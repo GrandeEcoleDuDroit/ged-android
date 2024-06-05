@@ -1,4 +1,4 @@
-package com.upsaclay.gedoise.ui.theme
+package com.upsaclay.core.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
