@@ -1,18 +1,18 @@
 package com.upsaclay.authentication.ui
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -27,11 +27,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -42,9 +44,10 @@ import com.upsaclay.authentication.data.AuthenticationState
 import com.upsaclay.core.ui.components.ErrorText
 import com.upsaclay.core.ui.components.InfiniteCircularProgressIndicator
 import com.upsaclay.core.ui.components.PrimaryLargeButton
+import com.upsaclay.core.ui.theme.GedoiseColor.BlackIconColor
+import com.upsaclay.core.ui.theme.GedoiseColor.PrimaryColor
+import com.upsaclay.core.ui.theme.GedoiseColor.SecondaryBackgroundColor
 import com.upsaclay.core.ui.theme.GedoiseTheme
-import com.upsaclay.core.ui.theme.PrimaryColor
-import com.upsaclay.core.ui.theme.SecondaryBackgroundColor
 import com.upsaclay.authentication.R as AuthResource
 import com.upsaclay.core.R as CoreResource
 
@@ -58,6 +61,7 @@ fun AuthenticationScreen(
 //    if(authenticationState == AuthenticationState.AUTHENTICATED){
 //        navController.navigate(Screen.Home.route)
 //    }
+    var showPassword by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
     errorMessage = when (authenticationState) {
         AuthenticationState.ERROR_AUTHENTICATION ->
@@ -71,24 +75,33 @@ fun AuthenticationScreen(
     Surface(
         color = SecondaryBackgroundColor,
         modifier = modifier.fillMaxSize()
-    )
-    {
+    ) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = modifier.padding(16.dp)
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            TitleSection()
-            BottomSection(
-                usernameText = authenticationViewModel.username,
-                usernameOnValueChange = { authenticationViewModel.updateUsername(it) },
-                passwordText = authenticationViewModel.password,
-                passwordOnValueChange = { authenticationViewModel.updatePassword(it) },
-                errorMessage = errorMessage,
-                authenticationState = authenticationState,
-                onClickButton = { authenticationViewModel.loginWithParisSaclay() },
-                isLoading = authenticationState == AuthenticationState.LOADING
-            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceEvenly,
+                modifier = modifier
+                    .padding(16.dp)
+                    .fillMaxHeight(0.9f)
+            ) {
+                TitleSection()
+                BottomSection(
+                    mailText = authenticationViewModel.username,
+                    mailOnValueChange = { authenticationViewModel.updateUsername(it) },
+                    passwordText = authenticationViewModel.password,
+                    passwordOnValueChange =
+                    { authenticationViewModel.updatePassword(it) },
+                    errorMessage = errorMessage,
+                    authenticationState = authenticationState,
+                    onClickButton = { authenticationViewModel.loginWithParisSaclay() },
+                )
+            }
+            if (authenticationState == AuthenticationState.LOADING) {
+                InfiniteCircularProgressIndicator()
+            }
         }
     }
 }
@@ -99,7 +112,6 @@ fun TitleSection(
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.offset(y = (-80).dp)
     ) {
         Image(
             painter = painterResource(id = CoreResource.drawable.ged_logo),
@@ -109,12 +121,14 @@ fun TitleSection(
             modifier = Modifier
                 .size(120.dp)
         )
+        Spacer(modifier = Modifier.height(20.dp))
         Text(
             text = stringResource(id = AuthResource.string.welcome_text),
             style = MaterialTheme.typography.titleSmall,
             fontSize = 19.sp,
             textAlign = TextAlign.Center
         )
+        Spacer(modifier = Modifier.height(10.dp))
         Text(
             text = stringResource(id = AuthResource.string.presentation_text),
             style = MaterialTheme.typography.bodyMedium,
@@ -160,22 +174,20 @@ fun InputsSection(
 
 @Composable
 fun BottomSection(
-    usernameText: String,
-    usernameOnValueChange: (String) -> Unit,
+    mailText: String,
+    mailOnValueChange: (String) -> Unit,
     passwordText: String,
     passwordOnValueChange: (String) -> Unit,
     errorMessage: String,
     authenticationState: AuthenticationState,
     onClickButton: () -> Unit,
-    isLoading: Boolean
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.offset(y = (-20).dp)
     ) {
         InputsSection(
-            usernameText = usernameText,
-            usernameOnValueChange = usernameOnValueChange,
+            usernameText = mailText,
+            usernameOnValueChange = mailOnValueChange,
             passwordText = passwordText,
             passwordOnValueChange = passwordOnValueChange,
             errorMessage = errorMessage,
@@ -187,9 +199,6 @@ fun BottomSection(
             onClick = onClickButton,
             modifier = Modifier.fillMaxWidth()
         )
-        if (isLoading) {
-            InfiniteCircularProgressIndicator()
-        }
     }
 }
 
@@ -206,7 +215,7 @@ fun EmailInput(
         onValueChange = onValueChange,
         leadingIcon = {
             Icon(
-                imageVector = Icons.Default.Email,
+                painter = painterResource(id = CoreResource.drawable.ic_school),
                 contentDescription = stringResource(
                     id = AuthResource.string.email_icon_description
                 )
@@ -224,6 +233,20 @@ fun PasswordInput(
     onValueChange: (String) -> Unit,
     isError: Boolean = false
 ) {
+    var passwordVisible by remember { mutableStateOf(false) }
+    val icon: Painter
+    val contentDescription: String
+    if (!passwordVisible) {
+        icon = painterResource(id = CoreResource.drawable.ic_visibility)
+        contentDescription = stringResource(
+            id = AuthResource.string.show_password_icon_description
+        )
+    } else {
+        icon = painterResource(id = CoreResource.drawable.ic_visibility_off)
+        contentDescription = stringResource(
+            id = AuthResource.string.hide_password_icon_description
+        )
+    }
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
         value = text,
@@ -238,33 +261,69 @@ fun PasswordInput(
             )
         },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-        visualTransformation = PasswordVisualTransformation(),
+        trailingIcon = {
+            Icon(
+                painter = icon,
+                contentDescription = contentDescription,
+                modifier = Modifier.clickable { passwordVisible = !passwordVisible },
+                tint = BlackIconColor
+            )
+        },
+        visualTransformation =
+        if (passwordVisible) VisualTransformation.None
+        else PasswordVisualTransformation(),
         isError = isError,
         singleLine = true
     )
 }
 
-@Preview(widthDp = 360, heightDp = 840, showBackground = true)
+@Preview(widthDp = 360, heightDp = 740, showBackground = true)
 @Composable
 fun AuthenticationScreenPreview() {
     var isLoading by remember { mutableStateOf(false) }
+    var mail by remember {
+        mutableStateOf("")
+    }
+    var password by remember {
+        mutableStateOf("")
+    }
+    var mytext by remember {
+        mutableStateOf("")
+    }
     GedoiseTheme {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(16.dp)
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            TitleSection()
-            BottomSection(
-                usernameText = "",
-                usernameOnValueChange = {},
-                passwordText = "",
-                passwordOnValueChange = {},
-                authenticationState = AuthenticationState.UNAUTHENTICATED,
-                errorMessage = "",
-                onClickButton = { isLoading = !isLoading },
-                isLoading = isLoading
-            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceEvenly,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxHeight(0.9f)
+            ) {
+                TitleSection()
+                BottomSection(
+                    mailText = mail,
+                    mailOnValueChange = {
+                        mail = it
+                    },
+                    passwordText = password,
+                    passwordOnValueChange = {
+                        password = it
+                    },
+                    authenticationState = AuthenticationState.UNAUTHENTICATED,
+                    errorMessage = "",
+                    onClickButton = {
+                        isLoading = !isLoading
+                        mytext = mail
+                    },
+                )
+            }
+            if (isLoading) {
+                InfiniteCircularProgressIndicator()
+            }
+            Text(text = mytext)
         }
     }
 }

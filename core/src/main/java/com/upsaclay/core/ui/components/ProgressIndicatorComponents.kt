@@ -12,7 +12,7 @@ import com.upsaclay.core.ui.theme.GedoiseTheme
 @Composable
 fun InfiniteCircularProgressIndicator() {
     CircularProgressIndicator(
-        modifier = Modifier.size(40.dp),
+        modifier = Modifier.size(42.dp),
         trackColor = MaterialTheme.colorScheme.surfaceVariant
     )
 }
