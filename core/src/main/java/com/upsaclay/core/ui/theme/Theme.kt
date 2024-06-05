@@ -7,6 +7,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
+import com.upsaclay.core.ui.theme.GedoiseColor.Black
+import com.upsaclay.core.ui.theme.GedoiseColor.ErrorColor
+import com.upsaclay.core.ui.theme.GedoiseColor.LightPrimaryColor
+import com.upsaclay.core.ui.theme.GedoiseColor.PrimaryColor
+import com.upsaclay.core.ui.theme.GedoiseColor.SecondaryBackgroundColor
+import com.upsaclay.core.ui.theme.GedoiseColor.SecondaryColor
+import com.upsaclay.core.ui.theme.GedoiseColor.TertiaryColor
+import com.upsaclay.core.ui.theme.GedoiseColor.White
 
 //private val DarkColorScheme = darkColorScheme(
 //    primary = PrimaryColor,

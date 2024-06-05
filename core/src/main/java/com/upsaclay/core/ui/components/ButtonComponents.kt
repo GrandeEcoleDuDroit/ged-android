@@ -2,7 +2,9 @@ package com.upsaclay.core.ui.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
@@ -16,8 +18,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.upsaclay.core.ui.theme.GedoiseColor.PrimaryColor
 import com.upsaclay.core.ui.theme.GedoiseTheme
-import com.upsaclay.core.ui.theme.PrimaryColor
 
 @Composable
 fun PrimaryLargeButton(
@@ -28,6 +30,7 @@ fun PrimaryLargeButton(
     Button(
         onClick = onClick,
         modifier = modifier
+            .height(45.dp)
     ) {
         Text(text = text)
     }
@@ -53,12 +56,19 @@ fun SmallFAB(
     }
 }
 
-@Preview
+@Preview(widthDp = 360)
 @Composable
 fun PreviewButtons() {
     GedoiseTheme {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            PrimaryLargeButton("Primary Large Button", {})
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(16.dp)
+        ) {
+            PrimaryLargeButton(
+                "Primary Large Button",
+                {},
+                modifier = Modifier.fillMaxWidth()
+            )
             Spacer(Modifier.height(10.dp))
             SmallFAB(
                 icon = Icons.Default.Add,
