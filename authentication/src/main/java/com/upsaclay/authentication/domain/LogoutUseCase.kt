@@ -1,16 +1,16 @@
 package com.upsaclay.authentication.domain
 
-import android.content.Context
 import com.upsaclay.core.data.SharedPreferenceFiles
+import com.upsaclay.core.data.SharedPreferencesKeys
+import com.upsaclay.core.domain.SharedPreferenceUseCase
 
-class LogoutUseCase(context: Context) {
-    private val sharedPreferences = context.getSharedPreferences(
-        SharedPreferenceFiles.AUTHENTICATION, Context.MODE_PRIVATE
-    )
+class LogoutUseCase(private val sharedPreferenceUseCase: SharedPreferenceUseCase) {
 
     operator fun invoke() {
-        sharedPreferences.edit()
-            .putBoolean(SharedPreferenceFiles.AUTHENTICATION, false)
-            .apply()
+        sharedPreferenceUseCase.storeBoolean(
+            SharedPreferenceFiles.AUTHENTICATION,
+            SharedPreferencesKeys.IS_AUTHENTICATED,
+            false
+        )
     }
 }

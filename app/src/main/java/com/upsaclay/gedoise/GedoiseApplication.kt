@@ -2,6 +2,7 @@ package com.upsaclay.gedoise
 
 import android.app.Application
 import com.upsaclay.authentication.authenticationModule
+import com.upsaclay.core.coreModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -14,7 +15,8 @@ class GedoiseApplication : Application() {
             androidContext(this@GedoiseApplication)
             modules(
                 listOf(
-                    authenticationModule
+                    authenticationModule,
+                    coreModule
                 )
             )
         }

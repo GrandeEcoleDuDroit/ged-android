@@ -1,5 +1,5 @@
 package com.upsaclay.core.data
 
-object SharedPreferenceFiles {
-    const val AUTHENTICATION = "preference_authentication"
+enum class SharedPreferenceFiles(val filename: String) {
+    AUTHENTICATION("preference_authentication")
 }

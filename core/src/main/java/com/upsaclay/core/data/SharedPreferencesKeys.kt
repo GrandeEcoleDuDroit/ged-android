@@ -1,5 +1,5 @@
 package com.upsaclay.core.data
 
-object SharedPreferencesKeys {
-    const val AUTHENTICATED = "authenticated_key"
+enum class SharedPreferencesKeys(val keyname: String) {
+    IS_AUTHENTICATED("authenticated_key")
 }

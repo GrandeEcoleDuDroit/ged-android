@@ -55,7 +55,7 @@ fun AuthenticationScreen(
     authenticationViewModel: AuthenticationViewModel = viewModel()
 ) {
     val authenticationState by authenticationViewModel.authenticationState.collectAsState()
-//    if(authenticationState == AuthenticationState.AUTHENTICATED){
+//    if(authenticationState == AuthenticationState.IS_AUTHENTICATED){
 //        navController.navigate(Screen.Home.route)
 //    }
     var errorMessage by remember { mutableStateOf("") }
