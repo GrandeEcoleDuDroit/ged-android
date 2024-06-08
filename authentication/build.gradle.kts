@@ -36,6 +36,9 @@ android {
     kotlinOptions {
         jvmTarget = "19"
     }
+    packaging {
+        resources.excludes.add("META-INF/*")
+    }
 }
 
 dependencies {
@@ -52,10 +55,17 @@ dependencies {
     implementation(platform(libs.okhttp.bom))
     implementation(libs.okhttp)
     implementation(libs.koin)
+    implementation(libs.koin.core)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.animation.compose)
 
     testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlin.test)
+    testImplementation(kotlin("test"))
+    testImplementation(libs.koin.test)
+    testImplementation(libs.koin.test.junit4)
+    androidTestImplementation(libs.mockk.android)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

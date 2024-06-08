@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.upsaclay.authentication.R
 import com.upsaclay.authentication.data.AuthenticationState
 import com.upsaclay.core.ui.components.ErrorText
 import com.upsaclay.core.ui.components.InfiniteCircularProgressIndicator
@@ -48,7 +49,6 @@ import com.upsaclay.core.ui.theme.GedoiseColor.BlackIconColor
 import com.upsaclay.core.ui.theme.GedoiseColor.PrimaryColor
 import com.upsaclay.core.ui.theme.GedoiseColor.SecondaryBackgroundColor
 import com.upsaclay.core.ui.theme.GedoiseTheme
-import com.upsaclay.authentication.R as AuthResource
 import com.upsaclay.core.R as CoreResource
 
 @Composable
@@ -58,14 +58,14 @@ fun AuthenticationScreen(
     authenticationViewModel: AuthenticationViewModel = viewModel()
 ) {
     val authenticationState by authenticationViewModel.authenticationState.collectAsState()
-//    if(authenticationState == AuthenticationState.AUTHENTICATED){
+//    if(authenticationState == AuthenticationState.IS_AUTHENTICATED){
 //        navController.navigate(Screen.Home.route)
 //    }
     var showPassword by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
     errorMessage = when (authenticationState) {
         AuthenticationState.ERROR_AUTHENTICATION ->
-            stringResource(id = AuthResource.string.error_connection)
+            stringResource(id = R.string.error_connection)
 
         AuthenticationState.ERROR_INPUT ->
             stringResource(id = CoreResource.string.error_empty_fields)
@@ -123,14 +123,14 @@ fun TitleSection(
         )
         Spacer(modifier = Modifier.height(20.dp))
         Text(
-            text = stringResource(id = AuthResource.string.welcome_text),
+            text = stringResource(id = R.string.welcome_text),
             style = MaterialTheme.typography.titleSmall,
             fontSize = 19.sp,
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(10.dp))
         Text(
-            text = stringResource(id = AuthResource.string.presentation_text),
+            text = stringResource(id = R.string.presentation_text),
             style = MaterialTheme.typography.bodyMedium,
             fontSize = 15.sp,
             textAlign = TextAlign.Center,
@@ -195,7 +195,7 @@ fun BottomSection(
         )
         Spacer(modifier = Modifier.height(20.dp))
         PrimaryLargeButton(
-            text = stringResource(id = AuthResource.string.connect),
+            text = stringResource(id = R.string.connect),
             onClick = onClickButton,
             modifier = Modifier.fillMaxWidth()
         )
@@ -217,7 +217,7 @@ fun EmailInput(
             Icon(
                 painter = painterResource(id = CoreResource.drawable.ic_school),
                 contentDescription = stringResource(
-                    id = AuthResource.string.email_icon_description
+                    id = R.string.email_icon_description
                 )
             )
         },
@@ -250,13 +250,13 @@ fun PasswordInput(
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
         value = text,
-        label = { Text(text = stringResource(id = AuthResource.string.password)) },
+        label = { Text(text = stringResource(id = R.string.password)) },
         onValueChange = onValueChange,
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.Lock,
                 contentDescription = stringResource(
-                    id = AuthResource.string.password_icon_description
+                    id = R.string.password_icon_description
                 )
             )
         },

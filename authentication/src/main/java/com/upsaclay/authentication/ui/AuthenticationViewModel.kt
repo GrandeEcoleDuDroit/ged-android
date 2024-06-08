@@ -1,5 +1,6 @@
 package com.upsaclay.authentication.ui
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -9,6 +10,9 @@ import com.upsaclay.authentication.data.AuthenticationState
 import com.upsaclay.authentication.domain.IsAuthenticatedUseCase
 import com.upsaclay.authentication.domain.LoginParisSaclayUseCase
 import com.upsaclay.authentication.domain.LogoutUseCase
+import com.upsaclay.core.data.SharedPreferenceFiles
+import com.upsaclay.core.data.SharedPreferencesKeys
+import com.upsaclay.core.domain.SharedPreferenceUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,12 +28,21 @@ class AuthenticationViewModel : ViewModel() {
         LoginParisSaclayUseCase::class.java
     )
     private val logoutUseCase: LogoutUseCase by inject(LogoutUseCase::class.java)
-    private val _authenticationState = MutableStateFlow(isAuthenticatedUseCase())
+    private val sharedPreferenceUseCase: SharedPreferenceUseCase by inject(
+        SharedPreferenceUseCase::class.java
+    )
+    private val _authenticationState = MutableStateFlow(AuthenticationState.UNAUTHENTICATED)
     val authenticationState: StateFlow<AuthenticationState> = _authenticationState.asStateFlow()
     var username by mutableStateOf("")
         private set
     var password by mutableStateOf("")
         private set
+
+    init {
+        _authenticationState.value = if (isAuthenticatedUseCase())
+            AuthenticationState.AUTHENTICATED
+        else AuthenticationState.UNAUTHENTICATED
+    }
 
     fun updateUsername(value: String) {
         username = value
@@ -46,7 +59,21 @@ class AuthenticationViewModel : ViewModel() {
             return
         }
         viewModelScope.launch(Dispatchers.IO) {
-            _authenticationState.value = loginParisSaclayUseCase(username, password)
+            val result = loginParisSaclayUseCase(username, password)
+            if (result.isSuccess) {
+                _authenticationState.value = AuthenticationState.AUTHENTICATED
+                sharedPreferenceUseCase.storeBoolean(
+                    SharedPreferenceFiles.AUTHENTICATION,
+                    SharedPreferencesKeys.IS_AUTHENTICATED,
+                    true
+                )
+            } else {
+                _authenticationState.value = AuthenticationState.ERROR_AUTHENTICATION
+                Log.e(
+                    javaClass.simpleName,
+                    "Error while trying to login : ${result.exceptionOrNull()}"
+                )
+            }
         }
     }
 
@@ -55,5 +82,5 @@ class AuthenticationViewModel : ViewModel() {
         _authenticationState.value = AuthenticationState.UNAUTHENTICATED
     }
 
-    private fun verifyInputs(): Boolean = !(username.isEmpty() || password.isEmpty())
+    private fun verifyInputs(): Boolean = !(username.isBlank() || password.isBlank())
 }

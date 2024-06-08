@@ -1,24 +1,15 @@
 package com.upsaclay.authentication.domain
 
-import android.content.Context
-import com.upsaclay.authentication.data.AuthenticationState
 import com.upsaclay.core.data.SharedPreferenceFiles
 import com.upsaclay.core.data.SharedPreferencesKeys
+import com.upsaclay.core.domain.SharedPreferenceUseCase
 
-class IsAuthenticatedUseCase(context: Context) {
-    private val sharedPreferences = context.getSharedPreferences(
-        SharedPreferenceFiles.AUTHENTICATION, Context.MODE_PRIVATE
+class IsAuthenticatedUseCase(
+    private val sharedPreferenceUseCase: SharedPreferenceUseCase
+) {
+    operator fun invoke(): Boolean = sharedPreferenceUseCase.getBoolean(
+        SharedPreferenceFiles.AUTHENTICATION,
+        SharedPreferencesKeys.IS_AUTHENTICATED,
+        false
     )
-
-    operator fun invoke(): AuthenticationState {
-        val isAuthenticated = sharedPreferences.getBoolean(
-            SharedPreferencesKeys.AUTHENTICATED, false
-        )
-        return if (isAuthenticated) {
-            AuthenticationState.AUTHENTICATED
-        } else {
-            AuthenticationState.UNAUTHENTICATED
-        }
-    }
-
 }
