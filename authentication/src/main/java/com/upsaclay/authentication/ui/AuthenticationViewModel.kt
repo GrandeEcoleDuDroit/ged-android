@@ -10,6 +10,8 @@ import com.upsaclay.authentication.data.AuthenticationState
 import com.upsaclay.authentication.domain.IsAuthenticatedUseCase
 import com.upsaclay.authentication.domain.LoginParisSaclayUseCase
 import com.upsaclay.authentication.domain.LogoutUseCase
+import com.upsaclay.core.data.SharedPreferenceFiles
+import com.upsaclay.core.data.SharedPreferencesKeys
 import com.upsaclay.core.domain.SharedPreferenceUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -60,6 +62,11 @@ class AuthenticationViewModel : ViewModel() {
             val result = loginParisSaclayUseCase(username, password)
             if (result.isSuccess) {
                 _authenticationState.value = AuthenticationState.AUTHENTICATED
+                sharedPreferenceUseCase.storeBoolean(
+                    SharedPreferenceFiles.AUTHENTICATION,
+                    SharedPreferencesKeys.IS_AUTHENTICATED,
+                    true
+                )
             } else {
                 _authenticationState.value = AuthenticationState.ERROR_AUTHENTICATION
                 Log.e(
@@ -75,5 +82,5 @@ class AuthenticationViewModel : ViewModel() {
         _authenticationState.value = AuthenticationState.UNAUTHENTICATED
     }
 
-    private fun verifyInputs(): Boolean = !(username.isEmpty() || password.isEmpty())
+    private fun verifyInputs(): Boolean = !(username.isBlank() || password.isBlank())
 }

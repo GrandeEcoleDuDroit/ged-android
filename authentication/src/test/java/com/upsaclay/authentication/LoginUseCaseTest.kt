@@ -34,7 +34,7 @@ class LoginUseCaseTest {
     }
 
     @Test
-    fun `login with paris saclay return authenticated when login is correct`() {
+    fun login_with_paris_saclay_return_success_when_login_is_correct() {
         runTest {
             val result = loginParisSaclayUseCase(email, password)
             assert(result.isSuccess)
@@ -42,7 +42,7 @@ class LoginUseCaseTest {
     }
 
     @Test
-    fun `login with paris saclay return error authentication when login is incorrect`() {
+    fun login_with_paris_saclay_return_fail_when_login_is_incorrect() {
         coEvery {
             authenticationRepository.loginWithParisSaclay(any(), any(), any())
         } returns Result.failure(Exception())
