@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.upsaclay.core.ui.theme.GedoiseColor.PrimaryColor
+import com.upsaclay.core.ui.theme.GedoiseColor.Primary
 import com.upsaclay.core.ui.theme.GedoiseTheme
 
 @Composable
@@ -73,7 +73,7 @@ fun PreviewButtons() {
             SmallFAB(
                 icon = Icons.Default.Add,
                 contentDescription = "Add",
-                colorButton = PrimaryColor,
+                colorButton = Primary,
                 colorIcon = Color.White,
                 onClick = {}
             )

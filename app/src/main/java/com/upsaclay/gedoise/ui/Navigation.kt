@@ -5,7 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.upsaclay.authentication.ui.AuthenticationScreen
-import com.upsaclay.core.ui.Screen
+import com.upsaclay.core.data.Screen
 
 @Composable
 fun Navigation() {

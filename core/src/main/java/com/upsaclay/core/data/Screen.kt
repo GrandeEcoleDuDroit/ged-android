@@ -1,4 +1,4 @@
-package com.upsaclay.core.ui
+package com.upsaclay.core.data
 
 sealed class Screen(val route: String) {
     data object Authentication : Screen("authentication_screen")
