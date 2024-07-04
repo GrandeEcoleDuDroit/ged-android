@@ -36,7 +36,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.upsaclay.authentication.R
@@ -124,15 +123,13 @@ private fun TitleSection(
         Spacer(modifier = Modifier.height(20.dp))
         Text(
             text = stringResource(id = R.string.welcome_text),
-            style = MaterialTheme.typography.titleSmall,
-            fontSize = 19.sp,
+            style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(10.dp))
         Text(
             text = stringResource(id = R.string.presentation_text),
             style = MaterialTheme.typography.bodyMedium,
-            fontSize = 15.sp,
             textAlign = TextAlign.Center,
             color = Primary,
         )
