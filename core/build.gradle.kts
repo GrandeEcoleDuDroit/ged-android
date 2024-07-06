@@ -23,6 +23,7 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_19
         targetCompatibility = JavaVersion.VERSION_19
@@ -53,6 +54,7 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.koin)
     implementation(libs.koin.core)
+    implementation(libs.androidx.material3.windowsize)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

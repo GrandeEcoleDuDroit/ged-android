@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Gedoise</string>
+    <string name="school_name">Grande École du Droit</string>
+    <string name="home_icon_description">Icône pour accéder à la page d\'accueil</string>
+    <string name="calendar_icon_description">Icône pour accéder au calendrier</string>
+    <string name="forum_icon_description">Icône pour accéder au forum</string>
+    <string name="mail_icon_description">Icône pour accéder à la messagerie</string>
+    <string name="profile_icon_description">Icône pour accéder à la page de profil</string>
 </resources>

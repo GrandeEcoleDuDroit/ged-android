@@ -16,7 +16,9 @@ object GedoiseColor {
     val White = Color(0xFFFFFFFF)
     val Black = Color(0xFF000000)
     val Grey = Color(0xFFAAAAAA)
+    val LightGrey = Color(0xFFD6D6D6)
     val DarkGrey = Color(0xFF666666)
+    val ButtonShowColor = Color(0xFFF3F2F8)
     val PastelBlue = Color(0xFFDBF2F1)
     val DarkSageGreen = Color(0xFF607B79)
 }
