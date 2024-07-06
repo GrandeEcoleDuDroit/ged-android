@@ -1,8 +1,8 @@
 package com.upsaclay.news.ui
 
 import androidx.lifecycle.ViewModel
-import com.upsaclay.news.data.Announcement
 import com.upsaclay.news.data.Post
+import com.upsaclay.news.data.model.Announcement
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

@@ -1,7 +1,5 @@
 package com.upsaclay.news.ui
 
-import android.graphics.Bitmap
-import android.graphics.Picture
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,7 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -33,14 +30,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.upsaclay.core.data.User
 import com.upsaclay.core.ui.components.SmallShowButton
 import com.upsaclay.core.ui.components.StandardWebView
 import com.upsaclay.core.ui.theme.GedoiseColor
 import com.upsaclay.core.ui.theme.GedoiseTheme
 import com.upsaclay.news.R
-import com.upsaclay.news.data.Announcement
+import com.upsaclay.news.data.model.Announcement
+import java.time.LocalDateTime
 import com.upsaclay.core.R as CoreResource
 
 private const val URL_BLOGSPOT = "https://grandeecoledudroit.blogspot.com/"
@@ -106,12 +104,12 @@ private fun ShortRecentAnnouncementSection(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
-                bitmap = announcement.authorPicture.asImageBitmap(),
+                painter = painterResource(id = com.upsaclay.core.R.drawable.ic_person),
                 contentDescription = stringResource(id = com.upsaclay.news.R.string.announcement_author_picture_description),
                 modifier = Modifier
                     .clip(CircleShape)
                     .size(40.dp)
-                    .background(GedoiseColor.LightPrimaryColor)
+                    .background(GedoiseColor.OnSurface)
             )
             Spacer(modifier = Modifier.width(15.dp))
             Column(
@@ -119,16 +117,16 @@ private fun ShortRecentAnnouncementSection(
                 horizontalAlignment = Alignment.Start
             ) {
                 Text(
-                    text = announcement.authorName,
+                    text = announcement.author.fullname,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 13.sp,
+                    style = MaterialTheme.typography.labelLarge,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
                     text = announcement.title,
-                    color = GedoiseColor.Grey,
-                    fontSize = 11.sp,
+                    color = Color.Gray,
+                    style = MaterialTheme.typography.labelSmall,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -149,6 +147,7 @@ private fun FullAnnouncementPopUp(
     announcement: Announcement,
     onclick: () -> Unit
 ) {
+    val announcementDate = "${announcement.date.dayOfMonth}/${announcement.date.monthValue}/${announcement.date.year}"
     Column(Modifier.padding(10.dp)) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -159,16 +158,16 @@ private fun FullAnnouncementPopUp(
                 modifier = Modifier
                     .clip(CircleShape)
                     .size(40.dp)
-                    .background(GedoiseColor.LightPrimaryColor)
+                    .background(GedoiseColor.OnSurface)
             )
             Spacer(modifier = Modifier.width(10.dp))
             Column {
                 Text(
-                    text = announcement.authorName,
-                    style = MaterialTheme.typography.labelMedium
+                    text = announcement.author.fullname,
+                    style = MaterialTheme.typography.labelLarge
                 )
                 Text(
-                    text = "Edité le ${announcement.date}",
+                    text = "Edité le $announcementDate",
                     style = MaterialTheme.typography.labelSmall,
                     color = Color.Gray
                 )
@@ -213,10 +212,10 @@ private fun NewsSection(){
 }
 
 private val announcementFixture = Announcement(
-    "Rappel : Visite de cabinet le 23/03.",
-    Bitmap.createBitmap(Picture(), 30, 30, Bitmap.Config.ARGB_8888),
-    "Author Name",
-    "Nous vous informons que la visite de votre " +
+    id = 1,
+    title = "Rappel : Visite de cabinet le 23/03.",
+    date = LocalDateTime.now(),
+    content = "Nous vous informons que la visite de votre " +
             "cabinet médical est programmée pour le 23 mars. " +
             "Cette visite a pour but de s'assurer que toutes les normes de sécurité " +
             "et de conformité sont respectées, ainsi que de vérifier l'état général " +
@@ -228,8 +227,14 @@ private val announcementFixture = Announcement(
             "sans heurts et de manière efficace. N'hésitez pas à nous contacter si " +
             "vous avez des questions ou si vous avez besoin de plus amples informations" +
             " avant la date prévue",
-    "10/09/2023"
+    author = User(
+        id = 1,
+        firstName = "Patrick",
+        lastName = "Dupont",
+        email = "patrick.dupont@example.com"
+    )
 )
+
 private val announcementItemsFixture = listOf(
     announcementFixture,
     announcementFixture,

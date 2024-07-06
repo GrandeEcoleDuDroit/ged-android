@@ -64,7 +64,6 @@ dependencies {
     implementation(libs.koin.core)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.animation.compose)
-    implementation(libs.androidx.webkit)
     testImplementation(libs.mockk)
     testImplementation(libs.kotlin.test)
     testImplementation(kotlin("test"))

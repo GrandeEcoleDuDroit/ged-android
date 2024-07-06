@@ -56,7 +56,6 @@ dependencies {
     implementation(libs.retrofit.converter.gson)
     implementation(libs.koin)
     implementation(libs.koin.core)
-    implementation(libs.androidx.material3.windowsize)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
