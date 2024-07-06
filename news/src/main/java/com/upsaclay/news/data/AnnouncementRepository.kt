@@ -1,10 +1,9 @@
 package com.upsaclay.news.data
 
+import com.upsaclay.news.data.model.Announcement
 import kotlinx.coroutines.flow.Flow
 
 interface AnnouncementRepository {
-    suspend fun getLastAnnouncement(): Flow<Announcement>
-    suspend fun createAnnouncement(announcement: Announcement)
-    suspend fun modifyAnnouncement(announcement: Announcement)
-    suspend fun deleteAnnouncement(announcement: Announcement)
+    val announcements: Flow<List<Announcement>>
+    suspend fun updateAnnouncements()
 }

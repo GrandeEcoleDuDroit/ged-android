@@ -43,7 +43,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -55,13 +54,17 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(platform(libs.okhttp.bom))
     implementation(libs.okhttp)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
+    implementation(libs.koin)
+    implementation(libs.koin.core)
+
+    testImplementation(libs.junit)
     implementation(libs.koin)
     implementation(libs.koin.core)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.animation.compose)
     implementation(libs.androidx.webkit)
-
-    testImplementation(libs.junit)
     testImplementation(libs.mockk)
     testImplementation(libs.kotlin.test)
     testImplementation(kotlin("test"))
