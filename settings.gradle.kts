@@ -23,3 +23,4 @@ rootProject.name = "Gedoise"
 include(":app")
 include(":authentication")
 include(":core")
+include(":news")

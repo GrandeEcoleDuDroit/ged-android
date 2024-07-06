@@ -51,6 +51,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(platform(libs.okhttp.bom))
     implementation(libs.okhttp)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
     implementation(libs.koin)
     implementation(libs.koin.core)
 
