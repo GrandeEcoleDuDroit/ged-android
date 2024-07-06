@@ -1,6 +1,10 @@
 package com.upsaclay.core.data
 
-sealed class Screen(val route: String) {
-    data object Authentication : Screen("authentication_screen")
-    data object Home : Screen("home_screen")
+enum class Screen(val route: String) {
+    AUTHENTICATION("authentication_screen"),
+    HOME("home_screen"),
+    MESSAGE("message_screen"),
+    CALENDAR( "calendar_screen"),
+    FORUM( "forum_screen"),
+    PROFILE("profile_screen")
 }
