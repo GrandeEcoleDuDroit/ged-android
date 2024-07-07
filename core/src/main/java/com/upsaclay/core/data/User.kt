@@ -7,8 +7,8 @@ data class User(
     val firstName: String,
     val lastName: String,
     val email: String
-){
-    val fullname = firstName[0].uppercaseChar() + " " + lastName[0].uppercaseChar()
+) {
+    val fullname = String.format("%s %s", firstName, lastName)
 }
 
 data class UserDTO(

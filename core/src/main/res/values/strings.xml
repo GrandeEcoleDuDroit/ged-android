@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="email">Adresse mail</string>
+    <string name="close">Fermer</string>
+    <string name="app">d</string>
     <string name="ged_logo_description">Logo de l\'université de La Grande École du Droit</string>
     <string name="error_empty_fields">Veuillez remplir tous les champs</string>
+    <string name="icon_add_descrption">Icône d\'ajout</string>
 </resources>

@@ -17,9 +17,9 @@ fun InfiniteCircularProgressIndicator() {
     )
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
-fun PreviewProgressIndicator() {
+private fun InfiniteCircularProgressIndicatorPreview() {
     GedoiseTheme {
         InfiniteCircularProgressIndicator()
     }

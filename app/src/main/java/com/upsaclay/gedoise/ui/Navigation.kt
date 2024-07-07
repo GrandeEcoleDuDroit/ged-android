@@ -6,19 +6,20 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.upsaclay.authentication.ui.AuthenticationScreen
 import com.upsaclay.core.data.Screen
+import com.upsaclay.news.ui.NewsScreen
 
 @Composable
 fun Navigation() {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = Screen.Authentication.route
+        startDestination = Screen.AUTHENTICATION.route
     ) {
-        composable(Screen.Authentication.route) {
+        composable(Screen.AUTHENTICATION.route) {
             AuthenticationScreen(navController = navController)
         }
-        composable(Screen.Home.route) {
-            HomeScreen(navController = navController)
+        composable(Screen.HOME.route) {
+            NewsScreen()
         }
     }
 }
