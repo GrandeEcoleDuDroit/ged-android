@@ -7,7 +7,10 @@ class AnnouncementRemoteDataSource(
 ) {
     suspend fun getAllAnnouncement(): List<Announcement> {
         val announcementResponse = announcementApi.getAllAnnouncement()
-        val announcementsWithUserDTO = announcementResponse.body() ?: emptyList()
+        val announcementsWithUserDTO = announcementResponse.body().takeIf {
+            announcementResponse.isSuccessful && it != null
+        } ?: emptyList()
+
         return announcementsWithUserDTO.map { it.toDomain() }
     }
 }

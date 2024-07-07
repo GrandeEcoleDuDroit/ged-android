@@ -5,6 +5,6 @@ import retrofit2.Response
 import retrofit2.http.GET
 
 interface AnnouncementApi {
-    @GET("/announcement")
+    @GET("/announcements")
     suspend fun getAllAnnouncement(): Response<List<AnnouncementWithUserDTO>>
 }

@@ -12,12 +12,12 @@ data class User(
 }
 
 data class UserDTO(
-    @SerializedName("user_id")
+    @SerializedName("USER_ID")
     val userId: Int,
-    @SerializedName("user_first_name")
+    @SerializedName("USER_FIRST_NAME")
     val userFirstName: String,
-    @SerializedName("user_last_name")
+    @SerializedName("USER_LAST_NAME")
     val userLastName: String,
-    @SerializedName("user_email")
+    @SerializedName("USER_EMAIL")
     val userEmail: String
 )
