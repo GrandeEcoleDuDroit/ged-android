@@ -1,16 +1,23 @@
 package com.upsaclay.news.data
 
+import android.util.Log
 import com.upsaclay.news.data.model.Announcement
 
 class AnnouncementRemoteDataSource(
     private val announcementApi: AnnouncementApi
 ) {
     suspend fun getAllAnnouncement(): List<Announcement> {
-        val announcementResponse = announcementApi.getAllAnnouncement()
-        val announcementsWithUserDTO = announcementResponse.body().takeIf {
-            announcementResponse.isSuccessful && it != null
-        } ?: emptyList()
+        return try {
+            val announcementResponse = announcementApi.getAllAnnouncement()
+            val announcementsWithUserDTO = announcementResponse.body().takeIf {
+                announcementResponse.isSuccessful && it != null
+            } ?: emptyList()
 
-        return announcementsWithUserDTO.map { it.toDomain() }
+            announcementsWithUserDTO.map { it.toDomain() }
+        }
+        catch (e: Exception){
+            Log.e("AnnouncementRemoteDataSource", "Error to get all announcement: ${e.message.toString()}")
+            emptyList()
+        }
     }
 }

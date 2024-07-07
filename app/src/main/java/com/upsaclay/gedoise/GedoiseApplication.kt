@@ -16,6 +16,7 @@ class GedoiseApplication : Application() {
             androidContext(this@GedoiseApplication)
             modules(
                 listOf(
+                    appModule,
                     authenticationModule,
                     coreModule,
                     newsModule

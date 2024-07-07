@@ -3,6 +3,7 @@ package com.upsaclay.gedoise.ui
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,10 +19,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -31,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -40,13 +41,17 @@ import com.upsaclay.core.data.Screen
 import com.upsaclay.core.ui.theme.GedoiseTheme
 import com.upsaclay.gedoise.R
 import com.upsaclay.gedoise.data.NavigationItem
-import com.upsaclay.gedoise.data.NavigationItemType
 import com.upsaclay.news.ui.NewsScreen
+import org.koin.androidx.compose.koinViewModel
+
 
 @Composable
-fun Navigation() {
+fun Navigation(
+    mainViewModel: MainViewModel = koinViewModel()
+) {
     val navController = rememberNavController()
-    val mainViewModel = koinViewModel<MainViewModel>()
+    val navigationItems by mainViewModel.navigationItem.collectAsState()
+
     NavHost(
         navController = navController,
         startDestination = Screen.AUTHENTICATION.route
@@ -54,9 +59,40 @@ fun Navigation() {
         composable(Screen.AUTHENTICATION.route) {
             AuthenticationScreen(navController = navController)
         }
+
         composable(Screen.HOME.route) {
-            MainNavigationBars(navController = navController) {
+            MainNavigationBars(
+                navController = navController,
+                navigationItems.values.toList()
+            ) {
                 NewsScreen()
+            }
+        }
+
+        composable(Screen.MESSAGE.route) {
+            MainNavigationBars(
+                navController = navController,
+                navigationItems.values.toList()
+            ) {
+                Text(text = "Message")
+            }
+        }
+
+        composable(Screen.CALENDAR.route) {
+            MainNavigationBars(
+                navController = navController,
+                navigationItems.values.toList()
+            ) {
+                Text(text = "Calendar")
+            }
+        }
+
+        composable(Screen.FORUM.route) {
+            MainNavigationBars(
+                navController = navController,
+                navigationItems.values.toList()
+            ) {
+                Text(text = "Forum")
             }
         }
     }
@@ -82,7 +118,9 @@ private fun MainNavigationBars(
         Column(
             modifier = Modifier.padding(
                 top = it.calculateTopPadding(),
-                bottom = it.calculateBottomPadding()
+                bottom = it.calculateBottomPadding(),
+                start = 16.dp,
+                end = 16.dp
             )
         ) {
             content()
@@ -124,15 +162,17 @@ private fun MainBottomBar(
     navController: NavController,
     navigationItems: List<NavigationItem>
 ){
-    var itemSelected by remember { mutableIntStateOf(0) }
+    val currentRoute = remember {
+        navController.currentDestination?.route
+    }
 
     NavigationBar{
         navigationItems.forEachIndexed { index, navigationItem ->
             NavigationBarItem(
-                selected = index == itemSelected,
+                selected = navigationItem.screen.route == currentRoute,
                 onClick = {
-                    itemSelected = index
-                    navController.navigate(navigationItem.screen.route)
+                    if(navigationItem.screen.route != currentRoute)
+                        navController.navigate(navigationItem.screen.route)
                 },
                 icon = {
                     BadgedBox(badge = {
@@ -158,13 +198,47 @@ private fun MainBottomBar(
     }
 }
 
+@Composable
+private fun RowScope.AddItem(
+    navController: NavController,
+    navigationItem: NavigationItem
+){
+    val currentRoute = remember {
+        navController.currentDestination?.route
+    }
+
+    NavigationBarItem(
+        modifier = Modifier.weight(1f),
+        label = { Text(text = stringResource(id = navigationItem.label)) },
+        icon = {
+            Icon(
+                painter = painterResource(id = navigationItem.icon),
+                contentDescription = stringResource(id = navigationItem.iconDescription)
+            )
+        },
+        selected = navigationItem.screen.route == currentRoute,
+        alwaysShowLabel = true,
+        onClick = {
+            if(navigationItem.screen.route != currentRoute)
+                navController.navigate(navigationItem.screen.route)
+        },
+    )
+}
+
+
 @Preview
 @Composable
-fun NavigationBarPreview(){
+private fun NavigationBarPreview(){
+    val messageWithNotif = NavigationItem.Message()
+    messageWithNotif.badges = 5
+
+    val calendarWithNews = NavigationItem.Calendar()
+    calendarWithNews.hasNews = true
+
     val itemList = listOf(
         NavigationItem.Home(),
-        NavigationItem.Message(),
-        NavigationItem.Calendar(),
+        messageWithNotif,
+        calendarWithNews,
         NavigationItem.Forum(),
     )
 

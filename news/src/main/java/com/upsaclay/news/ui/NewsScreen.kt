@@ -44,7 +44,9 @@ import com.upsaclay.core.R as CoreResource
 
 private const val URL_BLOGSPOT = "https://grandeecoledudroit.blogspot.com/"
 @Composable
-fun NewsScreen(newsViewModel: NewsViewModel = koinViewModel()){
+fun NewsScreen(
+    newsViewModel: NewsViewModel = koinViewModel()
+) {
     val news = newsViewModel.announcements.collectAsState(emptyList())
     LaunchedEffect(newsViewModel) {
         newsViewModel.updateAnnouncements()
