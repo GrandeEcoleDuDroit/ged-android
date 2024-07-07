@@ -36,6 +36,7 @@ import com.upsaclay.core.ui.components.SmallShowButton
 import com.upsaclay.core.ui.components.StandardWebView
 import com.upsaclay.core.ui.theme.GedoiseColor
 import com.upsaclay.core.ui.theme.GedoiseTheme
+import com.upsaclay.core.ui.theme.spacing
 import com.upsaclay.news.R
 import com.upsaclay.news.data.model.Announcement
 import org.koin.androidx.compose.koinViewModel
@@ -45,17 +46,17 @@ import com.upsaclay.core.R as CoreResource
 private const val URL_BLOGSPOT = "https://grandeecoledudroit.blogspot.com/"
 @Composable
 fun NewsScreen(
-    newsViewModel: NewsViewModel = koinViewModel()
+    newsViewModel: NewsViewModel = koinViewModel(),
 ) {
-    val news = newsViewModel.announcements.collectAsState(emptyList())
+    val announcements = newsViewModel.announcements.collectAsState(emptyList())
     LaunchedEffect(newsViewModel) {
         newsViewModel.updateAnnouncements()
     }
     Column {
         ShortRecentAnnouncementSection(
-            announcements = news.value
+            announcements = announcements.value
         )
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
         NewsSection()
     }
 }
@@ -67,17 +68,16 @@ private fun ShortRecentAnnouncementSection(
 ){
     Text(
         text = stringResource(id = R.string.recent_announcement),
-        style = MaterialTheme.typography.titleMedium
+        style = MaterialTheme.typography.titleMedium,
+        modifier = modifier
     )
-    Spacer(modifier = Modifier.height(10.dp))
-    LazyColumn(
-        modifier = modifier,
-    ) {
+    Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+    LazyColumn {
         item {
             if (announcements.isEmpty()){
                 Text(
                     text = stringResource(id = R.string.no_announcement),
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center
                 )
@@ -99,11 +99,12 @@ private fun ShortRecentAnnouncementSection(
 ){
     Card(
         modifier = modifier
-            .background(GedoiseColor.White)
+            .background(MaterialTheme.colorScheme.background)
+            .padding(10.dp)
     ) {
         Row(
             modifier = Modifier
-                .background(GedoiseColor.White)
+                .background(MaterialTheme.colorScheme.background)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -123,23 +124,19 @@ private fun ShortRecentAnnouncementSection(
                 Text(
                     text = announcement.author.fullname,
                     fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.labelLarge,
+                    style = MaterialTheme.typography.titleSmall,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
                     text = announcement.title,
                     color = Color.Gray,
-                    style = MaterialTheme.typography.labelSmall,
+                    style = MaterialTheme.typography.labelMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
             }
-            SmallShowButton(
-                modifier = Modifier
-                    .size(width = 50.dp, height = 25.dp),
-                textSize = 9
-            ) {
+            SmallShowButton {
 
             }
         }
@@ -149,10 +146,11 @@ private fun ShortRecentAnnouncementSection(
 @Composable
 private fun FullAnnouncementPopUp(
     announcement: Announcement,
+    modifier: Modifier = Modifier,
     onclick: () -> Unit
 ) {
     val announcementDate = "${announcement.date.dayOfMonth}/${announcement.date.monthValue}/${announcement.date.year}"
-    Column(Modifier.padding(10.dp)) {
+    Column(modifier = modifier) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -164,53 +162,112 @@ private fun FullAnnouncementPopUp(
                     .size(40.dp)
                     .background(GedoiseColor.OnSurface)
             )
-            Spacer(modifier = Modifier.width(10.dp))
+            Spacer(modifier = Modifier.width(MaterialTheme.spacing.small))
             Column {
                 Text(
                     text = announcement.author.fullname,
-                    style = MaterialTheme.typography.labelLarge
+                    style = MaterialTheme.typography.titleSmall
                 )
                 Text(
                     text = "Edité le $announcementDate",
-                    style = MaterialTheme.typography.labelSmall,
+                    style = MaterialTheme.typography.labelMedium,
                     color = Color.Gray
                 )
             }
         }
+        Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
         Text(
             text = announcement.title,
             style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(vertical = 5.dp)
+            modifier = Modifier.padding(vertical = MaterialTheme.spacing.extraSmall)
         )
+        Spacer(Modifier.height(MaterialTheme.spacing.small))
         Text(text = announcement.content)
-        Spacer(Modifier.height(10.dp))
+        Spacer(Modifier.height(MaterialTheme.spacing.small))
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = onclick
         ) {
             Text(
                 text = stringResource(id = CoreResource.string.close),
-                style = MaterialTheme.typography.bodySmall
+                style = MaterialTheme.typography.bodyMedium
             )
         }
     }
 }
 
 @Composable
-private fun NewsSection(){
-    Column {
+private fun NewsSection(modifier: Modifier = Modifier){
+    Column(modifier = modifier) {
         Text(
             text = stringResource(id = com.upsaclay.news.R.string.news_ged),
             style = MaterialTheme.typography.titleMedium,
         )
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
         Box(
             modifier = Modifier
                 .fillMaxWidth()
         ){
             StandardWebView(
-                url = URL_BLOGSPOT
+                url = URL_BLOGSPOT,
             )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun ShortRecentAnnouncementSectionPreview(){
+    GedoiseTheme {
+        Column {
+            ShortRecentAnnouncementSection(
+                announcements = announcementItemsFixture
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun ShortAnnouncementCardPreview(){
+    GedoiseTheme {
+        ShortAnnouncementCard(
+            announcement = announcementFixture,
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun FullAnnouncementScreenPreview(){
+    GedoiseTheme {
+        FullAnnouncementPopUp(
+            announcement = announcementFixture,
+            modifier = Modifier.padding(MaterialTheme.spacing.medium),
+            {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun NewsSectionPreview(){
+    GedoiseTheme {
+        NewsSection()
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 640)
+@Composable
+private fun NewsScreenPreview(){
+    GedoiseTheme {
+        Column(modifier = Modifier.padding(vertical = MaterialTheme.spacing.medium)) {
+            ShortRecentAnnouncementSection(
+                announcements = announcementItemsFixture,
+                Modifier.padding(horizontal = MaterialTheme.spacing.medium)
+            )
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+            NewsSection(Modifier.padding(horizontal = 16.dp))
         }
     }
 }
@@ -245,50 +302,3 @@ private val announcementItemsFixture = listOf(
     announcementFixture,
     announcementFixture
 )
-
-@Preview
-@Composable
-private fun ShortRecentAnnouncementSectionPreview(){
-    GedoiseTheme {
-        ShortRecentAnnouncementSection(
-            announcements = announcementItemsFixture
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun ShortAnnouncementCardPreview(){
-    GedoiseTheme {
-        ShortAnnouncementCard(
-            announcement = announcementFixture,
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun FullAnnouncementScreenPreview(){
-    GedoiseTheme {
-        FullAnnouncementPopUp(
-            announcement = announcementFixture,
-            {}
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun NewsSectionPreview(){
-    GedoiseTheme {
-        NewsSection()
-    }
-}
-
-@Preview(showBackground = true, widthDp = 360, heightDp = 640)
-@Composable
-private fun NewsScreenPreview(){
-    GedoiseTheme {
-        NewsScreen()
-    }
-}

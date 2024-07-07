@@ -1,8 +1,10 @@
 package com.upsaclay.core.ui.components
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -19,11 +21,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.upsaclay.core.R
 import com.upsaclay.core.ui.theme.GedoiseColor
 import com.upsaclay.core.ui.theme.GedoiseTheme
@@ -68,26 +68,24 @@ fun SmallFAB(
 @Composable
 fun SmallShowButton(
     modifier: Modifier = Modifier,
-    text: String = "Voir",
-    textSize: Int,
+    @StringRes textId: Int = R.string.show,
     onClick: () -> Unit
 ){
     Button(
-        modifier = modifier,
+        modifier = modifier.size(width = 50.dp, height = 25.dp),
         shape = ShapeDefaults.Small,
-        contentPadding = PaddingValues(0.dp),
         colors = ButtonColors(
             containerColor = GedoiseColor.ButtonShowColor,
             contentColor = GedoiseColor.Black,
             disabledContentColor = GedoiseColor.Grey,
             disabledContainerColor = GedoiseColor.ButtonShowColor
         ),
+        contentPadding = PaddingValues(0.dp),
         onClick = onClick
     ) {
         Text(
-            text = text,
-            fontWeight = FontWeight.Bold,
-            fontSize = textSize.sp,
+            text = stringResource(id = textId),
+            style = MaterialTheme.typography.labelSmall,
             textAlign = TextAlign.Center
         )
     }
@@ -120,7 +118,6 @@ private fun SmallFABPreview() {
 private fun SmallShowButtonPreview() {
     GedoiseTheme {
         SmallShowButton(
-            textSize = 10,
             onClick = {}
         )
     }
