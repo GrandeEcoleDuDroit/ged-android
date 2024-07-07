@@ -18,6 +18,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,7 +31,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.upsaclay.core.data.User
 import com.upsaclay.core.ui.components.SmallShowButton
 import com.upsaclay.core.ui.components.StandardWebView
@@ -38,15 +38,17 @@ import com.upsaclay.core.ui.theme.GedoiseColor
 import com.upsaclay.core.ui.theme.GedoiseTheme
 import com.upsaclay.news.R
 import com.upsaclay.news.data.model.Announcement
+import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDateTime
 import com.upsaclay.core.R as CoreResource
 
 private const val URL_BLOGSPOT = "https://grandeecoledudroit.blogspot.com/"
 @Composable
-fun NewsScreen(
-    newsViewModel: NewsViewModel = viewModel()
-){
-    val news = newsViewModel.announcements.collectAsState()
+fun NewsScreen(newsViewModel: NewsViewModel = koinViewModel()){
+    val news = newsViewModel.announcements.collectAsState(emptyList())
+    LaunchedEffect(newsViewModel) {
+        newsViewModel.updateAnnouncements()
+    }
     Column {
         ShortRecentAnnouncementSection(
             announcements = news.value

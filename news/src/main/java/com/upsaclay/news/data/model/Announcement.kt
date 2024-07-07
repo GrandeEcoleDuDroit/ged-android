@@ -13,28 +13,28 @@ data class Announcement(
 )
 
 data class AnnouncementWithUserDTO(
-    @SerializedName("announcement_id")
+    @SerializedName("ANNOUNCEMENT_ID")
     val announcementId: Int,
-    @SerializedName("announcement_title")
+    @SerializedName("ANNOUNCEMENT_TITLE")
     val announcementTitle: String,
-    @SerializedName("announcement_content")
+    @SerializedName("ANNOUNCEMENT_CONTENT")
     val announcementContent: String,
-    @SerializedName("announcement_date")
-    val announcementDate: LocalDateTime,
-    @SerializedName("user_id")
+    @SerializedName("ANNOUNCEMENT_DATE")
+    val announcementDate: String,
+    @SerializedName("USER_ID")
     val userId: Int,
-    @SerializedName("user_first_name")
+    @SerializedName("USER_FIRST_NAME")
     val userFirstName: String,
-    @SerializedName("user_last_name")
+    @SerializedName("USER_LAST_NAME")
     val userLastName: String,
-    @SerializedName("user_email")
+    @SerializedName("USER_EMAIL")
     val userEmail: String
 ) {
     fun toDomain() = Announcement(
         id = announcementId,
         title = announcementTitle,
         content = announcementContent,
-        date = announcementDate,
+        date = LocalDateTime.parse(announcementDate),
         author = User(
             id = userId,
             firstName = userFirstName,
@@ -45,15 +45,15 @@ data class AnnouncementWithUserDTO(
 }
 
 data class AnnouncementDTO(
-    @SerializedName("announcement_id")
+    @SerializedName("ANNOUNCEMENT_ID")
     val announcementId: Int,
-    @SerializedName("announcement_title")
+    @SerializedName("ANNOUNCEMENT_TITLE")
     val announcementTitle: String,
-    @SerializedName("announcement_content")
+    @SerializedName("ANNOUNCEMENT_CONTENT")
     val announcementContent: String,
-    @SerializedName("announcement_date")
-    val announcementDate: LocalDateTime,
-    @SerializedName("user_id")
+    @SerializedName("ANNOUNCEMENT_DATE")
+    val announcementDate: String,
+    @SerializedName("USER_ID")
     val userId: Int,
 ) {
     companion object {
@@ -61,7 +61,7 @@ data class AnnouncementDTO(
             announcementId = announcement.id,
             announcementTitle = announcement.title,
             announcementContent = announcement.content,
-            announcementDate = announcement.date,
+            announcementDate = announcement.date.toString(),
             userId = announcement.author.id
         )
     }
