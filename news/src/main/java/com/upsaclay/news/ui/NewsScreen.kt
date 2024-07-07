@@ -31,7 +31,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.upsaclay.core.data.User
 import com.upsaclay.core.ui.components.SmallShowButton
 import com.upsaclay.core.ui.components.StandardWebView

@@ -1,19 +1,22 @@
 package com.upsaclay.news.ui
 
 import androidx.lifecycle.ViewModel
-import com.upsaclay.news.data.Post
+import androidx.lifecycle.viewModelScope
 import com.upsaclay.news.data.model.Announcement
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import com.upsaclay.news.domain.GetAllAnnouncementUseCase
+import com.upsaclay.news.domain.UpdateAnnouncementsUseCase
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 
-class NewsViewModel: ViewModel() {
-    private val _announcements: MutableStateFlow<List<Announcement>> = MutableStateFlow(emptyList())
-    private val _posts: MutableStateFlow<List<Post>> = MutableStateFlow(emptyList())
-    val announcements: StateFlow<List<Announcement>> = _announcements.asStateFlow()
-    val posts: StateFlow<List<Post>> = _posts.asStateFlow()
+class NewsViewModel(
+    getAllAnnouncementUseCase: GetAllAnnouncementUseCase,
+    private val updateAnnouncementsUseCase: UpdateAnnouncementsUseCase
+): ViewModel() {
+    val announcements: Flow<List<Announcement>> = getAllAnnouncementUseCase()
 
-    private fun fetchAnnouncements(){
-
+    fun updateAnnouncements(){
+        viewModelScope.launch {
+            updateAnnouncementsUseCase()
+        }
     }
 }
