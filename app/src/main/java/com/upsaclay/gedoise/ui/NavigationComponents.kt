@@ -39,7 +39,7 @@ private fun RowScope.AddItem(
 
     NavigationBarItem(
         modifier = Modifier.weight(1f),
-        label = { Text(text = navigationItem.label) },
+        label = { Text(text = stringResource(id = navigationItem.label)) },
         icon = {
             Icon(
                 painter = painterResource(id = navigationItem.icon),
@@ -59,10 +59,10 @@ private fun RowScope.AddItem(
 @Composable
 private fun BottomNavigationPreview(){
     val itemList = listOf(
-        NavigationItem.Home,
-        NavigationItem.Message,
-        NavigationItem.Calendar,
-        NavigationItem.Forum,
+        NavigationItem.Home(),
+        NavigationItem.Message(),
+        NavigationItem.Calendar(),
+        NavigationItem.Forum(),
     )
     GedoiseTheme {
         BottomNavigation(
