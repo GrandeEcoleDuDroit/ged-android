@@ -1,24 +1,31 @@
 package com.upsaclay.core.ui.components
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.upsaclay.core.ui.theme.GedoiseColor.Primary
+import com.upsaclay.core.R
+import com.upsaclay.core.ui.theme.GedoiseColor
 import com.upsaclay.core.ui.theme.GedoiseTheme
 
 @Composable
@@ -38,15 +45,17 @@ fun PrimaryLargeButton(
 
 @Composable
 fun SmallFAB(
-    icon: ImageVector,
-    contentDescription: String,
-    colorButton: Color,
-    colorIcon: Color,
+    icon: ImageVector = Icons.Default.Add,
+    contentDescription: String = stringResource(id = R.string.icon_add_descrption),
+    colorButton: Color = MaterialTheme.colorScheme.tertiary,
+    shape: Shape = CircleShape,
+    colorIcon: Color = GedoiseColor.White,
     onClick: () -> Unit
 ) {
     SmallFloatingActionButton(
         containerColor = colorButton,
         contentColor = colorIcon,
+        shape = shape,
         onClick = onClick
     ) {
         Icon(
@@ -56,27 +65,60 @@ fun SmallFAB(
     }
 }
 
-@Preview(widthDp = 360)
 @Composable
-fun PreviewButtons() {
+fun SmallShowButton(
+    modifier: Modifier = Modifier,
+    @StringRes textId: Int = R.string.show,
+    onClick: () -> Unit
+){
+    Button(
+        modifier = modifier.size(width = 50.dp, height = 25.dp),
+        shape = ShapeDefaults.Small,
+        colors = ButtonColors(
+            containerColor = GedoiseColor.ButtonShowColor,
+            contentColor = GedoiseColor.Black,
+            disabledContentColor = GedoiseColor.Grey,
+            disabledContainerColor = GedoiseColor.ButtonShowColor
+        ),
+        contentPadding = PaddingValues(0.dp),
+        onClick = onClick
+    ) {
+        Text(
+            text = stringResource(id = textId),
+            style = MaterialTheme.typography.labelSmall,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun PrimaryLargeButtonPreview() {
     GedoiseTheme {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(16.dp)
-        ) {
-            PrimaryLargeButton(
-                "Primary Large Button",
-                {},
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(Modifier.height(10.dp))
-            SmallFAB(
-                icon = Icons.Default.Add,
-                contentDescription = "Add",
-                colorButton = Primary,
-                colorIcon = Color.White,
-                onClick = {}
-            )
-        }
+        PrimaryLargeButton(
+            "Primary Large Button",
+            {},
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun SmallFABPreview() {
+    GedoiseTheme {
+        SmallFAB(
+            onClick = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun SmallShowButtonPreview() {
+    GedoiseTheme {
+        SmallShowButton(
+            onClick = {}
+        )
     }
 }

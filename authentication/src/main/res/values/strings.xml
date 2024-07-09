@@ -5,10 +5,12 @@
     <string name="presentation_text">
         L\'application qui réunit toutes les actualités de la GED, faite pour les gédois par les gédois.
     </string>
+    <string name="title_login_screen">Gedoise Application</string>
     <string name="show_password_icon_description">Icône pour montrer le mot de passe</string>
     <string name="hide_password_icon_description">Icône pour cacher le mot de passe</string>
     <string name="connect">Se connecter</string>
     <string name="password">Mot de passe</string>
+    <string name="not_register">Première visite ? <b><u>S\'inscrire</u></b></string>
     <string name="error_connection">Adresse mail ou mot de passe incorrect</string>
     <string name="email_icon_description">Icône d\'email</string>
     <string name="password_icon_description">Icône de mot de passe</string>

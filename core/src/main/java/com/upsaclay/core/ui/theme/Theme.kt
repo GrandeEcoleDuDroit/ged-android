@@ -13,6 +13,7 @@ import androidx.core.view.WindowCompat
 import com.upsaclay.core.ui.theme.GedoiseColor.Error
 import com.upsaclay.core.ui.theme.GedoiseColor.InputBackground
 import com.upsaclay.core.ui.theme.GedoiseColor.Primary
+import com.upsaclay.core.ui.theme.GedoiseColor.PrimaryVariant
 import com.upsaclay.core.ui.theme.GedoiseColor.Secondary
 import com.upsaclay.core.ui.theme.GedoiseColor.Tertiary
 import com.upsaclay.core.ui.theme.GedoiseColor.White
@@ -27,6 +28,8 @@ private val LightColorScheme = lightColorScheme (
     error = Error,
     surface = White,
     surfaceVariant = InputBackground,
+    secondaryContainer = PrimaryVariant,
+    surfaceContainerHigh = PrimaryVariant,
 )
 
 private val DarkColorScheme = LightColorScheme

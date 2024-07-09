@@ -41,7 +41,6 @@ import androidx.navigation.NavController
 import com.upsaclay.authentication.R
 import com.upsaclay.authentication.data.AuthenticationState
 import com.upsaclay.core.data.Screen
-import com.upsaclay.core.ui.components.ErrorText
 import com.upsaclay.core.ui.components.InfiniteCircularProgressIndicator
 import com.upsaclay.core.ui.components.PrimaryLargeButton
 import com.upsaclay.core.ui.theme.GedoiseColor.BackgroundVariant
@@ -56,8 +55,8 @@ fun AuthenticationScreen(
     authenticationViewModel: AuthenticationViewModel = viewModel()
 ) {
     val authenticationState by authenticationViewModel.authenticationState.collectAsState()
-    if(authenticationState.equals(AuthenticationState.AUTHENTICATED)){
-        navController.navigate(Screen.Home.route)
+    if(authenticationState == AuthenticationState.AUTHENTICATED){
+        navController.navigate(Screen.HOME.route)
     }
 
     var errorMessage by remember { mutableStateOf("") }
@@ -162,8 +161,9 @@ private fun InputsSection(
         )
         if (isError) {
             Spacer(modifier = Modifier.height(5.dp))
-            ErrorText(
+            Text(
                 text = errorMessage,
+                color = MaterialTheme.colorScheme.error,
                 modifier = Modifier.padding(top = 5.dp)
             )
         }
