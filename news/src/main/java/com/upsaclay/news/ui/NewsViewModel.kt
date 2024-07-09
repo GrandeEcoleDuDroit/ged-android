@@ -1,5 +1,6 @@
 package com.upsaclay.news.ui
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upsaclay.news.data.model.Announcement
@@ -15,6 +16,7 @@ class NewsViewModel(
     val announcements: Flow<List<Announcement>> = getAllAnnouncementUseCase()
 
     fun updateAnnouncements(){
+        Log.i("NewsViewModel", "Update announcement in progress...")
         viewModelScope.launch {
             updateAnnouncementsUseCase()
         }

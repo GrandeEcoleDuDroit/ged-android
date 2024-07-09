@@ -6,14 +6,13 @@ import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-private const val URL_SERVER = "http://89.168.52.45/"
-private const val URL_DOCKER = "http://192.168.1.102:3000/"
+private const val URL_SERVER = "http://89.168.52.45:3000"
 
 val coreModule = module {
     singleOf(::SharedPreferenceUseCase)
     single {
         Retrofit.Builder()
-            .baseUrl(URL_DOCKER)
+            .baseUrl(URL_SERVER)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }

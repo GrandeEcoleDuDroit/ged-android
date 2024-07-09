@@ -13,6 +13,7 @@ fun StandardWebView(
         factory = { context ->
             WebView(context).apply {
                 webViewClient = WebViewClient()
+                settings.javaScriptEnabled = true
             }
         },
         update = {  webView ->

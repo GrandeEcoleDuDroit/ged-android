@@ -28,7 +28,8 @@ private val LightColorScheme = lightColorScheme (
     error = Error,
     surface = White,
     surfaceVariant = InputBackground,
-    secondaryContainer = PrimaryVariant
+    secondaryContainer = PrimaryVariant,
+    surfaceContainerHigh = PrimaryVariant,
 )
 
 private val DarkColorScheme = LightColorScheme
