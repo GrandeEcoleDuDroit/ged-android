@@ -1,9 +1,10 @@
 package com.upsaclay.authentication.ui
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,14 +12,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material3.Icon
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -30,22 +28,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.upsaclay.authentication.R
 import com.upsaclay.authentication.data.AuthenticationState
-import com.upsaclay.core.data.Screen
 import com.upsaclay.core.ui.components.InfiniteCircularProgressIndicator
 import com.upsaclay.core.ui.components.PrimaryLargeButton
 import com.upsaclay.core.ui.theme.GedoiseColor.BackgroundVariant
 import com.upsaclay.core.ui.theme.GedoiseColor.Primary
 import com.upsaclay.core.ui.theme.GedoiseTheme
+import com.upsaclay.core.ui.theme.spacing
 import com.upsaclay.core.R as CoreResource
 
 @Composable
@@ -55,9 +52,6 @@ fun AuthenticationScreen(
     authenticationViewModel: AuthenticationViewModel = viewModel()
 ) {
     val authenticationState by authenticationViewModel.authenticationState.collectAsState()
-    if(authenticationState == AuthenticationState.AUTHENTICATED){
-        navController.navigate(Screen.HOME.route)
-    }
 
     var errorMessage by remember { mutableStateOf("") }
 
@@ -74,17 +68,19 @@ fun AuthenticationScreen(
         modifier = modifier.fillMaxSize()
     ) {
         Column(
-            verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceEvenly,
+                verticalArrangement = Arrangement.Center,
                 modifier = modifier
-                    .padding(16.dp)
+                    .padding(MaterialTheme.spacing.medium)
                     .fillMaxHeight(0.9f)
             ) {
                 TitleSection()
+
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
+
                 BottomSection(
                     mailText = authenticationViewModel.username,
                     mailOnValueChange = { authenticationViewModel.updateUsername(it) },
@@ -147,6 +143,7 @@ private fun InputsSection(
 ) {
     val isError = authenticationState == AuthenticationState.ERROR_AUTHENTICATION ||
             authenticationState == AuthenticationState.ERROR_INPUT
+
     Column(modifier = modifier) {
         EmailInput(
             text = usernameText,
@@ -193,97 +190,42 @@ private fun BottomSection(
             errorMessage = errorMessage,
             authenticationState = authenticationState
         )
-        Spacer(modifier = Modifier.height(20.dp))
+
+        Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+
         PrimaryLargeButton(
-            text = stringResource(id = R.string.connect),
+            text = stringResource(id = R.string.sign_in),
             onClick = onClickButton,
             modifier = Modifier.fillMaxWidth()
         )
-    }
-}
 
-@Composable
-private fun EmailInput(
-    modifier: Modifier = Modifier,
-    text: String,
-    onValueChange: (String) -> Unit,
-    isError: Boolean = false
-) {
-    OutlinedTextField(
-        modifier = modifier.fillMaxWidth(),
-        value = text,
-        label = { Text(text = stringResource(id = CoreResource.string.email)) },
-        onValueChange = onValueChange,
-        leadingIcon = {
-            Icon(
-                painter = painterResource(id = CoreResource.drawable.ic_school),
-                contentDescription = stringResource(
-                    id = R.string.email_icon_description
+        Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+
+        Row {
+            Text(
+                text = stringResource(id = R.string.first_arrival),
+            )
+            Spacer(modifier = Modifier.width(MaterialTheme.spacing.extraSmall))
+            TextButton(
+                contentPadding = PaddingValues(0.dp),
+                modifier = Modifier.height(22.dp),
+                onClick = {  }
+            ){
+                Text(
+                    text = stringResource(id = R.string.sign_up),
+                    textDecoration = TextDecoration.Underline,
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.labelLarge
                 )
-            )
-        },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-        isError = isError,
-        singleLine = true
-    )
-}
-
-@Composable
-private fun PasswordInput(
-    modifier: Modifier = Modifier,
-    text: String,
-    onValueChange: (String) -> Unit,
-    isError: Boolean = false
-) {
-    var passwordVisible by remember { mutableStateOf(false) }
-    var iconShowPasswordId: Int = remember {
-        CoreResource.drawable.ic_visibility
+            }
+        }
     }
-    var contentDescriptionId: Int = remember {
-        R.string.show_password_icon_description
-    }
-
-    if (passwordVisible) {
-        iconShowPasswordId = CoreResource.drawable.ic_visibility_off
-        contentDescriptionId = R.string.show_password_icon_description
-    } else {
-        iconShowPasswordId = CoreResource.drawable.ic_visibility
-        contentDescriptionId = R.string.hide_password_icon_description
-    }
-
-    OutlinedTextField(
-        modifier = modifier.fillMaxWidth(),
-        value = text,
-        label = { Text(text = stringResource(id = R.string.password)) },
-        onValueChange = onValueChange,
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Default.Lock,
-                contentDescription = stringResource(
-                    id = R.string.password_icon_description
-                )
-            )
-        },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-        trailingIcon = {
-            Icon(
-                painter = painterResource(id = iconShowPasswordId),
-                contentDescription = stringResource(id = contentDescriptionId),
-                modifier = Modifier.clickable { passwordVisible = !passwordVisible },
-            )
-        },
-        visualTransformation =
-        if (passwordVisible) VisualTransformation.None
-        else PasswordVisualTransformation(),
-        isError = isError,
-        singleLine = true
-    )
 }
 
 @Preview(widthDp = 360, heightDp = 740, showBackground = true)
 @Composable
 private fun AuthenticationScreenPreview() {
-    var isLoading by remember { mutableStateOf(false) }
+    var isLoading by remember { mutableStateOf(true) }
     var mail by remember {
         mutableStateOf("")
     }
@@ -296,17 +238,17 @@ private fun AuthenticationScreenPreview() {
 
     GedoiseTheme {
         Column(
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceEvenly,
+                verticalArrangement = Arrangement.Center,
                 modifier = Modifier
-                    .padding(16.dp)
+                    .padding(MaterialTheme.spacing.medium)
                     .fillMaxHeight(0.9f)
             ) {
                 TitleSection()
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
                 BottomSection(
                     mailText = mail,
                     mailOnValueChange = {
@@ -324,6 +266,7 @@ private fun AuthenticationScreenPreview() {
                     },
                 )
             }
+
             if (isLoading) {
                 InfiniteCircularProgressIndicator()
             }
