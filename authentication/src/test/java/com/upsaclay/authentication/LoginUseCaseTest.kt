@@ -1,9 +1,9 @@
 package com.upsaclay.authentication
 
 import com.upsaclay.authentication.data.AuthenticationRepository
-import com.upsaclay.authentication.data.AuthenticationState
+import com.upsaclay.authentication.data.model.AuthenticationState
 import com.upsaclay.authentication.domain.GenerateHashUseCase
-import com.upsaclay.authentication.domain.LoginParisSaclayUseCase
+import com.upsaclay.authentication.domain.LoginUseCase
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -11,7 +11,7 @@ import org.junit.Before
 import org.junit.Test
 
 class LoginUseCaseTest {
-    private lateinit var loginParisSaclayUseCase: LoginParisSaclayUseCase
+    private lateinit var loginUseCase: LoginUseCase
     private lateinit var generateHashUseCase: GenerateHashUseCase
     private lateinit var authenticationRepository: AuthenticationRepository
     private val email = "firstname.name@universite-paris-saclay.fr"
@@ -22,13 +22,12 @@ class LoginUseCaseTest {
     fun setUp() {
         generateHashUseCase = mockk()
         authenticationRepository = mockk()
-        loginParisSaclayUseCase = LoginParisSaclayUseCase(
+        loginUseCase = LoginUseCase(
             authenticationRepository,
-            generateHashUseCase,
         )
 
         coEvery {
-            authenticationRepository.loginWithParisSaclay(any(), any(), any())
+            authenticationRepository.login(any(), any())
         } returns Result.success(AuthenticationState.AUTHENTICATED)
         coEvery { generateHashUseCase() } returns hash
     }
@@ -36,7 +35,7 @@ class LoginUseCaseTest {
     @Test
     fun login_with_paris_saclay_return_success_when_login_is_correct() {
         runTest {
-            val result = loginParisSaclayUseCase(email, password)
+            val result = loginUseCase(email, password)
             assert(result.isSuccess)
         }
     }
@@ -44,10 +43,10 @@ class LoginUseCaseTest {
     @Test
     fun login_with_paris_saclay_return_fail_when_login_is_incorrect() {
         coEvery {
-            authenticationRepository.loginWithParisSaclay(any(), any(), any())
+            authenticationRepository.login(any(), any())
         } returns Result.failure(Exception())
         runTest {
-            val result = loginParisSaclayUseCase(email, password)
+            val result = loginUseCase(email, password)
             assert(result.isFailure)
         }
     }

@@ -14,7 +14,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.upsaclay.authentication.domain.IsAuthenticatedUseCase
 import com.upsaclay.authentication.ui.AuthenticationScreen
-import com.upsaclay.core.data.Screen
+import com.upsaclay.authentication.ui.registration.RegistrationViewModel
+import com.upsaclay.authentication.ui.registration.FirstRegistrationScreen
+import com.upsaclay.authentication.ui.registration.SecondRegistrationScreen
+import com.upsaclay.authentication.ui.registration.ThirdRegistrationScreen
+import com.upsaclay.core.data.model.Screen
 import com.upsaclay.gedoise.data.NavigationItem
 import com.upsaclay.news.ui.NewsScreen
 import org.koin.androidx.compose.koinViewModel
@@ -29,11 +33,12 @@ fun Navigation(
     val navigationItems by mainViewModel.navigationItem.collectAsState()
     val isAuthenticatedUseCase: IsAuthenticatedUseCase = getKoin().get()
     val startDestination = if(isAuthenticatedUseCase()){
-        Screen.HOME.route
+        Screen.AUTHENTICATION.route
     }
     else {
         Screen.AUTHENTICATION.route
     }
+    val sharedRegistrationViewModel: RegistrationViewModel = koinViewModel()
 
     NavHost(
         navController = navController,
@@ -41,6 +46,18 @@ fun Navigation(
     ) {
         composable(Screen.AUTHENTICATION.route) {
             AuthenticationScreen(navController = navController)
+        }
+
+        composable(Screen.FIRST_REGISTRATION_SCREEN.route) {
+            FirstRegistrationScreen(navController = navController, sharedRegistrationViewModel)
+        }
+
+        composable(Screen.SECOND_REGISTRATION_SCREEN.route) {
+            SecondRegistrationScreen(navController = navController, sharedRegistrationViewModel)
+        }
+
+        composable(Screen.THIRD_REGISTRATION_SCREEN.route) {
+            ThirdRegistrationScreen(navController = navController, sharedRegistrationViewModel)
         }
 
         composable(Screen.HOME.route) {
@@ -76,6 +93,14 @@ fun Navigation(
                 navigationItems.values.toList()
             ) {
                 Text(text = "Forum")
+            }
+        }
+        composable(Screen.PROFILE.route) {
+            MainNavigationBars(
+                navController = navController,
+                navigationItems.values.toList()
+            ) {
+                Text(text = "Profile")
             }
         }
     }

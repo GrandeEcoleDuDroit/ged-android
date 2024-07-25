@@ -1,6 +1,7 @@
 package com.upsaclay.news.data
 
 import com.upsaclay.news.data.model.Announcement
+import com.upsaclay.news.data.remote.AnnouncementRemoteDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 

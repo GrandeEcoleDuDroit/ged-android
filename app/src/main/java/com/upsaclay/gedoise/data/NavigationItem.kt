@@ -2,7 +2,7 @@ package com.upsaclay.gedoise.data
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import com.upsaclay.core.data.Screen
+import com.upsaclay.core.data.model.Screen
 import com.upsaclay.gedoise.R
 
 sealed class NavigationItem(

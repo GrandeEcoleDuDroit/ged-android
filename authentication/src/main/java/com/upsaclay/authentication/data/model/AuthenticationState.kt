@@ -1,4 +1,4 @@
-package com.upsaclay.authentication.data
+package com.upsaclay.authentication.data.model
 
 enum class AuthenticationState {
     AUTHENTICATED,

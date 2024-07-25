@@ -9,7 +9,7 @@ import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.performClick
 import androidx.navigation.NavController
-import com.upsaclay.authentication.data.AuthenticationState
+import com.upsaclay.authentication.data.model.AuthenticationState
 import com.upsaclay.authentication.ui.AuthenticationScreen
 import com.upsaclay.authentication.ui.AuthenticationViewModel
 import io.mockk.every
@@ -38,19 +38,19 @@ class AuthenticationUiTest {
         authenticationViewModel = mockk()
 
         every {
-            authenticationViewModel.username
+            authenticationViewModel.mail
         } returns ""
         every {
             authenticationViewModel.password
         } returns ""
         every {
-            authenticationViewModel.loginWithParisSaclay()
+            authenticationViewModel.login()
         } returns Unit
         every {
-            authenticationViewModel.updateUsername(any())
+            authenticationViewModel.updateMailText(any())
         } returns Unit
         every {
-            authenticationViewModel.updateUsername(any())
+            authenticationViewModel.updateMailText(any())
         } returns Unit
 
         buttonLogin = hasText(rule.activity.getString(R.string.sign_in)) and hasClickAction()

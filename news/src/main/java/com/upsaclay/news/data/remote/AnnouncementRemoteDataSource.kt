@@ -1,4 +1,4 @@
-package com.upsaclay.news.data
+package com.upsaclay.news.data.remote
 
 import android.util.Log
 import com.upsaclay.news.data.model.Announcement
@@ -13,7 +13,7 @@ class AnnouncementRemoteDataSource(
                 announcementResponse.isSuccessful && it != null
             } ?: emptyList()
 
-            announcementsWithUserDTO.map { it.toDomain() }
+            announcementsWithUserDTO.map { it.toAnnouncement() }
         }
         catch (e: Exception){
             Log.e("AnnouncementRemoteDataSource", "Error to get all announcement: ${e.message.toString()}")
