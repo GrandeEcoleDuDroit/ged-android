@@ -1,86 +1,60 @@
 package com.upsaclay.authentication.ui
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.upsaclay.authentication.data.AuthenticationState
+import com.upsaclay.authentication.data.model.AuthenticationState
 import com.upsaclay.authentication.domain.IsAuthenticatedUseCase
-import com.upsaclay.authentication.domain.LoginParisSaclayUseCase
-import com.upsaclay.authentication.domain.LogoutUseCase
-import com.upsaclay.core.data.SharedPreferenceFiles
-import com.upsaclay.core.data.SharedPreferencesKeys
-import com.upsaclay.core.domain.SharedPreferenceUseCase
+import com.upsaclay.authentication.domain.LoginUseCase
+import com.upsaclay.core.utils.errorLog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.koin.java.KoinJavaComponent.inject
 
-class AuthenticationViewModel : ViewModel() {
-    private val isAuthenticatedUseCase: IsAuthenticatedUseCase by inject(
-        IsAuthenticatedUseCase::class.java
-    )
-    private val loginParisSaclayUseCase: LoginParisSaclayUseCase by inject(
-        LoginParisSaclayUseCase::class.java
-    )
-    private val logoutUseCase: LogoutUseCase by inject(LogoutUseCase::class.java)
-    private val sharedPreferenceUseCase: SharedPreferenceUseCase by inject(
-        SharedPreferenceUseCase::class.java
-    )
-    private val _authenticationState = MutableStateFlow(AuthenticationState.UNAUTHENTICATED)
+class AuthenticationViewModel(
+    isAuthenticatedUseCase: IsAuthenticatedUseCase,
+    private val loginUseCase: LoginUseCase,
+) : ViewModel() {
+    private val isAuthenticated = if (isAuthenticatedUseCase()) {
+        AuthenticationState.AUTHENTICATED
+    }
+    else {
+        AuthenticationState.UNAUTHENTICATED
+    }
+    private val _authenticationState = MutableStateFlow(isAuthenticated)
     val authenticationState: StateFlow<AuthenticationState> = _authenticationState.asStateFlow()
-    var username by mutableStateOf("")
+
+    var mail by mutableStateOf("")
         private set
     var password by mutableStateOf("")
         private set
 
-    init {
-        _authenticationState.value = if (isAuthenticatedUseCase())
-            AuthenticationState.AUTHENTICATED
-        else AuthenticationState.UNAUTHENTICATED
-    }
+    fun updateMailText(value: String) { mail = value }
 
-    fun updateUsername(value: String) {
-        username = value
-    }
+    fun updatePasswordText(value: String) { password = value }
 
-    fun updatePassword(value: String) {
-        password = value
-    }
-
-    fun loginWithParisSaclay() {
+    fun login() {
         _authenticationState.value = AuthenticationState.LOADING
         if (!verifyInputs()) {
             _authenticationState.value = AuthenticationState.ERROR_INPUT
             return
         }
+
         viewModelScope.launch(Dispatchers.IO) {
-            val result = loginParisSaclayUseCase(username, password)
+            val result = loginUseCase(mail, password)
             if (result.isSuccess) {
-                _authenticationState.value = AuthenticationState.AUTHENTICATED
-                sharedPreferenceUseCase.storeBoolean(
-                    SharedPreferenceFiles.AUTHENTICATION,
-                    SharedPreferencesKeys.IS_AUTHENTICATED,
-                    true
-                )
-            } else {
+                _authenticationState.value = result.getOrDefault(AuthenticationState.ERROR_AUTHENTICATION)
+            }
+            else {
                 _authenticationState.value = AuthenticationState.ERROR_AUTHENTICATION
-                Log.e(
-                    javaClass.simpleName,
-                    "Error while trying to login : ${result.exceptionOrNull()}"
-                )
+                errorLog("",result.exceptionOrNull())
             }
         }
     }
 
-    fun logout() {
-        logoutUseCase()
-        _authenticationState.value = AuthenticationState.UNAUTHENTICATED
-    }
-
-    private fun verifyInputs(): Boolean = !(username.isBlank() || password.isBlank())
+    private fun verifyInputs(): Boolean = !(mail.isBlank() || password.isBlank())
 }

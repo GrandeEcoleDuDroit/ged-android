@@ -1,7 +1,7 @@
 package com.upsaclay.news.data.model
 
 import com.google.gson.annotations.SerializedName
-import com.upsaclay.core.data.User
+import com.upsaclay.core.data.model.User
 import java.time.LocalDateTime
 
 data class Announcement(
@@ -10,7 +10,15 @@ data class Announcement(
     val content: String,
     val date: LocalDateTime,
     val author: User
-)
+) {
+    fun toDTO() = AnnouncementDTO(
+        announcementId = id,
+        announcementTitle = title,
+        announcementContent = content,
+        announcementDate = date.toString(),
+        userId = author.id
+    )
+}
 
 data class AnnouncementWithUserDTO(
     @SerializedName("ANNOUNCEMENT_ID")
@@ -28,9 +36,13 @@ data class AnnouncementWithUserDTO(
     @SerializedName("USER_LAST_NAME")
     val userLastName: String,
     @SerializedName("USER_EMAIL")
-    val userEmail: String
+    val userEmail: String,
+    @SerializedName("USER_SCHOOL_LEVEL")
+    val userSchoolLevel: String,
+    @SerializedName("USER_IS_MEMBER")
+    val userIsMember: Int
 ) {
-    fun toDomain() = Announcement(
+    fun toAnnouncement() = Announcement(
         id = announcementId,
         title = announcementTitle,
         content = announcementContent,
@@ -39,7 +51,9 @@ data class AnnouncementWithUserDTO(
             id = userId,
             firstName = userFirstName,
             lastName = userLastName,
-            email = userEmail
+            email = userEmail,
+            schoolLevel = userSchoolLevel,
+            isMember = userIsMember == 1
         )
     )
 }
@@ -55,14 +69,4 @@ data class AnnouncementDTO(
     val announcementDate: String,
     @SerializedName("USER_ID")
     val userId: Int,
-) {
-    companion object {
-        fun fromDomain(announcement: Announcement) = AnnouncementDTO(
-            announcementId = announcement.id,
-            announcementTitle = announcement.title,
-            announcementContent = announcement.content,
-            announcementDate = announcement.date.toString(),
-            userId = announcement.author.id
-        )
-    }
-}
+)

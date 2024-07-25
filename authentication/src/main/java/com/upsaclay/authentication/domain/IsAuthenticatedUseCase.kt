@@ -1,7 +1,7 @@
 package com.upsaclay.authentication.domain
 
-import com.upsaclay.core.data.SharedPreferenceFiles
-import com.upsaclay.core.data.SharedPreferencesKeys
+import com.upsaclay.core.data.local.SharedPreferenceFiles
+import com.upsaclay.core.data.local.SharedPreferencesKeys
 import com.upsaclay.core.domain.SharedPreferenceUseCase
 
 class IsAuthenticatedUseCase(

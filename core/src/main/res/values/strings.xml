@@ -4,6 +4,10 @@
     <string name="close">Fermer</string>
     <string name="show">Voir</string>
     <string name="ged_logo_description">Logo de l\'université de La Grande École du Droit</string>
+    <string name="profile_picture_description">Photo de profil de l\'utilisateur</string>
     <string name="error_empty_fields">Veuillez remplir tous les champs</string>
+    <string name="error_empty_field">Veuillez remplir le champ</string>
     <string name="icon_add_descrption">Icône d\'ajout</string>
+    <string name="next">Suivant</string>
+    <string name="finish">Terminer</string>
 </resources>

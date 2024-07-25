@@ -39,7 +39,9 @@ fun PrimaryLargeButton(
         modifier = modifier
             .height(45.dp)
     ) {
-        Text(text = text)
+        Text(
+            text = text,
+        )
     }
 }
 

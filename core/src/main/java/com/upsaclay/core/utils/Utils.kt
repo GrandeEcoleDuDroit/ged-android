@@ -1,4 +1,4 @@
-package com.upsaclay.core
+package com.upsaclay.core.utils
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -21,3 +21,11 @@ fun Drawable.toBitmap(): Bitmap{
     return bitmap
 }
 
+fun formatProfilePictureFileName(userId: String): String =
+    "$userId-profile-picture.jpg"
+
+fun formatHttpError(message: String, errorBody: String?): String {
+    val body = errorBody ?: "No error body"
+    return "Error request : $message\n" +
+            "Body: $body"
+}

@@ -1,4 +1,4 @@
-package com.upsaclay.authentication.ui
+package com.upsaclay.authentication.ui.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -30,25 +30,31 @@ import com.upsaclay.core.ui.theme.GedoiseColor
 import com.upsaclay.core.ui.theme.GedoiseTheme
 
 @Composable
-fun EmailInput(
+fun OutlinedEmailInput(
+    modifier: Modifier = Modifier,
     text: String,
+    label: String = stringResource(id = R.string.email),
     onValueChange: (String) -> Unit,
-    isError: Boolean = false
+    isError: Boolean = false,
+    readOnly: Boolean = false
 ) {
     OutlinedTextField(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         value = text,
-        label = { Text(text = stringResource(id = R.string.email)) },
+        label = { Text(text = label) },
         onValueChange = onValueChange,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
         isError = isError,
-        singleLine = true
+        singleLine = true,
+        readOnly = readOnly
     )
 }
 
 @Composable
-fun PasswordInput(
+fun OutlinedPasswordInput(
+    modifier: Modifier = Modifier,
     text: String,
+    label: String = stringResource(id = com.upsaclay.authentication.R.string.password),
     onValueChange: (String) -> Unit,
     isError: Boolean = false
 ) {
@@ -67,9 +73,9 @@ fun PasswordInput(
         )
     }
     OutlinedTextField(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         value = text,
-        label = { Text(text = stringResource(id = com.upsaclay.authentication.R.string.password)) },
+        label = { Text(text = label) },
         onValueChange = onValueChange,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         trailingIcon = {
@@ -88,29 +94,29 @@ fun PasswordInput(
     )
 }
 
-@Preview
-@Composable
-fun EmailInputPreview(){
-    GedoiseTheme {
-
-    }
-}
 @Preview(showBackground = true, widthDp = 360, heightDp = 220)
 @Composable
-fun PasswordInputPreview(){
+fun OutlinedInputsPreview(){
+    var mail by remember {
+        mutableStateOf("")
+    }
+    var password by remember {
+        mutableStateOf("")
+    }
+
     GedoiseTheme {
         Column(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.padding(horizontal = 20.dp)
         ) {
-            EmailInput(
-                text ="",
-                onValueChange = {}
+            OutlinedEmailInput(
+                text = mail,
+                onValueChange = { mail = it }
             )
             Spacer(modifier = Modifier.height(20.dp))
-            PasswordInput(
-                text = "",
-                onValueChange = {}
+            OutlinedPasswordInput(
+                text = password,
+                onValueChange = { password = it }
             )
         }
     }

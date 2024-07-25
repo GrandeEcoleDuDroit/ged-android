@@ -26,7 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
-import com.upsaclay.core.data.Screen
+import com.upsaclay.core.data.model.Screen
 import com.upsaclay.core.ui.theme.GedoiseTheme
 import com.upsaclay.gedoise.R
 import com.upsaclay.gedoise.data.NavigationItem

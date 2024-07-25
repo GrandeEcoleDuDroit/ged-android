@@ -13,6 +13,13 @@
     <string name="sign_up">S\'inscrire</string>
     <string name="first_arrival">Première visite ?</string>
     <string name="error_connection">Adresse mail ou mot de passe incorrect</string>
-    <string name="email_icon_description">Icône d\'email</string>
-    <string name="password_icon_description">Icône de mot de passe</string>
+
+    <string name="registration">Inscription</string>
+    <string name="partial_arrow_left_icon_description">Icône de retour à l\'écran précédent</string>
+    <string name="step">Étape %1$d/%2$d</string>
+    <string name="enter_school_credentials">Entrez vos identifiants universitaire</string>
+    <string name="select_level_school">Sélectionnez votre niveau d\'étude</string>
+    <string name="add_profile_picture">Ajoutez une photo de profil</string>
+    <string name="unrecognized_account">Compte universitaire non reconnu</string>
+    <string name="error_registration">Une erreur est survenue lors de l\'inscription. Veuillez réessayer</string>
 </resources>

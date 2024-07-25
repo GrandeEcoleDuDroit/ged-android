@@ -2,8 +2,8 @@ package com.upsaclay.core.domain
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.upsaclay.core.data.SharedPreferenceFiles
-import com.upsaclay.core.data.SharedPreferencesKeys
+import com.upsaclay.core.data.local.SharedPreferenceFiles
+import com.upsaclay.core.data.local.SharedPreferencesKeys
 
 class SharedPreferenceUseCase(private val context: Context) {
     private lateinit var sharedPreferences: SharedPreferences
