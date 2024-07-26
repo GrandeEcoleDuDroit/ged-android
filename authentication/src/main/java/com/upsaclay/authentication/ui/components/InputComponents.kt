@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
@@ -35,7 +36,9 @@ fun OutlinedEmailInput(
     text: String,
     label: String = stringResource(id = R.string.email),
     onValueChange: (String) -> Unit,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
     isError: Boolean = false,
+    isEnable: Boolean = true,
     readOnly: Boolean = false
 ) {
     OutlinedTextField(
@@ -45,8 +48,10 @@ fun OutlinedEmailInput(
         onValueChange = onValueChange,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
         isError = isError,
+        keyboardActions = keyboardActions,
         singleLine = true,
-        readOnly = readOnly
+        enabled = isEnable,
+        readOnly = readOnly,
     )
 }
 
@@ -56,7 +61,9 @@ fun OutlinedPasswordInput(
     text: String,
     label: String = stringResource(id = com.upsaclay.authentication.R.string.password),
     onValueChange: (String) -> Unit,
-    isError: Boolean = false
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    isError: Boolean = false,
+    isEnable: Boolean = true
 ) {
     var passwordVisible by remember { mutableStateOf(false) }
     val icon: Painter
@@ -78,6 +85,7 @@ fun OutlinedPasswordInput(
         label = { Text(text = label) },
         onValueChange = onValueChange,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+        keyboardActions = keyboardActions,
         trailingIcon = {
             Icon(
                 painter = icon,
@@ -90,13 +98,14 @@ fun OutlinedPasswordInput(
         if (passwordVisible) VisualTransformation.None
         else PasswordVisualTransformation(),
         isError = isError,
+        enabled = isEnable,
         singleLine = true
     )
 }
 
 @Preview(showBackground = true, widthDp = 360, heightDp = 220)
 @Composable
-fun OutlinedInputsPreview(){
+fun OutlinedInputsPreview() {
     var mail by remember {
         mutableStateOf("")
     }

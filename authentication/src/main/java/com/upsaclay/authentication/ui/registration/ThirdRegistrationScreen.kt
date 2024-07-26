@@ -1,5 +1,6 @@
 package com.upsaclay.authentication.ui.registration
 
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -46,7 +47,8 @@ import org.koin.androidx.compose.koinViewModel
 fun ThirdRegistrationScreen(
     navController: NavController,
     registrationViewModel: RegistrationViewModel = koinViewModel()
-){
+) {
+
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri ->
@@ -56,11 +58,16 @@ fun ThirdRegistrationScreen(
 
     val registrationState by registrationViewModel.registrationState.collectAsState()
 
-    if(registrationState == RegistrationState.REGISTERED){
+    if (registrationState == RegistrationState.REGISTERED) {
         navController.navigate(Screen.HOME.route)
     }
 
-    if(registrationViewModel.profilePictureUri == null) {
+    if(registrationState == RegistrationState.RECOGNIZED_ACCOUNT) {
+        registrationViewModel.resetRegistrationState()
+        Log.d("RegistrationViewModel", registrationState.toString())
+    }
+
+    if (registrationViewModel.profilePictureUri == null) {
         registrationViewModel.resetProfilePictureUri()
     }
 
@@ -121,7 +128,7 @@ fun ThirdRegistrationScreen(
                 )
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
 
-                if(registrationState == RegistrationState.ERROR_REGISTRATION){
+                if (registrationState == RegistrationState.ERROR_REGISTRATION) {
                     Text(
                         text = stringResource(id = R.string.error_registration),
                         color = MaterialTheme.colorScheme.error,
@@ -150,7 +157,7 @@ fun ThirdRegistrationScreen(
 
 @Preview
 @Composable
-fun FourthRegistrationStepPreview(){
+fun FourthRegistrationStepPreview() {
     val errorRegistration = true
     GedoiseTheme {
         Scaffold(
@@ -207,7 +214,7 @@ fun FourthRegistrationStepPreview(){
                     )
                     Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
 
-                    if(errorRegistration){
+                    if (errorRegistration) {
                         Text(
                             text = stringResource(id = R.string.error_registration),
                             color = MaterialTheme.colorScheme.error,
@@ -215,7 +222,7 @@ fun FourthRegistrationStepPreview(){
                         )
                     }
 
-                    if(!errorRegistration)
+                    if (!errorRegistration)
                         InfiniteCircularProgressIndicator()
                 }
 

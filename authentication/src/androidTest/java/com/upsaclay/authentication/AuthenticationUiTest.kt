@@ -33,7 +33,7 @@ class AuthenticationUiTest {
     private lateinit var authenticationViewModel: AuthenticationViewModel
 
     @Before
-    fun setUp(){
+    fun setUp() {
         navController = mockk()
         authenticationViewModel = mockk()
 
@@ -60,7 +60,7 @@ class AuthenticationUiTest {
     }
 
     @Test
-    fun show_error_input_text_when_authentication_state_is_error_input(){
+    fun show_error_input_text_when_authentication_state_is_error_input() {
         val authenticationState = MutableStateFlow(AuthenticationState.UNAUTHENTICATED)
         every {
             authenticationViewModel.authenticationState
@@ -79,7 +79,7 @@ class AuthenticationUiTest {
     }
 
     @Test
-    fun show_error_authentication_text_when_authentication_state_is_error_authentication(){
+    fun show_error_authentication_text_when_authentication_state_is_error_authentication() {
         val authenticationState = MutableStateFlow(AuthenticationState.UNAUTHENTICATED)
         every {
             authenticationViewModel.authenticationState
@@ -98,7 +98,7 @@ class AuthenticationUiTest {
     }
 
     @Test
-    fun show_circular_progress_bar_when_authentication_state_is_loading(){
+    fun show_circular_progress_bar_when_authentication_state_is_loading() {
         val authenticationState = MutableStateFlow(AuthenticationState.UNAUTHENTICATED)
         every {
             authenticationViewModel.authenticationState
@@ -117,7 +117,7 @@ class AuthenticationUiTest {
     }
 
     @Test
-    fun show_circular_progress_bar_disappear_when_authentication_state_goes_loading_to_another_state(){
+    fun show_circular_progress_bar_disappear_when_authentication_state_goes_loading_to_another_state() {
         val authenticationState = MutableStateFlow(AuthenticationState.UNAUTHENTICATED)
         every {
             authenticationViewModel.authenticationState

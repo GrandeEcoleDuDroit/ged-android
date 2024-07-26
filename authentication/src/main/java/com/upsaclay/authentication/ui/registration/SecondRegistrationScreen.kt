@@ -11,6 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,10 +39,16 @@ import org.koin.androidx.compose.koinViewModel
 fun SecondRegistrationScreen(
     navController: NavController,
     registrationViewModel: RegistrationViewModel = koinViewModel()
-){
+) {
+    LaunchedEffect(Unit) {
+        registrationViewModel.resetProfilePictureUri()
+        registrationViewModel.resetEmail()
+        registrationViewModel.resetPassword()
+    }
+
     val registrationState by registrationViewModel.registrationState.collectAsState()
 
-    if(registrationState == RegistrationState.RECOGNIZED_ACCOUNT){
+    if (registrationState == RegistrationState.RECOGNIZED_ACCOUNT) {
         navController.navigate(Screen.THIRD_REGISTRATION_SCREEN.route)
     }
 
@@ -54,8 +61,10 @@ fun SecondRegistrationScreen(
     errorMessage = when (registrationState) {
         RegistrationState.UNRECOGNIZED_ACCOUNT ->
             stringResource(id = R.string.unrecognized_account)
+
         RegistrationState.ERROR_INPUT ->
             stringResource(id = com.upsaclay.core.R.string.error_empty_fields)
+
         else -> ""
     }
 
@@ -133,7 +142,7 @@ fun SecondRegistrationScreen(
 
 @Preview
 @Composable
-private fun SecondRegistrationStepPreview(){
+private fun SecondRegistrationStepPreview() {
     val mail = "pierre.dupont@universite-paris-saclay.fr"
     val password = "password"
     GedoiseTheme {

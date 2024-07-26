@@ -11,7 +11,7 @@ import java.io.IOException
 class AuthenticationRepositoryImpl(
     private val authenticationRemoteDataSource: AuthenticationRemoteDataSource,
     private val authenticationLocalDataSource: AuthenticationLocalDataSource,
-): AuthenticationRepository {
+) : AuthenticationRepository {
 
     override suspend fun login(email: String, password: String): Result<AuthenticationState> {
         val response = authenticationRemoteDataSource.login(email, password)
@@ -19,17 +19,15 @@ class AuthenticationRepositoryImpl(
         return if (response.isSuccessful) {
             infoLog("Login successful !")
             Result.success(AuthenticationState.AUTHENTICATED)
-        }
-        else Result.failure(IOException("Error authentication request : $response"))
+        } else Result.failure(IOException("Error authentication request : $response"))
     }
 
     override suspend fun createUser(user: User): Result<Int> {
         val response = authenticationRemoteDataSource.createUser(user.toDTO())
-        return if(response.isSuccessful) {
+        return if (response.isSuccessful) {
             infoLog(response.body()?.message ?: "User created successfully")
             Result.success(response.body()?.data ?: -1)
-        }
-        else {
+        } else {
             val errorMessage = formatHttpError(response.message(), response.errorBody()?.string())
             Result.failure(IOException(errorMessage))
         }

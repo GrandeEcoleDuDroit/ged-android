@@ -13,7 +13,10 @@ class AuthenticationRemoteDataSource(
     private val authenticationParisSaclayApi: AuthenticationParisSaclayApi,
     private val generateHashUseCase: GenerateHashUseCase
 ) {
-    suspend fun login(email: String, password: String): Response<ServerResponse.EmptyServerResponse> {
+    suspend fun login(
+        email: String,
+        password: String
+    ): Response<ServerResponse.EmptyServerResponse> {
         val hash = generateHashUseCase()
         return authenticationParisSaclayApi.login(
             username = email,
@@ -25,8 +28,7 @@ class AuthenticationRemoteDataSource(
     suspend fun createUser(user: UserDTO): Response<ServerResponse.IntServerResponse> {
         return try {
             userApi.createUser(user)
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             errorLog("Error to create user: ${e.message.toString()}")
             Response.error(500, e.message.toString().toResponseBody())
         }

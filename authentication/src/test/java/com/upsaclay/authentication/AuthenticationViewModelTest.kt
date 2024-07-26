@@ -38,7 +38,7 @@ class AuthenticationViewModelTest : KoinTest {
     }
 
     @Before
-    fun setUp(){
+    fun setUp() {
         startKoin {
             modules(testModule)
         }
@@ -55,25 +55,31 @@ class AuthenticationViewModelTest : KoinTest {
     }
 
     @Test
-    fun authentication_state_is_unauthenticated_by_default(){
-        assertEquals(authenticationViewModel.authenticationState.value, AuthenticationState.UNAUTHENTICATED)
+    fun authentication_state_is_unauthenticated_by_default() {
+        assertEquals(
+            authenticationViewModel.authenticationState.value,
+            AuthenticationState.UNAUTHENTICATED
+        )
     }
 
     @Test
-    fun authentication_state_is_authenticated_when_preference_is_true(){
+    fun authentication_state_is_authenticated_when_preference_is_true() {
         every { isAuthenticatedUseCase() } returns true
-        assertEquals(authenticationViewModel.authenticationState.value, AuthenticationState.AUTHENTICATED)
+        assertEquals(
+            authenticationViewModel.authenticationState.value,
+            AuthenticationState.AUTHENTICATED
+        )
     }
 
     @Test
-    fun authentication_state_is_error_input_when_input_is_blank(){
+    fun authentication_state_is_error_input_when_input_is_blank() {
         authenticationViewModel.login()
         val result = authenticationViewModel.authenticationState.value
         assertEquals(result, AuthenticationState.ERROR_INPUT)
     }
 
     @Test
-    fun authentication_state_is_authenticated_when_login_successful(){
+    fun authentication_state_is_authenticated_when_login_successful() {
         authenticationViewModel.updateMailText("username")
         authenticationViewModel.updatePasswordText("password")
         runBlocking {
@@ -85,6 +91,7 @@ class AuthenticationViewModelTest : KoinTest {
             )
         }
     }
+
     @Test
     fun authentication_state_is_error_authentication_when_login_failed() {
         authenticationViewModel.updateMailText("username")

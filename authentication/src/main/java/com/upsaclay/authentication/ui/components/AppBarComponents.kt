@@ -27,7 +27,7 @@ internal fun RegistrationTopBar(
     navController: NavController,
     currentStep: Int,
     maxStep: Int
-){
+) {
     TopAppBar(
         title = {
             Text(
@@ -60,7 +60,7 @@ internal fun RegistrationTopBar(
 
 @Preview
 @Composable
-internal fun RegistrationTopBarPreview(){
+internal fun RegistrationTopBarPreview() {
     GedoiseTheme {
         RegistrationTopBar(
             navController = rememberNavController(),

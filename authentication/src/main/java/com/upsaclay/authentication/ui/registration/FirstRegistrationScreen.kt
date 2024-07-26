@@ -36,7 +36,8 @@ import org.koin.androidx.compose.koinViewModel
 fun FirstRegistrationScreen(
     navController: NavController,
     registrationViewModel: RegistrationViewModel = koinViewModel()
-){
+) {
+
     var selectedItem by remember {
         mutableStateOf(registrationViewModel.currentSchoolLevel)
     }
@@ -109,7 +110,7 @@ fun FirstRegistrationScreen(
 
 @Preview
 @Composable
-private fun FirstRegistrationStepPreview(){
+private fun FirstRegistrationStepPreview() {
     val items = persistentListOf("GED 1", "GED 2", "GED 3")
     var selectedItem by remember {
         mutableStateOf(items[0])
