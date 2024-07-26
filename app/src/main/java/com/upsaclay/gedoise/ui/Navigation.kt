@@ -14,8 +14,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.upsaclay.authentication.domain.IsAuthenticatedUseCase
 import com.upsaclay.authentication.ui.AuthenticationScreen
-import com.upsaclay.authentication.ui.registration.RegistrationViewModel
 import com.upsaclay.authentication.ui.registration.FirstRegistrationScreen
+import com.upsaclay.authentication.ui.registration.RegistrationViewModel
 import com.upsaclay.authentication.ui.registration.SecondRegistrationScreen
 import com.upsaclay.authentication.ui.registration.ThirdRegistrationScreen
 import com.upsaclay.core.data.model.Screen
@@ -33,7 +33,7 @@ fun Navigation(
     val navigationItems by mainViewModel.navigationItem.collectAsState()
     val isAuthenticatedUseCase: IsAuthenticatedUseCase = getKoin().get()
     val startDestination = if(isAuthenticatedUseCase()){
-        Screen.AUTHENTICATION.route
+        Screen.HOME.route
     }
     else {
         Screen.AUTHENTICATION.route

@@ -75,9 +75,9 @@ fun AuthenticationScreen(
     val view = LocalView.current
     val context = LocalContext.current
 
-//    if(authenticationState == AuthenticationState.AUTHENTICATED){
-//        navController.navigate(Screen.HOME.route)
-//    }
+    if(authenticationState == AuthenticationState.AUTHENTICATED){
+        navController.navigate(Screen.HOME.route)
+    }
 
     isError = authenticationState == AuthenticationState.ERROR_AUTHENTICATION ||
             authenticationState == AuthenticationState.ERROR_INPUT
