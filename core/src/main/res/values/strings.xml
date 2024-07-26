@@ -10,4 +10,5 @@
     <string name="icon_add_descrption">Icône d\'ajout</string>
     <string name="next">Suivant</string>
     <string name="finish">Terminer</string>
+    <string name="remove">Retirer</string>
 </resources>

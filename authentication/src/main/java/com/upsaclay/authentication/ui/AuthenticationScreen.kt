@@ -50,6 +50,7 @@ import com.upsaclay.authentication.data.model.AuthenticationState
 import com.upsaclay.authentication.ui.components.OutlinedEmailInput
 import com.upsaclay.authentication.ui.components.OutlinedPasswordInput
 import com.upsaclay.core.data.model.Screen
+import com.upsaclay.core.ui.components.ErrorText
 import com.upsaclay.core.ui.components.LoadingScreen
 import com.upsaclay.core.ui.components.PrimaryLargeButton
 import com.upsaclay.core.ui.theme.GedoiseColor.BackgroundVariant
@@ -228,10 +229,7 @@ private fun InputsSection(
         if (isError) {
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
 
-            Text(
-                text = errorMessage,
-                color = MaterialTheme.colorScheme.error,
-            )
+            ErrorText(text = errorMessage)
         }
     }
 }

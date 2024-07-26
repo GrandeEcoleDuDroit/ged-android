@@ -11,6 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,6 +44,11 @@ fun FirstRegistrationScreen(
     }
     var expanded by remember {
         mutableStateOf(false)
+    }
+
+    LaunchedEffect(Unit) {
+        registrationViewModel.resetEmail()
+        registrationViewModel.resetPassword()
     }
 
     Scaffold(
@@ -110,7 +116,7 @@ fun FirstRegistrationScreen(
 
 @Preview
 @Composable
-private fun FirstRegistrationStepPreview() {
+private fun FirstRegistrationScreenPreview() {
     val items = persistentListOf("GED 1", "GED 2", "GED 3")
     var selectedItem by remember {
         mutableStateOf(items[0])

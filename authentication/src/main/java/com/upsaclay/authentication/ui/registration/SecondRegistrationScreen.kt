@@ -19,9 +19,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.upsaclay.authentication.R
@@ -30,6 +30,8 @@ import com.upsaclay.authentication.ui.components.OutlinedEmailInput
 import com.upsaclay.authentication.ui.components.OutlinedPasswordInput
 import com.upsaclay.authentication.ui.components.RegistrationTopBar
 import com.upsaclay.core.data.model.Screen
+import com.upsaclay.core.ui.components.ErrorText
+import com.upsaclay.core.ui.components.LoadingScreen
 import com.upsaclay.core.ui.components.PrimaryLargeButton
 import com.upsaclay.core.ui.theme.GedoiseTheme
 import com.upsaclay.core.ui.theme.spacing
@@ -40,20 +42,21 @@ fun SecondRegistrationScreen(
     navController: NavController,
     registrationViewModel: RegistrationViewModel = koinViewModel()
 ) {
-    LaunchedEffect(Unit) {
-        registrationViewModel.resetProfilePictureUri()
-        registrationViewModel.resetEmail()
-        registrationViewModel.resetPassword()
-    }
 
+    val keyboardController = LocalSoftwareKeyboardController.current
     val registrationState by registrationViewModel.registrationState.collectAsState()
-
-    if (registrationState == RegistrationState.RECOGNIZED_ACCOUNT) {
-        navController.navigate(Screen.THIRD_REGISTRATION_SCREEN.route)
-    }
-
     var errorMessage by remember { mutableStateOf("") }
     var isError by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        registrationViewModel.resetProfilePictureUri()
+    }
+
+    LaunchedEffect(registrationState) {
+        if (registrationState == RegistrationState.RECOGNIZED_ACCOUNT) {
+            navController.navigate(Screen.THIRD_REGISTRATION_SCREEN.route)
+        }
+    }
 
     isError = registrationState == RegistrationState.UNRECOGNIZED_ACCOUNT ||
             registrationState == RegistrationState.ERROR_INPUT
@@ -115,18 +118,16 @@ fun SecondRegistrationScreen(
                 )
 
                 if (isError) {
-                    Spacer(modifier = Modifier.height(5.dp))
-                    Text(
-                        text = errorMessage,
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.padding(top = 5.dp)
-                    )
+                    Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+
+                    ErrorText(text = errorMessage)
                 }
             }
 
             PrimaryLargeButton(
                 text = stringResource(id = com.upsaclay.core.R.string.next),
                 onClick = {
+                    keyboardController?.hide()
                     registrationViewModel.verifyAccount(
                         registrationViewModel.email,
                         registrationViewModel.password
@@ -138,13 +139,19 @@ fun SecondRegistrationScreen(
             )
         }
     }
+
+    if(registrationState == RegistrationState.LOADING) {
+        LoadingScreen()
+    }
 }
 
 @Preview
 @Composable
-private fun SecondRegistrationStepPreview() {
+private fun SecondRegistrationScreenPreview() {
     val mail = "pierre.dupont@universite-paris-saclay.fr"
     val password = "password"
+    val isLoading = false
+
     GedoiseTheme {
         Scaffold(
             topBar = {
@@ -195,6 +202,9 @@ private fun SecondRegistrationStepPreview() {
                         .fillMaxWidth()
                 )
             }
+        }
+        if(isLoading) {
+            LoadingScreen()
         }
     }
 }

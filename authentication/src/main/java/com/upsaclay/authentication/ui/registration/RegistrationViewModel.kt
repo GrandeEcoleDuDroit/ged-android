@@ -38,9 +38,9 @@ class RegistrationViewModel(
     var currentSchoolLevel by mutableStateOf(schoolLevels[0])
         private set
 
-    private val defaultPictureUri =
+    val defaultPictureUri =
         getDrawableUriUseCase(com.upsaclay.core.R.drawable.default_profile_picture)
-    var profilePictureUri by mutableStateOf(defaultPictureUri)
+    var profilePictureUri: Uri by mutableStateOf(defaultPictureUri)
         private set
     var fullName by mutableStateOf("")
         private set

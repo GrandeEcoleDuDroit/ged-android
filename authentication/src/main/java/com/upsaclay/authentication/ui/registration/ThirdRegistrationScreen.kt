@@ -1,6 +1,5 @@
 package com.upsaclay.authentication.ui.registration
 
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -18,7 +17,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -37,7 +38,9 @@ import com.upsaclay.authentication.R
 import com.upsaclay.authentication.data.model.RegistrationState
 import com.upsaclay.authentication.ui.components.RegistrationTopBar
 import com.upsaclay.core.data.model.Screen
+import com.upsaclay.core.ui.components.ErrorText
 import com.upsaclay.core.ui.components.InfiniteCircularProgressIndicator
+import com.upsaclay.core.ui.components.LoadingScreen
 import com.upsaclay.core.ui.components.PrimaryLargeButton
 import com.upsaclay.core.ui.theme.GedoiseTheme
 import com.upsaclay.core.ui.theme.spacing
@@ -58,17 +61,18 @@ fun ThirdRegistrationScreen(
 
     val registrationState by registrationViewModel.registrationState.collectAsState()
 
-    if (registrationState == RegistrationState.REGISTERED) {
-        navController.navigate(Screen.HOME.route)
-    }
-
-    if(registrationState == RegistrationState.RECOGNIZED_ACCOUNT) {
-        registrationViewModel.resetRegistrationState()
-        Log.d("RegistrationViewModel", registrationState.toString())
-    }
-
-    if (registrationViewModel.profilePictureUri == null) {
-        registrationViewModel.resetProfilePictureUri()
+    LaunchedEffect(registrationState) {
+        when (registrationState) {
+            RegistrationState.REGISTERED -> {
+                navController.navigate(Screen.HOME.route) {
+                    popUpTo(Screen.HOME.route) { inclusive = true }
+                }
+            }
+            RegistrationState.RECOGNIZED_ACCOUNT -> {
+                registrationViewModel.resetRegistrationState()
+            }
+            else -> {}
+        }
     }
 
     Scaffold(
@@ -88,7 +92,7 @@ fun ThirdRegistrationScreen(
                     start = MaterialTheme.spacing.medium,
                     end = MaterialTheme.spacing.medium
                 )
-                .fillMaxSize(),
+                .fillMaxSize()
         ) {
             Column(
                 modifier = Modifier
@@ -100,7 +104,9 @@ fun ThirdRegistrationScreen(
                     text = stringResource(id = R.string.add_profile_picture),
                     style = MaterialTheme.typography.titleMedium,
                 )
+
                 Spacer(Modifier.height(MaterialTheme.spacing.medium))
+
                 AsyncImage(
                     model = registrationViewModel.profilePictureUri,
                     contentDescription = stringResource(id = com.upsaclay.core.R.string.profile_picture_description),
@@ -115,50 +121,57 @@ fun ThirdRegistrationScreen(
                             )
                         }
                 )
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+
+                if(registrationViewModel.profilePictureUri != registrationViewModel.defaultPictureUri) {
+                    TextButton(
+                        onClick = { registrationViewModel.resetProfilePictureUri() }
+                    ) {
+                        Text(
+                            text = stringResource(id = com.upsaclay.core.R.string.remove),
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
+                }
 
                 Text(
                     text = registrationViewModel.fullName,
                     style = MaterialTheme.typography.headlineMedium,
                 )
+
                 Text(
                     text = registrationViewModel.email,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
+
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
 
                 if (registrationState == RegistrationState.ERROR_REGISTRATION) {
-                    Text(
-                        text = stringResource(id = R.string.error_registration),
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                }
-
-                if (registrationState == RegistrationState.LOADING) {
-                    InfiniteCircularProgressIndicator()
+                    ErrorText(text = stringResource(id = R.string.error_registration))
                 }
             }
 
-
             PrimaryLargeButton(
                 text = stringResource(id = com.upsaclay.core.R.string.finish),
-                onClick = {
-                    registrationViewModel.register()
-                },
+                onClick = { registrationViewModel.register() },
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth()
             )
         }
     }
+
+    if(registrationState == RegistrationState.LOADING) {
+        LoadingScreen()
+    }
 }
 
 @Preview
 @Composable
-fun FourthRegistrationStepPreview() {
+fun ThirdRegistrationScreenPreview() {
     val errorRegistration = true
+
     GedoiseTheme {
         Scaffold(
             topBar = {
@@ -197,10 +210,21 @@ fun FourthRegistrationStepPreview() {
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .clip(CircleShape)
-                            .fillMaxWidth(0.5f)
-                            .clickable {}
+                            .fillMaxWidth(0.6f)
+                            .fillMaxHeight(0.3f)
                     )
-                    Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+
+                    if(true) {
+                        TextButton(
+                            onClick = { }
+                        ) {
+                            Text(
+                                text = stringResource(id = com.upsaclay.core.R.string.remove),
+                                color = MaterialTheme.colorScheme.error,
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
+                    }
 
                     Text(
                         text = "Pierre Dupont",
@@ -212,7 +236,7 @@ fun FourthRegistrationStepPreview() {
                         color = Color.DarkGray,
                         overflow = TextOverflow.Ellipsis
                     )
-                    Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
+                    Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
 
                     if (errorRegistration) {
                         Text(
