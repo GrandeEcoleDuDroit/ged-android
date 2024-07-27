@@ -13,7 +13,7 @@ class AuthenticationRemoteDataSource(
     private val authenticationParisSaclayApi: AuthenticationParisSaclayApi,
     private val generateHashUseCase: GenerateHashUseCase
 ) {
-    suspend fun login(
+    suspend fun loginWithParisSaclay(
         email: String,
         password: String
     ): Response<ServerResponse.EmptyServerResponse> {

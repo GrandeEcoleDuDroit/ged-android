@@ -37,10 +37,9 @@ class RegistrationViewModel(
     val schoolLevels = persistentListOf("GED 1", "GED 2", "GED 3", "GED 4")
     var currentSchoolLevel by mutableStateOf(schoolLevels[0])
         private set
-
     val defaultPictureUri =
         getDrawableUriUseCase(com.upsaclay.core.R.drawable.default_profile_picture)
-    var profilePictureUri: Uri by mutableStateOf(defaultPictureUri)
+    var profilePictureUri by mutableStateOf(defaultPictureUri)
         private set
     var fullName by mutableStateOf("")
         private set
@@ -93,7 +92,7 @@ class RegistrationViewModel(
                 val firstname = splitName[0].replaceFirstChar { it.uppercase() }
                 val lastname = splitMail[0].replaceFirstChar { it.uppercase() }
 
-                this@RegistrationViewModel.fullName = String.format("%s %s", firstname, lastname)
+                fullName = String.format("%s %s", firstname, lastname)
                 RegistrationState.RECOGNIZED_ACCOUNT
             } else {
                 RegistrationState.UNRECOGNIZED_ACCOUNT

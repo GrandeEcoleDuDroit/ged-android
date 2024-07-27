@@ -39,7 +39,6 @@ import com.upsaclay.authentication.data.model.RegistrationState
 import com.upsaclay.authentication.ui.components.RegistrationTopBar
 import com.upsaclay.core.data.model.Screen
 import com.upsaclay.core.ui.components.ErrorText
-import com.upsaclay.core.ui.components.InfiniteCircularProgressIndicator
 import com.upsaclay.core.ui.components.LoadingScreen
 import com.upsaclay.core.ui.components.PrimaryLargeButton
 import com.upsaclay.core.ui.theme.GedoiseTheme
@@ -170,7 +169,9 @@ fun ThirdRegistrationScreen(
 @Preview
 @Composable
 fun ThirdRegistrationScreenPreview() {
-    val errorRegistration = true
+    val errorRegistration = false
+    val isDefaultPicture = true
+    val isLoading = false
 
     GedoiseTheme {
         Scaffold(
@@ -214,7 +215,7 @@ fun ThirdRegistrationScreenPreview() {
                             .fillMaxHeight(0.3f)
                     )
 
-                    if(true) {
+                    if(!isDefaultPicture) {
                         TextButton(
                             onClick = { }
                         ) {
@@ -245,9 +246,6 @@ fun ThirdRegistrationScreenPreview() {
                             style = MaterialTheme.typography.bodyMedium,
                         )
                     }
-
-                    if (!errorRegistration)
-                        InfiniteCircularProgressIndicator()
                 }
 
                 PrimaryLargeButton(
@@ -257,6 +255,9 @@ fun ThirdRegistrationScreenPreview() {
                         .align(Alignment.BottomCenter)
                         .fillMaxWidth()
                 )
+            }
+            if (isLoading) {
+                LoadingScreen()
             }
         }
     }

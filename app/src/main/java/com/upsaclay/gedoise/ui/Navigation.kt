@@ -95,6 +95,7 @@ fun Navigation(
                 Text(text = "Forum")
             }
         }
+
         composable(Screen.PROFILE.route) {
             MainNavigationBars(
                 navController = navController,
@@ -113,9 +114,7 @@ private fun MainNavigationBars(
     content: @Composable () -> Unit
 ){
     Scaffold(
-        topBar = {
-            MainTopBar(navController = navController)
-        },
+        topBar = { MainTopBar(navController = navController) },
         bottomBar = {
             MainBottomBar(
                 navController = navController,
