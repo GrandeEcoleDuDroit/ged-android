@@ -1,15 +1,19 @@
 package com.upsaclay.core
 
-import com.upsaclay.core.data.remote.ImageApi
-import com.upsaclay.core.data.remote.ImageRepository
-import com.upsaclay.core.data.remote.ImageRepositoryImpl
-import com.upsaclay.core.data.remote.UserApi
-import com.upsaclay.core.domain.CreateFileUseCase
-import com.upsaclay.core.domain.DownloadImageOracleBucketUseCase
-import com.upsaclay.core.domain.GetBytesFileFromUriUseCase
-import com.upsaclay.core.domain.GetDrawableUriUseCase
-import com.upsaclay.core.domain.SharedPreferenceUseCase
-import com.upsaclay.core.domain.UploadImageOracleBucketUseCase
+import com.upsaclay.core.data.local.UserLocalDataSource
+import com.upsaclay.core.data.remote.UserRemoteDataSource
+import com.upsaclay.core.data.remote.api.ImageRemoteApi
+import com.upsaclay.core.data.remote.api.UserRemoteApi
+import com.upsaclay.core.data.repository.DrawableRepositoryImpl
+import com.upsaclay.core.data.repository.ImageRepositoryImpl
+import com.upsaclay.core.data.repository.UserRepositoryImpl
+import com.upsaclay.core.domain.repository.DrawableRepository
+import com.upsaclay.core.domain.repository.ImageRepository
+import com.upsaclay.core.domain.repository.UserRepository
+import com.upsaclay.core.domain.usecase.CreateFileUseCase
+import com.upsaclay.core.domain.usecase.DownloadImageOracleBucketUseCase
+import com.upsaclay.core.domain.usecase.GetFileBytesFromUriUseCase
+import com.upsaclay.core.domain.usecase.UploadImageOracleBucketUseCase
 import okhttp3.OkHttpClient
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
@@ -44,17 +48,21 @@ val coreModule = module {
     }
 
     single {
-        get<Retrofit>(qualifier = named(GEDOISE_VM_1_QUALIFIER)).create(ImageApi::class.java)
+        get<Retrofit>(qualifier = named(GEDOISE_VM_1_QUALIFIER)).create(ImageRemoteApi::class.java)
     }
 
     single {
-        get<Retrofit>(qualifier = named(GEDOISE_VM_1_QUALIFIER)).create(UserApi::class.java)
+        get<Retrofit>(qualifier = named(GEDOISE_VM_1_QUALIFIER)).create(UserRemoteApi::class.java)
     }
 
-    singleOf(::ImageRepositoryImpl){ bind<ImageRepository>() }
-    singleOf(::SharedPreferenceUseCase)
-    singleOf(::GetDrawableUriUseCase)
-    singleOf(::GetBytesFileFromUriUseCase)
+    singleOf(::ImageRepositoryImpl) { bind<ImageRepository>() }
+    singleOf(::DrawableRepositoryImpl) { bind<DrawableRepository>() }
+
+    singleOf(::UserRepositoryImpl) { bind<UserRepository>() }
+    singleOf(::UserRemoteDataSource)
+    singleOf(::UserLocalDataSource)
+
+    singleOf(::GetFileBytesFromUriUseCase)
     singleOf(::CreateFileUseCase)
     singleOf(::UploadImageOracleBucketUseCase)
     singleOf(::DownloadImageOracleBucketUseCase)

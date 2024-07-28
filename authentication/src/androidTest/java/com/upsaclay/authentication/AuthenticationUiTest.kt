@@ -9,7 +9,7 @@ import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.performClick
 import androidx.navigation.NavController
-import com.upsaclay.authentication.data.model.AuthenticationState
+import com.upsaclay.authentication.domain.model.AuthenticationState
 import com.upsaclay.authentication.ui.AuthenticationScreen
 import com.upsaclay.authentication.ui.AuthenticationViewModel
 import io.mockk.every

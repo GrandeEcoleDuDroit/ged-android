@@ -1,9 +1,8 @@
 package com.upsaclay.authentication
 
-import com.upsaclay.authentication.data.model.AuthenticationState
-import com.upsaclay.authentication.domain.IsAuthenticatedUseCase
-import com.upsaclay.authentication.domain.LoginUseCase
-import com.upsaclay.authentication.domain.LogoutUseCase
+import com.upsaclay.authentication.domain.model.AuthenticationState
+import com.upsaclay.authentication.domain.usecase.IsAuthenticatedUseCase
+import com.upsaclay.authentication.domain.usecase.LoginUseCase
 import com.upsaclay.authentication.ui.AuthenticationViewModel
 import io.mockk.coEvery
 import io.mockk.every
@@ -26,14 +25,12 @@ class AuthenticationViewModelTest : KoinTest {
     private val authenticationViewModel: AuthenticationViewModel by inject()
     private val loginUseCase: LoginUseCase by inject()
     private val isAuthenticatedUseCase: IsAuthenticatedUseCase by inject()
-    private val logoutUseCase: LogoutUseCase by inject()
 
     companion object {
         private val testModule: Module = module {
             singleOf(::AuthenticationViewModel)
             single { mockk<LoginUseCase>() }
             single { mockk<IsAuthenticatedUseCase>() }
-            single { mockk<LogoutUseCase>() }
         }
     }
 
@@ -46,7 +43,6 @@ class AuthenticationViewModelTest : KoinTest {
             loginUseCase(any(), any())
         } returns Result.success(AuthenticationState.AUTHENTICATED)
         every { isAuthenticatedUseCase() } returns false
-        every { logoutUseCase() } returns Unit
     }
 
     @After

@@ -25,7 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import com.upsaclay.core.data.model.User
+import com.upsaclay.core.domain.model.User
 import com.upsaclay.core.ui.components.PullToRefreshComponent
 import com.upsaclay.core.ui.components.StandardWebView
 import com.upsaclay.core.ui.theme.GedoiseTheme

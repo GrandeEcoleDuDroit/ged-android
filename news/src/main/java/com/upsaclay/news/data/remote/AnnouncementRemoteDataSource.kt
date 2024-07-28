@@ -2,6 +2,7 @@ package com.upsaclay.news.data.remote
 
 import android.util.Log
 import com.upsaclay.news.data.model.Announcement
+import com.upsaclay.news.data.remote.api.AnnouncementApi
 
 class AnnouncementRemoteDataSource(
     private val announcementApi: AnnouncementApi

@@ -1,7 +1,7 @@
 package com.upsaclay.news.data.model
 
 import com.google.gson.annotations.SerializedName
-import com.upsaclay.core.data.model.User
+import com.upsaclay.core.domain.model.User
 import java.time.LocalDateTime
 
 data class Announcement(
