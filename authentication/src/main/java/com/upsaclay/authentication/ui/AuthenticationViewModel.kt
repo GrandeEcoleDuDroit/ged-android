@@ -5,9 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.upsaclay.authentication.data.model.AuthenticationState
-import com.upsaclay.authentication.domain.IsAuthenticatedUseCase
-import com.upsaclay.authentication.domain.LoginUseCase
+import com.upsaclay.authentication.domain.model.AuthenticationState
+import com.upsaclay.authentication.domain.usecase.LoginUseCase
 import com.upsaclay.core.utils.errorLog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,17 +15,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class AuthenticationViewModel(
-    isAuthenticatedUseCase: IsAuthenticatedUseCase,
     private val loginUseCase: LoginUseCase,
 ) : ViewModel() {
-    private val isAuthenticated = if (isAuthenticatedUseCase()) {
-        AuthenticationState.AUTHENTICATED
-    } else {
-        AuthenticationState.UNAUTHENTICATED
-    }
-    private val _authenticationState = MutableStateFlow(isAuthenticated)
+    private val _authenticationState = MutableStateFlow(AuthenticationState.UNAUTHENTICATED)
     val authenticationState: StateFlow<AuthenticationState> = _authenticationState.asStateFlow()
-
     var mail by mutableStateOf("")
         private set
     var password by mutableStateOf("")

@@ -1,6 +1,7 @@
 package com.upsaclay.news.domain
 
-import com.upsaclay.news.data.AnnouncementRepository
+import com.upsaclay.news.domain.repository.AnnouncementRepository
+
 
 class UpdateAnnouncementsUseCase(
     private val announcementRepository: AnnouncementRepository

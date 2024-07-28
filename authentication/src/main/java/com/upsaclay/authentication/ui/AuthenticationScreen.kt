@@ -1,5 +1,6 @@
 package com.upsaclay.authentication.ui
 
+import android.os.Build
 import android.view.ViewTreeObserver
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -46,7 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.NavController
 import com.upsaclay.authentication.R
-import com.upsaclay.authentication.data.model.AuthenticationState
+import com.upsaclay.authentication.domain.model.AuthenticationState
 import com.upsaclay.authentication.ui.components.OutlinedEmailInput
 import com.upsaclay.authentication.ui.components.OutlinedPasswordInput
 import com.upsaclay.core.data.model.Screen
@@ -75,9 +76,9 @@ fun AuthenticationScreen(
     val view = LocalView.current
     val context = LocalContext.current
 
-    if(authenticationState == AuthenticationState.AUTHENTICATED){
-        navController.navigate(Screen.HOME.route)
-    }
+//    if(authenticationState == AuthenticationState.AUTHENTICATED){
+//        navController.navigate(Screen.HOME.route)
+//    }
 
     isError = authenticationState == AuthenticationState.ERROR_AUTHENTICATION ||
             authenticationState == AuthenticationState.ERROR_INPUT
@@ -95,7 +96,11 @@ fun AuthenticationScreen(
     DisposableEffect(context) {
         val listener = ViewTreeObserver.OnGlobalLayoutListener {
             val insets = view.rootWindowInsets
-            val keyboardHeight = insets?.getInsets(WindowInsetsCompat.Type.ime())?.bottom ?: 0
+            val keyboardHeight = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                insets?.getInsets(WindowInsetsCompat.Type.ime())?.bottom ?: 0
+            } else {
+                insets?.systemWindowInsetBottom ?: 0
+            }
             isKeyboardVisible = keyboardHeight > 0
         }
 

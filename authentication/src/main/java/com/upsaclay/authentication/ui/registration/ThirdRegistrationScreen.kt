@@ -35,7 +35,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.upsaclay.authentication.R
-import com.upsaclay.authentication.data.model.RegistrationState
+import com.upsaclay.authentication.domain.model.RegistrationState
 import com.upsaclay.authentication.ui.components.RegistrationTopBar
 import com.upsaclay.core.data.model.Screen
 import com.upsaclay.core.ui.components.ErrorText

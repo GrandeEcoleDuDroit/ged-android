@@ -6,14 +6,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.upsaclay.authentication.data.model.RegistrationState
-import com.upsaclay.authentication.domain.IsAccountExistUseCase
-import com.upsaclay.authentication.domain.RegistrationUseCase
-import com.upsaclay.core.data.model.User
-import com.upsaclay.core.domain.GetDrawableUriUseCase
-import com.upsaclay.core.domain.UploadImageOracleBucketUseCase
-import com.upsaclay.core.utils.errorLog
-import com.upsaclay.core.utils.formatProfilePictureFileName
+import com.upsaclay.authentication.domain.model.RegistrationState
+import com.upsaclay.authentication.domain.usecase.IsAccountExistUseCase
+import com.upsaclay.authentication.domain.usecase.RegistrationUseCase
+import com.upsaclay.core.domain.model.User
+import com.upsaclay.core.domain.usecase.GetDrawableUriUseCase
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,8 +23,8 @@ class RegistrationViewModel(
     private val isAccountExistUseCase: IsAccountExistUseCase,
     getDrawableUriUseCase: GetDrawableUriUseCase,
     private val registrationUseCase: RegistrationUseCase,
-    private val uploadImageOracleBucketUseCase: UploadImageOracleBucketUseCase,
 ) : ViewModel() {
+
     private val _registrationState = MutableStateFlow(RegistrationState.NOT_REGISTERED)
     val registrationState: StateFlow<RegistrationState> = _registrationState.asStateFlow()
     var email by mutableStateOf("")
@@ -115,18 +112,9 @@ class RegistrationViewModel(
         viewModelScope.launch {
             val result = registrationUseCase(user)
             if (result.isSuccess) {
-                val userId = result.getOrNull()
-                userId?.let {
-                    val fileName = formatProfilePictureFileName(it.toString())
-                    uploadImageOracleBucketUseCase.uploadFromUri(fileName, profilePictureUri)
-                    _registrationState.value = RegistrationState.REGISTERED
-                } ?: {
-                    _registrationState.value = RegistrationState.ERROR_REGISTRATION
-                    errorLog("Error to upload profile picture : User id is null")
-                }
+                _registrationState.value = RegistrationState.REGISTERED
             } else {
                 _registrationState.value = RegistrationState.ERROR_REGISTRATION
-                errorLog(result.exceptionOrNull().toString())
             }
         }
     }

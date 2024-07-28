@@ -1,12 +1,12 @@
 package com.upsaclay.news
 
 import com.upsaclay.core.GEDOISE_VM_1_QUALIFIER
-import com.upsaclay.news.data.remote.AnnouncementApi
 import com.upsaclay.news.data.remote.AnnouncementRemoteDataSource
-import com.upsaclay.news.data.AnnouncementRepository
-import com.upsaclay.news.data.AnnouncementRepositoryImpl
+import com.upsaclay.news.data.remote.api.AnnouncementApi
+import com.upsaclay.news.data.repository.AnnouncementRepositoryImpl
 import com.upsaclay.news.domain.GetAllAnnouncementUseCase
 import com.upsaclay.news.domain.UpdateAnnouncementsUseCase
+import com.upsaclay.news.domain.repository.AnnouncementRepository
 import com.upsaclay.news.ui.NewsViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.bind
