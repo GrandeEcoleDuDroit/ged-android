@@ -1,7 +1,7 @@
 package com.upsaclay.news.data.model
 
 import com.google.gson.annotations.SerializedName
-import com.upsaclay.core.domain.model.User
+import com.upsaclay.common.domain.model.User
 import java.time.LocalDateTime
 
 data class Announcement(
@@ -40,7 +40,9 @@ data class AnnouncementWithUserDTO(
     @SerializedName("USER_SCHOOL_LEVEL")
     val userSchoolLevel: String,
     @SerializedName("USER_IS_MEMBER")
-    val userIsMember: Int
+    val userIsMember: Int,
+    @SerializedName("USER_PROFILE_PICTURE_URL")
+    val profilePictureUrl: String
 ) {
     fun toAnnouncement() = Announcement(
         id = announcementId,
@@ -53,7 +55,8 @@ data class AnnouncementWithUserDTO(
             lastName = userLastName,
             email = userEmail,
             schoolLevel = userSchoolLevel,
-            isMember = userIsMember == 1
+            isMember = userIsMember == 1,
+            profilePictureUrl = profilePictureUrl
         )
     )
 }

@@ -5,8 +5,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.upsaclay.core.utils.getValue
-import com.upsaclay.core.utils.setValue
+import com.upsaclay.common.utils.getValue
+import com.upsaclay.common.utils.setValue
 
 class AuthenticationLocalDataSource(
     context: Context

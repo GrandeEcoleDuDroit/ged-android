@@ -26,11 +26,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.upsaclay.core.R
-import com.upsaclay.core.ui.components.SmallShowButton
-import com.upsaclay.core.ui.theme.GedoiseColor
-import com.upsaclay.core.ui.theme.GedoiseTheme
-import com.upsaclay.core.ui.theme.spacing
+import com.upsaclay.common.R
+import com.upsaclay.common.ui.components.SmallShowButton
+import com.upsaclay.common.ui.theme.GedoiseColor
+import com.upsaclay.common.ui.theme.GedoiseTheme
+import com.upsaclay.common.ui.theme.spacing
 import com.upsaclay.news.data.model.Announcement
 
 @Composable

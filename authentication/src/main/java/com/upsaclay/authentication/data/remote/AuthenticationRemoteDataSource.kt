@@ -1,6 +1,6 @@
 package com.upsaclay.authentication.data.remote
 
-import com.upsaclay.core.data.model.ServerResponse
+import com.upsaclay.common.data.model.ServerResponse
 import retrofit2.Response
 
 class AuthenticationRemoteDataSource(

@@ -37,12 +37,12 @@ import coil.compose.AsyncImage
 import com.upsaclay.authentication.R
 import com.upsaclay.authentication.domain.model.RegistrationState
 import com.upsaclay.authentication.ui.components.RegistrationTopBar
-import com.upsaclay.core.data.model.Screen
-import com.upsaclay.core.ui.components.ErrorText
-import com.upsaclay.core.ui.components.LoadingScreen
-import com.upsaclay.core.ui.components.PrimaryLargeButton
-import com.upsaclay.core.ui.theme.GedoiseTheme
-import com.upsaclay.core.ui.theme.spacing
+import com.upsaclay.common.data.model.Screen
+import com.upsaclay.common.ui.components.ErrorText
+import com.upsaclay.common.ui.components.LoadingScreen
+import com.upsaclay.common.ui.components.PrimaryLargeButton
+import com.upsaclay.common.ui.theme.GedoiseTheme
+import com.upsaclay.common.ui.theme.spacing
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -108,7 +108,7 @@ fun ThirdRegistrationScreen(
 
                 AsyncImage(
                     model = registrationViewModel.profilePictureUri,
-                    contentDescription = stringResource(id = com.upsaclay.core.R.string.profile_picture_description),
+                    contentDescription = stringResource(id = com.upsaclay.common.R.string.profile_picture_description),
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .clip(CircleShape)
@@ -126,7 +126,7 @@ fun ThirdRegistrationScreen(
                         onClick = { registrationViewModel.resetProfilePictureUri() }
                     ) {
                         Text(
-                            text = stringResource(id = com.upsaclay.core.R.string.remove),
+                            text = stringResource(id = com.upsaclay.common.R.string.remove),
                             color = MaterialTheme.colorScheme.error,
                             style = MaterialTheme.typography.bodyLarge
                         )
@@ -152,7 +152,7 @@ fun ThirdRegistrationScreen(
             }
 
             PrimaryLargeButton(
-                text = stringResource(id = com.upsaclay.core.R.string.finish),
+                text = stringResource(id = com.upsaclay.common.R.string.finish),
                 onClick = { registrationViewModel.register() },
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
@@ -206,8 +206,8 @@ fun ThirdRegistrationScreenPreview() {
                     Spacer(Modifier.height(MaterialTheme.spacing.medium))
 
                     Image(
-                        painter = painterResource(id = com.upsaclay.core.R.drawable.default_profile_picture),
-                        contentDescription = stringResource(id = com.upsaclay.core.R.string.profile_picture_description),
+                        painter = painterResource(id = com.upsaclay.common.R.drawable.default_profile_picture),
+                        contentDescription = stringResource(id = com.upsaclay.common.R.string.profile_picture_description),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .clip(CircleShape)
@@ -220,7 +220,7 @@ fun ThirdRegistrationScreenPreview() {
                             onClick = { }
                         ) {
                             Text(
-                                text = stringResource(id = com.upsaclay.core.R.string.remove),
+                                text = stringResource(id = com.upsaclay.common.R.string.remove),
                                 color = MaterialTheme.colorScheme.error,
                                 style = MaterialTheme.typography.bodyLarge
                             )
@@ -249,7 +249,7 @@ fun ThirdRegistrationScreenPreview() {
                 }
 
                 PrimaryLargeButton(
-                    text = stringResource(id = com.upsaclay.core.R.string.finish),
+                    text = stringResource(id = com.upsaclay.common.R.string.finish),
                     onClick = { },
                     modifier = Modifier
                         .align(Alignment.BottomCenter)

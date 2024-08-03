@@ -5,5 +5,5 @@ import com.upsaclay.authentication.domain.repository.AuthenticationRepository
 class IsAuthenticatedUseCase(
     private val authenticationRepository: AuthenticationRepository
 ) {
-    suspend fun invoke(): Boolean = authenticationRepository.isAuthenticated()
+    suspend operator fun invoke(): Boolean = authenticationRepository.isAuthenticated()
 }

@@ -3,10 +3,10 @@ package com.upsaclay.authentication.data.repository
 import com.upsaclay.authentication.data.local.AuthenticationLocalDataSource
 import com.upsaclay.authentication.data.remote.AuthenticationRemoteDataSource
 import com.upsaclay.authentication.domain.repository.AuthenticationRepository
-import com.upsaclay.core.domain.model.User
-import com.upsaclay.core.domain.repository.UserRepository
-import com.upsaclay.core.utils.formatHttpError
-import com.upsaclay.core.utils.infoLog
+import com.upsaclay.common.domain.model.User
+import com.upsaclay.common.domain.repository.UserRepository
+import com.upsaclay.common.utils.formatHttpError
+import com.upsaclay.common.utils.infoLog
 import java.io.IOException
 
 class AuthenticationRepositoryImpl(

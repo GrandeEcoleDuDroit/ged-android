@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -16,17 +15,16 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.upsaclay.authentication.domain.usecase.IsAuthenticatedUseCase
 import com.upsaclay.authentication.ui.AuthenticationScreen
 import com.upsaclay.authentication.ui.registration.FirstRegistrationScreen
 import com.upsaclay.authentication.ui.registration.RegistrationViewModel
 import com.upsaclay.authentication.ui.registration.SecondRegistrationScreen
 import com.upsaclay.authentication.ui.registration.ThirdRegistrationScreen
-import com.upsaclay.core.data.model.Screen
+import com.upsaclay.common.data.model.Screen
+import com.upsaclay.common.domain.model.User
 import com.upsaclay.gedoise.data.NavigationItem
 import com.upsaclay.news.ui.NewsScreen
 import org.koin.androidx.compose.koinViewModel
-import org.koin.compose.getKoin
 
 
 @Composable
@@ -35,18 +33,17 @@ fun Navigation(
 ) {
     val navController = rememberNavController()
     val navigationItems by mainViewModel.navigationItem.collectAsState()
-    val isAuthenticatedUseCase: IsAuthenticatedUseCase = getKoin().get()
+    val isAuthenticated by mainViewModel.isAuthenticated.collectAsState()
+    val sharedRegistrationViewModel: RegistrationViewModel = koinViewModel()
     var startDestination by remember { mutableStateOf<String?>(null) }
 
-    LaunchedEffect(Unit) {
-        startDestination = if (isAuthenticatedUseCase.invoke()) {
+    isAuthenticated?.let {
+        startDestination = if (it) {
             Screen.HOME.route
         } else {
             Screen.AUTHENTICATION.route
         }
     }
-
-    val sharedRegistrationViewModel: RegistrationViewModel = koinViewModel()
 
     startDestination?.let { destination ->
         NavHost(
@@ -72,7 +69,8 @@ fun Navigation(
             composable(Screen.HOME.route) {
                 MainNavigationBars(
                     navController = navController,
-                    navigationItems.values.toList()
+                    navigationItems.values.toList(),
+                    mainViewModel.currentUser
                 ) {
                     NewsScreen()
                 }
@@ -81,7 +79,8 @@ fun Navigation(
             composable(Screen.MESSAGE.route) {
                 MainNavigationBars(
                     navController = navController,
-                    navigationItems.values.toList()
+                    navigationItems.values.toList(),
+                    mainViewModel.currentUser
                 ) {
                     Text(text = "Message")
                 }
@@ -90,7 +89,8 @@ fun Navigation(
             composable(Screen.CALENDAR.route) {
                 MainNavigationBars(
                     navController = navController,
-                    navigationItems.values.toList()
+                    navigationItems.values.toList(),
+                    mainViewModel.currentUser
                 ) {
                     Text(text = "Calendar")
                 }
@@ -99,7 +99,8 @@ fun Navigation(
             composable(Screen.FORUM.route) {
                 MainNavigationBars(
                     navController = navController,
-                    navigationItems.values.toList()
+                    navigationItems.values.toList(),
+                    mainViewModel.currentUser
                 ) {
                     Text(text = "Forum")
                 }
@@ -108,7 +109,8 @@ fun Navigation(
             composable(Screen.PROFILE.route) {
                 MainNavigationBars(
                     navController = navController,
-                    navigationItems.values.toList()
+                    navigationItems.values.toList(),
+                    mainViewModel.currentUser
                 ) {
                     Text(text = "Profile")
                 }
@@ -121,10 +123,11 @@ fun Navigation(
 private fun MainNavigationBars(
     navController: NavController,
     navigationItems: List<NavigationItem>,
+    user: User?,
     content: @Composable () -> Unit
 ){
     Scaffold(
-        topBar = { MainTopBar(navController = navController) },
+        topBar = { MainTopBar(navController = navController, user) },
         bottomBar = {
             MainBottomBar(
                 navController = navController,

@@ -18,8 +18,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.upsaclay.authentication.R
-import com.upsaclay.core.ui.theme.GedoiseTheme
-import com.upsaclay.core.ui.theme.spacing
+import com.upsaclay.common.ui.theme.GedoiseTheme
+import com.upsaclay.common.ui.theme.spacing
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,7 +42,7 @@ internal fun RegistrationTopBar(
                 onClick = { navController.popBackStack() }
             ) {
                 Icon(
-                    painter = painterResource(id = com.upsaclay.core.R.drawable.ic_partial_arrow_left),
+                    painter = painterResource(id = com.upsaclay.common.R.drawable.ic_partial_arrow_left),
                     contentDescription = null
                 )
             }

@@ -24,11 +24,11 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.upsaclay.authentication.R
 import com.upsaclay.authentication.ui.components.RegistrationTopBar
-import com.upsaclay.core.data.model.Screen
-import com.upsaclay.core.ui.components.MyDropDownMenu
-import com.upsaclay.core.ui.components.PrimaryLargeButton
-import com.upsaclay.core.ui.theme.GedoiseTheme
-import com.upsaclay.core.ui.theme.spacing
+import com.upsaclay.common.data.model.Screen
+import com.upsaclay.common.ui.components.MyDropDownMenu
+import com.upsaclay.common.ui.components.PrimaryLargeButton
+import com.upsaclay.common.ui.theme.GedoiseTheme
+import com.upsaclay.common.ui.theme.spacing
 import kotlinx.collections.immutable.persistentListOf
 import org.koin.androidx.compose.koinViewModel
 
@@ -101,7 +101,7 @@ fun FirstRegistrationScreen(
             }
 
             PrimaryLargeButton(
-                text = stringResource(id = com.upsaclay.core.R.string.next),
+                text = stringResource(id = com.upsaclay.common.R.string.next),
                 onClick = {
                     registrationViewModel.updateSchoolLevel(selectedItem)
                     navController.navigate(Screen.SECOND_REGISTRATION_SCREEN.route)
@@ -174,7 +174,7 @@ private fun FirstRegistrationScreenPreview() {
                 }
 
                 PrimaryLargeButton(
-                    text = stringResource(id = com.upsaclay.core.R.string.next),
+                    text = stringResource(id = com.upsaclay.common.R.string.next),
                     onClick = {},
                     modifier = Modifier
                         .align(Alignment.BottomCenter)

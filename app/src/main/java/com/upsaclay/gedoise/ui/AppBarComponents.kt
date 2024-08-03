@@ -26,16 +26,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
-import com.upsaclay.core.data.model.Screen
-import com.upsaclay.core.ui.theme.GedoiseTheme
+import coil.compose.AsyncImage
+import com.upsaclay.common.data.model.Screen
+import com.upsaclay.common.domain.model.User
+import com.upsaclay.common.ui.theme.GedoiseTheme
 import com.upsaclay.gedoise.R
 import com.upsaclay.gedoise.data.NavigationItem
-import com.upsaclay.core.R as CoreResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainTopBar(
-    navController: NavController
+    navController: NavController,
+    user: User?
 ){
     TopAppBar(
         title = {
@@ -51,10 +53,10 @@ fun MainTopBar(
             IconButton(
                 onClick = { navController.navigate(Screen.HOME.route) }
             ) {
-                Image(
-                    painter = painterResource(id = com.upsaclay.core.R.drawable.ged_logo),
-                    contentDescription = stringResource(id = com.upsaclay.core.R.string.ged_logo_description),
-                    contentScale = ContentScale.Fit
+                AsyncImage(
+                    model = user?.profilePictureUrl,
+                    contentDescription = stringResource(id = R.string.profile_icon_description),
+                    contentScale = ContentScale.Crop
                 )
             }
         },
@@ -66,7 +68,7 @@ fun MainTopBar(
                     .background(MaterialTheme.colorScheme.surfaceVariant)
             ) {
                 Image(
-                    painter = painterResource(id = CoreResource.drawable.ic_person),
+                    painter = painterResource(id = com.upsaclay.common.R.drawable.ic_person),
                     contentDescription = stringResource(id = R.string.profile_icon_description),
                     contentScale = ContentScale.Fit
                 )
@@ -120,7 +122,19 @@ fun MainBottomBar(
 @Composable
 private fun MainTopBarPreview(){
     GedoiseTheme {
-        MainTopBar(NavController(LocalContext.current))
+        val user = User(
+            12,
+            "Pierre",
+            "Dupont",
+            "pierre.dupont@universite-paris-saclay.fr",
+            "GED 1",
+            false,
+            "https://i-mom.unimedias.fr/2020/09/16/dragon-ball-songoku.jpg?auto=format,compress&cs=tinysrgb&w=1200"
+        )
+        MainTopBar(
+            NavController(LocalContext.current),
+            user
+        )
     }
 }
 

@@ -50,16 +50,16 @@ import com.upsaclay.authentication.R
 import com.upsaclay.authentication.domain.model.AuthenticationState
 import com.upsaclay.authentication.ui.components.OutlinedEmailInput
 import com.upsaclay.authentication.ui.components.OutlinedPasswordInput
-import com.upsaclay.core.data.model.Screen
-import com.upsaclay.core.ui.components.ErrorText
-import com.upsaclay.core.ui.components.LoadingScreen
-import com.upsaclay.core.ui.components.PrimaryLargeButton
-import com.upsaclay.core.ui.theme.GedoiseColor.BackgroundVariant
-import com.upsaclay.core.ui.theme.GedoiseColor.Primary
-import com.upsaclay.core.ui.theme.GedoiseTheme
-import com.upsaclay.core.ui.theme.spacing
+import com.upsaclay.common.data.model.Screen
+import com.upsaclay.common.ui.components.ErrorText
+import com.upsaclay.common.ui.components.LoadingScreen
+import com.upsaclay.common.ui.components.PrimaryLargeButton
+import com.upsaclay.common.ui.theme.GedoiseColor.BackgroundVariant
+import com.upsaclay.common.ui.theme.GedoiseColor.Primary
+import com.upsaclay.common.ui.theme.GedoiseTheme
+import com.upsaclay.common.ui.theme.spacing
 import org.koin.androidx.compose.koinViewModel
-import com.upsaclay.core.R as CoreResource
+import com.upsaclay.common.R as CoreResource
 
 @Composable
 fun AuthenticationScreen(

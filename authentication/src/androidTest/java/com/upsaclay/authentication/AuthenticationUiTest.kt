@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import com.upsaclay.core.R as CoreResource
+import com.upsaclay.common.R as CoreResource
 
 class AuthenticationUiTest {
 

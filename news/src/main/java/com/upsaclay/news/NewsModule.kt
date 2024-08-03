@@ -1,6 +1,6 @@
 package com.upsaclay.news
 
-import com.upsaclay.core.GEDOISE_VM_1_QUALIFIER
+import com.upsaclay.common.GEDOISE_VM_1_QUALIFIER
 import com.upsaclay.news.data.remote.AnnouncementRemoteDataSource
 import com.upsaclay.news.data.remote.api.AnnouncementApi
 import com.upsaclay.news.data.repository.AnnouncementRepositoryImpl

@@ -1,6 +1,6 @@
 package com.upsaclay.authentication.domain.repository
 
-import com.upsaclay.core.domain.model.User
+import com.upsaclay.common.domain.model.User
 
 
 interface AuthenticationRepository {

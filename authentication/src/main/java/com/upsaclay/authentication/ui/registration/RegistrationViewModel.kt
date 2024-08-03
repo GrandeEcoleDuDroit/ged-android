@@ -9,8 +9,9 @@ import androidx.lifecycle.viewModelScope
 import com.upsaclay.authentication.domain.model.RegistrationState
 import com.upsaclay.authentication.domain.usecase.IsAccountExistUseCase
 import com.upsaclay.authentication.domain.usecase.RegistrationUseCase
-import com.upsaclay.core.domain.model.User
-import com.upsaclay.core.domain.usecase.GetDrawableUriUseCase
+import com.upsaclay.common.domain.model.User
+import com.upsaclay.common.domain.usecase.GetDrawableUriUseCase
+import com.upsaclay.common.utils.formatProfilePictureUrl
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -35,8 +36,8 @@ class RegistrationViewModel(
     var currentSchoolLevel by mutableStateOf(schoolLevels[0])
         private set
     val defaultPictureUri =
-        getDrawableUriUseCase(com.upsaclay.core.R.drawable.default_profile_picture)
-    var profilePictureUri by mutableStateOf(defaultPictureUri)
+        getDrawableUriUseCase(com.upsaclay.common.R.drawable.default_profile_picture)!!
+    var profilePictureUri: Uri by mutableStateOf(defaultPictureUri)
         private set
     var fullName by mutableStateOf("")
         private set
@@ -106,11 +107,12 @@ class RegistrationViewModel(
             lastName = fullName.split(" ")[1],
             email = email,
             schoolLevel = currentSchoolLevel,
-            isMember = false
+            isMember = false,
+            profilePictureUrl = formatProfilePictureUrl(userId = -1)
         )
 
         viewModelScope.launch {
-            val result = registrationUseCase(user)
+            val result = registrationUseCase(user, profilePictureUri)
             if (result.isSuccess) {
                 _registrationState.value = RegistrationState.REGISTERED
             } else {

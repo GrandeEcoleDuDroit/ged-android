@@ -29,12 +29,12 @@ import com.upsaclay.authentication.domain.model.RegistrationState
 import com.upsaclay.authentication.ui.components.OutlinedEmailInput
 import com.upsaclay.authentication.ui.components.OutlinedPasswordInput
 import com.upsaclay.authentication.ui.components.RegistrationTopBar
-import com.upsaclay.core.data.model.Screen
-import com.upsaclay.core.ui.components.ErrorText
-import com.upsaclay.core.ui.components.LoadingScreen
-import com.upsaclay.core.ui.components.PrimaryLargeButton
-import com.upsaclay.core.ui.theme.GedoiseTheme
-import com.upsaclay.core.ui.theme.spacing
+import com.upsaclay.common.data.model.Screen
+import com.upsaclay.common.ui.components.ErrorText
+import com.upsaclay.common.ui.components.LoadingScreen
+import com.upsaclay.common.ui.components.PrimaryLargeButton
+import com.upsaclay.common.ui.theme.GedoiseTheme
+import com.upsaclay.common.ui.theme.spacing
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -66,7 +66,7 @@ fun SecondRegistrationScreen(
             stringResource(id = R.string.unrecognized_account)
 
         RegistrationState.ERROR_INPUT ->
-            stringResource(id = com.upsaclay.core.R.string.error_empty_fields)
+            stringResource(id = com.upsaclay.common.R.string.error_empty_fields)
 
         else -> ""
     }
@@ -125,7 +125,7 @@ fun SecondRegistrationScreen(
             }
 
             PrimaryLargeButton(
-                text = stringResource(id = com.upsaclay.core.R.string.next),
+                text = stringResource(id = com.upsaclay.common.R.string.next),
                 onClick = {
                     keyboardController?.hide()
                     registrationViewModel.verifyAccount(
@@ -195,7 +195,7 @@ private fun SecondRegistrationScreenPreview() {
                 }
 
                 PrimaryLargeButton(
-                    text = stringResource(id = com.upsaclay.core.R.string.next),
+                    text = stringResource(id = com.upsaclay.common.R.string.next),
                     onClick = { },
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
