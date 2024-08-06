@@ -11,10 +11,6 @@ class AuthenticationRemoteDataSource(
         password: String,
         hash: String
     ): Response<ServerResponse.EmptyServerResponse> {
-        return authenticationParisSaclayApi.login(
-            username = email,
-            password = password,
-            hash = hash
-        )
+        return authenticationParisSaclayApi.login(email, password, hash)
     }
 }

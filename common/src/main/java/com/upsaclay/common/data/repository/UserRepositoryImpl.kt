@@ -16,11 +16,13 @@ internal class UserRepositoryImpl(
     override suspend fun createUser(user: User): Result<Int> {
         val response = userRemoteDataSource.createUser(user.toDTO())
 
-        return if (response.isSuccessful) {
+        return if (response.isSuccessful && response.body()?.data != null) {
             infoLog(response.body()?.message ?: "User created successfully !")
-            userLocalDataSource.storeCurrentUser(user.toDTO())
-            Result.success(response.body()?.data ?: -1)
-        } else {
+            val userId = response.body()!!.data
+            userLocalDataSource.createCurrentUser(user.copy(id = userId).toDTO())
+            Result.success(userId)
+        }
+        else {
             val errorMessage = formatHttpError(response.message(), response.errorBody()?.string())
             errorLog(errorMessage)
             Result.failure(IOException(errorMessage))
@@ -31,5 +33,19 @@ internal class UserRepositoryImpl(
         return userLocalDataSource.getCurrentUser()?.let {
             User.fromDTO(it)
         } ?: throw IllegalStateException("Current user not found")
+    }
+
+    override suspend fun updateProfilePictureUrl(userId: Int, profilePictureUrl: String): Result<Unit> {
+        val response = userRemoteDataSource.updateProfilePictureUrl(userId, profilePictureUrl)
+        return if (response.isSuccessful) {
+            infoLog("Profile picture updated successfully !")
+            userLocalDataSource.updateProfilePictureUrl(profilePictureUrl)
+            Result.success(Unit)
+        }
+        else {
+            val errorMessage = formatHttpError(response.message(), response.errorBody()?.string())
+            errorLog(errorMessage)
+            Result.failure(IOException(errorMessage))
+        }
     }
 }

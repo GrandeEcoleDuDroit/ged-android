@@ -26,7 +26,6 @@ import com.upsaclay.gedoise.data.NavigationItem
 import com.upsaclay.news.ui.NewsScreen
 import org.koin.androidx.compose.koinViewModel
 
-
 @Composable
 fun Navigation(
     mainViewModel: MainViewModel = koinViewModel()
@@ -123,7 +122,7 @@ fun Navigation(
 private fun MainNavigationBars(
     navController: NavController,
     navigationItems: List<NavigationItem>,
-    user: User?,
+    user: User,
     content: @Composable () -> Unit
 ){
     Scaffold(

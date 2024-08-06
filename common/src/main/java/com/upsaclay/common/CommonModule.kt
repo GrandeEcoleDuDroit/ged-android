@@ -1,17 +1,22 @@
 package com.upsaclay.common
 
+import com.upsaclay.common.data.local.UserDataStore
 import com.upsaclay.common.data.local.UserLocalDataSource
 import com.upsaclay.common.data.remote.UserRemoteDataSource
 import com.upsaclay.common.data.remote.api.ImageRemoteApi
 import com.upsaclay.common.data.remote.api.UserRemoteApi
 import com.upsaclay.common.data.repository.DrawableRepositoryImpl
+import com.upsaclay.common.data.repository.FileRepositoryImpl
 import com.upsaclay.common.data.repository.ImageRepositoryImpl
 import com.upsaclay.common.data.repository.UserRepositoryImpl
 import com.upsaclay.common.domain.repository.DrawableRepository
+import com.upsaclay.common.domain.repository.FileRepository
 import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.DownloadImageOracleBucketUseCase
 import com.upsaclay.common.domain.usecase.GetCurrentUser
+import com.upsaclay.common.domain.usecase.GetDrawableUriUseCase
+import com.upsaclay.common.domain.usecase.UpdateProfilePictureUseCase
 import com.upsaclay.common.domain.usecase.UploadImageOracleBucketUseCase
 import okhttp3.OkHttpClient
 import org.koin.core.module.dsl.bind
@@ -54,14 +59,18 @@ val coreModule = module {
         get<Retrofit>(qualifier = named(GEDOISE_VM_1_QUALIFIER)).create(UserRemoteApi::class.java)
     }
 
-    singleOf(::ImageRepositoryImpl) { bind<ImageRepository>() }
     singleOf(::DrawableRepositoryImpl) { bind<DrawableRepository>() }
+    singleOf(::FileRepositoryImpl) { bind<FileRepository>() }
+    singleOf(::ImageRepositoryImpl) { bind<ImageRepository>() }
 
     singleOf(::UserRepositoryImpl) { bind<UserRepository>() }
     singleOf(::UserRemoteDataSource)
     singleOf(::UserLocalDataSource)
+    singleOf(::UserDataStore)
 
-    singleOf(::UploadImageOracleBucketUseCase)
     singleOf(::DownloadImageOracleBucketUseCase)
     singleOf(::GetCurrentUser)
+    singleOf(::GetDrawableUriUseCase)
+    singleOf(::UpdateProfilePictureUseCase)
+    singleOf(::UploadImageOracleBucketUseCase)
 }

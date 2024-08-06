@@ -6,4 +6,6 @@ interface UserRepository {
     suspend fun createUser(user: User): Result<Int>
 
     suspend fun getCurrentUser(): User
+
+    suspend fun updateProfilePictureUrl(userId: Int, profilePictureUrl: String): Result<Unit>
 }

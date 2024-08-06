@@ -11,19 +11,21 @@ import com.upsaclay.authentication.domain.usecase.IsAccountExistUseCase
 import com.upsaclay.authentication.domain.usecase.RegistrationUseCase
 import com.upsaclay.common.domain.model.User
 import com.upsaclay.common.domain.usecase.GetDrawableUriUseCase
-import com.upsaclay.common.utils.formatProfilePictureUrl
+import com.upsaclay.common.domain.usecase.UpdateProfilePictureUseCase
+import com.upsaclay.common.utils.errorLog
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-internal const val MAX_STEP = 3
+internal const val MAX_REGISTRATION_STEP = 3
 
 class RegistrationViewModel(
-    private val isAccountExistUseCase: IsAccountExistUseCase,
     getDrawableUriUseCase: GetDrawableUriUseCase,
+    private val isAccountExistUseCase: IsAccountExistUseCase,
     private val registrationUseCase: RegistrationUseCase,
+    private val updateProfilePictureUseCase: UpdateProfilePictureUseCase
 ) : ViewModel() {
 
     private val _registrationState = MutableStateFlow(RegistrationState.NOT_REGISTERED)
@@ -102,20 +104,23 @@ class RegistrationViewModel(
         _registrationState.value = RegistrationState.LOADING
 
         val user = User(
-            id = -1,
             firstName = fullName.split(" ")[0],
             lastName = fullName.split(" ")[1],
             email = email,
-            schoolLevel = currentSchoolLevel,
-            isMember = false,
-            profilePictureUrl = formatProfilePictureUrl(userId = -1)
+            schoolLevel = currentSchoolLevel
         )
 
         viewModelScope.launch {
-            val result = registrationUseCase(user, profilePictureUri)
-            if (result.isSuccess) {
+            val registrationResult = registrationUseCase(user)
+            if(registrationResult.isSuccess) {
+                val userId = registrationResult.getOrNull()
+                userId?.let {
+                    updateProfilePictureUseCase(it, profilePictureUri)
+                } ?: errorLog("Cannot update profile picture because user id is null")
+                
                 _registrationState.value = RegistrationState.REGISTERED
-            } else {
+            }
+            else {
                 _registrationState.value = RegistrationState.ERROR_REGISTRATION
             }
         }

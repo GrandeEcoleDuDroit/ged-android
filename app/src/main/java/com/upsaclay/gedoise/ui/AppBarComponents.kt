@@ -1,7 +1,6 @@
 package com.upsaclay.gedoise.ui
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Badge
@@ -26,10 +25,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
 import com.upsaclay.common.data.model.Screen
 import com.upsaclay.common.domain.model.User
 import com.upsaclay.common.ui.theme.GedoiseTheme
+import com.upsaclay.common.utils.userFixture
 import com.upsaclay.gedoise.R
 import com.upsaclay.gedoise.data.NavigationItem
 
@@ -37,8 +37,10 @@ import com.upsaclay.gedoise.data.NavigationItem
 @Composable
 fun MainTopBar(
     navController: NavController,
-    user: User?
+    user: User
 ){
+    val profilePictureIcon = rememberAsyncImagePainter(user.profilePictureUrl)
+
     TopAppBar(
         title = {
             Text(
@@ -53,10 +55,10 @@ fun MainTopBar(
             IconButton(
                 onClick = { navController.navigate(Screen.HOME.route) }
             ) {
-                AsyncImage(
-                    model = user?.profilePictureUrl,
-                    contentDescription = stringResource(id = R.string.profile_icon_description),
-                    contentScale = ContentScale.Crop
+                Image(
+                    painter = painterResource(id = com.upsaclay.common.R.drawable.ged_logo),
+                    contentDescription = stringResource(id = com.upsaclay.common.R.string.ged_logo_description),
+                    contentScale = ContentScale.Fit
                 )
             }
         },
@@ -65,10 +67,9 @@ fun MainTopBar(
                 onClick = { navController.navigate(Screen.PROFILE.route) },
                 modifier = Modifier
                     .clip(shape = CircleShape)
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
             ) {
                 Image(
-                    painter = painterResource(id = com.upsaclay.common.R.drawable.ic_person),
+                    painter = profilePictureIcon,
                     contentDescription = stringResource(id = R.string.profile_icon_description),
                     contentScale = ContentScale.Fit
                 )
@@ -122,18 +123,9 @@ fun MainBottomBar(
 @Composable
 private fun MainTopBarPreview(){
     GedoiseTheme {
-        val user = User(
-            12,
-            "Pierre",
-            "Dupont",
-            "pierre.dupont@universite-paris-saclay.fr",
-            "GED 1",
-            false,
-            "https://i-mom.unimedias.fr/2020/09/16/dragon-ball-songoku.jpg?auto=format,compress&cs=tinysrgb&w=1200"
-        )
         MainTopBar(
             NavController(LocalContext.current),
-            user
+            userFixture
         )
     }
 }
