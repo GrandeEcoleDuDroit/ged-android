@@ -1,7 +1,6 @@
 package com.upsaclay.gedoise.ui
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Badge
@@ -26,17 +25,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
-import com.upsaclay.core.data.model.Screen
-import com.upsaclay.core.ui.theme.GedoiseTheme
+import coil.compose.rememberAsyncImagePainter
+import com.upsaclay.common.data.model.Screen
+import com.upsaclay.common.domain.model.User
+import com.upsaclay.common.ui.theme.GedoiseTheme
+import com.upsaclay.common.utils.userFixture
 import com.upsaclay.gedoise.R
 import com.upsaclay.gedoise.data.NavigationItem
-import com.upsaclay.core.R as CoreResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainTopBar(
-    navController: NavController
+    navController: NavController,
+    user: User
 ){
+    val profilePictureIcon = rememberAsyncImagePainter(user.profilePictureUrl)
+
     TopAppBar(
         title = {
             Text(
@@ -52,8 +56,8 @@ fun MainTopBar(
                 onClick = { navController.navigate(Screen.HOME.route) }
             ) {
                 Image(
-                    painter = painterResource(id = com.upsaclay.core.R.drawable.ged_logo),
-                    contentDescription = stringResource(id = com.upsaclay.core.R.string.ged_logo_description),
+                    painter = painterResource(id = com.upsaclay.common.R.drawable.ged_logo),
+                    contentDescription = stringResource(id = com.upsaclay.common.R.string.ged_logo_description),
                     contentScale = ContentScale.Fit
                 )
             }
@@ -63,10 +67,9 @@ fun MainTopBar(
                 onClick = { navController.navigate(Screen.PROFILE.route) },
                 modifier = Modifier
                     .clip(shape = CircleShape)
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
             ) {
                 Image(
-                    painter = painterResource(id = CoreResource.drawable.ic_person),
+                    painter = profilePictureIcon,
                     contentDescription = stringResource(id = R.string.profile_icon_description),
                     contentScale = ContentScale.Fit
                 )
@@ -120,7 +123,10 @@ fun MainBottomBar(
 @Composable
 private fun MainTopBarPreview(){
     GedoiseTheme {
-        MainTopBar(NavController(LocalContext.current))
+        MainTopBar(
+            NavController(LocalContext.current),
+            userFixture
+        )
     }
 }
 

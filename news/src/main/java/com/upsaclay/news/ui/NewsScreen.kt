@@ -25,11 +25,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import com.upsaclay.core.domain.model.User
-import com.upsaclay.core.ui.components.PullToRefreshComponent
-import com.upsaclay.core.ui.components.StandardWebView
-import com.upsaclay.core.ui.theme.GedoiseTheme
-import com.upsaclay.core.ui.theme.spacing
+import com.upsaclay.common.domain.model.User
+import com.upsaclay.common.ui.components.PullToRefreshComponent
+import com.upsaclay.common.ui.components.StandardWebView
+import com.upsaclay.common.ui.theme.GedoiseTheme
+import com.upsaclay.common.ui.theme.spacing
 import com.upsaclay.news.R
 import com.upsaclay.news.data.model.Announcement
 import org.koin.androidx.compose.koinViewModel
@@ -190,7 +190,8 @@ internal val announcementFixture = Announcement(
         lastName = "Dupont",
         email = "patrick.dupont@example.com",
         schoolLevel = "GED 1",
-        isMember = false
+        isMember = false,
+        profilePictureUrl = "https://i-mom.unimedias.fr/2020/09/16/dragon-ball-songoku.jpg?auto=format,compress&cs=tinysrgb&w=1200"
     )
 )
 

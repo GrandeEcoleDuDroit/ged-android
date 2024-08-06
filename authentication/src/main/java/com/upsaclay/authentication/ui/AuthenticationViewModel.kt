@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upsaclay.authentication.domain.model.AuthenticationState
 import com.upsaclay.authentication.domain.usecase.LoginUseCase
-import com.upsaclay.core.utils.errorLog
+import com.upsaclay.common.utils.errorLog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

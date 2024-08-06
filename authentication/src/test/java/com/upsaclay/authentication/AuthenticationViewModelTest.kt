@@ -5,7 +5,6 @@ import com.upsaclay.authentication.domain.usecase.IsAuthenticatedUseCase
 import com.upsaclay.authentication.domain.usecase.LoginUseCase
 import com.upsaclay.authentication.ui.AuthenticationViewModel
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -42,7 +41,7 @@ class AuthenticationViewModelTest : KoinTest {
         coEvery {
             loginUseCase(any(), any())
         } returns Result.success(AuthenticationState.AUTHENTICATED)
-        every { isAuthenticatedUseCase() } returns false
+        coEvery { isAuthenticatedUseCase() } returns false
     }
 
     @After
@@ -60,7 +59,7 @@ class AuthenticationViewModelTest : KoinTest {
 
     @Test
     fun authentication_state_is_authenticated_when_preference_is_true() {
-        every { isAuthenticatedUseCase() } returns true
+        coEvery { isAuthenticatedUseCase() } returns true
         assertEquals(
             authenticationViewModel.authenticationState.value,
             AuthenticationState.AUTHENTICATED

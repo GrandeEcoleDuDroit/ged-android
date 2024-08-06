@@ -26,9 +26,9 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.upsaclay.core.R
-import com.upsaclay.core.ui.theme.GedoiseColor
-import com.upsaclay.core.ui.theme.GedoiseTheme
+import com.upsaclay.common.R
+import com.upsaclay.common.ui.theme.GedoiseColor
+import com.upsaclay.common.ui.theme.GedoiseTheme
 
 @Composable
 fun OutlinedEmailInput(

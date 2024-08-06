@@ -2,7 +2,7 @@ package com.upsaclay.gedoise
 
 import android.app.Application
 import com.upsaclay.authentication.authenticationModule
-import com.upsaclay.core.coreModule
+import com.upsaclay.common.coreModule
 import com.upsaclay.news.newsModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
