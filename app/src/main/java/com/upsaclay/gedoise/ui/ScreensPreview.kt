@@ -9,7 +9,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import com.upsaclay.common.ui.theme.GedoiseTheme
-import com.upsaclay.common.utils.userFixture
 import com.upsaclay.gedoise.data.NavigationItem
 import com.upsaclay.news.ui.NewsScreenPreview
 
@@ -32,10 +31,7 @@ private fun NewsScreenWithNavbarPreview(){
     GedoiseTheme {
         Scaffold(
             topBar = {
-                MainTopBar(
-                    navController = NavController(LocalContext.current),
-                    userFixture
-                    )
+                MainTopBarPreview()
             },
             bottomBar = {
                 MainBottomBar (

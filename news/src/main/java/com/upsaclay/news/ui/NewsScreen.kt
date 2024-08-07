@@ -27,7 +27,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.upsaclay.common.domain.model.User
 import com.upsaclay.common.ui.components.PullToRefreshComponent
-import com.upsaclay.common.ui.components.StandardWebView
 import com.upsaclay.common.ui.theme.GedoiseTheme
 import com.upsaclay.common.ui.theme.spacing
 import com.upsaclay.news.R
@@ -62,7 +61,9 @@ fun NewsScreen(
                 announcements = announcements.value,
                 modifier = modifier.padding(horizontal = MaterialTheme.spacing.medium)
             )
-            Spacer(modifier = modifier.height(MaterialTheme.spacing.medium))
+
+            Spacer(modifier = modifier.height(MaterialTheme.spacing.large))
+
             PostSection(modifier = modifier
                 .padding(horizontal = MaterialTheme.spacing.medium)
             )
@@ -109,14 +110,14 @@ private fun PostSection(modifier: Modifier = Modifier){
             text = stringResource(id = com.upsaclay.news.R.string.news_ged),
             style = MaterialTheme.typography.titleMedium,
         )
-        Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+        Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
         Box(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
+                .background(Color.White),
+            contentAlignment = Alignment.Center
         ){
-            StandardWebView(
-                url = URL_BLOGSPOT,
-            )
+            Text(text = "POST SECTION")
         }
     }
 }
@@ -145,10 +146,10 @@ fun NewsScreenPreview(){
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(Color.LightGray),
+                            .background(Color.White),
                         contentAlignment = Alignment.Center
                     ){
-                        Text(text = "WEB VIEW")
+                        Text(text = "POST SECTION")
                     }
                 }
             }

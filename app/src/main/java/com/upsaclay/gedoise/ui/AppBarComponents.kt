@@ -1,6 +1,7 @@
 package com.upsaclay.gedoise.ui
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Badge
@@ -17,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -24,12 +26,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.upsaclay.common.data.model.Screen
 import com.upsaclay.common.domain.model.User
 import com.upsaclay.common.ui.theme.GedoiseTheme
-import com.upsaclay.common.utils.userFixture
 import com.upsaclay.gedoise.R
 import com.upsaclay.gedoise.data.NavigationItem
 
@@ -40,7 +42,6 @@ fun MainTopBar(
     user: User
 ){
     val profilePictureIcon = rememberAsyncImagePainter(user.profilePictureUrl)
-
     TopAppBar(
         title = {
             Text(
@@ -58,7 +59,7 @@ fun MainTopBar(
                 Image(
                     painter = painterResource(id = com.upsaclay.common.R.drawable.ged_logo),
                     contentDescription = stringResource(id = com.upsaclay.common.R.string.ged_logo_description),
-                    contentScale = ContentScale.Fit
+                    contentScale = ContentScale.Fit,
                 )
             }
         },
@@ -71,7 +72,8 @@ fun MainTopBar(
                 Image(
                     painter = profilePictureIcon,
                     contentDescription = stringResource(id = R.string.profile_icon_description),
-                    contentScale = ContentScale.Fit
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier.border(1.dp, Color.LightGray, CircleShape)
                 )
             }
         }
@@ -119,13 +121,46 @@ fun MainBottomBar(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
-private fun MainTopBarPreview(){
+internal fun MainTopBarPreview(){
     GedoiseTheme {
-        MainTopBar(
-            NavController(LocalContext.current),
-            userFixture
+        TopAppBar(
+            title = {
+                Text(
+                    text = stringResource(id = R.string.school_name),
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            },
+            navigationIcon = {
+                IconButton(
+                    onClick = { }
+                ) {
+                    Image(
+                        painter = painterResource(id = com.upsaclay.common.R.drawable.ged_logo),
+                        contentDescription = stringResource(id = com.upsaclay.common.R.string.ged_logo_description),
+                        contentScale = ContentScale.Fit
+                    )
+                }
+            },
+            actions = {
+                IconButton(
+                    onClick = { },
+                    modifier = Modifier
+                        .clip(shape = CircleShape)
+                ) {
+                    Image(
+                        painter = painterResource(id = com.upsaclay.common.R.drawable.default_profile_picture),
+                        contentDescription = stringResource(id = R.string.profile_icon_description),
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier.border(1.dp, Color.LightGray, CircleShape)
+                    )
+                }
+            }
         )
     }
 }
