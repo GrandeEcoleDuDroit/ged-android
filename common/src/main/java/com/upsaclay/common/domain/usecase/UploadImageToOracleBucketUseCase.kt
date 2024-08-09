@@ -4,7 +4,7 @@ import android.net.Uri
 import com.upsaclay.common.domain.repository.FileRepository
 import com.upsaclay.common.domain.repository.ImageRepository
 
-class UploadImageOracleBucketUseCase(
+class UploadImageToOracleBucketUseCase(
     private val imageRepository: ImageRepository,
     private val fileRepository: FileRepository
 ) {

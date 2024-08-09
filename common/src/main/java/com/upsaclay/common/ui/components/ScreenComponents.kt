@@ -17,7 +17,7 @@ import com.upsaclay.common.ui.theme.GedoiseTheme
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun LoadingScreen(){
+fun OverlayLoadingScreen(){
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -25,7 +25,7 @@ fun LoadingScreen(){
             .zIndex(1f)
             .pointerInteropFilter { true }
     ){
-        InfiniteCircularProgressIndicator(
+        CircularProgressBar(
             modifier = Modifier
                 .align(Alignment.Center)
                 .size(70.dp)
@@ -37,6 +37,6 @@ fun LoadingScreen(){
 @Preview
 fun LoadingScreenPreview(){
     GedoiseTheme {
-        LoadingScreen()
+        OverlayLoadingScreen()
     }
 }

@@ -1,6 +1,5 @@
 package com.upsaclay.authentication.domain.usecase
 
-import com.upsaclay.authentication.domain.repository.AuthenticationRepository
 import com.upsaclay.common.domain.model.User
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.utils.errorLog
@@ -8,19 +7,17 @@ import com.upsaclay.common.utils.infoLog
 
 class RegistrationUseCase(
     private val userRepository: UserRepository,
-    private val authenticationRepository: AuthenticationRepository,
 ) {
     suspend operator fun invoke(user: User): Result<Int> {
-        val createUserResult = userRepository.createUser(user)
+        val result = userRepository.createUser(user)
 
-        return if(createUserResult.isSuccess) {
+        return if(result.isSuccess) {
             infoLog("Registration successful")
-            authenticationRepository.setAuthenticated()
-            createUserResult
+            result
         }
         else {
-            errorLog("Error registration" ,createUserResult.exceptionOrNull())
-            Result.failure(createUserResult.exceptionOrNull()!!)
+            errorLog("Error registration" ,result.exceptionOrNull())
+            Result.failure(result.exceptionOrNull()!!)
         }
     }
 }

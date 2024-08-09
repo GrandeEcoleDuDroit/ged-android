@@ -7,6 +7,8 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.upsaclay.common.utils.getValue
 import com.upsaclay.common.utils.setValue
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class AuthenticationLocalDataSource(
     context: Context
@@ -15,13 +17,15 @@ class AuthenticationLocalDataSource(
     private val store = context.dataStore
     private val authenticationKey = booleanPreferencesKey("authenticationKey")
 
-    suspend fun setAuthenticated() {
+    suspend fun setAuthenticated() = withContext(Dispatchers.IO) {
         store.setValue(authenticationKey, true)
     }
 
-    suspend fun setUnauthenticated() {
+    suspend fun setUnauthenticated() = withContext(Dispatchers.IO) {
         store.setValue(authenticationKey, false)
     }
 
-    suspend fun isAuthenticated(): Boolean = store.getValue(authenticationKey) ?: false
+    suspend fun isAuthenticated(): Boolean = withContext(Dispatchers.IO) {
+        store.getValue(authenticationKey) ?: false
+    }
 }

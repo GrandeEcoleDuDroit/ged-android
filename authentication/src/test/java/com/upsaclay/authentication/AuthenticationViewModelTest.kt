@@ -1,12 +1,13 @@
 package com.upsaclay.authentication
 
 import com.upsaclay.authentication.domain.model.AuthenticationState
-import com.upsaclay.authentication.domain.usecase.IsAuthenticatedUseCase
+import com.upsaclay.authentication.domain.usecase.IsAuthenticatedFlowUseCase
 import com.upsaclay.authentication.domain.usecase.LoginUseCase
 import com.upsaclay.authentication.ui.AuthenticationViewModel
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -23,13 +24,13 @@ import kotlin.test.assertEquals
 class AuthenticationViewModelTest : KoinTest {
     private val authenticationViewModel: AuthenticationViewModel by inject()
     private val loginUseCase: LoginUseCase by inject()
-    private val isAuthenticatedUseCase: IsAuthenticatedUseCase by inject()
+    private val isAuthenticatedFlowUseCase: IsAuthenticatedFlowUseCase by inject()
 
     companion object {
         private val testModule: Module = module {
             singleOf(::AuthenticationViewModel)
             single { mockk<LoginUseCase>() }
-            single { mockk<IsAuthenticatedUseCase>() }
+            single { mockk<IsAuthenticatedFlowUseCase>() }
         }
     }
 
@@ -41,7 +42,7 @@ class AuthenticationViewModelTest : KoinTest {
         coEvery {
             loginUseCase(any(), any())
         } returns Result.success(AuthenticationState.AUTHENTICATED)
-        coEvery { isAuthenticatedUseCase() } returns false
+        coEvery { isAuthenticatedFlowUseCase() } returns flowOf(false)
     }
 
     @After
@@ -59,7 +60,7 @@ class AuthenticationViewModelTest : KoinTest {
 
     @Test
     fun authentication_state_is_authenticated_when_preference_is_true() {
-        coEvery { isAuthenticatedUseCase() } returns true
+        coEvery { isAuthenticatedFlowUseCase() } returns flowOf(true)
         assertEquals(
             authenticationViewModel.authenticationState.value,
             AuthenticationState.AUTHENTICATED

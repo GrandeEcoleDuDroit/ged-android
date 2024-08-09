@@ -27,7 +27,7 @@ import com.upsaclay.authentication.ui.components.OutlinedPasswordInput
 import com.upsaclay.authentication.ui.components.RegistrationTopBar
 import com.upsaclay.common.data.model.Screen
 import com.upsaclay.common.ui.components.ErrorText
-import com.upsaclay.common.ui.components.LoadingScreen
+import com.upsaclay.common.ui.components.OverlayLoadingScreen
 import com.upsaclay.common.ui.components.PrimaryLargeButton
 import com.upsaclay.common.ui.theme.GedoiseTheme
 import com.upsaclay.common.ui.theme.spacing
@@ -122,7 +122,7 @@ fun SecondRegistrationScreen(
     }
 
     if(registrationState == RegistrationState.LOADING) {
-        LoadingScreen()
+        OverlayLoadingScreen()
     }
 }
 
@@ -172,6 +172,6 @@ private fun SecondRegistrationScreenPreview() {
     }
 
     if(isLoading) {
-        LoadingScreen()
+        OverlayLoadingScreen()
     }
 }

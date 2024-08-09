@@ -11,7 +11,7 @@ import com.upsaclay.authentication.domain.usecase.IsAccountExistUseCase
 import com.upsaclay.authentication.domain.usecase.RegistrationUseCase
 import com.upsaclay.common.domain.model.User
 import com.upsaclay.common.domain.usecase.GetDrawableUriUseCase
-import com.upsaclay.common.domain.usecase.UpdateProfilePictureUseCase
+import com.upsaclay.common.domain.usecase.UpdateUserProfilePictureUseCase
 import com.upsaclay.common.utils.errorLog
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +25,7 @@ class RegistrationViewModel(
     getDrawableUriUseCase: GetDrawableUriUseCase,
     private val isAccountExistUseCase: IsAccountExistUseCase,
     private val registrationUseCase: RegistrationUseCase,
-    private val updateProfilePictureUseCase: UpdateProfilePictureUseCase
+    private val updateUserProfilePictureUseCase: UpdateUserProfilePictureUseCase
 ) : ViewModel() {
 
     private val _registrationState = MutableStateFlow(RegistrationState.NOT_REGISTERED)
@@ -115,7 +115,7 @@ class RegistrationViewModel(
             if(registrationResult.isSuccess) {
                 val userId = registrationResult.getOrNull()
                 userId?.let {
-                    updateProfilePictureUseCase(it, profilePictureUri)
+                    updateUserProfilePictureUseCase(it, profilePictureUri)
                 } ?: errorLog("Cannot update profile picture because user id is null")
                 
                 _registrationState.value = RegistrationState.REGISTERED

@@ -81,18 +81,20 @@ private fun ShortRecentAnnouncementSection(
         style = MaterialTheme.typography.titleMedium,
         modifier = modifier
     )
-    Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+
+    Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+
     LazyColumn {
         if (announcements.isEmpty()) {
             item {
-                    Text(
-                        text = stringResource(id = R.string.no_announcement),
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
-                    )
-                }
+                Text(
+                    text = stringResource(id = R.string.no_announcement),
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
             }
+        }
         else {
             items(announcements) { announcement ->
                 ShortAnnouncementCard(
@@ -130,6 +132,7 @@ fun NewsScreenPreview(){
             onRefresh = { },
         ) {
             Column(modifier = Modifier.padding(vertical = MaterialTheme.spacing.medium)) {
+
                 ShortRecentAnnouncementSection(
                     announcements = announcementItemsFixture,
                     Modifier.padding(horizontal = MaterialTheme.spacing.medium)

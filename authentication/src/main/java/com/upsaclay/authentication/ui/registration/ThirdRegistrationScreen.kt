@@ -34,7 +34,7 @@ import com.upsaclay.authentication.domain.model.RegistrationState
 import com.upsaclay.authentication.ui.components.RegistrationTopBar
 import com.upsaclay.common.data.model.Screen
 import com.upsaclay.common.ui.components.ErrorText
-import com.upsaclay.common.ui.components.LoadingScreen
+import com.upsaclay.common.ui.components.OverlayLoadingScreen
 import com.upsaclay.common.ui.components.PrimaryLargeButton
 import com.upsaclay.common.ui.theme.GedoiseTheme
 import com.upsaclay.common.ui.theme.spacing
@@ -133,7 +133,7 @@ fun ThirdRegistrationScreen(
         )
 
         if (registrationState == RegistrationState.LOADING) {
-            LoadingScreen()
+            OverlayLoadingScreen()
         }
     }
 }
@@ -215,7 +215,7 @@ fun ThirdRegistrationScreenPreview() {
             )
         }
         if (isLoading) {
-            LoadingScreen()
+            OverlayLoadingScreen()
         }
     }
 }

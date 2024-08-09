@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,6 +24,7 @@ import com.upsaclay.authentication.ui.registration.ThirdRegistrationScreen
 import com.upsaclay.common.data.model.Screen
 import com.upsaclay.common.domain.model.User
 import com.upsaclay.gedoise.data.NavigationItem
+import com.upsaclay.gedoise.ui.profile.ProfileScreen
 import com.upsaclay.news.ui.NewsScreen
 import org.koin.androidx.compose.koinViewModel
 
@@ -31,23 +33,23 @@ fun Navigation(
     mainViewModel: MainViewModel = koinViewModel()
 ) {
     val navController = rememberNavController()
-    val navigationItems by mainViewModel.navigationItem.collectAsState()
-    val isAuthenticated by mainViewModel.isAuthenticated.collectAsState()
     val sharedRegistrationViewModel: RegistrationViewModel = koinViewModel()
-    var startDestination by remember { mutableStateOf<String?>(null) }
+    val user by mainViewModel.user.collectAsState(initial = null)
+    var startDestination: String? by remember { mutableStateOf(null) }
 
-    isAuthenticated?.let {
-        startDestination = if (it) {
-            Screen.HOME.route
-        } else {
-            Screen.AUTHENTICATION.route
+    LaunchedEffect(mainViewModel.isAuthenticated) {
+        mainViewModel.isAuthenticated.collect {
+            startDestination = if(it)
+                Screen.HOME.route
+            else
+                Screen.AUTHENTICATION.route
         }
     }
 
-    startDestination?.let { destination ->
+    startDestination?.let {
         NavHost(
             navController = navController,
-            startDestination = destination
+            startDestination = it
         ) {
             composable(Screen.AUTHENTICATION.route) {
                 AuthenticationScreen(navController = navController)
@@ -68,8 +70,8 @@ fun Navigation(
             composable(Screen.HOME.route) {
                 MainNavigationBars(
                     navController = navController,
-                    navigationItems.values.toList(),
-                    mainViewModel.currentUser
+                    mainViewModel.navigationItem.values.toList(),
+                    user!!
                 ) {
                     NewsScreen()
                 }
@@ -78,8 +80,8 @@ fun Navigation(
             composable(Screen.MESSAGE.route) {
                 MainNavigationBars(
                     navController = navController,
-                    navigationItems.values.toList(),
-                    mainViewModel.currentUser
+                    mainViewModel.navigationItem.values.toList(),
+                    user!!
                 ) {
                     Text(text = "Message")
                 }
@@ -88,8 +90,8 @@ fun Navigation(
             composable(Screen.CALENDAR.route) {
                 MainNavigationBars(
                     navController = navController,
-                    navigationItems.values.toList(),
-                    mainViewModel.currentUser
+                    mainViewModel.navigationItem.values.toList(),
+                    user!!
                 ) {
                     Text(text = "Calendar")
                 }
@@ -98,21 +100,15 @@ fun Navigation(
             composable(Screen.FORUM.route) {
                 MainNavigationBars(
                     navController = navController,
-                    navigationItems.values.toList(),
-                    mainViewModel.currentUser
+                    mainViewModel.navigationItem.values.toList(),
+                    user!!
                 ) {
                     Text(text = "Forum")
                 }
             }
 
             composable(Screen.PROFILE.route) {
-                MainNavigationBars(
-                    navController = navController,
-                    navigationItems.values.toList(),
-                    mainViewModel.currentUser
-                ) {
-                    Text(text = "Profile")
-                }
+                ProfileScreen(navController = navController)
             }
         }
     }

@@ -9,5 +9,5 @@ enum class Screen(val route: String) {
     MESSAGE("message_screen"),
     CALENDAR( "calendar_screen"),
     FORUM( "forum_screen"),
-    PROFILE("profile_screen")
+    PROFILE("profile_screen"),
 }

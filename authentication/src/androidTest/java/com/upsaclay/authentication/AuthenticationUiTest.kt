@@ -53,7 +53,7 @@ class AuthenticationUiTest {
             authenticationViewModel.updateMailText(any())
         } returns Unit
 
-        buttonLogin = hasText(rule.activity.getString(R.string.sign_in)) and hasClickAction()
+        buttonLogin = hasText(rule.activity.getString(R.string.login)) and hasClickAction()
         errorConnectionText = hasText(rule.activity.getString(R.string.error_connection))
         errorInputText = hasText(rule.activity.getString(CoreResource.string.error_empty_fields))
         circularProgressBar = hasProgressBarRangeInfo(ProgressBarRangeInfo.Indeterminate)
