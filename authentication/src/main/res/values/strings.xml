@@ -8,7 +8,7 @@
     <string name="title_login_screen">Gedoise Application</string>
     <string name="show_password_icon_description">Icône pour montrer le mot de passe</string>
     <string name="hide_password_icon_description">Icône pour cacher le mot de passe</string>
-    <string name="sign_in">Se connecter</string>
+    <string name="login">Se connecter</string>
     <string name="password">Mot de passe</string>
     <string name="sign_up">S\'inscrire</string>
     <string name="first_arrival">Première visite ?</string>

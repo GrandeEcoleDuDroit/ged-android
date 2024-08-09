@@ -6,7 +6,7 @@ import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.utils.formatProfilePictureUrl
 
-class UpdateProfilePictureUseCase(
+class UpdateUserProfilePictureUseCase(
     private val fileRepository: FileRepository,
     private val imageRepository: ImageRepository,
     private val userRepository: UserRepository

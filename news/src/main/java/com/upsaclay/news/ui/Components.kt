@@ -28,7 +28,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.upsaclay.common.R
 import com.upsaclay.common.ui.components.SmallShowButton
-import com.upsaclay.common.ui.theme.GedoiseColor
 import com.upsaclay.common.ui.theme.GedoiseTheme
 import com.upsaclay.common.ui.theme.spacing
 import com.upsaclay.news.data.model.Announcement
@@ -55,7 +54,6 @@ internal fun ShortAnnouncementCard(
                 modifier = Modifier
                     .clip(CircleShape)
                     .size(40.dp)
-                    .background(GedoiseColor.OnSurface)
             )
             Spacer(modifier = Modifier.width(15.dp))
             Column(
@@ -101,7 +99,6 @@ internal fun FullAnnouncementPopUp(
                 modifier = Modifier
                     .clip(CircleShape)
                     .size(40.dp)
-                    .background(GedoiseColor.OnSurface)
             )
             Spacer(modifier = Modifier.width(MaterialTheme.spacing.small))
             Column {

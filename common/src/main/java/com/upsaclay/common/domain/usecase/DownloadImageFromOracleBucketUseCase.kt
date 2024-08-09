@@ -4,7 +4,7 @@ import com.upsaclay.common.domain.repository.FileRepository
 import com.upsaclay.common.domain.repository.ImageRepository
 import java.io.File
 
-class DownloadImageOracleBucketUseCase(
+class DownloadImageFromOracleBucketUseCase(
     private val imageRepository: ImageRepository,
     private val fileRepository: FileRepository
 ) {

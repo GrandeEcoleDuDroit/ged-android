@@ -13,7 +13,6 @@ object GedoiseColor {
     val Background = White
     val BackgroundVariant = Color(0xFFF0F1F8)
     val DarkBackground = Color(0xFF2D2E32)
-    val OnSurface = Color(0xFF9B9DAC)
     val InputBackground = Color(0xFFF5F6FA)
     val Error = Color(0xFFAB2418)
     val BlackIconColor = Color(0xFF49454F)

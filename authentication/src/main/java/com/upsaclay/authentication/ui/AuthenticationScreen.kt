@@ -52,7 +52,7 @@ import com.upsaclay.authentication.ui.components.OutlinedEmailInput
 import com.upsaclay.authentication.ui.components.OutlinedPasswordInput
 import com.upsaclay.common.data.model.Screen
 import com.upsaclay.common.ui.components.ErrorText
-import com.upsaclay.common.ui.components.LoadingScreen
+import com.upsaclay.common.ui.components.OverlayLoadingScreen
 import com.upsaclay.common.ui.components.PrimaryLargeButton
 import com.upsaclay.common.ui.theme.GedoiseColor.BackgroundVariant
 import com.upsaclay.common.ui.theme.GedoiseColor.Primary
@@ -160,7 +160,7 @@ fun AuthenticationScreen(
             }
 
             if(authenticationState == AuthenticationState.LOADING) {
-                LoadingScreen()
+                OverlayLoadingScreen()
             }
         }
     }
@@ -270,7 +270,7 @@ private fun BottomSection(
         Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
 
         PrimaryLargeButton(
-            text = stringResource(id = R.string.sign_in),
+            text = stringResource(id = R.string.login),
             onClick = onClickConnectButton,
             modifier = Modifier.fillMaxWidth()
         )
@@ -350,7 +350,7 @@ private fun AuthenticationScreenPreview() {
                 )
             }
             if(isLoading){
-                LoadingScreen()
+                OverlayLoadingScreen()
             }
         }
     }

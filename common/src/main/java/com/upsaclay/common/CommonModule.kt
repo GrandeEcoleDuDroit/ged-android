@@ -13,11 +13,12 @@ import com.upsaclay.common.domain.repository.DrawableRepository
 import com.upsaclay.common.domain.repository.FileRepository
 import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.common.domain.repository.UserRepository
-import com.upsaclay.common.domain.usecase.DownloadImageOracleBucketUseCase
-import com.upsaclay.common.domain.usecase.GetCurrentUser
+import com.upsaclay.common.domain.usecase.DownloadImageFromOracleBucketUseCase
+import com.upsaclay.common.domain.usecase.GetCurrentUserFlowUseCase
+import com.upsaclay.common.domain.usecase.GetCurrentUserUseCase
 import com.upsaclay.common.domain.usecase.GetDrawableUriUseCase
-import com.upsaclay.common.domain.usecase.UpdateProfilePictureUseCase
-import com.upsaclay.common.domain.usecase.UploadImageOracleBucketUseCase
+import com.upsaclay.common.domain.usecase.UpdateUserProfilePictureUseCase
+import com.upsaclay.common.domain.usecase.UploadImageToOracleBucketUseCase
 import okhttp3.OkHttpClient
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
@@ -68,9 +69,10 @@ val coreModule = module {
     singleOf(::UserLocalDataSource)
     singleOf(::UserDataStore)
 
-    singleOf(::DownloadImageOracleBucketUseCase)
-    singleOf(::GetCurrentUser)
+    singleOf(::DownloadImageFromOracleBucketUseCase)
+    singleOf(::GetCurrentUserFlowUseCase)
+    singleOf(::GetCurrentUserUseCase)
     singleOf(::GetDrawableUriUseCase)
-    singleOf(::UpdateProfilePictureUseCase)
-    singleOf(::UploadImageOracleBucketUseCase)
+    singleOf(::UpdateUserProfilePictureUseCase)
+    singleOf(::UploadImageToOracleBucketUseCase)
 }

@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.dp
 import com.upsaclay.common.ui.theme.GedoiseTheme
 
 @Composable
-fun InfiniteCircularProgressIndicator(
+fun CircularProgressBar(
     modifier: Modifier = Modifier
 ) {
     CircularProgressIndicator(
@@ -23,6 +23,6 @@ fun InfiniteCircularProgressIndicator(
 @Composable
 private fun InfiniteCircularProgressIndicatorPreview() {
     GedoiseTheme {
-        InfiniteCircularProgressIndicator()
+        CircularProgressBar()
     }
 }

@@ -8,6 +8,7 @@ import com.upsaclay.authentication.domain.repository.AuthenticationRepository
 import com.upsaclay.authentication.domain.usecase.GenerateHashUseCase
 import com.upsaclay.authentication.domain.usecase.GenerateRandomString
 import com.upsaclay.authentication.domain.usecase.IsAccountExistUseCase
+import com.upsaclay.authentication.domain.usecase.IsAuthenticatedFlowUseCase
 import com.upsaclay.authentication.domain.usecase.IsAuthenticatedUseCase
 import com.upsaclay.authentication.domain.usecase.LoginUseCase
 import com.upsaclay.authentication.domain.usecase.RegistrationUseCase
@@ -47,6 +48,7 @@ val authenticationModule = module {
     singleOf(::GenerateHashUseCase)
     singleOf(::GenerateRandomString)
     singleOf(::IsAccountExistUseCase)
+    singleOf(::IsAuthenticatedFlowUseCase)
     singleOf(::IsAuthenticatedUseCase)
     singleOf(::LoginUseCase)
     singleOf(::RegistrationUseCase)
