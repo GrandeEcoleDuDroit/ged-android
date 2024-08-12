@@ -25,14 +25,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import com.upsaclay.common.domain.model.User
 import com.upsaclay.common.ui.components.PullToRefreshComponent
 import com.upsaclay.common.ui.theme.GedoiseTheme
 import com.upsaclay.common.ui.theme.spacing
 import com.upsaclay.news.R
+import com.upsaclay.news.announcementItemsFixture
 import com.upsaclay.news.data.model.Announcement
 import org.koin.androidx.compose.koinViewModel
-import java.time.LocalDateTime
 
 private const val URL_BLOGSPOT = "https://grandeecoledudroit.blogspot.com/"
 
@@ -56,7 +55,7 @@ fun NewsScreen(
             isRefreshing = true
         }
     ) {
-        Column {
+        Column(modifier = Modifier.padding(vertical = MaterialTheme.spacing.medium)) {
             ShortRecentAnnouncementSection(
                 announcements = announcements.value,
                 modifier = modifier.padding(horizontal = MaterialTheme.spacing.medium)
@@ -145,7 +144,7 @@ fun NewsScreenPreview(){
                         text = stringResource(id = com.upsaclay.news.R.string.news_ged),
                         style = MaterialTheme.typography.titleMedium,
                     )
-                    Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+                    Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
@@ -171,35 +170,3 @@ internal fun ShortRecentAnnouncementSectionPreview(){
         }
     }
 }
-
-internal val announcementFixture = Announcement(
-    id = 1,
-    title = "Rappel : Visite de cabinet le 23/03.",
-    date = LocalDateTime.now(),
-    content = "Nous vous informons que la visite de votre " +
-            "cabinet médical est programmée pour le 23 mars. " +
-            "Cette visite a pour but de s'assurer que toutes les normes de sécurité " +
-            "et de conformité sont respectées, ainsi que de vérifier l'état général " +
-            "des installations et des équipements médicaux." +
-            "Nous vous recommandons de préparer tous les documents nécessaires et " +
-            "de veiller à ce que votre personnel soit disponible pour répondre " +
-            "à d'éventuelles questions ou fournir des informations supplémentaires. " +
-            "Une préparation adéquate permettra de garantir que la visite se déroule " +
-            "sans heurts et de manière efficace. N'hésitez pas à nous contacter si " +
-            "vous avez des questions ou si vous avez besoin de plus amples informations" +
-            " avant la date prévue",
-    author = User(
-        id = 1,
-        firstName = "Patrick",
-        lastName = "Dupont",
-        email = "patrick.dupont@example.com",
-        schoolLevel = "GED 1",
-        isMember = false,
-        profilePictureUrl = "https://i-mom.unimedias.fr/2020/09/16/dragon-ball-songoku.jpg?auto=format,compress&cs=tinysrgb&w=1200"
-    )
-)
-
-internal val announcementItemsFixture = listOf(
-    announcementFixture,
-    announcementFixture
-)

@@ -7,13 +7,14 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import com.upsaclay.common.ui.theme.GedoiseColor.Error
 import com.upsaclay.common.ui.theme.GedoiseColor.InputBackground
 import com.upsaclay.common.ui.theme.GedoiseColor.Primary
 import com.upsaclay.common.ui.theme.GedoiseColor.PrimaryVariant
+import com.upsaclay.common.ui.theme.GedoiseColor.Red
 import com.upsaclay.common.ui.theme.GedoiseColor.Secondary
 import com.upsaclay.common.ui.theme.GedoiseColor.Tertiary
 import com.upsaclay.common.ui.theme.GedoiseColor.White
@@ -25,11 +26,12 @@ private val LightColorScheme = lightColorScheme (
     tertiary = Tertiary,
     primaryContainer = Tertiary,
     background = White,
-    error = Error,
+    error = Red,
     surface = White,
     surfaceVariant = InputBackground,
     secondaryContainer = PrimaryVariant,
     surfaceContainerHigh = PrimaryVariant,
+    outlineVariant = Color.LightGray
 )
 
 private val DarkColorScheme = LightColorScheme
@@ -48,8 +50,8 @@ fun GedoiseTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            window.statusBarColor = colorScheme.background.toArgb()
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
     }
 

@@ -59,7 +59,7 @@ fun MyDropDownMenu(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun MyDropDownMenuPreview(){
     val items = persistentListOf("BUT 1", "BUT 2", "BUT 3")

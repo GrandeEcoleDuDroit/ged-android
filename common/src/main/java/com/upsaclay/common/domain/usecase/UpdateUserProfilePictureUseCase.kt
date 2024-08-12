@@ -12,12 +12,13 @@ class UpdateUserProfilePictureUseCase(
     private val userRepository: UserRepository
 ) {
     suspend operator fun invoke(userId: Int, profilePictureUri: Uri): Result<Unit> {
-        val fileName = "$userId-profile-picture"
+        val currentTime = System.currentTimeMillis()
+        val fileName = "$userId-profile-picture$currentTime"
         val profilePictureFile = fileRepository.createFileFromUri(fileName, profilePictureUri)
         val uploadImageResult = imageRepository.uploadImage(profilePictureFile)
-        val profilePictureUrl = formatProfilePictureUrl(userId, profilePictureFile.extension)
 
         return if(uploadImageResult.isSuccess) {
+            val profilePictureUrl = formatProfilePictureUrl(userId, profilePictureFile.extension)
             userRepository.updateProfilePictureUrl(userId, profilePictureUrl)
         }
         else {

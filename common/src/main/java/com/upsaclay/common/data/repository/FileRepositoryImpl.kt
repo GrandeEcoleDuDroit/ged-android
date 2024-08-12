@@ -39,5 +39,7 @@ class FileRepositoryImpl(private val context: Context): FileRepository {
         return byteArrayOutputStream.toByteArray()
     }
 
-    private fun getFileType(uri: Uri): String? = context.contentResolver.getType(uri)
+    override fun getFileType(uri: Uri): String? {
+        return context.contentResolver.getType(uri)?.split("/")?.last()
+    }
 }
