@@ -14,21 +14,22 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.IOException
 
 internal class UserRepositoryImpl(
     private val userRemoteDataSource: UserRemoteDataSource,
     private val userLocalDataSource: UserLocalDataSource
 ): UserRepository {
-    private val _userFlow = MutableStateFlow<User?>(null)
-    override val userFlow: Flow<User> = _userFlow.filterNotNull()
+    private val _user = MutableStateFlow<User?>(null)
+    override val user: Flow<User> = _user.filterNotNull()
+    override val currentUser: User? get() = _user.value
     private val _hasDefaultProfilePictureFlow = MutableStateFlow(true)
     override val hasDefaultProfilePicture: Flow<Boolean> get() = _hasDefaultProfilePictureFlow
-    override val user: User? get() = _userFlow.value
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
-            _userFlow.value = userLocalDataSource.getCurrentUser()?.let { User.fromDTO(it) }
+            _user.value = userLocalDataSource.getCurrentUser()?.let { User.fromDTO(it) }
             _hasDefaultProfilePictureFlow.value = userLocalDataSource.hasDefaultProfilePicture()
         }
     }
@@ -40,7 +41,7 @@ internal class UserRepositoryImpl(
             infoLog(response.body()?.message ?: "User created successfully !")
             val userId = response.body()!!.data
             userLocalDataSource.createCurrentUser(user.copy(id = userId).toDTO())
-            _userFlow.value = user.copy(id = userId)
+            _user.value = user.copy(id = userId)
             Result.success(userId)
         }
         else {
@@ -55,13 +56,28 @@ internal class UserRepositoryImpl(
         return if (response.isSuccessful) {
             infoLog("Profile picture updated successfully !")
             userLocalDataSource.updateProfilePictureUrl(profilePictureUrl)
-            _userFlow.update { it?.copy(profilePictureUrl = profilePictureUrl) }
+            _user.update { it?.copy(profilePictureUrl = profilePictureUrl) }
             Result.success(Unit)
         }
         else {
             val errorMessage = formatHttpError(response.message(), response.errorBody()?.string())
             errorLog(errorMessage)
             Result.failure(IOException(errorMessage))
+        }
+    }
+
+    override suspend fun deleteProfilePicture(imageName: String): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            val response = userRemoteDataSource.deleteProfilePicture(imageName)
+            if(response.isSuccessful) {
+                infoLog("Profile picture deleted successfully !")
+                Result.success(Unit)
+            }
+            else {
+                val errorMessage = formatHttpError(response.message(), response.errorBody()?.string())
+                errorLog(errorMessage)
+                Result.failure(IOException(errorMessage))
+            }
         }
     }
 

@@ -3,14 +3,14 @@ package com.upsaclay.gedoise.ui.profile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upsaclay.authentication.domain.repository.AuthenticationRepository
-import com.upsaclay.common.domain.usecase.GetCurrentUserFlowUseCase
+import com.upsaclay.common.domain.usecase.GetUserUseCase
 import kotlinx.coroutines.launch
 
 class ProfileViewModel(
-    getCurrentUserFlowUseCase: GetCurrentUserFlowUseCase,
+    getUserUseCase: GetUserUseCase,
     private val authenticationRepository: AuthenticationRepository
 ): ViewModel() {
-    val user = getCurrentUserFlowUseCase()
+    val user = getUserUseCase()
 
     fun logout() {
         viewModelScope.launch {

@@ -14,7 +14,7 @@ import com.upsaclay.common.domain.repository.FileRepository
 import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.DownloadImageFromOracleBucketUseCase
-import com.upsaclay.common.domain.usecase.GetCurrentUserFlowUseCase
+import com.upsaclay.common.domain.usecase.GetUserUseCase
 import com.upsaclay.common.domain.usecase.GetCurrentUserUseCase
 import com.upsaclay.common.domain.usecase.GetDrawableUriUseCase
 import com.upsaclay.common.domain.usecase.IsUserHasDefaultProfilePictureUseCase
@@ -72,7 +72,7 @@ val coreModule = module {
     singleOf(::UserDataStore)
 
     singleOf(::DownloadImageFromOracleBucketUseCase)
-    singleOf(::GetCurrentUserFlowUseCase)
+    singleOf(::GetUserUseCase)
     singleOf(::GetCurrentUserUseCase)
     singleOf(::GetDrawableUriUseCase)
     singleOf(::IsUserHasDefaultProfilePictureUseCase)

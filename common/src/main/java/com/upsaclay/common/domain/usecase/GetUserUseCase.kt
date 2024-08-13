@@ -4,8 +4,8 @@ import com.upsaclay.common.domain.model.User
 import com.upsaclay.common.domain.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
 
-class GetCurrentUserFlowUseCase(
+class GetUserUseCase(
     private val userRepository: UserRepository
 ) {
-    operator fun invoke(): Flow<User> = userRepository.userFlow
+    operator fun invoke(): Flow<User> = userRepository.user
 }

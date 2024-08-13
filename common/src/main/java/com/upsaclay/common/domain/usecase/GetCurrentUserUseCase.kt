@@ -6,5 +6,5 @@ import com.upsaclay.common.domain.repository.UserRepository
 class GetCurrentUserUseCase(
     private val userRepository: UserRepository
 ) {
-    operator fun invoke(): User? = userRepository.user
+    operator fun invoke(): User? = userRepository.currentUser
 }

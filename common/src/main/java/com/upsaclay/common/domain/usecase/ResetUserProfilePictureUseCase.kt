@@ -9,9 +9,9 @@ class ResetUserProfilePictureUseCase(
     private val updateUserProfilePictureUseCase: UpdateUserProfilePictureUseCase,
     private val getDrawableUriUseCase: GetDrawableUriUseCase
 ) {
-    suspend operator fun invoke(userId: Int): Result<Unit> {
+    suspend operator fun invoke(userId: Int, currentProfilePictureUrl: String): Result<Unit> {
         val defaultProfilePictureUri = getDrawableUriUseCase(R.drawable.default_profile_picture)!!
-        return updateUserProfilePictureUseCase(userId, defaultProfilePictureUri)
+        return updateUserProfilePictureUseCase(userId, defaultProfilePictureUri, currentProfilePictureUrl)
             .onSuccess { userRepository.setUserHasDefaultProfilePicture(true) }
             .onFailure { exception ->
                 errorLog(

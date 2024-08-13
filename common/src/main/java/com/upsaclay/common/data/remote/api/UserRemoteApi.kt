@@ -18,4 +18,10 @@ internal interface UserRemoteApi {
         @Field("USER_ID") userId: Int,
         @Field("USER_PROFILE_PICTURE_URL") userProfilePictureUrl: String
     ): Response<ServerResponse.EmptyServerResponse>
+
+    @FormUrlEncoded
+    @POST("users/deleteProfilePicture")
+    suspend fun deleteProfilePicture(
+        @Field("OBJECT_NAME") imageName: String
+    ): Response<ServerResponse.EmptyServerResponse>
 }
