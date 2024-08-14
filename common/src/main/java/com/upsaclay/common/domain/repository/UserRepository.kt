@@ -12,7 +12,5 @@ interface UserRepository {
 
     suspend fun updateProfilePictureUrl(userId: Int, profilePictureUrl: String): Result<Unit>
 
-    suspend fun deleteProfilePicture(imageName: String): Result<Unit>
-
     suspend fun setUserHasDefaultProfilePicture(hasDefaultProfilePicture: Boolean)
 }

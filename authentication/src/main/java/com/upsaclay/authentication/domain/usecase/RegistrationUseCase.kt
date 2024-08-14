@@ -16,7 +16,7 @@ class RegistrationUseCase(
         return userRepository.createUser(user)
             .onSuccess { userId ->
                 infoLog("Registration successful")
-                val profilePictureResult = updateUserProfilePictureUseCase(userId, profilePictureUri)
+                val profilePictureResult = updateUserProfilePictureUseCase(userId, profilePictureUri, null)
                 if (profilePictureResult.isFailure) {
                     errorLog("Error during profile picture update", profilePictureResult.exceptionOrNull() ?:
                         IOException("Error update profile picture")

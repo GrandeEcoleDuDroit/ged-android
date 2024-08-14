@@ -10,7 +10,7 @@ import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.Response
 
 internal class UserRemoteDataSource(private val userRemoteApi: UserRemoteApi) {
-    suspend fun createUser(user: UserDTO): Response<ServerResponse.IntServerResponse> = withContext(Dispatchers.IO) {
+    suspend fun createUser(user: UserDTO): Response<ServerResponse.IntResponse> = withContext(Dispatchers.IO) {
         try {
             userRemoteApi.createUser(user)
         } catch (e: Exception) {
@@ -19,23 +19,12 @@ internal class UserRemoteDataSource(private val userRemoteApi: UserRemoteApi) {
         }
     }
 
-    suspend fun updateProfilePictureUrl(userId: Int, newProfilePictureUrl: String): Response<ServerResponse.EmptyServerResponse> {
+    suspend fun updateProfilePictureUrl(userId: Int, newProfilePictureUrl: String): Response<ServerResponse.EmptyResponse> {
         return withContext(Dispatchers.IO) {
             try {
                 userRemoteApi.updateProfilePictureUrl(userId, newProfilePictureUrl)
             } catch (e: Exception) {
                 errorLog("Error to update user profile picture url: ${e.message.toString()}", e)
-                Response.error(500, e.message.toString().toResponseBody())
-            }
-        }
-    }
-
-    suspend fun deleteProfilePicture(imageName: String): Response<ServerResponse.EmptyServerResponse> {
-        return withContext(Dispatchers.IO) {
-            try {
-                userRemoteApi.deleteProfilePicture(imageName)
-            } catch (e: Exception) {
-                errorLog("Error to delete user profile picture: ${e.message.toString()}", e)
                 Response.error(500, e.message.toString().toResponseBody())
             }
         }

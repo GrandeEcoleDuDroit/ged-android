@@ -10,7 +10,7 @@ class AuthenticationRemoteDataSource(
         email: String,
         password: String,
         hash: String
-    ): Response<ServerResponse.EmptyServerResponse> {
+    ): Response<ServerResponse.EmptyResponse> {
         return authenticationParisSaclayApi.login(email, password, hash)
     }
 }

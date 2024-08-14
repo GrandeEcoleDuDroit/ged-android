@@ -32,10 +32,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -87,13 +85,7 @@ fun AccountInfoScreen(
     val scope = rememberCoroutineScope()
     val isUserHasDefaultProfilePicture = accountInfoViewModel.isUserHasDefaultProfilePicture.collectAsState(true)
     val context = LocalContext.current
-    val launchedEffectKey = accountScreenState.value == AccountInfoScreenState.PROFILE_PICTURE_UPDATED
-    var cacheKey by remember { mutableIntStateOf(0) }
     var showDeleteProfilePictureDialog by remember { mutableStateOf(false) }
-
-    LaunchedEffect(key1 = launchedEffectKey) {
-        cacheKey++
-    }
 
     val hideBottomSheet: () -> Unit = {
         scope.launch { sheetState.hide() }.invokeOnCompletion {
@@ -170,7 +162,6 @@ fun AccountInfoScreen(
                         isEdited = accountScreenState.value == AccountInfoScreenState.EDIT,
                         profilePictureUri = accountInfoViewModel.profilePictureUri,
                         profilePictureUrl = user.profilePictureUrl,
-                        cacheKey = cacheKey.toString(),
                         onClick = {
                             if (accountScreenState.value == AccountInfoScreenState.EDIT) {
                                 singlePhotoPickerLauncher.launch(
@@ -198,7 +189,7 @@ fun AccountInfoScreen(
                                     PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                                 )
                             },
-                            showDeleteProfilePicture = !isUserHasDefaultProfilePicture.value,
+                            showDeleteProfilePicture = isUserHasDefaultProfilePicture.value,
                             onDeleteProfilePictureClick = {
                                 hideBottomSheet()
                                 showDeleteProfilePictureDialog = true
@@ -246,7 +237,6 @@ private fun PictureSection(
     isEdited: Boolean,
     profilePictureUri: Uri?,
     profilePictureUrl: String,
-    cacheKey: String,
     onClick: () -> Unit,
 ) {
     val scaleImage = 1.8f
@@ -258,7 +248,6 @@ private fun PictureSection(
                 iconVector = Icons.Default.Edit,
                 contentDescription = "",
                 scale = scaleImage,
-                cacheKey = cacheKey,
                 onClick = onClick
             )
         } else {
@@ -279,7 +268,6 @@ private fun PictureSection(
             iconVector = Icons.Default.Edit,
             contentDescription = "",
             scale = scaleImage,
-            cacheKey = cacheKey,
             onClick = onClick
         )
     }

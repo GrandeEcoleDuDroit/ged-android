@@ -14,17 +14,19 @@ class UpdateUserProfilePictureUseCase(
     suspend operator fun invoke(
         userId: Int,
         profilePictureUri: Uri,
-        currentProfilePictureUrl: String
+        currentUserProfilePictureUrl: String?
     ): Result<Unit> {
         val currentTime = System.currentTimeMillis()
-        val fileName = "$userId-profile-picture$currentTime"
+        val fileName = "$userId-profile-picture-$currentTime"
         val profilePictureFile = fileRepository.createFileFromUri(fileName, profilePictureUri)
         val uploadImageResult = imageRepository.uploadImage(profilePictureFile)
 
         return if(uploadImageResult.isSuccess) {
             val profilePictureUrl = formatProfilePictureUrl(fileName, profilePictureFile.extension)
             userRepository.updateProfilePictureUrl(userId, profilePictureUrl)
-                .onSuccess { deleteProfilePicture(currentProfilePictureUrl) }
+                .onSuccess {
+                    currentUserProfilePictureUrl?.let { deleteProfilePicture(it) }
+                }
         }
         else {
             Result.failure(uploadImageResult.exceptionOrNull()!!)
@@ -33,6 +35,6 @@ class UpdateUserProfilePictureUseCase(
 
     private suspend fun deleteProfilePicture(userProfilePictureUrl: String): Result<Unit> {
         val fileName = userProfilePictureUrl.substringAfterLast("/")
-        return userRepository.deleteProfilePicture(fileName)
+        return imageRepository.deleteImage(fileName)
     }
 }

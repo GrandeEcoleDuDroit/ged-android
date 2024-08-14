@@ -13,5 +13,5 @@ interface AuthenticationParisSaclayApi {
         @Field("username") username: String,
         @Field("password") password: String,
         @Field("state") hash: String
-    ): Response<ServerResponse.EmptyServerResponse>
+    ): Response<ServerResponse.EmptyResponse>
 }

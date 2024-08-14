@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.IOException
 
 internal class UserRepositoryImpl(
@@ -39,7 +38,7 @@ internal class UserRepositoryImpl(
 
         return if (response.isSuccessful && response.body()?.data != null) {
             infoLog(response.body()?.message ?: "User created successfully !")
-            val userId = response.body()!!.data
+            val userId = response.body()!!.data!!
             userLocalDataSource.createCurrentUser(user.copy(id = userId).toDTO())
             _user.value = user.copy(id = userId)
             Result.success(userId)
@@ -53,31 +52,17 @@ internal class UserRepositoryImpl(
 
     override suspend fun updateProfilePictureUrl(userId: Int, profilePictureUrl: String): Result<Unit> {
         val response = userRemoteDataSource.updateProfilePictureUrl(userId, profilePictureUrl)
+
         return if (response.isSuccessful) {
-            infoLog("Profile picture updated successfully !")
             userLocalDataSource.updateProfilePictureUrl(profilePictureUrl)
             _user.update { it?.copy(profilePictureUrl = profilePictureUrl) }
+            infoLog("Profile picture updated successfully !")
             Result.success(Unit)
         }
         else {
             val errorMessage = formatHttpError(response.message(), response.errorBody()?.string())
             errorLog(errorMessage)
             Result.failure(IOException(errorMessage))
-        }
-    }
-
-    override suspend fun deleteProfilePicture(imageName: String): Result<Unit> {
-        return withContext(Dispatchers.IO) {
-            val response = userRemoteDataSource.deleteProfilePicture(imageName)
-            if(response.isSuccessful) {
-                infoLog("Profile picture deleted successfully !")
-                Result.success(Unit)
-            }
-            else {
-                val errorMessage = formatHttpError(response.message(), response.errorBody()?.string())
-                errorLog(errorMessage)
-                Result.failure(IOException(errorMessage))
-            }
         }
     }
 
