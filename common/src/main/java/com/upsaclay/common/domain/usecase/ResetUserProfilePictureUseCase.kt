@@ -2,7 +2,7 @@ package com.upsaclay.common.domain.usecase
 
 import com.upsaclay.common.R
 import com.upsaclay.common.domain.repository.UserRepository
-import com.upsaclay.common.utils.errorLog
+import com.upsaclay.common.utils.e
 
 class ResetUserProfilePictureUseCase(
     private val userRepository: UserRepository,
@@ -14,7 +14,7 @@ class ResetUserProfilePictureUseCase(
         return updateUserProfilePictureUseCase(userId, defaultProfilePictureUri, currentProfilePictureUrl)
             .onSuccess { userRepository.setUserHasDefaultProfilePicture(true) }
             .onFailure { exception ->
-                errorLog(
+                e(
                     exception.message ?: "Error while resetting user profile picture",
                     exception
                 )

@@ -2,8 +2,8 @@ package com.upsaclay.common.data.repository
 
 import com.upsaclay.common.data.remote.ImageRemoteDataSource
 import com.upsaclay.common.domain.repository.ImageRepository
-import com.upsaclay.common.utils.errorLog
-import com.upsaclay.common.utils.infoLog
+import com.upsaclay.common.utils.e
+import com.upsaclay.common.utils.i
 import java.io.File
 import java.io.IOException
 
@@ -21,13 +21,13 @@ class ImageRepositoryImpl(
 
         return if (response.isSuccessful) {
             val successMessage = responseBody?.message ?: "Upload image ${file.name} successful"
-            infoLog(successMessage)
+            i(successMessage)
             Result.success(successMessage)
         }
         else {
             val errorMessage = responseBody?.error
                 ?: "Error upload image ${file.name}, HTTP status: ${response.code()}"
-            errorLog(errorMessage)
+            e(errorMessage)
             Result.failure(IOException(errorMessage))
         }
     }
@@ -39,7 +39,7 @@ class ImageRepositoryImpl(
         } else {
             val errorMessage = response.body()?.error
                 ?: "Error to delete image ${fileName}, HTTP status: ${response.code()}, ${response.errorBody()}"
-            errorLog(errorMessage)
+            e(errorMessage)
             Result.failure(IOException(errorMessage))
         }
     }

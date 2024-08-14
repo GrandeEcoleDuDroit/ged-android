@@ -2,7 +2,7 @@ package com.upsaclay.common.data.remote
 
 import com.upsaclay.common.data.model.ServerResponse
 import com.upsaclay.common.data.remote.api.ImageRemoteApi
-import com.upsaclay.common.utils.errorLog
+import com.upsaclay.common.utils.e
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -21,11 +21,11 @@ class ImageRemoteDataSource(private val imageRemoteApi: ImageRemoteApi) {
                 response.body()!!.bytes()
             }
             else {
-                errorLog(response.errorBody().toString())
+                e(response.errorBody().toString())
                 null
             }
         } catch (e: Exception) {
-            errorLog("Error to download image from server: ${e.message}", e)
+            e("Error to download image from server: ${e.message}", e)
             null
         }
     }
@@ -36,7 +36,7 @@ class ImageRemoteDataSource(private val imageRemoteApi: ImageRemoteApi) {
             val multipartBody = MultipartBody.Part.createFormData("image", file.name, requestBody)
             imageRemoteApi.uploadImage(multipartBody)
         } catch (e: Exception) {
-            errorLog("Error upload image: ${e.message}", e)
+            e("Error upload image: ${e.message}", e)
             Response.error(500, e.message.toString().toResponseBody())
         }
     }
@@ -45,7 +45,7 @@ class ImageRemoteDataSource(private val imageRemoteApi: ImageRemoteApi) {
         try {
             imageRemoteApi.deleteImage(imageName)
         } catch (e: Exception) {
-            errorLog("Error to delete image: ${e.message.toString()}", e)
+            e("Error to delete image: ${e.message.toString()}", e)
             Response.error(500, e.message.toString().toResponseBody())
         }
     }

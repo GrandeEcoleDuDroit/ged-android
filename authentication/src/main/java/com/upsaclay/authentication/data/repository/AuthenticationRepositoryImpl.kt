@@ -4,7 +4,7 @@ import com.upsaclay.authentication.data.local.AuthenticationLocalDataSource
 import com.upsaclay.authentication.data.remote.AuthenticationRemoteDataSource
 import com.upsaclay.authentication.domain.repository.AuthenticationRepository
 import com.upsaclay.common.utils.formatHttpError
-import com.upsaclay.common.utils.infoLog
+import com.upsaclay.common.utils.i
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -32,7 +32,7 @@ class AuthenticationRepositoryImpl(
         val loginResponse = authenticationRemoteDataSource.loginWithParisSaclay(email, password, hash)
 
         return if (loginResponse.isSuccessful) {
-            infoLog("Login successfully !")
+            i("Login successfully !")
             updateAuthenticationState(true)
             Result.success(loginResponse.body()?.message ?: "")
         } else {

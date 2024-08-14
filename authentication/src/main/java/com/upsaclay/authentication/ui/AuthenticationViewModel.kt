@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upsaclay.authentication.domain.model.AuthenticationState
 import com.upsaclay.authentication.domain.usecase.LoginUseCase
-import com.upsaclay.common.utils.errorLog
+import com.upsaclay.common.utils.e
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -46,7 +46,7 @@ class AuthenticationViewModel(
                     result.getOrDefault(AuthenticationState.ERROR_AUTHENTICATION)
             } else {
                 _authenticationState.value = AuthenticationState.ERROR_AUTHENTICATION
-                errorLog("", result.exceptionOrNull())
+                e("", result.exceptionOrNull())
             }
         }
     }
