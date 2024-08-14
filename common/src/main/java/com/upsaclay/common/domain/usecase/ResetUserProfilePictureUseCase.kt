@@ -2,7 +2,7 @@ package com.upsaclay.common.domain.usecase
 
 import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.common.domain.repository.UserRepository
-import com.upsaclay.common.utils.errorLog
+import com.upsaclay.common.utils.e
 
 class ResetUserProfilePictureUseCase(
     private val userRepository: UserRepository,
@@ -13,7 +13,7 @@ class ResetUserProfilePictureUseCase(
     suspend operator fun invoke(userId: Int, currentProfilePictureUrl: String): Result<Unit> {
         return deleteProfilePicture(currentProfilePictureUrl)
             .onFailure { exception ->
-                errorLog(
+                e(
                     exception.message ?: "Error while resetting user profile picture",
                     exception
                 )

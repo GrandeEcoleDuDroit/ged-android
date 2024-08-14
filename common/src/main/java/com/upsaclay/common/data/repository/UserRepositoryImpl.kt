@@ -4,9 +4,9 @@ import com.upsaclay.common.data.local.UserLocalDataSource
 import com.upsaclay.common.data.remote.UserRemoteDataSource
 import com.upsaclay.common.domain.model.User
 import com.upsaclay.common.domain.repository.UserRepository
-import com.upsaclay.common.utils.errorLog
+import com.upsaclay.common.utils.e
 import com.upsaclay.common.utils.formatHttpError
-import com.upsaclay.common.utils.infoLog
+import com.upsaclay.common.utils.i
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -34,7 +34,7 @@ internal class UserRepositoryImpl(
         val response = userRemoteDataSource.createUser(user.toDTO())
 
         return if (response.isSuccessful && response.body()?.data != null) {
-            infoLog(response.body()?.message ?: "User created successfully !")
+            i(response.body()?.message ?: "User created successfully !")
             val userId = response.body()!!.data!!
             userLocalDataSource.createCurrentUser(user.copy(id = userId).toDTO())
             _user.value = user.copy(id = userId)
@@ -42,7 +42,7 @@ internal class UserRepositoryImpl(
         }
         else {
             val errorMessage = formatHttpError(response.message(), response.errorBody()?.string())
-            errorLog(errorMessage)
+            e(errorMessage)
             Result.failure(IOException(errorMessage))
         }
     }
@@ -53,12 +53,12 @@ internal class UserRepositoryImpl(
         return if (response.isSuccessful) {
             userLocalDataSource.updateProfilePictureUrl(profilePictureUrl)
             _user.update { it?.copy(profilePictureUrl = profilePictureUrl) }
-            infoLog("Profile picture updated successfully !")
+            i("Profile picture updated successfully !")
             Result.success(Unit)
         }
         else {
             val errorMessage = formatHttpError(response.message(), response.errorBody()?.string())
-            errorLog(errorMessage)
+            e(errorMessage)
             Result.failure(IOException(errorMessage))
         }
     }

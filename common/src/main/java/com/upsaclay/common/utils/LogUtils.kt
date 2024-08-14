@@ -1,15 +1,15 @@
 package com.upsaclay.common.utils
 
-import android.util.Log
+import timber.log.Timber
 
-fun  Any.debugLog(message: String) {
-    Log.d(javaClass.simpleName, message)
+fun  Any.d(message: String) {
+    Timber.tag(javaClass.simpleName).d(message)
 }
 
-fun Any.errorLog(message: String, throwable: Throwable? = null) {
-    Log.e(javaClass.simpleName, message, throwable)
+fun Any.e(message: String, throwable: Throwable? = null) {
+    Timber.tag(javaClass.simpleName).e(throwable, message)
 }
 
-fun Any.infoLog(message: String) {
-    Log.i(javaClass.simpleName, message)
+fun Any.i(message: String) {
+    Timber.tag(javaClass.simpleName).i(message)
 }
