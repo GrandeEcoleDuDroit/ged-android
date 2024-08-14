@@ -17,12 +17,4 @@ class UserLocalDataSource(private val userDataStore: UserDataStore) {
             userDataStore.storeCurrentUser(it.copy(userProfilePictureUrl = profilePictureUrl))
         }
     }
-
-    suspend fun hasDefaultProfilePicture(): Boolean {
-        return userDataStore.getUserHasDefaultProfilePicture()
-    }
-
-    suspend fun setUserHasDefaultProfilePicture(hasDefaultProfilePicture: Boolean) {
-        userDataStore.storeUserHasDefaultProfilePicture(hasDefaultProfilePicture)
-    }
 }

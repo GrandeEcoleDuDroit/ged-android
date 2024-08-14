@@ -9,9 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.upsaclay.authentication.domain.model.RegistrationState
 import com.upsaclay.authentication.domain.usecase.IsAccountExistUseCase
 import com.upsaclay.authentication.domain.usecase.RegistrationUseCase
-import com.upsaclay.common.R
 import com.upsaclay.common.domain.model.User
-import com.upsaclay.common.domain.usecase.GetDrawableUriUseCase
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,28 +19,20 @@ import kotlinx.coroutines.launch
 internal const val MAX_REGISTRATION_STEP = 3
 
 class RegistrationViewModel(
-    getDrawableUriUseCase: GetDrawableUriUseCase,
     private val isAccountExistUseCase: IsAccountExistUseCase,
     private val registrationUseCase: RegistrationUseCase,
 ) : ViewModel() {
-
     private val _registrationState = MutableStateFlow(RegistrationState.NOT_REGISTERED)
     val registrationState: StateFlow<RegistrationState> = _registrationState.asStateFlow()
-
     var email by mutableStateOf("")
         private set
-
     var password by mutableStateOf("")
         private set
-
     val schoolLevels = persistentListOf("GED 1", "GED 2", "GED 3", "GED 4")
     var currentSchoolLevel by mutableStateOf(schoolLevels[0])
         private set
-
-    val defaultPictureUri = getDrawableUriUseCase(R.drawable.default_profile_picture)!!
-    var profilePictureUri: Uri by mutableStateOf(defaultPictureUri)
+    var profilePictureUri: Uri? by mutableStateOf(null)
         private set
-
     var fullName by mutableStateOf("")
         private set
 
@@ -58,7 +48,7 @@ class RegistrationViewModel(
 
     fun resetPassword() { password = "" }
 
-    fun resetProfilePictureUri() { profilePictureUri = defaultPictureUri }
+    fun resetProfilePictureUri() { profilePictureUri = null }
 
     fun verifyAccount(email: String, password: String) {
         _registrationState.value = RegistrationState.LOADING

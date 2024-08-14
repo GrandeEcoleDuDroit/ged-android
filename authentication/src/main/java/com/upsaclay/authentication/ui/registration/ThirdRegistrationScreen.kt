@@ -97,7 +97,7 @@ fun ThirdRegistrationScreen(
                     }
             )
 
-            if (registrationViewModel.profilePictureUri != registrationViewModel.defaultPictureUri) {
+            registrationViewModel.profilePictureUri?.let {
                 TextButton(
                     onClick = { registrationViewModel.resetProfilePictureUri() }
                 ) {

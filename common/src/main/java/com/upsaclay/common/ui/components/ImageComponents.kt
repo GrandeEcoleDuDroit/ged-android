@@ -102,6 +102,72 @@ fun ImageWithIcon(
 fun ImageWithIcon(
     modifier: Modifier = Modifier,
     scale: Float = 1f,
+    @DrawableRes drawableRes: Int,
+    contentDescription: String,
+    iconVector: ImageVector,
+    iconColor: Color = Color.White,
+    iconBackgroundColor: Color = MaterialTheme.colorScheme.primary,
+    cacheKey: String? = null,
+    onClick: (() -> Unit)? = null
+) {
+    Box(modifier = modifier.size(100.dp * scale)) {
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(drawableRes)
+                .diskCacheKey(cacheKey)
+                .memoryCacheKey(cacheKey)
+                .build(),
+            contentDescription = contentDescription,
+            contentScale = ContentScale.Crop,
+            modifier = onClick?.let {
+                Modifier
+                    .align(Alignment.Center)
+                    .size(100.dp * scale)
+                    .clip(CircleShape)
+                    .border(1.dp, Color.LightGray, CircleShape)
+                    .clickable(onClick = it)
+            } ?: run {
+                Modifier
+                    .align(Alignment.Center)
+                    .fillMaxSize()
+                    .clip(CircleShape)
+                    .border(1.dp, Color.LightGray, CircleShape)
+            }
+        )
+
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = onClick?.let {
+                Modifier
+                    .clip(CircleShape)
+                    .background(iconBackgroundColor)
+                    .align(Alignment.BottomEnd)
+                    .size(30.dp * scale)
+                    .clickable(onClick = it)
+            } ?: run {
+                Modifier
+                    .clip(CircleShape)
+                    .background(iconBackgroundColor)
+                    .align(Alignment.BottomEnd)
+                    .size(30.dp * scale)
+            }
+        ) {
+            Icon(
+                imageVector = iconVector,
+                contentDescription = "",
+                tint = iconColor,
+                modifier = Modifier
+                    .padding(MaterialTheme.spacing.extraSmall)
+                    .size(16.dp * scale)
+            )
+        }
+    }
+}
+
+@Composable
+fun ImageWithIcon(
+    modifier: Modifier = Modifier,
+    scale: Float = 1f,
     imageUri: Uri,
     contentDescription: String,
     iconVector: ImageVector,

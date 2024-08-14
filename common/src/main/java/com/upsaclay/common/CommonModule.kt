@@ -18,7 +18,6 @@ import com.upsaclay.common.domain.usecase.DownloadImageFromOracleBucketUseCase
 import com.upsaclay.common.domain.usecase.GetCurrentUserUseCase
 import com.upsaclay.common.domain.usecase.GetDrawableUriUseCase
 import com.upsaclay.common.domain.usecase.GetUserUseCase
-import com.upsaclay.common.domain.usecase.IsUserHasDefaultProfilePictureUseCase
 import com.upsaclay.common.domain.usecase.ResetUserProfilePictureUseCase
 import com.upsaclay.common.domain.usecase.UpdateUserProfilePictureUseCase
 import com.upsaclay.common.domain.usecase.UploadImageToOracleBucketUseCase

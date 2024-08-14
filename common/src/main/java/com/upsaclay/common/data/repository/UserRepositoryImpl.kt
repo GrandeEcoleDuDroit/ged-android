@@ -23,13 +23,10 @@ internal class UserRepositoryImpl(
     private val _user = MutableStateFlow<User?>(null)
     override val user: Flow<User> = _user.filterNotNull()
     override val currentUser: User? get() = _user.value
-    private val _hasDefaultProfilePictureFlow = MutableStateFlow(true)
-    override val hasDefaultProfilePicture: Flow<Boolean> get() = _hasDefaultProfilePictureFlow
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
             _user.value = userLocalDataSource.getCurrentUser()?.let { User.fromDTO(it) }
-            _hasDefaultProfilePictureFlow.value = userLocalDataSource.hasDefaultProfilePicture()
         }
     }
 
@@ -64,9 +61,5 @@ internal class UserRepositoryImpl(
             errorLog(errorMessage)
             Result.failure(IOException(errorMessage))
         }
-    }
-
-    override suspend fun setUserHasDefaultProfilePicture(hasDefaultProfilePicture: Boolean) {
-        userLocalDataSource.setUserHasDefaultProfilePicture(hasDefaultProfilePicture)
     }
 }

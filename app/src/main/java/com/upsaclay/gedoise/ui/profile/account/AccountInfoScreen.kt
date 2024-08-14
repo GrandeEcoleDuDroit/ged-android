@@ -236,7 +236,7 @@ fun AccountInfoScreen(
 private fun PictureSection(
     isEdited: Boolean,
     profilePictureUri: Uri?,
-    profilePictureUrl: String,
+    profilePictureUrl: String?,
     onClick: () -> Unit,
 ) {
     val scaleImage = 1.8f
@@ -263,13 +263,23 @@ private fun PictureSection(
             )
         }
     } ?: run {
-        ImageWithIcon(
-            imageUrl = profilePictureUrl,
-            iconVector = Icons.Default.Edit,
-            contentDescription = "",
-            scale = scaleImage,
-            onClick = onClick
-        )
+        profilePictureUrl?.let {
+            ImageWithIcon(
+                imageUrl = it,
+                iconVector = Icons.Default.Edit,
+                contentDescription = "",
+                scale = scaleImage,
+                onClick = onClick
+            )
+        } ?: run {
+            ImageWithIcon(
+                drawableRes = com.upsaclay.common.R.drawable.default_profile_picture,
+                iconVector = Icons.Default.Edit,
+                contentDescription = "",
+                scale = scaleImage,
+                onClick = onClick
+            )
+        }
     }
 }
 

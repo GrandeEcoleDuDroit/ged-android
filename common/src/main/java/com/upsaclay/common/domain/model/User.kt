@@ -9,7 +9,7 @@ data class User(
     val email: String,
     val schoolLevel: String,
     val isMember: Boolean = false,
-    val profilePictureUrl: String = ""
+    val profilePictureUrl: String? = null
 ) {
     val fullName = String.format("%s %s", firstName, lastName)
 
@@ -20,7 +20,7 @@ data class User(
         userEmail = email,
         userSchoolLevel = schoolLevel,
         userIsMember = if(isMember) 1 else 0,
-        userProfilePictureUrl = profilePictureUrl?: ""
+        userProfilePictureUrl = profilePictureUrl
     )
 
     companion object {
@@ -31,7 +31,7 @@ data class User(
             email = userDTO.userEmail,
             schoolLevel = userDTO.userSchoolLevel,
             isMember = userDTO.userIsMember == 1,
-            profilePictureUrl = userDTO.userProfilePictureUrl?: ""
+            profilePictureUrl = userDTO.userProfilePictureUrl
         )
     }
 }

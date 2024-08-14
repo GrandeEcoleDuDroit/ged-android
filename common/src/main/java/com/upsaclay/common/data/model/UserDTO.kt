@@ -16,5 +16,5 @@ data class UserDTO(
     @SerializedName("USER_IS_MEMBER")
     val userIsMember: Int = 0,
     @SerializedName("USER_PROFILE_PICTURE_URL")
-    val userProfilePictureUrl: String? = ""
+    val userProfilePictureUrl: String? = null
 )
