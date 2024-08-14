@@ -22,7 +22,7 @@ fun OverlayLoadingScreen(){
         modifier = Modifier
             .fillMaxSize()
             .background(GedoiseColor.LittleTransparentWhite)
-            .zIndex(1f)
+            .zIndex(1000f)
             .pointerInteropFilter { true }
     ){
         CircularProgressBar(
@@ -35,7 +35,7 @@ fun OverlayLoadingScreen(){
 
 @Composable
 @Preview
-fun LoadingScreenPreview(){
+private fun LoadingScreenPreview(){
     GedoiseTheme {
         OverlayLoadingScreen()
     }

@@ -10,12 +10,12 @@ import retrofit2.http.POST
 
 internal interface UserRemoteApi {
     @POST("/users/create")
-    suspend fun createUser(@Body user: UserDTO): Response<ServerResponse.IntServerResponse>
+    suspend fun createUser(@Body user: UserDTO): Response<ServerResponse.IntResponse>
 
     @FormUrlEncoded
     @POST("users/updateProfilePictureUrl")
     suspend fun updateProfilePictureUrl(
         @Field("USER_ID") userId: Int,
         @Field("USER_PROFILE_PICTURE_URL") userProfilePictureUrl: String
-    ): Response<ServerResponse.EmptyServerResponse>
+    ): Response<ServerResponse.EmptyResponse>
 }

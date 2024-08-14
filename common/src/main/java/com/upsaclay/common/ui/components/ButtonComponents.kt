@@ -47,14 +47,16 @@ fun PrimaryLargeButton(
 
 @Composable
 fun SmallFAB(
-    icon: ImageVector = Icons.Default.Add,
-    contentDescription: String = stringResource(id = R.string.icon_add_descrption),
-    colorButton: Color = MaterialTheme.colorScheme.tertiary,
+    modifier: Modifier = Modifier,
+    icon: ImageVector,
+    contentDescription: String,
+    colorButton: Color = MaterialTheme.colorScheme.primary,
     shape: Shape = CircleShape,
     colorIcon: Color = GedoiseColor.White,
     onClick: () -> Unit
 ) {
     SmallFloatingActionButton(
+        modifier = modifier,
         containerColor = colorButton,
         contentColor = colorIcon,
         shape = shape,
@@ -110,6 +112,8 @@ private fun PrimaryLargeButtonPreview() {
 private fun SmallFABPreview() {
     GedoiseTheme {
         SmallFAB(
+            icon = Icons.Default.Add,
+            contentDescription = stringResource(id = R.string.icon_add_descrption),
             onClick = {}
         )
     }

@@ -30,6 +30,7 @@ import com.upsaclay.common.R
 import com.upsaclay.common.ui.components.SmallShowButton
 import com.upsaclay.common.ui.theme.GedoiseTheme
 import com.upsaclay.common.ui.theme.spacing
+import com.upsaclay.news.announcementFixture
 import com.upsaclay.news.data.model.Announcement
 
 @Composable

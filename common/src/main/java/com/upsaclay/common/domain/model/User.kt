@@ -9,7 +9,7 @@ data class User(
     val email: String,
     val schoolLevel: String,
     val isMember: Boolean = false,
-    val profilePictureUrl: String? = ""
+    val profilePictureUrl: String = ""
 ) {
     val fullName = String.format("%s %s", firstName, lastName)
 

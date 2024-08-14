@@ -59,6 +59,7 @@ dependencies {
     implementation(libs.koin)
     implementation(libs.koin.core)
     implementation(libs.kotlinx.collections.immutable)
+    implementation(libs.coil.compose)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

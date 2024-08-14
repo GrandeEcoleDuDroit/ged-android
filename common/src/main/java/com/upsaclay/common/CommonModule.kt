@@ -2,6 +2,7 @@ package com.upsaclay.common
 
 import com.upsaclay.common.data.local.UserDataStore
 import com.upsaclay.common.data.local.UserLocalDataSource
+import com.upsaclay.common.data.remote.ImageRemoteDataSource
 import com.upsaclay.common.data.remote.UserRemoteDataSource
 import com.upsaclay.common.data.remote.api.ImageRemoteApi
 import com.upsaclay.common.data.remote.api.UserRemoteApi
@@ -14,9 +15,11 @@ import com.upsaclay.common.domain.repository.FileRepository
 import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.DownloadImageFromOracleBucketUseCase
-import com.upsaclay.common.domain.usecase.GetCurrentUserFlowUseCase
 import com.upsaclay.common.domain.usecase.GetCurrentUserUseCase
 import com.upsaclay.common.domain.usecase.GetDrawableUriUseCase
+import com.upsaclay.common.domain.usecase.GetUserUseCase
+import com.upsaclay.common.domain.usecase.IsUserHasDefaultProfilePictureUseCase
+import com.upsaclay.common.domain.usecase.ResetUserProfilePictureUseCase
 import com.upsaclay.common.domain.usecase.UpdateUserProfilePictureUseCase
 import com.upsaclay.common.domain.usecase.UploadImageToOracleBucketUseCase
 import okhttp3.OkHttpClient
@@ -62,7 +65,9 @@ val coreModule = module {
 
     singleOf(::DrawableRepositoryImpl) { bind<DrawableRepository>() }
     singleOf(::FileRepositoryImpl) { bind<FileRepository>() }
+    
     singleOf(::ImageRepositoryImpl) { bind<ImageRepository>() }
+    singleOf(::ImageRemoteDataSource)
 
     singleOf(::UserRepositoryImpl) { bind<UserRepository>() }
     singleOf(::UserRemoteDataSource)
@@ -70,9 +75,11 @@ val coreModule = module {
     singleOf(::UserDataStore)
 
     singleOf(::DownloadImageFromOracleBucketUseCase)
-    singleOf(::GetCurrentUserFlowUseCase)
+    singleOf(::GetUserUseCase)
     singleOf(::GetCurrentUserUseCase)
     singleOf(::GetDrawableUriUseCase)
+    singleOf(::IsUserHasDefaultProfilePictureUseCase)
+    singleOf(::ResetUserProfilePictureUseCase)
     singleOf(::UpdateUserProfilePictureUseCase)
     singleOf(::UploadImageToOracleBucketUseCase)
 }

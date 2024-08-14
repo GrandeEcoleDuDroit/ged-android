@@ -9,19 +9,32 @@ import com.upsaclay.common.utils.formatProfilePictureUrl
 class UpdateUserProfilePictureUseCase(
     private val fileRepository: FileRepository,
     private val imageRepository: ImageRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
 ) {
-    suspend operator fun invoke(userId: Int, profilePictureUri: Uri): Result<Unit> {
-        val fileName = "$userId-profile-picture"
+    suspend operator fun invoke(
+        userId: Int,
+        profilePictureUri: Uri,
+        currentUserProfilePictureUrl: String?
+    ): Result<Unit> {
+        val currentTime = System.currentTimeMillis()
+        val fileName = "$userId-profile-picture-$currentTime"
         val profilePictureFile = fileRepository.createFileFromUri(fileName, profilePictureUri)
         val uploadImageResult = imageRepository.uploadImage(profilePictureFile)
-        val profilePictureUrl = formatProfilePictureUrl(userId, profilePictureFile.extension)
 
         return if(uploadImageResult.isSuccess) {
+            val profilePictureUrl = formatProfilePictureUrl(fileName, profilePictureFile.extension)
             userRepository.updateProfilePictureUrl(userId, profilePictureUrl)
+                .onSuccess {
+                    currentUserProfilePictureUrl?.let { deleteProfilePicture(it) }
+                }
         }
         else {
             Result.failure(uploadImageResult.exceptionOrNull()!!)
         }
+    }
+
+    private suspend fun deleteProfilePicture(userProfilePictureUrl: String): Result<Unit> {
+        val fileName = userProfilePictureUrl.substringAfterLast("/")
+        return imageRepository.deleteImage(fileName)
     }
 }

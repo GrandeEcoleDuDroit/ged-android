@@ -25,6 +25,7 @@ import com.upsaclay.common.data.model.Screen
 import com.upsaclay.common.domain.model.User
 import com.upsaclay.gedoise.data.NavigationItem
 import com.upsaclay.gedoise.ui.profile.ProfileScreen
+import com.upsaclay.gedoise.ui.profile.account.AccountInfoScreen
 import com.upsaclay.news.ui.NewsScreen
 import org.koin.androidx.compose.koinViewModel
 
@@ -39,10 +40,12 @@ fun Navigation(
 
     LaunchedEffect(mainViewModel.isAuthenticated) {
         mainViewModel.isAuthenticated.collect {
-            startDestination = if(it)
+            startDestination = if(it) {
                 Screen.HOME.route
-            else
+            }
+            else {
                 Screen.AUTHENTICATION.route
+            }
         }
     }
 
@@ -67,48 +70,54 @@ fun Navigation(
                 ThirdRegistrationScreen(navController = navController, sharedRegistrationViewModel)
             }
 
-            composable(Screen.HOME.route) {
-                MainNavigationBars(
-                    navController = navController,
-                    mainViewModel.navigationItem.values.toList(),
-                    user!!
-                ) {
-                    NewsScreen()
+            user?.let { user ->
+                composable(Screen.HOME.route) {
+                    MainNavigationBars(
+                        navController = navController,
+                        mainViewModel.navigationItem.values.toList(),
+                        user
+                    ) {
+                        NewsScreen()
+                    }
                 }
-            }
 
-            composable(Screen.MESSAGE.route) {
-                MainNavigationBars(
-                    navController = navController,
-                    mainViewModel.navigationItem.values.toList(),
-                    user!!
-                ) {
-                    Text(text = "Message")
+                composable(Screen.MESSAGE.route) {
+                    MainNavigationBars(
+                        navController = navController,
+                        mainViewModel.navigationItem.values.toList(),
+                        user
+                    ) {
+                        Text(text = "Message")
+                    }
                 }
-            }
 
-            composable(Screen.CALENDAR.route) {
-                MainNavigationBars(
-                    navController = navController,
-                    mainViewModel.navigationItem.values.toList(),
-                    user!!
-                ) {
-                    Text(text = "Calendar")
+                composable(Screen.CALENDAR.route) {
+                    MainNavigationBars(
+                        navController = navController,
+                        mainViewModel.navigationItem.values.toList(),
+                        user
+                    ) {
+                        Text(text = "Calendar")
+                    }
                 }
-            }
 
-            composable(Screen.FORUM.route) {
-                MainNavigationBars(
-                    navController = navController,
-                    mainViewModel.navigationItem.values.toList(),
-                    user!!
-                ) {
-                    Text(text = "Forum")
+                composable(Screen.FORUM.route) {
+                    MainNavigationBars(
+                        navController = navController,
+                        mainViewModel.navigationItem.values.toList(),
+                        user
+                    ) {
+                        Text(text = "Forum")
+                    }
                 }
             }
 
             composable(Screen.PROFILE.route) {
                 ProfileScreen(navController = navController)
+            }
+
+            composable(Screen.ACCOUNT_INFO.route) {
+                AccountInfoScreen(navController = navController)
             }
         }
     }
@@ -122,7 +131,7 @@ private fun MainNavigationBars(
     content: @Composable () -> Unit
 ){
     Scaffold(
-        topBar = { MainTopBar(navController = navController, user) },
+        topBar = { MainTopBar(navController = navController, user = user) },
         bottomBar = {
             MainBottomBar(
                 navController = navController,

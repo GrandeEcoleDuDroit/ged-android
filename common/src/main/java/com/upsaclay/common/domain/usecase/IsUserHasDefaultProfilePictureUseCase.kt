@@ -1,11 +1,12 @@
 package com.upsaclay.common.domain.usecase
 
-import com.upsaclay.common.domain.model.User
 import com.upsaclay.common.domain.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
 
-class GetCurrentUserFlowUseCase(
+class IsUserHasDefaultProfilePictureUseCase(
     private val userRepository: UserRepository
 ) {
-    operator fun invoke(): Flow<User> = userRepository.userFlow
+    operator fun invoke(): Flow<Boolean> {
+        return userRepository.hasDefaultProfilePicture
+    }
 }

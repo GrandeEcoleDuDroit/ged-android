@@ -4,6 +4,7 @@ import com.upsaclay.common.data.model.ServerResponse
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Response
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -16,5 +17,8 @@ interface ImageRemoteApi {
 
     @Multipart
     @POST("image/upload")
-    suspend fun uploadImage(@Part image: MultipartBody.Part): Response<ServerResponse.StringServerResponse>
+    suspend fun uploadImage(@Part image: MultipartBody.Part): Response<ServerResponse.EmptyResponse>
+
+    @DELETE("image/delete/{filename}")
+    suspend fun deleteImage(@Path("filename") filename: String): Response<ServerResponse.EmptyResponse>
 }

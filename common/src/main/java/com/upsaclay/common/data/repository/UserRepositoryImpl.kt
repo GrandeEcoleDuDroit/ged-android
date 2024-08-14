@@ -20,14 +20,16 @@ internal class UserRepositoryImpl(
     private val userRemoteDataSource: UserRemoteDataSource,
     private val userLocalDataSource: UserLocalDataSource
 ): UserRepository {
-    private val _userFlow = MutableStateFlow<User?>(null)
-    override val userFlow: Flow<User> = _userFlow.filterNotNull()
-    override val user: User?
-        get() = _userFlow.value
+    private val _user = MutableStateFlow<User?>(null)
+    override val user: Flow<User> = _user.filterNotNull()
+    override val currentUser: User? get() = _user.value
+    private val _hasDefaultProfilePictureFlow = MutableStateFlow(true)
+    override val hasDefaultProfilePicture: Flow<Boolean> get() = _hasDefaultProfilePictureFlow
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
-            _userFlow.value = userLocalDataSource.getCurrentUser()?.let { User.fromDTO(it) }
+            _user.value = userLocalDataSource.getCurrentUser()?.let { User.fromDTO(it) }
+            _hasDefaultProfilePictureFlow.value = userLocalDataSource.hasDefaultProfilePicture()
         }
     }
 
@@ -36,9 +38,9 @@ internal class UserRepositoryImpl(
 
         return if (response.isSuccessful && response.body()?.data != null) {
             infoLog(response.body()?.message ?: "User created successfully !")
-            val userId = response.body()!!.data
+            val userId = response.body()!!.data!!
             userLocalDataSource.createCurrentUser(user.copy(id = userId).toDTO())
-            _userFlow.value = user.copy(id = userId)
+            _user.value = user.copy(id = userId)
             Result.success(userId)
         }
         else {
@@ -50,10 +52,11 @@ internal class UserRepositoryImpl(
 
     override suspend fun updateProfilePictureUrl(userId: Int, profilePictureUrl: String): Result<Unit> {
         val response = userRemoteDataSource.updateProfilePictureUrl(userId, profilePictureUrl)
+
         return if (response.isSuccessful) {
-            infoLog("Profile picture updated successfully !")
             userLocalDataSource.updateProfilePictureUrl(profilePictureUrl)
-            _userFlow.update { it?.copy(profilePictureUrl = profilePictureUrl) }
+            _user.update { it?.copy(profilePictureUrl = profilePictureUrl) }
+            infoLog("Profile picture updated successfully !")
             Result.success(Unit)
         }
         else {
@@ -61,5 +64,9 @@ internal class UserRepositoryImpl(
             errorLog(errorMessage)
             Result.failure(IOException(errorMessage))
         }
+    }
+
+    override suspend fun setUserHasDefaultProfilePicture(hasDefaultProfilePicture: Boolean) {
+        userLocalDataSource.setUserHasDefaultProfilePicture(hasDefaultProfilePicture)
     }
 }

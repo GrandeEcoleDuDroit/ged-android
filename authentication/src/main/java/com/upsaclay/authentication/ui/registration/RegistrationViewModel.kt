@@ -9,10 +9,9 @@ import androidx.lifecycle.viewModelScope
 import com.upsaclay.authentication.domain.model.RegistrationState
 import com.upsaclay.authentication.domain.usecase.IsAccountExistUseCase
 import com.upsaclay.authentication.domain.usecase.RegistrationUseCase
+import com.upsaclay.common.R
 import com.upsaclay.common.domain.model.User
 import com.upsaclay.common.domain.usecase.GetDrawableUriUseCase
-import com.upsaclay.common.domain.usecase.UpdateUserProfilePictureUseCase
-import com.upsaclay.common.utils.errorLog
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,56 +24,41 @@ class RegistrationViewModel(
     getDrawableUriUseCase: GetDrawableUriUseCase,
     private val isAccountExistUseCase: IsAccountExistUseCase,
     private val registrationUseCase: RegistrationUseCase,
-    private val updateUserProfilePictureUseCase: UpdateUserProfilePictureUseCase
 ) : ViewModel() {
 
     private val _registrationState = MutableStateFlow(RegistrationState.NOT_REGISTERED)
     val registrationState: StateFlow<RegistrationState> = _registrationState.asStateFlow()
+
     var email by mutableStateOf("")
         private set
+
     var password by mutableStateOf("")
         private set
+
     val schoolLevels = persistentListOf("GED 1", "GED 2", "GED 3", "GED 4")
     var currentSchoolLevel by mutableStateOf(schoolLevels[0])
         private set
-    val defaultPictureUri =
-        getDrawableUriUseCase(com.upsaclay.common.R.drawable.default_profile_picture)!!
+
+    val defaultPictureUri = getDrawableUriUseCase(R.drawable.default_profile_picture)!!
     var profilePictureUri: Uri by mutableStateOf(defaultPictureUri)
         private set
+
     var fullName by mutableStateOf("")
         private set
 
-    fun updateEmail(value: String) {
-        email = value
-    }
+    fun updateEmail(value: String) { email = value }
 
-    fun updatePassword(value: String) {
-        password = value
-    }
+    fun updatePassword(value: String) { password = value }
 
-    fun updateSchoolLevel(value: String) {
-        currentSchoolLevel = value
-    }
+    fun updateSchoolLevel(value: String) { currentSchoolLevel = value }
 
-    fun updateProfilePictureUri(uri: Uri?) {
-        uri?.let { profilePictureUri = it }
-    }
+    fun updateProfilePictureUri(uri: Uri?) { uri?.let { profilePictureUri = it } }
 
-    fun resetEmail() {
-        email = ""
-    }
+    fun resetEmail() { email = "" }
 
-    fun resetPassword() {
-        password = ""
-    }
+    fun resetPassword() { password = "" }
 
-    fun resetRegistrationState() {
-        _registrationState.value = RegistrationState.NOT_REGISTERED
-    }
-
-    fun resetProfilePictureUri() {
-        profilePictureUri = defaultPictureUri
-    }
+    fun resetProfilePictureUri() { profilePictureUri = defaultPictureUri }
 
     fun verifyAccount(email: String, password: String) {
         _registrationState.value = RegistrationState.LOADING
@@ -111,18 +95,9 @@ class RegistrationViewModel(
         )
 
         viewModelScope.launch {
-            val registrationResult = registrationUseCase(user)
-            if(registrationResult.isSuccess) {
-                val userId = registrationResult.getOrNull()
-                userId?.let {
-                    updateUserProfilePictureUseCase(it, profilePictureUri)
-                } ?: errorLog("Cannot update profile picture because user id is null")
-                
-                _registrationState.value = RegistrationState.REGISTERED
-            }
-            else {
-                _registrationState.value = RegistrationState.ERROR_REGISTRATION
-            }
+            registrationUseCase(user, profilePictureUri)
+                .onSuccess { _registrationState.value = RegistrationState.REGISTERED }
+                .onFailure { _registrationState.value = RegistrationState.ERROR_REGISTRATION }
         }
     }
 }

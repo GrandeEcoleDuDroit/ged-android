@@ -4,6 +4,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -26,6 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
@@ -87,6 +89,7 @@ fun ThirdRegistrationScreen(
                     .clip(CircleShape)
                     .fillMaxWidth(0.6f)
                     .fillMaxHeight(0.3f)
+                    .border(1.dp, Color.LightGray, CircleShape)
                     .clickable {
                         singlePhotoPickerLauncher.launch(
                             PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
@@ -142,7 +145,7 @@ fun ThirdRegistrationScreen(
 @Composable
 fun ThirdRegistrationScreenPreview() {
     val errorRegistration = false
-    val isDefaultPicture = true
+    val pictureChanged = false
     val isLoading = false
 
     GedoiseTheme {
@@ -171,9 +174,10 @@ fun ThirdRegistrationScreenPreview() {
                         .clip(CircleShape)
                         .fillMaxWidth(0.6f)
                         .fillMaxHeight(0.3f)
+                        .border(1.dp, Color.LightGray, CircleShape)
                 )
 
-                if(!isDefaultPicture) {
+                if(pictureChanged) {
                     TextButton(
                         onClick = { }
                     ) {
