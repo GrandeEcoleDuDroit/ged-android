@@ -7,7 +7,6 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -40,9 +39,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -52,11 +49,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.Coil
-import coil.compose.AsyncImage
 import com.upsaclay.common.data.model.MenuItemData
-import com.upsaclay.common.ui.components.ImageWithIcon
 import com.upsaclay.common.ui.components.MenuItem
 import com.upsaclay.common.ui.components.OverlayLoadingScreen
+import com.upsaclay.common.ui.components.ProfilePicture
+import com.upsaclay.common.ui.components.ProfilePictureWithIcon
 import com.upsaclay.common.ui.components.SimpleDialog
 import com.upsaclay.common.ui.theme.GedoiseColor
 import com.upsaclay.common.ui.theme.GedoiseTheme
@@ -83,7 +80,6 @@ fun AccountInfoScreen(
     val sheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
-    val isUserHasDefaultProfilePicture = accountInfoViewModel.isUserHasDefaultProfilePicture.collectAsState(true)
     val context = LocalContext.current
     var showDeleteProfilePictureDialog by remember { mutableStateOf(false) }
 
@@ -189,7 +185,7 @@ fun AccountInfoScreen(
                                     PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                                 )
                             },
-                            showDeleteProfilePicture = isUserHasDefaultProfilePicture.value,
+                            showDeleteProfilePicture = user.profilePictureUrl != null,
                             onDeleteProfilePictureClick = {
                                 hideBottomSheet()
                                 showDeleteProfilePictureDialog = true
@@ -243,7 +239,7 @@ private fun PictureSection(
 
     profilePictureUri?.let { uri ->
         if (!isEdited) {
-            ImageWithIcon(
+            ProfilePictureWithIcon(
                 imageUri = uri,
                 iconVector = Icons.Default.Edit,
                 contentDescription = "",
@@ -251,35 +247,20 @@ private fun PictureSection(
                 onClick = onClick
             )
         } else {
-            AsyncImage(
-                model = uri,
-                contentDescription = "",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(100.dp * scaleImage)
-                    .clip(CircleShape)
-                    .border(1.dp, Color.LightGray, CircleShape)
-                    .clickable(onClick = onClick)
+            ProfilePicture(
+                imageUri = uri,
+                scaleImage = scaleImage,
+                onClick = onClick
             )
         }
     } ?: run {
-        profilePictureUrl?.let {
-            ImageWithIcon(
-                imageUrl = it,
-                iconVector = Icons.Default.Edit,
-                contentDescription = "",
-                scale = scaleImage,
-                onClick = onClick
-            )
-        } ?: run {
-            ImageWithIcon(
-                drawableRes = com.upsaclay.common.R.drawable.default_profile_picture,
-                iconVector = Icons.Default.Edit,
-                contentDescription = "",
-                scale = scaleImage,
-                onClick = onClick
-            )
-        }
+        ProfilePictureWithIcon(
+            imageUrl = profilePictureUrl,
+            iconVector = Icons.Default.Edit,
+            contentDescription = "",
+            scale = scaleImage,
+            onClick = onClick
+        )
     }
 }
 
@@ -441,7 +422,7 @@ private fun AccountScreenPreview() {
                             .fillMaxSize()
                     )
                     if(!pictureChanged) {
-                        ImageWithIcon(
+                        ProfilePictureWithIcon (
                             imageUrl = "",
                             contentDescription = "",
                             scale = scaleImage,

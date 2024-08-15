@@ -25,7 +25,7 @@ class UpdateUserProfilePictureUseCase(
             val profilePictureUrl = formatProfilePictureUrl(fileName, profilePictureFile.extension)
             userRepository.updateProfilePictureUrl(userId, profilePictureUrl)
                 .onSuccess {
-                    currentUserProfilePictureUrl?.let { deleteProfilePicture(it) }
+                    currentUserProfilePictureUrl?.let { deleteProfilePictureImage(it) }
                 }
         }
         else {
@@ -33,7 +33,7 @@ class UpdateUserProfilePictureUseCase(
         }
     }
 
-    private suspend fun deleteProfilePicture(userProfilePictureUrl: String): Result<Unit> {
+    private suspend fun deleteProfilePictureImage(userProfilePictureUrl: String): Result<Unit> {
         val fileName = userProfilePictureUrl.substringAfterLast("/")
         return imageRepository.deleteImage(fileName)
     }

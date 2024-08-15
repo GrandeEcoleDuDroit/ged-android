@@ -62,4 +62,20 @@ internal class UserRepositoryImpl(
             Result.failure(IOException(errorMessage))
         }
     }
+
+    override suspend fun deleteProfilePictureUrl(userId: Int): Result<Unit> {
+        val response = userRemoteDataSource.deleteProfilePictureUrl(userId)
+
+        return if(response.isSuccessful) {
+            userLocalDataSource.deleteProfilePictureUrl()
+            _user.update { it?.copy(profilePictureUrl = null) }
+            i("Profile picture deleted successfully !")
+            Result.success(Unit)
+        }
+        else {
+            val errorMessage = formatHttpError(response.message(), response.errorBody()?.string())
+            e(errorMessage)
+            Result.failure(IOException(errorMessage))
+        }
+    }
 }

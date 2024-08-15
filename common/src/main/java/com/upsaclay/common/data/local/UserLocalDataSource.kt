@@ -17,4 +17,11 @@ class UserLocalDataSource(private val userDataStore: UserDataStore) {
             userDataStore.storeCurrentUser(it.copy(userProfilePictureUrl = profilePictureUrl))
         }
     }
+
+    suspend fun deleteProfilePictureUrl() {
+        val user = userDataStore.getCurrentUser()
+        user?.let {
+            userDataStore.storeCurrentUser(it.copy(userProfilePictureUrl = null))
+        }
+    }
 }

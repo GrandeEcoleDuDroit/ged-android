@@ -30,4 +30,13 @@ internal class UserRemoteDataSource(private val userRemoteApi: UserRemoteApi) {
             }
         }
     }
+
+    suspend fun deleteProfilePictureUrl(userId: Int): Response<EmptyResponse> = withContext(Dispatchers.IO) {
+        try {
+            userRemoteApi.deleteProfilePictureUrl(userId)
+        } catch (e: Exception) {
+            e("Error to delete user profile picture url: ${e.message.toString()}", e)
+            Response.error(500, e.message.toString().toResponseBody())
+        }
+    }
 }

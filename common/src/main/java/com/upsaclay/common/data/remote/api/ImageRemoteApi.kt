@@ -19,6 +19,6 @@ interface ImageRemoteApi {
     @POST("image/upload")
     suspend fun uploadImage(@Part image: MultipartBody.Part): Response<ServerResponse.EmptyResponse>
 
-    @DELETE("image/delete/{filename}")
+    @DELETE("image/{filename}")
     suspend fun deleteImage(@Path("filename") filename: String): Response<ServerResponse.EmptyResponse>
 }
