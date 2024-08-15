@@ -18,11 +18,10 @@ class UserLocalDataSource(private val userDataStore: UserDataStore) {
         }
     }
 
-    suspend fun hasDefaultProfilePicture(): Boolean {
-        return userDataStore.getUserHasDefaultProfilePicture()
-    }
-
-    suspend fun setUserHasDefaultProfilePicture(hasDefaultProfilePicture: Boolean) {
-        userDataStore.storeUserHasDefaultProfilePicture(hasDefaultProfilePicture)
+    suspend fun deleteProfilePictureUrl() {
+        val user = userDataStore.getCurrentUser()
+        user?.let {
+            userDataStore.storeCurrentUser(it.copy(userProfilePictureUrl = null))
+        }
     }
 }

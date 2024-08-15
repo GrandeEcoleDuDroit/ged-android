@@ -23,13 +23,10 @@ internal class UserRepositoryImpl(
     private val _user = MutableStateFlow<User?>(null)
     override val user: Flow<User> = _user.filterNotNull()
     override val currentUser: User? get() = _user.value
-    private val _hasDefaultProfilePictureFlow = MutableStateFlow(true)
-    override val hasDefaultProfilePicture: Flow<Boolean> get() = _hasDefaultProfilePictureFlow
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
             _user.value = userLocalDataSource.getCurrentUser()?.let { User.fromDTO(it) }
-            _hasDefaultProfilePictureFlow.value = userLocalDataSource.hasDefaultProfilePicture()
         }
     }
 
@@ -66,7 +63,19 @@ internal class UserRepositoryImpl(
         }
     }
 
-    override suspend fun setUserHasDefaultProfilePicture(hasDefaultProfilePicture: Boolean) {
-        userLocalDataSource.setUserHasDefaultProfilePicture(hasDefaultProfilePicture)
+    override suspend fun deleteProfilePictureUrl(userId: Int): Result<Unit> {
+        val response = userRemoteDataSource.deleteProfilePictureUrl(userId)
+
+        return if(response.isSuccessful) {
+            userLocalDataSource.deleteProfilePictureUrl()
+            _user.update { it?.copy(profilePictureUrl = null) }
+            i("Profile picture deleted successfully !")
+            Result.success(Unit)
+        }
+        else {
+            val errorMessage = formatHttpError(response.message(), response.errorBody()?.string())
+            e(errorMessage)
+            Result.failure(IOException(errorMessage))
+        }
     }
 }

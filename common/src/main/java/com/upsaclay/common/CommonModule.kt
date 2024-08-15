@@ -14,12 +14,11 @@ import com.upsaclay.common.domain.repository.DrawableRepository
 import com.upsaclay.common.domain.repository.FileRepository
 import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.common.domain.repository.UserRepository
+import com.upsaclay.common.domain.usecase.DeleteUserProfilePictureUseCase
 import com.upsaclay.common.domain.usecase.DownloadImageFromOracleBucketUseCase
 import com.upsaclay.common.domain.usecase.GetCurrentUserUseCase
 import com.upsaclay.common.domain.usecase.GetDrawableUriUseCase
 import com.upsaclay.common.domain.usecase.GetUserUseCase
-import com.upsaclay.common.domain.usecase.IsUserHasDefaultProfilePictureUseCase
-import com.upsaclay.common.domain.usecase.ResetUserProfilePictureUseCase
 import com.upsaclay.common.domain.usecase.UpdateUserProfilePictureUseCase
 import com.upsaclay.common.domain.usecase.UploadImageToOracleBucketUseCase
 import okhttp3.OkHttpClient
@@ -78,8 +77,7 @@ val coreModule = module {
     singleOf(::GetUserUseCase)
     singleOf(::GetCurrentUserUseCase)
     singleOf(::GetDrawableUriUseCase)
-    singleOf(::IsUserHasDefaultProfilePictureUseCase)
-    singleOf(::ResetUserProfilePictureUseCase)
+    singleOf(::DeleteUserProfilePictureUseCase)
     singleOf(::UpdateUserProfilePictureUseCase)
     singleOf(::UploadImageToOracleBucketUseCase)
 }

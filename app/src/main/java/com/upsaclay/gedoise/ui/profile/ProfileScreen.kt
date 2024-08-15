@@ -135,7 +135,7 @@ fun ProfileScreen(
 
 @Composable
 private fun TopSection(
-    profilePictureUrl: String,
+    profilePictureUrl: String?,
     userFullName: String
 ) {
     Row(
@@ -145,7 +145,7 @@ private fun TopSection(
         verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
-            model = profilePictureUrl,
+            model = profilePictureUrl ?: com.upsaclay.common.R.drawable.default_profile_picture,
             contentDescription = stringResource(id = R.string.profile_icon_description),
             contentScale = ContentScale.Crop,
             modifier = Modifier
