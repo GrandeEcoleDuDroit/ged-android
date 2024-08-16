@@ -75,13 +75,13 @@ fun AccountInfoScreen(
     navController: NavController,
     accountInfoViewModel: AccountInfoViewModel = koinViewModel()
 ) {
-    val currentUser = accountInfoViewModel.currentUser.collectAsState(initial = null)
-    val accountScreenState = accountInfoViewModel.accountScreenState.collectAsState()
+    val currentUser = accountInfoViewModel.user.collectAsState(initial = null).value
+    val accountScreenState = accountInfoViewModel.accountScreenState.collectAsState().value
     val sheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
+    var showDeleteProfilePictureDialog by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
-    var showDeleteProfilePictureDialog by remember { mutableStateOf(false) }
 
     val hideBottomSheet: () -> Unit = {
         scope.launch { sheetState.hide() }.invokeOnCompletion {
@@ -101,7 +101,7 @@ fun AccountInfoScreen(
         }
     )
 
-    currentUser.value?.let { user ->
+    currentUser?.let { user ->
         val accountMenuItems: ImmutableList<AccountInfoItemData> = persistentListOf(
             AccountInfoItemData(
                 stringResource(id = com.upsaclay.common.R.string.last_name),
@@ -123,7 +123,7 @@ fun AccountInfoScreen(
 
         Scaffold(
             topBar = {
-                if (accountScreenState.value == AccountInfoScreenState.EDIT) {
+                if (accountScreenState == AccountInfoScreenState.EDIT) {
                     EditTopAppBar(
                         title = stringResource(id = R.string.account_informations),
                         onCancelClick = {
@@ -155,11 +155,11 @@ fun AccountInfoScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     PictureSection(
-                        isEdited = accountScreenState.value == AccountInfoScreenState.EDIT,
+                        isEdited = accountScreenState == AccountInfoScreenState.EDIT,
                         profilePictureUri = accountInfoViewModel.profilePictureUri,
                         profilePictureUrl = user.profilePictureUrl,
                         onClick = {
-                            if (accountScreenState.value == AccountInfoScreenState.EDIT) {
+                            if (accountScreenState == AccountInfoScreenState.EDIT) {
                                 singlePhotoPickerLauncher.launch(
                                     PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                                 )
@@ -194,7 +194,7 @@ fun AccountInfoScreen(
                     }
                 }
 
-                when(accountScreenState.value) {
+                when(accountScreenState) {
                     AccountInfoScreenState.LOADING -> {
                         OverlayLoadingScreen()
                     }
@@ -239,17 +239,17 @@ private fun PictureSection(
 
     profilePictureUri?.let { uri ->
         if (!isEdited) {
+            ProfilePicture(
+                imageUri = uri,
+                scaleImage = scaleImage,
+                onClick = onClick
+            )
+        } else {
             ProfilePictureWithIcon(
                 imageUri = uri,
                 iconVector = Icons.Default.Edit,
                 contentDescription = "",
                 scale = scaleImage,
-                onClick = onClick
-            )
-        } else {
-            ProfilePicture(
-                imageUri = uri,
-                scaleImage = scaleImage,
                 onClick = onClick
             )
         }

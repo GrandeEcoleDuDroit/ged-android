@@ -34,11 +34,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import coil.compose.AsyncImage
 import com.upsaclay.common.data.model.MenuItemData
 import com.upsaclay.common.data.model.Screen
 import com.upsaclay.common.ui.components.CircularProgressBar
 import com.upsaclay.common.ui.components.MenuItem
+import com.upsaclay.common.ui.components.ProfilePicture
 import com.upsaclay.common.ui.theme.GedoiseColor
 import com.upsaclay.common.ui.theme.GedoiseTheme
 import com.upsaclay.common.ui.theme.spacing
@@ -53,67 +53,15 @@ fun ProfileScreen(
     navController: NavController,
     profileViewModel: ProfileViewModel = koinViewModel()
 ) {
-    val user = profileViewModel.user.collectAsState(initial = null)
-
-    val menuItemData: ImmutableList<MenuItemData> = persistentListOf(
-        MenuItemData(
-            text = { Text(text = stringResource(id = R.string.account_informations)) },
-            icon = {
-                Icon(
-                    modifier = Modifier.size(28.dp),
-                    painter = painterResource(id = com.upsaclay.common.R.drawable.ic_person),
-                    contentDescription = stringResource(id = R.string.account_icon_description),
-                )
-            },
-            onClick = { navController.navigate(Screen.ACCOUNT_INFO.route) }
-        ),
-        MenuItemData(
-            text = {
-                Text(text = stringResource(id = R.string.settings))
-            },
-            icon = {
-                Icon(
-                    modifier = Modifier.size(28.dp),
-                    painter = painterResource(id = com.upsaclay.common.R.drawable.ic_settings),
-                    contentDescription = stringResource(id = R.string.settings_icon_description)
-                )
-            }
-        ),
-        MenuItemData(
-            text = {
-                Text(text = stringResource(id = R.string.support))
-            },
-            icon = {
-                Icon(
-                    painter = painterResource(id = com.upsaclay.common.R.drawable.ic_support),
-                    contentDescription = stringResource(id = R.string.support_icon_description)
-                )
-            }
-        ),
-        MenuItemData(
-            text = {
-                Text(
-                    text = stringResource(id = R.string.logout),
-                    color = GedoiseColor.Red
-                )
-            },
-            icon = {
-                Icon(
-                    painter = painterResource(id = com.upsaclay.common.R.drawable.ic_logout),
-                    contentDescription = stringResource(id = R.string.logout_icon_description),
-                    tint = GedoiseColor.Red
-                )
-            },
-            onClick = { profileViewModel.logout() }
-        )
-    )
+    val user = profileViewModel.user.collectAsState(initial = null).value
+    val menuItemData: ImmutableList<MenuItemData> = buildMenuItemData(navController, profileViewModel)
 
     Scaffold(
         topBar = { ProfileTopBar(navController = navController) }
     ) {
         Box(Modifier.padding(top = it.calculateTopPadding())) {
             Column {
-                user.value?.let { user ->
+                user?.let { user ->
                     TopSection(
                         profilePictureUrl = user.profilePictureUrl,
                         userFullName = user.fullName
@@ -144,13 +92,9 @@ private fun TopSection(
             .padding(MaterialTheme.spacing.medium),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        AsyncImage(
-            model = profilePictureUrl ?: com.upsaclay.common.R.drawable.default_profile_picture,
-            contentDescription = stringResource(id = R.string.profile_icon_description),
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(70.dp)
-                .border(1.dp, Color.LightGray, CircleShape)
+        ProfilePicture(
+            imageUrl = profilePictureUrl,
+            scaleImage = 0.7f
         )
 
         Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))
@@ -177,6 +121,64 @@ fun ProfileTopBar(
                 )
             }
         }
+    )
+}
+
+private fun buildMenuItemData(
+    navController: NavController,
+    profileViewModel: ProfileViewModel
+): ImmutableList<MenuItemData> {
+    return persistentListOf(
+        MenuItemData(
+            text = { Text(text = stringResource(id = R.string.account_informations)) },
+            icon = {
+                Icon(
+                    modifier = Modifier.size(28.dp),
+                    painter = painterResource(id = com.upsaclay.common.R.drawable.ic_person),
+                    contentDescription = stringResource(id = R.string.account_icon_description),
+                )
+            },
+            onClick = { navController.navigate(Screen.ACCOUNT_INFO.route) }
+        ),
+//        MenuItemData(
+//            text = {
+//                Text(text = stringResource(id = R.string.settings))
+//            },
+//            icon = {
+//                Icon(
+//                    modifier = Modifier.size(28.dp),
+//                    painter = painterResource(id = com.upsaclay.common.R.drawable.ic_settings),
+//                    contentDescription = stringResource(id = R.string.settings_icon_description)
+//                )
+//            }
+//        ),
+//        MenuItemData(
+//            text = {
+//                Text(text = stringResource(id = R.string.support))
+//            },
+//            icon = {
+//                Icon(
+//                    painter = painterResource(id = com.upsaclay.common.R.drawable.ic_support),
+//                    contentDescription = stringResource(id = R.string.support_icon_description)
+//                )
+//            }
+//        ),
+        MenuItemData(
+            text = {
+                Text(
+                    text = stringResource(id = R.string.logout),
+                    color = GedoiseColor.Red
+                )
+            },
+            icon = {
+                Icon(
+                    painter = painterResource(id = com.upsaclay.common.R.drawable.ic_logout),
+                    contentDescription = stringResource(id = R.string.logout_icon_description),
+                    tint = GedoiseColor.Red
+                )
+            },
+            onClick = { profileViewModel.logout() }
+        )
     )
 }
 
@@ -241,29 +243,29 @@ private val menuItemsFixtureData: ImmutableList<MenuItemData> = persistentListOf
             )
         },
     ),
-    MenuItemData(
-        text = {
-            Text(text = stringResource(id = R.string.settings))
-        },
-        icon = {
-            Icon(
-                modifier = Modifier.size(28.dp),
-                painter = painterResource(id = com.upsaclay.common.R.drawable.ic_settings),
-                contentDescription = stringResource(id = R.string.settings_icon_description)
-            )
-        }
-    ),
-    MenuItemData(
-        text = {
-            Text(text = stringResource(id = R.string.support))
-        },
-        icon = {
-            Icon(
-                painter = painterResource(id = com.upsaclay.common.R.drawable.ic_support),
-                contentDescription = stringResource(id = R.string.support_icon_description)
-            )
-        }
-    ),
+//    MenuItemData(
+//        text = {
+//            Text(text = stringResource(id = R.string.settings))
+//        },
+//        icon = {
+//            Icon(
+//                modifier = Modifier.size(28.dp),
+//                painter = painterResource(id = com.upsaclay.common.R.drawable.ic_settings),
+//                contentDescription = stringResource(id = R.string.settings_icon_description)
+//            )
+//        }
+//    ),
+//    MenuItemData(
+//        text = {
+//            Text(text = stringResource(id = R.string.support))
+//        },
+//        icon = {
+//            Icon(
+//                painter = painterResource(id = com.upsaclay.common.R.drawable.ic_support),
+//                contentDescription = stringResource(id = R.string.support_icon_description)
+//            )
+//        }
+//    ),
     MenuItemData(
         text = {
             Text(
