@@ -32,9 +32,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import coil.compose.rememberAsyncImagePainter
 import com.upsaclay.common.data.model.Screen
 import com.upsaclay.common.domain.model.User
+import com.upsaclay.common.ui.components.ProfilePicture
 import com.upsaclay.common.ui.theme.GedoiseTheme
 import com.upsaclay.gedoise.R
 import com.upsaclay.gedoise.data.NavigationItem
@@ -45,7 +45,7 @@ fun MainTopBar(
     navController: NavController,
     user: User
 ){
-    val profilePictureIcon = rememberAsyncImagePainter(user.profilePictureUrl)
+
     TopAppBar(
         title = {
             Text(
@@ -73,12 +73,7 @@ fun MainTopBar(
                 modifier = Modifier
                     .clip(shape = CircleShape)
             ) {
-                Image(
-                    painter = profilePictureIcon,
-                    contentDescription = stringResource(id = R.string.profile_icon_description),
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier.border(1.dp, Color.LightGray, CircleShape)
-                )
+                ProfilePicture(imageUrl = user.profilePictureUrl)
             }
         }
     )

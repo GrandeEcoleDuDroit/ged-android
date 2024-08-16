@@ -6,10 +6,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.upsaclay.common.domain.model.User
 import com.upsaclay.common.domain.usecase.DeleteUserProfilePictureUseCase
 import com.upsaclay.common.domain.usecase.GetUserUseCase
 import com.upsaclay.common.domain.usecase.UpdateUserProfilePictureUseCase
 import com.upsaclay.gedoise.data.profile.AccountInfoScreenState
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
@@ -22,7 +24,7 @@ class AccountInfoViewModel(
 ): ViewModel() {
     private val _accountInfoScreenState = MutableStateFlow(AccountInfoScreenState.READ)
     val accountScreenState = _accountInfoScreenState.asStateFlow()
-    val currentUser = getUserUseCase()
+    val user: Flow<User> = getUserUseCase()
     var profilePictureUri by mutableStateOf<Uri?>(null)
         private set
 
@@ -43,7 +45,7 @@ class AccountInfoViewModel(
 
         profilePictureUri?.let { uri ->
             viewModelScope.launch {
-                val (id, profilePictureUrl) = currentUser.first().id to currentUser.first().profilePictureUrl
+                val (id, profilePictureUrl) = user.first().id to user.first().profilePictureUrl
                 updateUserProfilePictureUseCase(id, uri, profilePictureUrl)
                     .onSuccess {
                         _accountInfoScreenState.value = AccountInfoScreenState.PROFILE_PICTURE_UPDATED
@@ -51,8 +53,8 @@ class AccountInfoViewModel(
                     .onFailure {
                         _accountInfoScreenState.value = AccountInfoScreenState.ERROR_UPDATING_PROFILE_PICTURE
                     }
+                resetProfilePictureUri()
             }
-            resetProfilePictureUri()
         }
     }
 
@@ -60,7 +62,7 @@ class AccountInfoViewModel(
         _accountInfoScreenState.value = AccountInfoScreenState.LOADING
 
         viewModelScope.launch {
-            val (id, profilePictureUrl) = currentUser.first().id to currentUser.first().profilePictureUrl
+            val (id, profilePictureUrl) = user.first().id to user.first().profilePictureUrl
             deleteUserProfilePictureUseCase(id, profilePictureUrl!!)
                 .onSuccess {
                     _accountInfoScreenState.value = AccountInfoScreenState.PROFILE_PICTURE_UPDATED
@@ -68,7 +70,7 @@ class AccountInfoViewModel(
                 .onFailure {
                     _accountInfoScreenState.value = AccountInfoScreenState.ERROR_UPDATING_PROFILE_PICTURE
                 }
+            resetProfilePictureUri()
         }
-        resetProfilePictureUri()
     }
 }

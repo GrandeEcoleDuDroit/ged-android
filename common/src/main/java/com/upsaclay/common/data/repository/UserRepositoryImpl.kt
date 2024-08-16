@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -53,6 +54,7 @@ internal class UserRepositoryImpl(
         return if (response.isSuccessful) {
             userLocalDataSource.updateProfilePictureUrl(profilePictureUrl)
             _user.update { it?.copy(profilePictureUrl = profilePictureUrl) }
+            user.first().profilePictureUrl?.let { i(it) }
             i("Profile picture updated successfully !")
             Result.success(Unit)
         }

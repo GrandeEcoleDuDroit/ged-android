@@ -35,7 +35,7 @@ fun Navigation(
 ) {
     val navController = rememberNavController()
     val sharedRegistrationViewModel: RegistrationViewModel = koinViewModel()
-    val user by mainViewModel.user.collectAsState(initial = null)
+    val user = mainViewModel.user.collectAsState(initial = null).value
     var startDestination: String? by remember { mutableStateOf(null) }
 
     LaunchedEffect(mainViewModel.isAuthenticated) {

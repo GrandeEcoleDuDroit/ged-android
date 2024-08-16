@@ -34,6 +34,7 @@ class ImageRepositoryImpl(
 
     override suspend fun deleteImage(fileName: String): Result<Unit> {
         val response = imageRemoteDataSource.deleteImage(fileName)
+
         return if(response.isSuccessful) {
             Result.success(Unit)
         } else {
