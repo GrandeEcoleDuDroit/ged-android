@@ -1,14 +1,16 @@
 package com.upsaclay.news.data.remote
 
-import android.util.Log
-import com.upsaclay.news.data.model.Announcement
 import com.upsaclay.news.data.remote.api.AnnouncementApi
+import com.upsaclay.news.domain.model.Announcement
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import timber.log.Timber.Forest.e
 
 class AnnouncementRemoteDataSource(
     private val announcementApi: AnnouncementApi
 ) {
-    suspend fun getAllAnnouncement(): List<Announcement> {
-        return try {
+    suspend fun getAllAnnouncement(): List<Announcement> = withContext(Dispatchers.IO) {
+        try {
             val announcementResponse = announcementApi.getAllAnnouncement()
             val announcementsWithUserDTO = announcementResponse.body().takeIf {
                 announcementResponse.isSuccessful && it != null
@@ -17,7 +19,7 @@ class AnnouncementRemoteDataSource(
             announcementsWithUserDTO.map { it.toAnnouncement() }
         }
         catch (e: Exception){
-            Log.e("AnnouncementRemoteDataSource", "Error to get all announcement: ${e.message.toString()}")
+            e("Error to get all remote announcements: %s", e.message.toString())
             emptyList()
         }
     }

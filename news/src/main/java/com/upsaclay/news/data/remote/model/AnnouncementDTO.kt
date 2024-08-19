@@ -1,24 +1,9 @@
-package com.upsaclay.news.data.model
+package com.upsaclay.news.data.remote.model
 
 import com.google.gson.annotations.SerializedName
 import com.upsaclay.common.domain.model.User
+import com.upsaclay.news.domain.model.Announcement
 import java.time.LocalDateTime
-
-data class Announcement(
-    val id: Int,
-    val title: String,
-    val content: String,
-    val date: LocalDateTime,
-    val author: User
-) {
-    fun toDTO() = AnnouncementDTO(
-        announcementId = id,
-        announcementTitle = title,
-        announcementContent = content,
-        announcementDate = date.toString(),
-        userId = author.id
-    )
-}
 
 data class AnnouncementWithUserDTO(
     @SerializedName("ANNOUNCEMENT_ID")
@@ -42,7 +27,7 @@ data class AnnouncementWithUserDTO(
     @SerializedName("USER_IS_MEMBER")
     val userIsMember: Int,
     @SerializedName("USER_PROFILE_PICTURE_URL")
-    val profilePictureUrl: String
+    val profilePictureUrl: String?
 ) {
     fun toAnnouncement() = Announcement(
         id = announcementId,

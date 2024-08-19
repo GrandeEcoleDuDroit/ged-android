@@ -1,7 +1,7 @@
 package com.upsaclay.news
 
 import com.upsaclay.common.domain.model.User
-import com.upsaclay.news.data.model.Announcement
+import com.upsaclay.news.domain.model.Announcement
 import java.time.LocalDateTime
 
 internal val announcementFixture = Announcement(
