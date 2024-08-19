@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "954607401960",
+    "project_id": "gedoise-application",
+    "storage_bucket": "gedoise-application.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:954607401960:android:03df67f146e0a6094a425d",
+        "android_client_info": {
+          "package_name": "com.upsaclay.gedoise"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMy_RYCp3i9QY80_72tUAfVgYvFhmzHfc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
