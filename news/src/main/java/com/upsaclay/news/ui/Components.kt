@@ -31,7 +31,7 @@ import com.upsaclay.common.ui.components.SmallShowButton
 import com.upsaclay.common.ui.theme.GedoiseTheme
 import com.upsaclay.common.ui.theme.spacing
 import com.upsaclay.news.announcementFixture
-import com.upsaclay.news.data.model.Announcement
+import com.upsaclay.news.domain.model.Announcement
 
 @Composable
 internal fun ShortAnnouncementCard(

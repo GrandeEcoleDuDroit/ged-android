@@ -30,7 +30,7 @@ import com.upsaclay.common.ui.theme.GedoiseTheme
 import com.upsaclay.common.ui.theme.spacing
 import com.upsaclay.news.R
 import com.upsaclay.news.announcementItemsFixture
-import com.upsaclay.news.data.model.Announcement
+import com.upsaclay.news.domain.model.Announcement
 import org.koin.androidx.compose.koinViewModel
 
 private const val URL_BLOGSPOT = "https://grandeecoledudroit.blogspot.com/"
@@ -46,7 +46,7 @@ fun NewsScreen(
     }
 
     LaunchedEffect(isRefreshing) {
-        newsViewModel.updateAnnouncements()
+        newsViewModel.refreshAnnouncements()
         isRefreshing = false
     }
 
