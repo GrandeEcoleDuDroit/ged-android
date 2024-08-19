@@ -23,10 +23,11 @@ import com.upsaclay.authentication.ui.registration.SecondRegistrationScreen
 import com.upsaclay.authentication.ui.registration.ThirdRegistrationScreen
 import com.upsaclay.common.data.model.Screen
 import com.upsaclay.common.domain.model.User
-import com.upsaclay.gedoise.data.NavigationItem
+import com.upsaclay.gedoise.data.BottomNavigationItem
 import com.upsaclay.gedoise.ui.profile.ProfileScreen
 import com.upsaclay.gedoise.ui.profile.account.AccountInfoScreen
 import com.upsaclay.news.ui.NewsScreen
+import com.upsaclay.news.ui.NewsViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -34,17 +35,19 @@ fun Navigation(
     mainViewModel: MainViewModel = koinViewModel()
 ) {
     val navController = rememberNavController()
-    val sharedRegistrationViewModel: RegistrationViewModel = koinViewModel()
     val user = mainViewModel.user.collectAsState(initial = null).value
     var startDestination: String? by remember { mutableStateOf(null) }
+
+    val sharedRegistrationViewModel: RegistrationViewModel = koinViewModel()
+    val sharedNewsViewModel: NewsViewModel = koinViewModel()
 
     LaunchedEffect(mainViewModel.isAuthenticated) {
         mainViewModel.isAuthenticated.collect {
             startDestination = if(it) {
-                Screen.HOME.route
+                Screen.NEWS.route
             }
             else {
-                Screen.AUTHENTICATION.route
+                Screen.NEWS.route
             }
         }
     }
@@ -59,33 +62,45 @@ fun Navigation(
             }
 
             composable(Screen.FIRST_REGISTRATION_SCREEN.route) {
-                FirstRegistrationScreen(navController = navController, sharedRegistrationViewModel)
+                FirstRegistrationScreen(
+                    navController = navController,
+                    registrationViewModel = sharedRegistrationViewModel
+                )
             }
 
             composable(Screen.SECOND_REGISTRATION_SCREEN.route) {
-                SecondRegistrationScreen(navController = navController, sharedRegistrationViewModel)
+                SecondRegistrationScreen(
+                    navController = navController,
+                    registrationViewModel = sharedRegistrationViewModel
+                )
             }
 
             composable(Screen.THIRD_REGISTRATION_SCREEN.route) {
-                ThirdRegistrationScreen(navController = navController, sharedRegistrationViewModel)
+                ThirdRegistrationScreen(
+                    navController = navController,
+                    registrationViewModel = sharedRegistrationViewModel
+                )
             }
 
             user?.let { user ->
-                composable(Screen.HOME.route) {
+                composable(Screen.NEWS.route) {
                     MainNavigationBars(
                         navController = navController,
-                        mainViewModel.navigationItem.values.toList(),
-                        user
+                        bottomNavigationItems = mainViewModel.bottomNavigationItem.values.toList(),
+                        user = user
                     ) {
-                        NewsScreen()
+                        NewsScreen(
+                            navController = navController,
+                            newsViewModel = sharedNewsViewModel
+                        )
                     }
                 }
 
-                composable(Screen.MESSAGE.route) {
+                composable(Screen.MESSAGES.route) {
                     MainNavigationBars(
                         navController = navController,
-                        mainViewModel.navigationItem.values.toList(),
-                        user
+                        bottomNavigationItems = mainViewModel.bottomNavigationItem.values.toList(),
+                        user = user
                     ) {
                         Text(text = "Message")
                     }
@@ -94,8 +109,8 @@ fun Navigation(
                 composable(Screen.CALENDAR.route) {
                     MainNavigationBars(
                         navController = navController,
-                        mainViewModel.navigationItem.values.toList(),
-                        user
+                        bottomNavigationItems = mainViewModel.bottomNavigationItem.values.toList(),
+                        user = user
                     ) {
                         Text(text = "Calendar")
                     }
@@ -104,8 +119,8 @@ fun Navigation(
                 composable(Screen.FORUM.route) {
                     MainNavigationBars(
                         navController = navController,
-                        mainViewModel.navigationItem.values.toList(),
-                        user
+                        bottomNavigationItems = mainViewModel.bottomNavigationItem.values.toList(),
+                        user = user
                     ) {
                         Text(text = "Forum")
                     }
@@ -116,7 +131,7 @@ fun Navigation(
                 ProfileScreen(navController = navController)
             }
 
-            composable(Screen.ACCOUNT_INFO.route) {
+            composable(Screen.ACCOUNT_INFOS.route) {
                 AccountInfoScreen(navController = navController)
             }
         }
@@ -126,7 +141,7 @@ fun Navigation(
 @Composable
 private fun MainNavigationBars(
     navController: NavController,
-    navigationItems: List<NavigationItem>,
+    bottomNavigationItems: List<BottomNavigationItem>,
     user: User,
     content: @Composable () -> Unit
 ){
@@ -135,7 +150,7 @@ private fun MainNavigationBars(
         bottomBar = {
             MainBottomBar(
                 navController = navController,
-                navigationItems = navigationItems
+                bottomNavigationItems = bottomNavigationItems
             )
         }
     ) {

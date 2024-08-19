@@ -138,7 +138,7 @@ private fun buildMenuItemData(
                     contentDescription = stringResource(id = R.string.account_icon_description),
                 )
             },
-            onClick = { navController.navigate(Screen.ACCOUNT_INFO.route) }
+            onClick = { navController.navigate(Screen.ACCOUNT_INFOS.route) }
         ),
 //        MenuItemData(
 //            text = {

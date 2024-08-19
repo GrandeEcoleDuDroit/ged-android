@@ -9,23 +9,23 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import com.upsaclay.common.ui.theme.GedoiseTheme
-import com.upsaclay.gedoise.data.NavigationItem
+import com.upsaclay.gedoise.data.BottomNavigationItem
 import com.upsaclay.news.ui.NewsScreenPreview
 
 @Preview
 @Composable
 private fun NewsScreenWithNavbarPreview(){
-    val messageWithNotif = NavigationItem.Message()
+    val messageWithNotif = BottomNavigationItem.Message()
     messageWithNotif.badges = 5
 
-    val calendarWithNews = NavigationItem.Calendar()
+    val calendarWithNews = BottomNavigationItem.Calendar()
     calendarWithNews.hasNews = true
 
     val navbarItemList = listOf(
-        NavigationItem.Home(),
+        BottomNavigationItem.Home(),
         messageWithNotif,
         calendarWithNews,
-        NavigationItem.Forum(),
+        BottomNavigationItem.Forum(),
     )
 
     GedoiseTheme {

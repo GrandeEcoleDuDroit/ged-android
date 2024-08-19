@@ -37,7 +37,7 @@ import com.upsaclay.common.domain.model.User
 import com.upsaclay.common.ui.components.ProfilePicture
 import com.upsaclay.common.ui.theme.GedoiseTheme
 import com.upsaclay.gedoise.R
-import com.upsaclay.gedoise.data.NavigationItem
+import com.upsaclay.gedoise.data.BottomNavigationItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,7 +58,7 @@ fun MainTopBar(
         },
         navigationIcon = {
             IconButton(
-                onClick = { navController.navigate(Screen.HOME.route) }
+                onClick = { navController.navigate(Screen.NEWS.route) }
             ) {
                 Image(
                     painter = painterResource(id = com.upsaclay.common.R.drawable.ged_logo),
@@ -135,14 +135,14 @@ fun EditTopAppBar(
 @Composable
 fun MainBottomBar(
     navController: NavController,
-    navigationItems: List<NavigationItem>
+    bottomNavigationItems: List<BottomNavigationItem>
 ){
     val currentRoute = remember {
         navController.currentDestination?.route
     }
 
     NavigationBar{
-        navigationItems.forEachIndexed { _, navigationItem ->
+        bottomNavigationItems.forEachIndexed { _, navigationItem ->
             NavigationBarItem(
                 selected = navigationItem.screen.route == currentRoute,
                 onClick = {
@@ -244,17 +244,17 @@ private fun EditTopAppBarPreview() {
 @Preview
 @Composable
 private fun MainBottomBarPreview(){
-    val messageWithNotif = NavigationItem.Message()
+    val messageWithNotif = BottomNavigationItem.Message()
     messageWithNotif.badges = 5
 
-    val calendarWithNews = NavigationItem.Calendar()
+    val calendarWithNews = BottomNavigationItem.Calendar()
     calendarWithNews.hasNews = true
 
     val itemList = listOf(
-        NavigationItem.Home(),
+        BottomNavigationItem.Home(),
         messageWithNotif,
         calendarWithNews,
-        NavigationItem.Forum(),
+        BottomNavigationItem.Forum(),
     )
 
     GedoiseTheme {
