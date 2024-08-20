@@ -7,7 +7,7 @@ import java.time.LocalDateTime
 internal val announcementFixture = Announcement(
     id = 1,
     title = "Rappel : Visite de cabinet le 23/03.",
-    date = LocalDateTime.now(),
+    date = LocalDateTime.of(2024, 8, 20, 10, 0),
     content = "Nous vous informons que la visite de votre " +
             "cabinet médical est programmée pour le 23 mars. " +
             "Cette visite a pour but de s'assurer que toutes les normes de sécurité " +
@@ -32,6 +32,9 @@ internal val announcementFixture = Announcement(
 )
 
 internal val announcementItemsFixture = listOf(
+    announcementFixture,
+    announcementFixture,
+    announcementFixture,
     announcementFixture,
     announcementFixture
 )

@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.zIndex
 import com.upsaclay.common.R
 import com.upsaclay.common.data.model.MenuItemData
 import com.upsaclay.common.ui.theme.GedoiseTheme
@@ -48,7 +49,7 @@ fun PullToRefreshComponent(
 
         PullToRefreshContainer(
             state = pullToRefreshState,
-            modifier = Modifier.align(Alignment.TopCenter)
+            modifier = Modifier.align(Alignment.TopCenter).zIndex(1000f)
         )
         content()
     }

@@ -4,8 +4,9 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.upsaclay.common.domain.model.User
+import com.upsaclay.common.domain.usecase.ConvertLocalDateTimeUseCase
+import com.upsaclay.common.domain.usecase.ConvertTimestampUseCase
 import com.upsaclay.news.domain.model.Announcement
-import java.time.LocalDateTime
 
 const val ANNOUNCEMENTS_LOCAL_TABLE_NAME = "announcements_local_table"
 
@@ -15,11 +16,11 @@ data class AnnouncementEntity(
     @ColumnInfo(name = "ANNOUNCEMENT_ID")
     val announcementId: Int,
     @ColumnInfo(name = "ANNOUNCEMENT_TITLE")
-    val announcementTitle: String,
+    val announcementTitle: String?,
     @ColumnInfo(name = "ANNOUNCEMENT_CONTENT")
     val announcementContent: String,
     @ColumnInfo(name = "ANNOUNCEMENT_DATE")
-    val announcementDate: String,
+    val announcementDate: Long,
     @ColumnInfo("USER_ID")
     val userId: Int,
     @ColumnInfo("USER_FIRST_NAME")
@@ -42,7 +43,7 @@ data class AnnouncementEntity(
                 announcementId = announcement.id,
                 announcementTitle = announcement.title,
                 announcementContent = announcement.content,
-                announcementDate = announcement.date.toString(),
+                announcementDate = ConvertLocalDateTimeUseCase().toTimestamp(announcement.date),
                 userId = announcement.author.id,
                 userFirstName = announcement.author.firstName,
                 userLastName = announcement.author.lastName,
@@ -58,7 +59,7 @@ data class AnnouncementEntity(
         id = announcementId,
         title = announcementTitle,
         content = announcementContent,
-        date = LocalDateTime.parse(announcementDate),
+        date = ConvertTimestampUseCase().toLocalDateTime(announcementDate),
         author = User(
             id = userId,
             firstName = userFirstName,

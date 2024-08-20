@@ -1,10 +1,7 @@
 package com.upsaclay.news.ui
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -20,11 +17,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -37,6 +34,7 @@ import com.upsaclay.news.R
 import com.upsaclay.news.announcementItemsFixture
 import com.upsaclay.news.domain.model.Announcement
 import org.koin.androidx.compose.koinViewModel
+
 
 private const val URL_BLOGSPOT = "https://grandeecoledudroit.blogspot.com/"
 
@@ -64,8 +62,6 @@ fun NewsScreen(
                     navController.navigate(Screen.ANNOUNCEMENT.route)
                 }
             )
-
-            PostSection()
         }
     }
 }
@@ -79,20 +75,22 @@ private fun ShortRecentAnnouncementSection(
 
     Column(modifier = Modifier.padding(vertical = MaterialTheme.spacing.medium)) {
         Text(
-            text = stringResource(id = R.string.recent_announcement),
+            text = stringResource(id = R.string.recent_announcements),
             style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
             modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium)
         )
 
-        Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+        Spacer(modifier = Modifier.height(MaterialTheme.spacing.smallMedium))
 
         LazyColumn(Modifier.heightIn(max = screenHeight * 0.3f)) {
             if (announcements.isEmpty()) {
                 item {
                     Text(
-                        text = stringResource(id = R.string.no_announcement),
+                        text = stringResource(id = R.string.no_announcements),
                         style = MaterialTheme.typography.bodyLarge,
                         modifier = Modifier.fillMaxWidth(),
+                        color = Color.Gray,
                         textAlign = TextAlign.Center
                     )
                 }
@@ -105,8 +103,13 @@ private fun ShortRecentAnnouncementSection(
                         }
                     )
                 }
+
             }
         }
+
+        Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+
+        PostSection()
     }
 }
 
@@ -114,22 +117,12 @@ private fun ShortRecentAnnouncementSection(
 private fun PostSection() {
     Column {
         Text(
-            text = stringResource(id = com.upsaclay.news.R.string.news_ged),
+            text = stringResource(id = R.string.news_ged),
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium)
         )
 
-        Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
-
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White)
-                .padding(MaterialTheme.spacing.medium),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(text = "POST SECTION")
-        }
+       //TODO : Implémenter la récupération de posts
     }
 }
 
@@ -149,23 +142,7 @@ fun NewsScreenPreview(){
 
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
 
-                Text(
-                    text = stringResource(id = com.upsaclay.news.R.string.news_ged),
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium)
-                )
-
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = MaterialTheme.spacing.medium)
-                        .background(Color.White),
-                    contentAlignment = Alignment.Center
-                ){
-                    Text(text = "POST SECTION")
-                }
+                PostSection()
             }
         }
     }

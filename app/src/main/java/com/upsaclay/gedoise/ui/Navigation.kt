@@ -12,6 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -26,6 +27,7 @@ import com.upsaclay.common.domain.model.User
 import com.upsaclay.gedoise.data.BottomNavigationItem
 import com.upsaclay.gedoise.ui.profile.ProfileScreen
 import com.upsaclay.gedoise.ui.profile.account.AccountInfoScreen
+import com.upsaclay.news.ui.AnnouncementScreen
 import com.upsaclay.news.ui.NewsScreen
 import com.upsaclay.news.ui.NewsViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -37,7 +39,6 @@ fun Navigation(
     val navController = rememberNavController()
     val user = mainViewModel.user.collectAsState(initial = null).value
     var startDestination: String? by remember { mutableStateOf(null) }
-
     val sharedRegistrationViewModel: RegistrationViewModel = koinViewModel()
     val sharedNewsViewModel: NewsViewModel = koinViewModel()
 
@@ -91,6 +92,24 @@ fun Navigation(
                     ) {
                         NewsScreen(
                             navController = navController,
+                            newsViewModel = sharedNewsViewModel
+                        )
+                    }
+                }
+
+                composable(
+                    route = Screen.ANNOUNCEMENT.route
+                ) {
+                    Scaffold(
+                        topBar = {
+                            BackSmallTopBar(
+                                navController = navController,
+                                title = stringResource(id = com.upsaclay.news.R.string.announcement)
+                            )
+                        }
+                    ) { contentPadding ->
+                        AnnouncementScreen(
+                            modifier = Modifier.padding(top = contentPadding.calculateTopPadding()),
                             newsViewModel = sharedNewsViewModel
                         )
                     }

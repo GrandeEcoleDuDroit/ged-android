@@ -1,7 +1,5 @@
 package com.upsaclay.news.ui
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.upsaclay.common.domain.model.ElapsedTime
@@ -26,12 +23,45 @@ import com.upsaclay.common.ui.theme.GedoiseTheme
 import com.upsaclay.common.ui.theme.spacing
 import com.upsaclay.news.announcementFixture
 import com.upsaclay.news.domain.model.Announcement
+import org.koin.androidx.compose.koinViewModel
 import java.time.format.DateTimeFormatter
 
 @Composable
-internal fun ShortAnnouncementItem(
-    announcement: Announcement,
-    onClick: () -> Unit
+fun AnnouncementScreen(
+    modifier: Modifier = Modifier,
+    newsViewModel: NewsViewModel = koinViewModel()
+) {
+    val announcement = newsViewModel.displayedAnnouncement
+
+    Column(
+        modifier = modifier.padding(
+            start = MaterialTheme.spacing.medium,
+            end = MaterialTheme.spacing.medium,
+            bottom = MaterialTheme.spacing.medium
+        )
+    ) {
+
+        TopSection(announcement)
+
+        Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+
+        announcement.title?.let {
+            Text(
+                text = it,
+                style = MaterialTheme.typography.titleLarge,
+            )
+            Spacer(Modifier.height(MaterialTheme.spacing.medium))
+        }
+
+        Text(
+            text = announcement.content,
+        )
+    }
+}
+
+@Composable
+fun TopSection(
+    announcement: Announcement
 ) {
     val context = LocalContext.current
     val elapsedTime = GetElapsedTimeUseCase().fromLocalDateTime(announcement.date)
@@ -48,59 +78,58 @@ internal fun ShortAnnouncementItem(
     }
 
     Row(
-        modifier = Modifier
-            .clickable { onClick() }
-            .background(MaterialTheme.colorScheme.background)
-            .padding(MaterialTheme.spacing.smallMedium),
-        verticalAlignment = Alignment.Top,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         ProfilePicture(
             imageUrl = announcement.author.profilePictureUrl,
-            scaleImage = 0.6f
+            scaleImage = 0.45f
         )
 
         Spacer(modifier = Modifier.width(MaterialTheme.spacing.smallMedium))
 
-        Column(
-            modifier = Modifier.weight(1f),
-            horizontalAlignment = Alignment.Start,
-        ) {
-            Row {
-                Text(
-                    text = announcement.author.fullName,
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.SemiBold
-                )
+        Text(
+            text = announcement.author.fullName,
+            style = MaterialTheme.typography.titleMedium,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
 
-                Spacer(modifier = Modifier.width(MaterialTheme.spacing.smallMedium))
+        Spacer(modifier = Modifier.width(MaterialTheme.spacing.smallMedium))
 
-                Text(
-                    text = elapsedTimeValue,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Gray
-                )
-            }
-
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraSmall))
-
-            Text(
-                text = announcement.title ?: announcement.content,
-                color = Color.Gray,
-                style = MaterialTheme.typography.bodyMedium,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
+        Text(
+            text = elapsedTimeValue,
+            style = MaterialTheme.typography.labelLarge,
+            color = Color.Gray
+        )
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
-internal fun ShortAnnouncementItemPreview(){
+private fun AnnouncementScreenPreview(){
     GedoiseTheme {
-        ShortAnnouncementItem(
-            announcement = announcementFixture,
-            onClick = {}
-        )
+
+        val announcement = announcementFixture
+
+        Column(
+            modifier = Modifier.padding(MaterialTheme.spacing.medium)
+        ) {
+
+            TopSection(announcement)
+
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+
+            announcement.title?.let {
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.titleLarge,
+                )
+                Spacer(Modifier.height(MaterialTheme.spacing.medium))
+            }
+
+            Text(
+                text = announcement.content,
+            )
+        }
     }
 }

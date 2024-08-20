@@ -125,7 +125,8 @@ fun EditTopAppBar(
                 Text(
                     text = stringResource(id = com.upsaclay.common.R.string.save),
                     style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
                 )
             }
         }
