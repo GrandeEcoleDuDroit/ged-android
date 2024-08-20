@@ -21,4 +21,10 @@
     <string name="first_name">Prénom</string>
     <string name="last_name">Nom</string>
     <string name="email">Adresse mail</string>
+
+    <string name="now">À l\'instant</string>
+    <string name="minute_ago">%d min</string>
+    <string name="hour_ago">%d h</string>
+    <string name="day_ago">%d jour</string>
+    <string name="week_ago">%d sem</string>
 </resources>

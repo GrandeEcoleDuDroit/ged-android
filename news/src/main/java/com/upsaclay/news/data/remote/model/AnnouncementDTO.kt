@@ -2,18 +2,19 @@ package com.upsaclay.news.data.remote.model
 
 import com.google.gson.annotations.SerializedName
 import com.upsaclay.common.domain.model.User
+import com.upsaclay.common.domain.usecase.ConvertTimestampUseCase
 import com.upsaclay.news.domain.model.Announcement
-import java.time.LocalDateTime
+import java.sql.Timestamp
 
 data class AnnouncementWithUserDTO(
     @SerializedName("ANNOUNCEMENT_ID")
     val announcementId: Int,
     @SerializedName("ANNOUNCEMENT_TITLE")
-    val announcementTitle: String,
+    val announcementTitle: String?,
     @SerializedName("ANNOUNCEMENT_CONTENT")
     val announcementContent: String,
     @SerializedName("ANNOUNCEMENT_DATE")
-    val announcementDate: String,
+    val announcementDate: Timestamp,
     @SerializedName("USER_ID")
     val userId: Int,
     @SerializedName("USER_FIRST_NAME")
@@ -33,7 +34,7 @@ data class AnnouncementWithUserDTO(
         id = announcementId,
         title = announcementTitle,
         content = announcementContent,
-        date = LocalDateTime.parse(announcementDate),
+        date = ConvertTimestampUseCase().toLocalDateTime(announcementDate),
         author = User(
             id = userId,
             firstName = userFirstName,
@@ -50,11 +51,11 @@ data class AnnouncementDTO(
     @SerializedName("ANNOUNCEMENT_ID")
     val announcementId: Int,
     @SerializedName("ANNOUNCEMENT_TITLE")
-    val announcementTitle: String,
+    val announcementTitle: String?,
     @SerializedName("ANNOUNCEMENT_CONTENT")
     val announcementContent: String,
     @SerializedName("ANNOUNCEMENT_DATE")
-    val announcementDate: String,
+    val announcementDate: Long,
     @SerializedName("USER_ID")
     val userId: Int,
 )

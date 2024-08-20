@@ -20,7 +20,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ShapeDefaults
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -54,7 +53,6 @@ import com.upsaclay.common.data.model.Screen
 import com.upsaclay.common.ui.components.ErrorText
 import com.upsaclay.common.ui.components.OverlayLoadingScreen
 import com.upsaclay.common.ui.components.PrimaryLargeButton
-import com.upsaclay.common.ui.theme.GedoiseColor.BackgroundVariant
 import com.upsaclay.common.ui.theme.GedoiseColor.Primary
 import com.upsaclay.common.ui.theme.GedoiseTheme
 import com.upsaclay.common.ui.theme.spacing
@@ -77,7 +75,7 @@ fun AuthenticationScreen(
     val context = LocalContext.current
 
 //    if(authenticationState == AuthenticationState.AUTHENTICATED){
-//        navController.navigate(Screen.HOME.route)
+//        navController.navigate(Screen.NEWS.route)
 //    }
 
     isError = authenticationState == AuthenticationState.ERROR_AUTHENTICATION ||
@@ -117,51 +115,46 @@ fun AuthenticationScreen(
         }
     }
 
-    Surface(
-        color = BackgroundVariant,
-        modifier = modifier.fillMaxSize()
+    Box(modifier = Modifier
+        .fillMaxSize()
     ) {
-        Box(modifier = Modifier
-            .fillMaxSize()
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.aligned { size, space ->
+                 size + (30 * space / 100)
+            },
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(MaterialTheme.spacing.medium)
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.aligned { size, space ->
-                     size + (30 * space / 100)
+            TitleSection()
+
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
+
+            BottomSection(
+                mailText = authenticationViewModel.mail,
+                mailOnValueChange = { authenticationViewModel.updateMailText(it) },
+                passwordText = authenticationViewModel.password,
+                passwordOnValueChange = { authenticationViewModel.updatePasswordText(it) },
+                errorMessage = errorMessage,
+                keyboardActions = KeyboardActions(
+                    onDone = { keyboardController?.hide() }
+                ),
+                onClickConnectButton = {
+                    keyboardController?.hide()
+                    authenticationViewModel.login()
                 },
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(scrollState)
-                    .padding(MaterialTheme.spacing.medium)
-            ) {
-                TitleSection()
+                onClickRegistration = {
+                    navController.navigate(Screen.FIRST_REGISTRATION_SCREEN.route)
+                },
+                isError = isError,
+                isEnable = authenticationState != AuthenticationState.LOADING
+            )
+        }
 
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
-
-                BottomSection(
-                    mailText = authenticationViewModel.mail,
-                    mailOnValueChange = { authenticationViewModel.updateMailText(it) },
-                    passwordText = authenticationViewModel.password,
-                    passwordOnValueChange = { authenticationViewModel.updatePasswordText(it) },
-                    errorMessage = errorMessage,
-                    keyboardActions = KeyboardActions(
-                        onDone = { keyboardController?.hide() }
-                    ),
-                    onClickConnectButton = {
-                        keyboardController?.hide()
-                        authenticationViewModel.login()
-                    },
-                    onClickRegistration = {
-                        navController.navigate(Screen.FIRST_REGISTRATION_SCREEN.route)
-                    },
-                    isError = isError,
-                    isEnable = authenticationState != AuthenticationState.LOADING
-                )
-            }
-
-            if(authenticationState == AuthenticationState.LOADING) {
-                OverlayLoadingScreen()
-            }
+        if(authenticationState == AuthenticationState.LOADING) {
+            OverlayLoadingScreen()
         }
     }
 }

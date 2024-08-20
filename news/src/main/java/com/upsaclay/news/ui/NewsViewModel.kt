@@ -9,14 +9,18 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class NewsViewModel(
-    getAllAnnouncementsUseCase: GetAllAnnouncementsUseCase,
+    getAllAnnouncementUseCase: GetAllAnnouncementsUseCase,
     private val refreshAnnouncementsUseCase: RefreshAnnouncementsUseCase,
 ): ViewModel() {
-    val announcements: Flow<List<Announcement>> = getAllAnnouncementsUseCase()
+    val announcements: Flow<List<Announcement>> = getAllAnnouncementUseCase()
+    lateinit var displayedAnnouncement: Announcement
+        private set
 
     fun refreshAnnouncements(){
-        viewModelScope.launch {
-            refreshAnnouncementsUseCase()
-        }
+        viewModelScope.launch { refreshAnnouncementsUseCase() }
+    }
+
+    fun updateDisplayedAnnouncement(announcement: Announcement){
+        displayedAnnouncement = announcement
     }
 }
