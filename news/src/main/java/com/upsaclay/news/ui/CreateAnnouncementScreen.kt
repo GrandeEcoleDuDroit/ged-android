@@ -1,5 +1,6 @@
 package com.upsaclay.news.ui
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,6 +21,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -37,6 +40,7 @@ import com.upsaclay.common.ui.theme.GedoiseTheme
 import com.upsaclay.common.ui.theme.spacing
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.model.Announcement
+import com.upsaclay.news.domain.model.AnnouncementState
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDateTime
 
@@ -45,9 +49,23 @@ fun CreateAnnouncementScreen(
     navController: NavController,
     newsViewModel: NewsViewModel = koinViewModel()
 ) {
-    var title by remember { mutableStateOf("") }
+    var title: String? by remember { mutableStateOf(null) }
     var content by remember { mutableStateOf("") }
     val user = newsViewModel.user.collectAsState(null).value
+    val state = newsViewModel.announcementState.collectAsState(AnnouncementState.DEFAULT).value
+    val context = LocalContext.current
+
+    LaunchedEffect(state) {
+        when(state) {
+            AnnouncementState.ANNOUNCEMENT_CREATED -> navController.popBackStack()
+            AnnouncementState.ERROR_ANNOUNCEMENT_CREATION -> Toast.makeText(
+                context,
+                "Error to create announcement",
+                Toast.LENGTH_SHORT
+            ).show()
+            else -> {}
+        }
+    }
 
     user?.let {
         Scaffold(
@@ -92,7 +110,7 @@ fun CreateAnnouncementScreen(
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent
                     ),
-                    value = title,
+                    value = title ?: "",
                     onValueChange = { title = it },
                     textStyle = MaterialTheme.typography.titleLarge
                         .plus(TextStyle(fontWeight = FontWeight.Bold)),
@@ -153,7 +171,6 @@ private fun CreateAnnouncementTopBar(
                 enabled = isButtonEnable,
                 onClick = {
                     newsViewModel.createAnnouncement(announcementToCreate)
-                    navController.popBackStack()
                 }
             ) {
                 Text(text = stringResource(id = com.upsaclay.common.R.string.publish))

@@ -1,11 +1,13 @@
 package com.upsaclay.news.data.remote
 
+import com.upsaclay.common.utils.i
 import com.upsaclay.news.data.remote.api.AnnouncementApi
 import com.upsaclay.news.data.remote.model.AnnouncementDTO
 import com.upsaclay.news.domain.model.Announcement
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber.Forest.e
+import java.io.IOException
 
 class AnnouncementRemoteDataSource(
     private val announcementApi: AnnouncementApi
@@ -30,15 +32,25 @@ class AnnouncementRemoteDataSource(
             val response = announcementApi.createAnnouncement(announcementDTO)
             if(response.isSuccessful) {
                 val announcementId = response.body()?.data
+
                 announcementId?.let {
+                    val responseMessage = response.body()?.message ?: "Announcement created successfully with id: $it"
+                    i(responseMessage)
                     Result.success(it)
-                } ?: Result.failure(Exception("Error to create remote announcement: id is null"))
+                } ?: run {
+                    val errorMessage = response.body()?.error ?: "Error to create remote announcement: id is null"
+                    e(errorMessage)
+                    Result.failure(IOException(errorMessage))
+                }
             } else {
-                val errorMessage = response.body()?.error
-                Result.failure(Exception("Error to create remote announcement : $errorMessage"))
+                val errorMessage = response.errorBody()?.string() ?:
+                    "Error to create remote announcement : Request failed with code ${response.code()}"
+                e(errorMessage)
+                Result.failure(IOException(errorMessage))
             }
         } catch (e: Exception) {
-            e("Error to create remote announcement: %s", e.message)
+            val errorMessage = "Error to create remote announcement: ${e.message}"
+            e(errorMessage)
             Result.failure(e)
         }
     }

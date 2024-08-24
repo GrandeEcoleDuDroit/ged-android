@@ -55,15 +55,17 @@ import com.upsaclay.news.domain.model.AnnouncementState
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
+
 private const val URL_BLOGSPOT = "https://grandeecoledudroit.blogspot.com/"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditableNewsScreen(
+fun NewsScreen(
     newsViewModel: NewsViewModel = koinViewModel(),
     navController: NavController
 ) {
     val announcements = newsViewModel.announcements.collectAsState(emptyList()).value
+    val user = newsViewModel.user.collectAsState(null).value
     var showBottomSheet by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
     var currentAnnouncementSelected by remember { mutableStateOf<Announcement?>(null) }
@@ -112,60 +114,65 @@ fun EditableNewsScreen(
         newsViewModel.refreshAnnouncements()
     }
 
-    PullToRefreshComponent(
-        onRefresh = { newsViewModel.refreshAnnouncements() },
-        refreshing = state == AnnouncementState.LOADING,
-    ) {
-        Column {
-            RecentAnnouncementSection(
-                announcements = announcements,
-                onClickAnnouncement = { announcement ->
-                    newsViewModel.updateDisplayedAnnouncement(announcement)
-                    navController.navigate(Screen.READ_ANNOUNCEMENT.route)
-                },
-                onClickEditAnnouncement = { announcement ->
-                    showBottomSheet = true
-                    currentAnnouncementSelected = announcement
-                }
-            )
-
-            PostSection()
-
-            if (showBottomSheet) {
-                EditAnnouncementModelBottomSheet(
-                    onDismissRequest = { showBottomSheet = false },
-                    sheetState = sheetState,
-                    menuItemData = menuItemData
-                )
-            }
-        }
-
-        Box(
-            modifier = Modifier
-                .padding(MaterialTheme.spacing.medium)
-                .fillMaxSize()
+    user?.let {
+        PullToRefreshComponent(
+            onRefresh = { newsViewModel.refreshAnnouncements() },
+            refreshing = state == AnnouncementState.LOADING,
         ) {
-            ExtendedFloatingActionButton(
-                modifier = Modifier.align(Alignment.BottomEnd),
-                onClick = { navController.navigate(Screen.CREATE_ANNOUNCEMENT.route) },
-                icon = {
-                    Icon(
-                        Icons.Filled.Edit,
-                        stringResource(id = R.string.new_announcement)
-                    )
-                },
-                text = { Text(text = stringResource(id = R.string.new_announcement)) },
-            )
-        }
+            Column {
+                RecentAnnouncementSection(
+                    announcements = announcements,
+                    isMember = user.isMember,
+                    onClickEditAnnouncement = { announcement ->
+                        showBottomSheet = true
+                        currentAnnouncementSelected = announcement
+                    },
+                    onClickAnnouncement = { announcement ->
+                        newsViewModel.updateDisplayedAnnouncement(announcement)
+                        navController.navigate(Screen.READ_ANNOUNCEMENT.route)
+                    }
+                )
 
-        if (showDialog) {
-            DeleteAnnouncementDialog(
-                onDismissRequest = { showDialog = false },
-                onConfirmClick = {
-                    showDialog = false
-                    newsViewModel.deleteAnnouncement(currentAnnouncementSelected!!)
+                PostSection()
+            }
+
+            if(user.isMember) {
+                Box(
+                    modifier = Modifier
+                        .padding(MaterialTheme.spacing.medium)
+                        .fillMaxSize()
+                ) {
+                    ExtendedFloatingActionButton(
+                        modifier = Modifier.align(Alignment.BottomEnd),
+                        onClick = { navController.navigate(Screen.CREATE_ANNOUNCEMENT.route) },
+                        icon = {
+                            Icon(
+                                Icons.Filled.Edit,
+                                stringResource(id = R.string.new_announcement)
+                            )
+                        },
+                        text = { Text(text = stringResource(id = R.string.new_announcement)) },
+                    )
                 }
-            )
+
+                if (showBottomSheet) {
+                    EditAnnouncementModelBottomSheet(
+                        onDismissRequest = { showBottomSheet = false },
+                        sheetState = sheetState,
+                        menuItemData = menuItemData
+                    )
+                }
+
+                if (showDialog) {
+                    DeleteAnnouncementDialog(
+                        onDismissRequest = { showDialog = false },
+                        onConfirmClick = {
+                            showDialog = false
+                            newsViewModel.deleteAnnouncement(currentAnnouncementSelected!!)
+                        }
+                    )
+                }
+            }
         }
     }
 }
@@ -173,10 +180,12 @@ fun EditableNewsScreen(
 @Composable
 private fun RecentAnnouncementSection(
     announcements: List<Announcement>,
+    isMember: Boolean,
+    onClickEditAnnouncement: (Announcement) -> Unit = {},
     onClickAnnouncement: (Announcement) -> Unit,
-    onClickEditAnnouncement: (Announcement) -> Unit,
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+    val sortedAnnouncements = announcements.sortedByDescending { it.date }
 
     Column(modifier = Modifier.padding(vertical = MaterialTheme.spacing.medium)) {
         Text(
@@ -200,17 +209,40 @@ private fun RecentAnnouncementSection(
                     )
                 }
             } else {
-                items(announcements) { announcement ->
-                    EditableShortAnnouncementItem(
-                        announcement = announcement,
-                        onClick = { onClickAnnouncement(announcement) },
-                        onEditClick = { onClickEditAnnouncement(announcement) }
-                    )
+                items(sortedAnnouncements) { announcement ->
+                    if(isMember) {
+                        EditableShortAnnouncementItem(
+                            announcement = announcement,
+                            onClick = { onClickAnnouncement(announcement) },
+                            onEditClick = { onClickEditAnnouncement(announcement) }
+                        )
+                    }
+                    else {
+                        ReadOnlyShortAnnouncementItem(
+                            announcement = announcement,
+                            onClick = { onClickAnnouncement(announcement) }
+                        )
+                    }
                 }
             }
         }
     }
 }
+
+@Composable
+private fun PostSection() {
+    Column {
+        Text(
+            text = stringResource(id = R.string.news_ged),
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium)
+        )
+
+       //TODO : Implémenter la récupération de posts
+    }
+}
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -232,19 +264,6 @@ private fun EditAnnouncementModelBottomSheet(
             )
         }
         Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
-    }
-}
-
-@Composable
-private fun PostSection() {
-    Column {
-        Text(
-            text = stringResource(id = R.string.news_ged),
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium)
-        )
-
-        //TODO : Implémenter la récupération de posts
     }
 }
 
@@ -279,33 +298,41 @@ private fun DeleteAnnouncementDialog(
 
 @Preview(showBackground = true ,widthDp = 360, heightDp = 640)
 @Composable
-fun EditableNewsScreenPreview(){
+fun NewsScreenPreview(){
+    val isMember = true
     GedoiseTheme {
         PullToRefreshComponent(
-            onRefresh = { }
+            onRefresh = { },
         ) {
             Column {
-                RecentAnnouncementSectionPreview()
+                if(isMember) {
+                    EditRecentAnnouncementSectionPreview()
+                }
+                else {
+                    ReadOnlyRecentAnnouncementSectionPreview()
+                }
 
                 PostSection()
             }
 
-            Box(
-                modifier = Modifier
-                    .padding(MaterialTheme.spacing.medium)
-                    .fillMaxSize()
-            ) {
-                ExtendedFloatingActionButton(
-                    modifier = Modifier.align(Alignment.BottomEnd),
-                    onClick = { },
-                    icon = {
-                        Icon(
-                            Icons.Filled.Edit,
-                            stringResource(id = R.string.new_announcement)
-                        )
-                    },
-                    text = { Text(text = stringResource(id = R.string.new_announcement)) },
-                )
+            if(isMember) {
+                Box(
+                    modifier = Modifier
+                        .padding(MaterialTheme.spacing.medium)
+                        .fillMaxSize()
+                ) {
+                    ExtendedFloatingActionButton(
+                        modifier = Modifier.align(Alignment.BottomEnd),
+                        onClick = { },
+                        icon = {
+                            Icon(
+                                Icons.Filled.Edit,
+                                stringResource(id = R.string.new_announcement)
+                            )
+                        },
+                        text = { Text(text = stringResource(id = R.string.new_announcement)) },
+                    )
+                }
             }
         }
     }
@@ -313,17 +340,32 @@ fun EditableNewsScreenPreview(){
 
 @Preview(showBackground = true)
 @Composable
-private fun RecentAnnouncementSectionPreview(){
+private fun ReadOnlyRecentAnnouncementSectionPreview(){
     GedoiseTheme {
         Column {
             RecentAnnouncementSection(
                 announcements = announcementItemsFixture,
                 onClickAnnouncement = {},
-                onClickEditAnnouncement = {}
+                isMember = false,
             )
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun EditRecentAnnouncementSectionPreview(){
+    GedoiseTheme {
+        Column {
+            RecentAnnouncementSection(
+                announcements = announcementItemsFixture,
+                onClickAnnouncement = {},
+                isMember = true,
+            )
+        }
+    }
+}
+
 
 @Preview
 @Composable

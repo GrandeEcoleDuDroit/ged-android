@@ -28,10 +28,9 @@ import com.upsaclay.gedoise.data.BottomNavigationItem
 import com.upsaclay.gedoise.ui.profile.ProfileScreen
 import com.upsaclay.gedoise.ui.profile.account.AccountInfoScreen
 import com.upsaclay.news.ui.CreateAnnouncementScreen
-import com.upsaclay.news.ui.EditableNewsScreen
 import com.upsaclay.news.ui.NewsViewModel
 import com.upsaclay.news.ui.ReadAnnouncementScreen
-import com.upsaclay.news.ui.ReadOnlyNewsScreen
+import com.upsaclay.news.ui.NewsScreen
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -92,18 +91,10 @@ fun Navigation(
                         bottomNavigationItems = mainViewModel.bottomNavigationItem.values.toList(),
                         user = user
                     ) {
-                        if(user.isMember) {
-                            EditableNewsScreen(
-                                navController = navController,
-                                newsViewModel = sharedNewsViewModel
-                            )
-                        }
-                        else {
-                            ReadOnlyNewsScreen(
-                                navController = navController,
-                                newsViewModel = sharedNewsViewModel
-                            )
-                        }
+                        NewsScreen(
+                            navController = navController,
+                            newsViewModel = sharedNewsViewModel
+                        )
                     }
                 }
 

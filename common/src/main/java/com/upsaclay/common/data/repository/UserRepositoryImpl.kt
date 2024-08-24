@@ -25,7 +25,7 @@ internal class UserRepositoryImpl(
     init {
         CoroutineScope(Dispatchers.IO).launch {
             userLocalDataSource.getUser().collect {
-                _user.value = it
+                _user.value = it?.copy(isMember = true)
             }
         }
     }

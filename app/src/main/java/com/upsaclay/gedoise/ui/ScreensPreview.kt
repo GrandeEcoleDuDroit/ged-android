@@ -10,7 +10,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import com.upsaclay.common.ui.theme.GedoiseTheme
 import com.upsaclay.gedoise.data.BottomNavigationItem
-import com.upsaclay.news.ui.ReadOnlyNewsScreenPreview
+import com.upsaclay.news.ui.NewsScreenPreview
 
 @Preview
 @Composable
@@ -46,7 +46,7 @@ private fun NewsScreenWithNavbarPreview(){
                     bottom = it.calculateBottomPadding()
                 )
             ) {
-                ReadOnlyNewsScreenPreview()
+                NewsScreenPreview()
             }
         }
     }

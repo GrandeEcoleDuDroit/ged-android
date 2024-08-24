@@ -92,8 +92,9 @@ fun TopSection(
             style = MaterialTheme.typography.titleMedium,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.weight(1f)
         )
+
+        Spacer(modifier = Modifier.width(MaterialTheme.spacing.smallMedium))
 
         Text(
             text = elapsedTimeValue,

@@ -5,7 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -60,6 +60,7 @@ internal fun ReadOnlyShortAnnouncementItem(
         modifier = Modifier
             .clickable { onClick() }
             .background(MaterialTheme.colorScheme.background)
+            .fillMaxWidth()
             .padding(MaterialTheme.spacing.smallMedium),
         verticalAlignment = Alignment.Top,
     ) {
@@ -90,8 +91,6 @@ internal fun ReadOnlyShortAnnouncementItem(
                 )
             }
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraSmall))
-
             Text(
                 text = announcement.title ?: announcement.content,
                 color = Color.Gray,
@@ -105,6 +104,7 @@ internal fun ReadOnlyShortAnnouncementItem(
 
 @Composable
 internal fun EditableShortAnnouncementItem(
+    modifier: Modifier = Modifier,
     announcement: Announcement,
     onClick: () -> Unit,
     onEditClick: () -> Unit
@@ -123,7 +123,7 @@ internal fun EditableShortAnnouncementItem(
         }
     }
     Row(
-        modifier = Modifier
+        modifier = modifier
             .clickable { onClick() }
             .background(MaterialTheme.colorScheme.background)
             .padding(MaterialTheme.spacing.smallMedium),
@@ -136,45 +136,25 @@ internal fun EditableShortAnnouncementItem(
 
         Spacer(modifier = Modifier.width(MaterialTheme.spacing.smallMedium))
 
-        Column {
+        Column(modifier = Modifier.weight(1f)) {
             Row {
-                Row(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = announcement.author.fullName,
-                        style = MaterialTheme.typography.titleSmall,
-                        fontWeight = FontWeight.SemiBold,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.weight(fill = false, weight = 1f)
-                    )
+                Text(
+                    text = announcement.author.fullName,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(fill = false, weight = 1f)
+                )
 
-                    Spacer(modifier = Modifier.width(MaterialTheme.spacing.small))
+                Spacer(modifier = Modifier.width(MaterialTheme.spacing.small))
 
-                    Text(
-                        text = elapsedTimeValue,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Color.Gray,
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(MaterialTheme.spacing.small ))
-
-                IconButton(
-                    onClick = onEditClick,
-                    modifier = Modifier
-                        .size(28.dp)
-                        .clip(CircleShape)
-                ) {
-                    Icon(
-                        modifier = Modifier.size(24.dp),
-                        imageVector = Icons.Default.MoreVert,
-                        tint = Color.Gray,
-                        contentDescription = stringResource(id = R.string.announcement_item_more_vert_description)
-                    )
-                }
+                Text(
+                    text = elapsedTimeValue,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.Gray,
+                )
             }
-
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraSmall))
 
             Text(
                 text = announcement.title ?: announcement.content,
@@ -182,6 +162,22 @@ internal fun EditableShortAnnouncementItem(
                 style = MaterialTheme.typography.bodyMedium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
+            )
+        }
+
+        Spacer(modifier = Modifier.width(MaterialTheme.spacing.smallMedium))
+
+        IconButton(
+            onClick = onEditClick,
+            modifier = Modifier
+                .size(28.dp)
+                .clip(CircleShape)
+        ) {
+            Icon(
+                modifier = Modifier.size(24.dp),
+                imageVector = Icons.Default.MoreVert,
+                tint = Color.Gray,
+                contentDescription = stringResource(id = R.string.announcement_item_more_vert_description)
             )
         }
     }
