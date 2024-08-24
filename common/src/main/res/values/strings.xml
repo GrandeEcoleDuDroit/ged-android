@@ -9,6 +9,8 @@
     <string name="save">Enregistrer</string>
     <string name="accept">Accepter</string>
     <string name="cancel">Annuler</string>
+    <string name="modify">Modifier</string>
+    <string name="publish">Publier</string>
 
     <string name="arrow_back_icon_description">Retour en arrière</string>
     <string name="ged_logo_description">Logo de l\'université de La Grande École du Droit</string>
@@ -25,6 +27,6 @@
     <string name="now">À l\'instant</string>
     <string name="minute_ago">%d min</string>
     <string name="hour_ago">%d h</string>
-    <string name="day_ago">%d jour</string>
+    <string name="day_ago">%d j</string>
     <string name="week_ago">%d sem</string>
 </resources>

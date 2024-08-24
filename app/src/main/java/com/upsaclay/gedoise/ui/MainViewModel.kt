@@ -19,5 +19,5 @@ class MainViewModel(
         BottomNavigationItemType.FORUM to BottomNavigationItem.Forum()
     )
     val isAuthenticated: Flow<Boolean> = isAuthenticatedFlowUseCase()
-    val user: Flow<User> = getUserUseCase()
+    val user: Flow<User?> = getUserUseCase()
 }

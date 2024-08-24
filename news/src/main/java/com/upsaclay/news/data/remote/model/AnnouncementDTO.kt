@@ -2,6 +2,7 @@ package com.upsaclay.news.data.remote.model
 
 import com.google.gson.annotations.SerializedName
 import com.upsaclay.common.domain.model.User
+import com.upsaclay.common.domain.usecase.ConvertLocalDateTimeUseCase
 import com.upsaclay.common.domain.usecase.ConvertTimestampUseCase
 import com.upsaclay.news.domain.model.Announcement
 import java.sql.Timestamp
@@ -58,4 +59,14 @@ data class AnnouncementDTO(
     val announcementDate: Long,
     @SerializedName("USER_ID")
     val userId: Int,
-)
+) {
+    companion object {
+        fun fromAnnouncement(announcement: Announcement) = AnnouncementDTO(
+            announcementId = announcement.id,
+            announcementTitle = announcement.title,
+            announcementContent = announcement.content,
+            announcementDate = ConvertLocalDateTimeUseCase().toTimestamp(announcement.date),
+            userId = announcement.author.id
+        )
+    }
+}
