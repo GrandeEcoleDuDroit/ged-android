@@ -49,8 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.Coil
-import com.upsaclay.common.data.model.MenuItemData
-import com.upsaclay.common.ui.components.MenuItem
+import com.upsaclay.common.ui.components.ClickableMenuItem
 import com.upsaclay.common.ui.components.OverlayLoadingScreen
 import com.upsaclay.common.ui.components.ProfilePicture
 import com.upsaclay.common.ui.components.ProfilePictureWithIcon
@@ -60,7 +59,7 @@ import com.upsaclay.common.ui.theme.GedoiseTheme
 import com.upsaclay.common.ui.theme.spacing
 import com.upsaclay.common.utils.userFixture
 import com.upsaclay.gedoise.R
-import com.upsaclay.gedoise.data.profile.AccountInfoItemData
+import com.upsaclay.gedoise.data.profile.AccountInfoFieldData
 import com.upsaclay.gedoise.data.profile.AccountInfoScreenState
 import com.upsaclay.gedoise.ui.BackSmallTopBar
 import com.upsaclay.gedoise.ui.EditTopAppBar
@@ -102,20 +101,20 @@ fun AccountInfoScreen(
     )
 
     currentUser?.let { user ->
-        val accountMenuItems: ImmutableList<AccountInfoItemData> = persistentListOf(
-            AccountInfoItemData(
+        val accountMenuItems: ImmutableList<AccountInfoFieldData> = persistentListOf(
+            AccountInfoFieldData(
                 stringResource(id = com.upsaclay.common.R.string.last_name),
                 user.lastName
             ),
-            AccountInfoItemData(
+            AccountInfoFieldData(
                 stringResource(id = com.upsaclay.common.R.string.first_name),
                 user.firstName
             ),
-            AccountInfoItemData(
+            AccountInfoFieldData(
                 stringResource(id = com.upsaclay.common.R.string.email),
                 user.email
             ),
-            AccountInfoItemData(
+            AccountInfoFieldData(
                 stringResource(id = com.upsaclay.common.R.string.school_level),
                 user.schoolLevel
             )
@@ -170,9 +169,9 @@ fun AccountInfoScreen(
                     )
 
                     accountMenuItems.forEach { accountMenuItemData ->
-                        AccountInfoItem(
+                        AccountInfoField(
                             modifier = Modifier.fillMaxWidth(),
-                            accountInfoItemData = accountMenuItemData
+                            accountInfoFieldData = accountMenuItemData
                         )
                     }
 
@@ -276,41 +275,37 @@ private fun AccountInfoModelBottomSheet(
 
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
-        sheetState = sheetState,
+        sheetState = sheetState
     ) {
-        MenuItem(
-            menuItemData = MenuItemData(
-                text = { Text(text = stringResource(id = R.string.new_profile_picture)) },
-                icon = {
-                    Icon(
-                        painter = painterResource(id = com.upsaclay.common.R.drawable.ic_picture),
-                        contentDescription = null
-                    )
-                },
-                onClick = onNewProfilePictureClick
-            ),
-            modifier = Modifier.fillMaxWidth()
+        ClickableMenuItem(
+            modifier = Modifier.fillMaxWidth(),
+            text = { Text(text = stringResource(id = R.string.new_profile_picture)) },
+            icon = {
+                Icon(
+                    painter = painterResource(id = com.upsaclay.common.R.drawable.ic_picture),
+                    contentDescription = null
+                )
+            },
+            onClick = onNewProfilePictureClick
         )
 
         if (showDeleteProfilePicture) {
-            MenuItem(
-                menuItemData = MenuItemData(
-                    text = {
-                        Text(
-                            text = stringResource(id = R.string.delete_current_profile_picture),
-                            color = GedoiseColor.Red
-                        )
-                    },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = null,
-                            tint = GedoiseColor.Red
-                        )
-                    },
-                    onClick = onDeleteProfilePictureClick
-                ),
-                modifier = Modifier.fillMaxWidth()
+            ClickableMenuItem(
+                modifier = Modifier.fillMaxWidth(),
+                text = {
+                    Text(
+                        text = stringResource(id = R.string.delete_current_profile_picture),
+                        color = GedoiseColor.Red
+                    )
+                },
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = null,
+                        tint = GedoiseColor.Red
+                    )
+                },
+                onClick = onDeleteProfilePictureClick
             )
         }
         Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
@@ -318,20 +313,20 @@ private fun AccountInfoModelBottomSheet(
 }
 
 @Composable
-fun AccountInfoItem(
+fun AccountInfoField(
     modifier: Modifier = Modifier,
-    accountInfoItemData: AccountInfoItemData
+    accountInfoFieldData: AccountInfoFieldData
 ) {
     Column(
         modifier = modifier.padding(vertical = MaterialTheme.spacing.smallMedium),
     ) {
         Text(
-            text = accountInfoItemData.label,
+            text = accountInfoFieldData.label,
             color = GedoiseColor.DarkGrey,
             style = MaterialTheme.typography.labelLarge
         )
         Text(
-            text = accountInfoItemData.value,
+            text = accountInfoFieldData.value,
             style = MaterialTheme.typography.bodyLarge,
         )
     }
@@ -347,20 +342,20 @@ private fun AccountScreenPreview() {
     val pictureChanged = false
     val isEdited = false
 
-    val accountMenuItems: ImmutableList<AccountInfoItemData> = persistentListOf(
-        AccountInfoItemData(
+    val accountMenuItems: ImmutableList<AccountInfoFieldData> = persistentListOf(
+        AccountInfoFieldData(
             stringResource(id = com.upsaclay.common.R.string.last_name),
             userFixture.lastName
         ),
-        AccountInfoItemData(
+        AccountInfoFieldData(
             stringResource(id = com.upsaclay.common.R.string.first_name),
             userFixture.firstName
         ),
-        AccountInfoItemData(
+        AccountInfoFieldData(
             stringResource(id = com.upsaclay.common.R.string.email),
             userFixture.email
         ),
-        AccountInfoItemData(
+        AccountInfoFieldData(
             stringResource(id = com.upsaclay.common.R.string.school_level),
             userFixture.schoolLevel
         )
@@ -433,9 +428,9 @@ private fun AccountScreenPreview() {
                 }
 
                 accountMenuItems.forEach { accountMenuItemData ->
-                    AccountInfoItem(
+                    AccountInfoField(
                         modifier = Modifier.fillMaxWidth(),
-                        accountInfoItemData = accountMenuItemData
+                        accountInfoFieldData = accountMenuItemData
                     )
                 }
             }

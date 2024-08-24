@@ -39,7 +39,7 @@ import org.koin.androidx.compose.koinViewModel
 private const val URL_BLOGSPOT = "https://grandeecoledudroit.blogspot.com/"
 
 @Composable
-fun NewsScreen(
+fun ReadOnlyNewsScreen(
     newsViewModel: NewsViewModel = koinViewModel(),
     navController: NavController
 ) {
@@ -55,21 +55,23 @@ fun NewsScreen(
         onRefresh = { isRefreshing = true }
     ) {
         Column {
-            ShortRecentAnnouncementSection(
+            RecentAnnouncementSection(
                 announcements = announcements,
                 onClickAnnouncement = { announcement ->
                     newsViewModel.updateDisplayedAnnouncement(announcement)
-                    navController.navigate(Screen.ANNOUNCEMENT.route)
+                    navController.navigate(Screen.READ_ANNOUNCEMENT.route)
                 }
             )
+
+            PostSection()
         }
     }
 }
 
 @Composable
-private fun ShortRecentAnnouncementSection(
+private fun RecentAnnouncementSection(
     announcements: List<Announcement>,
-    onClickAnnouncement: (Announcement) -> Unit
+    onClickAnnouncement: (Announcement) -> Unit,
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
 
@@ -96,20 +98,13 @@ private fun ShortRecentAnnouncementSection(
                 }
             } else {
                 items(announcements) { announcement ->
-                    ShortAnnouncementItem(
+                    ReadOnlyShortAnnouncementItem(
                         announcement = announcement,
-                        onClick = {
-                            onClickAnnouncement(announcement)
-                        }
+                        onClick = { onClickAnnouncement(announcement) }
                     )
                 }
-
             }
         }
-
-        Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
-
-        PostSection()
     }
 }
 
@@ -128,19 +123,13 @@ private fun PostSection() {
 
 @Preview(showBackground = true ,widthDp = 360, heightDp = 640)
 @Composable
-fun NewsScreenPreview(){
+fun ReadOnlyNewsScreenPreview(){
     GedoiseTheme {
         PullToRefreshComponent(
             onRefresh = { },
         ) {
             Column {
-
-                ShortRecentAnnouncementSection(
-                    announcements = announcementItemsFixture,
-                    onClickAnnouncement = {}
-                )
-
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+                RecentAnnouncementSectionPreview()
 
                 PostSection()
             }
@@ -150,12 +139,12 @@ fun NewsScreenPreview(){
 
 @Preview(showBackground = true)
 @Composable
-internal fun ShortRecentAnnouncementSectionPreview(){
+private fun RecentAnnouncementSectionPreview(){
     GedoiseTheme {
         Column {
-            ShortRecentAnnouncementSection(
+            RecentAnnouncementSection(
                 announcements = announcementItemsFixture,
-                onClickAnnouncement = {}
+                onClickAnnouncement = {},
             )
         }
     }

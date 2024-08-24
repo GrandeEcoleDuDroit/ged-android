@@ -6,8 +6,11 @@ import com.upsaclay.news.data.remote.AnnouncementRemoteDataSource
 import com.upsaclay.news.data.remote.api.AnnouncementApi
 import com.upsaclay.news.data.repository.AnnouncementRepositoryImpl
 import com.upsaclay.news.domain.repository.AnnouncementRepository
+import com.upsaclay.news.domain.usecase.CreateAnnouncementUseCase
+import com.upsaclay.news.domain.usecase.DeleteAnnouncementUseCase
 import com.upsaclay.news.domain.usecase.GetAllAnnouncementsUseCase
 import com.upsaclay.news.domain.usecase.RefreshAnnouncementsUseCase
+import com.upsaclay.news.domain.usecase.UpdateAnnouncementUseCase
 import com.upsaclay.news.ui.NewsViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.bind
@@ -24,6 +27,9 @@ val newsModule = module {
     singleOf(::AnnouncementLocalDataSource)
     viewModelOf(::NewsViewModel)
 
+    singleOf(::CreateAnnouncementUseCase)
+    singleOf(::DeleteAnnouncementUseCase)
     singleOf(::GetAllAnnouncementsUseCase)
     singleOf(::RefreshAnnouncementsUseCase)
+    singleOf(::UpdateAnnouncementUseCase)
 }

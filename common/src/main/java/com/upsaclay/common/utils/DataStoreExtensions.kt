@@ -5,11 +5,16 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 
 suspend fun <T> DataStore<Preferences>.getValue(key: Preferences.Key<T>): T? {
     return data.map { it[key] }.firstOrNull()
+}
+
+fun <T> DataStore<Preferences>.getFlowValue(key: Preferences.Key<T>): Flow<T?> {
+    return data.map { it[key] }
 }
 
 suspend fun <T> DataStore<Preferences>.setValue(key: Preferences.Key<T>, value: T) {
@@ -43,6 +48,13 @@ suspend fun <T> DataStore<Preferences>.setGsonValue(key: Preferences.Key<String>
 suspend inline fun <reified T> DataStore<Preferences>.getGsonValue(key: Preferences.Key<String>, gson: Gson= Gson()): T? {
     val type = object: TypeToken<T>() {}.type
     return getValue(key)?.let {
+        runCatching { gson.fromJson<T>(it, type) }.getOrNull()
+    }
+}
+
+inline fun <reified T> DataStore<Preferences>.getFlowGsonValue(key: Preferences.Key<String>, gson: Gson = Gson()): Flow<T?> {
+    val type = object: TypeToken<T>() {}.type
+    return getFlowValue(key).map {
         runCatching { gson.fromJson<T>(it, type) }.getOrNull()
     }
 }

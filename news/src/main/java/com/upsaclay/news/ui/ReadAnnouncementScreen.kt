@@ -27,11 +27,11 @@ import org.koin.androidx.compose.koinViewModel
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun AnnouncementScreen(
+fun ReadAnnouncementScreen(
     modifier: Modifier = Modifier,
     newsViewModel: NewsViewModel = koinViewModel()
 ) {
-    val announcement = newsViewModel.displayedAnnouncement
+    val announcement = newsViewModel.displayedAnnouncement!!
 
     Column(
         modifier = modifier.padding(
@@ -91,10 +91,9 @@ fun TopSection(
             text = announcement.author.fullName,
             style = MaterialTheme.typography.titleMedium,
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.weight(1f)
         )
-
-        Spacer(modifier = Modifier.width(MaterialTheme.spacing.smallMedium))
 
         Text(
             text = elapsedTimeValue,

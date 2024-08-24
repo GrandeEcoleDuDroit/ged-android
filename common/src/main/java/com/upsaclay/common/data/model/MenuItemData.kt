@@ -4,6 +4,6 @@ import androidx.compose.runtime.Composable
 
 data class MenuItemData(
     val text: @Composable () -> Unit,
-    val icon: @Composable (() -> Unit)? = null,
+    val icon: @Composable (() -> Unit),
     val onClick: (() -> Unit)? = null
 )

@@ -5,4 +5,11 @@
     <string name="news_ged">Actualités GED</string>
     <string name="no_announcements">Aucune annonces</string>
     <string name="announcement">Annonce</string>
+    <string name="announcement_item_more_vert_description">Afficher les options d\'édition de l\'annonce</string>
+    <string name="new_announcement">Nouvelle annonce</string>
+    <string name="edit_announcement">Editer l\'annonce</string>
+    <string name="delete_announcement">Supprimer l\'annonce</string>
+    <string name="delete_announcement_dialog_content">Êtes-vous sûr de vouloir supprimer cette annonce ?</string>
+    <string name="title_field">Titre</string>
+    <string name="content_field">Contenu</string>
 </resources>

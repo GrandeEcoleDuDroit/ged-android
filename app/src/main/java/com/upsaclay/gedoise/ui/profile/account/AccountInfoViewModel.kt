@@ -24,7 +24,7 @@ class AccountInfoViewModel(
 ): ViewModel() {
     private val _accountInfoScreenState = MutableStateFlow(AccountInfoScreenState.READ)
     val accountScreenState = _accountInfoScreenState.asStateFlow()
-    val user: Flow<User> = getUserUseCase()
+    val user: Flow<User?> = getUserUseCase()
     var profilePictureUri by mutableStateOf<Uri?>(null)
         private set
 
@@ -45,8 +45,8 @@ class AccountInfoViewModel(
 
         profilePictureUri?.let { uri ->
             viewModelScope.launch {
-                val (id, profilePictureUrl) = user.first().id to user.first().profilePictureUrl
-                updateUserProfilePictureUseCase(id, uri, profilePictureUrl)
+                val (id, profilePictureUrl) = user.first()?.id to user.first()?.profilePictureUrl
+                updateUserProfilePictureUseCase(id!!, uri, profilePictureUrl)
                     .onSuccess {
                         _accountInfoScreenState.value = AccountInfoScreenState.PROFILE_PICTURE_UPDATED
                     }
@@ -62,8 +62,8 @@ class AccountInfoViewModel(
         _accountInfoScreenState.value = AccountInfoScreenState.LOADING
 
         viewModelScope.launch {
-            val (id, profilePictureUrl) = user.first().id to user.first().profilePictureUrl
-            deleteUserProfilePictureUseCase(id, profilePictureUrl!!)
+            val (id, profilePictureUrl) = user.first()?.id to user.first()?.profilePictureUrl
+            deleteUserProfilePictureUseCase(id!!, profilePictureUrl!!)
                 .onSuccess {
                     _accountInfoScreenState.value = AccountInfoScreenState.PROFILE_PICTURE_UPDATED
                 }
