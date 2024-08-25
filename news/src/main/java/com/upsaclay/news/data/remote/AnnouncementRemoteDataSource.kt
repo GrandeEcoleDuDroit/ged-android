@@ -1,6 +1,5 @@
 package com.upsaclay.news.data.remote
 
-import com.upsaclay.common.utils.i
 import com.upsaclay.news.data.remote.api.AnnouncementApi
 import com.upsaclay.news.data.remote.model.AnnouncementDTO
 import com.upsaclay.news.domain.model.Announcement
@@ -34,8 +33,6 @@ class AnnouncementRemoteDataSource(
                 val announcementId = response.body()?.data
 
                 announcementId?.let {
-                    val responseMessage = response.body()?.message ?: "Announcement created successfully with id: $it"
-                    i(responseMessage)
                     Result.success(it)
                 } ?: run {
                     val errorMessage = response.body()?.error ?: "Error to create remote announcement: id is null"
@@ -59,10 +56,12 @@ class AnnouncementRemoteDataSource(
         try {
             val response = announcementApi.deleteAnnouncement(id)
             if(response.isSuccessful) {
-                    Result.success(Unit)
+                Result.success(Unit)
             } else {
-                val errorMessage = response.body()?.error
-                Result.failure(Exception("Error to delete remote announcement : $errorMessage"))
+                val errorMessage = response.errorBody()?.string() ?:
+                    "Error to delete remote announcement : Request failed with code ${response.code()}"
+                e(errorMessage)
+                Result.failure(IOException(errorMessage))
             }
         } catch (e: Exception) {
             e("Error to delete remote announcement: %s", e.message)
