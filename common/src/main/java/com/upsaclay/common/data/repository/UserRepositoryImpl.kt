@@ -25,7 +25,7 @@ internal class UserRepositoryImpl(
     init {
         CoroutineScope(Dispatchers.IO).launch {
             userLocalDataSource.getUser().collect {
-                _user.value = it?.copy(isMember = true)
+                _user.value = it
             }
         }
     }
@@ -51,7 +51,6 @@ internal class UserRepositoryImpl(
 
         return if (response.isSuccessful) {
             userLocalDataSource.updateProfilePictureUrl(profilePictureUrl)
-            i("Profile picture updated successfully !")
             Result.success(Unit)
         }
         else {
@@ -66,7 +65,6 @@ internal class UserRepositoryImpl(
 
         return if(response.isSuccessful) {
             userLocalDataSource.deleteProfilePictureUrl()
-            i("Profile picture deleted successfully !")
             Result.success(Unit)
         }
         else {
