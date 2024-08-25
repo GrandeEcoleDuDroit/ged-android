@@ -1,5 +1,6 @@
 package com.upsaclay.news.ui
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -197,14 +198,19 @@ private fun RecentAnnouncementSection(
 
         Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
 
-        LazyColumn(Modifier.heightIn(max = screenHeight * 0.3f)) {
+        LazyColumn(
+            modifier = Modifier.heightIn(max = screenHeight * 0.4f),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             if (announcements.isEmpty()) {
                 item {
+                    Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
                     Text(
                         text = stringResource(id = R.string.no_announcements),
                         style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.fillMaxWidth(),
                         color = Color.Gray,
+                        modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center
                     )
                 }
@@ -238,7 +244,7 @@ private fun PostSection() {
             modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium)
         )
 
-       //TODO : Implémenter la récupération de posts
+       //TODO : Implémenter la récupération des posts
     }
 }
 

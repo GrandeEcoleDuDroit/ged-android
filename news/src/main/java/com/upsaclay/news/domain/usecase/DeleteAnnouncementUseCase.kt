@@ -6,7 +6,7 @@ import com.upsaclay.news.domain.repository.AnnouncementRepository
 class DeleteAnnouncementUseCase(
     private val announcementRepository: AnnouncementRepository
 ) {
-    suspend operator fun invoke(announcement: Announcement) {
-        announcementRepository.deleteAnnouncement(announcement)
+    suspend operator fun invoke(announcement: Announcement): Result<Unit> {
+        return announcementRepository.deleteAnnouncement(announcement)
     }
 }

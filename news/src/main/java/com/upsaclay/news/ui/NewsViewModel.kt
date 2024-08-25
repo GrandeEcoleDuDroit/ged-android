@@ -56,7 +56,7 @@ class NewsViewModel(
         _announcementState.value = AnnouncementState.LOADING
         viewModelScope.launch {
             deleteAnnouncementUseCase(announcement)
-            _announcementState.value = AnnouncementState.DEFAULT
+            _announcementState.value = AnnouncementState.ANNOUNCEMENT_DELETED
         }
     }
 
