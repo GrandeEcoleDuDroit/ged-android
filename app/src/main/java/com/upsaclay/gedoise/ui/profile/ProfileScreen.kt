@@ -37,7 +37,7 @@ import androidx.navigation.compose.rememberNavController
 import com.upsaclay.common.data.model.MenuItemData
 import com.upsaclay.common.data.model.Screen
 import com.upsaclay.common.ui.components.CircularProgressBar
-import com.upsaclay.common.ui.components.MenuItem
+import com.upsaclay.common.ui.components.ClickableMenuItem
 import com.upsaclay.common.ui.components.ProfilePicture
 import com.upsaclay.common.ui.theme.GedoiseColor
 import com.upsaclay.common.ui.theme.GedoiseTheme
@@ -70,9 +70,11 @@ fun ProfileScreen(
                     HorizontalDivider()
 
                     menuItemData.forEach { menuItem ->
-                        MenuItem(
+                        ClickableMenuItem(
                             modifier = Modifier.fillMaxWidth(),
-                            menuItemData = menuItem
+                            text = menuItem.text,
+                            icon = menuItem.icon,
+                            onClick = menuItem.onClick!!
                         )
                     }
                 } ?: CircularProgressBar()
@@ -138,7 +140,7 @@ private fun buildMenuItemData(
                     contentDescription = stringResource(id = R.string.account_icon_description),
                 )
             },
-            onClick = { navController.navigate(Screen.ACCOUNT_INFO.route) }
+            onClick = { navController.navigate(Screen.ACCOUNT_INFOS.route) }
         ),
 //        MenuItemData(
 //            text = {
@@ -222,9 +224,11 @@ fun ProfileScreenPreview() {
                 HorizontalDivider()
 
                 menuItemsFixtureData.forEach { menuItem ->
-                    MenuItem(
+                    ClickableMenuItem(
                         modifier = Modifier.fillMaxWidth(),
-                        menuItemData = menuItem
+                        text = menuItem.text,
+                        icon = menuItem.icon,
+                        onClick = menuItem.onClick!!
                     )
                 }
             }

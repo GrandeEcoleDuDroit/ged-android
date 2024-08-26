@@ -4,20 +4,20 @@ import androidx.lifecycle.ViewModel
 import com.upsaclay.authentication.domain.usecase.IsAuthenticatedFlowUseCase
 import com.upsaclay.common.domain.model.User
 import com.upsaclay.common.domain.usecase.GetUserUseCase
-import com.upsaclay.gedoise.data.NavigationItem
-import com.upsaclay.gedoise.data.NavigationItemType
+import com.upsaclay.gedoise.data.BottomNavigationItem
+import com.upsaclay.gedoise.data.BottomNavigationItemType
 import kotlinx.coroutines.flow.Flow
 
 class MainViewModel(
     isAuthenticatedFlowUseCase: IsAuthenticatedFlowUseCase,
     getUserUseCase: GetUserUseCase
 ): ViewModel() {
-    val navigationItem: Map<NavigationItemType, NavigationItem> = mapOf(
-        NavigationItemType.HOME to NavigationItem.Home(),
-        NavigationItemType.MESSAGE to NavigationItem.Message(),
-        NavigationItemType.CALENDAR to NavigationItem.Calendar(),
-        NavigationItemType.FORUM to NavigationItem.Forum()
+    val bottomNavigationItem: Map<BottomNavigationItemType, BottomNavigationItem> = mapOf(
+        BottomNavigationItemType.HOME to BottomNavigationItem.Home(),
+        BottomNavigationItemType.MESSAGE to BottomNavigationItem.Message(),
+        BottomNavigationItemType.CALENDAR to BottomNavigationItem.Calendar(),
+        BottomNavigationItemType.FORUM to BottomNavigationItem.Forum()
     )
     val isAuthenticated: Flow<Boolean> = isAuthenticatedFlowUseCase()
-    val user: Flow<User> = getUserUseCase()
+    val user: Flow<User?> = getUserUseCase()
 }

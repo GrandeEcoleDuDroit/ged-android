@@ -16,7 +16,6 @@ import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.DeleteUserProfilePictureUseCase
 import com.upsaclay.common.domain.usecase.DownloadImageFromOracleBucketUseCase
-import com.upsaclay.common.domain.usecase.GetCurrentUserUseCase
 import com.upsaclay.common.domain.usecase.GetDrawableUriUseCase
 import com.upsaclay.common.domain.usecase.GetUserUseCase
 import com.upsaclay.common.domain.usecase.UpdateUserProfilePictureUseCase
@@ -75,7 +74,6 @@ val coreModule = module {
 
     singleOf(::DownloadImageFromOracleBucketUseCase)
     singleOf(::GetUserUseCase)
-    singleOf(::GetCurrentUserUseCase)
     singleOf(::GetDrawableUriUseCase)
     singleOf(::DeleteUserProfilePictureUseCase)
     singleOf(::UpdateUserProfilePictureUseCase)

@@ -5,21 +5,13 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ShapeDefaults
-import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,30 +33,6 @@ fun PrimaryLargeButton(
     ) {
         Text(
             text = text,
-        )
-    }
-}
-
-@Composable
-fun SmallFAB(
-    modifier: Modifier = Modifier,
-    icon: ImageVector,
-    contentDescription: String,
-    colorButton: Color = MaterialTheme.colorScheme.primary,
-    shape: Shape = CircleShape,
-    colorIcon: Color = GedoiseColor.White,
-    onClick: () -> Unit
-) {
-    SmallFloatingActionButton(
-        modifier = modifier,
-        containerColor = colorButton,
-        contentColor = colorIcon,
-        shape = shape,
-        onClick = onClick
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = contentDescription
         )
     }
 }
@@ -103,18 +71,6 @@ private fun PrimaryLargeButtonPreview() {
             "Primary Large Button",
             {},
             modifier = Modifier.fillMaxWidth()
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun SmallFABPreview() {
-    GedoiseTheme {
-        SmallFAB(
-            icon = Icons.Default.Add,
-            contentDescription = stringResource(id = R.string.icon_add_descrption),
-            onClick = {}
         )
     }
 }
