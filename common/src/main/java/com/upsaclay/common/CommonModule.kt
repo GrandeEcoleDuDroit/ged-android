@@ -28,37 +28,35 @@ import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-private const val GEDOISE_VM_1_URL = "http://89.168.52.45:3000"
-private const val GEDOISE_VM_2_URL = "http://89.168.63.192:3000"
-const val GEDOISE_VM_1_QUALIFIER = "gedoise-vm-1_qualifier"
-const val GEDOISE_VM_2_QUALIFIER = "gedoise-vm-2_qualifier"
+const val SERVER_1_RETROFIT_QUALIFIER = "server_1_qualifier"
+const val SERVER_2_RETROFIT_QUALIFIER = "server_2_qualifier"
 
 private val okHttpClient = OkHttpClient.Builder().build()
 
 val coreModule = module {
 
-    single<Retrofit>(qualifier = named(GEDOISE_VM_1_QUALIFIER)) {
+    single<Retrofit>(qualifier = named(SERVER_1_RETROFIT_QUALIFIER)) {
         Retrofit.Builder()
-            .baseUrl(GEDOISE_VM_1_URL)
+            .baseUrl(BuildConfig.SERVICE_1_BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
 
-    single<Retrofit>(qualifier = named(GEDOISE_VM_2_QUALIFIER)) {
+    single<Retrofit>(qualifier = named(SERVER_2_RETROFIT_QUALIFIER)) {
         Retrofit.Builder()
-            .baseUrl(GEDOISE_VM_2_URL)
+            .baseUrl(BuildConfig.SERVICE_2_BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
 
     single {
-        get<Retrofit>(qualifier = named(GEDOISE_VM_1_QUALIFIER)).create(ImageRemoteApi::class.java)
+        get<Retrofit>(qualifier = named(SERVER_1_RETROFIT_QUALIFIER)).create(ImageRemoteApi::class.java)
     }
 
     single {
-        get<Retrofit>(qualifier = named(GEDOISE_VM_1_QUALIFIER)).create(UserRemoteApi::class.java)
+        get<Retrofit>(qualifier = named(SERVER_1_RETROFIT_QUALIFIER)).create(UserRemoteApi::class.java)
     }
 
     singleOf(::DrawableRepositoryImpl) { bind<DrawableRepository>() }

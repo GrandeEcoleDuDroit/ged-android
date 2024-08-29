@@ -1,8 +1,21 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.composeCompiler)
 }
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if(localPropertiesFile.exists()) {
+    localPropertiesFile.inputStream().use { stream ->
+        localProperties.load(stream)
+    }
+}
+
+val gedoiseVm1BaseUrl = project.findProperty("GEDOISE_VM_1_BASE_URL") as String
+val gedoiseVm2BaseUrl = project.findProperty("GEDOISE_VM_2_BASE_URL") as String
 
 android {
     namespace = "com.upsaclay.common"
@@ -16,11 +29,36 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField(
+                "String",
+                "SERVICE_1_BASE_URL",
+                "\"${localProperties.getProperty("LOCAL_SERVER_BASE_URL")}\""
+            )
+
+            buildConfigField(
+                "String",
+                "SERVICE_2_BASE_URL",
+                "\"${localProperties.getProperty("LOCAL_SERVER_BASE_URL")}\""
+            )
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
+            )
+
+            buildConfigField(
+                "String",
+                "SERVICE_1_BASE_URL",
+                "\"$gedoiseVm1BaseUrl\""
+            )
+
+            buildConfigField(
+                "String",
+                "SERVICE_2_BASE_URL",
+                "\"$gedoiseVm2BaseUrl\""
             )
         }
     }
@@ -29,9 +67,12 @@ android {
         sourceCompatibility = JavaVersion.VERSION_19
         targetCompatibility = JavaVersion.VERSION_19
     }
+
     buildFeatures {
         compose = true
+        buildConfig = true
     }
+
     kotlinOptions {
         jvmTarget = "19"
     }
