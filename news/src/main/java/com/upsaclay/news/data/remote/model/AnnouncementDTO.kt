@@ -5,7 +5,6 @@ import com.upsaclay.common.domain.model.User
 import com.upsaclay.common.domain.usecase.ConvertLocalDateTimeUseCase
 import com.upsaclay.common.domain.usecase.ConvertTimestampUseCase
 import com.upsaclay.news.domain.model.Announcement
-import java.sql.Timestamp
 
 data class AnnouncementWithUserDTO(
     @SerializedName("ANNOUNCEMENT_ID")
@@ -15,7 +14,7 @@ data class AnnouncementWithUserDTO(
     @SerializedName("ANNOUNCEMENT_CONTENT")
     val announcementContent: String,
     @SerializedName("ANNOUNCEMENT_DATE")
-    val announcementDate: Timestamp,
+    val announcementDate: Long,
     @SerializedName("USER_ID")
     val userId: Int,
     @SerializedName("USER_FIRST_NAME")

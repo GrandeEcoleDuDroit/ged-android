@@ -30,9 +30,9 @@ class AnnouncementRepositoryImpl(
         val remoteAnnouncements = announcementRemoteDataSource.getAllAnnouncement()
         if (remoteAnnouncements.isNotEmpty()) {
             val localAnnouncements = announcementLocalDataSource.getAllAnnouncements().first()
-            val announcementsToUpdate = remoteAnnouncements.filter { remoteValue ->
+            val announcementsToUpdate = remoteAnnouncements.filterNot { remoteValue ->
                 localAnnouncements.any { localValue ->
-                    localValue.id == remoteValue.id && localValue.date != remoteValue.date
+                    localValue.id == remoteValue.id && localValue.date == remoteValue.date
                 }
             }
             announcementsToUpdate.forEach { announcementLocalDataSource.upsertAnnouncement(it) }
