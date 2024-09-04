@@ -1,7 +1,7 @@
 package com.upsaclay.common.data.remote
 
-import com.upsaclay.common.data.model.ServerResponse
 import com.upsaclay.common.data.remote.api.ImageRemoteApi
+import com.upsaclay.common.domain.model.ServerResponse
 import com.upsaclay.common.utils.e
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -12,7 +12,7 @@ import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.Response
 import java.io.File
 
-class ImageRemoteDataSource(private val imageRemoteApi: ImageRemoteApi) {
+internal class ImageRemoteDataSource(private val imageRemoteApi: ImageRemoteApi) {
 
     suspend fun downloadImage(fileName: String): ByteArray? = withContext(Dispatchers.IO) {
         try{

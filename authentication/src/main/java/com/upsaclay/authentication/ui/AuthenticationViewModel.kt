@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upsaclay.authentication.domain.model.AuthenticationState
 import com.upsaclay.authentication.domain.usecase.LoginUseCase
-import com.upsaclay.common.utils.e
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,30 +23,26 @@ class AuthenticationViewModel(
     var password by mutableStateOf("")
         private set
 
-    fun updateMailText(value: String) {
-        mail = value
-    }
+    fun updateMailText(value: String) { mail = value }
 
-    fun updatePasswordText(value: String) {
-        password = value
-    }
+    fun updatePasswordText(value: String) { password = value }
 
     fun login() {
         _authenticationState.value = AuthenticationState.LOADING
+
         if (!verifyInputs()) {
-            _authenticationState.value = AuthenticationState.ERROR_INPUT
+            _authenticationState.value = AuthenticationState.INPUT_ERROR
             return
         }
 
         viewModelScope.launch(Dispatchers.IO) {
-            val result = loginUseCase(mail, password)
-            if (result.isSuccess) {
-                _authenticationState.value =
-                    result.getOrDefault(AuthenticationState.ERROR_AUTHENTICATION)
-            } else {
-                _authenticationState.value = AuthenticationState.ERROR_AUTHENTICATION
-                e("", result.exceptionOrNull())
-            }
+            loginUseCase(mail, password)
+                .onSuccess{
+                    _authenticationState.value = AuthenticationState.AUTHENTICATED
+                }
+                .onFailure {
+                    _authenticationState.value = AuthenticationState.AUTHENTICATION_ERROR
+                }
         }
     }
 

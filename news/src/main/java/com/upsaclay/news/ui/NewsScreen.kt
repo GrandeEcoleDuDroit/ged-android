@@ -42,8 +42,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.upsaclay.common.data.model.MenuItemData
-import com.upsaclay.common.data.model.Screen
+import com.upsaclay.common.domain.model.ClickableMenuItemData
+import com.upsaclay.common.domain.model.Screen
 import com.upsaclay.common.ui.components.ClickableMenuItem
 import com.upsaclay.common.ui.components.PullToRefreshComponent
 import com.upsaclay.common.ui.theme.GedoiseColor
@@ -82,15 +82,15 @@ fun NewsScreen(
         }
     }
 
-    val menuItemData: List<MenuItemData> = listOf(
-        MenuItemData(
+    val clickableMenuItemData: List<ClickableMenuItemData> = listOf(
+        ClickableMenuItemData(
             text = { Text(text = stringResource(id = R.string.edit_announcement)) },
             icon = { Icon(imageVector = Icons.Default.Edit, contentDescription = null) },
             onClick = {
                 hideBottomSheet()
             }
         ),
-        MenuItemData(
+        ClickableMenuItemData(
             text = {
                 Text(
                     text = stringResource(id = R.string.delete_announcement),
@@ -160,7 +160,7 @@ fun NewsScreen(
                     EditAnnouncementModelBottomSheet(
                         onDismissRequest = { showBottomSheet = false },
                         sheetState = sheetState,
-                        menuItemData = menuItemData
+                        clickableMenuItemData = clickableMenuItemData
                     )
                 }
 
@@ -255,18 +255,18 @@ private fun PostSection() {
 private fun EditAnnouncementModelBottomSheet(
     onDismissRequest: () -> Unit,
     sheetState: SheetState,
-    menuItemData: List<MenuItemData>
+    clickableMenuItemData: List<ClickableMenuItemData>
 ) {
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
         sheetState = sheetState,
     ) {
-        menuItemData.forEach { menuItemData ->
+        clickableMenuItemData.forEach { clickableMenuItemData ->
             ClickableMenuItem(
                 modifier = Modifier.fillMaxWidth(),
-                text = menuItemData.text,
-                icon = menuItemData.icon,
-                onClick = menuItemData.onClick!!
+                text = clickableMenuItemData.text,
+                icon = clickableMenuItemData.icon,
+                onClick = clickableMenuItemData.onClick
             )
         }
         Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))

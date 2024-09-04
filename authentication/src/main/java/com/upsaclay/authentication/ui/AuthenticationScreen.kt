@@ -49,7 +49,7 @@ import com.upsaclay.authentication.R
 import com.upsaclay.authentication.domain.model.AuthenticationState
 import com.upsaclay.authentication.ui.components.OutlinedEmailInput
 import com.upsaclay.authentication.ui.components.OutlinedPasswordInput
-import com.upsaclay.common.data.model.Screen
+import com.upsaclay.common.domain.model.Screen
 import com.upsaclay.common.ui.components.ErrorText
 import com.upsaclay.common.ui.components.OverlayLoadingScreen
 import com.upsaclay.common.ui.components.PrimaryLargeButton
@@ -78,14 +78,14 @@ fun AuthenticationScreen(
 //        navController.navigate(Screen.NEWS.route)
 //    }
 
-    isError = authenticationState == AuthenticationState.ERROR_AUTHENTICATION ||
-            authenticationState == AuthenticationState.ERROR_INPUT
+    isError = authenticationState == AuthenticationState.AUTHENTICATION_ERROR ||
+            authenticationState == AuthenticationState.INPUT_ERROR
 
     errorMessage = when (authenticationState) {
-        AuthenticationState.ERROR_AUTHENTICATION ->
+        AuthenticationState.AUTHENTICATION_ERROR ->
             stringResource(id = R.string.error_connection)
 
-        AuthenticationState.ERROR_INPUT ->
+        AuthenticationState.INPUT_ERROR ->
             stringResource(id = CoreResource.string.error_empty_fields)
 
         else -> ""

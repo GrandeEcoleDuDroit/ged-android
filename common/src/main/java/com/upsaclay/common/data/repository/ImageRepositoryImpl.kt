@@ -7,7 +7,7 @@ import com.upsaclay.common.utils.i
 import java.io.File
 import java.io.IOException
 
-class ImageRepositoryImpl(
+internal class ImageRepositoryImpl(
     private val imageRemoteDataSource: ImageRemoteDataSource
 ): ImageRepository {
 
@@ -17,15 +17,14 @@ class ImageRepositoryImpl(
 
     override suspend fun uploadImage(file: File): Result<String> {
        val response = imageRemoteDataSource.uploadImage(file)
-        val responseBody = response.body()
 
         return if (response.isSuccessful) {
-            val successMessage = responseBody?.message ?: "Upload image ${file.name} successful"
+            val successMessage = response.body()?.message ?: "Upload image ${file.name} successful"
             i(successMessage)
             Result.success(successMessage)
         }
         else {
-            val errorMessage = responseBody?.error
+            val errorMessage = response.errorBody()?.string()
                 ?: "Error upload image ${file.name}, HTTP status: ${response.code()}"
             e(errorMessage)
             Result.failure(IOException(errorMessage))

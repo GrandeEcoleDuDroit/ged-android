@@ -34,7 +34,7 @@ import coil.compose.AsyncImage
 import com.upsaclay.authentication.R
 import com.upsaclay.authentication.domain.model.RegistrationState
 import com.upsaclay.authentication.ui.components.RegistrationTopBar
-import com.upsaclay.common.data.model.Screen
+import com.upsaclay.common.domain.model.Screen
 import com.upsaclay.common.ui.components.ErrorText
 import com.upsaclay.common.ui.components.OverlayLoadingScreen
 import com.upsaclay.common.ui.components.PrimaryLargeButton
@@ -122,7 +122,7 @@ fun ThirdRegistrationScreen(
 
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
 
-            if (registrationState == RegistrationState.ERROR_REGISTRATION) {
+            if (registrationState == RegistrationState.REGISTRATION_ERROR) {
                 ErrorText(text = stringResource(id = R.string.error_registration))
             }
         }

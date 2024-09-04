@@ -2,7 +2,7 @@ package com.upsaclay.authentication.domain.usecase
 
 import java.security.SecureRandom
 
-class GenerateRandomString {
+class GenerateRandomStringUseCase {
     private val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZaàäbc" +
             "deéèëêfghijklmnoôöpqrstuùûüµvwxyz0123456789!" +
             "@#\\\$£€%^¨{}[]&*()-_ =~+<>?/|.,;:¤"

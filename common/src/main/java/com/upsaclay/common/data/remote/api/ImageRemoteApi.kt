@@ -1,6 +1,6 @@
 package com.upsaclay.common.data.remote.api
 
-import com.upsaclay.common.data.model.ServerResponse
+import com.upsaclay.common.domain.model.ServerResponse
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Response
@@ -11,7 +11,7 @@ import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Path
 
-interface ImageRemoteApi {
+internal interface ImageRemoteApi {
     @GET("image/download/{filename}")
     suspend fun downloadImage(@Path("filename") filename: String): Response<ResponseBody>
 

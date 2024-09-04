@@ -74,7 +74,7 @@ class AuthenticationUiTest {
         }
 
         rule.onNode(buttonLogin).performClick()
-        authenticationState.value = AuthenticationState.ERROR_INPUT
+        authenticationState.value = AuthenticationState.INPUT_ERROR
         rule.onNode(errorInputText).assertExists("Error empty text don't exist")
     }
 
@@ -93,7 +93,7 @@ class AuthenticationUiTest {
         }
 
         rule.onNode(buttonLogin).performClick()
-        authenticationState.value = AuthenticationState.ERROR_AUTHENTICATION
+        authenticationState.value = AuthenticationState.AUTHENTICATION_ERROR
         rule.onNode(errorConnectionText).assertExists("Error authentication text don't exist")
     }
 

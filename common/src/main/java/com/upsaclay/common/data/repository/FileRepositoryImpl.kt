@@ -8,7 +8,7 @@ import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.io.File
 
-class FileRepositoryImpl(private val context: Context): FileRepository {
+internal class FileRepositoryImpl(private val context: Context): FileRepository {
     override suspend fun createFileFromUri(fileName: String, uri: Uri): File = withContext(Dispatchers.IO) {
         val extension = getFileType(uri) ?: "jpg"
         val fileByteArray = getFileByteArray(uri)

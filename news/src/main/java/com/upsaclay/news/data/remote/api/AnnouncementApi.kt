@@ -1,7 +1,7 @@
 package com.upsaclay.news.data.remote.api
 
-import com.upsaclay.common.data.model.ServerResponse.EmptyResponse
-import com.upsaclay.common.data.model.ServerResponse.IntResponse
+import com.upsaclay.common.domain.model.ServerResponse.EmptyResponse
+import com.upsaclay.common.domain.model.ServerResponse.IntResponse
 import com.upsaclay.news.data.remote.model.AnnouncementDTO
 import com.upsaclay.news.data.remote.model.AnnouncementWithUserDTO
 import retrofit2.Response

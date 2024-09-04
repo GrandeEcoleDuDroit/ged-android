@@ -1,9 +1,9 @@
 package com.upsaclay.authentication.domain.model
 
-enum class AuthenticationState {
+internal enum class AuthenticationState {
     AUTHENTICATED,
     UNAUTHENTICATED,
-    ERROR_AUTHENTICATION,
-    ERROR_INPUT,
+    AUTHENTICATION_ERROR,
+    INPUT_ERROR,
     LOADING
 }

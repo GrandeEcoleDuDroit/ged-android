@@ -25,7 +25,7 @@ import com.upsaclay.authentication.domain.model.RegistrationState
 import com.upsaclay.authentication.ui.components.OutlinedEmailInput
 import com.upsaclay.authentication.ui.components.OutlinedPasswordInput
 import com.upsaclay.authentication.ui.components.RegistrationTopBar
-import com.upsaclay.common.data.model.Screen
+import com.upsaclay.common.domain.model.Screen
 import com.upsaclay.common.ui.components.ErrorText
 import com.upsaclay.common.ui.components.OverlayLoadingScreen
 import com.upsaclay.common.ui.components.PrimaryLargeButton
@@ -55,13 +55,13 @@ fun SecondRegistrationScreen(
     }
 
     isError = registrationState == RegistrationState.UNRECOGNIZED_ACCOUNT ||
-            registrationState == RegistrationState.ERROR_INPUT
+            registrationState == RegistrationState.INPUT_ERROR
 
     errorMessage = when (registrationState) {
         RegistrationState.UNRECOGNIZED_ACCOUNT ->
             stringResource(id = R.string.unrecognized_account)
 
-        RegistrationState.ERROR_INPUT ->
+        RegistrationState.INPUT_ERROR ->
             stringResource(id = com.upsaclay.common.R.string.error_empty_fields)
 
         else -> ""

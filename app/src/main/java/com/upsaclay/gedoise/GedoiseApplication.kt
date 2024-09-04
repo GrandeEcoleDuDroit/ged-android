@@ -10,7 +10,6 @@ import org.koin.core.context.startKoin
 import timber.log.Timber
 import timber.log.Timber.Forest.plant
 
-
 class GedoiseApplication : Application() {
     override fun onCreate() {
         super.onCreate()
@@ -26,7 +25,6 @@ class GedoiseApplication : Application() {
                 )
             )
         }
-
         plant(Timber.DebugTree())
     }
 }

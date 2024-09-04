@@ -54,7 +54,7 @@ class RegistrationViewModel(
         _registrationState.value = RegistrationState.LOADING
 
         if (email.isBlank() || password.isBlank()) {
-            _registrationState.value = RegistrationState.ERROR_INPUT
+            _registrationState.value = RegistrationState.INPUT_ERROR
             return
         }
 
@@ -87,7 +87,7 @@ class RegistrationViewModel(
         viewModelScope.launch {
             registrationUseCase(user, profilePictureUri)
                 .onSuccess { _registrationState.value = RegistrationState.REGISTERED }
-                .onFailure { _registrationState.value = RegistrationState.ERROR_REGISTRATION }
+                .onFailure { _registrationState.value = RegistrationState.REGISTRATION_ERROR }
         }
     }
 }

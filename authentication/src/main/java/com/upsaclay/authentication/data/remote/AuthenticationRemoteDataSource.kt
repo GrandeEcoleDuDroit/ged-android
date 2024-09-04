@@ -1,9 +1,9 @@
 package com.upsaclay.authentication.data.remote
 
-import com.upsaclay.common.data.model.ServerResponse
+import com.upsaclay.common.domain.model.ServerResponse
 import retrofit2.Response
 
-class AuthenticationRemoteDataSource(
+internal class AuthenticationRemoteDataSource(
     private val authenticationParisSaclayApi: AuthenticationParisSaclayApi,
 ) {
     suspend fun loginWithParisSaclay(

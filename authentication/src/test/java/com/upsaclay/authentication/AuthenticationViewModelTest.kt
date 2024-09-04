@@ -1,7 +1,7 @@
 package com.upsaclay.authentication
 
 import com.upsaclay.authentication.domain.model.AuthenticationState
-import com.upsaclay.authentication.domain.usecase.IsAuthenticatedFlowUseCase
+import com.upsaclay.authentication.domain.usecase.IsUserAuthenticatedUseCase
 import com.upsaclay.authentication.domain.usecase.LoginUseCase
 import com.upsaclay.authentication.ui.AuthenticationViewModel
 import io.mockk.coEvery
@@ -24,13 +24,13 @@ import kotlin.test.assertEquals
 class AuthenticationViewModelTest : KoinTest {
     private val authenticationViewModel: AuthenticationViewModel by inject()
     private val loginUseCase: LoginUseCase by inject()
-    private val isAuthenticatedFlowUseCase: IsAuthenticatedFlowUseCase by inject()
+    private val isUserAuthenticatedUseCase: IsUserAuthenticatedUseCase by inject()
 
     companion object {
         private val testModule: Module = module {
             singleOf(::AuthenticationViewModel)
             single { mockk<LoginUseCase>() }
-            single { mockk<IsAuthenticatedFlowUseCase>() }
+            single { mockk<IsUserAuthenticatedUseCase>() }
         }
     }
 
@@ -42,7 +42,7 @@ class AuthenticationViewModelTest : KoinTest {
         coEvery {
             loginUseCase(any(), any())
         } returns Result.success(AuthenticationState.AUTHENTICATED)
-        coEvery { isAuthenticatedFlowUseCase() } returns flowOf(false)
+        coEvery { isUserAuthenticatedUseCase() } returns flowOf(false)
     }
 
     @After
@@ -60,7 +60,7 @@ class AuthenticationViewModelTest : KoinTest {
 
     @Test
     fun authentication_state_is_authenticated_when_preference_is_true() {
-        coEvery { isAuthenticatedFlowUseCase() } returns flowOf(true)
+        coEvery { isUserAuthenticatedUseCase() } returns flowOf(true)
         assertEquals(
             authenticationViewModel.authenticationState.value,
             AuthenticationState.AUTHENTICATED
@@ -71,7 +71,7 @@ class AuthenticationViewModelTest : KoinTest {
     fun authentication_state_is_error_input_when_input_is_blank() {
         authenticationViewModel.login()
         val result = authenticationViewModel.authenticationState.value
-        assertEquals(result, AuthenticationState.ERROR_INPUT)
+        assertEquals(result, AuthenticationState.INPUT_ERROR)
     }
 
     @Test
@@ -98,7 +98,7 @@ class AuthenticationViewModelTest : KoinTest {
             delay(2000)
             assertEquals(
                 authenticationViewModel.authenticationState.value,
-                AuthenticationState.ERROR_AUTHENTICATION
+                AuthenticationState.AUTHENTICATION_ERROR
             )
         }
     }

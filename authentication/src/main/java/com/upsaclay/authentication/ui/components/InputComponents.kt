@@ -31,7 +31,7 @@ import com.upsaclay.common.ui.theme.GedoiseColor
 import com.upsaclay.common.ui.theme.GedoiseTheme
 
 @Composable
-fun OutlinedEmailInput(
+internal fun OutlinedEmailInput(
     modifier: Modifier = Modifier,
     text: String,
     label: String = stringResource(id = R.string.email),
@@ -94,9 +94,12 @@ fun OutlinedPasswordInput(
                 tint = GedoiseColor.BlackIconColor
             )
         },
-        visualTransformation =
-        if (passwordVisible) VisualTransformation.None
-        else PasswordVisualTransformation(),
+        visualTransformation = if (passwordVisible) {
+            VisualTransformation.None
+        }
+        else {
+            PasswordVisualTransformation()
+        },
         isError = isError,
         enabled = isEnable,
         singleLine = true
@@ -106,12 +109,8 @@ fun OutlinedPasswordInput(
 @Preview(showBackground = true, widthDp = 360, heightDp = 220)
 @Composable
 fun OutlinedInputsPreview() {
-    var mail by remember {
-        mutableStateOf("")
-    }
-    var password by remember {
-        mutableStateOf("")
-    }
+    var mail by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
 
     GedoiseTheme {
         Column(

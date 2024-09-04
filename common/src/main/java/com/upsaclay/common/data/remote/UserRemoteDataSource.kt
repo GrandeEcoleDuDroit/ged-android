@@ -1,9 +1,9 @@
 package com.upsaclay.common.data.remote
 
-import com.upsaclay.common.data.model.ServerResponse.EmptyResponse
-import com.upsaclay.common.data.model.ServerResponse.IntResponse
 import com.upsaclay.common.data.model.UserDTO
 import com.upsaclay.common.data.remote.api.UserRemoteApi
+import com.upsaclay.common.domain.model.ServerResponse.EmptyResponse
+import com.upsaclay.common.domain.model.ServerResponse.IntResponse
 import com.upsaclay.common.domain.model.User
 import com.upsaclay.common.utils.e
 import kotlinx.coroutines.Dispatchers

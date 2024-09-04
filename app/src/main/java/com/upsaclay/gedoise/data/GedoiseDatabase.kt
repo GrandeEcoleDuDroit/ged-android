@@ -6,6 +6,6 @@ import com.upsaclay.news.data.local.AnnouncementDao
 import com.upsaclay.news.data.local.AnnouncementEntity
 
 @Database(entities = [AnnouncementEntity::class], version = 2)
-abstract class GedoiseDatabase: RoomDatabase() {
+internal abstract class GedoiseDatabase : RoomDatabase() {
     abstract fun announcementDao(): AnnouncementDao
 }

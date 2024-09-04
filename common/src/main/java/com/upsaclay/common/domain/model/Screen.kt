@@ -1,4 +1,4 @@
-package com.upsaclay.common.data.model
+package com.upsaclay.common.domain.model
 
 enum class Screen(val route: String) {
     AUTHENTICATION("authentication_screen"),
@@ -12,5 +12,5 @@ enum class Screen(val route: String) {
     CALENDAR( "calendar_screen"),
     FORUM( "forum_screen"),
     PROFILE("profile_screen"),
-    ACCOUNT_INFOS("account_infos_screen")
+    ACCOUNT("account_screen")
 }

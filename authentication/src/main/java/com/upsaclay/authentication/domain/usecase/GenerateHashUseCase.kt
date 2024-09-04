@@ -3,10 +3,10 @@ package com.upsaclay.authentication.domain.usecase
 import java.security.MessageDigest
 
 class GenerateHashUseCase(
-    private val generateRandomString: GenerateRandomString
+    private val generateRandomStringUseCase: GenerateRandomStringUseCase
 ) {
     operator fun invoke(): String {
-        val secureRandomString = generateRandomString()
+        val secureRandomString = generateRandomStringUseCase()
         val bytes = secureRandomString.toByteArray()
         val messageDigest = MessageDigest.getInstance("SHA-256")
         val digest = messageDigest.digest(bytes)

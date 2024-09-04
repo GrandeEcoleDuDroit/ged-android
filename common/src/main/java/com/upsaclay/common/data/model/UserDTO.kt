@@ -3,7 +3,7 @@ package com.upsaclay.common.data.model
 import com.google.gson.annotations.SerializedName
 import com.upsaclay.common.domain.model.User
 
-data class UserDTO(
+internal data class UserDTO(
     @SerializedName("USER_ID")
     val userId: Int? = null,
     @SerializedName("USER_FIRST_NAME")
