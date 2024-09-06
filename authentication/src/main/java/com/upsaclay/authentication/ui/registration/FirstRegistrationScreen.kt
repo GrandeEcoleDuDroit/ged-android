@@ -21,20 +21,18 @@ import androidx.navigation.NavController
 import com.upsaclay.authentication.R
 import com.upsaclay.authentication.ui.components.RegistrationTopBar
 import com.upsaclay.common.domain.model.Screen
-import com.upsaclay.common.ui.components.MyDropDownMenu
 import com.upsaclay.common.ui.components.PrimaryLargeButton
+import com.upsaclay.common.ui.components.SimpleDropDownMenu
 import com.upsaclay.common.ui.theme.GedoiseTheme
 import com.upsaclay.common.ui.theme.spacing
 import kotlinx.collections.immutable.persistentListOf
 import org.koin.androidx.compose.koinViewModel
-
 
 @Composable
 fun FirstRegistrationScreen(
     navController: NavController,
     registrationViewModel: RegistrationViewModel = koinViewModel()
 ) {
-
     var selectedItem by remember {
         mutableStateOf(registrationViewModel.currentSchoolLevel)
     }
@@ -64,7 +62,7 @@ fun FirstRegistrationScreen(
 
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
 
-            MyDropDownMenu(
+            SimpleDropDownMenu(
                 items = registrationViewModel.schoolLevels,
                 selectedItem = selectedItem,
                 onItemClicked = { item ->
@@ -122,7 +120,7 @@ private fun FirstRegistrationScreenPreview() {
                     style = MaterialTheme.typography.titleMedium,
                 )
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
-                MyDropDownMenu(
+                SimpleDropDownMenu(
                     items = items,
                     selectedItem = selectedItem,
                     onItemClicked = { item ->

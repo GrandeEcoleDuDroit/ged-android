@@ -40,7 +40,7 @@ internal class UserRepositoryImpl(
             Result.success(userId)
         }
         else {
-            val errorMessage = formatHttpError(response.message(), response.errorBody()?.string())
+            val errorMessage = formatHttpError(response.message(), response)
             e(errorMessage)
             Result.failure(IOException(errorMessage))
         }
@@ -51,10 +51,11 @@ internal class UserRepositoryImpl(
 
         return if (response.isSuccessful) {
             userLocalDataSource.updateProfilePictureUrl(profilePictureUrl)
+            i(response.body()?.message ?: "Profile picture url updated successfully !")
             Result.success(Unit)
         }
         else {
-            val errorMessage = formatHttpError(response.message(), response.errorBody()?.string())
+            val errorMessage = formatHttpError(response.message(), response)
             e(errorMessage)
             Result.failure(IOException(errorMessage))
         }
@@ -65,10 +66,11 @@ internal class UserRepositoryImpl(
 
         return if(response.isSuccessful) {
             userLocalDataSource.deleteProfilePictureUrl()
+            i(response.body()?.message ?: "Profile picture url deleted successfully !")
             Result.success(Unit)
         }
         else {
-            val errorMessage = formatHttpError(response.message(), response.errorBody()?.string())
+            val errorMessage = formatHttpError(response.message(), response)
             e(errorMessage)
             Result.failure(IOException(errorMessage))
         }

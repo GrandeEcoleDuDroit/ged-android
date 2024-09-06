@@ -96,8 +96,7 @@ fun OutlinedPasswordInput(
         },
         visualTransformation = if (passwordVisible) {
             VisualTransformation.None
-        }
-        else {
+        } else {
             PasswordVisualTransformation()
         },
         isError = isError,

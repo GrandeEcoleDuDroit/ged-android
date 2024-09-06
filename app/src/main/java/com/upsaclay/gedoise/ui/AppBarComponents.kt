@@ -172,7 +172,7 @@ fun SmallTopBarEdit(
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
-internal fun MainTopBarPreview() {
+private fun MainTopBarPreview() {
     GedoiseTheme {
         TopAppBar(
             title = {

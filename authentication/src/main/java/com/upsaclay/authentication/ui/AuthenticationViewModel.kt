@@ -8,24 +8,27 @@ import androidx.lifecycle.viewModelScope
 import com.upsaclay.authentication.domain.model.AuthenticationState
 import com.upsaclay.authentication.domain.usecase.LoginUseCase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class AuthenticationViewModel(
     private val loginUseCase: LoginUseCase,
 ) : ViewModel() {
     private val _authenticationState = MutableStateFlow(AuthenticationState.UNAUTHENTICATED)
-    val authenticationState: StateFlow<AuthenticationState> = _authenticationState.asStateFlow()
+    val authenticationState: Flow<AuthenticationState> = _authenticationState
     var mail by mutableStateOf("")
         private set
     var password by mutableStateOf("")
         private set
 
-    fun updateMailText(value: String) { mail = value }
+    fun updateMailText(value: String) {
+        mail = value
+    }
 
-    fun updatePasswordText(value: String) { password = value }
+    fun updatePasswordText(value: String) {
+        password = value
+    }
 
     fun login() {
         _authenticationState.value = AuthenticationState.LOADING
@@ -37,7 +40,7 @@ class AuthenticationViewModel(
 
         viewModelScope.launch(Dispatchers.IO) {
             loginUseCase(mail, password)
-                .onSuccess{
+                .onSuccess {
                     _authenticationState.value = AuthenticationState.AUTHENTICATED
                 }
                 .onFailure {

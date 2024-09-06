@@ -19,18 +19,8 @@ internal data class UserDTO(
     @SerializedName("USER_PROFILE_PICTURE_URL")
     val userProfilePictureUrl: String? = null
 ) {
-    fun toUser() = User(
-        id = this.userId ?: -1,
-        firstName = this.userFirstName,
-        lastName = this.userLastName,
-        email = this.userEmail,
-        schoolLevel = this.userSchoolLevel,
-        isMember = this.userIsMember == 1,
-        profilePictureUrl = this.userProfilePictureUrl
-    )
-
     companion object {
-        fun fromUser(user: User) = UserDTO(
+        fun fromDomain(user: User) = UserDTO(
             userId = if (user.id == -1) null else user.id,
             userFirstName = user.firstName,
             userLastName = user.lastName,
@@ -40,4 +30,16 @@ internal data class UserDTO(
             userProfilePictureUrl = user.profilePictureUrl
         )
     }
+
+    fun toDomain() = User(
+        id = this.userId ?: -1,
+        firstName = this.userFirstName,
+        lastName = this.userLastName,
+        email = this.userEmail,
+        schoolLevel = this.userSchoolLevel,
+        isMember = this.userIsMember == 1,
+        profilePictureUrl = this.userProfilePictureUrl
+    )
 }
+
+

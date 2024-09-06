@@ -62,10 +62,11 @@ import com.upsaclay.common.R as CoreResource
 @Composable
 fun AuthenticationScreen(
     navController: NavController,
-    modifier: Modifier = Modifier,
     authenticationViewModel: AuthenticationViewModel = koinViewModel()
 ) {
-    val authenticationState by authenticationViewModel.authenticationState.collectAsState()
+    val authenticationState by authenticationViewModel.authenticationState.collectAsState(
+        AuthenticationState.UNAUTHENTICATED
+    )
     var isError by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
     val scrollState = rememberScrollState()
@@ -74,9 +75,9 @@ fun AuthenticationScreen(
     val view = LocalView.current
     val context = LocalContext.current
 
-//    if(authenticationState == AuthenticationState.AUTHENTICATED){
-//        navController.navigate(Screen.NEWS.route)
-//    }
+    if (authenticationState == AuthenticationState.AUTHENTICATED) {
+        navController.navigate(Screen.NEWS.route)
+    }
 
     isError = authenticationState == AuthenticationState.AUTHENTICATION_ERROR ||
             authenticationState == AuthenticationState.INPUT_ERROR
@@ -115,13 +116,14 @@ fun AuthenticationScreen(
         }
     }
 
-    Box(modifier = Modifier
-        .fillMaxSize()
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.aligned { size, space ->
-                 size + (30 * space / 100)
+                size + (30 * space / 100)
             },
             modifier = Modifier
                 .fillMaxSize()
@@ -153,7 +155,7 @@ fun AuthenticationScreen(
             )
         }
 
-        if(authenticationState == AuthenticationState.LOADING) {
+        if (authenticationState == AuthenticationState.LOADING) {
             OverlayLoadingScreen()
         }
     }
@@ -241,7 +243,7 @@ private fun BottomSection(
     passwordOnValueChange: (String) -> Unit,
     keyboardActions: KeyboardActions,
     isError: Boolean,
-    isEnable : Boolean = true,
+    isEnable: Boolean = true,
     errorMessage: String,
     onClickConnectButton: () -> Unit,
     onClickRegistration: () -> Unit
@@ -342,7 +344,7 @@ private fun AuthenticationScreenPreview() {
                     isEnable = !isLoading
                 )
             }
-            if(isLoading){
+            if (isLoading) {
                 OverlayLoadingScreen()
             }
         }

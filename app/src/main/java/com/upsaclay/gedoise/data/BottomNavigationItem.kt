@@ -5,7 +5,7 @@ import androidx.annotation.StringRes
 import com.upsaclay.common.domain.model.Screen
 import com.upsaclay.gedoise.R
 
-internal sealed class BottomNavigationItem(
+sealed class BottomNavigationItem(
     open val screen: Screen,
     @StringRes open val label: Int,
     open var badges: Int,

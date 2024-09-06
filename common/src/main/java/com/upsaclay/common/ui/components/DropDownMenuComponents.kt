@@ -20,7 +20,7 @@ import kotlinx.collections.immutable.persistentListOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyDropDownMenu(
+fun SimpleDropDownMenu(
     modifier: Modifier = Modifier,
     items: ImmutableList<String>,
     selectedItem: String,
@@ -61,8 +61,8 @@ fun MyDropDownMenu(
 
 @Preview(showBackground = true)
 @Composable
-fun MyDropDownMenuPreview(){
-    val items = persistentListOf("BUT 1", "BUT 2", "BUT 3")
+fun SimpleDropDownMenuPreview(){
+    val items = persistentListOf("Item 1", "Item 2", "Item 3")
     var selectedItem by remember {
         mutableStateOf(items[0])
     }
@@ -71,7 +71,7 @@ fun MyDropDownMenuPreview(){
     }
 
     GedoiseTheme {
-        MyDropDownMenu(
+        SimpleDropDownMenu(
             items = items,
             selectedItem = selectedItem,
             onItemClicked = { item ->

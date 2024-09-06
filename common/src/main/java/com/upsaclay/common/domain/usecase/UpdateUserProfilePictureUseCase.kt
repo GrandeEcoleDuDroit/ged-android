@@ -5,11 +5,12 @@ import com.upsaclay.common.domain.repository.FileRepository
 import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.utils.formatProfilePictureUrl
+import java.io.IOException
 
 class UpdateUserProfilePictureUseCase(
     private val fileRepository: FileRepository,
     private val imageRepository: ImageRepository,
-    private val userRepository: UserRepository,
+    private val userRepository: UserRepository
 ) {
     suspend operator fun invoke(
         userId: Int,
@@ -29,7 +30,8 @@ class UpdateUserProfilePictureUseCase(
                 }
         }
         else {
-            Result.failure(uploadImageResult.exceptionOrNull()!!)
+            val exception = uploadImageResult.exceptionOrNull() ?: IOException("Error uploading image")
+            Result.failure(exception)
         }
     }
 

@@ -14,12 +14,13 @@ import com.upsaclay.common.domain.repository.DrawableRepository
 import com.upsaclay.common.domain.repository.FileRepository
 import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.common.domain.repository.UserRepository
+import com.upsaclay.common.domain.usecase.ConvertLocalDateTimeUseCase
+import com.upsaclay.common.domain.usecase.ConvertTimestampUseCase
 import com.upsaclay.common.domain.usecase.DeleteUserProfilePictureUseCase
-import com.upsaclay.common.domain.usecase.DownloadImageFromOracleBucketUseCase
 import com.upsaclay.common.domain.usecase.GetDrawableUriUseCase
+import com.upsaclay.common.domain.usecase.GetElapsedTimeUseCase
 import com.upsaclay.common.domain.usecase.GetUserUseCase
 import com.upsaclay.common.domain.usecase.UpdateUserProfilePictureUseCase
-import com.upsaclay.common.domain.usecase.UploadImageToOracleBucketUseCase
 import okhttp3.OkHttpClient
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
@@ -70,10 +71,11 @@ val coreModule = module {
     singleOf(::UserLocalDataSource)
     singleOf(::UserDataStore)
 
-    singleOf(::DownloadImageFromOracleBucketUseCase)
-    singleOf(::GetUserUseCase)
-    singleOf(::GetDrawableUriUseCase)
+    singleOf(::ConvertLocalDateTimeUseCase)
+    singleOf(::ConvertTimestampUseCase)
     singleOf(::DeleteUserProfilePictureUseCase)
+    singleOf(::GetDrawableUriUseCase)
+    singleOf(::GetElapsedTimeUseCase)
+    singleOf(::GetUserUseCase)
     singleOf(::UpdateUserProfilePictureUseCase)
-    singleOf(::UploadImageToOracleBucketUseCase)
 }

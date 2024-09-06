@@ -1,6 +1,6 @@
 package com.upsaclay.gedoise.data
 
-internal enum class BottomNavigationItemType {
+enum class BottomNavigationItemType {
     HOME,
     MESSAGE,
     CALENDAR,

@@ -56,9 +56,6 @@ import com.upsaclay.news.domain.model.AnnouncementState
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
-
-private const val URL_BLOGSPOT = "https://grandeecoledudroit.blogspot.com/"
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewsScreen(
@@ -86,9 +83,7 @@ fun NewsScreen(
         ClickableMenuItemData(
             text = { Text(text = stringResource(id = R.string.edit_announcement)) },
             icon = { Icon(imageVector = Icons.Default.Edit, contentDescription = null) },
-            onClick = {
-                hideBottomSheet()
-            }
+            onClick = { hideBottomSheet() }
         ),
         ClickableMenuItemData(
             text = {
@@ -111,9 +106,7 @@ fun NewsScreen(
         )
     )
 
-    LaunchedEffect(Unit) {
-        newsViewModel.refreshAnnouncements()
-    }
+    LaunchedEffect(Unit) { newsViewModel.refreshAnnouncements() }
 
     user?.let {
         PullToRefreshComponent(
@@ -133,7 +126,6 @@ fun NewsScreen(
                         navController.navigate(Screen.READ_ANNOUNCEMENT.route)
                     }
                 )
-
                 PostSection()
             }
 
@@ -183,7 +175,7 @@ private fun RecentAnnouncementSection(
     announcements: List<Announcement>,
     isMember: Boolean,
     onClickEditAnnouncement: (Announcement) -> Unit = {},
-    onClickAnnouncement: (Announcement) -> Unit,
+    onClickAnnouncement: (Announcement) -> Unit
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     val sortedAnnouncements = announcements.sortedByDescending { it.date }
@@ -295,7 +287,7 @@ private fun DeleteAnnouncementDialog(
         },
         text = {
             Text(
-                text = stringResource(id = R.string.delete_announcement_dialog_content),
+                text = stringResource(id = R.string.delete_announcement_dialog_text),
                 style = MaterialTheme.typography.bodyLarge
             )
         }
@@ -307,14 +299,11 @@ private fun DeleteAnnouncementDialog(
 fun NewsScreenPreview(){
     val isMember = true
     GedoiseTheme {
-        PullToRefreshComponent(
-            onRefresh = { },
-        ) {
+        PullToRefreshComponent(onRefresh = { }) {
             Column {
                 if(isMember) {
                     EditRecentAnnouncementSectionPreview()
-                }
-                else {
+                } else {
                     ReadOnlyRecentAnnouncementSectionPreview()
                 }
 

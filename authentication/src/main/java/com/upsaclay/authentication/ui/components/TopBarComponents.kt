@@ -66,7 +66,7 @@ internal fun RegistrationTopBar(
         }
     ) {
         Box(
-            Modifier
+            modifier = Modifier
                 .padding(
                     top = it.calculateTopPadding(),
                     bottom = MaterialTheme.spacing.medium,

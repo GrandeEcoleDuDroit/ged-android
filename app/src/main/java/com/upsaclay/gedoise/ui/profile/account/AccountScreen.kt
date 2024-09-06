@@ -74,7 +74,7 @@ fun AccountScreen(
     navController: NavController,
     accountViewModel: AccountViewModel = koinViewModel()
 ) {
-    val currentUser = accountViewModel.user.collectAsState(initial = null).value
+    val user = accountViewModel.user.collectAsState(initial = null).value
     val accountScreenState = accountViewModel.accountScreenState.collectAsState().value
     val sheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -100,7 +100,7 @@ fun AccountScreen(
         }
     )
 
-    currentUser?.let { user ->
+    user?.let {
         val accountInfos: ImmutableList<AccountInfo> = persistentListOf(
             AccountInfo(
                 stringResource(id = com.upsaclay.common.R.string.last_name),

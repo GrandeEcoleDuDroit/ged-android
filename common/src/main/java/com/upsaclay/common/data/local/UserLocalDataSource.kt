@@ -7,10 +7,10 @@ import kotlinx.coroutines.flow.map
 
 internal class UserLocalDataSource(private val userDataStore: UserDataStore) {
     suspend fun createUser(user: User) {
-        userDataStore.storeUser(UserDTO.fromUser(user))
+        userDataStore.storeUser(UserDTO.fromDomain(user))
     }
 
-    fun getUser(): Flow<User?> = userDataStore.getUserFlow().map { it?.toUser() }
+    fun getUser(): Flow<User?> = userDataStore.getUserFlow().map { it?.toDomain() }
 
     suspend fun updateProfilePictureUrl(profilePictureUrl: String) {
         userDataStore.getUser()?.let { userDTO ->

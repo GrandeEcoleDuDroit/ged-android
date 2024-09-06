@@ -1,6 +1,6 @@
 package com.upsaclay.authentication.domain.model
 
-internal enum class RegistrationState {
+enum class RegistrationState {
     REGISTERED,
     NOT_REGISTERED,
     RECOGNIZED_ACCOUNT,

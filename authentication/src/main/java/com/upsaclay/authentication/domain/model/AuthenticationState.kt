@@ -1,6 +1,6 @@
 package com.upsaclay.authentication.domain.model
 
-internal enum class AuthenticationState {
+enum class AuthenticationState {
     AUTHENTICATED,
     UNAUTHENTICATED,
     AUTHENTICATION_ERROR,

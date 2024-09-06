@@ -31,6 +31,7 @@ import com.upsaclay.common.ui.components.OverlayLoadingScreen
 import com.upsaclay.common.ui.components.PrimaryLargeButton
 import com.upsaclay.common.ui.theme.GedoiseTheme
 import com.upsaclay.common.ui.theme.spacing
+
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -38,7 +39,6 @@ fun SecondRegistrationScreen(
     navController: NavController,
     registrationViewModel: RegistrationViewModel = koinViewModel()
 ) {
-
     val keyboardController = LocalSoftwareKeyboardController.current
     val registrationState by registrationViewModel.registrationState.collectAsState()
     var errorMessage by remember { mutableStateOf("") }
@@ -101,7 +101,6 @@ fun SecondRegistrationScreen(
 
             if (isError) {
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
-
                 ErrorText(text = errorMessage)
             }
         }
@@ -121,7 +120,7 @@ fun SecondRegistrationScreen(
         )
     }
 
-    if(registrationState == RegistrationState.LOADING) {
+    if (registrationState == RegistrationState.LOADING) {
         OverlayLoadingScreen()
     }
 }
@@ -171,7 +170,7 @@ private fun SecondRegistrationScreenPreview() {
         }
     }
 
-    if(isLoading) {
+    if (isLoading) {
         OverlayLoadingScreen()
     }
 }

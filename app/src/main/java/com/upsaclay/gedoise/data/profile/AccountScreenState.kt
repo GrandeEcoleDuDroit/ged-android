@@ -1,6 +1,6 @@
 package com.upsaclay.gedoise.data.profile
 
-internal enum class AccountScreenState {
+enum class AccountScreenState {
     READ,
     EDIT,
     LOADING,

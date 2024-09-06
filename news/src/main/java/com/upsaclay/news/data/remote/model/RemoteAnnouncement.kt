@@ -6,7 +6,7 @@ import com.upsaclay.common.domain.usecase.ConvertLocalDateTimeUseCase
 import com.upsaclay.common.domain.usecase.ConvertTimestampUseCase
 import com.upsaclay.news.domain.model.Announcement
 
-data class AnnouncementWithUserDTO(
+internal data class AnnouncementRemoteWithUser(
     @SerializedName("ANNOUNCEMENT_ID")
     val announcementId: Int,
     @SerializedName("ANNOUNCEMENT_TITLE")
@@ -30,7 +30,7 @@ data class AnnouncementWithUserDTO(
     @SerializedName("USER_PROFILE_PICTURE_URL")
     val profilePictureUrl: String?
 ) {
-    fun toAnnouncement() = Announcement(
+    fun toDomain() = Announcement(
         id = announcementId,
         title = announcementTitle,
         content = announcementContent,
@@ -47,7 +47,7 @@ data class AnnouncementWithUserDTO(
     )
 }
 
-data class AnnouncementDTO(
+internal data class RemoteAnnouncement(
     @SerializedName("ANNOUNCEMENT_ID")
     val announcementId: Int,
     @SerializedName("ANNOUNCEMENT_TITLE")
@@ -60,7 +60,7 @@ data class AnnouncementDTO(
     val userId: Int,
 ) {
     companion object {
-        fun fromAnnouncement(announcement: Announcement) = AnnouncementDTO(
+        fun fromDomain(announcement: Announcement) = RemoteAnnouncement(
             announcementId = announcement.id,
             announcementTitle = announcement.title,
             announcementContent = announcement.content,

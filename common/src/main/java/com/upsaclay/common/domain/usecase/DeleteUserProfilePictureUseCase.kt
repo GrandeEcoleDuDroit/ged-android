@@ -11,14 +11,10 @@ class DeleteUserProfilePictureUseCase(
         val urlDeletionResult = userRepository.deleteProfilePictureUrl(userId)
 
         return if (urlDeletionResult.isSuccess) {
-            deleteProfilePictureImage(currentProfilePictureUrl)
+            val fileName = currentProfilePictureUrl.substringAfterLast("/")
+            imageRepository.deleteImage(fileName)
         } else {
             urlDeletionResult
         }
-    }
-
-    private suspend fun deleteProfilePictureImage(userProfilePictureUrl: String): Result<Unit> {
-        val fileName = userProfilePictureUrl.substringAfterLast("/")
-        return imageRepository.deleteImage(fileName)
     }
 }

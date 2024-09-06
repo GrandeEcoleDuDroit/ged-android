@@ -97,16 +97,17 @@ fun Navigation(mainViewModel: MainViewModel = koinViewModel()) {
             ) { contentPadding ->
                 ReadAnnouncementScreen(
                     modifier = Modifier.padding(top = contentPadding.calculateTopPadding()),
+                    navController = navController,
                     newsViewModel = sharedNewsViewModel
                 )
             }
         }
 
         composable(Screen.CREATE_ANNOUNCEMENT.route) {
-           CreateAnnouncementScreen(
-               navController = navController,
-               newsViewModel = sharedNewsViewModel
-           )
+            CreateAnnouncementScreen(
+                navController = navController,
+                newsViewModel = sharedNewsViewModel
+            )
         }
 
         composable(Screen.MESSAGES.route) {
