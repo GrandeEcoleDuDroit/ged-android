@@ -1,6 +1,7 @@
 package com.upsaclay.news.data.remote
 
 import com.upsaclay.common.utils.formatHttpError
+import com.upsaclay.common.utils.i
 import com.upsaclay.news.data.remote.api.AnnouncementApi
 import com.upsaclay.news.data.remote.model.RemoteAnnouncement
 import com.upsaclay.news.domain.model.Announcement
@@ -14,6 +15,7 @@ internal class AnnouncementRemoteDataSource(
 ) {
     suspend fun getAllAnnouncement(): List<Announcement> = withContext(Dispatchers.IO) {
         try {
+            i("Retrieving all remote announcements...")
             val response = announcementApi.getAllAnnouncement()
             if(response.isSuccessful) {
                 val announcementsWithUserDTO = response.body().takeIf {

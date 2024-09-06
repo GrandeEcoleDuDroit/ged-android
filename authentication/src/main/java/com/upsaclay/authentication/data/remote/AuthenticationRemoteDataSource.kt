@@ -3,6 +3,7 @@ package com.upsaclay.authentication.data.remote
 import com.upsaclay.authentication.domain.usecase.GenerateHashUseCase
 import com.upsaclay.common.utils.e
 import com.upsaclay.common.utils.formatHttpError
+import com.upsaclay.common.utils.i
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.IOException
@@ -15,6 +16,7 @@ internal class AuthenticationRemoteDataSource(
         email: String,
         password: String,
     ): Result<Unit> = withContext(Dispatchers.IO) {
+        i("Logging in with Paris-Saclay...")
         val hash = generateHashUseCase()
         try {
             val response = parisSaclayAuthenticationApi.login(email, password, hash)

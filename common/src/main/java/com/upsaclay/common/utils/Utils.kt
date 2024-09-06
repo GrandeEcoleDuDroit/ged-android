@@ -14,9 +14,9 @@ val userFixture = User(
 )
 
 fun <T> formatHttpError(message: String, response: Response<T>): String {
-    val body = response.errorBody() ?: "No error body"
+    val body = response.errorBody()?.string() ?: "No error body"
     return "Error request : $message\n" +
-            "HTTP status: ${response.code()}" +
+            "HTTP status: ${response.code()}\n" +
             "Body: $body"
 }
 
