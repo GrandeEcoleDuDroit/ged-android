@@ -58,9 +58,9 @@ fun CreateAnnouncementScreen(
     LaunchedEffect(state) {
         when(state) {
             AnnouncementState.ANNOUNCEMENT_CREATED -> navController.popBackStack()
-            AnnouncementState.ERROR_ANNOUNCEMENT_CREATION -> Toast.makeText(
+            AnnouncementState.ANNOUNCEMENT_CREATION_ERROR -> Toast.makeText(
                 context,
-                "Error to create announcement",
+                R.string.announcement_creation_error,
                 Toast.LENGTH_SHORT
             ).show()
             else -> {}
@@ -75,13 +75,13 @@ fun CreateAnnouncementScreen(
                     newsViewModel = newsViewModel,
                     isButtonEnable = content.isNotEmpty(),
                     announcementToCreate =
-                    Announcement(
-                        id = -1,
-                        title = title,
-                        content = content,
-                        date = LocalDateTime.now(),
-                        author = user
-                    )
+                        Announcement(
+                            id = -1,
+                            title = title,
+                            content = content,
+                            date = LocalDateTime.now(),
+                            author = user
+                        )
                 )
             }
         ) { contentPadding ->
@@ -99,7 +99,7 @@ fun CreateAnnouncementScreen(
                     modifier = Modifier.fillMaxWidth(),
                     placeholder = {
                         Text(
-                            text = stringResource(id = R.string.title_field),
+                            text = stringResource(id = R.string.title_field_entry),
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold
                         )
@@ -123,7 +123,7 @@ fun CreateAnnouncementScreen(
                     modifier = Modifier.fillMaxSize(),
                     placeholder = {
                         Text(
-                            text = stringResource(id = R.string.content_field),
+                            text = stringResource(id = R.string.content_field_entry),
                             style = MaterialTheme.typography.bodyLarge,
                         )
                     },
@@ -154,9 +154,7 @@ private fun CreateAnnouncementTopBar(
     announcementToCreate: Announcement
 ) {
     TopAppBar(
-        title = {
-            Text(text = "")
-        },
+        title = { Text(text = "") },
         navigationIcon = {
             IconButton(onClick = { navController.popBackStack()}) {
                 Icon(
@@ -169,9 +167,7 @@ private fun CreateAnnouncementTopBar(
         actions = {
             Button(
                 enabled = isButtonEnable,
-                onClick = {
-                    newsViewModel.createAnnouncement(announcementToCreate)
-                }
+                onClick = { newsViewModel.createAnnouncement(announcementToCreate) }
             ) {
                 Text(text = stringResource(id = com.upsaclay.common.R.string.publish))
             }
@@ -190,9 +186,7 @@ fun CreateAnnouncementScreenPreview() {
         Scaffold (
             topBar = {
                 TopAppBar(
-                    title = {
-                        Text(text = "")
-                    },
+                    title = { Text(text = "") },
                     navigationIcon = {
                         IconButton(onClick = { }) {
                             Icon(
@@ -229,7 +223,7 @@ fun CreateAnnouncementScreenPreview() {
                     modifier = Modifier.fillMaxWidth(),
                     placeholder = {
                         Text(
-                            text = stringResource(id = R.string.title_field),
+                            text = stringResource(id = R.string.title_field_entry),
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold
                         )
@@ -253,7 +247,7 @@ fun CreateAnnouncementScreenPreview() {
                     modifier = Modifier.fillMaxSize(),
                     placeholder = {
                         Text(
-                            text = stringResource(id = R.string.content_field),
+                            text = stringResource(id = R.string.content_field_entry),
                             style = MaterialTheme.typography.bodyLarge,
                         )
                     },

@@ -5,24 +5,22 @@ import com.upsaclay.common.domain.model.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class UserLocalDataSource(private val userDataStore: UserDataStore) {
+internal class UserLocalDataSource(private val userDataStore: UserDataStore) {
     suspend fun createUser(user: User) {
-        userDataStore.storeUser(UserDTO.fromUser(user))
+        userDataStore.storeUser(UserDTO.fromDomain(user))
     }
 
-    suspend fun getUser(): Flow<User?> = userDataStore.getUserFlow().map { it?.toUser() }
+    fun getUser(): Flow<User?> = userDataStore.getUserFlow().map { it?.toDomain() }
 
     suspend fun updateProfilePictureUrl(profilePictureUrl: String) {
-        val userDTO = userDataStore.getUser()
-        userDTO?.let {
-            userDataStore.storeUser(it.copy(userProfilePictureUrl = profilePictureUrl))
+        userDataStore.getUser()?.let { userDTO ->
+            userDataStore.storeUser(userDTO.copy(userProfilePictureUrl = profilePictureUrl))
         }
     }
 
     suspend fun deleteProfilePictureUrl() {
-        val userDTO = userDataStore.getUser()
-        userDTO?.let {
-            userDataStore.storeUser(it.copy(userProfilePictureUrl = null))
+        userDataStore.getUser()?.let { userDTO ->
+            userDataStore.storeUser(userDTO.copy(userProfilePictureUrl = null))
         }
     }
 }

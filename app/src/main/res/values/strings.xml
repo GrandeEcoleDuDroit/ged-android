@@ -31,6 +31,6 @@
     <string name="new_profile_picture">Nouvelle photo de profil</string>
     <string name="profile_picture_uploaded">Photo de profil mise à jour</string>
     <string name="error_uploading_profile_picture">Erreur lors de l\'envoi de la photo de profil</string>
-    <string name="delete_profil_picture_dialog_text">Voulez-vous supprimer votre photo de profil ?</string>
+    <string name="delete_profil_picture_dialog_text">Voulez-vous supprimer la photo de profil ?</string>
 
 </resources>

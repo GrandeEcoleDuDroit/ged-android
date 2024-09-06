@@ -7,18 +7,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upsaclay.authentication.domain.model.AuthenticationState
 import com.upsaclay.authentication.domain.usecase.LoginUseCase
-import com.upsaclay.common.utils.e
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class AuthenticationViewModel(
     private val loginUseCase: LoginUseCase,
 ) : ViewModel() {
     private val _authenticationState = MutableStateFlow(AuthenticationState.UNAUTHENTICATED)
-    val authenticationState: StateFlow<AuthenticationState> = _authenticationState.asStateFlow()
+    val authenticationState: Flow<AuthenticationState> = _authenticationState
     var mail by mutableStateOf("")
         private set
     var password by mutableStateOf("")
@@ -34,20 +32,20 @@ class AuthenticationViewModel(
 
     fun login() {
         _authenticationState.value = AuthenticationState.LOADING
+
         if (!verifyInputs()) {
-            _authenticationState.value = AuthenticationState.ERROR_INPUT
+            _authenticationState.value = AuthenticationState.INPUT_ERROR
             return
         }
 
         viewModelScope.launch(Dispatchers.IO) {
-            val result = loginUseCase(mail, password)
-            if (result.isSuccess) {
-                _authenticationState.value =
-                    result.getOrDefault(AuthenticationState.ERROR_AUTHENTICATION)
-            } else {
-                _authenticationState.value = AuthenticationState.ERROR_AUTHENTICATION
-                e("", result.exceptionOrNull())
-            }
+            loginUseCase(mail, password)
+                .onSuccess {
+                    _authenticationState.value = AuthenticationState.AUTHENTICATED
+                }
+                .onFailure {
+                    _authenticationState.value = AuthenticationState.AUTHENTICATION_ERROR
+                }
         }
     }
 

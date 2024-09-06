@@ -32,7 +32,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.upsaclay.common.data.model.Screen
+import com.upsaclay.common.domain.model.Screen
 import com.upsaclay.common.domain.model.User
 import com.upsaclay.common.ui.components.ProfilePicture
 import com.upsaclay.common.ui.theme.GedoiseTheme
@@ -44,8 +44,7 @@ import com.upsaclay.gedoise.data.BottomNavigationItem
 fun MainTopBar(
     navController: NavController,
     user: User
-){
-
+) {
     TopAppBar(
         title = {
             Text(
@@ -70,8 +69,7 @@ fun MainTopBar(
         actions = {
             IconButton(
                 onClick = { navController.navigate(Screen.PROFILE.route) },
-                modifier = Modifier
-                    .clip(shape = CircleShape)
+                modifier = Modifier.clip(shape = CircleShape)
             ) {
                 ProfilePicture(imageUrl = user.profilePictureUrl)
             }
@@ -79,9 +77,49 @@ fun MainTopBar(
     )
 }
 
+@Composable
+fun MainBottomBar(
+    navController: NavController,
+    bottomNavigationItems: List<BottomNavigationItem>
+) {
+    val currentRoute = remember {
+        navController.currentDestination?.route
+    }
+
+    NavigationBar {
+        bottomNavigationItems.forEachIndexed { _, navigationItem ->
+            NavigationBarItem(
+                selected = navigationItem.screen.route == currentRoute,
+                onClick = {
+                    if (navigationItem.screen.route != currentRoute) {
+                        navController.navigate(navigationItem.screen.route)
+                    }
+                },
+                icon = {
+                    BadgedBox(
+                        badge = {
+                            if (navigationItem.badges > 0) {
+                                Badge { Text(text = navigationItem.badges.toString()) }
+                            } else if (navigationItem.hasNews) {
+                                Badge()
+                            }
+                        }
+                    ) {
+                        Icon(
+                            painter = painterResource(id = navigationItem.icon),
+                            contentDescription = stringResource(id = navigationItem.iconDescription)
+                        )
+                    }
+                },
+                label = { Text(text = stringResource(id = navigationItem.label)) }
+            )
+        }
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BackSmallTopBar(
+fun SmallTopBarBack(
     navController: NavController,
     title: String,
     icon: @Composable () -> Unit = {
@@ -94,9 +132,7 @@ fun BackSmallTopBar(
     TopAppBar(
         title = { Text(text = title) },
         navigationIcon = {
-            IconButton(
-                onClick = { navController.popBackStack() }
-            ) {
+            IconButton(onClick = { navController.popBackStack() }) {
                 icon()
             }
         }
@@ -105,15 +141,15 @@ fun BackSmallTopBar(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditTopAppBar(
+fun SmallTopBarEdit(
     title: String,
-    onCancelClick: () -> Unit,
-    onSaveClick: () -> Unit
+    onClickCancel: () -> Unit,
+    onClickSave: () -> Unit
 ) {
     TopAppBar(
         title = { Text(text = title) },
         navigationIcon = {
-            IconButton(onClick = onCancelClick) {
+            IconButton(onClick = onClickCancel) {
                 Icon(
                     imageVector = Icons.Default.Close,
                     contentDescription = null
@@ -121,7 +157,7 @@ fun EditTopAppBar(
             }
         },
         actions = {
-            TextButton(onClick = onSaveClick) {
+            TextButton(onClick = onClickSave) {
                 Text(
                     text = stringResource(id = com.upsaclay.common.R.string.save),
                     style = MaterialTheme.typography.bodyLarge,
@@ -133,52 +169,10 @@ fun EditTopAppBar(
     )
 }
 
-@Composable
-fun MainBottomBar(
-    navController: NavController,
-    bottomNavigationItems: List<BottomNavigationItem>
-){
-    val currentRoute = remember {
-        navController.currentDestination?.route
-    }
-
-    NavigationBar{
-        bottomNavigationItems.forEachIndexed { _, navigationItem ->
-            NavigationBarItem(
-                selected = navigationItem.screen.route == currentRoute,
-                onClick = {
-                    if(navigationItem.screen.route != currentRoute)
-                        navController.navigate(navigationItem.screen.route)
-                },
-                icon = {
-                    BadgedBox(
-                        badge = {
-                            if (navigationItem.badges > 0) {
-                                Badge { Text(text = navigationItem.badges.toString()) }
-                            }
-                            else if (navigationItem.hasNews) {
-                                Badge()
-                            }
-                        }
-                    ) {
-                        Icon(
-                            painter = painterResource(id = navigationItem.icon),
-                            contentDescription = stringResource(id = navigationItem.iconDescription)
-                        )
-                    }
-                },
-                label = {
-                    Text(text = stringResource(id = navigationItem.label))
-                }
-            )
-        }
-    }
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
-internal fun MainTopBarPreview(){
+private fun MainTopBarPreview() {
     GedoiseTheme {
         TopAppBar(
             title = {
@@ -221,30 +215,7 @@ internal fun MainTopBarPreview(){
 
 @Preview
 @Composable
-private fun SmallTopBarPreview(){
-    GedoiseTheme {
-        BackSmallTopBar(
-            navController = NavController(LocalContext.current),
-            title = "Title",
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun EditTopAppBarPreview() {
-    GedoiseTheme {
-        EditTopAppBar(
-            title = "Edit",
-            onCancelClick = { },
-            onSaveClick = { }
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun MainBottomBarPreview(){
+private fun MainBottomBarPreview() {
     val messageWithNotif = BottomNavigationItem.Message()
     messageWithNotif.badges = 5
 
@@ -260,5 +231,28 @@ private fun MainBottomBarPreview(){
 
     GedoiseTheme {
         MainBottomBar(NavController(LocalContext.current), itemList)
+    }
+}
+
+@Preview
+@Composable
+private fun SmallTopBarBackPreview() {
+    GedoiseTheme {
+        SmallTopBarBack(
+            navController = NavController(LocalContext.current),
+            title = "Title",
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun SmallTopBarEditPreview() {
+    GedoiseTheme {
+        SmallTopBarEdit(
+            title = "Title",
+            onClickCancel = { },
+            onClickSave = { }
+        )
     }
 }

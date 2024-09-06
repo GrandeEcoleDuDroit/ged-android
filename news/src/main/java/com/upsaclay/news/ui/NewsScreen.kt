@@ -42,8 +42,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.upsaclay.common.data.model.MenuItemData
-import com.upsaclay.common.data.model.Screen
+import com.upsaclay.common.domain.model.ClickableMenuItemData
+import com.upsaclay.common.domain.model.Screen
 import com.upsaclay.common.ui.components.ClickableMenuItem
 import com.upsaclay.common.ui.components.PullToRefreshComponent
 import com.upsaclay.common.ui.theme.GedoiseColor
@@ -55,9 +55,6 @@ import com.upsaclay.news.domain.model.Announcement
 import com.upsaclay.news.domain.model.AnnouncementState
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
-
-
-private const val URL_BLOGSPOT = "https://grandeecoledudroit.blogspot.com/"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -82,15 +79,13 @@ fun NewsScreen(
         }
     }
 
-    val menuItemData: List<MenuItemData> = listOf(
-        MenuItemData(
+    val clickableMenuItemData: List<ClickableMenuItemData> = listOf(
+        ClickableMenuItemData(
             text = { Text(text = stringResource(id = R.string.edit_announcement)) },
             icon = { Icon(imageVector = Icons.Default.Edit, contentDescription = null) },
-            onClick = {
-                hideBottomSheet()
-            }
+            onClick = { hideBottomSheet() }
         ),
-        MenuItemData(
+        ClickableMenuItemData(
             text = {
                 Text(
                     text = stringResource(id = R.string.delete_announcement),
@@ -111,9 +106,7 @@ fun NewsScreen(
         )
     )
 
-    LaunchedEffect(Unit) {
-        newsViewModel.refreshAnnouncements()
-    }
+    LaunchedEffect(Unit) { newsViewModel.refreshAnnouncements() }
 
     user?.let {
         PullToRefreshComponent(
@@ -133,7 +126,6 @@ fun NewsScreen(
                         navController.navigate(Screen.READ_ANNOUNCEMENT.route)
                     }
                 )
-
                 PostSection()
             }
 
@@ -160,7 +152,7 @@ fun NewsScreen(
                     EditAnnouncementModelBottomSheet(
                         onDismissRequest = { showBottomSheet = false },
                         sheetState = sheetState,
-                        menuItemData = menuItemData
+                        clickableMenuItemData = clickableMenuItemData
                     )
                 }
 
@@ -183,7 +175,7 @@ private fun RecentAnnouncementSection(
     announcements: List<Announcement>,
     isMember: Boolean,
     onClickEditAnnouncement: (Announcement) -> Unit = {},
-    onClickAnnouncement: (Announcement) -> Unit,
+    onClickAnnouncement: (Announcement) -> Unit
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     val sortedAnnouncements = announcements.sortedByDescending { it.date }
@@ -255,18 +247,18 @@ private fun PostSection() {
 private fun EditAnnouncementModelBottomSheet(
     onDismissRequest: () -> Unit,
     sheetState: SheetState,
-    menuItemData: List<MenuItemData>
+    clickableMenuItemData: List<ClickableMenuItemData>
 ) {
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
         sheetState = sheetState,
     ) {
-        menuItemData.forEach { menuItemData ->
+        clickableMenuItemData.forEach { clickableMenuItemData ->
             ClickableMenuItem(
                 modifier = Modifier.fillMaxWidth(),
-                text = menuItemData.text,
-                icon = menuItemData.icon,
-                onClick = menuItemData.onClick!!
+                text = clickableMenuItemData.text,
+                icon = clickableMenuItemData.icon,
+                onClick = clickableMenuItemData.onClick
             )
         }
         Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
@@ -295,7 +287,7 @@ private fun DeleteAnnouncementDialog(
         },
         text = {
             Text(
-                text = stringResource(id = R.string.delete_announcement_dialog_content),
+                text = stringResource(id = R.string.delete_announcement_dialog_text),
                 style = MaterialTheme.typography.bodyLarge
             )
         }
@@ -307,14 +299,11 @@ private fun DeleteAnnouncementDialog(
 fun NewsScreenPreview(){
     val isMember = true
     GedoiseTheme {
-        PullToRefreshComponent(
-            onRefresh = { },
-        ) {
+        PullToRefreshComponent(onRefresh = { }) {
             Column {
                 if(isMember) {
                     EditRecentAnnouncementSectionPreview()
-                }
-                else {
+                } else {
                     ReadOnlyRecentAnnouncementSectionPreview()
                 }
 

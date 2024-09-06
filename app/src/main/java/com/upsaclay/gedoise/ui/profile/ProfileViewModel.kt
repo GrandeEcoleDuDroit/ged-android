@@ -9,9 +9,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class ProfileViewModel(
-    getUserUseCase: GetUserUseCase,
-    private val authenticationRepository: AuthenticationRepository
-): ViewModel() {
+    private val authenticationRepository: AuthenticationRepository,
+    getUserUseCase: GetUserUseCase
+) : ViewModel() {
     val user: Flow<User?> = getUserUseCase()
 
     fun logout() {

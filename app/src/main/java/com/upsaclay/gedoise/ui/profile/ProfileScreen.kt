@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -34,8 +35,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.upsaclay.common.data.model.MenuItemData
-import com.upsaclay.common.data.model.Screen
+import com.upsaclay.common.domain.model.ClickableMenuItemData
+import com.upsaclay.common.domain.model.Screen
 import com.upsaclay.common.ui.components.CircularProgressBar
 import com.upsaclay.common.ui.components.ClickableMenuItem
 import com.upsaclay.common.ui.components.ProfilePicture
@@ -54,14 +55,19 @@ fun ProfileScreen(
     profileViewModel: ProfileViewModel = koinViewModel()
 ) {
     val user = profileViewModel.user.collectAsState(initial = null).value
-    val menuItemData: ImmutableList<MenuItemData> = buildMenuItemData(navController, profileViewModel)
+    val clickableMenuItemsData: ImmutableList<ClickableMenuItemData> =
+        buildProfileMenuItemData(navController, profileViewModel)
 
     Scaffold(
         topBar = { ProfileTopBar(navController = navController) }
     ) {
-        Box(Modifier.padding(top = it.calculateTopPadding())) {
-            Column {
-                user?.let { user ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = it.calculateTopPadding()),
+        ) {
+            user?.let { user ->
+                Column {
                     TopSection(
                         profilePictureUrl = user.profilePictureUrl,
                         userFullName = user.fullName
@@ -69,16 +75,20 @@ fun ProfileScreen(
 
                     HorizontalDivider()
 
-                    menuItemData.forEach { menuItem ->
+                    clickableMenuItemsData.forEach { menuItem ->
                         ClickableMenuItem(
                             modifier = Modifier.fillMaxWidth(),
                             text = menuItem.text,
                             icon = menuItem.icon,
-                            onClick = menuItem.onClick!!
+                            onClick = menuItem.onClick
                         )
                     }
-                } ?: CircularProgressBar()
-            }
+
+                }
+            } ?: CircularProgressBar(
+                modifier = Modifier.align(Alignment.Center),
+                scale = 3f
+            )
         }
     }
 }
@@ -110,11 +120,14 @@ private fun TopSection(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileTopBar(
-    navController: NavController
-) {
+fun ProfileTopBar(navController: NavController) {
     TopAppBar(
-        title = { Text(text = stringResource(id = R.string.profile), textAlign = TextAlign.Center) },
+        title = {
+            Text(
+                text = stringResource(id = R.string.profile),
+                textAlign = TextAlign.Center
+            )
+        },
         navigationIcon = {
             IconButton(onClick = { navController.popBackStack() }) {
                 Icon(
@@ -126,12 +139,12 @@ fun ProfileTopBar(
     )
 }
 
-private fun buildMenuItemData(
+private fun buildProfileMenuItemData(
     navController: NavController,
     profileViewModel: ProfileViewModel
-): ImmutableList<MenuItemData> {
+): ImmutableList<ClickableMenuItemData> {
     return persistentListOf(
-        MenuItemData(
+        ClickableMenuItemData(
             text = { Text(text = stringResource(id = R.string.account_informations)) },
             icon = {
                 Icon(
@@ -140,9 +153,9 @@ private fun buildMenuItemData(
                     contentDescription = stringResource(id = R.string.account_icon_description),
                 )
             },
-            onClick = { navController.navigate(Screen.ACCOUNT_INFOS.route) }
+            onClick = { navController.navigate(Screen.ACCOUNT.route) }
         ),
-//        MenuItemData(
+//        ClickableMenuItemData(
 //            text = {
 //                Text(text = stringResource(id = R.string.settings))
 //            },
@@ -154,7 +167,7 @@ private fun buildMenuItemData(
 //                )
 //            }
 //        ),
-//        MenuItemData(
+//        ClickableMenuItemData(
 //            text = {
 //                Text(text = stringResource(id = R.string.support))
 //            },
@@ -165,7 +178,7 @@ private fun buildMenuItemData(
 //                )
 //            }
 //        ),
-        MenuItemData(
+        ClickableMenuItemData(
             text = {
                 Text(
                     text = stringResource(id = R.string.logout),
@@ -187,57 +200,70 @@ private fun buildMenuItemData(
 @Preview
 @Composable
 fun ProfileScreenPreview() {
+    val showProgressBar = true
+
     GedoiseTheme {
         Scaffold(
             topBar = { ProfileTopBar(navController = rememberNavController()) }
         ) {
-            Column(
-                modifier = Modifier.padding(top = it.calculateTopPadding()),
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = it.calculateTopPadding()),
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            start = MaterialTheme.spacing.medium,
-                            end = MaterialTheme.spacing.medium,
-                            bottom = MaterialTheme.spacing.medium
-                        ),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Image(
-                        painter = painterResource(id = com.upsaclay.common.R.drawable.default_profile_picture),
-                        contentDescription = "",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(70.dp)
-                            .border(1.dp, Color.LightGray, CircleShape)
+                if (showProgressBar) {
+                    CircularProgressBar(
+                        modifier = Modifier.align(Alignment.Center),
+                        scale = 3f
                     )
+                } else {
+                    Column {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                    start = MaterialTheme.spacing.medium,
+                                    end = MaterialTheme.spacing.medium,
+                                    bottom = MaterialTheme.spacing.medium
+                                ),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Image(
+                                painter = painterResource(id = com.upsaclay.common.R.drawable.default_profile_picture),
+                                contentDescription = "",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .size(70.dp)
+                                    .border(1.dp, Color.LightGray, CircleShape)
+                            )
 
-                    Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))
+                            Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))
 
-                    Text(
-                        text = userFixture.firstName + " " + userFixture.lastName,
-                        style = MaterialTheme.typography.headlineSmall,
-                    )
-                }
+                            Text(
+                                text = userFixture.firstName + " " + userFixture.lastName,
+                                style = MaterialTheme.typography.headlineSmall,
+                            )
+                        }
 
-                HorizontalDivider()
+                        HorizontalDivider()
 
-                menuItemsFixtureData.forEach { menuItem ->
-                    ClickableMenuItem(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = menuItem.text,
-                        icon = menuItem.icon,
-                        onClick = menuItem.onClick!!
-                    )
+                        profileMenuItemsDataFixture.forEach { menuItem ->
+                            ClickableMenuItem(
+                                modifier = Modifier.fillMaxWidth(),
+                                text = menuItem.text,
+                                icon = menuItem.icon,
+                                onClick = menuItem.onClick
+                            )
+                        }
+                    }
                 }
             }
         }
     }
 }
 
-private val menuItemsFixtureData: ImmutableList<MenuItemData> = persistentListOf(
-    MenuItemData(
+private val profileMenuItemsDataFixture: ImmutableList<ClickableMenuItemData> = persistentListOf(
+    ClickableMenuItemData(
         text = { Text(text = stringResource(id = R.string.account_informations)) },
         icon = {
             Icon(
@@ -246,8 +272,9 @@ private val menuItemsFixtureData: ImmutableList<MenuItemData> = persistentListOf
                 contentDescription = stringResource(id = R.string.account_icon_description),
             )
         },
+        onClick = {}
     ),
-//    MenuItemData(
+//    ClickableMenuItemData(
 //        text = {
 //            Text(text = stringResource(id = R.string.settings))
 //        },
@@ -259,7 +286,7 @@ private val menuItemsFixtureData: ImmutableList<MenuItemData> = persistentListOf
 //            )
 //        }
 //    ),
-//    MenuItemData(
+//    ClickableMenuItemData(
 //        text = {
 //            Text(text = stringResource(id = R.string.support))
 //        },
@@ -270,7 +297,7 @@ private val menuItemsFixtureData: ImmutableList<MenuItemData> = persistentListOf
 //            )
 //        }
 //    ),
-    MenuItemData(
+    ClickableMenuItemData(
         text = {
             Text(
                 text = stringResource(id = R.string.logout),
@@ -283,6 +310,7 @@ private val menuItemsFixtureData: ImmutableList<MenuItemData> = persistentListOf
                 contentDescription = stringResource(id = R.string.logout_icon_description),
                 tint = GedoiseColor.Red
             )
-        }
+        },
+        onClick = {}
     )
 )

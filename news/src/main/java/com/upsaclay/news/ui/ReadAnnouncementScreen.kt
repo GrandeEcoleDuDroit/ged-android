@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 import com.upsaclay.common.domain.model.ElapsedTime
 import com.upsaclay.common.domain.usecase.GetElapsedTimeUseCase
 import com.upsaclay.common.ui.components.ProfilePicture
@@ -23,14 +24,21 @@ import com.upsaclay.common.ui.theme.GedoiseTheme
 import com.upsaclay.common.ui.theme.spacing
 import com.upsaclay.news.announcementFixture
 import com.upsaclay.news.domain.model.Announcement
+import com.upsaclay.news.domain.model.AnnouncementState
 import org.koin.androidx.compose.koinViewModel
 import java.time.format.DateTimeFormatter
 
 @Composable
 fun ReadAnnouncementScreen(
     modifier: Modifier = Modifier,
+    navController: NavController,
     newsViewModel: NewsViewModel = koinViewModel()
 ) {
+    if(newsViewModel.displayedAnnouncement == null) {
+        newsViewModel.updateAnnouncementState(AnnouncementState.ANNOUNCEMENT_DISPLAY_ERROR)
+        navController.popBackStack()
+    }
+
     val announcement = newsViewModel.displayedAnnouncement!!
 
     Column(
@@ -40,7 +48,6 @@ fun ReadAnnouncementScreen(
             bottom = MaterialTheme.spacing.medium
         )
     ) {
-
         TopSection(announcement)
 
         Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
@@ -48,21 +55,17 @@ fun ReadAnnouncementScreen(
         announcement.title?.let {
             Text(
                 text = it,
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleLarge
             )
             Spacer(Modifier.height(MaterialTheme.spacing.medium))
         }
 
-        Text(
-            text = announcement.content,
-        )
+        Text(text = announcement.content)
     }
 }
 
 @Composable
-fun TopSection(
-    announcement: Announcement
-) {
+fun TopSection(announcement: Announcement) {
     val context = LocalContext.current
     val elapsedTime = GetElapsedTimeUseCase().fromLocalDateTime(announcement.date)
     val elapsedTimeValue = when(elapsedTime) {
@@ -77,9 +80,7 @@ fun TopSection(
         }
     }
 
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
         ProfilePicture(
             imageUrl = announcement.author.profilePictureUrl,
             scaleImage = 0.45f
@@ -108,13 +109,9 @@ fun TopSection(
 @Composable
 private fun AnnouncementScreenPreview(){
     GedoiseTheme {
-
         val announcement = announcementFixture
 
-        Column(
-            modifier = Modifier.padding(MaterialTheme.spacing.medium)
-        ) {
-
+        Column(modifier = Modifier.padding(MaterialTheme.spacing.medium)) {
             TopSection(announcement)
 
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
@@ -127,9 +124,7 @@ private fun AnnouncementScreenPreview(){
                 Spacer(Modifier.height(MaterialTheme.spacing.medium))
             }
 
-            Text(
-                text = announcement.content,
-            )
+            Text(text = announcement.content,)
         }
     }
 }

@@ -183,8 +183,6 @@ internal fun EditableShortAnnouncementItem(
     }
 }
 
-
-
 @Preview
 @Composable
 internal fun ReadOnlyShortAnnouncementItemPreview(){

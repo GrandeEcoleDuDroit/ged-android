@@ -1,6 +1,6 @@
 package com.upsaclay.gedoise.data.profile
 
-data class AccountInfoFieldData(
+internal data class AccountInfo(
     val label: String,
     val value: String
 )

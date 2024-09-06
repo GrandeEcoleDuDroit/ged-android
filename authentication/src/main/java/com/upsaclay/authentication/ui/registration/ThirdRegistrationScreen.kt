@@ -4,14 +4,12 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -20,9 +18,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -30,14 +27,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import coil.compose.AsyncImage
 import com.upsaclay.authentication.R
 import com.upsaclay.authentication.domain.model.RegistrationState
 import com.upsaclay.authentication.ui.components.RegistrationTopBar
-import com.upsaclay.common.data.model.Screen
+import com.upsaclay.common.domain.model.Screen
 import com.upsaclay.common.ui.components.ErrorText
 import com.upsaclay.common.ui.components.OverlayLoadingScreen
 import com.upsaclay.common.ui.components.PrimaryLargeButton
+import com.upsaclay.common.ui.components.ProfilePicture
 import com.upsaclay.common.ui.theme.GedoiseTheme
 import com.upsaclay.common.ui.theme.spacing
 import org.koin.androidx.compose.koinViewModel
@@ -47,14 +44,12 @@ fun ThirdRegistrationScreen(
     navController: NavController,
     registrationViewModel: RegistrationViewModel = koinViewModel()
 ) {
-
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri ->
             registrationViewModel.updateProfilePictureUri(uri)
         }
     )
-
     val registrationState by registrationViewModel.registrationState.collectAsState()
 
     if (registrationState == RegistrationState.REGISTERED) {
@@ -81,20 +76,14 @@ fun ThirdRegistrationScreen(
 
             Spacer(Modifier.height(MaterialTheme.spacing.medium))
 
-            AsyncImage(
-                model = registrationViewModel.profilePictureUri,
-                contentDescription = stringResource(id = com.upsaclay.common.R.string.profile_picture_description),
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .fillMaxWidth(0.6f)
-                    .fillMaxHeight(0.3f)
-                    .border(1.dp, Color.LightGray, CircleShape)
-                    .clickable {
-                        singlePhotoPickerLauncher.launch(
-                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                        )
-                    }
+            ProfilePicture(
+                imageUri = registrationViewModel.profilePictureUri,
+                scaleImage = 2f,
+                onClick = {
+                    singlePhotoPickerLauncher.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    )
+                }
             )
 
             registrationViewModel.profilePictureUri?.let {
@@ -122,7 +111,7 @@ fun ThirdRegistrationScreen(
 
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
 
-            if (registrationState == RegistrationState.ERROR_REGISTRATION) {
+            if (registrationState == RegistrationState.REGISTRATION_ERROR) {
                 ErrorText(text = stringResource(id = R.string.error_registration))
             }
         }
@@ -166,18 +155,23 @@ fun ThirdRegistrationScreenPreview() {
                 )
                 Spacer(Modifier.height(MaterialTheme.spacing.medium))
 
-                Image(
-                    painter = painterResource(id = com.upsaclay.common.R.drawable.default_profile_picture),
-                    contentDescription = stringResource(id = com.upsaclay.common.R.string.profile_picture_description),
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .fillMaxWidth(0.6f)
-                        .fillMaxHeight(0.3f)
-                        .border(1.dp, Color.LightGray, CircleShape)
-                )
+                Box(
+                    modifier = Modifier.size(220.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = com.upsaclay.common.R.drawable.default_profile_picture),
+                        contentDescription = "",
+                        modifier = Modifier.size(100.dp).scale(2f)
+                    )
+                    ProfilePicture(
+                        imageUrl = null,
+                        scaleImage = 2f,
+                        onClick = {}
+                    )
+                }
 
-                if(pictureChanged) {
+                if (pictureChanged) {
                     TextButton(
                         onClick = { }
                     ) {

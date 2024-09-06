@@ -3,9 +3,9 @@ package com.upsaclay.gedoise.data
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.upsaclay.news.data.local.AnnouncementDao
-import com.upsaclay.news.data.local.AnnouncementEntity
+import com.upsaclay.news.data.local.LocalAnnouncement
 
-@Database(entities = [AnnouncementEntity::class], version = 2)
-abstract class GedoiseDatabase: RoomDatabase() {
+@Database(entities = [LocalAnnouncement::class], version = 3)
+internal abstract class GedoiseDatabase : RoomDatabase() {
     abstract fun announcementDao(): AnnouncementDao
 }

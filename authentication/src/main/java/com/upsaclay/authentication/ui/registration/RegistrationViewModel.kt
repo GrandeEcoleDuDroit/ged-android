@@ -24,6 +24,7 @@ class RegistrationViewModel(
 ) : ViewModel() {
     private val _registrationState = MutableStateFlow(RegistrationState.NOT_REGISTERED)
     val registrationState: StateFlow<RegistrationState> = _registrationState.asStateFlow()
+
     var email by mutableStateOf("")
         private set
     var password by mutableStateOf("")
@@ -36,25 +37,39 @@ class RegistrationViewModel(
     var fullName by mutableStateOf("")
         private set
 
-    fun updateEmail(value: String) { email = value }
+    fun updateEmail(value: String) {
+        email = value
+    }
 
-    fun updatePassword(value: String) { password = value }
+    fun updatePassword(value: String) {
+        password = value
+    }
 
-    fun updateSchoolLevel(value: String) { currentSchoolLevel = value }
+    fun updateSchoolLevel(value: String) {
+        currentSchoolLevel = value
+    }
 
-    fun updateProfilePictureUri(uri: Uri?) { uri?.let { profilePictureUri = it } }
+    fun updateProfilePictureUri(uri: Uri?) {
+        uri?.let { profilePictureUri = it }
+    }
 
-    fun resetEmail() { email = "" }
+    fun resetEmail() {
+        email = ""
+    }
 
-    fun resetPassword() { password = "" }
+    fun resetPassword() {
+        password = ""
+    }
 
-    fun resetProfilePictureUri() { profilePictureUri = null }
+    fun resetProfilePictureUri() {
+        profilePictureUri = null
+    }
 
     fun verifyAccount(email: String, password: String) {
         _registrationState.value = RegistrationState.LOADING
 
         if (email.isBlank() || password.isBlank()) {
-            _registrationState.value = RegistrationState.ERROR_INPUT
+            _registrationState.value = RegistrationState.INPUT_ERROR
             return
         }
 
@@ -87,7 +102,7 @@ class RegistrationViewModel(
         viewModelScope.launch {
             registrationUseCase(user, profilePictureUri)
                 .onSuccess { _registrationState.value = RegistrationState.REGISTERED }
-                .onFailure { _registrationState.value = RegistrationState.ERROR_REGISTRATION }
+                .onFailure { _registrationState.value = RegistrationState.REGISTRATION_ERROR }
         }
     }
 }
