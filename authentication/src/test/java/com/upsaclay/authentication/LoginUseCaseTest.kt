@@ -21,14 +21,11 @@ class LoginUseCaseTest {
     fun setUp() {
         generateHashUseCase = mockk()
         authenticationRepository = mockk()
-        loginUseCase = LoginUseCase(
-            authenticationRepository,
-            generateHashUseCase
-        )
+        loginUseCase = LoginUseCase(authenticationRepository)
 
         coEvery {
-            authenticationRepository.loginWithParisSaclay(any(), any(), any())
-        } returns Result.success("")
+            authenticationRepository.login(any(), any())
+        } returns Result.success(Unit)
         coEvery { generateHashUseCase() } returns hash
     }
 
@@ -43,7 +40,7 @@ class LoginUseCaseTest {
     @Test
     fun login_with_paris_saclay_return_fail_when_login_is_incorrect() {
         coEvery {
-            authenticationRepository.loginWithParisSaclay(any(), any(), any())
+            authenticationRepository.login(any(), any())
         } returns Result.failure(Exception())
         runTest {
             val result = loginUseCase(email, password)

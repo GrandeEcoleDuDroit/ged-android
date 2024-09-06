@@ -5,12 +5,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
@@ -22,11 +18,11 @@ import com.upsaclay.authentication.ui.registration.FirstRegistrationScreen
 import com.upsaclay.authentication.ui.registration.RegistrationViewModel
 import com.upsaclay.authentication.ui.registration.SecondRegistrationScreen
 import com.upsaclay.authentication.ui.registration.ThirdRegistrationScreen
-import com.upsaclay.common.data.model.Screen
+import com.upsaclay.common.domain.model.Screen
 import com.upsaclay.common.domain.model.User
 import com.upsaclay.gedoise.data.BottomNavigationItem
 import com.upsaclay.gedoise.ui.profile.ProfileScreen
-import com.upsaclay.gedoise.ui.profile.account.AccountInfoScreen
+import com.upsaclay.gedoise.ui.profile.account.AccountScreen
 import com.upsaclay.news.ui.EditAnnouncementScreen
 import com.upsaclay.news.ui.NewsScreen
 import com.upsaclay.news.ui.NewsViewModel
@@ -34,144 +30,136 @@ import com.upsaclay.news.ui.ReadAnnouncementScreen
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun Navigation(
-    mainViewModel: MainViewModel = koinViewModel()
-) {
+fun Navigation(mainViewModel: MainViewModel = koinViewModel()) {
     val navController = rememberNavController()
-    val user = mainViewModel.user.collectAsState(initial = null).value
-    var startDestination: String? by remember { mutableStateOf(null) }
+    val user = mainViewModel.user.collectAsState(null).value
+    val isAuthenticated by mainViewModel.isAuthenticated.collectAsState(false)
     val sharedRegistrationViewModel: RegistrationViewModel = koinViewModel()
     val sharedNewsViewModel: NewsViewModel = koinViewModel()
-
-    LaunchedEffect(mainViewModel.isAuthenticated) {
-        mainViewModel.isAuthenticated.collect {
-            startDestination = if(it) {
-                Screen.NEWS.route
-            }
-            else {
-                Screen.NEWS.route
-            }
-        }
+    val startDestination = if (isAuthenticated) {
+        Screen.NEWS.route
+    } else {
+        Screen.NEWS.route
     }
 
-    startDestination?.let {
-        NavHost(
-            navController = navController,
-            startDestination = it
-        ) {
-            composable(Screen.AUTHENTICATION.route) {
-                AuthenticationScreen(navController = navController)
-            }
+    NavHost(
+        navController = navController,
+        startDestination = startDestination
+    ) {
+        composable(Screen.AUTHENTICATION.route) {
+            AuthenticationScreen(navController = navController)
+        }
 
-            composable(Screen.FIRST_REGISTRATION_SCREEN.route) {
-                FirstRegistrationScreen(
+        composable(Screen.FIRST_REGISTRATION_SCREEN.route) {
+            FirstRegistrationScreen(
+                navController = navController,
+                registrationViewModel = sharedRegistrationViewModel
+            )
+        }
+
+        composable(Screen.SECOND_REGISTRATION_SCREEN.route) {
+            SecondRegistrationScreen(
+                navController = navController,
+                registrationViewModel = sharedRegistrationViewModel
+            )
+        }
+
+        composable(Screen.THIRD_REGISTRATION_SCREEN.route) {
+            ThirdRegistrationScreen(
+                navController = navController,
+                registrationViewModel = sharedRegistrationViewModel
+            )
+        }
+
+        composable(Screen.NEWS.route) {
+            user?.let {
+                MainNavigationBars(
                     navController = navController,
-                    registrationViewModel = sharedRegistrationViewModel
-                )
-            }
-
-            composable(Screen.SECOND_REGISTRATION_SCREEN.route) {
-                SecondRegistrationScreen(
-                    navController = navController,
-                    registrationViewModel = sharedRegistrationViewModel
-                )
-            }
-
-            composable(Screen.THIRD_REGISTRATION_SCREEN.route) {
-                ThirdRegistrationScreen(
-                    navController = navController,
-                    registrationViewModel = sharedRegistrationViewModel
-                )
-            }
-
-            user?.let { user ->
-                composable(Screen.NEWS.route) {
-                    MainNavigationBars(
-                        navController = navController,
-                        bottomNavigationItems = mainViewModel.bottomNavigationItem.values.toList(),
-                        user = user
-                    ) {
-                        NewsScreen(
-                            navController = navController,
-                            newsViewModel = sharedNewsViewModel
-                        )
-                    }
-                }
-
-                composable(
-                    route = Screen.READ_ANNOUNCEMENT.route
+                    bottomNavigationItems = mainViewModel.bottomNavigationItem.values.toList(),
+                    user = user
                 ) {
-                    Scaffold(
-                        topBar = {
-                            BackSmallTopBar(
-                                navController = navController,
-                                title = stringResource(id = com.upsaclay.news.R.string.announcement)
-                            )
-                        }
-                    ) { contentPadding ->
-                        ReadAnnouncementScreen(
-                            modifier = Modifier.padding(top = contentPadding.calculateTopPadding()),
-                            navController = navController,
-                            newsViewModel = sharedNewsViewModel
-                        )
-                    }
-                }
-                
-                composable(Screen.CREATE_ANNOUNCEMENT.route) {
-                   EditAnnouncementScreen(
-                       navController = navController,
-                       newsViewModel = sharedNewsViewModel
-                   )
-                }
-
-                composable(
-                    Screen.EDIT_ANNOUNCEMENT.route
-                ) {
-                    EditAnnouncementScreen(
+                    NewsScreen(
                         navController = navController,
-                        newsViewModel = sharedNewsViewModel,
-                        isModification = true
+                        newsViewModel = sharedNewsViewModel
                     )
                 }
+            }
+        }
 
-                composable(Screen.MESSAGES.route) {
-                    MainNavigationBars(
+        composable(Screen.READ_ANNOUNCEMENT.route) {
+            Scaffold(
+                topBar = {
+                    SmallTopBarBack(
                         navController = navController,
-                        bottomNavigationItems = mainViewModel.bottomNavigationItem.values.toList(),
-                        user = user
-                    ) {
-                        Text(text = "Message")
-                    }
+                        title = stringResource(id = com.upsaclay.news.R.string.announcement)
+                    )
                 }
+            ) { contentPadding ->
+                ReadAnnouncementScreen(
+                    modifier = Modifier.padding(top = contentPadding.calculateTopPadding()),
+                    navController = navController,
+                    newsViewModel = sharedNewsViewModel
+                )
+            }
+        }
 
-                composable(Screen.CALENDAR.route) {
-                    MainNavigationBars(
-                        navController = navController,
-                        bottomNavigationItems = mainViewModel.bottomNavigationItem.values.toList(),
-                        user = user
-                    ) {
-                        Text(text = "Calendar")
-                    }
-                }
+        composable(Screen.CREATE_ANNOUNCEMENT.route) {
+            EditAnnouncementScreen(
+                navController = navController,
+                newsViewModel = sharedNewsViewModel
+            )
+        }
 
-                composable(Screen.FORUM.route) {
-                    MainNavigationBars(
-                        navController = navController,
-                        bottomNavigationItems = mainViewModel.bottomNavigationItem.values.toList(),
-                        user = user
-                    ) {
-                        Text(text = "Forum")
-                    }
+        composable(Screen.EDIT_ANNOUNCEMENT.route) {
+            EditAnnouncementScreen(
+                navController = navController,
+                newsViewModel = sharedNewsViewModel,
+                isModification = true
+            )
+        }
+
+        composable(Screen.MESSAGES.route) {
+            user?.let {
+                MainNavigationBars(
+                    navController = navController,
+                    bottomNavigationItems = mainViewModel.bottomNavigationItem.values.toList(),
+                    user = user
+                ) {
+                    Text(text = "Message")
                 }
             }
+        }
 
-            composable(Screen.PROFILE.route) {
-                ProfileScreen(navController = navController)
+        composable(Screen.CALENDAR.route) {
+            user?.let {
+                MainNavigationBars(
+                    navController = navController,
+                    bottomNavigationItems = mainViewModel.bottomNavigationItem.values.toList(),
+                    user = user
+                ) {
+                    Text(text = "Calendar")
+                }
             }
+        }
 
-            composable(Screen.ACCOUNT_INFOS.route) {
-                AccountInfoScreen(navController = navController)
+        composable(Screen.FORUM.route) {
+            user?.let {
+                MainNavigationBars(
+                    navController = navController,
+                    bottomNavigationItems = mainViewModel.bottomNavigationItem.values.toList(),
+                    user = user
+                ) {
+                    Text(text = "Forum")
+                }
             }
+        }
+
+        composable(Screen.PROFILE.route) {
+            ProfileScreen(navController = navController)
+        }
+
+        composable(Screen.ACCOUNT.route) {
+            AccountScreen(navController = navController)
         }
     }
 }
@@ -182,7 +170,7 @@ private fun MainNavigationBars(
     bottomNavigationItems: List<BottomNavigationItem>,
     user: User,
     content: @Composable () -> Unit
-){
+) {
     Scaffold(
         topBar = { MainTopBar(navController = navController, user = user) },
         bottomBar = {

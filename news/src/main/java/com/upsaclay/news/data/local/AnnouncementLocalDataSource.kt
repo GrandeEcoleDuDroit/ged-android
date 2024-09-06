@@ -6,26 +6,26 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
-class AnnouncementLocalDataSource(
+internal class AnnouncementLocalDataSource(
     private val announcementDao: AnnouncementDao
 ) {
     suspend fun getAllAnnouncements(): Flow<List<Announcement>> = withContext(Dispatchers.IO) {
-        announcementDao.getAllAnnouncements().map { announcementsList ->
-            announcementsList.map { it.toAnnouncement() }
+        announcementDao.getAllAnnouncements().map { announcementLocals ->
+            announcementLocals.map { it.toDomain() }
         }
     }
 
     suspend fun upsertAnnouncement(announcement: Announcement) {
         withContext(Dispatchers.IO) {
-            val announcementEntity = AnnouncementEntity.fromAnnouncement(announcement)
-            announcementDao.upsertAnnouncement(announcementEntity)
+            val localAnnouncement = LocalAnnouncement.fromDomain(announcement)
+            announcementDao.upsertAnnouncement(localAnnouncement)
         }
     }
 
     suspend fun deleteAnnouncement(announcement: Announcement) {
         withContext(Dispatchers.IO) {
-            val announcementEntity = AnnouncementEntity.fromAnnouncement(announcement)
-            announcementDao.deleteAnnouncement(announcementEntity)
+            val localAnnouncement = LocalAnnouncement.fromDomain(announcement)
+            announcementDao.deleteAnnouncement(localAnnouncement)
         }
     }
 }

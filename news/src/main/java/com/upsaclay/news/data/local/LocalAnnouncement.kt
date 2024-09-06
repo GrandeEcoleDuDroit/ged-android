@@ -8,10 +8,10 @@ import com.upsaclay.common.domain.usecase.ConvertLocalDateTimeUseCase
 import com.upsaclay.common.domain.usecase.ConvertTimestampUseCase
 import com.upsaclay.news.domain.model.Announcement
 
-const val ANNOUNCEMENTS_LOCAL_TABLE_NAME = "announcements_local_table"
+const val ANNOUNCEMENTS_TABLE = "announcements_table"
 
-@Entity(tableName = ANNOUNCEMENTS_LOCAL_TABLE_NAME)
-data class AnnouncementEntity(
+@Entity(tableName = ANNOUNCEMENTS_TABLE)
+data class LocalAnnouncement(
     @PrimaryKey
     @ColumnInfo(name = "ANNOUNCEMENT_ID")
     val announcementId: Int,
@@ -34,12 +34,11 @@ data class AnnouncementEntity(
     @ColumnInfo("USER_IS_MEMBER")
     val userIsMember: Boolean,
     @ColumnInfo("USER_PROFILE_PICTURE_URL")
-    val profilePictureUrl: String?
+    val userProfilePictureUrl: String?
 ) {
-
     companion object {
-        fun fromAnnouncement(announcement: Announcement): AnnouncementEntity {
-            return AnnouncementEntity(
+        fun fromDomain(announcement: Announcement): LocalAnnouncement {
+            return LocalAnnouncement(
                 announcementId = announcement.id,
                 announcementTitle = announcement.title,
                 announcementContent = announcement.content,
@@ -50,12 +49,12 @@ data class AnnouncementEntity(
                 userEmail = announcement.author.email,
                 userSchoolLevel = announcement.author.schoolLevel,
                 userIsMember = announcement.author.isMember,
-                profilePictureUrl = announcement.author.profilePictureUrl
+                userProfilePictureUrl = announcement.author.profilePictureUrl
             )
         }
     }
 
-    fun toAnnouncement() = Announcement(
+    fun toDomain() = Announcement(
         id = announcementId,
         title = announcementTitle,
         content = announcementContent,
@@ -67,7 +66,7 @@ data class AnnouncementEntity(
             email = userEmail,
             schoolLevel = userSchoolLevel,
             isMember = userIsMember,
-            profilePictureUrl = profilePictureUrl
+            profilePictureUrl = userProfilePictureUrl
         )
     )
 }

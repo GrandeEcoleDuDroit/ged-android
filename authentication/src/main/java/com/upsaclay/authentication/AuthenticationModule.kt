@@ -1,15 +1,13 @@
 package com.upsaclay.authentication
 
 import com.upsaclay.authentication.data.local.AuthenticationLocalDataSource
-import com.upsaclay.authentication.data.remote.AuthenticationParisSaclayApi
 import com.upsaclay.authentication.data.remote.AuthenticationRemoteDataSource
+import com.upsaclay.authentication.data.remote.ParisSaclayAuthenticationApi
 import com.upsaclay.authentication.data.repository.AuthenticationRepositoryImpl
 import com.upsaclay.authentication.domain.repository.AuthenticationRepository
 import com.upsaclay.authentication.domain.usecase.GenerateHashUseCase
-import com.upsaclay.authentication.domain.usecase.GenerateRandomString
 import com.upsaclay.authentication.domain.usecase.IsAccountExistUseCase
-import com.upsaclay.authentication.domain.usecase.IsAuthenticatedFlowUseCase
-import com.upsaclay.authentication.domain.usecase.IsAuthenticatedUseCase
+import com.upsaclay.authentication.domain.usecase.IsUserAuthenticatedUseCase
 import com.upsaclay.authentication.domain.usecase.LoginUseCase
 import com.upsaclay.authentication.domain.usecase.RegistrationUseCase
 import com.upsaclay.authentication.ui.AuthenticationViewModel
@@ -35,7 +33,7 @@ val authenticationModule = module {
 
     single {
         get<Retrofit>(qualifier = named(PARIS_SACLAY_SERVER_QUALIFIER))
-            .create(AuthenticationParisSaclayApi::class.java)
+            .create(ParisSaclayAuthenticationApi::class.java)
     }
 
     viewModelOf(::AuthenticationViewModel)
@@ -46,11 +44,8 @@ val authenticationModule = module {
     singleOf(::AuthenticationLocalDataSource)
 
     singleOf(::GenerateHashUseCase)
-    singleOf(::GenerateRandomString)
     singleOf(::IsAccountExistUseCase)
-    singleOf(::IsAuthenticatedFlowUseCase)
-    singleOf(::IsAuthenticatedUseCase)
+    singleOf(::IsUserAuthenticatedUseCase)
     singleOf(::LoginUseCase)
     singleOf(::RegistrationUseCase)
-
 }

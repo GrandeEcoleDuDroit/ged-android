@@ -8,12 +8,12 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AnnouncementDao {
-    @Query("SELECT * FROM $ANNOUNCEMENTS_LOCAL_TABLE_NAME")
-    fun getAllAnnouncements(): Flow<List<AnnouncementEntity>>
+    @Query("SELECT * FROM $ANNOUNCEMENTS_TABLE")
+    fun getAllAnnouncements(): Flow<List<LocalAnnouncement>>
 
     @Upsert
-    fun upsertAnnouncement(announcementEntity: AnnouncementEntity)
+    fun upsertAnnouncement(localAnnouncement: LocalAnnouncement)
 
     @Delete
-    fun deleteAnnouncement(announcementEntity: AnnouncementEntity)
+    fun deleteAnnouncement(localAnnouncement: LocalAnnouncement)
 }

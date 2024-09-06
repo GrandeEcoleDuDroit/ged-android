@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-class AnnouncementRepositoryImpl(
+internal class AnnouncementRepositoryImpl(
     private val announcementRemoteDataSource: AnnouncementRemoteDataSource,
     private val announcementLocalDataSource: AnnouncementLocalDataSource
 ): AnnouncementRepository {
@@ -30,11 +30,13 @@ class AnnouncementRepositoryImpl(
         val remoteAnnouncements = announcementRemoteDataSource.getAllAnnouncement()
         if (remoteAnnouncements.isNotEmpty()) {
             val localAnnouncements = announcementLocalDataSource.getAllAnnouncements().first()
-            val announcementsToUpdate = remoteAnnouncements.filter { remoteValue ->
+
+            val announcementsToUpdate = remoteAnnouncements.filterNot { remoteValue ->
                 localAnnouncements.any { localValue ->
-                    localValue.id == remoteValue.id && localValue.date != remoteValue.date
+                    localValue.id == remoteValue.id && localValue.date == remoteValue.date
                 }
             }
+
             announcementsToUpdate.forEach { announcementLocalDataSource.upsertAnnouncement(it) }
         }
     }

@@ -4,6 +4,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import com.upsaclay.common.ui.theme.GedoiseTheme
 
 @Composable
 fun ErrorText(
@@ -16,4 +18,12 @@ fun ErrorText(
         color = MaterialTheme.colorScheme.error,
         style = MaterialTheme.typography.bodyMedium,
     )
+}
+
+@Preview
+@Composable
+private fun ErrorTextPreview() {
+    GedoiseTheme {
+        ErrorText(text = "Error")
+    }
 }

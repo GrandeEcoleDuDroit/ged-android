@@ -1,8 +1,8 @@
 package com.upsaclay.common.data.remote.api
 
-import com.upsaclay.common.data.model.ServerResponse.EmptyResponse
-import com.upsaclay.common.data.model.ServerResponse.IntResponse
 import com.upsaclay.common.data.model.UserDTO
+import com.upsaclay.common.domain.model.ServerResponse.EmptyResponse
+import com.upsaclay.common.domain.model.ServerResponse.IntResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE

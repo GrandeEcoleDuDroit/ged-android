@@ -5,27 +5,23 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.upsaclay.common.utils.getValue
+import com.upsaclay.common.utils.getFlowValue
 import com.upsaclay.common.utils.setValue
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.withContext
 
-class AuthenticationLocalDataSource(
-    context: Context
-) {
+internal class AuthenticationLocalDataSource(context: Context) {
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "authentication")
     private val store = context.dataStore
     private val authenticationKey = booleanPreferencesKey("authenticationKey")
 
-    suspend fun setAuthenticated() = withContext(Dispatchers.IO) {
-        store.setValue(authenticationKey, true)
+    suspend fun setAuthenticationState(isAuthenticated: Boolean) = withContext(Dispatchers.IO) {
+        store.setValue(authenticationKey, isAuthenticated)
     }
 
-    suspend fun setUnauthenticated() = withContext(Dispatchers.IO) {
-        store.setValue(authenticationKey, false)
-    }
-
-    suspend fun isAuthenticated(): Boolean = withContext(Dispatchers.IO) {
-        store.getValue(authenticationKey) ?: false
+    suspend fun getAuthenticationState(): Flow<Boolean> = withContext(Dispatchers.IO) {
+        store.getFlowValue(authenticationKey).filterNotNull()
     }
 }

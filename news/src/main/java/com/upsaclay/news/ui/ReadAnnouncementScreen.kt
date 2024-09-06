@@ -43,9 +43,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.upsaclay.common.data.model.MenuItemData
-import com.upsaclay.common.data.model.Screen
+import com.upsaclay.common.domain.model.ClickableMenuItemData
 import com.upsaclay.common.domain.model.ElapsedTime
+import com.upsaclay.common.domain.model.Screen
 import com.upsaclay.common.domain.usecase.GetElapsedTimeUseCase
 import com.upsaclay.common.ui.components.ClickableMenuItem
 import com.upsaclay.common.ui.components.OverlayLoadingScreen
@@ -68,6 +68,11 @@ fun ReadAnnouncementScreen(
     navController: NavController,
     newsViewModel: NewsViewModel = koinViewModel()
 ) {
+    if(newsViewModel.displayedAnnouncement == null) {
+        newsViewModel.updateAnnouncementState(AnnouncementState.ANNOUNCEMENT_DISPLAY_ERROR)
+        navController.popBackStack()
+    }
+
     val announcement = newsViewModel.displayedAnnouncement!!
     var showBottomSheet by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
@@ -83,8 +88,8 @@ fun ReadAnnouncementScreen(
         }
     }
 
-    val bottomSheetItemData: List<MenuItemData> = listOf(
-        MenuItemData(
+    val bottomSheetItemData: List<ClickableMenuItemData> = listOf(
+        ClickableMenuItemData(
             text = { Text(text = stringResource(id = R.string.edit_announcement)) },
             icon = { Icon(imageVector = Icons.Default.Edit, contentDescription = null) },
             onClick = {
@@ -92,7 +97,7 @@ fun ReadAnnouncementScreen(
                 hideBottomSheet()
             }
         ),
-        MenuItemData(
+        ClickableMenuItemData(
             text = {
                 Text(
                     text = stringResource(id = R.string.delete_announcement),
@@ -174,9 +179,7 @@ fun ReadAnnouncementScreen(
 }
 
 @Composable
-private fun ReadOnlyTopSection(
-    announcement: Announcement
-) {
+private fun ReadOnlyTopSection(announcement: Announcement) {
     val context = LocalContext.current
     val elapsedTime = GetElapsedTimeUseCase().fromLocalDateTime(announcement.date)
     val elapsedTimeValue = when(elapsedTime) {
@@ -191,9 +194,7 @@ private fun ReadOnlyTopSection(
         }
     }
 
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
         ProfilePicture(
             imageUrl = announcement.author.profilePictureUrl,
             scaleImage = 0.45f
@@ -291,13 +292,9 @@ private fun EditableTopSection(
 @Composable
 private fun ReadOnlyAnnouncementScreenPreview(){
     GedoiseTheme {
-
         val announcement = announcementFixture
 
-        Column(
-            modifier = Modifier.padding(MaterialTheme.spacing.medium)
-        ) {
-
+        Column(modifier = Modifier.padding(MaterialTheme.spacing.medium)) {
             ReadOnlyTopSection(announcement)
 
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
@@ -310,9 +307,7 @@ private fun ReadOnlyAnnouncementScreenPreview(){
                 Spacer(Modifier.height(MaterialTheme.spacing.medium))
             }
 
-            Text(
-                text = announcement.content,
-            )
+            Text(text = announcement.content,)
         }
     }
 }
@@ -356,7 +351,7 @@ private fun EditableAnnouncementScreenPreview(){
 private fun EditAnnouncementModelBottomSheet(
     onDismissRequest: () -> Unit,
     sheetState: SheetState,
-    menuItemData: List<MenuItemData>
+    menuItemData: List<ClickableMenuItemData>
 ) {
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
@@ -367,7 +362,7 @@ private fun EditAnnouncementModelBottomSheet(
                 modifier = Modifier.fillMaxWidth(),
                 text = menuItemData.text,
                 icon = menuItemData.icon,
-                onClick = menuItemData.onClick!!
+                onClick = menuItemData.onClick
             )
         }
         Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
@@ -396,7 +391,7 @@ private fun DeleteAnnouncementDialog(
         },
         text = {
             Text(
-                text = stringResource(id = R.string.delete_announcement_dialog_content),
+                text = stringResource(id = R.string.delete_announcement_dialog_text),
                 style = MaterialTheme.typography.bodyLarge
             )
         }

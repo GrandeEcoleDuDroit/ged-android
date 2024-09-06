@@ -43,12 +43,16 @@ class NewsViewModel(
         displayedAnnouncement = announcement
     }
 
+    fun updateAnnouncementState(state: AnnouncementState){
+        _announcementState.value = state
+    }
+
     fun createAnnouncement(announcement: Announcement) {
         _announcementState.value = AnnouncementState.LOADING
         viewModelScope.launch {
             createAnnouncementUseCase(announcement)
                 .onSuccess { _announcementState.value = AnnouncementState.ANNOUNCEMENT_CREATED }
-                .onFailure { _announcementState.value = AnnouncementState.ERROR_ANNOUNCEMENT_CREATION }
+                .onFailure { _announcementState.value = AnnouncementState.ANNOUNCEMENT_CREATION_ERROR }
         }
     }
 

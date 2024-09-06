@@ -29,23 +29,6 @@ import com.upsaclay.common.ui.theme.GedoiseTheme
 import com.upsaclay.common.ui.theme.spacing
 
 @Composable
-fun ProfilePictureWithBubble(
-    modifier: Modifier = Modifier,
-    scale: Float = 1f,
-    imageUrl: String?,
-    bubbleBackgroundColor: Color,
-    onClick: (() -> Unit)? = null
-) {
-    ImageWithBubble(
-        modifier = modifier,
-        model = imageUrl ?: R.drawable.default_profile_picture,
-        scale = scale,
-        bubbleBackgroundColor = bubbleBackgroundColor,
-        onClick = onClick
-    )
-}
-
-@Composable
 fun ProfilePictureWithIcon(
     modifier: Modifier = Modifier,
     scale: Float = 1f,
@@ -141,54 +124,6 @@ fun ProfilePicture(
                 .border(1.dp, Color.LightGray, CircleShape)
         }
     )
-}
-
-@Composable
-private fun ImageWithBubble(
-    modifier: Modifier,
-    scale: Float = 1f,
-    model: Any,
-    bubbleBackgroundColor: Color,
-    onClick: (() -> Unit)?
-) {
-    Box(modifier = modifier.size(100.dp * scale)) {
-        AsyncImage(
-            model = model,
-            contentDescription = "",
-            contentScale = ContentScale.Crop,
-            modifier = onClick?.let {
-                Modifier
-                    .align(Alignment.Center)
-                    .size(100.dp * scale)
-                    .clip(CircleShape)
-                    .border(1.dp, Color.LightGray, CircleShape)
-                    .clickable(onClick = it)
-            } ?: run {
-                Modifier
-                    .align(Alignment.Center)
-                    .size(100.dp * scale)
-                    .clip(CircleShape)
-                    .border(1.dp, Color.LightGray, CircleShape)
-            }
-        )
-
-        Box(
-            modifier = onClick?.let {
-                Modifier
-                    .clip(CircleShape)
-                    .background(bubbleBackgroundColor)
-                    .align(Alignment.BottomEnd)
-                    .size(30.dp * scale)
-                    .clickable(onClick = it)
-            } ?: run {
-                Modifier
-                    .clip(CircleShape)
-                    .background(bubbleBackgroundColor)
-                    .align(Alignment.BottomEnd)
-                    .size(30.dp * scale)
-            }
-        )
-    }
 }
 
 @Composable
@@ -254,16 +189,15 @@ private fun ImageWithIcon(
 
 @Preview
 @Composable
-private fun ProfilePictureWithBubblePreview() {
+private fun ProfilePicturePreview() {
     GedoiseTheme {
         Box(Modifier.size(100.dp)) {
             Image(
                 painter = painterResource(id = R.drawable.default_profile_picture),
                 contentDescription = ""
             )
-            ProfilePictureWithBubble(
+            ProfilePicture(
                 imageUrl = null,
-                bubbleBackgroundColor = Color.Green,
                 onClick = {}
             )
         }
@@ -289,3 +223,89 @@ private fun ProfilePictureWithIconPreview() {
         }
     }
 }
+
+// Not used but can be useful
+/*
+@Composable
+fun ProfilePictureWithBubble(
+    modifier: Modifier = Modifier,
+    scale: Float = 1f,
+    imageUrl: String?,
+    bubbleBackgroundColor: Color,
+    onClick: (() -> Unit)? = null
+) {
+    ImageWithBubble(
+        modifier = modifier,
+        model = imageUrl ?: R.drawable.default_profile_picture,
+        scale = scale,
+        bubbleBackgroundColor = bubbleBackgroundColor,
+        onClick = onClick
+    )
+}
+
+@Composable
+private fun ImageWithBubble(
+    modifier: Modifier,
+    scale: Float = 1f,
+    model: Any,
+    bubbleBackgroundColor: Color,
+    onClick: (() -> Unit)?
+) {
+    Box(modifier = modifier.size(100.dp * scale)) {
+        AsyncImage(
+            model = model,
+            contentDescription = "",
+            contentScale = ContentScale.Crop,
+            modifier = onClick?.let {
+                Modifier
+                    .align(Alignment.Center)
+                    .size(100.dp * scale)
+                    .clip(CircleShape)
+                    .border(1.dp, Color.LightGray, CircleShape)
+                    .clickable(onClick = it)
+            } ?: run {
+                Modifier
+                    .align(Alignment.Center)
+                    .size(100.dp * scale)
+                    .clip(CircleShape)
+                    .border(1.dp, Color.LightGray, CircleShape)
+            }
+        )
+
+        Box(
+            modifier = onClick?.let {
+                Modifier
+                    .clip(CircleShape)
+                    .background(bubbleBackgroundColor)
+                    .align(Alignment.BottomEnd)
+                    .size(30.dp * scale)
+                    .clickable(onClick = it)
+            } ?: run {
+                Modifier
+                    .clip(CircleShape)
+                    .background(bubbleBackgroundColor)
+                    .align(Alignment.BottomEnd)
+                    .size(30.dp * scale)
+            }
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun ProfilePictureWithBubblePreview() {
+    GedoiseTheme {
+        Box(Modifier.size(100.dp)) {
+            Image(
+                painter = painterResource(id = R.drawable.default_profile_picture),
+                contentDescription = ""
+            )
+            ProfilePictureWithBubble(
+                imageUrl = null,
+                bubbleBackgroundColor = Color.Green,
+                onClick = {}
+            )
+        }
+    }
+}
+*/

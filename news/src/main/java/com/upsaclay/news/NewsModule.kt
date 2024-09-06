@@ -1,6 +1,6 @@
 package com.upsaclay.news
 
-import com.upsaclay.common.GEDOISE_VM_1_QUALIFIER
+import com.upsaclay.common.SERVER_1_RETROFIT_QUALIFIER
 import com.upsaclay.news.data.local.AnnouncementLocalDataSource
 import com.upsaclay.news.data.remote.AnnouncementRemoteDataSource
 import com.upsaclay.news.data.remote.api.AnnouncementApi
@@ -20,7 +20,7 @@ import org.koin.dsl.module
 import retrofit2.Retrofit
 
 val newsModule = module {
-    single { get<Retrofit>(qualifier = named(GEDOISE_VM_1_QUALIFIER)).create(AnnouncementApi::class.java) }
+    single { get<Retrofit>(qualifier = named(SERVER_1_RETROFIT_QUALIFIER)).create(AnnouncementApi::class.java) }
 
     singleOf(::AnnouncementRepositoryImpl) { bind<AnnouncementRepository>() }
     singleOf(::AnnouncementRemoteDataSource)

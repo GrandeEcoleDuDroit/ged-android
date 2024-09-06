@@ -45,12 +45,12 @@ internal fun RegistrationTopBar(
                     )
                 },
                 navigationIcon = {
-                    IconButton(
-                        onClick = { navController.popBackStack() }
-                    ) {
+                    IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             painter = painterResource(id = com.upsaclay.common.R.drawable.ic_partial_arrow_left),
-                            contentDescription = null
+                            contentDescription = stringResource(
+                                id = com.upsaclay.common.R.string.arrow_back_icon_description
+                            )
                         )
                     }
                 },
@@ -66,7 +66,7 @@ internal fun RegistrationTopBar(
         }
     ) {
         Box(
-            Modifier
+            modifier = Modifier
                 .padding(
                     top = it.calculateTopPadding(),
                     bottom = MaterialTheme.spacing.medium,

@@ -25,12 +25,13 @@ import com.upsaclay.authentication.domain.model.RegistrationState
 import com.upsaclay.authentication.ui.components.OutlinedEmailInput
 import com.upsaclay.authentication.ui.components.OutlinedPasswordInput
 import com.upsaclay.authentication.ui.components.RegistrationTopBar
-import com.upsaclay.common.data.model.Screen
+import com.upsaclay.common.domain.model.Screen
 import com.upsaclay.common.ui.components.ErrorText
 import com.upsaclay.common.ui.components.OverlayLoadingScreen
 import com.upsaclay.common.ui.components.PrimaryLargeButton
 import com.upsaclay.common.ui.theme.GedoiseTheme
 import com.upsaclay.common.ui.theme.spacing
+
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -38,7 +39,6 @@ fun SecondRegistrationScreen(
     navController: NavController,
     registrationViewModel: RegistrationViewModel = koinViewModel()
 ) {
-
     val keyboardController = LocalSoftwareKeyboardController.current
     val registrationState by registrationViewModel.registrationState.collectAsState()
     var errorMessage by remember { mutableStateOf("") }
@@ -55,13 +55,13 @@ fun SecondRegistrationScreen(
     }
 
     isError = registrationState == RegistrationState.UNRECOGNIZED_ACCOUNT ||
-            registrationState == RegistrationState.ERROR_INPUT
+            registrationState == RegistrationState.INPUT_ERROR
 
     errorMessage = when (registrationState) {
         RegistrationState.UNRECOGNIZED_ACCOUNT ->
             stringResource(id = R.string.unrecognized_account)
 
-        RegistrationState.ERROR_INPUT ->
+        RegistrationState.INPUT_ERROR ->
             stringResource(id = com.upsaclay.common.R.string.error_empty_fields)
 
         else -> ""
@@ -101,7 +101,6 @@ fun SecondRegistrationScreen(
 
             if (isError) {
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
-
                 ErrorText(text = errorMessage)
             }
         }
@@ -121,7 +120,7 @@ fun SecondRegistrationScreen(
         )
     }
 
-    if(registrationState == RegistrationState.LOADING) {
+    if (registrationState == RegistrationState.LOADING) {
         OverlayLoadingScreen()
     }
 }
@@ -171,7 +170,7 @@ private fun SecondRegistrationScreenPreview() {
         }
     }
 
-    if(isLoading) {
+    if (isLoading) {
         OverlayLoadingScreen()
     }
 }

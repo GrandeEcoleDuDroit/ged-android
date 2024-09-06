@@ -5,9 +5,8 @@ import com.upsaclay.common.domain.model.User
 import com.upsaclay.common.domain.usecase.ConvertLocalDateTimeUseCase
 import com.upsaclay.common.domain.usecase.ConvertTimestampUseCase
 import com.upsaclay.news.domain.model.Announcement
-import java.sql.Timestamp
 
-data class AnnouncementWithUserDTO(
+internal data class AnnouncementRemoteWithUser(
     @SerializedName("ANNOUNCEMENT_ID")
     val announcementId: Int,
     @SerializedName("ANNOUNCEMENT_TITLE")
@@ -15,7 +14,7 @@ data class AnnouncementWithUserDTO(
     @SerializedName("ANNOUNCEMENT_CONTENT")
     val announcementContent: String,
     @SerializedName("ANNOUNCEMENT_DATE")
-    val announcementDate: Timestamp,
+    val announcementDate: Long,
     @SerializedName("USER_ID")
     val userId: Int,
     @SerializedName("USER_FIRST_NAME")
@@ -31,7 +30,7 @@ data class AnnouncementWithUserDTO(
     @SerializedName("USER_PROFILE_PICTURE_URL")
     val profilePictureUrl: String?
 ) {
-    fun toAnnouncement() = Announcement(
+    fun toDomain() = Announcement(
         id = announcementId,
         title = announcementTitle,
         content = announcementContent,
@@ -48,7 +47,7 @@ data class AnnouncementWithUserDTO(
     )
 }
 
-data class AnnouncementDTO(
+internal data class RemoteAnnouncement(
     @SerializedName("ANNOUNCEMENT_ID")
     val announcementId: Int,
     @SerializedName("ANNOUNCEMENT_TITLE")
@@ -61,7 +60,7 @@ data class AnnouncementDTO(
     val userId: Int,
 ) {
     companion object {
-        fun fromAnnouncement(announcement: Announcement) = AnnouncementDTO(
+        fun fromDomain(announcement: Announcement) = RemoteAnnouncement(
             announcementId = announcement.id,
             announcementTitle = announcement.title,
             announcementContent = announcement.content,

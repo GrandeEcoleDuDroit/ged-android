@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -30,7 +31,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.upsaclay.common.data.model.Screen
+import com.upsaclay.common.domain.model.ClickableMenuItemData
+import com.upsaclay.common.domain.model.Screen
+import com.upsaclay.common.ui.components.ClickableMenuItem
 import com.upsaclay.common.ui.components.PullToRefreshComponent
 import com.upsaclay.common.ui.theme.GedoiseTheme
 import com.upsaclay.common.ui.theme.spacing
@@ -40,9 +43,7 @@ import com.upsaclay.news.domain.model.Announcement
 import com.upsaclay.news.domain.model.AnnouncementState
 import org.koin.androidx.compose.koinViewModel
 
-
-private const val URL_BLOGSPOT = "https://grandeecoledudroit.blogspot.com/"
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewsScreen(
     newsViewModel: NewsViewModel = koinViewModel(),
@@ -69,7 +70,6 @@ fun NewsScreen(
                         navController.navigate(Screen.READ_ANNOUNCEMENT.route)
                     }
                 )
-
                 PostSection()
             }
 
@@ -160,9 +160,7 @@ private fun PostSection() {
 fun NewsScreenPreview(){
     val isMember = true
     GedoiseTheme {
-        PullToRefreshComponent(
-            onRefresh = { },
-        ) {
+        PullToRefreshComponent(onRefresh = { }) {
             Column {
                 RecentAnnouncementSectionPreview()
                 PostSection()
