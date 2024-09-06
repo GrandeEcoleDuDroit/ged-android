@@ -64,7 +64,7 @@ class NewsViewModel(
         _announcementState.value = AnnouncementState.LOADING
         viewModelScope.launch {
             updateAnnouncementUseCase(announcement)
-            _announcementState.value = AnnouncementState.DEFAULT
+            _announcementState.value = AnnouncementState.ANNOUNCEMENT_UPDATED
         }
     }
 }

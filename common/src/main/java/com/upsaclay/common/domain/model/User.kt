@@ -10,4 +10,8 @@ data class User(
     val profilePictureUrl: String? = null
 ) {
     val fullName = String.format("%s %s", firstName, lastName)
+
+    override fun equals(other: Any?): Boolean {
+        return other is User && other.id == id
+    }
 }

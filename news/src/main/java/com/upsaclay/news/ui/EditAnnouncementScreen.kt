@@ -39,21 +39,30 @@ import androidx.navigation.NavController
 import com.upsaclay.common.ui.theme.GedoiseTheme
 import com.upsaclay.common.ui.theme.spacing
 import com.upsaclay.news.R
+import com.upsaclay.news.announcementFixture
 import com.upsaclay.news.domain.model.Announcement
 import com.upsaclay.news.domain.model.AnnouncementState
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDateTime
 
 @Composable
-fun CreateAnnouncementScreen(
+fun EditAnnouncementScreen(
     navController: NavController,
-    newsViewModel: NewsViewModel = koinViewModel()
+    newsViewModel: NewsViewModel = koinViewModel(),
+    isModification: Boolean = false
 ) {
     var title: String? by remember { mutableStateOf(null) }
     var content by remember { mutableStateOf("") }
     val user = newsViewModel.user.collectAsState(null).value
     val state = newsViewModel.announcementState.collectAsState(AnnouncementState.DEFAULT).value
     val context = LocalContext.current
+    val currentAnnouncement = remember { newsViewModel.displayedAnnouncement }
+    LaunchedEffect(Unit) {
+        if(isModification) {
+            title = currentAnnouncement!!.title
+            content = currentAnnouncement.content
+        }
+    }
 
     LaunchedEffect(state) {
         when(state) {
@@ -70,19 +79,34 @@ fun CreateAnnouncementScreen(
     user?.let {
         Scaffold(
             topBar = {
-                CreateAnnouncementTopBar(
-                    navController = navController,
-                    newsViewModel = newsViewModel,
-                    isButtonEnable = content.isNotEmpty(),
-                    announcementToCreate =
-                    Announcement(
-                        id = -1,
-                        title = title,
-                        content = content,
-                        date = LocalDateTime.now(),
-                        author = user
+                if(isModification) {
+                    EditAnnouncementTopBar(
+                        navController = navController,
+                        newsViewModel = newsViewModel,
+                        isButtonEnable = content.isNotEmpty(),
+                        isModification = true,
+                        announcement = currentAnnouncement!!.copy(
+                            title = title,
+                            content = content,
+                            date = LocalDateTime.now()
+                        )
                     )
-                )
+                }
+                else {
+                    EditAnnouncementTopBar(
+                        navController = navController,
+                        newsViewModel = newsViewModel,
+                        isButtonEnable = content.isNotEmpty(),
+                        isModification = false,
+                        announcement = Announcement(
+                            id = -1,
+                            title = title,
+                            content = content,
+                            date = LocalDateTime.now(),
+                            author = user
+                        )
+                    )
+                }
             }
         ) { contentPadding ->
             Column(
@@ -147,16 +171,15 @@ fun CreateAnnouncementScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun CreateAnnouncementTopBar(
+private fun EditAnnouncementTopBar(
     navController: NavController,
     newsViewModel: NewsViewModel,
     isButtonEnable: Boolean = false,
-    announcementToCreate: Announcement
+    isModification: Boolean,
+    announcement: Announcement
 ) {
     TopAppBar(
-        title = {
-            Text(text = "")
-        },
+        title = { Text(text = "") },
         navigationIcon = {
             IconButton(onClick = { navController.popBackStack()}) {
                 Icon(
@@ -167,16 +190,115 @@ private fun CreateAnnouncementTopBar(
             }
         },
         actions = {
-            Button(
-                enabled = isButtonEnable,
-                onClick = {
-                    newsViewModel.createAnnouncement(announcementToCreate)
+            if (isModification) {
+                Button(
+                    enabled = isButtonEnable,
+                    onClick = { newsViewModel.updateAnnouncement(announcement) }
+                ) {
+                    Text(text = stringResource(id = com.upsaclay.common.R.string.save))
                 }
-            ) {
-                Text(text = stringResource(id = com.upsaclay.common.R.string.publish))
+            } else {
+                Button(
+                    enabled = isButtonEnable,
+                    onClick = { newsViewModel.createAnnouncement(announcement) }
+                ) {
+                    Text(text = stringResource(id = com.upsaclay.common.R.string.publish))
+                }
             }
         }
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview
+@Composable
+fun EditAnnouncementScreenPreview() {
+    var title by remember { mutableStateOf(announcementFixture.title) }
+    var content by remember { mutableStateOf(announcementFixture.content) }
+
+    GedoiseTheme {
+        Scaffold (
+            topBar = {
+                TopAppBar(
+                    title = { Text(text = "") },
+                    navigationIcon = {
+                        IconButton(onClick = { }) {
+                            Icon(
+                                modifier = Modifier.size(MaterialTheme.spacing.extraLarge),
+                                imageVector = Icons.Default.Close,
+                                contentDescription = stringResource(id = com.upsaclay.common.R.string.close)
+                            )
+                        }
+                    },
+                    actions = {
+                        Button(
+                            enabled = true,
+                            onClick = {}
+                        ) {
+                            Text(text = stringResource(id = com.upsaclay.common.R.string.save))
+                        }
+                    }
+                )
+            }
+        ) { contentPadding ->
+            Column(
+                modifier = Modifier
+                    .padding(
+                        top = contentPadding.calculateTopPadding(),
+                        start = MaterialTheme.spacing.medium,
+                        end = MaterialTheme.spacing.medium,
+                        bottom = MaterialTheme.spacing.medium
+                    )
+                    .fillMaxSize()
+            ) {
+                TextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    placeholder = {
+                        Text(
+                            text = stringResource(id = R.string.title_field),
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = MaterialTheme.colorScheme.background,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent
+                    ),
+                    value = title ?: "",
+                    onValueChange = { title = it },
+                    textStyle = MaterialTheme.typography.titleLarge
+                        .plus(TextStyle(fontWeight = FontWeight.Bold)),
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.Sentences
+                    )
+                )
+
+                TextField(
+                    modifier = Modifier.fillMaxSize(),
+                    placeholder = {
+                        Text(
+                            text = stringResource(id = R.string.content_field),
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
+                    },
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = MaterialTheme.colorScheme.background,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent
+                    ),
+                    value = content,
+                    onValueChange = { content = it },
+                    textStyle = MaterialTheme.typography.bodyLarge,
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.Sentences
+                    )
+                )
+            }
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

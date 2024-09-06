@@ -7,6 +7,7 @@ enum class Screen(val route: String) {
     THIRD_REGISTRATION_SCREEN("third_registration_screen"),
     NEWS("news_screen"),
     READ_ANNOUNCEMENT("read_announcement_screen"),
+    EDIT_ANNOUNCEMENT("edit_announcement_screen"),
     CREATE_ANNOUNCEMENT("create_announcement_screen"),
     MESSAGES("message_screen"),
     CALENDAR( "calendar_screen"),

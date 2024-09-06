@@ -27,10 +27,10 @@ import com.upsaclay.common.domain.model.User
 import com.upsaclay.gedoise.data.BottomNavigationItem
 import com.upsaclay.gedoise.ui.profile.ProfileScreen
 import com.upsaclay.gedoise.ui.profile.account.AccountInfoScreen
-import com.upsaclay.news.ui.CreateAnnouncementScreen
+import com.upsaclay.news.ui.EditAnnouncementScreen
+import com.upsaclay.news.ui.NewsScreen
 import com.upsaclay.news.ui.NewsViewModel
 import com.upsaclay.news.ui.ReadAnnouncementScreen
-import com.upsaclay.news.ui.NewsScreen
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -111,16 +111,27 @@ fun Navigation(
                     ) { contentPadding ->
                         ReadAnnouncementScreen(
                             modifier = Modifier.padding(top = contentPadding.calculateTopPadding()),
+                            navController = navController,
                             newsViewModel = sharedNewsViewModel
                         )
                     }
                 }
                 
                 composable(Screen.CREATE_ANNOUNCEMENT.route) {
-                   CreateAnnouncementScreen(
+                   EditAnnouncementScreen(
                        navController = navController,
                        newsViewModel = sharedNewsViewModel
                    )
+                }
+
+                composable(
+                    Screen.EDIT_ANNOUNCEMENT.route
+                ) {
+                    EditAnnouncementScreen(
+                        navController = navController,
+                        newsViewModel = sharedNewsViewModel,
+                        isModification = true
+                    )
                 }
 
                 composable(Screen.MESSAGES.route) {
