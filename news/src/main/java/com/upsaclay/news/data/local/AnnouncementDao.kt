@@ -11,9 +11,12 @@ interface AnnouncementDao {
     @Query("SELECT * FROM $ANNOUNCEMENTS_TABLE")
     fun getAllAnnouncements(): Flow<List<LocalAnnouncement>>
 
+    @Query("SELECT * FROM $ANNOUNCEMENTS_TABLE WHERE ANNOUNCEMENT_ID = :id")
+    suspend fun getAnnouncement(id: Int): LocalAnnouncement?
+
     @Upsert
-    fun upsertAnnouncement(localAnnouncement: LocalAnnouncement)
+    suspend fun upsertAnnouncement(localAnnouncement: LocalAnnouncement)
 
     @Delete
-    fun deleteAnnouncement(localAnnouncement: LocalAnnouncement)
+    suspend fun deleteAnnouncement(localAnnouncement: LocalAnnouncement)
 }

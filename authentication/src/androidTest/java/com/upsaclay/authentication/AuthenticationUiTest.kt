@@ -10,8 +10,8 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.performClick
 import androidx.navigation.NavController
 import com.upsaclay.authentication.domain.model.AuthenticationState
-import com.upsaclay.authentication.ui.AuthenticationScreen
-import com.upsaclay.authentication.ui.AuthenticationViewModel
+import com.upsaclay.authentication.presentation.AuthenticationScreen
+import com.upsaclay.authentication.presentation.AuthenticationViewModel
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,7 +38,7 @@ class AuthenticationUiTest {
         authenticationViewModel = mockk()
 
         every {
-            authenticationViewModel.mail
+            authenticationViewModel.email
         } returns ""
         every {
             authenticationViewModel.password
@@ -47,10 +47,10 @@ class AuthenticationUiTest {
             authenticationViewModel.login()
         } returns Unit
         every {
-            authenticationViewModel.updateMailText(any())
+            authenticationViewModel.updateEmail(any())
         } returns Unit
         every {
-            authenticationViewModel.updateMailText(any())
+            authenticationViewModel.updateEmail(any())
         } returns Unit
 
         buttonLogin = hasText(rule.activity.getString(R.string.login)) and hasClickAction()

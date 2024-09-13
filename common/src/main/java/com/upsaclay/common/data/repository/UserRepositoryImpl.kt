@@ -24,10 +24,28 @@ internal class UserRepositoryImpl(
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
-            userLocalDataSource.getUser().collect {
-                _user.value = it
+            userLocalDataSource.getUser().collect { user ->
+                _user.value = user
+                updateUserIfNeeded(user)
             }
         }
+    }
+
+    private suspend fun updateUserIfNeeded(localUser: User) {
+        userRemoteDataSource.getUser(localUser.id)
+            .onSuccess { remoteUser ->
+                remoteUser?.let {
+                    val shouldBeUpdated = remoteUser.profilePictureUrl != localUser.profilePictureUrl ||
+                            remoteUser.isMember != localUser.isMember ||
+                            remoteUser.schoolLevel != localUser.schoolLevel
+                    if(shouldBeUpdated) {
+                        userLocalDataSource.setUser(remoteUser)
+                    }
+                }
+            }
+            .onFailure { exception ->
+                e(exception.message ?: "Error retrieving remote user")
+            }
     }
 
     override suspend fun createUser(user: User): Result<Int> {
@@ -35,7 +53,7 @@ internal class UserRepositoryImpl(
 
         return if (response.isSuccessful && response.body()?.data != null) {
             val userId = response.body()!!.data!!
-            userLocalDataSource.createUser(user.copy(id = userId))
+            userLocalDataSource.setUser(user.copy(id = userId))
             i(response.body()?.message ?: "User created successfully !")
             Result.success(userId)
         }

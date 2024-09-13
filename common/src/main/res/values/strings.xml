@@ -11,6 +11,10 @@
     <string name="cancel">Annuler</string>
     <string name="modify">Modifier</string>
     <string name="publish">Publier</string>
+    <string name="discard">Abandonner</string>
+
+    <string name="deletion">Supression...</string>
+    <string name="loading">Chargement...</string>
 
     <string name="arrow_back_icon_description">Retour en arrière</string>
     <string name="ged_logo_description">Logo de l\'université de La Grande École du Droit</string>
@@ -29,4 +33,6 @@
     <string name="hour_ago">%d h</string>
     <string name="day_ago">%d j</string>
     <string name="week_ago">%d sem</string>
+
+    <string name="discard_modification_dialog_text">Abandonner les modifications ?</string>
 </resources>
