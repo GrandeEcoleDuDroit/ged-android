@@ -15,6 +15,10 @@ internal class AnnouncementLocalDataSource(
         }
     }
 
+    suspend fun getAnnouncement(id: Int): Announcement? = withContext(Dispatchers.IO) {
+        announcementDao.getAnnouncement(id)?.toDomain()
+    }
+
     suspend fun upsertAnnouncement(announcement: Announcement) {
         withContext(Dispatchers.IO) {
             val localAnnouncement = LocalAnnouncement.fromDomain(announcement)

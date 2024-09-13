@@ -31,7 +31,7 @@ internal val announcementFixture = Announcement(
     )
 )
 
-internal val announcementItemsFixture = listOf(
+internal val announcementsFixture = listOf(
     announcementFixture,
     announcementFixture,
     announcementFixture,

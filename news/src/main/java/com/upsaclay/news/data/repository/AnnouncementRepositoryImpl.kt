@@ -31,14 +31,20 @@ internal class AnnouncementRepositoryImpl(
         if (remoteAnnouncements.isNotEmpty()) {
             val localAnnouncements = announcementLocalDataSource.getAllAnnouncements().first()
 
-            val announcementsToUpdate = remoteAnnouncements.filterNot { remoteValue ->
+            val announcementsToUpdate = remoteAnnouncements.filter { remoteValue ->
                 localAnnouncements.any { localValue ->
-                    localValue.id == remoteValue.id && localValue.date == remoteValue.date
+                    (localValue.id == remoteValue.id &&
+                            localValue.date != remoteValue.date) ||
+                            localValue.author.profilePictureUrl != remoteValue.author.profilePictureUrl
                 }
             }
 
             announcementsToUpdate.forEach { announcementLocalDataSource.upsertAnnouncement(it) }
         }
+    }
+
+    override suspend fun getAnnouncement(id: Int): Announcement? {
+        return announcementLocalDataSource.getAnnouncement(id)
     }
 
     override suspend fun createAnnouncement(announcement: Announcement): Result<Int> {
@@ -48,17 +54,17 @@ internal class AnnouncementRepositoryImpl(
             }
     }
 
-    override suspend fun deleteAnnouncement(announcement: Announcement): Result<Unit> {
-        return announcementRemoteDataSource.deleteAnnouncement(announcement.id)
-            .onSuccess {
-                announcementLocalDataSource.deleteAnnouncement(announcement)
-            }
-    }
-
     override suspend fun updateAnnouncement(announcement: Announcement): Result<Unit> {
         return announcementRemoteDataSource.updateAnnouncement(announcement)
             .onSuccess {
                 announcementLocalDataSource.upsertAnnouncement(announcement)
+            }
+    }
+
+    override suspend fun deleteAnnouncement(announcement: Announcement): Result<Unit> {
+        return announcementRemoteDataSource.deleteAnnouncement(announcement.id)
+            .onSuccess {
+                announcementLocalDataSource.deleteAnnouncement(announcement)
             }
     }
 }

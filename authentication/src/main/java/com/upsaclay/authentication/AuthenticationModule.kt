@@ -10,8 +10,8 @@ import com.upsaclay.authentication.domain.usecase.IsAccountExistUseCase
 import com.upsaclay.authentication.domain.usecase.IsUserAuthenticatedUseCase
 import com.upsaclay.authentication.domain.usecase.LoginUseCase
 import com.upsaclay.authentication.domain.usecase.RegistrationUseCase
-import com.upsaclay.authentication.ui.AuthenticationViewModel
-import com.upsaclay.authentication.ui.registration.RegistrationViewModel
+import com.upsaclay.authentication.presentation.AuthenticationViewModel
+import com.upsaclay.authentication.presentation.registration.RegistrationViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf

@@ -5,13 +5,19 @@ import com.upsaclay.news.data.local.AnnouncementLocalDataSource
 import com.upsaclay.news.data.remote.AnnouncementRemoteDataSource
 import com.upsaclay.news.data.remote.api.AnnouncementApi
 import com.upsaclay.news.data.repository.AnnouncementRepositoryImpl
+import com.upsaclay.news.domain.model.Announcement
 import com.upsaclay.news.domain.repository.AnnouncementRepository
+import com.upsaclay.news.domain.usecase.ConvertAnnouncementToJsonUseCase
 import com.upsaclay.news.domain.usecase.CreateAnnouncementUseCase
 import com.upsaclay.news.domain.usecase.DeleteAnnouncementUseCase
 import com.upsaclay.news.domain.usecase.GetAllAnnouncementsUseCase
+import com.upsaclay.news.domain.usecase.GetAnnouncementUseCase
 import com.upsaclay.news.domain.usecase.RefreshAnnouncementsUseCase
 import com.upsaclay.news.domain.usecase.UpdateAnnouncementUseCase
-import com.upsaclay.news.ui.NewsViewModel
+import com.upsaclay.news.presentation.viewmodel.CreateAnnouncementViewModel
+import com.upsaclay.news.presentation.viewmodel.EditAnnouncementViewModel
+import com.upsaclay.news.presentation.viewmodel.NewsViewModel
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
@@ -25,11 +31,21 @@ val newsModule = module {
     singleOf(::AnnouncementRepositoryImpl) { bind<AnnouncementRepository>() }
     singleOf(::AnnouncementRemoteDataSource)
     singleOf(::AnnouncementLocalDataSource)
-    viewModelOf(::NewsViewModel)
 
+    viewModelOf(::NewsViewModel)
+    viewModel { (announcement: Announcement) ->
+        EditAnnouncementViewModel(
+            editedAnnouncement = announcement,
+            updateAnnouncementUseCase =  get()
+        )
+    }
+    viewModelOf(::CreateAnnouncementViewModel)
+
+    singleOf(::ConvertAnnouncementToJsonUseCase)
     singleOf(::CreateAnnouncementUseCase)
     singleOf(::DeleteAnnouncementUseCase)
     singleOf(::GetAllAnnouncementsUseCase)
+    singleOf(::GetAnnouncementUseCase)
     singleOf(::RefreshAnnouncementsUseCase)
     singleOf(::UpdateAnnouncementUseCase)
 }

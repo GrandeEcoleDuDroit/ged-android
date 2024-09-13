@@ -76,10 +76,10 @@ internal class AnnouncementRemoteDataSource(
         }
     }
 
-    suspend fun  updateAnnouncement(announcement: Announcement): Result<Unit> = withContext(Dispatchers.IO) {
+    suspend fun updateAnnouncement(announcement: Announcement): Result<Unit> = withContext(Dispatchers.IO) {
         try {
             val remoteAnnouncement = RemoteAnnouncement.fromDomain(announcement)
-            val response = announcementApi.createAnnouncement(remoteAnnouncement)
+            val response = announcementApi.updateAnnouncement(remoteAnnouncement)
             if(response.isSuccessful) {
                 Result.success(Unit)
             } else {
