@@ -6,6 +6,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -15,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -32,14 +34,18 @@ fun TransparentTextField(
     placeholder: @Composable (() -> Unit),
     textStyle: TextStyle,
 ) {
+
+    val colors: TextFieldColors = TextFieldDefaults.colors()
+
     BasicTextField(
         modifier = modifier,
         value = value,
         onValueChange = onValueChange,
-        textStyle = textStyle,
+        textStyle = textStyle.copy(color = MaterialTheme.colorScheme.onBackground),
         keyboardOptions = KeyboardOptions(
             capitalization = KeyboardCapitalization.Sentences
-        )
+        ),
+        cursorBrush = SolidColor(colors.cursorColor)
     ) { innerTextField ->
         val interactionSource = remember { MutableInteractionSource() }
         TextFieldDefaults.DecorationBox(
@@ -53,7 +59,7 @@ fun TransparentTextField(
                 focusedContainerColor = MaterialTheme.colorScheme.background,
                 unfocusedContainerColor = MaterialTheme.colorScheme.background,
                 focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent
+                unfocusedIndicatorColor = Color.Transparent,
             ),
             placeholder = placeholder,
             contentPadding = PaddingValues(MaterialTheme.spacing.default)
@@ -79,6 +85,7 @@ fun TransparentFocusedTextField(
             )
         )
     }
+    val colors: TextFieldColors = TextFieldDefaults.colors()
 
     LaunchedEffect(Unit) {
         awaitFrame()
@@ -92,10 +99,11 @@ fun TransparentFocusedTextField(
             textFieldValue.value = newValue
             onValueChange(newValue.text)
         },
-        textStyle = textStyle,
+        textStyle = textStyle.copy(color = MaterialTheme.colorScheme.onBackground),
         keyboardOptions = KeyboardOptions(
             capitalization = KeyboardCapitalization.Sentences
-        )
+        ),
+        cursorBrush = SolidColor(colors.cursorColor)
     ) { innerTextField ->
         val interactionSource = remember { MutableInteractionSource() }
         TextFieldDefaults.DecorationBox(
@@ -109,7 +117,7 @@ fun TransparentFocusedTextField(
                 focusedContainerColor = MaterialTheme.colorScheme.background,
                 unfocusedContainerColor = MaterialTheme.colorScheme.background,
                 focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent
+                unfocusedIndicatorColor = Color.Transparent,
             ),
             placeholder = placeholder,
             contentPadding = PaddingValues(MaterialTheme.spacing.default)
