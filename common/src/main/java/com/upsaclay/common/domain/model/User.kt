@@ -12,6 +12,7 @@ data class User(
     val fullName = String.format("%s %s", firstName, lastName)
 
     override fun equals(other: Any?): Boolean {
-        return other is User && other.id == id
+        return other is User && other.id == id &&
+                other.profilePictureUrl == profilePictureUrl
     }
 }

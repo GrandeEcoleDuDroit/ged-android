@@ -1,7 +1,6 @@
 package com.upsaclay.gedoise.presentation.profile.account
 
 import android.net.Uri
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -42,18 +41,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import coil.Coil
 import com.upsaclay.common.presentation.components.ClickableMenuItem
-import com.upsaclay.common.presentation.components.OverlayLoadingScreen
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.components.ProfilePictureWithIcon
 import com.upsaclay.common.presentation.components.SensibleActionDialog
-import com.upsaclay.common.presentation.components.SimpleDialog
 import com.upsaclay.common.presentation.components.SmallTopBarBack
 import com.upsaclay.common.presentation.components.SmallTopBarEdit
 import com.upsaclay.common.presentation.theme.GedoiseColor
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.spacing
+import com.upsaclay.common.utils.showToast
 import com.upsaclay.common.utils.userFixture
 import com.upsaclay.gedoise.R
 import com.upsaclay.gedoise.data.profile.AccountInfo
@@ -75,6 +72,7 @@ fun AccountScreen(
     var showBottomSheet by remember { mutableStateOf(false) }
     var showDeleteProfilePictureDialog by remember { mutableStateOf(false) }
     var showCancelModificationDialog by remember { mutableStateOf(false) }
+    var showLoadingDialog by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
@@ -95,6 +93,51 @@ fun AccountScreen(
             }
         }
     )
+
+    when (accountScreenState) {
+        AccountScreenState.PROFILE_PICTURE_UPDATED -> {
+            showLoadingDialog = false
+            showToast(context, R.string.profile_picture_updated)
+            accountViewModel.updateAccountScreenState(AccountScreenState.READ)
+        }
+
+        AccountScreenState.PROFILE_PICTURE_UPDATE_ERROR -> {
+            showLoadingDialog = false
+            showToast(context, R.string.error_updating_profile_picture)
+            accountViewModel.updateAccountScreenState(AccountScreenState.READ)
+        }
+
+        AccountScreenState.LOADING -> showLoadingDialog = true
+
+        else -> {}
+    }
+
+    if (showDeleteProfilePictureDialog) {
+        SensibleActionDialog(
+            text = stringResource(id = R.string.delete_profile_picture_dialog_text),
+            confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
+            onConfirm = {
+                showDeleteProfilePictureDialog = false
+                accountViewModel.deleteUserProfilePicture()
+            },
+            onCancel = { showDeleteProfilePictureDialog = false },
+            onDismiss = { showDeleteProfilePictureDialog = false },
+        )
+    }
+
+    if(showCancelModificationDialog) {
+        SensibleActionDialog(
+            text = stringResource(id = com.upsaclay.common.R.string.discard_modification_dialog_text),
+            confirmText = stringResource(id = com.upsaclay.common.R.string.discard),
+            onConfirm = {
+                accountViewModel.resetProfilePictureUri()
+                accountViewModel.updateAccountScreenState(AccountScreenState.READ)
+                showCancelModificationDialog = false
+            },
+            onCancel = { showCancelModificationDialog = false },
+            onDismiss = { showCancelModificationDialog = false }
+        )
+    }
 
     user?.let {
         val accountInfos: ImmutableList<AccountInfo> = persistentListOf(
@@ -119,17 +162,17 @@ fun AccountScreen(
         Scaffold(
             topBar = {
                 AccountTopBar(
-                    navController,
-                    accountViewModel,
-                    accountScreenState,
-                    onCancelClick = { showCancelModificationDialog = true }
+                    isEdited = accountScreenState == AccountScreenState.EDIT,
+                    onSaveClick = { accountViewModel.updateUserProfilePicture() },
+                    onCancelClick = { showCancelModificationDialog = true },
+                    onBackClick = { navController.popBackStack() }
                 ) }
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(
-                        top = it.calculateTopPadding() + MaterialTheme.spacing.small,
+                        top = it.calculateTopPadding(),
                         start = MaterialTheme.spacing.medium,
                         end = MaterialTheme.spacing.medium,
                         bottom = MaterialTheme.spacing.medium
@@ -164,74 +207,19 @@ fun AccountScreen(
                     if (showBottomSheet) {
                         AccountModelBottomSheet(
                             onDismissRequest = { showBottomSheet = false },
-                            onClickNewProfilePicture = {
+                            onNewProfilePictureClick = {
                                 hideBottomSheet()
                                 singlePhotoPickerLauncher.launch(
                                     PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                                 )
                             },
                             showDeleteProfilePicture = user.profilePictureUrl != null,
-                            onClickDeleteProfilePicture = {
+                            onDeleteProfilePictureClick = {
                                 hideBottomSheet()
                                 showDeleteProfilePictureDialog = true
                             }
                         )
                     }
-                }
-
-                when (accountScreenState) {
-                    AccountScreenState.LOADING -> {
-                        OverlayLoadingScreen()
-                    }
-
-                    AccountScreenState.PROFILE_PICTURE_UPDATE_ERROR -> {
-                        Toast.makeText(
-                            context,
-                            R.string.error_uploading_profile_picture,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        accountViewModel.updateAccountScreenState(AccountScreenState.READ)
-                    }
-
-                    AccountScreenState.PROFILE_PICTURE_UPDATED -> {
-                        Coil.imageLoader(context).shutdown()
-                        Toast.makeText(
-                            context,
-                            R.string.profile_picture_updated,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        accountViewModel.updateAccountScreenState(AccountScreenState.READ)
-                    }
-
-                    else -> {}
-                }
-
-                if (showDeleteProfilePictureDialog) {
-                    SimpleDialog(
-                        title = stringResource(id = R.string.delete_current_profile_picture),
-                        text = stringResource(id = R.string.delete_profile_picture_dialog_text),
-                        confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
-                        onConfirm = {
-                            showDeleteProfilePictureDialog = false
-                            accountViewModel.deleteUserProfilePicture()
-                        },
-                        onCancel = { showDeleteProfilePictureDialog = false },
-                        onDismiss = { showDeleteProfilePictureDialog = false },
-                    )
-                }
-
-                if(showCancelModificationDialog) {
-                    SensibleActionDialog(
-                        text = stringResource(id = com.upsaclay.common.R.string.discard_modification_dialog_text),
-                        confirmText = stringResource(id = com.upsaclay.common.R.string.discard),
-                        onConfirm = {
-                            accountViewModel.resetProfilePictureUri()
-                            accountViewModel.updateAccountScreenState(AccountScreenState.READ)
-                            showCancelModificationDialog = false
-                        },
-                        onCancel = { showCancelModificationDialog = false },
-                        onDismiss = { showCancelModificationDialog = false }
-                    )
                 }
             }
         }
@@ -248,18 +236,18 @@ private fun ProfilePictureSection(
     val scaleImage = 1.8f
 
     profilePictureUri?.let { uri ->
-        if (!isEdited) {
-            ProfilePicture(
-                imageUri = uri,
-                scaleImage = scaleImage,
-                onClick = onClick
-            )
-        } else {
+        if (isEdited) {
             ProfilePictureWithIcon(
                 imageUri = uri,
                 iconVector = Icons.Default.Edit,
                 contentDescription = "",
                 scale = scaleImage,
+                onClick = onClick
+            )
+        } else {
+            ProfilePicture(
+                imageUri = uri,
+                scaleImage = scaleImage,
                 onClick = onClick
             )
         }
@@ -278,9 +266,9 @@ private fun ProfilePictureSection(
 @Composable
 private fun AccountModelBottomSheet(
     onDismissRequest: () -> Unit,
-    onClickNewProfilePicture: () -> Unit,
+    onNewProfilePictureClick: () -> Unit,
     showDeleteProfilePicture: Boolean = false,
-    onClickDeleteProfilePicture: () -> Unit
+    onDeleteProfilePictureClick: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState()
 
@@ -297,7 +285,7 @@ private fun AccountModelBottomSheet(
                     contentDescription = null
                 )
             },
-            onClick = onClickNewProfilePicture
+            onClick = onNewProfilePictureClick
         )
 
         if (showDeleteProfilePicture) {
@@ -305,7 +293,7 @@ private fun AccountModelBottomSheet(
                 modifier = Modifier.fillMaxWidth(),
                 text = {
                     Text(
-                        text = stringResource(id = R.string.delete_current_profile_picture),
+                        text = stringResource(id = R.string.delete_profile_picture),
                         color = GedoiseColor.Red
                     )
                 },
@@ -316,7 +304,7 @@ private fun AccountModelBottomSheet(
                         tint = GedoiseColor.Red
                     )
                 },
-                onClick = onClickDeleteProfilePicture
+                onClick = onDeleteProfilePictureClick
             )
         }
         Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
@@ -345,21 +333,21 @@ private fun AccountInfoItem(
 
 @Composable
 private fun AccountTopBar(
-    navController: NavController,
-    accountViewModel: AccountViewModel,
-    accountScreenState: AccountScreenState,
-    onCancelClick: () -> Unit
+    isEdited: Boolean,
+    onSaveClick: () -> Unit,
+    onCancelClick: () -> Unit,
+    onBackClick: () -> Unit
 ) {
-    if (accountScreenState == AccountScreenState.EDIT) {
+    if (isEdited) {
         SmallTopBarEdit(
             title = stringResource(id = R.string.account_informations),
             onCancelClick = onCancelClick,
-            onSaveClick = { accountViewModel.updateUserProfilePicture() }
+            onSaveClick = onSaveClick
         )
     } else {
         SmallTopBarBack(
             title = stringResource(id = R.string.account_informations),
-            onBackClick = { navController.popBackStack() }
+            onBackClick = onBackClick
         )
     }
 }
@@ -370,7 +358,7 @@ private fun AccountScreenPreview() {
     val scaleImage = 1.8f
     val sizeImage = 100.dp * scaleImage
     val hasPictureChanged = false
-    val isEdited = true
+    val isEdited = false
 
     val accountInfos: ImmutableList<AccountInfo> = persistentListOf(
         AccountInfo(

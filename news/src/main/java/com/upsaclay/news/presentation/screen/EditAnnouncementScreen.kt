@@ -81,7 +81,11 @@ fun EditAnnouncementScreen(
         topBar = {
             SmallTopBarEdit(
                 title = stringResource(id = R.string.announcement),
-                onCancelClick = { navController.popBackStack() },
+                onCancelClick = {
+                    focusManager.clearFocus()
+                    keyboardController?.hide()
+                    navController.popBackStack()
+                },
                 onSaveClick = {
                     editAnnouncementViewModel.updateAnnouncement(
                         editAnnouncementViewModel.editedAnnouncement.copy(
