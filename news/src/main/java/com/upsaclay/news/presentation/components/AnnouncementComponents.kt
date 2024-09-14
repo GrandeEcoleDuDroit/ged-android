@@ -70,7 +70,7 @@ internal fun AnnouncementItem(
 
         Text(
             text = elapsedTimeValue,
-            style = MaterialTheme.typography.bodySmall,
+            style = MaterialTheme.typography.bodyMedium,
             color = Color.Gray
         )
     }
@@ -104,7 +104,7 @@ internal fun AnnouncementItemWithTitle(
     ) {
         ProfilePicture(
             imageUrl = announcement.author.profilePictureUrl,
-            scaleImage = 0.45f
+            scaleImage = 0.5f
         )
 
         Spacer(modifier = Modifier.width(MaterialTheme.spacing.smallMedium))
@@ -123,7 +123,7 @@ internal fun AnnouncementItemWithTitle(
 
                 Text(
                     text = elapsedTimeValue,
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = Color.Gray,
                 )
             }

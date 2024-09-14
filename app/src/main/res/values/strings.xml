@@ -26,10 +26,9 @@
     <string name="logout_icon_description">Icône pour se déconnecter</string>
     <string name="check_icon_description">Accepter les changements</string>
 
-    <string name="delete_current_profile_picture">Supprimer la photo actuelle</string>
     <string name="delete_profile_picture">Supprimer photo de profil</string>
     <string name="new_profile_picture">Nouvelle photo de profil</string>
     <string name="profile_picture_updated">Photo de profil mise à jour</string>
-    <string name="error_uploading_profile_picture">Erreur lors de l\'envoi de la photo de profil</string>
+    <string name="error_updating_profile_picture">Une erreur est survenue lors de la mise à jour de la photo de profil</string>
     <string name="delete_profile_picture_dialog_text">Voulez-vous supprimer la photo de profil ?</string>
 </resources>

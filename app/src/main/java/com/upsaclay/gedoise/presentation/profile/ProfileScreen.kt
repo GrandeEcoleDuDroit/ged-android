@@ -118,18 +118,10 @@ private fun TopSection(
 
             Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))
 
-            Column {
-                Text(
-                    text = userFullName,
-                    style = MaterialTheme.typography.titleLarge
-                )
-
-                Text(
-                    text = userEmail,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Gray
-                )
-            }
+            Text(
+                text = userFullName,
+                style = MaterialTheme.typography.titleLarge
+            )
         }
     }
 }
@@ -171,29 +163,6 @@ private fun buildProfileMenuItemData(
             },
             onClick = { navController.navigate(Screen.ACCOUNT.route) }
         ),
-//        ClickableMenuItemData(
-//            text = {
-//                Text(text = stringResource(id = R.string.settings))
-//            },
-//            icon = {
-//                Icon(
-//                    modifier = Modifier.size(28.dp),
-//                    painter = painterResource(id = com.upsaclay.common.R.drawable.ic_settings),
-//                    contentDescription = stringResource(id = R.string.settings_icon_description)
-//                )
-//            }
-//        ),
-//        ClickableMenuItemData(
-//            text = {
-//                Text(text = stringResource(id = R.string.support))
-//            },
-//            icon = {
-//                Icon(
-//                    painter = painterResource(id = com.upsaclay.common.R.drawable.ic_support),
-//                    contentDescription = stringResource(id = R.string.support_icon_description)
-//                )
-//            }
-//        ),
         ClickableMenuItemData(
             text = {
                 Text(
@@ -255,18 +224,10 @@ fun ProfileScreenPreview() {
 
                             Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))
 
-                            Column {
-                                Text(
-                                    text = userFixture.firstName + " " + userFixture.lastName,
-                                    style = MaterialTheme.typography.titleLarge,
-                                )
-
-                                Text(
-                                    text = userFixture.email,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = Color.DarkGray
-                                )
-                            }
+                            Text(
+                                text = userFixture.firstName + " " + userFixture.lastName,
+                                style = MaterialTheme.typography.titleLarge,
+                            )
                         }
 
                         HorizontalDivider()
