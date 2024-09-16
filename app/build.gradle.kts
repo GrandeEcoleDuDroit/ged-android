@@ -91,4 +91,5 @@ dependencies {
     implementation(project(":common"))
     implementation(project(":authentication"))
     implementation(project(":news"))
+    implementation(project(":message"))
 }

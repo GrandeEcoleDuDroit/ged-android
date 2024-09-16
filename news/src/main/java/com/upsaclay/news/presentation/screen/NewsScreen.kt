@@ -158,6 +158,12 @@ private fun PostSection() {
     }
 }
 
+/*
+ =====================================================================
+                                Preview
+ =====================================================================
+ */
+
 @Preview(showBackground = true ,widthDp = 360, heightDp = 640)
 @Composable
 private fun NewsScreenPreview(){

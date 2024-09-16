@@ -59,6 +59,12 @@ fun SimpleDropDownMenu(
     }
 }
 
+/*
+ =====================================================================
+                                Preview
+ =====================================================================
+ */
+
 @Preview(showBackground = true)
 @Composable
 private fun SimpleDropDownMenuPreview(){

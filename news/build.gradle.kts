@@ -29,13 +29,16 @@ android {
     buildFeatures {
         compose = true
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_19
         targetCompatibility = JavaVersion.VERSION_19
     }
+
     kotlinOptions {
         jvmTarget = "19"
     }
+
     packaging {
         resources.excludes.add("META-INF/*")
     }
@@ -61,12 +64,10 @@ dependencies {
     implementation(libs.koin)
     implementation(libs.koin.core)
     implementation(libs.koin.androidx.compose)
-
-    testImplementation(libs.junit)
-    implementation(libs.koin)
-    implementation(libs.koin.core)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.animation.compose)
+
+    testImplementation(libs.junit)
     testImplementation(libs.mockk)
     testImplementation(libs.kotlin.test)
     testImplementation(kotlin("test"))

@@ -19,9 +19,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import com.upsaclay.authentication.R
+import com.upsaclay.authentication.presentation.components.LargeButton
 import com.upsaclay.authentication.presentation.components.RegistrationTopBar
 import com.upsaclay.common.domain.model.Screen
-import com.upsaclay.common.presentation.components.PrimaryLargeButton
 import com.upsaclay.common.presentation.components.SimpleDropDownMenu
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.spacing
@@ -80,7 +80,7 @@ fun FirstRegistrationScreen(
             )
         }
 
-        PrimaryLargeButton(
+        LargeButton(
             text = stringResource(id = com.upsaclay.common.R.string.next),
             onClick = {
                 registrationViewModel.updateSchoolLevel(selectedItem)
@@ -92,6 +92,12 @@ fun FirstRegistrationScreen(
         )
     }
 }
+
+/*
+ =====================================================================
+                                Preview
+ =====================================================================
+ */
 
 @Preview
 @Composable
@@ -138,7 +144,7 @@ private fun FirstRegistrationScreenPreview() {
                 )
             }
 
-            PrimaryLargeButton(
+            LargeButton(
                 text = stringResource(id = com.upsaclay.common.R.string.next),
                 onClick = {},
                 modifier = Modifier

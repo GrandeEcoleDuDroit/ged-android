@@ -26,6 +26,8 @@ import com.upsaclay.common.presentation.components.SmallTopBarBack
 import com.upsaclay.gedoise.data.BottomNavigationItem
 import com.upsaclay.gedoise.presentation.profile.ProfileScreen
 import com.upsaclay.gedoise.presentation.profile.account.AccountScreen
+import com.upsaclay.message.presentation.screen.ChatScreen
+import com.upsaclay.message.presentation.screen.ConversationScreen
 import com.upsaclay.news.domain.usecase.ConvertAnnouncementToJsonUseCase
 import com.upsaclay.news.presentation.screen.CreateAnnouncementScreen
 import com.upsaclay.news.presentation.screen.EditAnnouncementScreen
@@ -136,16 +138,20 @@ fun Navigation(mainViewModel: MainViewModel = koinViewModel()) {
             } ?: navController.popBackStack()
         }
 
-        composable(Screen.MESSAGES.route) {
+        composable(Screen.CONVERSATIONS.route) {
             user?.let {
                 MainNavigationBars(
                     navController = navController,
                     bottomNavigationItems = mainViewModel.bottomNavigationItem.values.toList(),
                     user = user
                 ) {
-                    Text(text = "Message")
+                    ConversationScreen(navController)
                 }
             }
+        }
+
+        composable(Screen.CHAT.route) {
+            ChatScreen(navController)
         }
 
         composable(Screen.CALENDAR.route) {

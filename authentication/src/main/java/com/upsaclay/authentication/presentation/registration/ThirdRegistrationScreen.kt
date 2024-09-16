@@ -29,11 +29,11 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.upsaclay.authentication.R
 import com.upsaclay.authentication.domain.model.RegistrationState
+import com.upsaclay.authentication.presentation.components.LargeButton
 import com.upsaclay.authentication.presentation.components.RegistrationTopBar
 import com.upsaclay.common.domain.model.Screen
 import com.upsaclay.common.presentation.components.ErrorText
 import com.upsaclay.common.presentation.components.OverlayLoadingScreen
-import com.upsaclay.common.presentation.components.PrimaryLargeButton
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.spacing
@@ -116,7 +116,7 @@ fun ThirdRegistrationScreen(
             }
         }
 
-        PrimaryLargeButton(
+        LargeButton(
             text = stringResource(id = com.upsaclay.common.R.string.finish),
             onClick = { registrationViewModel.register() },
             modifier = Modifier
@@ -129,6 +129,12 @@ fun ThirdRegistrationScreen(
         }
     }
 }
+
+/*
+ =====================================================================
+                                Preview
+ =====================================================================
+ */
 
 @Preview
 @Composable
@@ -204,7 +210,7 @@ fun ThirdRegistrationScreenPreview() {
                 }
             }
 
-            PrimaryLargeButton(
+            LargeButton(
                 text = stringResource(id = com.upsaclay.common.R.string.finish),
                 onClick = { },
                 modifier = Modifier

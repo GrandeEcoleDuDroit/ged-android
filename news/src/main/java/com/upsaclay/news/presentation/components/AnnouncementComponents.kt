@@ -15,36 +15,41 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.upsaclay.common.domain.model.ElapsedTime
 import com.upsaclay.common.domain.usecase.GetElapsedTimeUseCase
+import com.upsaclay.common.domain.usecase.LocalDateTimeFormatterUseCase
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.news.announcementFixture
 import com.upsaclay.news.domain.model.Announcement
-import java.time.format.DateTimeFormatter
 
 @Composable
 internal fun AnnouncementItem(
-    announcement: Announcement,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    announcement: Announcement
 ) {
     val context = LocalContext.current
-    val elapsedTime = GetElapsedTimeUseCase().fromLocalDateTime(announcement.date)
-    val elapsedTimeValue = when(elapsedTime) {
-        is ElapsedTime.Now -> stringResource(id = com.upsaclay.common.R.string.now)
+    val localDateTimeFormatterUseCase = LocalDateTimeFormatterUseCase()
+    val getElapsedTimeUseCase = GetElapsedTimeUseCase()
+
+    val elapsedTime = getElapsedTimeUseCase.fromLocalDateTime(announcement.date)
+
+    val elapsedTimeValue: String = when(elapsedTime) {
+        is ElapsedTime.Now ->  context.getString(com.upsaclay.common.R.string.second_ago, elapsedTime.value)
+
         is ElapsedTime.Minute -> context.getString(com.upsaclay.common.R.string.minute_ago, elapsedTime.value)
+
         is ElapsedTime.Hour -> context.getString(com.upsaclay.common.R.string.hour_ago, elapsedTime.value)
+
         is ElapsedTime.Day -> context.getString(com.upsaclay.common.R.string.day_ago, elapsedTime.value)
+
         is ElapsedTime.Week -> context.getString(com.upsaclay.common.R.string.week_ago, elapsedTime.value)
-        is ElapsedTime.After -> {
-            val dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-            announcement.date.format(dateFormat)
-        }
+
+        is ElapsedTime.Later -> localDateTimeFormatterUseCase.formatDayMonthYear(elapsedTime.value)
     }
 
     Row(
@@ -82,22 +87,27 @@ internal fun AnnouncementItemWithTitle(
     onClick: () -> Unit
 ) {
     val context = LocalContext.current
-    val elapsedTime = GetElapsedTimeUseCase().fromLocalDateTime(announcement.date)
+    val getElapsedTimeUseCase = GetElapsedTimeUseCase()
+    val localDateTimeFormatterUseCase = LocalDateTimeFormatterUseCase()
+    val elapsedTime = getElapsedTimeUseCase.fromLocalDateTime(announcement.date)
+
     val elapsedTimeValue = when(elapsedTime) {
-        is ElapsedTime.Now -> stringResource(id = com.upsaclay.common.R.string.now)
+        is ElapsedTime.Now ->  context.getString(com.upsaclay.common.R.string.second_ago, elapsedTime.value)
+
         is ElapsedTime.Minute -> context.getString(com.upsaclay.common.R.string.minute_ago, elapsedTime.value)
+
         is ElapsedTime.Hour -> context.getString(com.upsaclay.common.R.string.hour_ago, elapsedTime.value)
+
         is ElapsedTime.Day -> context.getString(com.upsaclay.common.R.string.day_ago, elapsedTime.value)
+
         is ElapsedTime.Week -> context.getString(com.upsaclay.common.R.string.week_ago, elapsedTime.value)
-        is ElapsedTime.After -> {
-            val dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-            announcement.date.format(dateFormat)
-        }
+
+        is ElapsedTime.Later -> localDateTimeFormatterUseCase.formatDayMonthYear(elapsedTime.value)
     }
 
     Row(
         modifier = Modifier
-            .clickable { onClick() }
+            .clickable(onClick = onClick)
             .fillMaxWidth()
             .padding(MaterialTheme.spacing.smallMedium),
         verticalAlignment = Alignment.Top,
@@ -141,6 +151,12 @@ internal fun AnnouncementItemWithTitle(
     }
 }
 
+/*
+ =====================================================================
+                                Preview
+ =====================================================================
+ */
+
 @Preview(showBackground = true)
 @Composable
 private fun AnnouncementItemPreview() {
@@ -155,7 +171,7 @@ private fun AnnouncementItemWithTitlePreview(){
     GedoiseTheme {
         AnnouncementItemWithTitle(
             announcement = announcementFixture,
-            onClick = {}
+            onClick = { }
         )
     }
 }

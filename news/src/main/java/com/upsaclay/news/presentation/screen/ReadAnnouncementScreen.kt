@@ -42,12 +42,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.upsaclay.common.domain.model.ClickableMenuItemData
-import com.upsaclay.common.domain.model.ElapsedTime
 import com.upsaclay.common.domain.model.Screen
-import com.upsaclay.common.domain.usecase.GetElapsedTimeUseCase
-import com.upsaclay.common.presentation.components.ClickableMenuItem
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.SensibleActionDialog
+import com.upsaclay.common.presentation.components.SimpleClickableItem
 import com.upsaclay.common.presentation.theme.GedoiseColor
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.spacing
@@ -60,7 +58,6 @@ import com.upsaclay.news.presentation.components.AnnouncementItem
 import com.upsaclay.news.presentation.viewmodel.NewsViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
-import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -215,20 +212,6 @@ private fun EditableTopSection(
     announcement: Announcement,
     onEditClick: () -> Unit
 ) {
-    val context = LocalContext.current
-    val elapsedTime = GetElapsedTimeUseCase().fromLocalDateTime(announcement.date)
-    val elapsedTimeValue = when(elapsedTime) {
-        is ElapsedTime.Now -> stringResource(id = com.upsaclay.common.R.string.now)
-        is ElapsedTime.Minute -> context.getString(com.upsaclay.common.R.string.minute_ago, elapsedTime.value)
-        is ElapsedTime.Hour -> context.getString(com.upsaclay.common.R.string.hour_ago, elapsedTime.value)
-        is ElapsedTime.Day -> context.getString(com.upsaclay.common.R.string.day_ago, elapsedTime.value)
-        is ElapsedTime.Week -> context.getString(com.upsaclay.common.R.string.week_ago, elapsedTime.value)
-        is ElapsedTime.After -> {
-            val dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-            announcement.date.format(dateFormat)
-        }
-    }
-
     Row(verticalAlignment = Alignment.CenterVertically) {
         AnnouncementItem(
             announcement = announcement,
@@ -253,6 +236,12 @@ private fun EditableTopSection(
     }
 }
 
+/*
+ =====================================================================
+                                Preview
+ =====================================================================
+ */
+
 @Preview(showBackground = true)
 @Composable
 private fun ReadOnlyAnnouncementScreenPreview(){
@@ -265,7 +254,7 @@ private fun ReadOnlyAnnouncementScreenPreview(){
                 .verticalScroll(rememberScrollState())
                 .padding(MaterialTheme.spacing.medium)
         ) {
-            AnnouncementItem(announcement)
+            AnnouncementItem(announcement = announcement)
 
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
 
@@ -334,7 +323,7 @@ private fun EditAnnouncementModelBottomSheet(
         sheetState = sheetState,
     ) {
         menuItemData.forEach { menuItemData ->
-            ClickableMenuItem(
+            SimpleClickableItem(
                 modifier = Modifier.fillMaxWidth(),
                 text = menuItemData.text,
                 icon = menuItemData.icon,

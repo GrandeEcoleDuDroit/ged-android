@@ -106,7 +106,13 @@ fun OutlinedPasswordInput(
     )
 }
 
-@Preview(showBackground = true, widthDp = 360, heightDp = 220)
+/*
+ =====================================================================
+                                Preview
+ =====================================================================
+ */
+
+@Preview(showBackground = true)
 @Composable
 fun OutlinedInputsPreview() {
     var mail by remember { mutableStateOf("") }
@@ -115,7 +121,7 @@ fun OutlinedInputsPreview() {
     GedoiseTheme {
         Column(
             verticalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(horizontal = MaterialTheme.spacing.mediumLarge)
+            modifier = Modifier.padding(MaterialTheme.spacing.mediumLarge)
         ) {
             OutlinedEmailInput(
                 text = mail,

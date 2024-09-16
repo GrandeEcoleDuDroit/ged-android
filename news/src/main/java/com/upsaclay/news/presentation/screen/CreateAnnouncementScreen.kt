@@ -143,6 +143,12 @@ fun CreateAnnouncementScreen(
     }
 }
 
+/*
+ =====================================================================
+                                Preview
+ =====================================================================
+ */
+
 @Preview
 @Composable
 private fun CreateAnnouncementScreenPreview() {
