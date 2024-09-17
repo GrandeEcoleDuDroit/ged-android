@@ -27,6 +27,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.SmallTopBarEdit
+import com.upsaclay.common.presentation.components.TransparentFocusedTextField
+import com.upsaclay.common.presentation.components.TransparentTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.showToast
@@ -34,8 +36,6 @@ import com.upsaclay.news.R
 import com.upsaclay.news.announcementFixture
 import com.upsaclay.news.domain.model.AnnouncementState
 import com.upsaclay.news.presentation.components.AnnouncementItem
-import com.upsaclay.news.presentation.components.TransparentFocusedTextField
-import com.upsaclay.news.presentation.components.TransparentTextField
 import com.upsaclay.news.presentation.viewmodel.EditAnnouncementViewModel
 import java.time.LocalDateTime
 
@@ -126,6 +126,7 @@ fun EditAnnouncementScreen(
                     },
                     onValueChange = { editAnnouncementViewModel.updateTitle(it) },
                     textStyle = MaterialTheme.typography.titleMedium,
+                    displayKeyboard = true
                 )
 
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
@@ -193,6 +194,7 @@ private fun EditAnnouncementScreenPreview() {
                         )
                     },
                     textStyle = MaterialTheme.typography.titleMedium,
+                    displayKeyboard = true
                 )
 
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))

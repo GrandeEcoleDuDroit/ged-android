@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -18,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -28,39 +28,40 @@ import com.upsaclay.common.domain.model.ElapsedTime
 import com.upsaclay.common.domain.usecase.GetElapsedTimeUseCase
 import com.upsaclay.common.domain.usecase.LocalDateTimeFormatterUseCase
 import com.upsaclay.common.presentation.components.ProfilePicture
+import com.upsaclay.common.presentation.theme.GedoiseColor
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.userFixture2
-import com.upsaclay.message.domain.model.ConversationItemData
+import com.upsaclay.message.domain.model.ConversationPreview
 import com.upsaclay.message.utils.messageFixture2
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ConversationItem(
     modifier: Modifier = Modifier,
-    conversationItemData: ConversationItemData,
+    conversationPreview: ConversationPreview,
     onClick: () -> Unit,
     onLongClick: () -> Unit
 ) {
     val getElapsedTimeUseCase = GetElapsedTimeUseCase()
     val localDateTimeFormatterUseCase = LocalDateTimeFormatterUseCase()
-    val elapsedTime = getElapsedTimeUseCase.fromLocalDateTime(conversationItemData.lastMessage.date)
+    val elapsedTime = getElapsedTimeUseCase.fromLocalDateTime(conversationPreview.lastMessage.date)
 
     val elapsedTimeValue: String = when(elapsedTime) {
         is ElapsedTime.Now -> stringResource(id = com.upsaclay.common.R.string.now)
 
         is ElapsedTime.Minute, is ElapsedTime.Hour ->
-            localDateTimeFormatterUseCase.formatHourMinute(conversationItemData.lastMessage.date)
+            localDateTimeFormatterUseCase.formatHourMinute(conversationPreview.lastMessage.date)
 
         is ElapsedTime.Day -> {
             if(elapsedTime.value == 1L) {
                 stringResource(id = com.upsaclay.common.R.string.yesterday)
             } else {
-                localDateTimeFormatterUseCase.formatDayMonthYear(conversationItemData.lastMessage.date)
+                localDateTimeFormatterUseCase.formatDayMonthYear(conversationPreview.lastMessage.date)
             }
         }
 
-        else -> localDateTimeFormatterUseCase.formatDayMonthYear(conversationItemData.lastMessage.date)
+        else -> localDateTimeFormatterUseCase.formatDayMonthYear(conversationPreview.lastMessage.date)
     }
 
     Row(
@@ -73,47 +74,56 @@ fun ConversationItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         ProfilePicture(
-            imageUrl = conversationItemData.interlocutor.profilePictureUrl,
+            imageUrl = conversationPreview.interlocutor.profilePictureUrl,
             scaleImage = 0.5f
         )
 
         Spacer(modifier = Modifier.width(MaterialTheme.spacing.smallMedium))
 
         Row(verticalAlignment = Alignment.Top) {
-            if (conversationItemData.isRead) {
+            if (conversationPreview.isRead) {
                 Column(modifier = Modifier.weight(1f)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            modifier = Modifier.weight(1f),
+                            text = conversationPreview.interlocutor.fullName,
+                            style = MaterialTheme.typography.bodyMedium,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+
+                        Spacer(modifier = Modifier.width(MaterialTheme.spacing.smallMedium))
+
+                        Text(
+                            text = elapsedTimeValue,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = GedoiseColor.PreviewText
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(2.dp))
+
                     Text(
-                        text = conversationItemData.interlocutor.fullName,
+                        text = conversationPreview.lastMessage.text,
                         style = MaterialTheme.typography.bodyMedium,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Text(
-                        text = conversationItemData.lastMessage.text,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Color.Gray,
+                        color = GedoiseColor.PreviewText,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
                 }
-                Text(
-                    text = elapsedTimeValue,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.Gray
-                )
             } else {
                 Column(modifier = Modifier.weight(1f)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             modifier = Modifier.weight(1f),
-                            text = conversationItemData.interlocutor.fullName,
+                            text = conversationPreview.interlocutor.fullName,
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.SemiBold,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
 
-                        Spacer(modifier = Modifier.size(MaterialTheme.spacing.smallMedium))
+                        Spacer(modifier = Modifier.width(MaterialTheme.spacing.smallMedium))
 
                         Text(
                             text = elapsedTimeValue,
@@ -121,16 +131,19 @@ fun ConversationItem(
                         )
                     }
 
+                    Spacer(modifier = Modifier.height(2.dp))
+
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             modifier = Modifier.weight(1f),
-                            text = conversationItemData.lastMessage.text,
+                            text = conversationPreview.lastMessage.text,
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.SemiBold,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
-                        Spacer(modifier = Modifier.size(MaterialTheme.spacing.smallMedium))
+
+                        Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))
 
                         Box(
                             modifier = Modifier
@@ -153,8 +166,27 @@ fun ConversationItem(
 
 @Preview(showBackground = true)
 @Composable
-private fun ConversationItemPreview() {
-    val conversationItemData = ConversationItemData(
+private fun ReadConversationItemPreview() {
+    val conversationPreview = ConversationPreview(
+        id = 1,
+        interlocutor = userFixture2,
+        lastMessage = messageFixture2,
+        isRead = true
+    )
+    GedoiseTheme {
+        ConversationItem(
+            modifier = Modifier.fillMaxWidth(),
+            conversationPreview = conversationPreview,
+            onClick = { },
+            onLongClick = { }
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun UnreadConversationItemPreview() {
+    val conversationPreview = ConversationPreview(
         id = 1,
         interlocutor = userFixture2,
         lastMessage = messageFixture2,
@@ -163,7 +195,7 @@ private fun ConversationItemPreview() {
     GedoiseTheme {
         ConversationItem(
             modifier = Modifier.fillMaxWidth(),
-            conversationItemData = conversationItemData,
+            conversationPreview = conversationPreview,
             onClick = { },
             onLongClick = { }
         )

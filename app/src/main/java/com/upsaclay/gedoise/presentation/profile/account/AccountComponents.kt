@@ -84,7 +84,7 @@ internal fun AccountInfoItem(
     ) {
         Text(
             text = accountInfo.label,
-            color = GedoiseColor.DarkGrey,
+            color = GedoiseColor.DarkGray,
             style = MaterialTheme.typography.labelLarge
         )
         Text(

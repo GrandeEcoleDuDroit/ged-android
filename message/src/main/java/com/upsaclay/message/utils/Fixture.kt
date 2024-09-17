@@ -3,13 +3,13 @@ package com.upsaclay.message.utils
 import com.upsaclay.common.utils.userFixture
 import com.upsaclay.common.utils.userFixture2
 import com.upsaclay.message.domain.model.Conversation
-import com.upsaclay.message.domain.model.ConversationItemData
+import com.upsaclay.message.domain.model.ConversationPreview
 import com.upsaclay.message.domain.model.Message
 import java.time.LocalDateTime
 
 val messageFixture = Message(
     id = 1,
-    text = "Je te rappelle",
+    text = "Salut, bien et toi ? Oui bien sûr.",
     date = LocalDateTime.of(2024, 7, 20, 10, 0),
     sender = userFixture
 )
@@ -23,11 +23,15 @@ val messageFixture2 = Message(
 
 val messagesFixture = listOf(
     messageFixture,
+    messageFixture.copy(text = "Yes"),
+    messageFixture,
     messageFixture2,
     messageFixture2,
     messageFixture2,
+    messageFixture2.copy(text = "T'es dispo ?"),
+    messageFixture,
     messageFixture2,
-    messageFixture2,
+    messageFixture,
     messageFixture2,
     messageFixture2,
     messageFixture2
@@ -35,7 +39,7 @@ val messagesFixture = listOf(
 
 val conversationFixture = Conversation(
     id = 1,
-    interlocutor = userFixture,
+    interlocutor = userFixture2,
     messages = messagesFixture
 )
 
@@ -50,19 +54,19 @@ val conversationsFixture = listOf(
     conversationFixture
 )
 
-val conversationItemDataFixture = ConversationItemData(
+val conversationPreviewFixture = ConversationPreview(
     id = 1,
     interlocutor = userFixture2,
     lastMessage = messageFixture2,
     isRead = true
 )
 
-val conversationsItemsDataFixture = listOf(
-    conversationItemDataFixture.copy(isRead = false),
-    conversationItemDataFixture,
-    conversationItemDataFixture,
-    conversationItemDataFixture,
-    conversationItemDataFixture,
-    conversationItemDataFixture,
-    conversationItemDataFixture
+val conversationsPreviewFixture = listOf(
+    conversationPreviewFixture.copy(isRead = false),
+    conversationPreviewFixture,
+    conversationPreviewFixture,
+    conversationPreviewFixture,
+    conversationPreviewFixture,
+    conversationPreviewFixture,
+    conversationPreviewFixture
 )

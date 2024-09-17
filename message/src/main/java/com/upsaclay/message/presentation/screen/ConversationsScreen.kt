@@ -10,7 +10,6 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -23,7 +22,7 @@ import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.message.R
 import com.upsaclay.message.presentation.components.ConversationItem
 import com.upsaclay.message.presentation.viewmodel.ConversationViewModel
-import com.upsaclay.message.utils.conversationsItemsDataFixture
+import com.upsaclay.message.utils.conversationsPreviewFixture
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -31,14 +30,14 @@ fun ConversationScreen(
     navController: NavController,
     conversationViewModel : ConversationViewModel = koinViewModel()
 ) {
-    val conversations = conversationViewModel.conversations.collectAsState(emptyList()).value
-
+//    val conversations = conversationViewModel.conversations.collectAsState(emptyList()).value
+    val conversations = conversationViewModel.conversations
     Box {
         LazyColumn {
             items(conversations) { conversation ->
                 ConversationItem(
                     modifier = Modifier.fillMaxWidth(),
-                    conversationItemData = conversation,
+                    conversationPreview = conversation,
                     onClick = {
                         navController.navigate(Screen.CHAT.route + "?conversationId=${conversation.id}")
                     },
@@ -50,15 +49,16 @@ fun ConversationScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(MaterialTheme.spacing.medium)
+                .padding(MaterialTheme.spacing.medium),
+            contentAlignment = Alignment.BottomEnd
         ) {
             FloatingActionButton(
-                modifier = Modifier.align(Alignment.BottomEnd),
                 onClick = { },
                 containerColor = MaterialTheme.colorScheme.primary
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_message_add),
+
                     contentDescription = stringResource(id = R.string.ic_message_add_description)
                 )
             }
@@ -74,13 +74,13 @@ fun ConversationScreen(
 
 @Preview(showBackground = true)
 @Composable
-private fun ConversationScreenPreview() {
+private fun ConversationsScreenPreview() {
     GedoiseTheme {
         LazyColumn {
-            items(conversationsItemsDataFixture) { conversation ->
+            items(conversationsPreviewFixture) { conversation ->
                 ConversationItem(
                     modifier = Modifier.fillMaxWidth(),
-                    conversationItemData = conversation,
+                    conversationPreview = conversation,
                     onClick = { },
                     onLongClick = { }
                 )

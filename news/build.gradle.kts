@@ -66,6 +66,7 @@ dependencies {
     implementation(libs.koin.androidx.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.animation.compose)
+    implementation(libs.jakewharton.timber)
 
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
@@ -80,7 +81,6 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    implementation(libs.jakewharton.timber)
 
     implementation(project(":common"))
 }

@@ -6,7 +6,7 @@ import com.upsaclay.news.domain.repository.AnnouncementRepository
 class GetAnnouncementUseCase(
     private val announcementRepository: AnnouncementRepository
 ) {
-    suspend operator fun invoke(id: Int): Announcement? {
-        return announcementRepository.getAnnouncement(id)
+    suspend operator fun invoke(announcementId: Int): Announcement? {
+        return announcementRepository.getAnnouncement(announcementId)
     }
 }

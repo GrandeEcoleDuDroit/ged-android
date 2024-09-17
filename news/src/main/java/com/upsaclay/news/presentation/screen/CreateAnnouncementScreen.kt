@@ -28,14 +28,14 @@ import androidx.navigation.NavController
 import com.upsaclay.common.domain.model.User
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.SmallTopBarEdit
+import com.upsaclay.common.presentation.components.TransparentFocusedTextField
+import com.upsaclay.common.presentation.components.TransparentTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.showToast
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.model.Announcement
 import com.upsaclay.news.domain.model.AnnouncementState
-import com.upsaclay.news.presentation.components.TransparentFocusedTextField
-import com.upsaclay.news.presentation.components.TransparentTextField
 import com.upsaclay.news.presentation.viewmodel.CreateAnnouncementViewModel
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDateTime
@@ -186,6 +186,7 @@ private fun CreateAnnouncementScreenPreview() {
                         )
                     },
                     textStyle = MaterialTheme.typography.titleMedium,
+                    displayKeyboard = true
                 )
 
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))

@@ -6,10 +6,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
+import androidx.navigation.NavType.Companion.IntType
 import androidx.navigation.NavType.Companion.StringType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -28,6 +28,9 @@ import com.upsaclay.gedoise.presentation.profile.ProfileScreen
 import com.upsaclay.gedoise.presentation.profile.account.AccountScreen
 import com.upsaclay.message.presentation.screen.ChatScreen
 import com.upsaclay.message.presentation.screen.ConversationScreen
+import com.upsaclay.message.presentation.screen.CreateConversationScreen
+import com.upsaclay.message.presentation.viewmodel.ChatViewModel
+import com.upsaclay.message.presentation.viewmodel.ConversationViewModel
 import com.upsaclay.news.domain.usecase.ConvertAnnouncementToJsonUseCase
 import com.upsaclay.news.presentation.screen.CreateAnnouncementScreen
 import com.upsaclay.news.presentation.screen.EditAnnouncementScreen
@@ -43,9 +46,12 @@ import org.koin.java.KoinJavaComponent.inject
 fun Navigation(mainViewModel: MainViewModel = koinViewModel()) {
     val navController = rememberNavController()
     val user = mainViewModel.user.collectAsState(null).value
-    val isAuthenticated by mainViewModel.isAuthenticated.collectAsState(false)
+    val isAuthenticated = mainViewModel.isAuthenticated.collectAsState(false).value
+
     val sharedRegistrationViewModel: RegistrationViewModel = koinViewModel()
     val sharedNewsViewModel: NewsViewModel = koinViewModel()
+    val sharedConversationViewModel: ConversationViewModel = koinViewModel()
+
     val convertAnnouncementToJsonUseCase: ConvertAnnouncementToJsonUseCase by inject(ConvertAnnouncementToJsonUseCase::class.java)
     val startDestination = if (isAuthenticated) {
         Screen.NEWS.route
@@ -137,6 +143,18 @@ fun Navigation(mainViewModel: MainViewModel = koinViewModel()) {
                 )
             } ?: navController.popBackStack()
         }
+        
+        composable(Screen.CREATE_ANNOUNCEMENT.route) {
+            SmallTopBarBack(
+                onBackClick = { navController.popBackStack() },
+                title = stringResource(id = com.upsaclay.message.R.string.create_conversation)
+            ) {
+                CreateConversationScreen(
+                    navController = navController,
+                    conversationViewModel = sharedConversationViewModel
+                )
+            }
+        }
 
         composable(Screen.CONVERSATIONS.route) {
             user?.let {
@@ -145,13 +163,23 @@ fun Navigation(mainViewModel: MainViewModel = koinViewModel()) {
                     bottomNavigationItems = mainViewModel.bottomNavigationItem.values.toList(),
                     user = user
                 ) {
-                    ConversationScreen(navController)
+                    ConversationScreen(
+                        navController = navController,
+                        conversationViewModel = sharedConversationViewModel
+                    )
                 }
             }
         }
 
-        composable(Screen.CHAT.route) {
-            ChatScreen(navController)
+        composable(
+            route = Screen.CHAT.route + "?conversationId={conversationId}",
+            arguments = listOf(navArgument("conversationId") { type = IntType })
+        ) { backStackEntry ->
+            val conversationId = backStackEntry.arguments?.getInt("conversationId")
+            val chatViewModel: ChatViewModel = koinViewModel(
+                parameters = { parametersOf(conversationId) }
+            )
+            ChatScreen(navController, chatViewModel)
         }
 
         composable(Screen.CALENDAR.route) {

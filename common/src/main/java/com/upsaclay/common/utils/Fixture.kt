@@ -21,3 +21,15 @@ val userFixture2 = User(
     false,
     "https://avatarfiles.alphacoders.com/330/330775.png"
 )
+
+val userFixtures = listOf(
+    userFixture,
+    userFixture,
+    userFixture,
+    userFixture,
+    userFixture2,
+    userFixture2,
+    userFixture2,
+    userFixture2,
+    userFixture2
+)

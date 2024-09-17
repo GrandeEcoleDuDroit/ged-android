@@ -31,21 +31,8 @@ internal class UserRepositoryImpl(
         }
     }
 
-    private suspend fun updateUserIfNeeded(localUser: User) {
-        userRemoteDataSource.getUser(localUser.id)
-            .onSuccess { remoteUser ->
-                remoteUser?.let {
-                    val shouldBeUpdated = remoteUser.profilePictureUrl != localUser.profilePictureUrl ||
-                            remoteUser.isMember != localUser.isMember ||
-                            remoteUser.schoolLevel != localUser.schoolLevel
-                    if(shouldBeUpdated) {
-                        userLocalDataSource.setUser(remoteUser)
-                    }
-                }
-            }
-            .onFailure { exception ->
-                e(exception.message ?: "Error retrieving remote user")
-            }
+    override suspend fun getAllUser(): List<User> {
+        TODO("Not yet implemented")
     }
 
     override suspend fun createUser(user: User): Result<Int> {
@@ -92,5 +79,22 @@ internal class UserRepositoryImpl(
             e(errorMessage)
             Result.failure(IOException(errorMessage))
         }
+    }
+
+    private suspend fun updateUserIfNeeded(localUser: User) {
+        userRemoteDataSource.getUser(localUser.id)
+            .onSuccess { remoteUser ->
+                remoteUser?.let {
+                    val shouldBeUpdated = remoteUser.profilePictureUrl != localUser.profilePictureUrl ||
+                            remoteUser.isMember != localUser.isMember ||
+                            remoteUser.schoolLevel != localUser.schoolLevel
+                    if(shouldBeUpdated) {
+                        userLocalDataSource.setUser(remoteUser)
+                    }
+                }
+            }
+            .onFailure { exception ->
+                e(exception.message ?: "Error retrieving remote user")
+            }
     }
 }

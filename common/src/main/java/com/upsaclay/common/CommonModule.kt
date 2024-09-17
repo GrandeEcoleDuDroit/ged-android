@@ -17,6 +17,7 @@ import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.ConvertLocalDateTimeUseCase
 import com.upsaclay.common.domain.usecase.ConvertTimestampUseCase
 import com.upsaclay.common.domain.usecase.DeleteUserProfilePictureUseCase
+import com.upsaclay.common.domain.usecase.GetAllUserUseCase
 import com.upsaclay.common.domain.usecase.GetDrawableUriUseCase
 import com.upsaclay.common.domain.usecase.GetElapsedTimeUseCase
 import com.upsaclay.common.domain.usecase.GetUserUseCase
@@ -74,6 +75,7 @@ val coreModule = module {
     singleOf(::ConvertLocalDateTimeUseCase)
     singleOf(::ConvertTimestampUseCase)
     singleOf(::DeleteUserProfilePictureUseCase)
+    singleOf(::GetAllUserUseCase)
     singleOf(::GetDrawableUriUseCase)
     singleOf(::GetElapsedTimeUseCase)
     singleOf(::GetUserUseCase)

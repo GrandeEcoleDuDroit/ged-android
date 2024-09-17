@@ -13,7 +13,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,6 +21,7 @@ import com.upsaclay.common.domain.model.ElapsedTime
 import com.upsaclay.common.domain.usecase.GetElapsedTimeUseCase
 import com.upsaclay.common.domain.usecase.LocalDateTimeFormatterUseCase
 import com.upsaclay.common.presentation.components.ProfilePicture
+import com.upsaclay.common.presentation.theme.GedoiseColor
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.news.announcementFixture
@@ -76,7 +76,7 @@ internal fun AnnouncementItem(
         Text(
             text = elapsedTimeValue,
             style = MaterialTheme.typography.bodyMedium,
-            color = Color.Gray
+            color = GedoiseColor.PreviewText
         )
     }
 }
@@ -134,7 +134,7 @@ internal fun AnnouncementItemWithTitle(
                 Text(
                     text = elapsedTimeValue,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Gray,
+                    color = GedoiseColor.PreviewText,
                 )
             }
 
@@ -142,7 +142,7 @@ internal fun AnnouncementItemWithTitle(
 
             Text(
                 text = announcement.title ?: announcement.content,
-                color = Color.Gray,
+                color = GedoiseColor.PreviewText,
                 style = MaterialTheme.typography.bodyMedium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
