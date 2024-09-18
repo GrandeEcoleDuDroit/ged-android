@@ -8,7 +8,6 @@ import com.upsaclay.common.domain.model.User
 import com.upsaclay.common.domain.usecase.GetUserUseCase
 import com.upsaclay.message.domain.model.Conversation
 import com.upsaclay.message.domain.usecase.GetConversationUseCase
-import com.upsaclay.message.utils.conversationFixture
 import kotlinx.coroutines.flow.Flow
 
 class ChatViewModel(
@@ -16,9 +15,8 @@ class ChatViewModel(
     getUserUseCase: GetUserUseCase,
     conversationId: Int
 ): ViewModel() {
-//    val conversation: Flow<Conversation> = getConversationUseCase(conversationId)
-    val conversation: Conversation = conversationFixture
-    val user: Flow<User> = getUserUseCase()
+    val conversation: Flow<Conversation> = getConversationUseCase(conversationId)
+    val currentUser: Flow<User> = getUserUseCase()
     var text: String by mutableStateOf("")
         private set
 

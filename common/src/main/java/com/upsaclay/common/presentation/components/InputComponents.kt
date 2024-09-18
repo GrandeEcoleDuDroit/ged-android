@@ -93,7 +93,7 @@ fun TransparentFocusedTextField(
     placeholder: @Composable (() -> Unit),
     textStyle: TextStyle = TextStyle.Default,
     backgroundColor: Color = MaterialTheme.colorScheme.background,
-    padding: Dp = MaterialTheme.spacing.default,
+    padding: PaddingValues = PaddingValues(MaterialTheme.spacing.default),
     shape: Shape = TextFieldDefaults.shape,
     displayKeyboard: Boolean = false
 ) {
@@ -122,7 +122,7 @@ fun TransparentFocusedTextField(
                 .focusRequester(focusRequester)
                 .clip(shape)
                 .background(backgroundColor)
-                .padding(padding)
+                .padding()
         } else {
             modifier
                 .clip(shape)

@@ -1,7 +1,6 @@
 package com.upsaclay.message.presentation.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -18,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.theme.GedoiseColor
 import com.upsaclay.common.presentation.theme.GedoiseTheme
@@ -51,11 +49,7 @@ fun ReceiveMessageItem(
     message: Message,
     displayProfilePicture: Boolean
 ) {
-    val backgroundColor = if(isSystemInDarkTheme()) {
-        GedoiseColor.DarkGray
-    } else {
-        GedoiseColor.LightGray
-    }
+    val backgroundColor = if(isSystemInDarkTheme()) GedoiseColor.DarkGray else GedoiseColor.LightGray
 
     Row(
         modifier = modifier.fillMaxWidth(0.8f),
@@ -68,9 +62,8 @@ fun ReceiveMessageItem(
         Spacer(modifier = Modifier.width(MaterialTheme.spacing.small))
 
         MessageText(
-            modifier = Modifier.border(1.dp, GedoiseColor.Gray, RoundedCornerShape(MaterialTheme.spacing.large)),
             text = message.text,
-//            backgroundColor = backgroundColor
+            backgroundColor = backgroundColor
         )
     }
 }
