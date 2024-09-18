@@ -122,7 +122,7 @@ fun TransparentFocusedTextField(
                 .focusRequester(focusRequester)
                 .clip(shape)
                 .background(backgroundColor)
-                .padding()
+                .padding(padding)
         } else {
             modifier
                 .clip(shape)
