@@ -14,11 +14,14 @@ import org.koin.dsl.module
 
 val messageModule = module {
     viewModelOf(::ConversationViewModel)
-    viewModel { (conversationId: Int) ->
+    viewModel { (conversationId: String, interlocutorId: Int?) ->
         ChatViewModel(
+            conversationId = conversationId,
+            interlocutorId = interlocutorId,
             getConversationUseCase = get(),
+            getCurrentUserUseCase = get(),
             getUserUseCase = get(),
-            conversationId = conversationId
+            sendMessageUseCase = get()
         )
     }
 

@@ -126,10 +126,10 @@ private fun RecentAnnouncementSection(
                 item {
                     Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
                     Text(
+                        modifier = Modifier.fillMaxWidth(),
                         text = stringResource(id = R.string.no_announcements),
                         style = MaterialTheme.typography.bodyLarge,
                         color = Color.Gray,
-                        modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center
                     )
                 }

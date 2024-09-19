@@ -6,7 +6,7 @@ import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
 
-internal interface ParisSaclayAuthenticationApi {
+internal interface AuthenticationParisSaclayApi {
     @FormUrlEncoded
     @POST("/v1/auth/signin")
     suspend fun login(

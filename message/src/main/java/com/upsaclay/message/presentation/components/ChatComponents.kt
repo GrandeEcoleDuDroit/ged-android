@@ -88,6 +88,7 @@ private fun MessageText(
         color = textColor
     )
 }
+
 /*
  =====================================================================
                                 Preview

@@ -8,14 +8,14 @@ import com.upsaclay.message.domain.model.Message
 import java.time.LocalDateTime
 
 val messageFixture = Message(
-    id = 1,
+    id = "1",
     text = "Salut, bien et toi ? Oui bien sûr.",
     date = LocalDateTime.of(2024, 7, 20, 10, 0),
     sender = userFixture
 )
 
 val messageFixture2 = Message(
-    id = 2,
+    id = "2",
     text = "Salut ça va ? Cela fait longtemps que j'attend de te parler. Pourrait-on se voir ?",
     date = LocalDateTime.now(),
     sender = userFixture2
@@ -38,7 +38,7 @@ val messagesFixture = listOf(
 )
 
 val conversationFixture = Conversation(
-    id = 1,
+    id = "1",
     interlocutor = userFixture2,
     messages = messagesFixture
 )
@@ -55,7 +55,7 @@ val conversationsFixture = listOf(
 )
 
 val conversationPreviewFixture = ConversationPreview(
-    id = 1,
+    id = "1",
     interlocutor = userFixture2,
     lastMessage = messageFixture2,
     isRead = true

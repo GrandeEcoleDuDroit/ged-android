@@ -19,7 +19,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -234,7 +233,6 @@ private fun BottomSection(
                 contentPadding = PaddingValues(MaterialTheme.spacing.default),
                 modifier = Modifier.height(MaterialTheme.spacing.large),
                 onClick = onRegistrationClick,
-                shape = ShapeDefaults.ExtraSmall
             ) {
                 Text(
                     text = stringResource(id = R.string.sign_up),

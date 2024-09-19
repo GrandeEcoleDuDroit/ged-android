@@ -3,7 +3,7 @@ package com.upsaclay.message.domain.model
 import com.upsaclay.common.domain.model.User
 
 data class Conversation(
-    val id: Int,
+    val id: String = "",
     val interlocutor: User,
     val messages: List<Message>
 )

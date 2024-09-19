@@ -11,7 +11,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 
-internal interface AnnouncementApi {
+internal interface AnnouncementRetrofitApi {
     @GET("announcements")
     suspend fun getAllAnnouncement(): Response<List<AnnouncementRemoteWithUser>>
 

@@ -9,7 +9,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
-import androidx.navigation.NavType.Companion.IntType
 import androidx.navigation.NavType.Companion.StringType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -171,11 +170,23 @@ fun Navigation(mainViewModel: MainViewModel = koinViewModel()) {
             }
         }
 
+        composable(Screen.CREATE_CONVERSATION.route) {
+            SmallTopBarBack(
+                onBackClick = { navController.popBackStack() },
+                title = stringResource(id = com.upsaclay.message.R.string.create_conversation)
+            ) {
+                CreateConversationScreen(
+                    navController = navController,
+                    conversationViewModel = sharedConversationViewModel
+                )
+            }
+        }
+
         composable(
             route = Screen.CHAT.route + "?conversationId={conversationId}",
-            arguments = listOf(navArgument("conversationId") { type = IntType })
+            arguments = listOf(navArgument("conversationId") { type = StringType })
         ) { backStackEntry ->
-            val conversationId = backStackEntry.arguments?.getInt("conversationId")
+            val conversationId = backStackEntry.arguments?.getString("conversationId")
             val chatViewModel: ChatViewModel = koinViewModel(
                 parameters = { parametersOf(conversationId) }
             )

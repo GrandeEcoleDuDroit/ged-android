@@ -2,7 +2,7 @@ package com.upsaclay.news.data.remote
 
 import com.upsaclay.common.utils.formatHttpError
 import com.upsaclay.common.utils.i
-import com.upsaclay.news.data.remote.api.AnnouncementApi
+import com.upsaclay.news.data.remote.api.AnnouncementRetrofitApi
 import com.upsaclay.news.data.remote.model.RemoteAnnouncement
 import com.upsaclay.news.domain.model.Announcement
 import kotlinx.coroutines.Dispatchers
@@ -11,12 +11,12 @@ import timber.log.Timber.Forest.e
 import java.io.IOException
 
 internal class AnnouncementRemoteDataSource(
-    private val announcementApi: AnnouncementApi
+    private val announcementRetrofitApi: AnnouncementRetrofitApi
 ) {
     suspend fun getAllAnnouncement(): List<Announcement> = withContext(Dispatchers.IO) {
         try {
             i("Retrieving all remote announcements...")
-            val response = announcementApi.getAllAnnouncement()
+            val response = announcementRetrofitApi.getAllAnnouncement()
             if(response.isSuccessful) {
                 val announcementsWithUserDTO = response.body().takeIf {
                     it != null
@@ -37,7 +37,7 @@ internal class AnnouncementRemoteDataSource(
     suspend fun createAnnouncement(announcement: Announcement): Result<Int> = withContext(Dispatchers.IO) {
         try {
             val remoteAnnouncement = RemoteAnnouncement.fromDomain(announcement)
-            val response = announcementApi.createAnnouncement(remoteAnnouncement)
+            val response = announcementRetrofitApi.createAnnouncement(remoteAnnouncement)
             if(response.isSuccessful) {
                 val announcementId = response.body()?.data
 
@@ -62,7 +62,7 @@ internal class AnnouncementRemoteDataSource(
 
     suspend fun deleteAnnouncement(id: Int): Result<Unit> = withContext(Dispatchers.IO) {
         try {
-            val response = announcementApi.deleteAnnouncement(id)
+            val response = announcementRetrofitApi.deleteAnnouncement(id)
             if(response.isSuccessful) {
                 Result.success(Unit)
             } else {
@@ -79,7 +79,7 @@ internal class AnnouncementRemoteDataSource(
     suspend fun updateAnnouncement(announcement: Announcement): Result<Unit> = withContext(Dispatchers.IO) {
         try {
             val remoteAnnouncement = RemoteAnnouncement.fromDomain(announcement)
-            val response = announcementApi.updateAnnouncement(remoteAnnouncement)
+            val response = announcementRetrofitApi.updateAnnouncement(remoteAnnouncement)
             if(response.isSuccessful) {
                 Result.success(Unit)
             } else {

@@ -19,19 +19,28 @@ internal class UserRepositoryImpl(
     private val userRemoteDataSource: UserRemoteDataSource,
     private val userLocalDataSource: UserLocalDataSource
 ): UserRepository {
-    private val _user = MutableStateFlow<User?>(null)
-    override val user: Flow<User> = _user.filterNotNull()
+    private val _currentUser = MutableStateFlow<User?>(null)
+    override val currentUserFlow: Flow<User> = _currentUser.filterNotNull()
+    override val currentUser: User? = _currentUser.value
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
-            userLocalDataSource.getUser().collect { user ->
-                _user.value = user
-                updateUserIfNeeded(user)
+            launch {
+                userLocalDataSource.getCurrentUserFlow().collect { user ->
+                    _currentUser.value = user
+                }
+            }
+            launch {
+                refreshUser()
             }
         }
     }
 
     override suspend fun getAllUser(): List<User> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getUser(userId: Int): User? {
         TODO("Not yet implemented")
     }
 
@@ -81,20 +90,23 @@ internal class UserRepositoryImpl(
         }
     }
 
-    private suspend fun updateUserIfNeeded(localUser: User) {
-        userRemoteDataSource.getUser(localUser.id)
-            .onSuccess { remoteUser ->
-                remoteUser?.let {
-                    val shouldBeUpdated = remoteUser.profilePictureUrl != localUser.profilePictureUrl ||
-                            remoteUser.isMember != localUser.isMember ||
-                            remoteUser.schoolLevel != localUser.schoolLevel
-                    if(shouldBeUpdated) {
-                        userLocalDataSource.setUser(remoteUser)
+    private suspend fun refreshUser() {
+        userLocalDataSource.getCurrentUser()?.let { localUser ->
+            userRemoteDataSource.getUser(localUser.id)
+                .onSuccess { remoteUser ->
+                    remoteUser?.let {
+                        val shouldBeUpdated =
+                            remoteUser.profilePictureUrl != localUser.profilePictureUrl ||
+                                    remoteUser.isMember != localUser.isMember ||
+                                    remoteUser.schoolLevel != localUser.schoolLevel
+                        if (shouldBeUpdated) {
+                            userLocalDataSource.setUser(remoteUser)
+                        }
                     }
                 }
-            }
-            .onFailure { exception ->
-                e(exception.message ?: "Error retrieving remote user")
-            }
+                .onFailure { exception ->
+                    e(exception.message ?: "Error retrieving remote user")
+                }
+        }
     }
 }

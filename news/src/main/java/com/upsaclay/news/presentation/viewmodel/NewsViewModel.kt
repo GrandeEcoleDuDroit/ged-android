@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upsaclay.common.domain.model.User
-import com.upsaclay.common.domain.usecase.GetUserUseCase
+import com.upsaclay.common.domain.usecase.GetCurrentUserFlowUseCase
 import com.upsaclay.news.domain.model.Announcement
 import com.upsaclay.news.domain.model.AnnouncementState
 import com.upsaclay.news.domain.usecase.ConvertAnnouncementToJsonUseCase
@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 
 class NewsViewModel(
     getAllAnnouncementUseCase: GetAllAnnouncementsUseCase,
-    getUserUseCase: GetUserUseCase,
+    getCurrentUserFlowUseCase: GetCurrentUserFlowUseCase,
     private val refreshAnnouncementsUseCase: RefreshAnnouncementsUseCase,
     private val deleteAnnouncementUseCase: DeleteAnnouncementUseCase,
     private val convertAnnouncementToJsonUseCase: ConvertAnnouncementToJsonUseCase,
@@ -30,7 +30,7 @@ class NewsViewModel(
     private val _announcementState = MutableStateFlow(AnnouncementState.DEFAULT)
     val announcementState: Flow<AnnouncementState> = _announcementState
     val announcements: Flow<List<Announcement>> = getAllAnnouncementUseCase()
-    val user: Flow<User?> = getUserUseCase()
+    val user: Flow<User?> = getCurrentUserFlowUseCase()
     var displayedAnnouncement: Announcement? = null
         private set
     var isRefreshing by mutableStateOf(false)

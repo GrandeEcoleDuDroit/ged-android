@@ -7,6 +7,6 @@ import kotlinx.coroutines.flow.Flow
 class GetConversationUseCase(
     private val conversationRepository: ConversationRepository
 ) {
-    operator fun invoke(conversationId: Int): Flow<Conversation> =
+    operator fun invoke(conversationId: String): Flow<Conversation> =
         conversationRepository.getConversation(conversationId)
 }

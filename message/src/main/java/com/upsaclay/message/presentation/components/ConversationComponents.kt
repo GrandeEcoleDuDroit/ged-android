@@ -168,7 +168,7 @@ fun ConversationItem(
 @Composable
 private fun ReadConversationItemPreview() {
     val conversationPreview = ConversationPreview(
-        id = 1,
+        id = "1",
         interlocutor = userFixture2,
         lastMessage = messageFixture2,
         isRead = true
@@ -187,7 +187,7 @@ private fun ReadConversationItemPreview() {
 @Composable
 private fun UnreadConversationItemPreview() {
     val conversationPreview = ConversationPreview(
-        id = 1,
+        id = "1",
         interlocutor = userFixture2,
         lastMessage = messageFixture2,
         isRead = false

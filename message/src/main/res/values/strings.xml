@@ -5,5 +5,8 @@
     <string name="ic_add_description">Ouvrir le pannel des floating boutons</string>
     
     <string name="create_conversation">Créer une conversation</string>
+    <string name="new_conversation">Nouvelle conversation</string>
+    <string name="no_conversation">Commencez une nouvelle discussion avec vos amis.</string>
     <string name="message_placeholder">Message</string>
+    <string name="send_message_icon_description">Envoyer un message</string>
 </resources>

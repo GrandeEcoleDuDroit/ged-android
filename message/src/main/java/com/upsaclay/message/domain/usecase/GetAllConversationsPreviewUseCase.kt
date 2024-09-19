@@ -7,5 +7,6 @@ import kotlinx.coroutines.flow.Flow
 class GetAllConversationsPreviewUseCase(
     private val conversationRepository: ConversationRepository
 ) {
-    operator fun invoke(): Flow<List<ConversationPreview>> = conversationRepository.conversationsPreview
+    operator fun invoke(): Flow<List<ConversationPreview>> =
+        conversationRepository.conversationsPreview
 }

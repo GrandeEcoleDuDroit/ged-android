@@ -3,8 +3,8 @@ package com.upsaclay.common.domain.usecase
 import com.upsaclay.common.domain.model.User
 import com.upsaclay.common.domain.repository.UserRepository
 
-class GetUserUseCase(
+class GetCurrentUserUseCase(
     private val userRepository: UserRepository
 ) {
-    suspend operator fun invoke(userId: Int): User? = userRepository.getUser(userId)
+    operator fun invoke(): User? = userRepository.currentUser
 }

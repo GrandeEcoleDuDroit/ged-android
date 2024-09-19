@@ -4,9 +4,12 @@ import com.upsaclay.common.domain.model.User
 import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
-    val user: Flow<User>
+    val currentUserFlow: Flow<User>
+    val currentUser: User?
 
     suspend fun getAllUser(): List<User>
+
+    suspend fun getUser(userId: Int): User?
 
     suspend fun createUser(user: User): Result<Int>
 

@@ -9,7 +9,7 @@ import kotlinx.coroutines.withContext
 import java.io.IOException
 
 internal class AuthenticationRemoteDataSource(
-    private val parisSaclayAuthenticationApi: ParisSaclayAuthenticationApi,
+    private val authenticationParisSaclayApi: AuthenticationParisSaclayApi,
     private val generateHashUseCase: GenerateHashUseCase
 ) {
     suspend fun login(
@@ -19,7 +19,7 @@ internal class AuthenticationRemoteDataSource(
         i("Logging in with Paris-Saclay...")
         val hash = generateHashUseCase()
         try {
-            val response = parisSaclayAuthenticationApi.login(email, password, hash)
+            val response = authenticationParisSaclayApi.login(email, password, hash)
             if (response.isSuccessful) {
                 Result.success(Unit)
             } else {

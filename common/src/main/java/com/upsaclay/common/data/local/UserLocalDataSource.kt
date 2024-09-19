@@ -7,21 +7,23 @@ import kotlinx.coroutines.flow.mapNotNull
 
 internal class UserLocalDataSource(private val userDataStore: UserDataStore) {
 
-    fun getUser(): Flow<User> = userDataStore.getUserFlow().mapNotNull { it?.toDomain() }
+    fun getCurrentUserFlow(): Flow<User> = userDataStore.getCurrentUserFlow().mapNotNull { it?.toDomain() }
+
+    suspend fun getCurrentUser(): User? = userDataStore.getCurrentUser()?.toDomain()
 
     suspend fun setUser(user: User) {
-        userDataStore.storeUser(UserDTO.fromDomain(user))
+        userDataStore.storeCurrentUser(UserDTO.fromDomain(user))
     }
 
     suspend fun updateProfilePictureUrl(profilePictureUrl: String) {
-        userDataStore.getUser()?.let { userDTO ->
-            userDataStore.storeUser(userDTO.copy(userProfilePictureUrl = profilePictureUrl))
+        userDataStore.getCurrentUser()?.let { userDTO ->
+            userDataStore.storeCurrentUser(userDTO.copy(userProfilePictureUrl = profilePictureUrl))
         }
     }
 
     suspend fun deleteProfilePictureUrl() {
-        userDataStore.getUser()?.let { userDTO ->
-            userDataStore.storeUser(userDTO.copy(userProfilePictureUrl = null))
+        userDataStore.getCurrentUser()?.let { userDTO ->
+            userDataStore.storeCurrentUser(userDTO.copy(userProfilePictureUrl = null))
         }
     }
 }

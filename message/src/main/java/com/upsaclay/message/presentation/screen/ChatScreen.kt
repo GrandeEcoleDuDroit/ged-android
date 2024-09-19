@@ -2,11 +2,9 @@ package com.upsaclay.message.presentation.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -55,45 +53,75 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun ChatScreen(
     navController: NavController,
-    chatViewModel: ChatViewModel = koinViewModel(),
+    chatViewModel: ChatViewModel = koinViewModel()
 ) {
     val conversation = chatViewModel.conversation.collectAsState(initial = null).value
-    val currentUser = chatViewModel.currentUser.collectAsState(initial = null).value
+    val currentUser = chatViewModel.currentUser
     val text = chatViewModel.text
 
     conversation?.let {
         currentUser?.let {
             Scaffold(
                 topBar = {
-                    ChatTopBar(navController = navController, interlocutor = conversation.interlocutor)
+                    ChatTopBar(
+                        navController = navController,
+                        interlocutor = conversation.interlocutor
+                    )
                 }
             ) { innerPadding ->
-                Column(
-                    modifier = Modifier.padding(
-                        top = innerPadding.calculateTopPadding(),
-                        start = MaterialTheme.spacing.medium,
-                        end = MaterialTheme.spacing.medium,
-                        bottom = MaterialTheme.spacing.small
-                    )
-                ) {
-                    MessageSection(
-                        modifier = Modifier.weight(1f),
-                        messages = conversation.messages,
-                        currentUser = currentUser
-                    )
-
-                    TransparentFocusedTextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        defaultValue = text,
-                        onValueChange = { chatViewModel.updateText(it) },
-                        placeholder = { Text(text = stringResource(id = R.string.message_placeholder)) },
-                        backgroundColor = GedoiseColor.LightGray,
-                        shape = ShapeDefaults.ExtraLarge,
-                        padding = PaddingValues(
-                            vertical = MaterialTheme.spacing.smallMedium,
-                            horizontal = MaterialTheme.spacing.medium
+                Column {
+                    Column(
+                        modifier = Modifier.padding(
+                            top = innerPadding.calculateTopPadding(),
+                            start = MaterialTheme.spacing.medium,
+                            end = MaterialTheme.spacing.medium,
+                            bottom = MaterialTheme.spacing.small
                         )
-                    )
+                    ) {
+                        MessageSection(
+                            modifier = Modifier.weight(1f),
+                            messages = conversation.messages,
+                            currentUser = currentUser
+                        )
+
+                        Row(
+                            modifier = Modifier.padding(top = MaterialTheme.spacing.small),
+                            verticalAlignment = Alignment.Bottom
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .clip(ShapeDefaults.ExtraLarge)
+                                    .background(GedoiseColor.LightGray)
+                                    .weight(1f)
+                                    .padding(horizontal = MaterialTheme.spacing.medium)
+                            ) {
+                                TransparentFocusedTextField(
+                                    modifier = Modifier.padding(vertical = MaterialTheme.spacing.smallMedium),
+                                    defaultValue = text,
+                                    onValueChange = { chatViewModel.updateText(it) },
+                                    placeholder = { Text(text = stringResource(id = R.string.message_placeholder)) },
+                                    backgroundColor = GedoiseColor.LightGray
+                                )
+                            }
+
+                            IconButton(
+                                onClick = { chatViewModel.sendMessage() },
+                                colors = IconButtonColors(
+                                    containerColor = MaterialTheme.colorScheme.primary,
+                                    contentColor = Color.White,
+                                    disabledContainerColor = IconButtonDefaults.iconButtonColors().disabledContainerColor,
+                                    disabledContentColor = IconButtonDefaults.iconButtonColors().disabledContentColor
+                                ),
+                                enabled = text.isNotBlank()
+                            ) {
+                                Icon(
+                                    modifier = Modifier.scale(0.8f),
+                                    imageVector = Icons.AutoMirrored.Filled.Send,
+                                    contentDescription = stringResource(id = R.string.send_message_icon_description)
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -150,13 +178,12 @@ private fun ChatScreenPreview() {
         ) { innerPadding ->
             Column {
                 Column(
-                    modifier = Modifier
-                        .padding(
-                            top = innerPadding.calculateTopPadding(),
-                            start = MaterialTheme.spacing.medium,
-                            end = MaterialTheme.spacing.medium,
-                            bottom = MaterialTheme.spacing.small
-                        )
+                    modifier = Modifier.padding(
+                        top = innerPadding.calculateTopPadding(),
+                        start = MaterialTheme.spacing.medium,
+                        end = MaterialTheme.spacing.medium,
+                        bottom = MaterialTheme.spacing.small
+                    )
                 ) {
                     MessageSection(
                         modifier = Modifier.weight(1f),
@@ -179,19 +206,20 @@ private fun ChatScreenPreview() {
                                 modifier = Modifier.padding(vertical = MaterialTheme.spacing.smallMedium),
                                 defaultValue = text,
                                 onValueChange = { text = it },
-                                placeholder = { Text("Message") },
+                                placeholder = { Text(stringResource(id = R.string.message_placeholder)) },
                                 backgroundColor = GedoiseColor.LightGray
                             )
                         }
 
                         IconButton(
-                            onClick = { },
+                            onClick = {  },
                             colors = IconButtonColors(
                                 containerColor = MaterialTheme.colorScheme.primary,
                                 contentColor = Color.White,
                                 disabledContainerColor = IconButtonDefaults.iconButtonColors().disabledContainerColor,
                                 disabledContentColor = IconButtonDefaults.iconButtonColors().disabledContentColor
-                            )
+                            ),
+                            enabled = text.isNotBlank()
                         ) {
                             Icon(
                                 modifier = Modifier.scale(0.8f),

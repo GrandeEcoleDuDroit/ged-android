@@ -38,6 +38,10 @@ android {
     kotlinOptions {
         jvmTarget = "19"
     }
+
+    packaging {
+        resources.excludes.add("META-INF/*")
+    }
 }
 
 dependencies {
