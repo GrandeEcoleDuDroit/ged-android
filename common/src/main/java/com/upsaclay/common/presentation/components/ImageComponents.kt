@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -25,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.upsaclay.common.R
+import com.upsaclay.common.presentation.theme.GedoiseColor
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.spacing
 
@@ -78,35 +80,15 @@ fun ProfilePictureWithIcon(
 fun ProfilePicture(
     modifier: Modifier = Modifier,
     scaleImage: Float = 1f,
-    imageUri: Uri?,
-    onClick: (() -> Unit)? = null
-) {
-    AsyncImage(
-        model = imageUri ?: R.drawable.default_profile_picture,
-        contentDescription = "",
-        contentScale = ContentScale.Crop,
-        modifier = onClick?.let {
-            modifier
-                .size(100.dp * scaleImage)
-                .clip(CircleShape)
-                .border(1.dp, Color.LightGray, CircleShape)
-                .clickable(onClick = it)
-        } ?: run {
-            modifier
-                .size(100.dp * scaleImage)
-                .clip(CircleShape)
-                .border(1.dp, Color.LightGray, CircleShape)
-        }
-    )
-}
-
-@Composable
-fun ProfilePicture(
-    modifier: Modifier = Modifier,
-    scaleImage: Float = 1f,
     imageUrl: String?,
     onClick: (() -> Unit)? = null
 ) {
+    val borderColor = if(isSystemInDarkTheme()) {
+        GedoiseColor.DarkGray
+    } else {
+        Color.LightGray
+    }
+
     AsyncImage(
         model = imageUrl ?: R.drawable.default_profile_picture,
         contentDescription = "",
@@ -115,13 +97,45 @@ fun ProfilePicture(
             modifier
                 .size(100.dp * scaleImage)
                 .clip(CircleShape)
-                .border(1.dp, Color.LightGray, CircleShape)
+                .border(1.dp, borderColor, CircleShape)
                 .clickable(onClick = it)
         } ?: run {
             modifier
                 .size(100.dp * scaleImage)
                 .clip(CircleShape)
-                .border(1.dp, Color.LightGray, CircleShape)
+                .border(1.dp, borderColor, CircleShape)
+        }
+    )
+}
+
+@Composable
+fun ProfilePicture(
+    modifier: Modifier = Modifier,
+    scaleImage: Float = 1f,
+    imageUri: Uri?,
+    onClick: (() -> Unit)? = null
+) {
+    val borderColor = if(isSystemInDarkTheme()) {
+        GedoiseColor.DarkGray
+    } else {
+        Color.LightGray
+    }
+
+    AsyncImage(
+        model = imageUri ?: R.drawable.default_profile_picture,
+        contentDescription = "",
+        contentScale = ContentScale.Crop,
+        modifier = onClick?.let {
+            modifier
+                .size(100.dp * scaleImage)
+                .clip(CircleShape)
+                .border(1.dp, borderColor, CircleShape)
+                .clickable(onClick = it)
+        } ?: run {
+            modifier
+                .size(100.dp * scaleImage)
+                .clip(CircleShape)
+                .border(1.dp, borderColor, CircleShape)
         }
     )
 }
@@ -137,6 +151,12 @@ private fun ImageWithIcon(
     contentDescription: String,
     onClick: (() -> Unit)?
 ) {
+    val borderColor = if(isSystemInDarkTheme()) {
+        GedoiseColor.DarkGray
+    } else {
+        Color.LightGray
+    }
+
     Box(modifier = modifier.size(100.dp * scale)) {
         AsyncImage(
             model = model,
@@ -147,14 +167,14 @@ private fun ImageWithIcon(
                     .align(Alignment.Center)
                     .size(100.dp * scale)
                     .clip(CircleShape)
-                    .border(1.dp, Color.LightGray, CircleShape)
+                    .border(1.dp, borderColor, CircleShape)
                     .clickable(onClick = it)
             } ?: run {
                 Modifier
                     .align(Alignment.Center)
                     .size(100.dp * scale)
                     .clip(CircleShape)
-                    .border(1.dp, Color.LightGray, CircleShape)
+                    .border(1.dp, borderColor, CircleShape)
             }
         )
 
@@ -186,6 +206,12 @@ private fun ImageWithIcon(
         }
     }
 }
+
+/*
+ =====================================================================
+                                Preview
+ =====================================================================
+ */
 
 @Preview
 @Composable

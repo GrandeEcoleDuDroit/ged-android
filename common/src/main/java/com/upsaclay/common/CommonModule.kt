@@ -4,8 +4,8 @@ import com.upsaclay.common.data.local.UserDataStore
 import com.upsaclay.common.data.local.UserLocalDataSource
 import com.upsaclay.common.data.remote.ImageRemoteDataSource
 import com.upsaclay.common.data.remote.UserRemoteDataSource
-import com.upsaclay.common.data.remote.api.ImageRemoteApi
-import com.upsaclay.common.data.remote.api.UserRemoteApi
+import com.upsaclay.common.data.remote.api.ImageRetrofitApi
+import com.upsaclay.common.data.remote.api.UserRetrofitApi
 import com.upsaclay.common.data.repository.DrawableRepositoryImpl
 import com.upsaclay.common.data.repository.FileRepositoryImpl
 import com.upsaclay.common.data.repository.ImageRepositoryImpl
@@ -17,9 +17,10 @@ import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.ConvertLocalDateTimeUseCase
 import com.upsaclay.common.domain.usecase.ConvertTimestampUseCase
 import com.upsaclay.common.domain.usecase.DeleteUserProfilePictureUseCase
+import com.upsaclay.common.domain.usecase.GetAllUserUseCase
 import com.upsaclay.common.domain.usecase.GetDrawableUriUseCase
 import com.upsaclay.common.domain.usecase.GetElapsedTimeUseCase
-import com.upsaclay.common.domain.usecase.GetUserUseCase
+import com.upsaclay.common.domain.usecase.GetCurrentUserFlowUseCase
 import com.upsaclay.common.domain.usecase.UpdateUserProfilePictureUseCase
 import okhttp3.OkHttpClient
 import org.koin.core.module.dsl.bind
@@ -53,11 +54,11 @@ val coreModule = module {
     }
 
     single {
-        get<Retrofit>(qualifier = named(SERVER_1_RETROFIT_QUALIFIER)).create(ImageRemoteApi::class.java)
+        get<Retrofit>(qualifier = named(SERVER_1_RETROFIT_QUALIFIER)).create(ImageRetrofitApi::class.java)
     }
 
     single {
-        get<Retrofit>(qualifier = named(SERVER_1_RETROFIT_QUALIFIER)).create(UserRemoteApi::class.java)
+        get<Retrofit>(qualifier = named(SERVER_1_RETROFIT_QUALIFIER)).create(UserRetrofitApi::class.java)
     }
 
     singleOf(::DrawableRepositoryImpl) { bind<DrawableRepository>() }
@@ -74,8 +75,9 @@ val coreModule = module {
     singleOf(::ConvertLocalDateTimeUseCase)
     singleOf(::ConvertTimestampUseCase)
     singleOf(::DeleteUserProfilePictureUseCase)
+    singleOf(::GetAllUserUseCase)
     singleOf(::GetDrawableUriUseCase)
     singleOf(::GetElapsedTimeUseCase)
-    singleOf(::GetUserUseCase)
+    singleOf(::GetCurrentUserFlowUseCase)
     singleOf(::UpdateUserProfilePictureUseCase)
 }

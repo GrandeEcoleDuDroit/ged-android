@@ -33,9 +33,8 @@ internal class AnnouncementRepositoryImpl(
 
             val announcementsToUpdate = remoteAnnouncements.filter { remoteValue ->
                 localAnnouncements.any { localValue ->
-                    (localValue.id == remoteValue.id &&
-                            localValue.date != remoteValue.date) ||
-                            localValue.author.profilePictureUrl != remoteValue.author.profilePictureUrl
+                   localValue.isUpdated(remoteValue) ||
+                           localValue.author.isUpdated(remoteValue.author)
                 }
             }
 
@@ -43,8 +42,8 @@ internal class AnnouncementRepositoryImpl(
         }
     }
 
-    override suspend fun getAnnouncement(id: Int): Announcement? {
-        return announcementLocalDataSource.getAnnouncement(id)
+    override suspend fun getAnnouncement(announcementId: Int): Announcement? {
+        return announcementLocalDataSource.getAnnouncement(announcementId)
     }
 
     override suspend fun createAnnouncement(announcement: Announcement): Result<Int> {

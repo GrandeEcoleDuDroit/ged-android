@@ -24,14 +24,13 @@ import com.upsaclay.authentication.R
 import com.upsaclay.authentication.domain.model.RegistrationState
 import com.upsaclay.authentication.presentation.components.OutlinedEmailInput
 import com.upsaclay.authentication.presentation.components.OutlinedPasswordInput
+import com.upsaclay.authentication.presentation.components.LargeButton
 import com.upsaclay.authentication.presentation.components.RegistrationTopBar
 import com.upsaclay.common.domain.model.Screen
 import com.upsaclay.common.presentation.components.ErrorText
 import com.upsaclay.common.presentation.components.OverlayLoadingScreen
-import com.upsaclay.common.presentation.components.PrimaryLargeButton
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.spacing
-
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -103,7 +102,7 @@ fun SecondRegistrationScreen(
             }
         }
 
-        PrimaryLargeButton(
+        LargeButton(
             text = stringResource(id = com.upsaclay.common.R.string.next),
             onClick = {
                 keyboardController?.hide()
@@ -119,6 +118,12 @@ fun SecondRegistrationScreen(
         OverlayLoadingScreen()
     }
 }
+
+/*
+ =====================================================================
+                                Preview
+ =====================================================================
+ */
 
 @Preview
 @Composable
@@ -155,7 +160,7 @@ private fun SecondRegistrationScreenPreview() {
                 )
             }
 
-            PrimaryLargeButton(
+            LargeButton(
                 text = stringResource(id = com.upsaclay.common.R.string.next),
                 onClick = { },
                 modifier = Modifier

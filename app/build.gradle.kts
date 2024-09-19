@@ -38,21 +38,21 @@ android {
         sourceCompatibility = JavaVersion.VERSION_19
         targetCompatibility = JavaVersion.VERSION_19
     }
+
     kotlinOptions {
         jvmTarget = "19"
     }
+
     buildFeatures {
         compose = true
     }
+
     packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
+        resources.excludes.add("META-INF/*")
     }
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -91,4 +91,5 @@ dependencies {
     implementation(project(":common"))
     implementation(project(":authentication"))
     implementation(project(":news"))
+    implementation(project(":message"))
 }

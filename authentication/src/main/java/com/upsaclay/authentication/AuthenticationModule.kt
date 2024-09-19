@@ -2,7 +2,7 @@ package com.upsaclay.authentication
 
 import com.upsaclay.authentication.data.local.AuthenticationLocalDataSource
 import com.upsaclay.authentication.data.remote.AuthenticationRemoteDataSource
-import com.upsaclay.authentication.data.remote.ParisSaclayAuthenticationApi
+import com.upsaclay.authentication.data.remote.AuthenticationParisSaclayApi
 import com.upsaclay.authentication.data.repository.AuthenticationRepositoryImpl
 import com.upsaclay.authentication.domain.repository.AuthenticationRepository
 import com.upsaclay.authentication.domain.usecase.GenerateHashUseCase
@@ -33,7 +33,7 @@ val authenticationModule = module {
 
     single {
         get<Retrofit>(qualifier = named(PARIS_SACLAY_SERVER_QUALIFIER))
-            .create(ParisSaclayAuthenticationApi::class.java)
+            .create(AuthenticationParisSaclayApi::class.java)
     }
 
     viewModelOf(::AuthenticationViewModel)
