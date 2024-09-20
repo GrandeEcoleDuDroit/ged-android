@@ -7,7 +7,7 @@ private const val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZaàäbc" +
         "deéèëêfghijklmnoôöpqrstuùûüµvwxyz0123456789!" +
         "@#\\\$£€%^¨{}[]&*()-_ =~+<>?/|.,;:¤"
 
-internal class GenerateHashUseCase {
+class GenerateHashUseCase {
     private val secureRandom = SecureRandom()
     private val stringBuilder = StringBuilder()
 
