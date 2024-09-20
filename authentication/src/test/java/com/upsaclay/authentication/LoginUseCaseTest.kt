@@ -5,6 +5,7 @@ import com.upsaclay.authentication.domain.usecase.GenerateHashUseCase
 import com.upsaclay.authentication.domain.usecase.LoginUseCase
 import io.mockk.coEvery
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
@@ -21,12 +22,20 @@ class LoginUseCaseTest {
     fun setUp() {
         generateHashUseCase = mockk()
         authenticationRepository = mockk()
-        loginUseCase = LoginUseCase(authenticationRepository)
+        loginUseCase = LoginUseCase(authenticationRepository, generateHashUseCase)
 
         coEvery {
-            authenticationRepository.login(any(), any())
+            authenticationRepository.login(any(), any(), any())
         } returns Result.success(Unit)
         coEvery { generateHashUseCase() } returns hash
+    }
+
+    @Test
+    fun login_with_paris_saclay_call_generate_hash_once() {
+        runTest {
+            loginUseCase(email, password)
+            verify(exactly = 1) { generateHashUseCase() }
+        }
     }
 
     @Test
@@ -40,7 +49,7 @@ class LoginUseCaseTest {
     @Test
     fun login_with_paris_saclay_return_fail_when_login_is_incorrect() {
         coEvery {
-            authenticationRepository.login(any(), any())
+            authenticationRepository.login(any(), any(), any())
         } returns Result.failure(Exception())
         runTest {
             val result = loginUseCase(email, password)

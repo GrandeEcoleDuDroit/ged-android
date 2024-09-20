@@ -26,9 +26,10 @@ internal class AuthenticationRepositoryImpl(
 
     override suspend fun login(
         email: String,
-        password: String
+        password: String,
+        hash: String
     ): Result<Unit> {
-        return authenticationRemoteDataSource.login(email, password)
+        return authenticationRemoteDataSource.login(email, password, hash)
     }
 
     override suspend fun logout() {
