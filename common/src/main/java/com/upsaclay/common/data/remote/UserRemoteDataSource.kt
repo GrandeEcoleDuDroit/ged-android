@@ -1,67 +1,116 @@
 package com.upsaclay.common.data.remote
 
+import com.google.firebase.firestore.FirebaseFirestoreException
 import com.upsaclay.common.data.model.UserDTO
+import com.upsaclay.common.data.remote.api.FirebaseUserModel
 import com.upsaclay.common.data.remote.api.UserFirebaseApi
 import com.upsaclay.common.data.remote.api.UserRetrofitApi
-import com.upsaclay.common.domain.model.ServerResponse.EmptyResponse
-import com.upsaclay.common.domain.model.ServerResponse.IntResponse
-import com.upsaclay.common.domain.model.User
 import com.upsaclay.common.utils.e
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okhttp3.ResponseBody.Companion.toResponseBody
-import retrofit2.Response
+import java.io.IOException
 
 internal class UserRemoteDataSource(
     private val userRetrofitApi: UserRetrofitApi,
     private val userFirebaseApi: UserFirebaseApi
 ) {
-    suspend fun getUser(userId: Int): Result<User?> = withContext(Dispatchers.IO) {
-        try {
-            val response = userRetrofitApi.getUser(userId)
-            if (response.isSuccessful) {
-                val userDTO = response.body()
-                userDTO?.let {
-                    Result.success(it.toDomain())
-                } ?: run {
-                    Result.success(null)
+    suspend fun getCurrentUser(userId: Int): UserDTO? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = userRetrofitApi.getUser(userId)
+                if (response.isSuccessful) {
+                    response.body()
+                } else {
+                    e("Error retrieving current user : ${response.message()}")
+                    null
                 }
-            } else {
-                Result.failure(Exception("Error retrieving user : ${response.message()}"))
+            } catch (e: IOException) {
+                e("Error retrieving current user: ${e.message.toString()}")
+                null
             }
-        } catch (e: Exception) {
-            e("Error retrieving user: ${e.message.toString()}")
-            Result.failure(Exception("Error retrieving user : ${e.message}"))
         }
     }
 
-    suspend fun createUser(user: User): Response<IntResponse> = withContext(Dispatchers.IO) {
-        try {
-            val userDTO = UserDTO.fromDomain(user)
-            userRetrofitApi.createUser(userDTO)
-        } catch (e: Exception) {
-            e("Error creating user: ${e.message.toString()}")
-            Response.error(500, e.message.toString().toResponseBody())
+    suspend fun getUser(userId: Int): FirebaseUserModel? {
+        return withContext(Dispatchers.IO) {
+            try {
+                userFirebaseApi.getUser(userId.toString())
+            } catch (e: IOException) {
+                e("Error retrieving user: ${e.message.toString()}")
+                null
+            } catch (e: FirebaseFirestoreException) {
+                e("Error retrieving user: ${e.message.toString()}")
+                null
+            }
         }
     }
 
-    suspend fun updateProfilePictureUrl(userId: Int, newProfilePictureUrl: String): Response<EmptyResponse> {
+    suspend fun getAllUsers(): List<FirebaseUserModel> {
+        return try {
+            userFirebaseApi.getAllUsers()
+        } catch (e: Exception) {
+            e("Error retrieving all users: ${e.message.toString()}", e)
+            emptyList()
+        }
+    }
+
+    suspend fun getOnlineUsers(): List<FirebaseUserModel> {
+        return try {
+            userFirebaseApi.getOnlineUsers()
+        } catch (e: IOException) {
+            e("Error retrieving all online users: ${e.message.toString()}", e)
+            emptyList()
+        }
+        catch (e: FirebaseFirestoreException) {
+            e("Error retrieving all online users: ${e.message.toString()}", e)
+            emptyList()
+        }
+    }
+
+    suspend fun createUser(userDTO: UserDTO): Int? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = userRetrofitApi.createUser(userDTO)
+                if(response.isSuccessful && response.body()?.data != null) {
+                    userFirebaseApi.createUser(FirebaseUserModel.fromDTO(userDTO))
+                    response.body()?.data!!
+                } else {
+                    null
+                }
+            } catch (e: IOException) {
+                e("Error creating user: ${e.message.toString()}", e)
+                null
+            }
+        }
+    }
+
+    suspend fun updateProfilePictureUrl(userId: Int, newProfilePictureUrl: String): Result<Unit> {
         return withContext(Dispatchers.IO) {
             try {
                 userRetrofitApi.updateProfilePictureUrl(userId, newProfilePictureUrl)
-            } catch (e: Exception) {
+                userFirebaseApi.updateProfilePictureUrl(userId.toString(), newProfilePictureUrl)
+            } catch (e: IOException) {
                 e("Error updating user profile picture url: ${e.message.toString()}", e)
-                Response.error(500, e.message.toString().toResponseBody())
+                Result.failure(e)
+            } catch (e: FirebaseFirestoreException) {
+                e("Error updating user profile picture url: ${e.message.toString()}", e)
+                Result.failure(e)
             }
         }
     }
 
-    suspend fun deleteProfilePictureUrl(userId: Int): Response<EmptyResponse> = withContext(Dispatchers.IO) {
-        try {
-            userRetrofitApi.deleteProfilePictureUrl(userId)
-        } catch (e: Exception) {
-            e("Error deleting user profile picture url: ${e.message.toString()}", e)
-            Response.error(500, e.message.toString().toResponseBody())
+    suspend fun deleteProfilePictureUrl(userId: Int): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            try {
+                userRetrofitApi.deleteProfilePictureUrl(userId)
+                userFirebaseApi.updateProfilePictureUrl(userId.toString(), null)
+            } catch (e: IOException) {
+                e("Error deleting user profile picture url: ${e.message.toString()}", e)
+                Result.failure(e)
+            } catch (e: FirebaseFirestoreException) {
+                e("Error deleting user profile picture url: ${e.message.toString()}", e)
+                Result.failure(e)
+            }
         }
     }
 }

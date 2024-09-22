@@ -72,10 +72,11 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.androidx.compose.foundation)
-    implementation(platform(libs.firebase.bom))
+    implementation(libs.gson)
+    implementation(libs.jakewharton.timber)
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.crashlytics)
-    implementation(libs.gson)
+    implementation(platform(libs.firebase.bom))
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -84,9 +85,6 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    implementation(libs.jakewharton.timber)
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.analytics)
 
     implementation(project(":common"))
     implementation(project(":authentication"))

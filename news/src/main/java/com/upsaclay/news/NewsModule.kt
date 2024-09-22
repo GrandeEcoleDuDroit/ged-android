@@ -12,6 +12,7 @@ import com.upsaclay.news.domain.usecase.CreateAnnouncementUseCase
 import com.upsaclay.news.domain.usecase.DeleteAnnouncementUseCase
 import com.upsaclay.news.domain.usecase.GetAllAnnouncementsUseCase
 import com.upsaclay.news.domain.usecase.GetAnnouncementUseCase
+import com.upsaclay.news.domain.usecase.GetOnlineUserUseCase
 import com.upsaclay.news.domain.usecase.RefreshAnnouncementsUseCase
 import com.upsaclay.news.domain.usecase.UpdateAnnouncementUseCase
 import com.upsaclay.news.presentation.viewmodel.CreateAnnouncementViewModel
@@ -46,6 +47,7 @@ val newsModule = module {
     singleOf(::DeleteAnnouncementUseCase)
     singleOf(::GetAllAnnouncementsUseCase)
     singleOf(::GetAnnouncementUseCase)
+    singleOf(::GetOnlineUserUseCase)
     singleOf(::RefreshAnnouncementsUseCase)
     singleOf(::UpdateAnnouncementUseCase)
 }

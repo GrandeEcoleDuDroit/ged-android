@@ -9,7 +9,7 @@ import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Path
 
-internal interface ImageRetrofitApi {
+internal interface ImageApi {
     @Multipart
     @POST("image/upload")
     suspend fun uploadImage(@Part image: MultipartBody.Part): Response<ServerResponse.EmptyResponse>

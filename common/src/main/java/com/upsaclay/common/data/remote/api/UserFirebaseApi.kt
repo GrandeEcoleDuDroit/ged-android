@@ -1,11 +1,13 @@
 package com.upsaclay.common.data.remote.api
 
-import com.upsaclay.common.domain.model.User
-
 internal interface UserFirebaseApi {
-    suspend fun getUser(userId: Int): Result<User?>
+    suspend fun getUser(userId: String): FirebaseUserModel?
 
-    suspend fun createUser(user: User): Result<Unit>
+    suspend fun getAllUsers(): List<FirebaseUserModel>
 
-    suspend fun updateUser(user: User): Result<Unit>
+    suspend fun getOnlineUsers(): List<FirebaseUserModel>
+
+    suspend fun createUser(firebaseUserModel: FirebaseUserModel): Result<Unit>
+
+    suspend fun updateProfilePictureUrl(userId: String, profilePictureUrl: String?): Result<Unit>
 }

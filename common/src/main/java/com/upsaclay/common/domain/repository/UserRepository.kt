@@ -7,11 +7,13 @@ interface UserRepository {
     val currentUserFlow: Flow<User>
     val currentUser: User?
 
-    suspend fun getAllUser(): List<User>
+    suspend fun createUser(user: User): Int?
 
     suspend fun getUser(userId: Int): User?
 
-    suspend fun createUser(user: User): Result<Int>
+    suspend fun getAllUsers(): List<User>
+
+    suspend fun getOnlineUsers(): List<User>
 
     suspend fun updateProfilePictureUrl(userId: Int, profilePictureUrl: String): Result<Unit>
 

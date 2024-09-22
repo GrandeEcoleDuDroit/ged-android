@@ -95,7 +95,6 @@ fun TransparentFocusedTextField(
     backgroundColor: Color = MaterialTheme.colorScheme.background,
     padding: PaddingValues = PaddingValues(MaterialTheme.spacing.default),
     shape: Shape = TextFieldDefaults.shape,
-    displayKeyboard: Boolean = false
 ) {
     val focusRequester = remember{ FocusRequester() }
     val textFieldValue = remember {
@@ -108,27 +107,17 @@ fun TransparentFocusedTextField(
     }
     val colors: TextFieldColors = TextFieldDefaults.colors()
 
-    if(displayKeyboard) {
-        LaunchedEffect(Unit) {
-            awaitFrame()
-            focusRequester.requestFocus()
-        }
+    LaunchedEffect(Unit) {
+        awaitFrame()
+        focusRequester.requestFocus()
     }
 
-
     BasicTextField(
-        modifier = if(displayKeyboard) {
-            modifier
-                .focusRequester(focusRequester)
-                .clip(shape)
-                .background(backgroundColor)
-                .padding(padding)
-        } else {
-            modifier
-                .clip(shape)
-                .background(backgroundColor)
-                .padding(padding)
-        },
+        modifier = modifier
+            .focusRequester(focusRequester)
+            .clip(shape)
+            .background(backgroundColor)
+            .padding(padding),
         value = textFieldValue.value,
         onValueChange = { newValue ->
             textFieldValue.value = newValue

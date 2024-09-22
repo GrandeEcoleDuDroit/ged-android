@@ -1,5 +1,6 @@
 package com.upsaclay.common.presentation.components
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -42,7 +43,7 @@ fun OverlayLoadingScreen(){
  =====================================================================
  */
 
-@Preview
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun LoadingScreenPreview(){
     GedoiseTheme {

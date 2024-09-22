@@ -82,7 +82,7 @@ internal fun AnnouncementItem(
 }
 
 @Composable
-internal fun AnnouncementItemWithTitle(
+internal fun AnnouncementItemWithContent(
     announcement: Announcement,
     onClick: () -> Unit
 ) {
@@ -169,7 +169,7 @@ private fun AnnouncementItemPreview() {
 @Composable
 private fun AnnouncementItemWithTitlePreview(){
     GedoiseTheme {
-        AnnouncementItemWithTitle(
+        AnnouncementItemWithContent(
             announcement = announcementFixture,
             onClick = { }
         )

@@ -28,6 +28,7 @@ import com.upsaclay.gedoise.presentation.profile.account.AccountScreen
 import com.upsaclay.message.presentation.screen.ChatScreen
 import com.upsaclay.message.presentation.screen.ConversationScreen
 import com.upsaclay.message.presentation.screen.CreateConversationScreen
+import com.upsaclay.message.presentation.screen.CreateGroupConversationScreen
 import com.upsaclay.message.presentation.viewmodel.ChatViewModel
 import com.upsaclay.message.presentation.viewmodel.ConversationViewModel
 import com.upsaclay.news.domain.usecase.ConvertAnnouncementToJsonUseCase
@@ -142,18 +143,6 @@ fun Navigation(mainViewModel: MainViewModel = koinViewModel()) {
                 )
             } ?: navController.popBackStack()
         }
-        
-        composable(Screen.CREATE_ANNOUNCEMENT.route) {
-            SmallTopBarBack(
-                onBackClick = { navController.popBackStack() },
-                title = stringResource(id = com.upsaclay.message.R.string.create_conversation)
-            ) {
-                CreateConversationScreen(
-                    navController = navController,
-                    conversationViewModel = sharedConversationViewModel
-                )
-            }
-        }
 
         composable(Screen.CONVERSATIONS.route) {
             user?.let {
@@ -171,11 +160,33 @@ fun Navigation(mainViewModel: MainViewModel = koinViewModel()) {
         }
 
         composable(Screen.CREATE_CONVERSATION.route) {
-            SmallTopBarBack(
-                onBackClick = { navController.popBackStack() },
-                title = stringResource(id = com.upsaclay.message.R.string.create_conversation)
-            ) {
+            Scaffold(
+                topBar = {
+                    SmallTopBarBack(
+                        onBackClick = { navController.popBackStack() },
+                        title = stringResource(id = com.upsaclay.message.R.string.new_conversation)
+                    )
+                }
+            ) { innerPadding ->
                 CreateConversationScreen(
+                    modifier = Modifier.padding(top = innerPadding.calculateTopPadding()),
+                    navController = navController,
+                    conversationViewModel = sharedConversationViewModel
+                )
+            }
+        }
+
+        composable(Screen.CREATE_GROUP_CONVERSATION.route) {
+            Scaffold(
+                topBar = {
+                    SmallTopBarBack(
+                        onBackClick = { navController.popBackStack() },
+                        title = stringResource(id = com.upsaclay.message.R.string.new_group)
+                    )
+                }
+            ) { innerPadding ->
+                CreateGroupConversationScreen(
+                    modifier = Modifier.padding(top = innerPadding.calculateTopPadding()),
                     navController = navController,
                     conversationViewModel = sharedConversationViewModel
                 )

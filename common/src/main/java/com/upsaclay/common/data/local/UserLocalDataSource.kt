@@ -1,18 +1,17 @@
 package com.upsaclay.common.data.local
 
 import com.upsaclay.common.data.model.UserDTO
-import com.upsaclay.common.domain.model.User
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.filterNotNull
 
 internal class UserLocalDataSource(private val userDataStore: UserDataStore) {
 
-    fun getCurrentUserFlow(): Flow<User> = userDataStore.getCurrentUserFlow().mapNotNull { it?.toDomain() }
+    fun getCurrentUserFlow(): Flow<UserDTO> = userDataStore.getCurrentUserFlow().filterNotNull()
 
-    suspend fun getCurrentUser(): User? = userDataStore.getCurrentUser()?.toDomain()
+    suspend fun getCurrentUser(): UserDTO? = userDataStore.getCurrentUser()
 
-    suspend fun setUser(user: User) {
-        userDataStore.storeCurrentUser(UserDTO.fromDomain(user))
+    suspend fun setUser(userDTO: UserDTO) {
+        userDataStore.storeCurrentUser(userDTO)
     }
 
     suspend fun updateProfilePictureUrl(profilePictureUrl: String) {

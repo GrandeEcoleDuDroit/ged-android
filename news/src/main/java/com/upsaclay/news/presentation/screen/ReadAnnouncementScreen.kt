@@ -180,14 +180,14 @@ fun ReadAnnouncementScreen(
                 AnnouncementItem(announcement = announcement)
             }
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
 
             announcement.title?.let {
                 Text(
                     text = it,
                     style = MaterialTheme.typography.titleMedium,
                 )
-                Spacer(Modifier.height(MaterialTheme.spacing.medium))
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
             }
 
             Text(
@@ -236,81 +236,6 @@ private fun EditableTopSection(
     }
 }
 
-/*
- =====================================================================
-                                Preview
- =====================================================================
- */
-
-@Preview(showBackground = true)
-@Composable
-private fun ReadOnlyAnnouncementScreenPreview(){
-    val announcement = announcementFixture
-
-    GedoiseTheme {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(MaterialTheme.spacing.medium)
-        ) {
-            AnnouncementItem(announcement = announcement)
-
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
-
-            announcement.title?.let {
-                Text(
-                    text = it,
-                    style = MaterialTheme.typography.titleMedium,
-                )
-                Spacer(Modifier.height(MaterialTheme.spacing.medium))
-            }
-
-            Text(
-                text = announcement.content,
-                style = MaterialTheme.typography.bodyLarge
-            )
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun EditableAnnouncementScreenPreview(){
-    val announcement = announcementFixture
-
-    GedoiseTheme {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(MaterialTheme.spacing.medium)
-        ) {
-
-            EditableTopSection(
-                announcement = announcement,
-                onEditClick = {}
-            )
-
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
-
-            announcement.title?.let {
-                Text(
-                    text = it,
-                    style = MaterialTheme.typography.titleMedium,
-                )
-                Spacer(Modifier.height(MaterialTheme.spacing.medium))
-            }
-
-            Text(
-                text = announcement.content,
-                style = MaterialTheme.typography.bodyLarge
-            )
-        }
-    }
-}
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun EditAnnouncementModelBottomSheet(
@@ -346,6 +271,83 @@ private fun DeleteAnnouncementDialog(
         onConfirm = onConfirm,
         onCancel = onCancel
     )
+}
+
+/*
+ =====================================================================
+                                Preview
+ =====================================================================
+ */
+
+@Preview(showBackground = true)
+@Composable
+private fun ReadOnlyAnnouncementScreenPreview(){
+    val announcement = announcementFixture
+
+    GedoiseTheme {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(MaterialTheme.spacing.medium)
+        ) {
+            AnnouncementItem(announcement = announcement)
+
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+
+            announcement.title?.let {
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.titleMedium,
+                )
+            }
+
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+
+            Text(
+                text = announcement.content,
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun EditableAnnouncementScreenPreview(){
+    val announcement = announcementFixture
+
+    GedoiseTheme {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(MaterialTheme.spacing.medium)
+        ) {
+
+            EditableTopSection(
+                announcement = announcement,
+                onEditClick = {}
+            )
+
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+
+            announcement.title?.let {
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.titleMedium,
+                )
+            }
+
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+
+            Text(
+                text = announcement.content,
+                style = MaterialTheme.typography.bodyLarge
+
+            )
+        }
+    }
 }
 
 @Preview

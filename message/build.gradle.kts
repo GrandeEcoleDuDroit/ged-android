@@ -45,7 +45,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -65,6 +64,10 @@ dependencies {
     implementation(libs.androidx.animation.compose)
     implementation(libs.gson)
     implementation(libs.jakewharton.timber)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.firestore)
 
     testImplementation(libs.junit)
     testImplementation(libs.mockk)

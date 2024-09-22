@@ -35,7 +35,6 @@ import com.upsaclay.common.utils.showToast
 import com.upsaclay.news.R
 import com.upsaclay.news.announcementFixture
 import com.upsaclay.news.domain.model.AnnouncementState
-import com.upsaclay.news.presentation.components.AnnouncementItem
 import com.upsaclay.news.presentation.viewmodel.EditAnnouncementViewModel
 import java.time.LocalDateTime
 
@@ -80,7 +79,6 @@ fun EditAnnouncementScreen(
     Scaffold(
         topBar = {
             SmallTopBarEdit(
-                title = stringResource(id = R.string.announcement),
                 onCancelClick = {
                     focusManager.clearFocus()
                     keyboardController?.hide()
@@ -110,9 +108,7 @@ fun EditAnnouncementScreen(
                 .fillMaxSize()
         ) {
             Column {
-                AnnouncementItem(announcement = editAnnouncementViewModel.editedAnnouncement)
-
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
 
                 TransparentFocusedTextField(
                     modifier = Modifier.fillMaxWidth(),
@@ -126,10 +122,9 @@ fun EditAnnouncementScreen(
                     },
                     onValueChange = { editAnnouncementViewModel.updateTitle(it) },
                     textStyle = MaterialTheme.typography.titleMedium,
-                    displayKeyboard = true
                 )
 
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
 
                 TransparentTextField(
                     modifier = Modifier.fillMaxWidth(),
@@ -164,7 +159,6 @@ private fun EditAnnouncementScreenPreview() {
         Scaffold (
             topBar = {
                 SmallTopBarEdit(
-                    title = stringResource(id = R.string.announcement),
                     onCancelClick = { },
                     onSaveClick = { }
                 )
@@ -180,9 +174,7 @@ private fun EditAnnouncementScreenPreview() {
                     )
                     .fillMaxSize()
             ) {
-                AnnouncementItem(announcement = announcementFixture)
-
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
 
                 TransparentFocusedTextField(
                     defaultValue = title ?: "",
@@ -194,10 +186,9 @@ private fun EditAnnouncementScreenPreview() {
                         )
                     },
                     textStyle = MaterialTheme.typography.titleMedium,
-                    displayKeyboard = true
                 )
 
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
 
                 TransparentTextField(
                     value = content,

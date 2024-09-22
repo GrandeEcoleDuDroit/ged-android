@@ -38,7 +38,7 @@ import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.news.R
 import com.upsaclay.news.announcementsFixture
 import com.upsaclay.news.domain.model.Announcement
-import com.upsaclay.news.presentation.components.AnnouncementItemWithTitle
+import com.upsaclay.news.presentation.components.AnnouncementItemWithContent
 import com.upsaclay.news.presentation.viewmodel.NewsViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -50,10 +50,12 @@ fun NewsScreen(
     val announcements = newsViewModel.announcements.collectAsState(emptyList()).value
     val user = newsViewModel.user.collectAsState(null).value
     val isRefreshing = newsViewModel.isRefreshing
+    val onlineUsers = newsViewModel.onlineUsers.collectAsState().value
 
     LaunchedEffect(Unit) {
         newsViewModel.resetAnnouncementState()
         newsViewModel.refreshAnnouncements()
+        newsViewModel.getOnlineUsers()
     }
 
     user?.let {
@@ -100,6 +102,22 @@ fun NewsScreen(
     }
 }
 
+//@Composable
+//fun OnlineUserSection(user: User) {
+//    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+//        ProfilePictureWithBubble(
+//            imageUrl = user.profilePictureUrl,
+//            bubbleBackgroundColor = GedoiseColor.OnlineColor,
+//            contentDescription = "",
+//            scale = 0.5f
+//        )
+//        Text(
+//            text = user.shortName,
+//            style = MaterialTheme.typography.bodySmall
+//        )
+//    }
+//}
+
 @Composable
 private fun RecentAnnouncementSection(
     announcements: List<Announcement>,
@@ -108,7 +126,7 @@ private fun RecentAnnouncementSection(
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     val sortedAnnouncements = announcements.sortedByDescending { it.date }
 
-    Column(modifier = Modifier.padding(bottom = MaterialTheme.spacing.medium)) {
+    Column(modifier = Modifier.padding(bottom = MaterialTheme.spacing.small)) {
         Text(
             text = stringResource(id = R.string.recent_announcements),
             style = MaterialTheme.typography.titleMedium,
@@ -135,7 +153,7 @@ private fun RecentAnnouncementSection(
                 }
             } else {
                 items(sortedAnnouncements) { announcement ->
-                    AnnouncementItemWithTitle(
+                    AnnouncementItemWithContent(
                         announcement = announcement,
                         onClick = { onClickAnnouncement(announcement) }
                     )

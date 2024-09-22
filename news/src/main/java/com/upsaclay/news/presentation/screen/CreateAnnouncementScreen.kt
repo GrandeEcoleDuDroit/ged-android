@@ -23,7 +23,6 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.upsaclay.common.domain.model.User
 import com.upsaclay.common.presentation.components.LoadingDialog
@@ -83,7 +82,11 @@ fun CreateAnnouncementScreen(
             SmallTopBarEdit(
                 title = "",
                 confirmText = stringResource(id = com.upsaclay.common.R.string.publish),
-                onCancelClick = { navController.popBackStack() },
+                onCancelClick = {
+                    focusManager.clearFocus()
+                    keyboardController?.hide()
+                    navController.popBackStack()
+                },
                 onSaveClick = {
                     createAnnouncementViewModel.createAnnouncement(
                         Announcement(
@@ -116,7 +119,6 @@ fun CreateAnnouncementScreen(
                     placeholder = {
                         Text(
                             text = stringResource(id = R.string.title_field_entry),
-                            fontSize = 18.sp,
                             style = MaterialTheme.typography.titleMedium,
                         )
                     },
@@ -181,12 +183,10 @@ private fun CreateAnnouncementScreenPreview() {
                     placeholder = {
                         Text(
                             text = stringResource(id = R.string.title_field_entry),
-                            fontSize = 18.sp,
                             style = MaterialTheme.typography.titleMedium,
                         )
                     },
                     textStyle = MaterialTheme.typography.titleMedium,
-                    displayKeyboard = true
                 )
 
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
