@@ -2,7 +2,7 @@ package com.upsaclay.news.data.remote
 
 import com.upsaclay.common.utils.formatHttpError
 import com.upsaclay.common.utils.i
-import com.upsaclay.news.data.remote.api.AnnouncementRetrofitApi
+import com.upsaclay.news.data.remote.api.AnnouncementApi
 import com.upsaclay.news.data.remote.model.RemoteAnnouncement
 import com.upsaclay.news.domain.model.Announcement
 import kotlinx.coroutines.Dispatchers
@@ -11,25 +11,25 @@ import timber.log.Timber.Forest.e
 import java.io.IOException
 
 internal class AnnouncementRemoteDataSource(
-    private val announcementRetrofitApi: AnnouncementRetrofitApi
+    private val announcementApi: AnnouncementApi
 ) {
     suspend fun getAllAnnouncement(): List<Announcement> = withContext(Dispatchers.IO) {
         try {
-            i("Retrieving all remote announcements...")
-            val response = announcementRetrofitApi.getAllAnnouncement()
+            i("Getting all remote announcements...")
+            val response = announcementApi.getAllAnnouncement()
             if(response.isSuccessful) {
                 val announcementsWithUserDTO = response.body().takeIf {
                     it != null
                 } ?: emptyList()
                 announcementsWithUserDTO.map { it.toDomain() }
             } else {
-                val errorMessage = formatHttpError("Error retrieving all remote announcement", response)
+                val errorMessage = formatHttpError("Error getting all remote announcement", response)
                 e(errorMessage)
                 emptyList()
             }
 
         } catch (e: Exception){
-            e("Error retrieving all remote announcements: ${e.message}")
+            e("Error getting all remote announcements: ${e.message}")
             emptyList()
         }
     }
@@ -37,7 +37,7 @@ internal class AnnouncementRemoteDataSource(
     suspend fun createAnnouncement(announcement: Announcement): Result<Int> = withContext(Dispatchers.IO) {
         try {
             val remoteAnnouncement = RemoteAnnouncement.fromDomain(announcement)
-            val response = announcementRetrofitApi.createAnnouncement(remoteAnnouncement)
+            val response = announcementApi.createAnnouncement(remoteAnnouncement)
             if(response.isSuccessful) {
                 val announcementId = response.body()?.data
 
@@ -62,7 +62,7 @@ internal class AnnouncementRemoteDataSource(
 
     suspend fun deleteAnnouncement(id: Int): Result<Unit> = withContext(Dispatchers.IO) {
         try {
-            val response = announcementRetrofitApi.deleteAnnouncement(id)
+            val response = announcementApi.deleteAnnouncement(id)
             if(response.isSuccessful) {
                 Result.success(Unit)
             } else {
@@ -79,7 +79,7 @@ internal class AnnouncementRemoteDataSource(
     suspend fun updateAnnouncement(announcement: Announcement): Result<Unit> = withContext(Dispatchers.IO) {
         try {
             val remoteAnnouncement = RemoteAnnouncement.fromDomain(announcement)
-            val response = announcementRetrofitApi.updateAnnouncement(remoteAnnouncement)
+            val response = announcementApi.updateAnnouncement(remoteAnnouncement)
             if(response.isSuccessful) {
                 Result.success(Unit)
             } else {

@@ -21,8 +21,11 @@ import com.upsaclay.common.domain.usecase.ConvertTimestampUseCase
 import com.upsaclay.common.domain.usecase.DeleteUserProfilePictureUseCase
 import com.upsaclay.common.domain.usecase.GetAllUserUseCase
 import com.upsaclay.common.domain.usecase.GetCurrentUserFlowUseCase
+import com.upsaclay.common.domain.usecase.GetCurrentUserUseCase
 import com.upsaclay.common.domain.usecase.GetDrawableUriUseCase
 import com.upsaclay.common.domain.usecase.GetElapsedTimeUseCase
+import com.upsaclay.common.domain.usecase.GetUserUseCase
+import com.upsaclay.common.domain.usecase.LocalDateTimeFormatterUseCase
 import com.upsaclay.common.domain.usecase.UpdateUserProfilePictureUseCase
 import okhttp3.OkHttpClient
 import org.koin.core.module.dsl.bind
@@ -79,8 +82,11 @@ val coreModule = module {
     singleOf(::ConvertTimestampUseCase)
     singleOf(::DeleteUserProfilePictureUseCase)
     singleOf(::GetAllUserUseCase)
+    singleOf(::GetCurrentUserFlowUseCase)
+    singleOf(::GetCurrentUserUseCase)
     singleOf(::GetDrawableUriUseCase)
     singleOf(::GetElapsedTimeUseCase)
-    singleOf(::GetCurrentUserFlowUseCase)
+    singleOf(::GetUserUseCase)
+    singleOf(::LocalDateTimeFormatterUseCase)
     singleOf(::UpdateUserProfilePictureUseCase)
 }

@@ -34,7 +34,7 @@ fun UserItem(
 
         Spacer(modifier = Modifier.width(MaterialTheme.spacing.smallMedium))
 
-        Text(text = user.fullName)
+        Text(text = user.fullName, style = MaterialTheme.typography.titleMedium)
     }
 }
 

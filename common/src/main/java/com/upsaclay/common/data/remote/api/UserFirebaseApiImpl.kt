@@ -9,11 +9,11 @@ import kotlin.coroutines.suspendCoroutine
 internal class UserFirebaseApiImpl: UserFirebaseApi {
     private val users = Firebase.firestore.collection("users")
 
-    override suspend fun getUser(userId: String): FirebaseUserModel? =
+    override suspend fun getUser(userId: String): RemoteUserFirebase? =
         suspendCoroutine { continuation ->
             users.document(userId).get()
                 .addOnSuccessListener { document ->
-                    val user = document.toObject(FirebaseUserModel::class.java)
+                    val user = document.toObject(RemoteUserFirebase::class.java)
                     continuation.resume(user)
                 }
                 .addOnFailureListener { e ->
@@ -21,11 +21,11 @@ internal class UserFirebaseApiImpl: UserFirebaseApi {
                 }
     }
 
-    override suspend fun getAllUsers(): List<FirebaseUserModel> =
+    override suspend fun getAllUsers(): List<RemoteUserFirebase> =
         suspendCoroutine { continuation ->
             users.get()
                 .addOnSuccessListener { querySnapshot ->
-                    val allUsers = querySnapshot.documents.mapNotNull { it.toObject(FirebaseUserModel::class.java) }
+                    val allUsers = querySnapshot.documents.mapNotNull { it.toObject(RemoteUserFirebase::class.java) }
                     continuation.resume(allUsers)
                 }
                 .addOnFailureListener { e ->
@@ -33,11 +33,11 @@ internal class UserFirebaseApiImpl: UserFirebaseApi {
                 }
         }
 
-    override suspend fun getOnlineUsers(): List<FirebaseUserModel> =
+    override suspend fun getOnlineUsers(): List<RemoteUserFirebase> =
         suspendCoroutine { continuation ->
             users.whereEqualTo("is_online", true).get()
                 .addOnSuccessListener { querySnapshot ->
-                    val allOnlineUsers = querySnapshot.documents.mapNotNull { it.toObject(FirebaseUserModel::class.java) }
+                    val allOnlineUsers = querySnapshot.documents.mapNotNull { it.toObject(RemoteUserFirebase::class.java) }
                     continuation.resume(allOnlineUsers)
                 }
                 .addOnFailureListener { e ->
@@ -45,9 +45,9 @@ internal class UserFirebaseApiImpl: UserFirebaseApi {
                 }
         }
 
-    override suspend fun createUser(firebaseUserModel: FirebaseUserModel): Result<Unit> =
+    override suspend fun createUser(remoteUserFirebase: RemoteUserFirebase): Result<Unit> =
         suspendCoroutine { continuation ->
-            users.document(firebaseUserModel.userId.toString()).set(firebaseUserModel)
+            users.document(remoteUserFirebase.userId.toString()).set(remoteUserFirebase)
                 .addOnSuccessListener {
                     continuation.resume(Result.success(Unit))
                 }

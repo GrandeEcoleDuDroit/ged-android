@@ -64,8 +64,7 @@ fun AuthenticationScreen(
     navController: NavController,
     authenticationViewModel: AuthenticationViewModel = koinViewModel()
 ) {
-    val authenticationState by authenticationViewModel.authenticationState
-        .collectAsState(AuthenticationState.UNAUTHENTICATED)
+    val authenticationState by authenticationViewModel.authenticationState.collectAsState()
     var isError by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
     val scrollState = rememberScrollState()

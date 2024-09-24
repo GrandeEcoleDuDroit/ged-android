@@ -11,14 +11,16 @@ val messageFixture = Message(
     id = "1",
     text = "Salut, bien et toi ? Oui bien sûr.",
     date = LocalDateTime.of(2024, 7, 20, 10, 0),
-    sender = userFixture
+    sender = userFixture,
+    isRead = true
 )
 
 val messageFixture2 = Message(
     id = "2",
     text = "Salut ça va ? Cela fait longtemps que j'attend de te parler. Pourrait-on se voir ?",
     date = LocalDateTime.now(),
-    sender = userFixture2
+    sender = userFixture2,
+    isRead = false
 )
 
 val messagesFixture = listOf(
@@ -52,21 +54,4 @@ val conversationsFixture = listOf(
     conversationFixture,
     conversationFixture,
     conversationFixture
-)
-
-val conversationPreviewFixture = ConversationPreview(
-    id = "1",
-    interlocutor = userFixture2,
-    lastMessage = messageFixture2,
-    isRead = true
-)
-
-val conversationsPreviewFixture = listOf(
-    conversationPreviewFixture.copy(isRead = false),
-    conversationPreviewFixture,
-    conversationPreviewFixture,
-    conversationPreviewFixture,
-    conversationPreviewFixture,
-    conversationPreviewFixture,
-    conversationPreviewFixture
 )

@@ -1,6 +1,7 @@
 package com.upsaclay.message.presentation.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -41,6 +42,7 @@ import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.userFixture
 import com.upsaclay.message.R
+import com.upsaclay.message.domain.model.ChatState
 import com.upsaclay.message.domain.model.Message
 import com.upsaclay.message.presentation.components.ChatTopBar
 import com.upsaclay.message.presentation.components.ReceiveMessageItem
@@ -55,71 +57,75 @@ fun ChatScreen(
     navController: NavController,
     chatViewModel: ChatViewModel = koinViewModel()
 ) {
-    val conversation = chatViewModel.conversation.collectAsState(initial = null).value
+    val conversation = chatViewModel.conversation.collectAsState().value
+    val interlocutor = conversation?.interlocutor ?: chatViewModel.interlocutor.collectAsState().value
     val currentUser = chatViewModel.currentUser
     val text = chatViewModel.text
+    val chatState = chatViewModel.chatState.collectAsState().value
 
-    conversation?.let {
-        currentUser?.let {
-            Scaffold(
-                topBar = {
-                    ChatTopBar(
-                        navController = navController,
-                        interlocutor = conversation.interlocutor
-                    )
-                }
-            ) { innerPadding ->
-                Column {
-                    Column(
-                        modifier = Modifier.padding(
-                            top = innerPadding.calculateTopPadding(),
-                            start = MaterialTheme.spacing.medium,
-                            end = MaterialTheme.spacing.medium,
-                            bottom = MaterialTheme.spacing.small
-                        )
+    if(chatState == ChatState.LOADING) {
+        Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background))
+    }
+
+    if (interlocutor != null && currentUser != null) {
+        Scaffold(
+            topBar = {
+                ChatTopBar(
+                    navController = navController,
+                    interlocutor = interlocutor
+                )
+            }
+        ) { innerPadding ->
+            Column(
+                modifier = Modifier.padding(
+                    top = innerPadding.calculateTopPadding(),
+                    start = MaterialTheme.spacing.medium,
+                    end = MaterialTheme.spacing.medium,
+                    bottom = MaterialTheme.spacing.small
+                )
+            ) {
+                MessageSection(
+                    modifier = Modifier.weight(1f),
+                    messages = conversation?.messages ?: emptyList(),
+                    currentUser = currentUser
+                )
+
+                Row(
+                    modifier = Modifier.padding(top = MaterialTheme.spacing.small),
+                    verticalAlignment = Alignment.Bottom
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .clip(ShapeDefaults.ExtraLarge)
+                            .background(GedoiseColor.LightGray)
+                            .weight(1f)
+                            .padding(horizontal = MaterialTheme.spacing.medium)
                     ) {
-                        MessageSection(
-                            modifier = Modifier.weight(1f),
-                            messages = conversation.messages,
-                            currentUser = currentUser
+                        TransparentFocusedTextField(
+                            modifier = Modifier.padding(vertical = MaterialTheme.spacing.smallMedium),
+                            defaultValue = text,
+                            onValueChange = { chatViewModel.updateText(it) },
+                            placeholder = { Text(text = stringResource(id = R.string.message_placeholder)) },
+                            backgroundColor = GedoiseColor.LightGray,
+                            displayKeyboard = false
                         )
+                    }
 
-                        Row(
-                            modifier = Modifier.padding(top = MaterialTheme.spacing.small),
-                            verticalAlignment = Alignment.Bottom
+                    if(text.isNotBlank()) {
+                        IconButton(
+                            onClick = { chatViewModel.sendMessage() },
+                            colors = IconButtonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = Color.White,
+                                disabledContainerColor = IconButtonDefaults.iconButtonColors().disabledContainerColor,
+                                disabledContentColor = IconButtonDefaults.iconButtonColors().disabledContentColor
+                            )
                         ) {
-                            Row(
-                                modifier = Modifier
-                                    .clip(ShapeDefaults.ExtraLarge)
-                                    .background(GedoiseColor.LightGray)
-                                    .weight(1f)
-                                    .padding(horizontal = MaterialTheme.spacing.medium)
-                            ) {
-                                TransparentFocusedTextField(
-                                    modifier = Modifier.padding(vertical = MaterialTheme.spacing.smallMedium),
-                                    defaultValue = text,
-                                    onValueChange = { chatViewModel.updateText(it) },
-                                    placeholder = { Text(text = stringResource(id = R.string.message_placeholder)) },
-                                    backgroundColor = GedoiseColor.LightGray
-                                )
-                            }
-
-                            IconButton(
-                                onClick = { chatViewModel.sendMessage() },
-                                colors = IconButtonColors(
-                                    containerColor = MaterialTheme.colorScheme.primary,
-                                    contentColor = Color.White,
-                                    disabledContainerColor = IconButtonDefaults.iconButtonColors().disabledContainerColor,
-                                    disabledContentColor = IconButtonDefaults.iconButtonColors().disabledContentColor
-                                ),
-                                enabled = text.isNotBlank()
-                            ) {
-                                Icon(
-                                    modifier = Modifier.scale(0.8f),
-                                    imageVector = Icons.AutoMirrored.Filled.Send,
-                                    contentDescription = stringResource(id = R.string.send_message_icon_description)
-                                )
-                            }
+                            Icon(
+                                modifier = Modifier.scale(0.8f),
+                                imageVector = Icons.AutoMirrored.Filled.Send,
+                                contentDescription = stringResource(id = R.string.send_message_icon_description)
+                            )
                         }
                     }
                 }
@@ -138,19 +144,27 @@ private fun MessageSection(
         modifier = modifier.fillMaxSize(),
         reverseLayout = true,
     ) {
-        itemsIndexed(messages) { index, message ->
-            val sameSender = index > 0 && message.sender == messages[index - 1].sender
-            val spacing = if (sameSender) MaterialTheme.spacing.extraSmall else MaterialTheme.spacing.smallMedium
-            val isCurrentUserSender = message.sender.id == currentUser.id
+        if(messages.isNotEmpty()) {
+            itemsIndexed(messages) { index, message ->
+                val sameSender = index > 0 && message.sender == messages[index - 1].sender
+                val spacing =
+                    if (sameSender) MaterialTheme.spacing.extraSmall else MaterialTheme.spacing.smallMedium
+                val isCurrentUserSender = message.sender.id == currentUser.id
 
-            Spacer(modifier = Modifier.height(spacing))
+                Spacer(modifier = Modifier.height(spacing))
 
-            if (isCurrentUserSender) {
-                SentMessageItem(text = message.text)
-            } else {
-                val displayProfilePicture = index == 0 || !sameSender
-                val paddingModifier = if (displayProfilePicture) Modifier else Modifier.padding(start = MaterialTheme.spacing.extraLarge)
-                ReceiveMessageItem(modifier = paddingModifier, message = message, displayProfilePicture = displayProfilePicture)
+                if (isCurrentUserSender) {
+                    SentMessageItem(text = message.text)
+                } else {
+                    val displayProfilePicture = index == 0 || !sameSender
+                    val paddingModifier =
+                        if (displayProfilePicture) Modifier else Modifier.padding(start = MaterialTheme.spacing.extraLarge)
+                    ReceiveMessageItem(
+                        modifier = paddingModifier,
+                        message = message,
+                        displayProfilePicture = displayProfilePicture
+                    )
+                }
             }
         }
     }
@@ -211,21 +225,22 @@ private fun ChatScreenPreview() {
                             )
                         }
 
-                        IconButton(
-                            onClick = {  },
-                            colors = IconButtonColors(
-                                containerColor = MaterialTheme.colorScheme.primary,
-                                contentColor = Color.White,
-                                disabledContainerColor = IconButtonDefaults.iconButtonColors().disabledContainerColor,
-                                disabledContentColor = IconButtonDefaults.iconButtonColors().disabledContentColor
-                            ),
-                            enabled = text.isNotBlank()
-                        ) {
-                            Icon(
-                                modifier = Modifier.scale(0.8f),
-                                imageVector = Icons.AutoMirrored.Filled.Send,
-                                contentDescription = ""
-                            )
+                        if(text.isNotBlank()) {
+                            IconButton(
+                                onClick = { },
+                                colors = IconButtonColors(
+                                    containerColor = MaterialTheme.colorScheme.primary,
+                                    contentColor = Color.White,
+                                    disabledContainerColor = IconButtonDefaults.iconButtonColors().disabledContainerColor,
+                                    disabledContentColor = IconButtonDefaults.iconButtonColors().disabledContentColor
+                                ),
+                            ) {
+                                Icon(
+                                    modifier = Modifier.scale(0.8f),
+                                    imageVector = Icons.AutoMirrored.Filled.Send,
+                                    contentDescription = ""
+                                )
+                            }
                         }
                     }
                 }

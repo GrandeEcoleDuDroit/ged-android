@@ -130,7 +130,7 @@ fun AccountScreen(
     }
 
     if (showLoadingDialog) {
-        LoadingDialog(text = stringResource(id = com.upsaclay.common.R.string.loading))
+        LoadingDialog()
     }
 
     user?.let {

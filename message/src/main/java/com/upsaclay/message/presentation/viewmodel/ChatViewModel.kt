@@ -13,8 +13,8 @@ import com.upsaclay.message.domain.model.Conversation
 import com.upsaclay.message.domain.model.Message
 import com.upsaclay.message.domain.usecase.GetConversationUseCase
 import com.upsaclay.message.domain.usecase.SendMessageUseCase
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
@@ -27,19 +27,22 @@ class ChatViewModel(
     private val sendMessageUseCase: SendMessageUseCase
 ): ViewModel() {
     private val _chatState = MutableStateFlow(ChatState.DEFAULT)
-    val chatState: Flow<ChatState> = _chatState
+    val chatState: StateFlow<ChatState> = _chatState
+    private val _interlocutor = MutableStateFlow<User?>(null)
+    val interlocutor: StateFlow<User?> = _interlocutor
     private val _conversation = MutableStateFlow<Conversation?>(null)
-    val conversation: Flow<Conversation?> = _conversation
+    val conversation: StateFlow<Conversation?> = _conversation
     val currentUser: User? = getCurrentUserUseCase()
-    lateinit var interlocutor: User
     var text: String by mutableStateOf("")
         private set
 
     init {
+        _chatState.value = ChatState.LOADING
         conversationId?.let {
             viewModelScope.launch {
                 getConversationUseCase(conversationId).collect {
                     _conversation.value = it
+                    _chatState.value = ChatState.DEFAULT
                 }
             }
         }
@@ -47,7 +50,8 @@ class ChatViewModel(
         interlocutorId?.let {
             viewModelScope.launch {
                 getUserUseCase(interlocutorId)?.let {
-                    interlocutor = it
+                    _interlocutor.value = it
+                    _chatState.value = ChatState.DEFAULT
                 }
             }
         }
@@ -58,26 +62,21 @@ class ChatViewModel(
     }
 
     fun sendMessage() {
-        _conversation.value?.let { conversation ->
-            currentUser?.let {
-                val message = Message(
-                    text = text,
-                    date = LocalDateTime.now(),
-                    sender = currentUser
-                )
-                viewModelScope.launch {
-                    sendMessageUseCase(conversation.id, message)
-                        .onSuccess {
-                            _chatState.value = ChatState.MESSAGE_SENT
-                        }
-                        .onFailure {
-                            _chatState.value = ChatState.SENT_MESSAGE_ERROR
-                        }
-                }
-            } ?: {
-                _chatState.value = ChatState.SENT_MESSAGE_ERROR
+        if(currentUser != null) {
+            val messages = _conversation.value?.messages?.toMutableList() ?: mutableListOf()
+            val message = Message(
+                text = text,
+                date = LocalDateTime.now(),
+                sender = currentUser
+            )
+            messages.add(message)
+            val conversation = _conversation.value ?:
+                Conversation(interlocutor = _interlocutor.value!!, messages = messages)
+            _conversation.value = conversation
+            viewModelScope.launch {
+                sendMessageUseCase(conversation.id, message)
             }
-        } ?: {
+        } else {
             _chatState.value = ChatState.SENT_MESSAGE_ERROR
         }
     }

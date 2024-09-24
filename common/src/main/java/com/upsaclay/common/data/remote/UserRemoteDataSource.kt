@@ -2,7 +2,7 @@ package com.upsaclay.common.data.remote
 
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.upsaclay.common.data.model.UserDTO
-import com.upsaclay.common.data.remote.api.FirebaseUserModel
+import com.upsaclay.common.data.remote.api.RemoteUserFirebase
 import com.upsaclay.common.data.remote.api.UserFirebaseApi
 import com.upsaclay.common.data.remote.api.UserRetrofitApi
 import com.upsaclay.common.utils.e
@@ -21,48 +21,48 @@ internal class UserRemoteDataSource(
                 if (response.isSuccessful) {
                     response.body()
                 } else {
-                    e("Error retrieving current user : ${response.message()}")
+                    e("Error getting current user : ${response.message()}")
                     null
                 }
             } catch (e: IOException) {
-                e("Error retrieving current user: ${e.message.toString()}")
+                e("Error getting current user: ${e.message.toString()}")
                 null
             }
         }
     }
 
-    suspend fun getUser(userId: Int): FirebaseUserModel? {
+    suspend fun getUser(userId: Int): RemoteUserFirebase? {
         return withContext(Dispatchers.IO) {
             try {
                 userFirebaseApi.getUser(userId.toString())
             } catch (e: IOException) {
-                e("Error retrieving user: ${e.message.toString()}")
+                e("Error getting user: ${e.message.toString()}")
                 null
             } catch (e: FirebaseFirestoreException) {
-                e("Error retrieving user: ${e.message.toString()}")
+                e("Error getting user: ${e.message.toString()}")
                 null
             }
         }
     }
 
-    suspend fun getAllUsers(): List<FirebaseUserModel> {
+    suspend fun getAllUsers(): List<RemoteUserFirebase> {
         return try {
             userFirebaseApi.getAllUsers()
         } catch (e: Exception) {
-            e("Error retrieving all users: ${e.message.toString()}", e)
+            e("Error getting all users: ${e.message.toString()}", e)
             emptyList()
         }
     }
 
-    suspend fun getOnlineUsers(): List<FirebaseUserModel> {
+    suspend fun getOnlineUsers(): List<RemoteUserFirebase> {
         return try {
             userFirebaseApi.getOnlineUsers()
         } catch (e: IOException) {
-            e("Error retrieving all online users: ${e.message.toString()}", e)
+            e("Error getting all online users: ${e.message.toString()}", e)
             emptyList()
         }
         catch (e: FirebaseFirestoreException) {
-            e("Error retrieving all online users: ${e.message.toString()}", e)
+            e("Error getting all online users: ${e.message.toString()}", e)
             emptyList()
         }
     }
@@ -72,7 +72,7 @@ internal class UserRemoteDataSource(
             try {
                 val response = userRetrofitApi.createUser(userDTO)
                 if(response.isSuccessful && response.body()?.data != null) {
-                    userFirebaseApi.createUser(FirebaseUserModel.fromDTO(userDTO))
+                    userFirebaseApi.createUser(RemoteUserFirebase.fromDTO(userDTO))
                     response.body()?.data!!
                 } else {
                     null

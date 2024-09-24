@@ -4,7 +4,7 @@ import com.google.firebase.firestore.PropertyName
 import com.upsaclay.common.data.model.UserDTO
 import com.upsaclay.common.domain.model.User
 
-internal data class FirebaseUserModel(
+internal data class RemoteUserFirebase(
     @get:PropertyName("user_id")
     @set:PropertyName("user_id")
     var userId: Int = -1,
@@ -38,7 +38,7 @@ internal data class FirebaseUserModel(
     var isOnline: Boolean = false
 ) {
     companion object {
-        fun fromDomain(user: User) = FirebaseUserModel(
+        fun fromDomain(user: User) = RemoteUserFirebase(
             userId = user.id,
             firstName = user.firstName,
             lastName = user.lastName,
@@ -48,7 +48,7 @@ internal data class FirebaseUserModel(
             profilePictureUrl = user.profilePictureUrl
         )
 
-        fun fromDTO(userDTO: UserDTO) = FirebaseUserModel(
+        fun fromDTO(userDTO: UserDTO) = RemoteUserFirebase(
             userId = userDTO.userId ?: -1,
             firstName = userDTO.userFirstName,
             lastName = userDTO.userLastName,

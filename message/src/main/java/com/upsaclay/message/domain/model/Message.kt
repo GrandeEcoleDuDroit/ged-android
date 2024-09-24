@@ -7,5 +7,6 @@ data class Message(
     val id: String = "",
     val text: String,
     val date: LocalDateTime,
-    val sender: User
+    val sender: User,
+    val isRead: Boolean
 )

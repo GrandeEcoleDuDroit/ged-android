@@ -18,7 +18,7 @@ internal class UserRepositoryImpl(
 ): UserRepository {
     private val _currentUser = MutableStateFlow<User?>(null)
     override val currentUserFlow: Flow<User> = _currentUser.filterNotNull()
-    override val currentUser: User? = _currentUser.value
+    override val currentUser: User? get() = _currentUser.value
 
     init {
         CoroutineScope(Dispatchers.IO).launch {

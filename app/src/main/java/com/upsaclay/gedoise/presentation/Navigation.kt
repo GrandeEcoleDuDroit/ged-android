@@ -9,6 +9,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
+import androidx.navigation.NavType.Companion.IntType
 import androidx.navigation.NavType.Companion.StringType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -199,7 +200,18 @@ fun Navigation(mainViewModel: MainViewModel = koinViewModel()) {
         ) { backStackEntry ->
             val conversationId = backStackEntry.arguments?.getString("conversationId")
             val chatViewModel: ChatViewModel = koinViewModel(
-                parameters = { parametersOf(conversationId) }
+                parameters = { parametersOf(conversationId, null) }
+            )
+            ChatScreen(navController, chatViewModel)
+        }
+
+        composable(
+            route = Screen.CHAT.route + "?userId={userId}",
+            arguments = listOf(navArgument("userId") { type = IntType })
+        ) { backStackEntry ->
+            val interlocutorId = backStackEntry.arguments?.getInt("userId")
+            val chatViewModel: ChatViewModel = koinViewModel(
+                parameters = { parametersOf(null, interlocutorId) }
             )
             ChatScreen(navController, chatViewModel)
         }

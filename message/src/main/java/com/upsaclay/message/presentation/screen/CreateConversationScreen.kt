@@ -5,12 +5,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
-import com.google.gson.Gson
 import com.upsaclay.common.domain.model.Screen
 import com.upsaclay.common.presentation.components.SmallTopBarBack
 import com.upsaclay.common.presentation.theme.GedoiseTheme
@@ -26,15 +26,20 @@ fun CreateConversationScreen(
     conversationViewModel: ConversationViewModel
 ) {
     val users = conversationViewModel.users.collectAsState(emptyList()).value
-    val gson = Gson()
-    
+
+    LaunchedEffect(Unit) {
+        conversationViewModel.fetchAllUsers()
+    }
+
     LazyColumn(modifier = modifier) {
         items(users) { user ->
             UserItem(
                 user = user,
                 onClick = {
-                    val userJson = gson.toJson(user)
-                    navController.navigate(Screen.CHAT.route + "?user=$userJson")
+                    navController.navigate(Screen.CHAT.route + "?userId=${user.id}") {
+                        popUpTo(Screen.CREATE_CONVERSATION.route) { inclusive = true }
+                        launchSingleTop = true
+                    }
                 }
             )
         }

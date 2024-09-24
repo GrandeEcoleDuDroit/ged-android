@@ -74,7 +74,7 @@ fun CreateAnnouncementScreen(
     }
 
     if(showLoadingDialog) {
-        LoadingDialog(text = stringResource(id = com.upsaclay.common.R.string.loading))
+        LoadingDialog()
     }
 
     Scaffold(

@@ -52,7 +52,7 @@ import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.message.R
 import com.upsaclay.message.presentation.components.ConversationItem
 import com.upsaclay.message.presentation.viewmodel.ConversationViewModel
-import com.upsaclay.message.utils.conversationsPreviewFixture
+import com.upsaclay.message.utils.conversationsFixture
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -65,7 +65,6 @@ fun ConversationScreen(
     var expanded by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxSize()) {
-
         if(expanded) {
             Box(
                 modifier = Modifier
@@ -107,7 +106,7 @@ fun ConversationScreen(
                 items(conversations) { conversation ->
                     ConversationItem(
                         modifier = Modifier.fillMaxWidth(),
-                        conversationPreview = conversation,
+                        conversation = conversation,
                         onClick = {
                             navController.navigate(Screen.CHAT.route + "?conversationId=${conversation.id}")
                         },
@@ -121,8 +120,8 @@ fun ConversationScreen(
             modifier = Modifier.align(Alignment.BottomEnd),
             expanded = expanded,
             onToggleClick = { expanded = !expanded },
-            onConversationClick = { navController.navigate(Screen.CREATE_CONVERSATION.route)},
-            onGroupClick = { navController.navigate(Screen.CREATE_GROUP_CONVERSATION.route) }
+            onNewConversationClick = { navController.navigate(Screen.CREATE_CONVERSATION.route)},
+            onNewGroupClick = { navController.navigate(Screen.CREATE_GROUP_CONVERSATION.route) }
         )
     }
 }
@@ -132,8 +131,8 @@ private fun FloatingActionButtonSection(
     modifier: Modifier = Modifier,
     expanded: Boolean,
     onToggleClick: () -> Unit,
-    onConversationClick: () -> Unit,
-    onGroupClick: () -> Unit,
+    onNewConversationClick: () -> Unit,
+    onNewGroupClick: () -> Unit,
 ) {
     val rotation by animateFloatAsState(
         targetValue = if(expanded) 0f else -90f,
@@ -163,7 +162,7 @@ private fun FloatingActionButtonSection(
 
                 SmallFloatingActionButton(
                     containerColor = MaterialTheme.colorScheme.surface,
-                    onClick = onGroupClick,
+                    onClick = onNewGroupClick,
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_group_add),
@@ -185,7 +184,7 @@ private fun FloatingActionButtonSection(
                 )
 
                 FloatingActionButton(
-                    onClick = onConversationClick,
+                    onClick = onNewConversationClick,
                     containerColor = MaterialTheme.colorScheme.primary
                 ) {
                     Icon(
@@ -220,7 +219,7 @@ private fun FloatingActionButtonSection(
 @Preview(showBackground = true)
 @Composable
 private fun ConversationsScreenPreview() {
-    val conversations = conversationsPreviewFixture
+    val conversations = conversationsFixture
 //    val conversations = emptyList<ConversationPreview>()
     var expanded by remember { mutableStateOf(false) }
     val rotation by animateFloatAsState(
@@ -271,7 +270,7 @@ private fun ConversationsScreenPreview() {
                     items(conversations) { conversation ->
                         ConversationItem(
                             modifier = Modifier.fillMaxWidth(),
-                            conversationPreview = conversation,
+                            conversation = conversation,
                             onClick = { },
                             onLongClick = { }
                         )
@@ -283,8 +282,8 @@ private fun ConversationsScreenPreview() {
                 modifier = Modifier.align(Alignment.BottomEnd),
                 expanded = expanded,
                 onToggleClick = { expanded = !expanded },
-                onConversationClick = { },
-                onGroupClick = { }
+                onNewConversationClick = { },
+                onNewGroupClick = { }
             )
         }
     }

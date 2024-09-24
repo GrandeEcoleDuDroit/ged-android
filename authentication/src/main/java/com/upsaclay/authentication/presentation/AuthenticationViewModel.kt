@@ -8,15 +8,15 @@ import androidx.lifecycle.viewModelScope
 import com.upsaclay.authentication.domain.model.AuthenticationState
 import com.upsaclay.authentication.domain.usecase.LoginUseCase
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class AuthenticationViewModel(
     private val loginUseCase: LoginUseCase
 ) : ViewModel() {
     private val _authenticationState = MutableStateFlow(AuthenticationState.UNAUTHENTICATED)
-    val authenticationState: Flow<AuthenticationState> = _authenticationState
+    val authenticationState: StateFlow<AuthenticationState> = _authenticationState
     var email by mutableStateOf("")
         private set
     var password by mutableStateOf("")

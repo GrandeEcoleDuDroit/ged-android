@@ -32,37 +32,46 @@ import com.upsaclay.common.presentation.theme.GedoiseColor
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.userFixture2
-import com.upsaclay.message.domain.model.ConversationPreview
-import com.upsaclay.message.utils.messageFixture2
+import com.upsaclay.message.R
+import com.upsaclay.message.domain.model.Conversation
+import com.upsaclay.message.utils.messagesFixture
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ConversationItem(
     modifier: Modifier = Modifier,
-    conversationPreview: ConversationPreview,
+    conversation: Conversation,
     onClick: () -> Unit,
     onLongClick: () -> Unit
 ) {
+    val lastMessage = conversation.messages.lastOrNull()
     val getElapsedTimeUseCase = GetElapsedTimeUseCase()
     val localDateTimeFormatterUseCase = LocalDateTimeFormatterUseCase()
-    val elapsedTime = getElapsedTimeUseCase.fromLocalDateTime(conversationPreview.lastMessage.date)
 
-    val elapsedTimeValue: String = when(elapsedTime) {
-        is ElapsedTime.Now -> stringResource(id = com.upsaclay.common.R.string.now)
+    val elapsedTimeValue: String = if(lastMessage != null) {
+        val elapsedTime = getElapsedTimeUseCase.fromLocalDateTime(lastMessage.date)
 
-        is ElapsedTime.Minute, is ElapsedTime.Hour ->
-            localDateTimeFormatterUseCase.formatHourMinute(conversationPreview.lastMessage.date)
+        when(elapsedTime) {
+            is ElapsedTime.Now -> stringResource(id = com.upsaclay.common.R.string.now)
 
-        is ElapsedTime.Day -> {
-            if(elapsedTime.value == 1L) {
-                stringResource(id = com.upsaclay.common.R.string.yesterday)
-            } else {
-                localDateTimeFormatterUseCase.formatDayMonthYear(conversationPreview.lastMessage.date)
+            is ElapsedTime.Minute, is ElapsedTime.Hour ->
+                localDateTimeFormatterUseCase.formatHourMinute(lastMessage.date)
+
+            is ElapsedTime.Day -> {
+                if(elapsedTime.value == 1L) {
+                    stringResource(id = com.upsaclay.common.R.string.yesterday)
+                } else {
+                    localDateTimeFormatterUseCase.formatDayMonthYear(lastMessage.date)
+                }
             }
-        }
 
-        else -> localDateTimeFormatterUseCase.formatDayMonthYear(conversationPreview.lastMessage.date)
-    }
+            else -> localDateTimeFormatterUseCase.formatDayMonthYear(lastMessage.date)
+        }
+    } else ""
+
+    val unreadMessage = lastMessage?.let {
+        it.sender == conversation.interlocutor && !it.isRead
+    } ?: false
 
     Row(
         modifier = modifier
@@ -74,49 +83,19 @@ fun ConversationItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         ProfilePicture(
-            imageUrl = conversationPreview.interlocutor.profilePictureUrl,
+            imageUrl = conversation.interlocutor.profilePictureUrl,
             scaleImage = 0.5f
         )
 
         Spacer(modifier = Modifier.width(MaterialTheme.spacing.smallMedium))
 
         Row(verticalAlignment = Alignment.Top) {
-            if (conversationPreview.isRead) {
+            if (unreadMessage) {
                 Column(modifier = Modifier.weight(1f)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             modifier = Modifier.weight(1f),
-                            text = conversationPreview.interlocutor.fullName,
-                            style = MaterialTheme.typography.bodyMedium,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-
-                        Spacer(modifier = Modifier.width(MaterialTheme.spacing.smallMedium))
-
-                        Text(
-                            text = elapsedTimeValue,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = GedoiseColor.PreviewText
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(2.dp))
-
-                    Text(
-                        text = conversationPreview.lastMessage.text,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = GedoiseColor.PreviewText,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-            } else {
-                Column(modifier = Modifier.weight(1f)) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            modifier = Modifier.weight(1f),
-                            text = conversationPreview.interlocutor.fullName,
+                            text = conversation.interlocutor.fullName,
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.SemiBold,
                             maxLines = 1,
@@ -136,7 +115,7 @@ fun ConversationItem(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             modifier = Modifier.weight(1f),
-                            text = conversationPreview.lastMessage.text,
+                            text = lastMessage!!.text,
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.SemiBold,
                             maxLines = 1,
@@ -150,6 +129,47 @@ fun ConversationItem(
                                 .clip(CircleShape)
                                 .background(MaterialTheme.colorScheme.error)
                                 .size(10.dp)
+                        )
+                    }
+                }
+
+            } else {
+                Column(modifier = Modifier.weight(1f)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            modifier = Modifier.weight(1f),
+                            text = conversation.interlocutor.fullName,
+                            style = MaterialTheme.typography.bodyMedium,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+
+                        Spacer(modifier = Modifier.width(MaterialTheme.spacing.smallMedium))
+
+                        Text(
+                            text = elapsedTimeValue,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = GedoiseColor.PreviewText
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(2.dp))
+
+                    lastMessage?.let {
+                        Text(
+                            text = lastMessage.text,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = GedoiseColor.PreviewText,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    } ?: run {
+                        Text(
+                            text = stringResource(id = R.string.tap_to_chat),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = GedoiseColor.PreviewText,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                 }
@@ -167,16 +187,15 @@ fun ConversationItem(
 @Preview(showBackground = true)
 @Composable
 private fun ReadConversationItemPreview() {
-    val conversationPreview = ConversationPreview(
+    val conversation = Conversation(
         id = "1",
         interlocutor = userFixture2,
-        lastMessage = messageFixture2,
-        isRead = true
+        messages = messagesFixture,
     )
     GedoiseTheme {
         ConversationItem(
             modifier = Modifier.fillMaxWidth(),
-            conversationPreview = conversationPreview,
+            conversation = conversation,
             onClick = { },
             onLongClick = { }
         )
@@ -186,16 +205,15 @@ private fun ReadConversationItemPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun UnreadConversationItemPreview() {
-    val conversationPreview = ConversationPreview(
+    val conversation = Conversation(
         id = "1",
         interlocutor = userFixture2,
-        lastMessage = messageFixture2,
-        isRead = false
+        messages = messagesFixture,
     )
     GedoiseTheme {
         ConversationItem(
             modifier = Modifier.fillMaxWidth(),
-            conversationPreview = conversationPreview,
+            conversation = conversation,
             onClick = { },
             onLongClick = { }
         )
