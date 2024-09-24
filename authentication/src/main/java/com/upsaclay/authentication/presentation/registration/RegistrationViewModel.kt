@@ -13,7 +13,6 @@ import com.upsaclay.common.domain.model.User
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 internal const val MAX_REGISTRATION_STEP = 3
@@ -23,7 +22,7 @@ class RegistrationViewModel(
     private val registrationUseCase: RegistrationUseCase,
 ) : ViewModel() {
     private val _registrationState = MutableStateFlow(RegistrationState.NOT_REGISTERED)
-    val registrationState: StateFlow<RegistrationState> = _registrationState.asStateFlow()
+    val registrationState: StateFlow<RegistrationState> = _registrationState
     var email by mutableStateOf("")
         private set
     var password by mutableStateOf("")

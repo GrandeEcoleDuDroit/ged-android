@@ -8,7 +8,7 @@ interface AnnouncementRepository {
 
     suspend fun refreshAnnouncements()
 
-    suspend fun getAnnouncement(id: Int): Announcement?
+    suspend fun getAnnouncement(announcementId: Int): Announcement?
 
     suspend fun createAnnouncement(announcement: Announcement): Result<Int>
 

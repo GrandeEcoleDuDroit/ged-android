@@ -23,7 +23,7 @@ sealed class BottomNavigationItem(
     ) : BottomNavigationItem(screen, label, badges, hasNews, icon, iconDescription)
 
     data class Message(
-        override val screen: Screen = Screen.MESSAGES,
+        override val screen: Screen = Screen.CONVERSATIONS,
         override val label: Int = R.string.message,
         override var badges: Int = 0,
         override var hasNews: Boolean = false,

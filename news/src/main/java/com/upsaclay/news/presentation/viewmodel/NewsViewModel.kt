@@ -6,31 +6,36 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upsaclay.common.domain.model.User
-import com.upsaclay.common.domain.usecase.GetUserUseCase
+import com.upsaclay.common.domain.usecase.GetCurrentUserFlowUseCase
 import com.upsaclay.news.domain.model.Announcement
 import com.upsaclay.news.domain.model.AnnouncementState
 import com.upsaclay.news.domain.usecase.ConvertAnnouncementToJsonUseCase
 import com.upsaclay.news.domain.usecase.DeleteAnnouncementUseCase
 import com.upsaclay.news.domain.usecase.GetAllAnnouncementsUseCase
 import com.upsaclay.news.domain.usecase.GetAnnouncementUseCase
+import com.upsaclay.news.domain.usecase.GetOnlineUserUseCase
 import com.upsaclay.news.domain.usecase.RefreshAnnouncementsUseCase
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class NewsViewModel(
     getAllAnnouncementUseCase: GetAllAnnouncementsUseCase,
-    getUserUseCase: GetUserUseCase,
+    getCurrentUserFlowUseCase: GetCurrentUserFlowUseCase,
     private val refreshAnnouncementsUseCase: RefreshAnnouncementsUseCase,
     private val deleteAnnouncementUseCase: DeleteAnnouncementUseCase,
     private val convertAnnouncementToJsonUseCase: ConvertAnnouncementToJsonUseCase,
-    private val getAnnouncementUseCase: GetAnnouncementUseCase
+    private val getAnnouncementUseCase: GetAnnouncementUseCase,
+    private val getOnlineUserUseCase: GetOnlineUserUseCase
 ): ViewModel() {
+    private val _onlineUsers = MutableStateFlow(emptyList<User>())
+    val onlineUsers: StateFlow<List<User>> = _onlineUsers
     private val _announcementState = MutableStateFlow(AnnouncementState.DEFAULT)
     val announcementState: Flow<AnnouncementState> = _announcementState
     val announcements: Flow<List<Announcement>> = getAllAnnouncementUseCase()
-    val user: Flow<User?> = getUserUseCase()
+    val user: Flow<User?> = getCurrentUserFlowUseCase()
     var displayedAnnouncement: Announcement? = null
         private set
     var isRefreshing by mutableStateOf(false)
@@ -72,6 +77,12 @@ class NewsViewModel(
             deleteAnnouncementUseCase(announcement)
                 .onSuccess { _announcementState.value = AnnouncementState.ANNOUNCEMENT_DELETED }
                 .onFailure { _announcementState.value = AnnouncementState.ANNOUNCEMENT_DELETE_ERROR }
+        }
+    }
+
+    fun getOnlineUsers() {
+        viewModelScope.launch {
+            _onlineUsers.value = getOnlineUserUseCase()
         }
     }
 }

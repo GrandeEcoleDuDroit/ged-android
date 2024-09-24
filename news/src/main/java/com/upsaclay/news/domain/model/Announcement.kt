@@ -9,4 +9,7 @@ data class Announcement(
     val content: String,
     val date: LocalDateTime,
     val author: User
-)
+) {
+    fun isUpdated(announcement: Announcement): Boolean =
+        announcement.id == this.id && announcement.date != this.date
+}

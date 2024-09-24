@@ -27,15 +27,14 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.SmallTopBarEdit
+import com.upsaclay.common.presentation.components.TransparentFocusedTextField
+import com.upsaclay.common.presentation.components.TransparentTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.showToast
 import com.upsaclay.news.R
 import com.upsaclay.news.announcementFixture
 import com.upsaclay.news.domain.model.AnnouncementState
-import com.upsaclay.news.presentation.components.AnnouncementItem
-import com.upsaclay.news.presentation.components.TransparentFocusedTextField
-import com.upsaclay.news.presentation.components.TransparentTextField
 import com.upsaclay.news.presentation.viewmodel.EditAnnouncementViewModel
 import java.time.LocalDateTime
 
@@ -74,13 +73,12 @@ fun EditAnnouncementScreen(
     }
 
     if(showLoadingDialog) {
-        LoadingDialog(text = stringResource(id = com.upsaclay.common.R.string.loading))
+        LoadingDialog()
     }
 
     Scaffold(
         topBar = {
             SmallTopBarEdit(
-                title = stringResource(id = R.string.announcement),
                 onCancelClick = {
                     focusManager.clearFocus()
                     keyboardController?.hide()
@@ -110,9 +108,7 @@ fun EditAnnouncementScreen(
                 .fillMaxSize()
         ) {
             Column {
-                AnnouncementItem(announcement = editAnnouncementViewModel.editedAnnouncement)
-
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
 
                 TransparentFocusedTextField(
                     modifier = Modifier.fillMaxWidth(),
@@ -128,7 +124,7 @@ fun EditAnnouncementScreen(
                     textStyle = MaterialTheme.typography.titleMedium,
                 )
 
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
 
                 TransparentTextField(
                     modifier = Modifier.fillMaxWidth(),
@@ -147,6 +143,12 @@ fun EditAnnouncementScreen(
     }
 }
 
+/*
+ =====================================================================
+                                Preview
+ =====================================================================
+ */
+
 @Preview
 @Composable
 private fun EditAnnouncementScreenPreview() {
@@ -157,7 +159,6 @@ private fun EditAnnouncementScreenPreview() {
         Scaffold (
             topBar = {
                 SmallTopBarEdit(
-                    title = stringResource(id = R.string.announcement),
                     onCancelClick = { },
                     onSaveClick = { }
                 )
@@ -173,9 +174,7 @@ private fun EditAnnouncementScreenPreview() {
                     )
                     .fillMaxSize()
             ) {
-                AnnouncementItem(announcement = announcementFixture)
-
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
 
                 TransparentFocusedTextField(
                     defaultValue = title ?: "",
@@ -189,7 +188,7 @@ private fun EditAnnouncementScreenPreview() {
                     textStyle = MaterialTheme.typography.titleMedium,
                 )
 
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
 
                 TransparentTextField(
                     value = content,

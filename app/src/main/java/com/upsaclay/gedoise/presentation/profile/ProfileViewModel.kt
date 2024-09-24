@@ -4,15 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upsaclay.authentication.domain.repository.AuthenticationRepository
 import com.upsaclay.common.domain.model.User
-import com.upsaclay.common.domain.usecase.GetUserUseCase
+import com.upsaclay.common.domain.usecase.GetCurrentUserFlowUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class ProfileViewModel(
     private val authenticationRepository: AuthenticationRepository,
-    getUserUseCase: GetUserUseCase
+    getCurrentUserFlowUseCase: GetCurrentUserFlowUseCase
 ) : ViewModel() {
-    val user: Flow<User?> = getUserUseCase()
+    val user: Flow<User?> = getCurrentUserFlowUseCase()
 
     fun logout() {
         viewModelScope.launch {

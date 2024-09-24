@@ -80,6 +80,12 @@ internal fun RegistrationTopBar(
     }
 }
 
+/*
+ =====================================================================
+                                Preview
+ =====================================================================
+ */
+
 @Preview
 @Composable
 internal fun RegistrationTopBarPreview() {

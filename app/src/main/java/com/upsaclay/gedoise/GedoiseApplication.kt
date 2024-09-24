@@ -3,6 +3,7 @@ package com.upsaclay.gedoise
 import android.app.Application
 import com.upsaclay.authentication.authenticationModule
 import com.upsaclay.common.coreModule
+import com.upsaclay.message.messageModule
 import com.upsaclay.news.newsModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -21,7 +22,8 @@ class GedoiseApplication : Application() {
                     appModule,
                     authenticationModule,
                     coreModule,
-                    newsModule
+                    newsModule,
+                    messageModule
                 )
             )
         }

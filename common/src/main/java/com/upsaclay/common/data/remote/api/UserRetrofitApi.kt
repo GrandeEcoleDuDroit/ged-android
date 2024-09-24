@@ -12,7 +12,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 
-internal interface UserRemoteApi {
+internal interface UserRetrofitApi {
 
     @GET("users/{id}")
     suspend fun getUser(@Path("id") userId: Int): Response<UserDTO>

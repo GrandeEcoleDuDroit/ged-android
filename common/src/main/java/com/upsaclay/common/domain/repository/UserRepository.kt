@@ -4,9 +4,16 @@ import com.upsaclay.common.domain.model.User
 import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
-    val user: Flow<User>
+    val currentUserFlow: Flow<User>
+    val currentUser: User?
 
-    suspend fun createUser(user: User): Result<Int>
+    suspend fun createUser(user: User): Int?
+
+    suspend fun getUser(userId: Int): User?
+
+    suspend fun getAllUsers(): List<User>
+
+    suspend fun getOnlineUsers(): List<User>
 
     suspend fun updateProfilePictureUrl(userId: Int, profilePictureUrl: String): Result<Unit>
 

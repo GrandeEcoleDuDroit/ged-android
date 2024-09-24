@@ -1,10 +1,17 @@
 package com.upsaclay.common.domain.model
 
+import java.time.LocalDateTime
+
 sealed class ElapsedTime {
-    data object Now: ElapsedTime()
+    data class Now(val value: Long): ElapsedTime()
+
     data class Minute(val value: Long) : ElapsedTime()
+
     data class Hour(val value: Long) : ElapsedTime()
+
     data class Day(val value: Long) : ElapsedTime()
+
     data class Week(val value: Long): ElapsedTime()
-    data object After: ElapsedTime()
+
+    data class Later(val value: LocalDateTime): ElapsedTime()
 }
