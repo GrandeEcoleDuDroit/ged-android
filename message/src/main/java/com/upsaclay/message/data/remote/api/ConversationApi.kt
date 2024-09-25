@@ -1,11 +1,12 @@
 package com.upsaclay.message.data.remote.api
 
-import com.upsaclay.message.data.remote.RemoteConversation
+import com.upsaclay.message.data.remote.model.RemoteConversation
+import kotlinx.coroutines.flow.Flow
 
-internal interface ConversationApi {
-    suspend fun getConversation(conversationId: String): RemoteConversation?
+interface ConversationApi {
+    fun getAllConversations(userId: String): Flow<List<RemoteConversation>>
 
-    suspend fun getAllConversations(userId: String): List<RemoteConversation>
+    fun updateConversation(remoteConversation: RemoteConversation)
 
-    fun createConversation(conversation: RemoteConversation)
+    suspend fun createConversation(remoteConversation: RemoteConversation): String
 }

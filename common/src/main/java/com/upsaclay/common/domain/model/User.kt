@@ -9,12 +9,9 @@ data class User(
     val email: String,
     val schoolLevel: String,
     val isMember: Boolean = false,
-    val profilePictureUrl: String? = null,
-    val isOnline: Boolean = false
+    val profilePictureUrl: String? = null
 ) {
     val fullName: String = "${firstName.capitalizeFirstLetter()} ${lastName.capitalizeFirstLetter()}"
-
-    val shortName: String = "${firstName[0].lowercase()}${lastName.lowercase()}"
 
     fun isUpdated(user: User): Boolean {
         return this.id == user.id &&

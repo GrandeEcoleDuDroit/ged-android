@@ -3,8 +3,6 @@ package com.upsaclay.message.utils
 import com.upsaclay.common.utils.userFixture
 import com.upsaclay.common.utils.userFixture2
 import com.upsaclay.message.domain.model.Conversation
-import com.upsaclay.message.domain.model.ConversationPreview
-import com.upsaclay.message.domain.model.Message
 import java.time.LocalDateTime
 
 val messageFixture = Message(

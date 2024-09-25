@@ -1,12 +1,12 @@
 package com.upsaclay.message.domain.model
 
-import com.upsaclay.common.domain.model.User
 import java.time.LocalDateTime
 
 data class Message(
-    val id: String = "",
+    val id: String,
+    val senderId: String,
     val text: String,
     val date: LocalDateTime,
-    val sender: User,
-    val isRead: Boolean
+    val isRead: Boolean,
+    val type: String
 )

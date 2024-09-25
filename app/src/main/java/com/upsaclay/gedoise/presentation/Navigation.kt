@@ -30,7 +30,6 @@ import com.upsaclay.message.presentation.screen.ChatScreen
 import com.upsaclay.message.presentation.screen.ConversationScreen
 import com.upsaclay.message.presentation.screen.CreateConversationScreen
 import com.upsaclay.message.presentation.screen.CreateGroupConversationScreen
-import com.upsaclay.message.presentation.viewmodel.ChatViewModel
 import com.upsaclay.message.presentation.viewmodel.ConversationViewModel
 import com.upsaclay.news.domain.usecase.ConvertAnnouncementToJsonUseCase
 import com.upsaclay.news.presentation.screen.CreateAnnouncementScreen

@@ -27,7 +27,10 @@ import org.koin.dsl.module
 import retrofit2.Retrofit
 
 val newsModule = module {
-    single { get<Retrofit>(qualifier = named(SERVER_1_RETROFIT_QUALIFIER)).create(AnnouncementApi::class.java) }
+    single {
+        get<Retrofit>(qualifier = named(SERVER_1_RETROFIT_QUALIFIER))
+            .create(AnnouncementApi::class.java)
+    }
 
     singleOf(::AnnouncementRepositoryImpl) { bind<AnnouncementRepository>() }
     singleOf(::AnnouncementRemoteDataSource)
