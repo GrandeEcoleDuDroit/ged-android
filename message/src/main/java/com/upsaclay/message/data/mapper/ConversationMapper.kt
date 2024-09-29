@@ -2,9 +2,12 @@ package com.upsaclay.message.data.mapper
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.upsaclay.message.data.local.LocalConversation
+import com.upsaclay.common.domain.model.User
+import com.upsaclay.message.data.local.model.LocalConversation
 import com.upsaclay.message.data.model.ConversationDTO
 import com.upsaclay.message.data.remote.model.RemoteConversation
+import com.upsaclay.message.domain.model.Conversation
+import com.upsaclay.message.domain.model.Message
 
 object ConversationMapper {
     private val gson = Gson()
@@ -22,17 +25,23 @@ object ConversationMapper {
         participants = gson.toJson(conversationDTO.participants)
     )
 
-    fun toLocal(remoteConversation: RemoteConversation): LocalConversation {
-        return LocalConversation(
-            conversationId = remoteConversation.conversationId,
-            participants = gson.toJson(remoteConversation.participants)
-        )
-    }
+    fun toLocal(remoteConversation: RemoteConversation) = LocalConversation(
+        conversationId = remoteConversation.conversationId,
+        participants = gson.toJson(remoteConversation.participants)
+    )
 
-    fun toRemote(conversationDTO: ConversationDTO): RemoteConversation {
-        return RemoteConversation(
-            conversationId = conversationDTO.conversationId,
-            participants = conversationDTO.participants
-        )
-    }
+    fun toRemote(conversationDTO: ConversationDTO) = RemoteConversation(
+        conversationId = conversationDTO.conversationId,
+        participants = conversationDTO.participants
+    )
+
+    fun toDomain(
+        conversationId: String,
+        interlocutor: User,
+        messages: List<Message>
+    ) = Conversation(
+        id = conversationId,
+        interlocutor = interlocutor,
+        messages = messages
+    )
 }

@@ -25,7 +25,7 @@ internal class ConversationRepositoryImpl(
         }
     }
 
-    override suspend fun listenConversations(userId: String) {
+    override suspend fun refreshConversations(userId: String) {
         conversationRemoteDataSource.getAllConversations(userId).collect { remoteConversations ->
             remoteConversations.forEach {
                 conversationLocalDataSource.upsertConversation(ConversationMapper.toLocal(it))

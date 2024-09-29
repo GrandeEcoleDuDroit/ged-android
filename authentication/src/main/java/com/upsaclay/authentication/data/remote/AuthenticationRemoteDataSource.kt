@@ -1,6 +1,5 @@
 package com.upsaclay.authentication.data.remote
 
-import com.upsaclay.authentication.domain.usecase.GenerateHashUseCase
 import com.upsaclay.common.utils.e
 import com.upsaclay.common.utils.formatHttpError
 import com.upsaclay.common.utils.i
@@ -10,14 +9,13 @@ import java.io.IOException
 
 internal class AuthenticationRemoteDataSource(
     private val authenticationApi: AuthenticationApi,
-    private val generateHashUseCase: GenerateHashUseCase
 ) {
     suspend fun login(
         email: String,
         password: String,
+        hash: String
     ): Result<Unit> = withContext(Dispatchers.IO) {
         i("Logging in with Paris-Saclay...")
-        val hash = generateHashUseCase()
         try {
             val response = authenticationApi.login(email, password, hash)
             if (response.isSuccessful) {

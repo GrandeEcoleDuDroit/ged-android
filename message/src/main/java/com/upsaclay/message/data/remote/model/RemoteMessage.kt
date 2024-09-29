@@ -13,23 +13,23 @@ data class RemoteMessage(
     @set:PropertyName(MessageField.CONVERSATION_ID)
     var conversationId: String = "",
 
-    @get:PropertyName("sender_id")
-    @set:PropertyName("sender_id")
+    @get:PropertyName(MessageField.SENDER_ID)
+    @set:PropertyName(MessageField.SENDER_ID)
     var senderId: String = "",
 
-    @get:PropertyName("text")
-    @set:PropertyName("text")
+    @get:PropertyName(MessageField.TEXT)
+    @set:PropertyName(MessageField.TEXT)
     var text: String = "",
 
-    @get:PropertyName("timestamp")
-    @set:PropertyName("timestamp")
+    @get:PropertyName(MessageField.TIMESTAMP)
+    @set:PropertyName(MessageField.TIMESTAMP)
     var timestamp: Timestamp = Timestamp.now(),
 
-    @get:PropertyName("is_read")
-    @set:PropertyName("is_read")
+    @get:PropertyName(MessageField.IS_READ)
+    @set:PropertyName(MessageField.IS_READ)
     var isRead: Boolean = false,
 
-    @get:PropertyName("type")
-    @set:PropertyName("type")
+    @get:PropertyName(MessageField.TYPE)
+    @set:PropertyName(MessageField.TYPE)
     var type: String = ""
 )

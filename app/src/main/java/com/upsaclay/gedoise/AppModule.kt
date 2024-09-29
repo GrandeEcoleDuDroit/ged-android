@@ -20,6 +20,8 @@ val appModule = module {
     }
 
     single { get<GedoiseDatabase>().announcementDao() }
+    single { get<GedoiseDatabase>().conversationDao() }
+    single { get<GedoiseDatabase>().messageDao() }
 
     viewModelOf(::MainViewModel)
     viewModelOf(::ProfileViewModel)

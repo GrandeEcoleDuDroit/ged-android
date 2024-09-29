@@ -3,27 +3,21 @@ package com.upsaclay.message.data.remote.api
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import com.upsaclay.common.utils.e
-import com.upsaclay.message.data.remote.DataField
-import com.upsaclay.message.data.remote.DataField.Conversation.CONVERSATION_ID
-import com.upsaclay.message.data.remote.TableName
+import com.upsaclay.message.data.model.MESSAGES_TABLE_NAME
+import com.upsaclay.message.data.remote.MessageField.CONVERSATION_ID
+import com.upsaclay.message.data.remote.MessageField.TIMESTAMP
 import com.upsaclay.message.data.remote.model.RemoteMessage
-import com.upsaclay.message.domain.model.Message
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
-//Fields
-private const val MESSAGE_ID = "message_id"
-private const val CONVERSATION_ID = "conversation_id"
-private const val SENDER_ID = "sender_id"
-private const val TEXT = "text"
-private const val TIMESTAMP = "timestamp"
-private const val IS_READ = "is_read"
-private const val TYPE = "type"
 
 class MessageApiImpl: MessageApi {
-    private val messagesCollection = Firebase.firestore.collection(TableName.MESSAGES.value)
+    private val messagesCollection = Firebase.firestore.collection(MESSAGES_TABLE_NAME)
 
-    override fun getLastMessages(conversationId: String): Flow<List<RemoteMessage>> = callbackFlow {
+    override fun listenLastMessages(conversationId: String): Flow<List<RemoteMessage>> = callbackFlow {
         messagesCollection.whereEqualTo(CONVERSATION_ID, conversationId)
             .orderBy(TIMESTAMP)
             .limit(10)
@@ -34,16 +28,25 @@ class MessageApiImpl: MessageApi {
                     throw it
                 }
 
-                val messages = snapshot?.toObjects(Message::class.java) ?: emptyList()
+                val messages = snapshot?.toObjects(RemoteMessage::class.java) ?: emptyList()
                 trySend(messages)
             }
     }
 
-    override fun getMessages(conversationId: String, start: Int, end: Int): List<Message> {
-        messagesCollection.whereEqualTo(CONVERSATION_ID, conversationId)
-            .startAfter(start)
-            .orderBy()
-            .limit(10)
-            .get()
+    override suspend fun getMessages(conversationId: String, start: Int): List<RemoteMessage> =
+        suspendCoroutine { continuation ->
+            messagesCollection.whereEqualTo(CONVERSATION_ID, conversationId)
+                .startAfter(start)
+                .orderBy(TIMESTAMP)
+                .limit(10)
+                .get()
+                .addOnSuccessListener {
+                    val messages = it.toObjects(RemoteMessage::class.java)
+                    continuation.resume(messages)
+                }
+                .addOnFailureListener { e ->
+                    e("Error getting messages", e)
+                    continuation.resumeWithException(e)
+                }
     }
 }

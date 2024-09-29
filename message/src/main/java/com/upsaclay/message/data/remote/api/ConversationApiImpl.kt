@@ -5,6 +5,7 @@ import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.firestore
 import com.upsaclay.common.utils.e
 import com.upsaclay.common.utils.i
+import com.upsaclay.message.data.model.CONVERSATIONS_TABLE_NAME
 import com.upsaclay.message.data.remote.model.RemoteConversation
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -13,8 +14,9 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
+
 class ConversationApiImpl: ConversationApi {
-    private val conversationsCollection = Firebase.firestore.collection("conversations")
+    private val conversationsCollection = Firebase.firestore.collection(CONVERSATIONS_TABLE_NAME)
     private val lastConversations = emptyList<RemoteConversation>()
 
     override fun getAllConversations(userId: String): Flow<List<RemoteConversation>> = callbackFlow {
