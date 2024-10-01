@@ -4,8 +4,9 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Ease
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.slideIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -45,6 +46,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import com.upsaclay.common.domain.model.Screen
@@ -111,7 +113,7 @@ fun ConversationScreen(
                         modifier = Modifier.fillMaxWidth(),
                         conversation = conversation,
                         onClick = {
-                            navController.navigate(Screen.CHAT.route + "?conversationId=${conversation.id}")
+//                            navController.navigate(Screen.CHAT.route + "?conversationId=${conversation.id}")
                         },
                         onLongClick = { }
                     )
@@ -146,15 +148,15 @@ private fun FloatingActionButtonSection(
         modifier = modifier
             .padding(MaterialTheme.spacing.medium)
             .zIndex(2000f),
-        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.smallMedium),
         horizontalAlignment = Alignment.End
     ) {
         AnimatedVisibility(
             visible = expanded,
-            enter = fadeIn(initialAlpha = 0.0f),
-            exit = fadeOut(targetAlpha = 0.0f)
+            enter = scaleIn(initialScale = 0.5f) + slideIn { fullSize -> IntOffset(0, fullSize.height) },
+            exit = fadeOut()
         ) {
             Row(
+                modifier = Modifier.padding(bottom = MaterialTheme.spacing.smallMedium),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.smallMedium)
             ) {

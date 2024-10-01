@@ -18,18 +18,17 @@ import kotlin.coroutines.suspendCoroutine
 class MessageApiImpl: MessageApi {
     private val conversationCollection = Firebase.firestore.collection(CONVERSATIONS_TABLE_NAME)
 
-    override fun listenLastMessage(conversationId: String): Flow<RemoteMessage> = callbackFlow {
+    override fun listenLastMessages(conversationId: String): Flow<List<RemoteMessage>> = callbackFlow {
         val listener = conversationCollection.document(conversationId)
             .collection(MESSAGES_TABLE_NAME)
             .orderBy(TIMESTAMP, Query.Direction.DESCENDING)
-            .limit(1)
             .addSnapshotListener { snapshot, error ->
                 error?.let {
                     e("Error getting last messages", it)
                     close(it)
                 }
 
-                snapshot?.toObjects(RemoteMessage::class.java)?.firstOrNull()?.let { trySend(it) }
+                snapshot?.toObjects(RemoteMessage::class.java)?.let { trySend(it) }
             }
         awaitClose { listener.remove() }
     }

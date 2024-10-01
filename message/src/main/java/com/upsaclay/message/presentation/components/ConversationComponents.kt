@@ -3,6 +3,7 @@ package com.upsaclay.message.presentation.components
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -44,7 +45,7 @@ fun ConversationItem(
     onClick: () -> Unit,
     onLongClick: () -> Unit
 ) {
-    val lastMessage = conversation.messages.lastOrNull()
+    val lastMessage = conversation.messages.firstOrNull()
     val getElapsedTimeUseCase = GetElapsedTimeUseCase()
     val localDateTimeFormatterUseCase = LocalDateTimeFormatterUseCase()
 
@@ -76,7 +77,10 @@ fun ConversationItem(
                 onClick = onClick,
                 onLongClick = onLongClick
             )
-            .padding(MaterialTheme.spacing.smallMedium),
+            .padding(
+                horizontal = MaterialTheme.spacing.medium,
+                vertical = MaterialTheme.spacing.smallMedium
+            ),
         verticalAlignment = Alignment.CenterVertically
     ) {
         ProfilePicture(
@@ -86,7 +90,10 @@ fun ConversationItem(
 
         Spacer(modifier = Modifier.width(MaterialTheme.spacing.smallMedium))
 
-        Row(verticalAlignment = Alignment.Top) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+        ) {
             if (unreadMessage) {
                 Column(modifier = Modifier.weight(1f)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -118,17 +125,15 @@ fun ConversationItem(
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
-
-                        Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))
-
-                        Box(
-                            modifier = Modifier
-                                .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.error)
-                                .size(10.dp)
-                        )
                     }
                 }
+
+                Box(
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.error)
+                        .size(10.dp)
+                )
 
             } else {
                 Column(modifier = Modifier.weight(1f)) {

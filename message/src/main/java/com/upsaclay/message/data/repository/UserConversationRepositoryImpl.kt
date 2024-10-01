@@ -39,9 +39,9 @@ class UserConversationRepositoryImpl(
 
                 newsConversationsDTO.forEach { conversationDTO ->
                     launch {
-                        messageRepository.listenLastMessage(conversationDTO.conversationId).collect { messageDTO ->
-                            val messages = MessageMapper.toDomain(messageDTO)
-                            updateConversationMessages(conversationDTO.conversationId, messages)
+                        messageRepository.listenLastMessages(conversationDTO.conversationId).collect { messagesDTO ->
+                            val messages = messagesDTO.map(MessageMapper::toDomain)
+                            addNewConversationMessages(conversationDTO.conversationId, messages)
                         }
                     }
                 }
@@ -62,12 +62,11 @@ class UserConversationRepositoryImpl(
         _conversations.value = conversations
     }
 
-    private fun updateConversationMessages(conversationId: String, message: Message) {
+    private fun addNewConversationMessages(conversationId: String, messages: List<Message>) {
         _conversations.value = _conversations.value.map { conversation ->
             if (conversation.id == conversationId) {
-                val messages = conversation.messages.toMutableList()
-                messages.add(0, message)
-                conversation.copy(messages = messages)
+                val updatedMessages = messages.filterNot { conversation.messages.contains(it) } + conversation.messages
+                conversation.copy(messages = updatedMessages)
             } else {
                 conversation
             }

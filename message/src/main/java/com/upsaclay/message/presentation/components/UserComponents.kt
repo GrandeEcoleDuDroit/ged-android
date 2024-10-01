@@ -27,7 +27,10 @@ fun UserItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(MaterialTheme.spacing.smallMedium),
+            .padding(
+                horizontal = MaterialTheme.spacing.medium,
+                vertical = MaterialTheme.spacing.smallMedium
+            ),
         verticalAlignment = Alignment.CenterVertically
     ) {
         ProfilePicture(imageUrl = user.profilePictureUrl, scaleImage = 0.5f)
