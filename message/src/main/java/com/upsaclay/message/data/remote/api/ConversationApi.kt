@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 interface ConversationApi {
     fun listenAllConversations(userId: Int): Flow<List<RemoteConversation>>
 
-    fun updateConversation(remoteConversation: RemoteConversation)
-
     suspend fun createConversation(remoteConversation: RemoteConversation): String
+
+    fun updateConversation(remoteConversation: RemoteConversation)
 }

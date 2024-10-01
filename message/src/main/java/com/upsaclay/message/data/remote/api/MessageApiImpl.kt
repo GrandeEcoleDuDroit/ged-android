@@ -12,7 +12,6 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 
@@ -28,7 +27,6 @@ class MessageApiImpl: MessageApi {
                 error?.let {
                     e("Error getting last messages", it)
                     close(it)
-                    throw it
                 }
 
                 snapshot?.toObjects(RemoteMessage::class.java)?.firstOrNull()?.let { trySend(it) }
@@ -49,7 +47,7 @@ class MessageApiImpl: MessageApi {
                 }
                 .addOnFailureListener { e ->
                     e("Error getting messages", e)
-                    continuation.resumeWithException(e)
+                    continuation.resume(emptyList())
                 }
     }
 }

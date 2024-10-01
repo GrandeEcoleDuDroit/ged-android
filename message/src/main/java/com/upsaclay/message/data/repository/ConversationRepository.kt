@@ -8,7 +8,7 @@ interface ConversationRepository {
 
     suspend fun listenAllConversations(userId: Int)
 
-    suspend fun updateConversation(conversationDTO: ConversationDTO)
-
     suspend fun createConversation(conversationDTO: ConversationDTO)
+
+    suspend fun updateConversation(conversationDTO: ConversationDTO)
 }

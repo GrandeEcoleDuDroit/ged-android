@@ -25,8 +25,8 @@ class ConversationApiImpl: ConversationApi {
                 error?.let {
                     e("Error getting conversations", it)
                     close(it)
-                    throw it
                 }
+
                 val conversations = value?.let {
                     when (it.size()) {
                         0 -> emptyList()
@@ -43,18 +43,6 @@ class ConversationApiImpl: ConversationApi {
         awaitClose { listener.remove() }
     }
 
-    override fun updateConversation(remoteConversation: RemoteConversation) {
-        conversationsCollection.document(remoteConversation.conversationId)
-            .set(remoteConversation, SetOptions.merge())
-            .addOnSuccessListener {
-                i("Conversation updated successfully")
-            }
-            .addOnFailureListener { e ->
-                e("Error updating conversations", e)
-                throw e
-            }
-    }
-
     override suspend fun createConversation(remoteConversation: RemoteConversation): String {
         return suspendCoroutine { continuation ->
             conversationsCollection.add(remoteConversation)
@@ -67,5 +55,16 @@ class ConversationApiImpl: ConversationApi {
                     continuation.resumeWithException(e)
                 }
         }
+    }
+
+    override fun updateConversation(remoteConversation: RemoteConversation) {
+        conversationsCollection.document(remoteConversation.conversationId)
+            .set(remoteConversation, SetOptions.merge())
+            .addOnSuccessListener {
+                i("Conversation updated successfully")
+            }
+            .addOnFailureListener { e ->
+                e("Error updating conversations", e)
+            }
     }
 }

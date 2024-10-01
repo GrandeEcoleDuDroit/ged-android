@@ -33,13 +33,13 @@ internal class ConversationRepositoryImpl(
         }
     }
 
-    override suspend fun updateConversation(conversationDTO: ConversationDTO) {
-        conversationRemoteDataSource.updateConversation(ConversationMapper.toRemote(conversationDTO))
+    override suspend fun createConversation(conversationDTO: ConversationDTO) {
+        conversationRemoteDataSource.createConversation(ConversationMapper.toRemote(conversationDTO))
         conversationLocalDataSource.upsertConversation(ConversationMapper.toLocal(conversationDTO))
     }
 
-    override suspend fun createConversation(conversationDTO: ConversationDTO) {
-        conversationRemoteDataSource.createConversation(ConversationMapper.toRemote(conversationDTO))
+    override suspend fun updateConversation(conversationDTO: ConversationDTO) {
+        conversationRemoteDataSource.updateConversation(ConversationMapper.toRemote(conversationDTO))
         conversationLocalDataSource.upsertConversation(ConversationMapper.toLocal(conversationDTO))
     }
 }
