@@ -3,7 +3,6 @@ package com.upsaclay.common.presentation.components
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -25,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.upsaclay.common.R
+import com.upsaclay.common.presentation.theme.GedoiseColor
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.spacing
 
@@ -78,32 +78,6 @@ fun ProfilePictureWithIcon(
 fun ProfilePicture(
     modifier: Modifier = Modifier,
     scaleImage: Float = 1f,
-    imageUri: Uri?,
-    onClick: (() -> Unit)? = null
-) {
-    AsyncImage(
-        model = imageUri ?: R.drawable.default_profile_picture,
-        contentDescription = "",
-        contentScale = ContentScale.Crop,
-        modifier = onClick?.let {
-            modifier
-                .size(100.dp * scaleImage)
-                .clip(CircleShape)
-                .border(1.dp, Color.LightGray, CircleShape)
-                .clickable(onClick = it)
-        } ?: run {
-            modifier
-                .size(100.dp * scaleImage)
-                .clip(CircleShape)
-                .border(1.dp, Color.LightGray, CircleShape)
-        }
-    )
-}
-
-@Composable
-fun ProfilePicture(
-    modifier: Modifier = Modifier,
-    scaleImage: Float = 1f,
     imageUrl: String?,
     onClick: (() -> Unit)? = null
 ) {
@@ -115,14 +89,55 @@ fun ProfilePicture(
             modifier
                 .size(100.dp * scaleImage)
                 .clip(CircleShape)
-                .border(1.dp, Color.LightGray, CircleShape)
                 .clickable(onClick = it)
         } ?: run {
             modifier
                 .size(100.dp * scaleImage)
                 .clip(CircleShape)
-                .border(1.dp, Color.LightGray, CircleShape)
         }
+    )
+}
+
+@Composable
+fun ProfilePicture(
+    modifier: Modifier = Modifier,
+    scaleImage: Float = 1f,
+    imageUri: Uri?,
+    onClick: (() -> Unit)? = null
+) {
+    AsyncImage(
+        model = imageUri ?: R.drawable.default_profile_picture,
+        contentDescription = "",
+        contentScale = ContentScale.Crop,
+        modifier = onClick?.let {
+            modifier
+                .size(100.dp * scaleImage)
+                .clip(CircleShape)
+                .clickable(onClick = it)
+        } ?: run {
+            modifier
+                .size(100.dp * scaleImage)
+                .clip(CircleShape)
+        }
+    )
+}
+
+@Composable
+fun ProfilePictureWithBubble(
+    modifier: Modifier = Modifier,
+    scale: Float = 1f,
+    imageUrl: String?,
+    bubbleBackgroundColor: Color,
+    contentDescription: String,
+    onClick: (() -> Unit)? = null
+) {
+    ImageWithBubble(
+        modifier = modifier,
+        model = imageUrl ?: R.drawable.default_profile_picture,
+        scale = scale,
+        bubbleBackgroundColor = bubbleBackgroundColor,
+        contentDescription = contentDescription,
+        onClick = onClick
     )
 }
 
@@ -147,14 +162,12 @@ private fun ImageWithIcon(
                     .align(Alignment.Center)
                     .size(100.dp * scale)
                     .clip(CircleShape)
-                    .border(1.dp, Color.LightGray, CircleShape)
                     .clickable(onClick = it)
             } ?: run {
                 Modifier
                     .align(Alignment.Center)
                     .size(100.dp * scale)
                     .clip(CircleShape)
-                    .border(1.dp, Color.LightGray, CircleShape)
             }
         )
 
@@ -186,6 +199,59 @@ private fun ImageWithIcon(
         }
     }
 }
+
+@Composable
+private fun ImageWithBubble(
+    modifier: Modifier,
+    scale: Float = 1f,
+    model: Any,
+    bubbleBackgroundColor: Color,
+    contentDescription: String,
+    onClick: (() -> Unit)?
+) {
+    Box(modifier = modifier.size(100.dp * scale)) {
+        AsyncImage(
+            model = model,
+            contentDescription = contentDescription,
+            contentScale = ContentScale.Crop,
+            modifier = onClick?.let {
+                Modifier
+                    .align(Alignment.Center)
+                    .size(100.dp * scale)
+                    .clip(CircleShape)
+                    .clickable(onClick = it)
+            } ?: run {
+                Modifier
+                    .align(Alignment.Center)
+                    .size(100.dp * scale)
+                    .clip(CircleShape)
+            }
+        )
+
+        Box(
+            modifier = onClick?.let {
+                Modifier
+                    .clip(CircleShape)
+                    .background(bubbleBackgroundColor)
+                    .align(Alignment.BottomEnd)
+                    .size(30.dp * scale)
+                    .clickable(onClick = it)
+            } ?: run {
+                Modifier
+                    .clip(CircleShape)
+                    .background(bubbleBackgroundColor)
+                    .align(Alignment.BottomEnd)
+                    .size(30.dp * scale)
+            }
+        )
+    }
+}
+
+/*
+ =====================================================================
+                                Preview
+ =====================================================================
+ */
 
 @Preview
 @Composable
@@ -224,73 +290,6 @@ private fun ProfilePictureWithIconPreview() {
     }
 }
 
-// Not used but can be useful
-/*
-@Composable
-fun ProfilePictureWithBubble(
-    modifier: Modifier = Modifier,
-    scale: Float = 1f,
-    imageUrl: String?,
-    bubbleBackgroundColor: Color,
-    onClick: (() -> Unit)? = null
-) {
-    ImageWithBubble(
-        modifier = modifier,
-        model = imageUrl ?: R.drawable.default_profile_picture,
-        scale = scale,
-        bubbleBackgroundColor = bubbleBackgroundColor,
-        onClick = onClick
-    )
-}
-
-@Composable
-private fun ImageWithBubble(
-    modifier: Modifier,
-    scale: Float = 1f,
-    model: Any,
-    bubbleBackgroundColor: Color,
-    onClick: (() -> Unit)?
-) {
-    Box(modifier = modifier.size(100.dp * scale)) {
-        AsyncImage(
-            model = model,
-            contentDescription = "",
-            contentScale = ContentScale.Crop,
-            modifier = onClick?.let {
-                Modifier
-                    .align(Alignment.Center)
-                    .size(100.dp * scale)
-                    .clip(CircleShape)
-                    .border(1.dp, Color.LightGray, CircleShape)
-                    .clickable(onClick = it)
-            } ?: run {
-                Modifier
-                    .align(Alignment.Center)
-                    .size(100.dp * scale)
-                    .clip(CircleShape)
-                    .border(1.dp, Color.LightGray, CircleShape)
-            }
-        )
-
-        Box(
-            modifier = onClick?.let {
-                Modifier
-                    .clip(CircleShape)
-                    .background(bubbleBackgroundColor)
-                    .align(Alignment.BottomEnd)
-                    .size(30.dp * scale)
-                    .clickable(onClick = it)
-            } ?: run {
-                Modifier
-                    .clip(CircleShape)
-                    .background(bubbleBackgroundColor)
-                    .align(Alignment.BottomEnd)
-                    .size(30.dp * scale)
-            }
-        )
-    }
-}
-
 @Preview
 @Composable
 private fun ProfilePictureWithBubblePreview() {
@@ -302,10 +301,12 @@ private fun ProfilePictureWithBubblePreview() {
             )
             ProfilePictureWithBubble(
                 imageUrl = null,
-                bubbleBackgroundColor = Color.Green,
+                bubbleBackgroundColor = GedoiseColor.OnlineColor,
+                contentDescription = "",
                 onClick = {}
             )
         }
     }
 }
-*/
+
+

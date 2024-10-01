@@ -28,11 +28,17 @@
     <string name="last_name">Nom</string>
     <string name="email">Adresse mail</string>
 
-    <string name="now">À l\'instant</string>
-    <string name="minute_ago">%d min</string>
-    <string name="hour_ago">%d h</string>
-    <string name="day_ago">%d j</string>
-    <string name="week_ago">%d sem</string>
-
     <string name="discard_modification_dialog_text">Abandonner les modifications ?</string>
+
+    <string name="now">Maintenant</string>
+    <string name="second_ago_short">%d sec</string>
+    <string name="minute_ago_short">%d min</string>
+    <string name="hour_ago_short">%d h</string>
+    <string name="day_ago_short">%d j</string>
+    <string name="week_ago_short">%d sem</string>
+
+    <string name="minute_ago_medium">%d minutes</string>
+    <string name="hour_ago_medium">%d heures</string>
+    <string name="day_ago_medium">%d jours</string>
+    <string name="week_ago_medium">%d semaines</string>
 </resources>

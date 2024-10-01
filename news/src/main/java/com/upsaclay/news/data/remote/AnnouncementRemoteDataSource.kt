@@ -15,7 +15,7 @@ internal class AnnouncementRemoteDataSource(
 ) {
     suspend fun getAllAnnouncement(): List<Announcement> = withContext(Dispatchers.IO) {
         try {
-            i("Retrieving all remote announcements...")
+            i("Getting all remote announcements...")
             val response = announcementApi.getAllAnnouncement()
             if(response.isSuccessful) {
                 val announcementsWithUserDTO = response.body().takeIf {
@@ -23,13 +23,13 @@ internal class AnnouncementRemoteDataSource(
                 } ?: emptyList()
                 announcementsWithUserDTO.map { it.toDomain() }
             } else {
-                val errorMessage = formatHttpError("Error retrieving all remote announcement", response)
+                val errorMessage = formatHttpError("Error getting all remote announcement", response)
                 e(errorMessage)
                 emptyList()
             }
 
         } catch (e: Exception){
-            e("Error retrieving all remote announcements: ${e.message}")
+            e("Error getting all remote announcements: ${e.message}")
             emptyList()
         }
     }

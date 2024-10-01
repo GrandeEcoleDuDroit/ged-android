@@ -6,7 +6,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
@@ -26,6 +25,10 @@ import com.upsaclay.common.presentation.components.SmallTopBarBack
 import com.upsaclay.gedoise.data.BottomNavigationItem
 import com.upsaclay.gedoise.presentation.profile.ProfileScreen
 import com.upsaclay.gedoise.presentation.profile.account.AccountScreen
+import com.upsaclay.message.presentation.screen.ConversationScreen
+import com.upsaclay.message.presentation.screen.CreateConversationScreen
+import com.upsaclay.message.presentation.screen.CreateGroupConversationScreen
+import com.upsaclay.message.presentation.viewmodel.ConversationViewModel
 import com.upsaclay.news.domain.usecase.ConvertAnnouncementToJsonUseCase
 import com.upsaclay.news.presentation.screen.CreateAnnouncementScreen
 import com.upsaclay.news.presentation.screen.EditAnnouncementScreen
@@ -41,9 +44,12 @@ import org.koin.java.KoinJavaComponent.inject
 fun Navigation(mainViewModel: MainViewModel = koinViewModel()) {
     val navController = rememberNavController()
     val user = mainViewModel.user.collectAsState(null).value
-    val isAuthenticated by mainViewModel.isAuthenticated.collectAsState(false)
+    val isAuthenticated = mainViewModel.isAuthenticated.collectAsState(false).value
+
     val sharedRegistrationViewModel: RegistrationViewModel = koinViewModel()
     val sharedNewsViewModel: NewsViewModel = koinViewModel()
+    val sharedConversationViewModel: ConversationViewModel = koinViewModel()
+
     val convertAnnouncementToJsonUseCase: ConvertAnnouncementToJsonUseCase by inject(ConvertAnnouncementToJsonUseCase::class.java)
     val startDestination = if (isAuthenticated) {
         Screen.NEWS.route
@@ -136,17 +142,76 @@ fun Navigation(mainViewModel: MainViewModel = koinViewModel()) {
             } ?: navController.popBackStack()
         }
 
-        composable(Screen.MESSAGES.route) {
+        composable(Screen.CONVERSATIONS.route) {
             user?.let {
                 MainNavigationBars(
                     navController = navController,
                     bottomNavigationItems = mainViewModel.bottomNavigationItem.values.toList(),
                     user = user
                 ) {
-                    Text(text = "Message")
+                    ConversationScreen(
+                        navController = navController,
+                        conversationViewModel = sharedConversationViewModel
+                    )
                 }
             }
         }
+
+        composable(Screen.CREATE_CONVERSATION.route) {
+            Scaffold(
+                topBar = {
+                    SmallTopBarBack(
+                        onBackClick = { navController.popBackStack() },
+                        title = stringResource(id = com.upsaclay.message.R.string.new_conversation)
+                    )
+                }
+            ) { innerPadding ->
+                CreateConversationScreen(
+                    modifier = Modifier.padding(top = innerPadding.calculateTopPadding()),
+                    navController = navController,
+                    conversationViewModel = sharedConversationViewModel
+                )
+            }
+        }
+
+        composable(Screen.CREATE_GROUP_CONVERSATION.route) {
+            Scaffold(
+                topBar = {
+                    SmallTopBarBack(
+                        onBackClick = { navController.popBackStack() },
+                        title = stringResource(id = com.upsaclay.message.R.string.new_group)
+                    )
+                }
+            ) { innerPadding ->
+                CreateGroupConversationScreen(
+                    modifier = Modifier.padding(top = innerPadding.calculateTopPadding()),
+                    navController = navController,
+                    conversationViewModel = sharedConversationViewModel
+                )
+            }
+        }
+
+//        composable(
+//            route = Screen.CHAT.route + "?conversationId={conversationId}",
+//            arguments = listOf(navArgument("conversationId") { type = StringType })
+//        ) { backStackEntry ->
+//            val conversationId = backStackEntry.arguments?.getString("conversationId")
+//            val chatViewModel: ChatViewModel = koinViewModel(
+//                parameters = { parametersOf(conversationId, null) }
+//            )
+//            ChatScreen(navController, chatViewModel)
+//        }
+//
+//        composable(
+//            route = Screen.CHAT.route + "?userId={userId}",
+//            arguments = listOf(navArgument("userId") { type = IntType })
+//        ) { backStackEntry ->
+//            val interlocutorId = backStackEntry.arguments?.getInt("userId")
+//            val chatViewModel: ChatViewModel = koinViewModel(
+//                parameters = { parametersOf(null, interlocutorId) }
+//            )
+//            ChatScreen(navController, chatViewModel)
+//        }
 
         composable(Screen.CALENDAR.route) {
             user?.let {

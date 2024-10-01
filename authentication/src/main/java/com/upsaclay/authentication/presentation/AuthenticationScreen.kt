@@ -19,7 +19,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -47,12 +46,13 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.NavController
 import com.upsaclay.authentication.R
 import com.upsaclay.authentication.domain.model.AuthenticationState
+import com.upsaclay.authentication.presentation.components.LargeButton
+import com.upsaclay.authentication.presentation.components.LoadingLargeButton
 import com.upsaclay.authentication.presentation.components.OutlinedEmailInput
 import com.upsaclay.authentication.presentation.components.OutlinedPasswordInput
 import com.upsaclay.common.domain.model.Screen
 import com.upsaclay.common.presentation.components.ErrorText
 import com.upsaclay.common.presentation.components.OverlayLoadingScreen
-import com.upsaclay.common.presentation.components.PrimaryLargeButton
 import com.upsaclay.common.presentation.theme.GedoiseColor.Primary
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.spacing
@@ -64,9 +64,7 @@ fun AuthenticationScreen(
     navController: NavController,
     authenticationViewModel: AuthenticationViewModel = koinViewModel()
 ) {
-    val authenticationState by authenticationViewModel.authenticationState.collectAsState(
-        AuthenticationState.UNAUTHENTICATED
-    )
+    val authenticationState by authenticationViewModel.authenticationState.collectAsState()
     var isError by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
     val scrollState = rememberScrollState()
@@ -118,10 +116,7 @@ fun AuthenticationScreen(
         }
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.aligned { size, space ->
@@ -142,16 +137,12 @@ fun AuthenticationScreen(
                 password = password,
                 onPasswordChange = { authenticationViewModel.updatePassword(it) },
                 errorMessage = errorMessage,
-                keyboardActions = KeyboardActions(
-                    onDone = { keyboardController?.hide() }
-                ),
-                onClickConnection = {
+                keyboardActions = KeyboardActions(onDone = { keyboardController?.hide() }),
+                onConnectionClick = {
                     keyboardController?.hide()
                     authenticationViewModel.login()
                 },
-                onClickRegistration = {
-                    navController.navigate(Screen.FIRST_REGISTRATION_SCREEN.route)
-                },
+                onRegistrationClick = { navController.navigate(Screen.FIRST_REGISTRATION_SCREEN.route) },
                 isError = isError,
                 isEnable = authenticationState != AuthenticationState.LOADING
             )
@@ -193,6 +184,67 @@ private fun TitleSection() {
 }
 
 @Composable
+private fun BottomSection(
+    email: String,
+    onEmailChange: (String) -> Unit,
+    password: String,
+    onPasswordChange: (String) -> Unit,
+    keyboardActions: KeyboardActions,
+    isError: Boolean,
+    isEnable: Boolean = true,
+    errorMessage: String,
+    onConnectionClick: () -> Unit,
+    onRegistrationClick: () -> Unit,
+    isLoading: Boolean = false
+) {
+    Column {
+        InputsSection(
+            email = email,
+            onEmailChange = onEmailChange,
+            password = password,
+            onPasswordChange = onPasswordChange,
+            keyboardActions = keyboardActions,
+            errorMessage = errorMessage,
+            isError = isError,
+            isEnable = isEnable
+        )
+
+        Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+
+        if(isLoading) {
+            LoadingLargeButton(modifier = Modifier.fillMaxWidth())
+        } else {
+            LargeButton(
+                text = stringResource(id = R.string.login),
+                onClick = onConnectionClick,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+
+        Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+
+        Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+            Text(text = stringResource(id = R.string.first_arrival))
+
+            Spacer(modifier = Modifier.width(MaterialTheme.spacing.extraSmall))
+
+            TextButton(
+                contentPadding = PaddingValues(MaterialTheme.spacing.default),
+                modifier = Modifier.height(MaterialTheme.spacing.large),
+                onClick = onRegistrationClick,
+            ) {
+                Text(
+                    text = stringResource(id = R.string.sign_up),
+                    textDecoration = TextDecoration.Underline,
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
+        }
+    }
+}
+
+@Composable
 private fun InputsSection(
     email: String,
     onEmailChange: (String) -> Unit,
@@ -229,66 +281,11 @@ private fun InputsSection(
     }
 }
 
-@Composable
-private fun BottomSection(
-    email: String,
-    onEmailChange: (String) -> Unit,
-    password: String,
-    onPasswordChange: (String) -> Unit,
-    keyboardActions: KeyboardActions,
-    isError: Boolean,
-    isEnable: Boolean = true,
-    errorMessage: String,
-    onClickConnection: () -> Unit,
-    onClickRegistration: () -> Unit
-) {
-    Column {
-        InputsSection(
-            email = email,
-            onEmailChange = onEmailChange,
-            password = password,
-            onPasswordChange = onPasswordChange,
-            keyboardActions = keyboardActions,
-            errorMessage = errorMessage,
-            isError = isError,
-            isEnable = isEnable
-        )
-
-        Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
-
-        PrimaryLargeButton(
-            text = stringResource(id = R.string.login),
-            onClick = onClickConnection,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
-
-        Row(
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        ) {
-            Text(
-                text = stringResource(id = R.string.first_arrival),
-            )
-
-            Spacer(modifier = Modifier.width(MaterialTheme.spacing.extraSmall))
-
-            TextButton(
-                contentPadding = PaddingValues(MaterialTheme.spacing.default),
-                modifier = Modifier.height(MaterialTheme.spacing.large),
-                onClick = onClickRegistration,
-                shape = ShapeDefaults.ExtraSmall
-            ) {
-                Text(
-                    text = stringResource(id = R.string.sign_up),
-                    textDecoration = TextDecoration.Underline,
-                    fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            }
-        }
-    }
-}
+/*
+ =====================================================================
+                                Preview
+ =====================================================================
+ */
 
 @Preview(widthDp = 360, heightDp = 740, showBackground = true)
 @Composable
@@ -296,44 +293,34 @@ private fun AuthenticationScreenPreview() {
     var isLoading by remember { mutableStateOf(false) }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var mytext by remember { mutableStateOf("") }
 
     GedoiseTheme {
-        Box(
-            Modifier
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.aligned { size, space ->
+                size + (20 * space / 100)
+            },
+            modifier = Modifier
                 .fillMaxSize()
                 .padding(MaterialTheme.spacing.medium)
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.aligned { size, space ->
-                    size + (20 * space / 100)
-                },
-                modifier = Modifier.fillMaxSize()
-            ) {
-                TitleSection()
+            TitleSection()
 
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
 
-                BottomSection(
-                    email = email,
-                    onEmailChange = { email = it },
-                    password = password,
-                    onPasswordChange = { password = it },
-                    errorMessage = "Veuillez remplir tous les champs",
-                    onClickConnection = {
-                        isLoading = !isLoading
-                        mytext = email
-                    },
-                    onClickRegistration = { },
-                    keyboardActions = KeyboardActions.Default,
-                    isError = false,
-                    isEnable = !isLoading
-                )
-            }
-            if (isLoading) {
-                OverlayLoadingScreen()
-            }
+            BottomSection(
+                email = email,
+                onEmailChange = { email = it },
+                password = password,
+                onPasswordChange = { password = it },
+                errorMessage = "Veuillez remplir tous les champs",
+                onConnectionClick = { isLoading = !isLoading },
+                onRegistrationClick = { },
+                keyboardActions = KeyboardActions.Default,
+                isError = false,
+                isEnable = !isLoading,
+                isLoading = isLoading
+            )
         }
     }
 }

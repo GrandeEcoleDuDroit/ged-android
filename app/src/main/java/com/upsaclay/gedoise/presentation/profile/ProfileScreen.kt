@@ -38,7 +38,7 @@ import androidx.navigation.compose.rememberNavController
 import com.upsaclay.common.domain.model.ClickableMenuItemData
 import com.upsaclay.common.domain.model.Screen
 import com.upsaclay.common.presentation.components.CircularProgressBar
-import com.upsaclay.common.presentation.components.ClickableMenuItem
+import com.upsaclay.common.presentation.components.SimpleClickableItem
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.theme.GedoiseColor
 import com.upsaclay.common.presentation.theme.GedoiseTheme
@@ -77,7 +77,7 @@ fun ProfileScreen(
                     HorizontalDivider()
 
                     clickableMenuItemsData.forEach { menuItem ->
-                        ClickableMenuItem(
+                        SimpleClickableItem(
                             modifier = Modifier.fillMaxWidth(),
                             text = menuItem.text,
                             icon = menuItem.icon,
@@ -182,6 +182,12 @@ private fun buildProfileMenuItemData(
     )
 }
 
+/*
+ =====================================================================
+                                Preview
+ =====================================================================
+ */
+
 @Preview
 @Composable
 fun ProfileScreenPreview() {
@@ -233,7 +239,7 @@ fun ProfileScreenPreview() {
                         HorizontalDivider()
 
                         profileMenuItemsDataFixture.forEach { menuItem ->
-                            ClickableMenuItem(
+                            SimpleClickableItem(
                                 modifier = Modifier.fillMaxWidth(),
                                 text = menuItem.text,
                                 icon = menuItem.icon,

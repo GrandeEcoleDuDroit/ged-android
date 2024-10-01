@@ -1,6 +1,6 @@
 package com.upsaclay.common.data.remote
 
-import com.upsaclay.common.data.remote.api.ImageRemoteApi
+import com.upsaclay.common.data.remote.api.ImageApi
 import com.upsaclay.common.domain.model.ServerResponse
 import com.upsaclay.common.utils.e
 import kotlinx.coroutines.Dispatchers
@@ -12,12 +12,12 @@ import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.Response
 import java.io.File
 
-internal class ImageRemoteDataSource(private val imageRemoteApi: ImageRemoteApi) {
+internal class ImageRemoteDataSource(private val imageApi: ImageApi) {
     suspend fun uploadImage(file: File): Response<ServerResponse.EmptyResponse> = withContext(Dispatchers.IO) {
         try {
             val requestBody = file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
             val multipartBody = MultipartBody.Part.createFormData("image", file.name, requestBody)
-            imageRemoteApi.uploadImage(multipartBody)
+            imageApi.uploadImage(multipartBody)
         } catch (e: Exception) {
             e("Error uploading image: ${e.message}", e)
             Response.error(500, e.message.toString().toResponseBody())
@@ -26,7 +26,7 @@ internal class ImageRemoteDataSource(private val imageRemoteApi: ImageRemoteApi)
 
     suspend fun deleteImage(imageName: String): Response<ServerResponse.EmptyResponse> = withContext(Dispatchers.IO) {
         try {
-            imageRemoteApi.deleteImage(imageName)
+            imageApi.deleteImage(imageName)
         } catch (e: Exception) {
             e("Error deleting image: ${e.message.toString()}", e)
             Response.error(500, e.message.toString().toResponseBody())

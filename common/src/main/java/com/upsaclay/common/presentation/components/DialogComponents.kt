@@ -84,7 +84,7 @@ fun SensibleActionDialog(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoadingDialog(text: String) {
+fun LoadingDialog(text: String = stringResource(id = R.string.loading)) {
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
 
     BasicAlertDialog(
@@ -113,6 +113,12 @@ fun LoadingDialog(text: String) {
         }
     }
 }
+
+/*
+ =====================================================================
+                                Preview
+ =====================================================================
+ */
 
 @Preview
 @Composable

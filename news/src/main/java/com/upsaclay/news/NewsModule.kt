@@ -12,6 +12,7 @@ import com.upsaclay.news.domain.usecase.CreateAnnouncementUseCase
 import com.upsaclay.news.domain.usecase.DeleteAnnouncementUseCase
 import com.upsaclay.news.domain.usecase.GetAllAnnouncementsUseCase
 import com.upsaclay.news.domain.usecase.GetAnnouncementUseCase
+import com.upsaclay.news.domain.usecase.GetOnlineUserUseCase
 import com.upsaclay.news.domain.usecase.RefreshAnnouncementsUseCase
 import com.upsaclay.news.domain.usecase.UpdateAnnouncementUseCase
 import com.upsaclay.news.presentation.viewmodel.CreateAnnouncementViewModel
@@ -26,7 +27,10 @@ import org.koin.dsl.module
 import retrofit2.Retrofit
 
 val newsModule = module {
-    single { get<Retrofit>(qualifier = named(SERVER_1_RETROFIT_QUALIFIER)).create(AnnouncementApi::class.java) }
+    single {
+        get<Retrofit>(qualifier = named(SERVER_1_RETROFIT_QUALIFIER))
+            .create(AnnouncementApi::class.java)
+    }
 
     singleOf(::AnnouncementRepositoryImpl) { bind<AnnouncementRepository>() }
     singleOf(::AnnouncementRemoteDataSource)
@@ -46,6 +50,7 @@ val newsModule = module {
     singleOf(::DeleteAnnouncementUseCase)
     singleOf(::GetAllAnnouncementsUseCase)
     singleOf(::GetAnnouncementUseCase)
+    singleOf(::GetOnlineUserUseCase)
     singleOf(::RefreshAnnouncementsUseCase)
     singleOf(::UpdateAnnouncementUseCase)
 }

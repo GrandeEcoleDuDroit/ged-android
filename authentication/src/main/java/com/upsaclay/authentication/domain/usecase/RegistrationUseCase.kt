@@ -4,21 +4,18 @@ import android.net.Uri
 import com.upsaclay.common.domain.model.User
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.UpdateUserProfilePictureUseCase
-import com.upsaclay.common.utils.e
+import java.io.IOException
 
 class RegistrationUseCase(
     private val userRepository: UserRepository,
     private val updateUserProfilePictureUseCase: UpdateUserProfilePictureUseCase
 ) {
     suspend operator fun invoke(user: User, profilePictureUri: Uri?): Result<Int> {
-        return userRepository.createUser(user)
-            .onSuccess { userId ->
-                profilePictureUri?.let {
-                    updateUserProfilePictureUseCase(userId, profilePictureUri, null)
-                }
+        return userRepository.createUser(user)?.let { userId ->
+            profilePictureUri?.let {
+                updateUserProfilePictureUseCase(userId, profilePictureUri, null)
+                Result.success(userId)
             }
-            .onFailure { exception ->
-                e("Error during registration", exception)
-            }
+        } ?: Result.failure(IOException())
     }
 }

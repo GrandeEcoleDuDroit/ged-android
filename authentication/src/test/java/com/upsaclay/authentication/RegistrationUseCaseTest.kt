@@ -25,7 +25,7 @@ class RegistrationUseCaseTest {
         uri = mockk()
         registrationUseCase = RegistrationUseCase(userRepository, updateUserProfilePictureUseCase)
 
-        coEvery { userRepository.createUser(any()) } returns Result.success(0)
+        coEvery { userRepository.createUser(any()) } returns 0
         coEvery { updateUserProfilePictureUseCase(any(), any(), any()) } returns Result.success(Unit)
     }
 
