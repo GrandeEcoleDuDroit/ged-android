@@ -5,11 +5,6 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 class LocalDateTimeFormatterUseCase {
-    fun formatHourMinute(localDateTime: LocalDateTime): String {
-        val formatter = DateTimeFormatter.ofPattern("HH:mm")
-        return localDateTime.format(formatter)
-    }
-
     fun formatDayMonthYear(localDateTime: LocalDateTime): String {
         val formatter = if(Locale.getDefault().language == "fr") {
             DateTimeFormatter.ofPattern("dd MMMyyyy", Locale.FRENCH)

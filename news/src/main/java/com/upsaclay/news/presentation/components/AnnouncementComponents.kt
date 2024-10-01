@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -39,15 +40,15 @@ internal fun AnnouncementItem(
     val elapsedTime = getElapsedTimeUseCase.fromLocalDateTime(announcement.date)
 
     val elapsedTimeValue: String = when(elapsedTime) {
-        is ElapsedTime.Now ->  context.getString(com.upsaclay.common.R.string.second_ago, elapsedTime.value)
+        is ElapsedTime.Now ->  stringResource(com.upsaclay.common.R.string.second_ago_short, elapsedTime.value)
 
-        is ElapsedTime.Minute -> context.getString(com.upsaclay.common.R.string.minute_ago, elapsedTime.value)
+        is ElapsedTime.Minute -> stringResource(com.upsaclay.common.R.string.minute_ago_short, elapsedTime.value)
 
-        is ElapsedTime.Hour -> context.getString(com.upsaclay.common.R.string.hour_ago, elapsedTime.value)
+        is ElapsedTime.Hour -> stringResource(com.upsaclay.common.R.string.hour_ago_short, elapsedTime.value)
 
-        is ElapsedTime.Day -> context.getString(com.upsaclay.common.R.string.day_ago, elapsedTime.value)
+        is ElapsedTime.Day -> stringResource(com.upsaclay.common.R.string.day_ago_short, elapsedTime.value)
 
-        is ElapsedTime.Week -> context.getString(com.upsaclay.common.R.string.week_ago, elapsedTime.value)
+        is ElapsedTime.Week -> stringResource(com.upsaclay.common.R.string.week_ago_short, elapsedTime.value)
 
         is ElapsedTime.Later -> localDateTimeFormatterUseCase.formatDayMonthYear(elapsedTime.value)
     }
@@ -86,21 +87,20 @@ internal fun AnnouncementItemWithContent(
     announcement: Announcement,
     onClick: () -> Unit
 ) {
-    val context = LocalContext.current
     val getElapsedTimeUseCase = GetElapsedTimeUseCase()
     val localDateTimeFormatterUseCase = LocalDateTimeFormatterUseCase()
     val elapsedTime = getElapsedTimeUseCase.fromLocalDateTime(announcement.date)
 
     val elapsedTimeValue = when(elapsedTime) {
-        is ElapsedTime.Now ->  context.getString(com.upsaclay.common.R.string.second_ago, elapsedTime.value)
+        is ElapsedTime.Now ->  stringResource(com.upsaclay.common.R.string.second_ago_short, elapsedTime.value)
 
-        is ElapsedTime.Minute -> context.getString(com.upsaclay.common.R.string.minute_ago, elapsedTime.value)
+        is ElapsedTime.Minute -> stringResource(com.upsaclay.common.R.string.minute_ago_short, elapsedTime.value)
 
-        is ElapsedTime.Hour -> context.getString(com.upsaclay.common.R.string.hour_ago, elapsedTime.value)
+        is ElapsedTime.Hour -> stringResource(com.upsaclay.common.R.string.hour_ago_short, elapsedTime.value)
 
-        is ElapsedTime.Day -> context.getString(com.upsaclay.common.R.string.day_ago, elapsedTime.value)
+        is ElapsedTime.Day -> stringResource(com.upsaclay.common.R.string.day_ago_short, elapsedTime.value)
 
-        is ElapsedTime.Week -> context.getString(com.upsaclay.common.R.string.week_ago, elapsedTime.value)
+        is ElapsedTime.Week -> stringResource(com.upsaclay.common.R.string.week_ago_short, elapsedTime.value)
 
         is ElapsedTime.Later -> localDateTimeFormatterUseCase.formatDayMonthYear(elapsedTime.value)
     }

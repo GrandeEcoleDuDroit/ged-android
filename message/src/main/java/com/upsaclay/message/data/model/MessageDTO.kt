@@ -4,7 +4,7 @@ import java.time.LocalDateTime
 
 data class MessageDTO(
     val messageId: String,
-    val senderId: String,
+    val senderId: Int,
     val conversationId: String,
     val text: String,
     val date: LocalDateTime,

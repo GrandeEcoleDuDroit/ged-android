@@ -4,7 +4,7 @@ import com.upsaclay.message.data.remote.model.RemoteConversation
 import kotlinx.coroutines.flow.Flow
 
 interface ConversationApi {
-    fun getAllConversations(userId: String): Flow<List<RemoteConversation>>
+    fun listenAllConversations(userId: Int): Flow<List<RemoteConversation>>
 
     fun updateConversation(remoteConversation: RemoteConversation)
 

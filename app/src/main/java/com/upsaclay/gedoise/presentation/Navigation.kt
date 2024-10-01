@@ -9,7 +9,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
-import androidx.navigation.NavType.Companion.IntType
 import androidx.navigation.NavType.Companion.StringType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -26,7 +25,6 @@ import com.upsaclay.common.presentation.components.SmallTopBarBack
 import com.upsaclay.gedoise.data.BottomNavigationItem
 import com.upsaclay.gedoise.presentation.profile.ProfileScreen
 import com.upsaclay.gedoise.presentation.profile.account.AccountScreen
-import com.upsaclay.message.presentation.screen.ChatScreen
 import com.upsaclay.message.presentation.screen.ConversationScreen
 import com.upsaclay.message.presentation.screen.CreateConversationScreen
 import com.upsaclay.message.presentation.screen.CreateGroupConversationScreen
@@ -193,27 +191,27 @@ fun Navigation(mainViewModel: MainViewModel = koinViewModel()) {
             }
         }
 
-        composable(
-            route = Screen.CHAT.route + "?conversationId={conversationId}",
-            arguments = listOf(navArgument("conversationId") { type = StringType })
-        ) { backStackEntry ->
-            val conversationId = backStackEntry.arguments?.getString("conversationId")
-            val chatViewModel: ChatViewModel = koinViewModel(
-                parameters = { parametersOf(conversationId, null) }
-            )
-            ChatScreen(navController, chatViewModel)
-        }
-
-        composable(
-            route = Screen.CHAT.route + "?userId={userId}",
-            arguments = listOf(navArgument("userId") { type = IntType })
-        ) { backStackEntry ->
-            val interlocutorId = backStackEntry.arguments?.getInt("userId")
-            val chatViewModel: ChatViewModel = koinViewModel(
-                parameters = { parametersOf(null, interlocutorId) }
-            )
-            ChatScreen(navController, chatViewModel)
-        }
+//        composable(
+//            route = Screen.CHAT.route + "?conversationId={conversationId}",
+//            arguments = listOf(navArgument("conversationId") { type = StringType })
+//        ) { backStackEntry ->
+//            val conversationId = backStackEntry.arguments?.getString("conversationId")
+//            val chatViewModel: ChatViewModel = koinViewModel(
+//                parameters = { parametersOf(conversationId, null) }
+//            )
+//            ChatScreen(navController, chatViewModel)
+//        }
+//
+//        composable(
+//            route = Screen.CHAT.route + "?userId={userId}",
+//            arguments = listOf(navArgument("userId") { type = IntType })
+//        ) { backStackEntry ->
+//            val interlocutorId = backStackEntry.arguments?.getInt("userId")
+//            val chatViewModel: ChatViewModel = koinViewModel(
+//                parameters = { parametersOf(null, interlocutorId) }
+//            )
+//            ChatScreen(navController, chatViewModel)
+//        }
 
         composable(Screen.CALENDAR.route) {
             user?.let {

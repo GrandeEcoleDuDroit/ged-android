@@ -15,7 +15,7 @@ data class RemoteMessage(
 
     @get:PropertyName(MessageField.SENDER_ID)
     @set:PropertyName(MessageField.SENDER_ID)
-    var senderId: String = "",
+    var senderId: Int = -1,
 
     @get:PropertyName(MessageField.TEXT)
     @set:PropertyName(MessageField.TEXT)

@@ -7,8 +7,8 @@ import kotlinx.coroutines.flow.Flow
 class ConversationRemoteDataSource(
     private val conversationApi: ConversationApi
 ) {
-    fun getAllConversations(userId: String): Flow<List<RemoteConversation>> {
-        return conversationApi.getAllConversations(userId)
+    fun listenAllConversations(userId: Int): Flow<List<RemoteConversation>> {
+        return conversationApi.listenAllConversations(userId)
     }
 
     fun updateConversation(remoteConversation: RemoteConversation) {

@@ -6,6 +6,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -47,6 +48,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import com.upsaclay.common.domain.model.Screen
+import com.upsaclay.common.presentation.theme.GedoiseColor
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.message.R
@@ -69,6 +71,7 @@ fun ConversationScreen(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(GedoiseColor.LittleTransparentWhite)
                     .zIndex(1000f)
                     .pointerInput(Unit) {
                         detectTapGestures(onPress = { expanded = !expanded })
@@ -219,7 +222,7 @@ private fun FloatingActionButtonSection(
 @Preview(showBackground = true)
 @Composable
 private fun ConversationsScreenPreview() {
-    val conversations = conversationsFixture
+    val conversations = conversationsFixture.sortedByDescending { it.messages.last().date }
 //    val conversations = emptyList<ConversationPreview>()
     var expanded by remember { mutableStateOf(false) }
     val rotation by animateFloatAsState(
@@ -234,6 +237,7 @@ private fun ConversationsScreenPreview() {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
+                        .background(GedoiseColor.LittleTransparentWhite)
                         .zIndex(1000f)
                         .pointerInput(Unit) {
                             detectTapGestures(onPress = { expanded = !expanded })

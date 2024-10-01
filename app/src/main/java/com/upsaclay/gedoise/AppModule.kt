@@ -9,7 +9,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.dsl.module
 
-const val DATABASE_NAME = "GedoiseDatabase"
+private const val DATABASE_NAME = "GedoiseDatabase"
 
 val appModule = module {
     single {

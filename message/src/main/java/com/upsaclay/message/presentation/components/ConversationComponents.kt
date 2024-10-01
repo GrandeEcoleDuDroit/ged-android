@@ -54,23 +54,20 @@ fun ConversationItem(
         when(elapsedTime) {
             is ElapsedTime.Now -> stringResource(id = com.upsaclay.common.R.string.now)
 
-            is ElapsedTime.Minute, is ElapsedTime.Hour ->
-                localDateTimeFormatterUseCase.formatHourMinute(lastMessage.date)
+            is ElapsedTime.Minute -> stringResource(com.upsaclay.common.R.string.minute_ago_short, elapsedTime.value)
 
-            is ElapsedTime.Day -> {
-                if(elapsedTime.value == 1L) {
-                    stringResource(id = com.upsaclay.common.R.string.yesterday)
-                } else {
-                    localDateTimeFormatterUseCase.formatDayMonthYear(lastMessage.date)
-                }
-            }
+            is ElapsedTime.Hour -> stringResource(com.upsaclay.common.R.string.hour_ago_short, elapsedTime.value)
 
-            else -> localDateTimeFormatterUseCase.formatDayMonthYear(lastMessage.date)
+            is ElapsedTime.Day -> stringResource(com.upsaclay.common.R.string.day_ago_short, elapsedTime.value)
+
+            is ElapsedTime.Week -> stringResource(com.upsaclay.common.R.string.week_ago_short, elapsedTime.value)
+
+            is ElapsedTime.Later -> localDateTimeFormatterUseCase.formatDayMonthYear(elapsedTime.value)
         }
     } else ""
 
     val unreadMessage = lastMessage?.let {
-        it.sender == conversation.interlocutor && !it.isRead
+        it.senderId == conversation.interlocutor.id && !it.isRead
     } ?: false
 
     Row(
@@ -94,7 +91,7 @@ fun ConversationItem(
                 Column(modifier = Modifier.weight(1f)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            modifier = Modifier.weight(1f),
+                            modifier = Modifier.weight(1f, fill = false),
                             text = conversation.interlocutor.fullName,
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.SemiBold,
@@ -137,7 +134,7 @@ fun ConversationItem(
                 Column(modifier = Modifier.weight(1f)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            modifier = Modifier.weight(1f),
+                            modifier = Modifier.weight(1f, fill = false),
                             text = conversation.interlocutor.fullName,
                             style = MaterialTheme.typography.bodyMedium,
                             maxLines = 1,
@@ -190,7 +187,8 @@ private fun ReadConversationItemPreview() {
     val conversation = Conversation(
         id = "1",
         interlocutor = userFixture2,
-        messages = messagesFixture,
+        messages = messagesFixture
+            .map { it.copy(isRead = true, date = it.date.minusDays(2)) },
     )
     GedoiseTheme {
         ConversationItem(

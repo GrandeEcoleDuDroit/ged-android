@@ -14,19 +14,19 @@ internal class ConversationRepositoryImpl(
     private val conversationLocalDataSource: ConversationLocalDataSource,
     private val conversationRemoteDataSource: ConversationRemoteDataSource
 ): ConversationRepository {
-    private val _conversations = MutableStateFlow<List<ConversationDTO>>(emptyList())
-    override val conversationsDTO: Flow<List<ConversationDTO>> = _conversations
+    private val _conversationsDTO = MutableStateFlow<List<ConversationDTO>>(emptyList())
+    override val conversationsDTO: Flow<List<ConversationDTO>> = _conversationsDTO
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
             conversationLocalDataSource.getAllConversationsFlow().collect { localConversations ->
-                _conversations.value = localConversations.map { ConversationMapper.fromLocal(it) }
+                _conversationsDTO.value = localConversations.map { ConversationMapper.fromLocal(it) }
             }
         }
     }
 
-    override suspend fun refreshConversations(userId: String) {
-        conversationRemoteDataSource.getAllConversations(userId).collect { remoteConversations ->
+    override suspend fun listenAllConversations(userId: Int) {
+        conversationRemoteDataSource.listenAllConversations(userId).collect { remoteConversations ->
             remoteConversations.forEach {
                 conversationLocalDataSource.upsertConversation(ConversationMapper.toLocal(it))
             }

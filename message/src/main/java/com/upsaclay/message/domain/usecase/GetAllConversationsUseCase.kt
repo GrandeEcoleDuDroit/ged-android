@@ -1,12 +1,11 @@
 package com.upsaclay.message.domain.usecase
 
 import com.upsaclay.message.domain.model.Conversation
-import com.upsaclay.message.data.repository.ConversationRepository
+import com.upsaclay.message.domain.repository.UserConversationRepository
 import kotlinx.coroutines.flow.Flow
 
 class GetAllConversationsUseCase(
-    private val conversationRepository: ConversationRepository
+    private val userConversationRepository: UserConversationRepository
 ) {
-    operator fun invoke(): Flow<List<Conversation>> = conversationRepository.conversations
-
+    operator fun invoke(): Flow<List<Conversation>> = userConversationRepository.conversations
 }

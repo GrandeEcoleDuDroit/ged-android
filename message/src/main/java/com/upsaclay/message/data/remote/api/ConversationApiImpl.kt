@@ -6,6 +6,7 @@ import com.google.firebase.firestore.firestore
 import com.upsaclay.common.utils.e
 import com.upsaclay.common.utils.i
 import com.upsaclay.message.data.model.CONVERSATIONS_TABLE_NAME
+import com.upsaclay.message.data.remote.ConversationField
 import com.upsaclay.message.data.remote.model.RemoteConversation
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -17,17 +18,16 @@ import kotlin.coroutines.suspendCoroutine
 
 class ConversationApiImpl: ConversationApi {
     private val conversationsCollection = Firebase.firestore.collection(CONVERSATIONS_TABLE_NAME)
-    private val lastConversations = emptyList<RemoteConversation>()
 
-    override fun getAllConversations(userId: String): Flow<List<RemoteConversation>> = callbackFlow {
-        val listener = conversationsCollection.whereArrayContains("user_id", userId)
+    override fun listenAllConversations(userId: Int): Flow<List<RemoteConversation>> = callbackFlow {
+        val listener = conversationsCollection.whereArrayContains(ConversationField.PARTICIPANTS, userId)
             .addSnapshotListener { value, error ->
                 error?.let {
                     e("Error getting conversations", it)
                     close(it)
                     throw it
                 }
-                var conversations = value?.let {
+                val conversations = value?.let {
                     when (it.size()) {
                         0 -> emptyList()
                         1 -> {
@@ -38,9 +38,6 @@ class ConversationApiImpl: ConversationApi {
                     }
                 } ?: emptyList()
 
-                conversations = conversations.filter { remoteConversation ->
-                    lastConversations.none { it == remoteConversation }
-                }
                 trySend(conversations)
             }
         awaitClose { listener.remove() }

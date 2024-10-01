@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 interface ConversationRepository {
     val conversationsDTO: Flow<List<ConversationDTO>>
 
-    suspend fun refreshConversations(userId: String)
+    suspend fun listenAllConversations(userId: Int)
 
     suspend fun updateConversation(conversationDTO: ConversationDTO)
 

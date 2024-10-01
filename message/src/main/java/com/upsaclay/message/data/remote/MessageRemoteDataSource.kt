@@ -5,11 +5,11 @@ import com.upsaclay.message.data.remote.model.RemoteMessage
 import kotlinx.coroutines.flow.Flow
 
 class MessageRemoteDataSource(private val messageApi: MessageApi) {
-    fun listenLastMessages(conversationId: String): Flow<List<RemoteMessage>> {
-        return messageApi.listenLastMessages(conversationId)
+    fun listenLastMessage(conversationId: String): Flow<RemoteMessage> {
+        return messageApi.listenLastMessage(conversationId)
     }
 
-    suspend fun getMessages(conversationId: String, start: Int): List<RemoteMessage> {
-        return messageApi.getMessages(conversationId, start)
+    suspend fun getMessages(conversationId: String, limit: Long): List<RemoteMessage> {
+        return messageApi.getMessages(conversationId, limit)
     }
 }

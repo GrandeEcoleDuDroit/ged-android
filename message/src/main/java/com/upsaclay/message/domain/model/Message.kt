@@ -4,7 +4,7 @@ import java.time.LocalDateTime
 
 data class Message(
     val id: String,
-    val senderId: String,
+    val senderId: Int,
     val text: String,
     val date: LocalDateTime,
     val isRead: Boolean,

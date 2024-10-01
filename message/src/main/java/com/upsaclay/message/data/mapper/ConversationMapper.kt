@@ -13,7 +13,7 @@ object ConversationMapper {
     private val gson = Gson()
 
     fun fromLocal(localConversation: LocalConversation): ConversationDTO {
-        val type = object : TypeToken<List<String>>() {}.type
+        val type = object : TypeToken<List<Int>>() {}.type
         return ConversationDTO(
             conversationId = localConversation.conversationId,
             participants = gson.fromJson(localConversation.participants, type)

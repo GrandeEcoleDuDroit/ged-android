@@ -11,15 +11,13 @@ class MessageRepositoryImpl(
     private val messageRemoteDataSource: MessageRemoteDataSource,
     private val messageLocalDataSource: MessageLocalDataSource
 ): MessageRepository {
-    override fun listenLastMessages(conversationId: String): Flow<List<MessageDTO>> {
-        return messageRemoteDataSource.listenLastMessages(conversationId)
-            .map { messages ->
-                messages.map { MessageMapper.toDTO(it) }
-            }
+    override fun listenLastMessage(conversationId: String): Flow<MessageDTO> {
+        return messageRemoteDataSource.listenLastMessage(conversationId).map(MessageMapper::toDTO)
     }
 
-    override suspend fun getMessages(conversationId: String, start: Int): List<MessageDTO> {
-        return messageRemoteDataSource.getMessages(conversationId, start)
-            .map { MessageMapper.toDTO(it) }
+    override suspend fun getMessages(conversationId: String, limit: Long): List<MessageDTO> {
+        return messageRemoteDataSource
+            .getMessages(conversationId, limit)
+            .map(MessageMapper::toDTO)
     }
 }

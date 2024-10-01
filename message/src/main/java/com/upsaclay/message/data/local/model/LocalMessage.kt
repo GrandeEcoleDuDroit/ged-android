@@ -12,7 +12,7 @@ data class LocalMessage(
     @ColumnInfo(name = MessageField.MESSAGE_ID)
     val messageId: String,
     @ColumnInfo(name = MessageField.SENDER_ID)
-    val senderId: String,
+    val senderId: Int,
     @ColumnInfo(name = MessageField.CONVERSATION_ID)
     val conversationId: String,
     @ColumnInfo(name = MessageField.TEXT)

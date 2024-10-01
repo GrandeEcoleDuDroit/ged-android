@@ -1,12 +1,9 @@
 package com.upsaclay.message.domain.usecase
 
-import com.upsaclay.message.domain.model.Conversation
-import com.upsaclay.message.data.repository.ConversationRepository
-import kotlinx.coroutines.flow.Flow
+import com.upsaclay.message.domain.repository.UserConversationRepository
 
 class GetConversationUseCase(
-    private val conversationRepository: ConversationRepository
+    private val userConversationRepository: UserConversationRepository
 ) {
-    operator fun invoke(conversationId: String): Flow<Conversation> =
-        conversationRepository.getConversation(conversationId)
+//    operator fun invoke(conversationId: String): Flow<Conversation> =
 }
