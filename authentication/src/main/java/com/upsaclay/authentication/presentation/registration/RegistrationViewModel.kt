@@ -90,7 +90,7 @@ class RegistrationViewModel(
     fun register() {
         _registrationState.value = RegistrationState.LOADING
 
-        val user = User(
+        val user = com.upsaclay.common.domain.model.User(
             firstName = fullName.split(" ")[0],
             lastName = fullName.split(" ")[1],
             email = email,

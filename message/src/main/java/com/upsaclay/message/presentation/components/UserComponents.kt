@@ -20,7 +20,7 @@ import com.upsaclay.common.utils.userFixture
 
 @Composable
 fun UserItem(
-    user: User,
+    user: com.upsaclay.common.domain.model.User,
     onClick: () -> Unit
 ) {
     Row(

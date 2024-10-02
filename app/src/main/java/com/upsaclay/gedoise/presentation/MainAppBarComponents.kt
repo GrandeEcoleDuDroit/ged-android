@@ -39,7 +39,7 @@ import com.upsaclay.gedoise.data.BottomNavigationItem
 @Composable
 fun MainTopBar(
     navController: NavController,
-    user: User
+    user: com.upsaclay.common.domain.model.User
 ) {
     TopAppBar(
         title = {
@@ -54,8 +54,8 @@ fun MainTopBar(
         navigationIcon = {
             IconButton(
                 onClick = {
-                    if(navController.currentDestination?.route != Screen.NEWS.route) {
-                        navController.navigate(Screen.NEWS.route)
+                    if(navController.currentDestination?.route != com.upsaclay.common.domain.model.Screen.NEWS.route) {
+                        navController.navigate(com.upsaclay.common.domain.model.Screen.NEWS.route)
                     }
                 }
             ) {
@@ -68,7 +68,7 @@ fun MainTopBar(
         },
         actions = {
             IconButton(
-                onClick = { navController.navigate(Screen.PROFILE.route) },
+                onClick = { navController.navigate(com.upsaclay.common.domain.model.Screen.PROFILE.route) },
                 modifier = Modifier.clip(shape = CircleShape)
             ) {
                 ProfilePicture(imageUrl = user.profilePictureUrl)

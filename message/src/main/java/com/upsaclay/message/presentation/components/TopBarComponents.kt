@@ -32,7 +32,7 @@ import com.upsaclay.common.utils.userFixture
 @Composable
 fun ChatTopBar(
     navController: NavController,
-    interlocutor: User
+    interlocutor: com.upsaclay.common.domain.model.User
 ) {
     val color = TopAppBarDefaults.topAppBarColors()
 

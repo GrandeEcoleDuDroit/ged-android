@@ -53,8 +53,8 @@ fun ThirdRegistrationScreen(
     val registrationState by registrationViewModel.registrationState.collectAsState()
 
     if (registrationState == RegistrationState.REGISTERED) {
-        navController.navigate(Screen.NEWS.route) {
-            popUpTo(Screen.NEWS.route) { inclusive = true }
+        navController.navigate(com.upsaclay.common.domain.model.Screen.NEWS.route) {
+            popUpTo(com.upsaclay.common.domain.model.Screen.NEWS.route) { inclusive = true }
         }
     }
 

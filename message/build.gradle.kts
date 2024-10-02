@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsKotlinAndroid)
-    alias(libs.plugins.ksp)
     alias(libs.plugins.composeCompiler)
 }
 
@@ -54,9 +53,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.androidx.room.runtime)
-    ksp(libs.androidx.room.compiler)
-    implementation(libs.androidx.room.ktx)
+
     implementation(libs.koin)
     implementation(libs.koin.core)
     implementation(libs.koin.androidx.compose)
@@ -64,10 +61,6 @@ dependencies {
     implementation(libs.androidx.animation.compose)
     implementation(libs.gson)
     implementation(libs.jakewharton.timber)
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.analytics)
-    implementation(libs.firebase.crashlytics)
-    implementation(libs.firebase.firestore)
 
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
@@ -84,4 +77,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation(project(":common"))
+    implementation(project(":common:domain"))
+    implementation(project(":message:domain"))
 }

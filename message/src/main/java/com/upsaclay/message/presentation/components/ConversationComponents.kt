@@ -53,17 +53,17 @@ fun ConversationItem(
         val elapsedTime = getElapsedTimeUseCase.fromLocalDateTime(lastMessage.date)
 
         when(elapsedTime) {
-            is ElapsedTime.Now -> stringResource(id = com.upsaclay.common.R.string.now)
+            is com.upsaclay.common.domain.model.ElapsedTime.Now -> stringResource(id = com.upsaclay.common.R.string.now)
 
-            is ElapsedTime.Minute -> stringResource(com.upsaclay.common.R.string.minute_ago_short, elapsedTime.value)
+            is com.upsaclay.common.domain.model.ElapsedTime.Minute -> stringResource(com.upsaclay.common.R.string.minute_ago_short, elapsedTime.value)
 
-            is ElapsedTime.Hour -> stringResource(com.upsaclay.common.R.string.hour_ago_short, elapsedTime.value)
+            is com.upsaclay.common.domain.model.ElapsedTime.Hour -> stringResource(com.upsaclay.common.R.string.hour_ago_short, elapsedTime.value)
 
-            is ElapsedTime.Day -> stringResource(com.upsaclay.common.R.string.day_ago_short, elapsedTime.value)
+            is com.upsaclay.common.domain.model.ElapsedTime.Day -> stringResource(com.upsaclay.common.R.string.day_ago_short, elapsedTime.value)
 
-            is ElapsedTime.Week -> stringResource(com.upsaclay.common.R.string.week_ago_short, elapsedTime.value)
+            is com.upsaclay.common.domain.model.ElapsedTime.Week -> stringResource(com.upsaclay.common.R.string.week_ago_short, elapsedTime.value)
 
-            is ElapsedTime.Later -> localDateTimeFormatterUseCase.formatDayMonthYear(elapsedTime.value)
+            is com.upsaclay.common.domain.model.ElapsedTime.Later -> localDateTimeFormatterUseCase.formatDayMonthYear(elapsedTime.value)
         }
     } else ""
 

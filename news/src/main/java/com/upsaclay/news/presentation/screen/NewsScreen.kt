@@ -31,13 +31,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.upsaclay.common.domain.model.Screen
 import com.upsaclay.common.presentation.components.PullToRefreshComponent
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.news.R
 import com.upsaclay.news.announcementsFixture
-import com.upsaclay.news.domain.model.Announcement
 import com.upsaclay.news.presentation.components.AnnouncementItemWithContent
 import com.upsaclay.news.presentation.viewmodel.NewsViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -72,13 +70,13 @@ fun NewsScreen(
                     announcements = announcements,
                     onClickAnnouncement = { announcement ->
                         newsViewModel.setDisplayedAnnouncement(announcement)
-                        navController.navigate(Screen.READ_ANNOUNCEMENT.route)
+                        navController.navigate(com.upsaclay.common.domain.model.Screen.READ_ANNOUNCEMENT.route)
                     }
                 )
                 PostSection()
             }
 
-            if(user.isMember) {
+            if (user.isMember) {
                 Box(
                     modifier = Modifier
                         .padding(MaterialTheme.spacing.medium)
@@ -94,7 +92,7 @@ fun NewsScreen(
                                 stringResource(id = R.string.new_announcement)
                             )
                         },
-                        onClick = { navController.navigate(Screen.CREATE_ANNOUNCEMENT.route) }
+                        onClick = { navController.navigate(com.upsaclay.common.domain.model.Screen.CREATE_ANNOUNCEMENT.route) }
                     )
                 }
             }
@@ -120,8 +118,8 @@ fun NewsScreen(
 
 @Composable
 private fun RecentAnnouncementSection(
-    announcements: List<Announcement>,
-    onClickAnnouncement: (Announcement) -> Unit,
+    announcements: List<com.upsaclay.news.domain.model.Announcement>,
+    onClickAnnouncement: (com.upsaclay.news.domain.model.Announcement) -> Unit,
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     val sortedAnnouncements = announcements.sortedByDescending { it.date }
@@ -172,7 +170,7 @@ private fun PostSection() {
             modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium)
         )
 
-       //TODO : Implémenter la récupération des posts
+        //TODO : Implémenter la récupération des posts
     }
 }
 
@@ -182,9 +180,9 @@ private fun PostSection() {
  =====================================================================
  */
 
-@Preview(showBackground = true ,widthDp = 360, heightDp = 640)
+@Preview(showBackground = true, widthDp = 360, heightDp = 640)
 @Composable
-private fun NewsScreenPreview(){
+private fun NewsScreenPreview() {
     val isMember = true
     GedoiseTheme {
         PullToRefreshComponent(onRefresh = { }, isRefreshing = true) {
@@ -193,7 +191,7 @@ private fun NewsScreenPreview(){
                 PostSection()
             }
 
-            if(isMember) {
+            if (isMember) {
                 Box(
                     modifier = Modifier
                         .padding(MaterialTheme.spacing.medium)
@@ -219,7 +217,7 @@ private fun NewsScreenPreview(){
 
 @Preview(showBackground = true)
 @Composable
-private fun RecentAnnouncementSectionPreview(){
+private fun RecentAnnouncementSectionPreview() {
     GedoiseTheme {
         Column {
             RecentAnnouncementSection(

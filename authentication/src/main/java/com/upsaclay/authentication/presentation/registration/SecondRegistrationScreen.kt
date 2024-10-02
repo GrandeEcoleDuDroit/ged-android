@@ -51,7 +51,7 @@ fun SecondRegistrationScreen(
 
     LaunchedEffect(registrationState) {
         if (registrationState == RegistrationState.RECOGNIZED_ACCOUNT) {
-            navController.navigate(Screen.THIRD_REGISTRATION_SCREEN.route)
+            navController.navigate(com.upsaclay.common.domain.model.Screen.THIRD_REGISTRATION_SCREEN.route)
         }
     }
 

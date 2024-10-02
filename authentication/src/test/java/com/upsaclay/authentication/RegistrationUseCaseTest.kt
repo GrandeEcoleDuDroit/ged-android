@@ -14,7 +14,7 @@ import org.junit.Test
 
 class RegistrationUseCaseTest {
     private lateinit var registrationUseCase: RegistrationUseCase
-    private lateinit var userRepository: UserRepository
+    private lateinit var userRepository: com.upsaclay.common.domain.repository.UserRepository
     private lateinit var updateUserProfilePictureUseCase: UpdateUserProfilePictureUseCase
     private lateinit var uri: Uri
 

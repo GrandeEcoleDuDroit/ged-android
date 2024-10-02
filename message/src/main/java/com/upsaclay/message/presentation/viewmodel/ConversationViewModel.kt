@@ -14,8 +14,8 @@ class ConversationViewModel(
     getAllConversationsUseCase: GetAllConversationsUseCase,
     private val getAllUserUseCase: GetAllUserUseCase
 ): ViewModel() {
-    private val _users = MutableStateFlow<List<User>>(emptyList())
-    val users: Flow<List<User>> = _users
+    private val _users = MutableStateFlow<List<com.upsaclay.common.domain.model.User>>(emptyList())
+    val users: Flow<List<com.upsaclay.common.domain.model.User>> = _users
     val conversations: Flow<List<Conversation>> = getAllConversationsUseCase()
 
     fun fetchAllUsers() {

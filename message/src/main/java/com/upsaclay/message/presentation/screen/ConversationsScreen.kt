@@ -98,7 +98,7 @@ fun ConversationScreen(
                 TextButton(
                     contentPadding = PaddingValues(MaterialTheme.spacing.default),
                     modifier = Modifier.height(MaterialTheme.spacing.large),
-                    onClick = { navController.navigate(Screen.CREATE_CONVERSATION.route) },
+                    onClick = { navController.navigate(com.upsaclay.common.domain.model.Screen.CREATE_CONVERSATION.route) },
                 ) {
                     Text(
                         text = stringResource(id = R.string.new_conversation),
@@ -125,8 +125,8 @@ fun ConversationScreen(
             modifier = Modifier.align(Alignment.BottomEnd),
             expanded = expanded,
             onToggleClick = { expanded = !expanded },
-            onNewConversationClick = { navController.navigate(Screen.CREATE_CONVERSATION.route)},
-            onNewGroupClick = { navController.navigate(Screen.CREATE_GROUP_CONVERSATION.route) }
+            onNewConversationClick = { navController.navigate(com.upsaclay.common.domain.model.Screen.CREATE_CONVERSATION.route)},
+            onNewGroupClick = { navController.navigate(com.upsaclay.common.domain.model.Screen.CREATE_GROUP_CONVERSATION.route) }
         )
     }
 }

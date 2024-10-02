@@ -76,7 +76,7 @@ fun AuthenticationScreen(
     val password = authenticationViewModel.password
 
     if (authenticationState == AuthenticationState.AUTHENTICATED) {
-        navController.navigate(Screen.NEWS.route)
+        navController.navigate(com.upsaclay.common.domain.model.Screen.NEWS.route)
     }
 
     isError = authenticationState == AuthenticationState.AUTHENTICATION_ERROR ||
@@ -142,7 +142,7 @@ fun AuthenticationScreen(
                     keyboardController?.hide()
                     authenticationViewModel.login()
                 },
-                onRegistrationClick = { navController.navigate(Screen.FIRST_REGISTRATION_SCREEN.route) },
+                onRegistrationClick = { navController.navigate(com.upsaclay.common.domain.model.Screen.FIRST_REGISTRATION_SCREEN.route) },
                 isError = isError,
                 isEnable = authenticationState != AuthenticationState.LOADING
             )

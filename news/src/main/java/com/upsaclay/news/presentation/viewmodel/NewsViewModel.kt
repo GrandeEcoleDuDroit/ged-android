@@ -29,7 +29,7 @@ class NewsViewModel(
     private val convertAnnouncementToJsonUseCase: ConvertAnnouncementToJsonUseCase,
     private val getAnnouncementUseCase: GetAnnouncementUseCase,
     private val getOnlineUserUseCase: GetOnlineUserUseCase
-): ViewModel() {
+) : ViewModel() {
     private val _onlineUsers = MutableStateFlow(emptyList<User>())
     val onlineUsers: StateFlow<List<User>> = _onlineUsers
     private val _announcementState = MutableStateFlow(AnnouncementState.DEFAULT)
@@ -76,7 +76,9 @@ class NewsViewModel(
             delay(300)
             deleteAnnouncementUseCase(announcement)
                 .onSuccess { _announcementState.value = AnnouncementState.ANNOUNCEMENT_DELETED }
-                .onFailure { _announcementState.value = AnnouncementState.ANNOUNCEMENT_DELETE_ERROR }
+                .onFailure {
+                    _announcementState.value = AnnouncementState.ANNOUNCEMENT_DELETE_ERROR
+                }
         }
     }
 

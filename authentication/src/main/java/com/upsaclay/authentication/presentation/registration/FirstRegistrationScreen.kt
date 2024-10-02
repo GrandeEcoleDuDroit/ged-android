@@ -84,7 +84,7 @@ fun FirstRegistrationScreen(
             text = stringResource(id = com.upsaclay.common.R.string.next),
             onClick = {
                 registrationViewModel.updateSchoolLevel(selectedItem)
-                navController.navigate(Screen.SECOND_REGISTRATION_SCREEN.route)
+                navController.navigate(com.upsaclay.common.domain.model.Screen.SECOND_REGISTRATION_SCREEN.route)
             },
             modifier = Modifier
                 .align(Alignment.BottomCenter)

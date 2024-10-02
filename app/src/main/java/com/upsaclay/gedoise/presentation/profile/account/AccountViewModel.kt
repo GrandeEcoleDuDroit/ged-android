@@ -24,7 +24,7 @@ class AccountViewModel(
 ) : ViewModel() {
     private val _accountScreenState = MutableStateFlow(AccountScreenState.READ)
     val accountScreenState = _accountScreenState.asStateFlow()
-    val user: Flow<User?> = getCurrentUserFlowUseCase()
+    val user: Flow<com.upsaclay.common.domain.model.User?> = getCurrentUserFlowUseCase()
     var profilePictureUri by mutableStateOf<Uri?>(null)
         private set
 
