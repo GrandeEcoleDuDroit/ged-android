@@ -29,6 +29,7 @@ crashlytics= "3.0.2"
 appcompat = "1.7.0"
 material = "1.12.0"
 kotlinx = "1.9.0"
+spotless = "6.25.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -84,6 +85,7 @@ jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "k
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 googleServices = { id = "com.google.gms.google-services", version.ref = "googleServices"}
 firebaseCrashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlytics" }
