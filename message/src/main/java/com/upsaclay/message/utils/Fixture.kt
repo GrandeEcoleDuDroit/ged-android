@@ -57,4 +57,4 @@ val conversationsFixture = listOf(
     conversationFixture.copy(messages = messagesFixture.map { it.copy(isRead = true, date = it.date.minusWeeks(3)) }),
     conversationFixture.copy(messages = messagesFixture.map { it.copy(isRead = true, date = it.date.minusMonths(1)) })
 
-    )
+)

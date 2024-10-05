@@ -34,45 +34,43 @@ import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.showToast
 import com.upsaclay.news.R
 import com.upsaclay.news.announcementFixture
-import com.upsaclay.news.domain.model.AnnouncementState
 import com.upsaclay.news.presentation.viewmodel.EditAnnouncementViewModel
 import java.time.LocalDateTime
 
 @Composable
-fun EditAnnouncementScreen(
-    navController: NavController,
-    editAnnouncementViewModel: EditAnnouncementViewModel
-) {
+fun EditAnnouncementScreen(navController: NavController, editAnnouncementViewModel: EditAnnouncementViewModel) {
     val context = LocalContext.current
-    val state = editAnnouncementViewModel.announcementState.collectAsState(AnnouncementState.DEFAULT).value
+    val state =
+        editAnnouncementViewModel.announcementState.collectAsState(com.upsaclay.news.domain.model.AnnouncementState.DEFAULT).value
     val title: String = editAnnouncementViewModel.title
     val content: String = editAnnouncementViewModel.content
-    val isAnnouncementModified = editAnnouncementViewModel.isAnnouncementModified.collectAsState(initial = false).value
+    val isAnnouncementModified =
+        editAnnouncementViewModel.isAnnouncementModified.collectAsState(initial = false).value
     var showLoadingDialog by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
     LaunchedEffect(state) {
         when (state) {
-            AnnouncementState.ANNOUNCEMENT_UPDATE_ERROR -> {
+            com.upsaclay.news.domain.model.AnnouncementState.ANNOUNCEMENT_UPDATE_ERROR -> {
                 showLoadingDialog = false
                 showToast(context, R.string.announcement_update_error)
             }
 
-            AnnouncementState.ANNOUNCEMENT_UPDATED -> {
+            com.upsaclay.news.domain.model.AnnouncementState.ANNOUNCEMENT_UPDATED -> {
                 showLoadingDialog = false
                 focusManager.clearFocus()
                 keyboardController?.hide()
                 navController.popBackStack()
             }
 
-            AnnouncementState.LOADING -> showLoadingDialog = true
+            com.upsaclay.news.domain.model.AnnouncementState.LOADING -> showLoadingDialog = true
 
             else -> {}
         }
     }
 
-    if(showLoadingDialog) {
+    if (showLoadingDialog) {
         LoadingDialog()
     }
 
@@ -117,11 +115,11 @@ fun EditAnnouncementScreen(
                         Text(
                             text = stringResource(id = R.string.title_field_entry),
                             fontSize = 18.sp,
-                            style = MaterialTheme.typography.titleMedium,
+                            style = MaterialTheme.typography.titleMedium
                         )
                     },
                     onValueChange = { editAnnouncementViewModel.updateTitle(it) },
-                    textStyle = MaterialTheme.typography.titleMedium,
+                    textStyle = MaterialTheme.typography.titleMedium
                 )
 
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
@@ -132,7 +130,7 @@ fun EditAnnouncementScreen(
                     placeholder = {
                         Text(
                             text = stringResource(id = R.string.content_field_entry),
-                            style = MaterialTheme.typography.bodyLarge,
+                            style = MaterialTheme.typography.bodyLarge
                         )
                     },
                     onValueChange = { editAnnouncementViewModel.updateContent(it) },
@@ -156,7 +154,7 @@ private fun EditAnnouncementScreenPreview() {
     var content by remember { mutableStateOf(announcementFixture.content) }
 
     GedoiseTheme {
-        Scaffold (
+        Scaffold(
             topBar = {
                 SmallTopBarEdit(
                     onCancelClick = { },
@@ -185,7 +183,7 @@ private fun EditAnnouncementScreenPreview() {
                             style = MaterialTheme.typography.titleMedium
                         )
                     },
-                    textStyle = MaterialTheme.typography.titleMedium,
+                    textStyle = MaterialTheme.typography.titleMedium
                 )
 
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
@@ -196,7 +194,7 @@ private fun EditAnnouncementScreenPreview() {
                     placeholder = {
                         Text(
                             text = stringResource(id = R.string.content_field_entry),
-                            style = MaterialTheme.typography.bodyLarge,
+                            style = MaterialTheme.typography.bodyLarge
                         )
                     },
                     textStyle = MaterialTheme.typography.bodyLarge

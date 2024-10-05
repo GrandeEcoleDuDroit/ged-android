@@ -40,10 +40,7 @@ import com.upsaclay.common.presentation.theme.spacing
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun ThirdRegistrationScreen(
-    navController: NavController,
-    registrationViewModel: RegistrationViewModel = koinViewModel()
-) {
+fun ThirdRegistrationScreen(navController: NavController, registrationViewModel: RegistrationViewModel = koinViewModel()) {
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri ->
@@ -53,8 +50,8 @@ fun ThirdRegistrationScreen(
     val registrationState by registrationViewModel.registrationState.collectAsState()
 
     if (registrationState == RegistrationState.REGISTERED) {
-        navController.navigate(Screen.NEWS.route) {
-            popUpTo(Screen.NEWS.route) { inclusive = true }
+        navController.navigate(com.upsaclay.common.domain.model.Screen.NEWS.route) {
+            popUpTo(com.upsaclay.common.domain.model.Screen.NEWS.route) { inclusive = true }
         }
     }
 
@@ -71,7 +68,7 @@ fun ThirdRegistrationScreen(
         ) {
             Text(
                 text = stringResource(id = R.string.add_profile_picture),
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleMedium
             )
 
             Spacer(Modifier.height(MaterialTheme.spacing.medium))
@@ -100,7 +97,7 @@ fun ThirdRegistrationScreen(
 
             Text(
                 text = registrationViewModel.fullName,
-                style = MaterialTheme.typography.headlineMedium,
+                style = MaterialTheme.typography.headlineMedium
             )
 
             Text(
@@ -153,11 +150,11 @@ fun ThirdRegistrationScreenPreview() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.Center),
-                horizontalAlignment = Alignment.CenterHorizontally,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
                     text = stringResource(id = R.string.add_profile_picture),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleMedium
                 )
                 Spacer(Modifier.height(MaterialTheme.spacing.medium))
 
@@ -191,7 +188,7 @@ fun ThirdRegistrationScreenPreview() {
 
                 Text(
                     text = "Pierre Dupont",
-                    style = MaterialTheme.typography.headlineMedium,
+                    style = MaterialTheme.typography.headlineMedium
                 )
                 Text(
                     text = "pierre.dupont@universite-paris-saclay.fr",
@@ -205,7 +202,7 @@ fun ThirdRegistrationScreenPreview() {
                     Text(
                         text = stringResource(id = R.string.error_registration),
                         color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 }
             }
@@ -223,4 +220,3 @@ fun ThirdRegistrationScreenPreview() {
         }
     }
 }
-

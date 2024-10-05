@@ -76,7 +76,7 @@ fun TransparentTextField(
                 focusedContainerColor = backgroundColor,
                 unfocusedContainerColor = backgroundColor,
                 focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
             ),
             placeholder = placeholder,
             contentPadding = PaddingValues(MaterialTheme.spacing.default)
@@ -97,7 +97,7 @@ fun TransparentFocusedTextField(
     shape: Shape = TextFieldDefaults.shape,
     displayKeyboard: Boolean = true
 ) {
-    val focusRequester = remember{ FocusRequester() }
+    val focusRequester = remember { FocusRequester() }
     val textFieldValue = remember {
         mutableStateOf(
             TextFieldValue(
@@ -108,7 +108,7 @@ fun TransparentFocusedTextField(
     }
     val colors: TextFieldColors = TextFieldDefaults.colors()
 
-    if(displayKeyboard) {
+    if (displayKeyboard) {
         LaunchedEffect(Unit) {
             awaitFrame()
             focusRequester.requestFocus()
@@ -116,7 +116,7 @@ fun TransparentFocusedTextField(
     }
 
     BasicTextField(
-        modifier =  if(displayKeyboard) {
+        modifier = if (displayKeyboard) {
             modifier
                 .focusRequester(focusRequester)
                 .clip(shape)
@@ -151,7 +151,7 @@ fun TransparentFocusedTextField(
                 focusedContainerColor = backgroundColor,
                 unfocusedContainerColor = backgroundColor,
                 focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
             ),
             placeholder = placeholder,
             contentPadding = PaddingValues(MaterialTheme.spacing.default)

@@ -28,7 +28,7 @@ fun SimpleDropDownMenu(
     expanded: Boolean,
     onExpandedChange: (Boolean) -> Unit,
     onDismissRequest: () -> Unit
-){
+) {
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = onExpandedChange,
@@ -67,7 +67,7 @@ fun SimpleDropDownMenu(
 
 @Preview(showBackground = true)
 @Composable
-private fun SimpleDropDownMenuPreview(){
+private fun SimpleDropDownMenuPreview() {
     val items = persistentListOf("Item 1", "Item 2", "Item 3")
     var selectedItem by remember {
         mutableStateOf(items[0])

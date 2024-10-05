@@ -13,11 +13,7 @@ import com.upsaclay.common.presentation.components.CircularProgressBar
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 
 @Composable
-fun LargeButton(
-    modifier: Modifier = Modifier,
-    text: String,
-    onClick: () -> Unit
-) {
+fun LargeButton(modifier: Modifier = Modifier, text: String, onClick: () -> Unit) {
     Button(
         onClick = onClick,
         modifier = modifier.height(45.dp)
@@ -52,7 +48,7 @@ private fun LargeButtonPreview() {
         LargeButton(
             modifier = Modifier.fillMaxWidth(),
             text = "Primary Large Button",
-            onClick = {},
+            onClick = {}
         )
     }
 }

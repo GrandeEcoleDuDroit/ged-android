@@ -29,7 +29,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -86,8 +86,19 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation(project(":common"))
     implementation(project(":authentication"))
-    implementation(project(":news"))
+    implementation(project(":authentication:domain"))
+    implementation(project(":authentication:data"))
+
+    implementation(project(":common"))
+    implementation(project(":common:domain"))
+    implementation(project(":common:data"))
+
     implementation(project(":message"))
+    implementation(project(":message:domain"))
+    implementation(project(":message:data"))
+
+    implementation(project(":news"))
+    implementation(project(":news:domain"))
+    implementation(project(":news:data"))
 }

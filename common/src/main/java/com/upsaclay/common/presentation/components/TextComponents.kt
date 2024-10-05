@@ -8,15 +8,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 
 @Composable
-fun ErrorText(
-    modifier: Modifier = Modifier,
-    text: String,
-) {
+fun ErrorText(modifier: Modifier = Modifier, text: String) {
     Text(
         modifier = modifier,
         text = text,
         color = MaterialTheme.colorScheme.error,
-        style = MaterialTheme.typography.bodyMedium,
+        style = MaterialTheme.typography.bodyMedium
     )
 }
 

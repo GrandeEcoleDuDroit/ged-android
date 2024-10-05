@@ -15,7 +15,8 @@ val appModule = module {
     single {
         Room.databaseBuilder(
             androidContext(),
-            GedoiseDatabase::class.java, DATABASE_NAME
+            GedoiseDatabase::class.java,
+            DATABASE_NAME
         ).fallbackToDestructiveMigration().build()
     }
 

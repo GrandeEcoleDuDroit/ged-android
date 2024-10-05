@@ -24,7 +24,6 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
-import com.upsaclay.common.domain.model.User
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.SmallTopBarEdit
 import com.upsaclay.common.presentation.components.TransparentFocusedTextField
@@ -33,19 +32,18 @@ import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.showToast
 import com.upsaclay.news.R
-import com.upsaclay.news.domain.model.Announcement
-import com.upsaclay.news.domain.model.AnnouncementState
 import com.upsaclay.news.presentation.viewmodel.CreateAnnouncementViewModel
-import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDateTime
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun CreateAnnouncementScreen(
     navController: NavController,
     createAnnouncementViewModel: CreateAnnouncementViewModel = koinViewModel(),
-    user: User
+    user: com.upsaclay.common.domain.model.User
 ) {
-    val state = createAnnouncementViewModel.announcementState.collectAsState(AnnouncementState.DEFAULT).value
+    val state =
+        createAnnouncementViewModel.announcementState.collectAsState(com.upsaclay.news.domain.model.AnnouncementState.DEFAULT).value
     val title: String = createAnnouncementViewModel.title
     val content: String = createAnnouncementViewModel.content
     val context = LocalContext.current
@@ -55,25 +53,25 @@ fun CreateAnnouncementScreen(
 
     LaunchedEffect(state) {
         when (state) {
-            AnnouncementState.ANNOUNCEMENT_CREATION_ERROR -> {
+            com.upsaclay.news.domain.model.AnnouncementState.ANNOUNCEMENT_CREATION_ERROR -> {
                 showLoadingDialog = false
                 showToast(context, R.string.announcement_creation_error)
             }
 
-            AnnouncementState.ANNOUNCEMENT_CREATED -> {
+            com.upsaclay.news.domain.model.AnnouncementState.ANNOUNCEMENT_CREATED -> {
                 showLoadingDialog = false
                 focusManager.clearFocus()
                 keyboardController?.hide()
                 navController.popBackStack()
             }
 
-            AnnouncementState.LOADING -> showLoadingDialog = true
+            com.upsaclay.news.domain.model.AnnouncementState.LOADING -> showLoadingDialog = true
 
             else -> {}
         }
     }
 
-    if(showLoadingDialog) {
+    if (showLoadingDialog) {
         LoadingDialog()
     }
 
@@ -89,9 +87,9 @@ fun CreateAnnouncementScreen(
                 },
                 onSaveClick = {
                     createAnnouncementViewModel.createAnnouncement(
-                        Announcement(
+                        com.upsaclay.news.domain.model.Announcement(
                             id = -1,
-                            title = if(title.isBlank()) null else title.trim(),
+                            title = if (title.isBlank()) null else title.trim(),
                             content = content.trim(),
                             date = LocalDateTime.now(),
                             author = user
@@ -119,11 +117,11 @@ fun CreateAnnouncementScreen(
                     placeholder = {
                         Text(
                             text = stringResource(id = R.string.title_field_entry),
-                            style = MaterialTheme.typography.titleMedium,
+                            style = MaterialTheme.typography.titleMedium
                         )
                     },
                     onValueChange = { createAnnouncementViewModel.updateTitle(it) },
-                    textStyle = MaterialTheme.typography.titleMedium,
+                    textStyle = MaterialTheme.typography.titleMedium
                 )
 
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
@@ -134,7 +132,7 @@ fun CreateAnnouncementScreen(
                     placeholder = {
                         Text(
                             text = stringResource(id = R.string.content_field_entry),
-                            style = MaterialTheme.typography.bodyLarge,
+                            style = MaterialTheme.typography.bodyLarge
                         )
                     },
                     onValueChange = { createAnnouncementViewModel.updateContent(it) },
@@ -158,7 +156,7 @@ private fun CreateAnnouncementScreenPreview() {
     var content by remember { mutableStateOf("") }
 
     GedoiseTheme {
-        Scaffold (
+        Scaffold(
             topBar = {
                 SmallTopBarEdit(
                     onCancelClick = { },
@@ -183,10 +181,10 @@ private fun CreateAnnouncementScreenPreview() {
                     placeholder = {
                         Text(
                             text = stringResource(id = R.string.title_field_entry),
-                            style = MaterialTheme.typography.titleMedium,
+                            style = MaterialTheme.typography.titleMedium
                         )
                     },
-                    textStyle = MaterialTheme.typography.titleMedium,
+                    textStyle = MaterialTheme.typography.titleMedium
                 )
 
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
@@ -197,7 +195,7 @@ private fun CreateAnnouncementScreenPreview() {
                     placeholder = {
                         Text(
                             text = stringResource(id = R.string.content_field_entry),
-                            style = MaterialTheme.typography.bodyLarge,
+                            style = MaterialTheme.typography.bodyLarge
                         )
                     },
                     textStyle = MaterialTheme.typography.bodyLarge

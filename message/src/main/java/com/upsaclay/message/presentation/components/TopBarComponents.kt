@@ -30,10 +30,7 @@ import com.upsaclay.common.utils.userFixture
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChatTopBar(
-    navController: NavController,
-    interlocutor: User
-) {
+fun ChatTopBar(navController: NavController, interlocutor: com.upsaclay.common.domain.model.User) {
     val color = TopAppBarDefaults.topAppBarColors()
 
     Row(
@@ -49,7 +46,7 @@ fun ChatTopBar(
         IconButton(onClick = { navController.popBackStack() }) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = stringResource(id = com.upsaclay.common.R.string.arrow_back_icon_description),
+                contentDescription = stringResource(id = com.upsaclay.common.R.string.arrow_back_icon_description)
             )
         }
 

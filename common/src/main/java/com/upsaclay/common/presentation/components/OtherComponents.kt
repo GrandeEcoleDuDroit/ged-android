@@ -36,12 +36,7 @@ import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PullToRefreshComponent(
-    modifier: Modifier = Modifier,
-    onRefresh: () -> Unit,
-    isRefreshing: Boolean,
-    content: @Composable () -> Unit
-) {
+fun PullToRefreshComponent(modifier: Modifier = Modifier, onRefresh: () -> Unit, isRefreshing: Boolean, content: @Composable () -> Unit) {
     val pullToRefreshState = rememberPullToRefreshState()
 
     Box(
@@ -49,14 +44,14 @@ fun PullToRefreshComponent(
             .fillMaxSize()
             .nestedScroll(pullToRefreshState.nestedScrollConnection)
     ) {
-        if(pullToRefreshState.isRefreshing){
+        if (pullToRefreshState.isRefreshing) {
             LaunchedEffect(true) {
                 onRefresh()
             }
         }
 
         LaunchedEffect(isRefreshing) {
-            if(!isRefreshing) {
+            if (!isRefreshing) {
                 pullToRefreshState.endRefresh()
             }
         }
@@ -72,12 +67,7 @@ fun PullToRefreshComponent(
 }
 
 @Composable
-fun SimpleClickableItem(
-    modifier: Modifier = Modifier,
-    text: @Composable () -> Unit,
-    icon: @Composable () -> Unit,
-    onClick: () -> Unit
-) {
+fun SimpleClickableItem(modifier: Modifier = Modifier, text: @Composable () -> Unit, icon: @Composable () -> Unit, onClick: () -> Unit) {
     Row(
         modifier = modifier
             .clickable(onClick = onClick)
