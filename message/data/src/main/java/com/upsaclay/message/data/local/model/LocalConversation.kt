@@ -6,7 +6,6 @@ import androidx.room.PrimaryKey
 import com.upsaclay.message.data.model.CONVERSATIONS_TABLE_NAME
 import com.upsaclay.message.data.remote.ConversationField
 
-
 @Entity(tableName = CONVERSATIONS_TABLE_NAME)
 data class LocalConversation(
     @PrimaryKey

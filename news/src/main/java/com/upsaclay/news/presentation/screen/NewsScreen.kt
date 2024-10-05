@@ -41,10 +41,7 @@ import com.upsaclay.news.presentation.viewmodel.NewsViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun NewsScreen(
-    newsViewModel: NewsViewModel = koinViewModel(),
-    navController: NavController
-) {
+fun NewsScreen(newsViewModel: NewsViewModel = koinViewModel(), navController: NavController) {
     val announcements = newsViewModel.announcements.collectAsState(emptyList()).value
     val user = newsViewModel.user.collectAsState(null).value
     val isRefreshing = newsViewModel.isRefreshing
@@ -100,8 +97,8 @@ fun NewsScreen(
     }
 }
 
-//@Composable
-//fun OnlineUserSection(user: User) {
+// @Composable
+// fun OnlineUserSection(user: User) {
 //    Column(horizontalAlignment = Alignment.CenterHorizontally) {
 //        ProfilePictureWithBubble(
 //            imageUrl = user.profilePictureUrl,
@@ -114,12 +111,12 @@ fun NewsScreen(
 //            style = MaterialTheme.typography.bodySmall
 //        )
 //    }
-//}
+// }
 
 @Composable
 private fun RecentAnnouncementSection(
     announcements: List<com.upsaclay.news.domain.model.Announcement>,
-    onClickAnnouncement: (com.upsaclay.news.domain.model.Announcement) -> Unit,
+    onClickAnnouncement: (com.upsaclay.news.domain.model.Announcement) -> Unit
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     val sortedAnnouncements = announcements.sortedByDescending { it.date }
@@ -170,7 +167,7 @@ private fun PostSection() {
             modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium)
         )
 
-        //TODO : Implémenter la récupération des posts
+        // TODO : Implémenter la récupération des posts
     }
 }
 
@@ -207,7 +204,7 @@ private fun NewsScreenPreview() {
                                 stringResource(id = R.string.new_announcement)
                             )
                         },
-                        text = { Text(text = stringResource(id = R.string.new_announcement)) },
+                        text = { Text(text = stringResource(id = R.string.new_announcement)) }
                     )
                 }
             }
@@ -222,7 +219,7 @@ private fun RecentAnnouncementSectionPreview() {
         Column {
             RecentAnnouncementSection(
                 announcements = announcementsFixture,
-                onClickAnnouncement = {},
+                onClickAnnouncement = {}
             )
         }
     }

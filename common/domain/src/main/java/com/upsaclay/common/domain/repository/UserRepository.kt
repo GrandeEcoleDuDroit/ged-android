@@ -3,7 +3,6 @@ package com.upsaclay.common.domain.repository
 import com.upsaclay.common.domain.model.User
 import kotlinx.coroutines.flow.Flow
 
-
 interface UserRepository {
     val currentUserFlow: Flow<User>
     val currentUser: User?

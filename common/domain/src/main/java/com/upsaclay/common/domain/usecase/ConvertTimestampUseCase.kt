@@ -5,10 +5,8 @@ import java.time.ZoneId
 import java.time.ZoneOffset
 
 class ConvertTimestampUseCase {
-    fun toLocalDateTime(timestamp: Long): LocalDateTime {
-        return LocalDateTime
-            .ofEpochSecond(timestamp, 0, ZoneOffset.ofHours(2))
-            .atZone(ZoneId.systemDefault())
-            .toLocalDateTime()
-    }
+    fun toLocalDateTime(timestamp: Long): LocalDateTime = LocalDateTime
+        .ofEpochSecond(timestamp, 0, ZoneOffset.ofHours(2))
+        .atZone(ZoneId.systemDefault())
+        .toLocalDateTime()
 }

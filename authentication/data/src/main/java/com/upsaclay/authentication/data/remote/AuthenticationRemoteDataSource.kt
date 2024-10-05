@@ -3,18 +3,12 @@ package com.upsaclay.authentication.data.remote
 import com.upsaclay.common.data.formatHttpError
 import com.upsaclay.common.domain.e
 import com.upsaclay.common.domain.i
+import java.io.IOException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.IOException
 
-internal class AuthenticationRemoteDataSource(
-    private val authenticationApi: AuthenticationApi,
-) {
-    suspend fun login(
-        email: String,
-        password: String,
-        hash: String
-    ): Result<Unit> = withContext(Dispatchers.IO) {
+internal class AuthenticationRemoteDataSource(private val authenticationApi: AuthenticationApi) {
+    suspend fun login(email: String, password: String, hash: String): Result<Unit> = withContext(Dispatchers.IO) {
         i("Logging in with Paris-Saclay...")
         try {
             val response = authenticationApi.login(email, password, hash)

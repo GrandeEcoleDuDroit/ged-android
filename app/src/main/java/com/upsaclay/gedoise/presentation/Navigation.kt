@@ -51,7 +51,8 @@ fun Navigation(mainViewModel: MainViewModel = koinViewModel()) {
     val sharedConversationViewModel: ConversationViewModel = koinViewModel()
 
     val convertAnnouncementToJsonUseCase: ConvertAnnouncementToJsonUseCase by inject(
-        ConvertAnnouncementToJsonUseCase::class.java)
+        ConvertAnnouncementToJsonUseCase::class.java
+    )
     val startDestination = if (isAuthenticated) {
         Screen.NEWS.route
     } else {

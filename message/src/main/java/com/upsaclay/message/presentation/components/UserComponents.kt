@@ -19,10 +19,7 @@ import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.userFixture
 
 @Composable
-fun UserItem(
-    user: com.upsaclay.common.domain.model.User,
-    onClick: () -> Unit
-) {
+fun UserItem(user: com.upsaclay.common.domain.model.User, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()

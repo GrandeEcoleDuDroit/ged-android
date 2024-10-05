@@ -10,9 +10,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
-class CreateAnnouncementViewModel(
-    private val createAnnouncementUseCase: com.upsaclay.news.domain.usecase.CreateAnnouncementUseCase
-) : ViewModel() {
+class CreateAnnouncementViewModel(private val createAnnouncementUseCase: com.upsaclay.news.domain.usecase.CreateAnnouncementUseCase) :
+    ViewModel() {
     private val _announcementState =
         MutableStateFlow(com.upsaclay.news.domain.model.AnnouncementState.DEFAULT)
     val announcementState: Flow<com.upsaclay.news.domain.model.AnnouncementState> =

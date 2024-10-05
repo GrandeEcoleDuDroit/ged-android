@@ -9,5 +9,5 @@ internal data class RemoteConversation(
 
     @get:PropertyName("participants")
     @set:PropertyName("participants")
-    var participants: List<Int> = emptyList(),
+    var participants: List<Int> = emptyList()
 )

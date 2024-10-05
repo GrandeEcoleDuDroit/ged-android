@@ -35,11 +35,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.upsaclay.common.presentation.ClickableMenuItemData
 import com.upsaclay.common.domain.model.Screen
+import com.upsaclay.common.presentation.ClickableMenuItemData
 import com.upsaclay.common.presentation.components.CircularProgressBar
-import com.upsaclay.common.presentation.components.SimpleClickableItem
 import com.upsaclay.common.presentation.components.ProfilePicture
+import com.upsaclay.common.presentation.components.SimpleClickableItem
 import com.upsaclay.common.presentation.theme.GedoiseColor
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.spacing
@@ -50,10 +50,7 @@ import kotlinx.collections.immutable.persistentListOf
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun ProfileScreen(
-    navController: NavController,
-    profileViewModel: ProfileViewModel = koinViewModel()
-) {
+fun ProfileScreen(navController: NavController, profileViewModel: ProfileViewModel = koinViewModel()) {
     val user = profileViewModel.user.collectAsState(initial = null).value
     val clickableMenuItemsData: ImmutableList<ClickableMenuItemData> =
         buildProfileMenuItemData(navController, profileViewModel)
@@ -64,7 +61,7 @@ fun ProfileScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = it.calculateTopPadding()),
+                .padding(top = it.calculateTopPadding())
         ) {
             user?.let { user ->
                 Column {
@@ -84,7 +81,6 @@ fun ProfileScreen(
                             onClick = menuItem.onClick
                         )
                     }
-
                 }
             } ?: CircularProgressBar(
                 modifier = Modifier.align(Alignment.Center),
@@ -95,11 +91,7 @@ fun ProfileScreen(
 }
 
 @Composable
-private fun TopSection(
-    profilePictureUrl: String?,
-    userFullName: String,
-    userEmail: String
-) {
+private fun TopSection(profilePictureUrl: String?, userFullName: String, userEmail: String) {
     Column {
         Row(
             modifier = Modifier
@@ -150,37 +142,35 @@ fun ProfileTopBar(navController: NavController) {
 private fun buildProfileMenuItemData(
     navController: NavController,
     profileViewModel: ProfileViewModel
-): ImmutableList<ClickableMenuItemData> {
-    return persistentListOf(
-        ClickableMenuItemData(
-            text = { Text(text = stringResource(id = R.string.account_informations)) },
-            icon = {
-                Icon(
-                    modifier = Modifier.size(28.dp),
-                    painter = painterResource(id = com.upsaclay.common.R.drawable.ic_person),
-                    contentDescription = stringResource(id = R.string.account_icon_description),
-                )
-            },
-            onClick = { navController.navigate(Screen.ACCOUNT.route) }
-        ),
-        ClickableMenuItemData(
-            text = {
-                Text(
-                    text = stringResource(id = R.string.logout),
-                    color = GedoiseColor.Red
-                )
-            },
-            icon = {
-                Icon(
-                    painter = painterResource(id = com.upsaclay.common.R.drawable.ic_logout),
-                    contentDescription = stringResource(id = R.string.logout_icon_description),
-                    tint = GedoiseColor.Red
-                )
-            },
-            onClick = { profileViewModel.logout() }
-        )
+): ImmutableList<ClickableMenuItemData> = persistentListOf(
+    ClickableMenuItemData(
+        text = { Text(text = stringResource(id = R.string.account_informations)) },
+        icon = {
+            Icon(
+                modifier = Modifier.size(28.dp),
+                painter = painterResource(id = com.upsaclay.common.R.drawable.ic_person),
+                contentDescription = stringResource(id = R.string.account_icon_description)
+            )
+        },
+        onClick = { navController.navigate(Screen.ACCOUNT.route) }
+    ),
+    ClickableMenuItemData(
+        text = {
+            Text(
+                text = stringResource(id = R.string.logout),
+                color = GedoiseColor.Red
+            )
+        },
+        icon = {
+            Icon(
+                painter = painterResource(id = com.upsaclay.common.R.drawable.ic_logout),
+                contentDescription = stringResource(id = R.string.logout_icon_description),
+                tint = GedoiseColor.Red
+            )
+        },
+        onClick = { profileViewModel.logout() }
     )
-}
+)
 
 /*
  =====================================================================
@@ -200,7 +190,7 @@ fun ProfileScreenPreview() {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(top = it.calculateTopPadding()),
+                    .padding(top = it.calculateTopPadding())
             ) {
                 if (isLoading) {
                     CircularProgressBar(
@@ -232,7 +222,7 @@ fun ProfileScreenPreview() {
 
                             Text(
                                 text = userFixture.firstName + " " + userFixture.lastName,
-                                style = MaterialTheme.typography.titleLarge,
+                                style = MaterialTheme.typography.titleLarge
                             )
                         }
 
@@ -260,7 +250,7 @@ private val profileMenuItemsDataFixture: ImmutableList<ClickableMenuItemData> = 
             Icon(
                 modifier = Modifier.size(28.dp),
                 painter = painterResource(id = com.upsaclay.common.R.drawable.ic_person),
-                contentDescription = stringResource(id = R.string.account_icon_description),
+                contentDescription = stringResource(id = R.string.account_icon_description)
             )
         },
         onClick = {}

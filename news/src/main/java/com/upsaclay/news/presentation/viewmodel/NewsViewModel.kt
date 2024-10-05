@@ -59,8 +59,7 @@ class NewsViewModel(
         displayedAnnouncement = announcement
     }
 
-    fun convertAnnouncementToJson(announcement: Announcement): String =
-        convertAnnouncementToJsonUseCase.toJson(announcement)
+    fun convertAnnouncementToJson(announcement: Announcement): String = convertAnnouncementToJsonUseCase.toJson(announcement)
 
     fun updateAnnouncementState(state: AnnouncementState) {
         _announcementState.value = state

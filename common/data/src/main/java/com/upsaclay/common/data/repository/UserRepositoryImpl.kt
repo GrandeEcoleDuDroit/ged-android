@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 internal class UserRepositoryImpl(
     private val userRemoteDataSource: UserRemoteDataSource,
     private val userLocalDataSource: UserLocalDataSource
-): UserRepository {
+) : UserRepository {
     private val _currentUser = MutableStateFlow<User?>(null)
     override val currentUserFlow: Flow<User> = _currentUser.filterNotNull()
     override val currentUser: User? get() = _currentUser.value
@@ -33,17 +33,11 @@ internal class UserRepositoryImpl(
         }
     }
 
-    override suspend fun getUser(userId: Int): User? {
-        return userRemoteDataSource.getUser(userId)?.toDomain()
-    }
+    override suspend fun getUser(userId: Int): User? = userRemoteDataSource.getUser(userId)?.toDomain()
 
-    override suspend fun getAllUsers(): List<User> {
-        return userRemoteDataSource.getAllUsers().map { it.toDomain() }
-    }
+    override suspend fun getAllUsers(): List<User> = userRemoteDataSource.getAllUsers().map { it.toDomain() }
 
-    override suspend fun getOnlineUsers(): List<User> {
-        return userRemoteDataSource.getOnlineUsers().map { it.toDomain() }
-    }
+    override suspend fun getOnlineUsers(): List<User> = userRemoteDataSource.getOnlineUsers().map { it.toDomain() }
 
     override suspend fun createUser(user: User): Int? {
         val userDTO = UserDTO.fromDomain(user)
@@ -51,15 +45,12 @@ internal class UserRepositoryImpl(
         return userId?.also { userLocalDataSource.setUser(userDTO.copy(userId = userId)) }
     }
 
-    override suspend fun updateProfilePictureUrl(userId: Int, profilePictureUrl: String): Result<Unit> {
-        return userRemoteDataSource.updateProfilePictureUrl(userId, profilePictureUrl)
+    override suspend fun updateProfilePictureUrl(userId: Int, profilePictureUrl: String): Result<Unit> =
+        userRemoteDataSource.updateProfilePictureUrl(userId, profilePictureUrl)
             .onSuccess { userLocalDataSource.updateProfilePictureUrl(profilePictureUrl) }
-    }
 
-    override suspend fun deleteProfilePictureUrl(userId: Int): Result<Unit> {
-        return userRemoteDataSource.deleteProfilePictureUrl(userId)
-            .onSuccess { userLocalDataSource.deleteProfilePictureUrl() }
-    }
+    override suspend fun deleteProfilePictureUrl(userId: Int): Result<Unit> = userRemoteDataSource.deleteProfilePictureUrl(userId)
+        .onSuccess { userLocalDataSource.deleteProfilePictureUrl() }
 
     private suspend fun refreshUser() {
         userLocalDataSource.getCurrentUser()?.let { localUser ->

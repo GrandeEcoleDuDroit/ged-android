@@ -38,10 +38,7 @@ import com.upsaclay.news.presentation.viewmodel.EditAnnouncementViewModel
 import java.time.LocalDateTime
 
 @Composable
-fun EditAnnouncementScreen(
-    navController: NavController,
-    editAnnouncementViewModel: EditAnnouncementViewModel
-) {
+fun EditAnnouncementScreen(navController: NavController, editAnnouncementViewModel: EditAnnouncementViewModel) {
     val context = LocalContext.current
     val state =
         editAnnouncementViewModel.announcementState.collectAsState(com.upsaclay.news.domain.model.AnnouncementState.DEFAULT).value
@@ -118,11 +115,11 @@ fun EditAnnouncementScreen(
                         Text(
                             text = stringResource(id = R.string.title_field_entry),
                             fontSize = 18.sp,
-                            style = MaterialTheme.typography.titleMedium,
+                            style = MaterialTheme.typography.titleMedium
                         )
                     },
                     onValueChange = { editAnnouncementViewModel.updateTitle(it) },
-                    textStyle = MaterialTheme.typography.titleMedium,
+                    textStyle = MaterialTheme.typography.titleMedium
                 )
 
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
@@ -133,7 +130,7 @@ fun EditAnnouncementScreen(
                     placeholder = {
                         Text(
                             text = stringResource(id = R.string.content_field_entry),
-                            style = MaterialTheme.typography.bodyLarge,
+                            style = MaterialTheme.typography.bodyLarge
                         )
                     },
                     onValueChange = { editAnnouncementViewModel.updateContent(it) },
@@ -186,7 +183,7 @@ private fun EditAnnouncementScreenPreview() {
                             style = MaterialTheme.typography.titleMedium
                         )
                     },
-                    textStyle = MaterialTheme.typography.titleMedium,
+                    textStyle = MaterialTheme.typography.titleMedium
                 )
 
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
@@ -197,7 +194,7 @@ private fun EditAnnouncementScreenPreview() {
                     placeholder = {
                         Text(
                             text = stringResource(id = R.string.content_field_entry),
-                            style = MaterialTheme.typography.bodyLarge,
+                            style = MaterialTheme.typography.bodyLarge
                         )
                     },
                     textStyle = MaterialTheme.typography.bodyLarge

@@ -75,12 +75,9 @@ internal fun AccountModelBottomSheet(
 }
 
 @Composable
-internal fun AccountInfoItem(
-    modifier: Modifier = Modifier,
-    accountInfo: AccountInfo
-) {
+internal fun AccountInfoItem(modifier: Modifier = Modifier, accountInfo: AccountInfo) {
     Column(
-        modifier = modifier.padding(vertical = MaterialTheme.spacing.smallMedium),
+        modifier = modifier.padding(vertical = MaterialTheme.spacing.smallMedium)
     ) {
         Text(
             text = accountInfo.label,
@@ -89,18 +86,13 @@ internal fun AccountInfoItem(
         )
         Text(
             text = accountInfo.value,
-            style = MaterialTheme.typography.bodyLarge,
+            style = MaterialTheme.typography.bodyLarge
         )
     }
 }
 
 @Composable
-internal fun AccountTopBar(
-    isEdited: Boolean,
-    onSaveClick: () -> Unit,
-    onCancelClick: () -> Unit,
-    onBackClick: () -> Unit
-) {
+internal fun AccountTopBar(isEdited: Boolean, onSaveClick: () -> Unit, onCancelClick: () -> Unit, onBackClick: () -> Unit) {
     if (isEdited) {
         SmallTopBarEdit(
             title = stringResource(id = R.string.account_informations),

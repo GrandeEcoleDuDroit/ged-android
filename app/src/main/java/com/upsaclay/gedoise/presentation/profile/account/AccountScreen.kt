@@ -52,10 +52,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AccountScreen(
-    navController: NavController,
-    accountViewModel: AccountViewModel = koinViewModel()
-) {
+fun AccountScreen(navController: NavController, accountViewModel: AccountViewModel = koinViewModel()) {
     val user = accountViewModel.user.collectAsState(initial = null).value
     val accountScreenState = accountViewModel.accountScreenState.collectAsState().value
     val sheetState = rememberModalBottomSheetState()
@@ -111,11 +108,11 @@ fun AccountScreen(
                 accountViewModel.deleteUserProfilePicture()
             },
             onCancel = { showDeleteProfilePictureDialog = false },
-            onDismiss = { showDeleteProfilePictureDialog = false },
+            onDismiss = { showDeleteProfilePictureDialog = false }
         )
     }
 
-    if(showCancelModificationDialog) {
+    if (showCancelModificationDialog) {
         SensibleActionDialog(
             text = stringResource(id = com.upsaclay.common.R.string.discard_modification_dialog_text),
             confirmText = stringResource(id = com.upsaclay.common.R.string.discard),
@@ -160,7 +157,8 @@ fun AccountScreen(
                     onSaveClick = { accountViewModel.updateUserProfilePicture() },
                     onCancelClick = { showCancelModificationDialog = true },
                     onBackClick = { navController.popBackStack() }
-                ) }
+                )
+            }
         ) {
             Box(
                 modifier = Modifier
@@ -188,7 +186,7 @@ fun AccountScreen(
                             } else {
                                 showBottomSheet = true
                             }
-                        },
+                        }
                     )
 
                     accountInfos.forEach { accountInfo ->
@@ -221,12 +219,7 @@ fun AccountScreen(
 }
 
 @Composable
-private fun ProfilePictureSection(
-    isEdited: Boolean,
-    profilePictureUri: Uri?,
-    profilePictureUrl: String?,
-    onClick: () -> Unit,
-) {
+private fun ProfilePictureSection(isEdited: Boolean, profilePictureUri: Uri?, profilePictureUrl: String?, onClick: () -> Unit) {
     val scaleImage = 1.8f
 
     profilePictureUri?.let { uri ->

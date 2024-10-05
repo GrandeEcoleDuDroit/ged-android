@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 internal class InternalConversationRepositoryImpl(
     private val conversationLocalDataSource: com.upsaclay.message.data.local.ConversationLocalDataSource,
     private val conversationRemoteDataSource: ConversationRemoteDataSource
-): InternalConversationRepository {
+) : InternalConversationRepository {
     private val _conversationsDTO = MutableStateFlow<List<ConversationDTO>>(emptyList())
     override val conversationsDTO: Flow<List<ConversationDTO>> = _conversationsDTO
 

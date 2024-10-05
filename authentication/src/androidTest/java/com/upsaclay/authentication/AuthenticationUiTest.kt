@@ -12,13 +12,13 @@ import androidx.navigation.NavController
 import com.upsaclay.authentication.domain.model.AuthenticationState
 import com.upsaclay.authentication.presentation.AuthenticationScreen
 import com.upsaclay.authentication.presentation.AuthenticationViewModel
+import com.upsaclay.common.R as CoreResource
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import com.upsaclay.common.R as CoreResource
 
 class AuthenticationUiTest {
 

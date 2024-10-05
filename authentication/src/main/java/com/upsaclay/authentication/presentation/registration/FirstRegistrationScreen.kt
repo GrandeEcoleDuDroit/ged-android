@@ -29,10 +29,7 @@ import kotlinx.collections.immutable.persistentListOf
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun FirstRegistrationScreen(
-    navController: NavController,
-    registrationViewModel: RegistrationViewModel = koinViewModel()
-) {
+fun FirstRegistrationScreen(navController: NavController, registrationViewModel: RegistrationViewModel = koinViewModel()) {
     var selectedItem by remember {
         mutableStateOf(registrationViewModel.schoolLevel)
     }
@@ -57,7 +54,7 @@ fun FirstRegistrationScreen(
         ) {
             Text(
                 text = stringResource(id = R.string.select_level_school),
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleMedium
             )
 
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
@@ -123,7 +120,7 @@ private fun FirstRegistrationScreenPreview() {
             ) {
                 Text(
                     text = stringResource(id = R.string.select_level_school),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleMedium
                 )
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
                 SimpleDropDownMenu(

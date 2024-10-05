@@ -11,6 +11,7 @@ object GedoiseColor {
     val Black = Color(0xFF000000)
     val PrimaryVariant = Color(0xFFDBE0E9)
     val Background = White
+
 //    val Surface = Color(0xFFF4F5F7
     val Surface = White
     val BackgroundVariant = Color(0xFFF0F1F8)

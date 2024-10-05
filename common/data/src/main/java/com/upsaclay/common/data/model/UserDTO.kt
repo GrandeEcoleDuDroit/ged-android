@@ -34,5 +34,3 @@ internal data class UserDTO(
         profilePictureUrl = this.userProfilePictureUrl
     )
 }
-
-

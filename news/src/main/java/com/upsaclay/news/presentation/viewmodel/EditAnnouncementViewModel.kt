@@ -50,7 +50,6 @@ class EditAnnouncementViewModel(
                     _announcementState.value =
                         com.upsaclay.news.domain.model.AnnouncementState.ANNOUNCEMENT_UPDATE_ERROR
                 }
-
         }
     }
 

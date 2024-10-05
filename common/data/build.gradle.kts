@@ -7,7 +7,7 @@ plugins {
 
 val localProperties = Properties()
 val localPropertiesFile = rootProject.file("local.properties")
-if(localPropertiesFile.exists()) {
+if (localPropertiesFile.exists()) {
     localPropertiesFile.inputStream().use { stream ->
         localProperties.load(stream)
     }
@@ -31,13 +31,13 @@ android {
             buildConfigField(
                 "String",
                 "SERVICE_1_BASE_URL",
-                "\"${localProperties.getProperty("LOCAL_SERVER_BASE_URL")}\""
+                "\"${localProperties.getProperty("LOCAL_SERVER_BASE_URL")}\"",
             )
 
             buildConfigField(
                 "String",
                 "SERVICE_2_BASE_URL",
-                "\"${localProperties.getProperty("LOCAL_SERVER_BASE_URL")}\""
+                "\"${localProperties.getProperty("LOCAL_SERVER_BASE_URL")}\"",
             )
         }
 
@@ -45,19 +45,19 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
 
             buildConfigField(
                 "String",
                 "SERVICE_1_BASE_URL",
-                "\"$gedoiseVm1BaseUrl\""
+                "\"$gedoiseVm1BaseUrl\"",
             )
 
             buildConfigField(
                 "String",
                 "SERVICE_2_BASE_URL",
-                "\"$gedoiseVm2BaseUrl\""
+                "\"$gedoiseVm2BaseUrl\"",
             )
         }
     }

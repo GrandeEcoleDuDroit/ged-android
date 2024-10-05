@@ -57,7 +57,7 @@ internal data class RemoteAnnouncement(
     @SerializedName("ANNOUNCEMENT_DATE")
     val announcementDate: Long,
     @SerializedName("USER_ID")
-    val userId: Int,
+    val userId: Int
 ) {
     companion object {
         fun fromDomain(announcement: Announcement) = RemoteAnnouncement(

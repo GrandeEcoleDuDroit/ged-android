@@ -33,8 +33,8 @@ import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.showToast
 import com.upsaclay.news.R
 import com.upsaclay.news.presentation.viewmodel.CreateAnnouncementViewModel
-import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDateTime
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun CreateAnnouncementScreen(
@@ -117,11 +117,11 @@ fun CreateAnnouncementScreen(
                     placeholder = {
                         Text(
                             text = stringResource(id = R.string.title_field_entry),
-                            style = MaterialTheme.typography.titleMedium,
+                            style = MaterialTheme.typography.titleMedium
                         )
                     },
                     onValueChange = { createAnnouncementViewModel.updateTitle(it) },
-                    textStyle = MaterialTheme.typography.titleMedium,
+                    textStyle = MaterialTheme.typography.titleMedium
                 )
 
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
@@ -132,7 +132,7 @@ fun CreateAnnouncementScreen(
                     placeholder = {
                         Text(
                             text = stringResource(id = R.string.content_field_entry),
-                            style = MaterialTheme.typography.bodyLarge,
+                            style = MaterialTheme.typography.bodyLarge
                         )
                     },
                     onValueChange = { createAnnouncementViewModel.updateContent(it) },
@@ -181,10 +181,10 @@ private fun CreateAnnouncementScreenPreview() {
                     placeholder = {
                         Text(
                             text = stringResource(id = R.string.title_field_entry),
-                            style = MaterialTheme.typography.titleMedium,
+                            style = MaterialTheme.typography.titleMedium
                         )
                     },
-                    textStyle = MaterialTheme.typography.titleMedium,
+                    textStyle = MaterialTheme.typography.titleMedium
                 )
 
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
@@ -195,7 +195,7 @@ private fun CreateAnnouncementScreenPreview() {
                     placeholder = {
                         Text(
                             text = stringResource(id = R.string.content_field_entry),
-                            style = MaterialTheme.typography.bodyLarge,
+                            style = MaterialTheme.typography.bodyLarge
                         )
                     },
                     textStyle = MaterialTheme.typography.bodyLarge

@@ -20,11 +20,7 @@ import com.upsaclay.message.presentation.components.UserItem
 import com.upsaclay.message.presentation.viewmodel.ConversationViewModel
 
 @Composable
-fun CreateConversationScreen(
-    modifier: Modifier = Modifier,
-    navController: NavController,
-    conversationViewModel: ConversationViewModel
-) {
+fun CreateConversationScreen(modifier: Modifier = Modifier, navController: NavController, conversationViewModel: ConversationViewModel) {
     val users = conversationViewModel.users.collectAsState(emptyList()).value
 
     LaunchedEffect(Unit) {

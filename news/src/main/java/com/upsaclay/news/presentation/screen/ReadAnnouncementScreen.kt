@@ -59,11 +59,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReadAnnouncementScreen(
-    modifier: Modifier = Modifier,
-    navController: NavController,
-    newsViewModel: NewsViewModel = koinViewModel()
-) {
+fun ReadAnnouncementScreen(modifier: Modifier = Modifier, navController: NavController, newsViewModel: NewsViewModel = koinViewModel()) {
     val displayAnnouncement = newsViewModel.displayedAnnouncement
 
     if (displayAnnouncement == null) {
@@ -184,7 +180,7 @@ fun ReadAnnouncementScreen(
             announcement.title?.let {
                 Text(
                     text = it,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleMedium
                 )
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
             }
@@ -205,12 +201,8 @@ fun ReadAnnouncementScreen(
     }
 }
 
-
 @Composable
-private fun EditableTopSection(
-    announcement: com.upsaclay.news.domain.model.Announcement,
-    onEditClick: () -> Unit
-) {
+private fun EditableTopSection(announcement: com.upsaclay.news.domain.model.Announcement, onEditClick: () -> Unit) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         AnnouncementItem(
             announcement = announcement,
@@ -244,7 +236,7 @@ private fun EditAnnouncementModelBottomSheet(
 ) {
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
-        sheetState = sheetState,
+        sheetState = sheetState
     ) {
         menuItemData.forEach { menuItemData ->
             SimpleClickableItem(
@@ -259,10 +251,7 @@ private fun EditAnnouncementModelBottomSheet(
 }
 
 @Composable
-private fun DeleteAnnouncementDialog(
-    onConfirm: () -> Unit,
-    onCancel: () -> Unit
-) {
+private fun DeleteAnnouncementDialog(onConfirm: () -> Unit, onCancel: () -> Unit) {
     SensibleActionDialog(
         text = stringResource(id = R.string.delete_announcement_dialog_text),
         onDismiss = onCancel,
@@ -297,7 +286,7 @@ private fun ReadOnlyAnnouncementScreenPreview() {
             announcement.title?.let {
                 Text(
                     text = it,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleMedium
                 )
             }
 
@@ -323,7 +312,6 @@ private fun EditableAnnouncementScreenPreview() {
                 .verticalScroll(rememberScrollState())
                 .padding(MaterialTheme.spacing.medium)
         ) {
-
             EditableTopSection(
                 announcement = announcement,
                 onEditClick = {}
@@ -334,7 +322,7 @@ private fun EditableAnnouncementScreenPreview() {
             announcement.title?.let {
                 Text(
                     text = it,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleMedium
                 )
             }
 

@@ -8,14 +8,13 @@ import com.upsaclay.message.data.model.CONVERSATIONS_TABLE_NAME
 import com.upsaclay.message.data.model.MESSAGES_TABLE_NAME
 import com.upsaclay.message.data.remote.MessageField.TIMESTAMP
 import com.upsaclay.message.data.remote.model.RemoteMessage
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
-
-internal class MessageApiImpl: MessageApi {
+internal class MessageApiImpl : MessageApi {
     private val conversationCollection = Firebase.firestore.collection(CONVERSATIONS_TABLE_NAME)
 
     override fun listenLastMessages(conversationId: String): Flow<List<RemoteMessage>> = callbackFlow {
@@ -33,20 +32,19 @@ internal class MessageApiImpl: MessageApi {
         awaitClose { listener.remove() }
     }
 
-    override suspend fun getMessages(conversationId: String, limit: Long): List<RemoteMessage> =
-        suspendCoroutine { continuation ->
-            conversationCollection.document(conversationId)
-                .collection(MESSAGES_TABLE_NAME)
-                .orderBy(TIMESTAMP, Query.Direction.DESCENDING)
-                .limit(limit)
-                .get()
-                .addOnSuccessListener {
-                    val messages = it.toObjects(RemoteMessage::class.java)
-                    continuation.resume(messages)
-                }
-                .addOnFailureListener { e ->
-                    e("Error getting messages", e)
-                    continuation.resume(emptyList())
-                }
+    override suspend fun getMessages(conversationId: String, limit: Long): List<RemoteMessage> = suspendCoroutine { continuation ->
+        conversationCollection.document(conversationId)
+            .collection(MESSAGES_TABLE_NAME)
+            .orderBy(TIMESTAMP, Query.Direction.DESCENDING)
+            .limit(limit)
+            .get()
+            .addOnSuccessListener {
+                val messages = it.toObjects(RemoteMessage::class.java)
+                continuation.resume(messages)
+            }
+            .addOnFailureListener { e ->
+                e("Error getting messages", e)
+                continuation.resume(emptyList())
+            }
     }
 }

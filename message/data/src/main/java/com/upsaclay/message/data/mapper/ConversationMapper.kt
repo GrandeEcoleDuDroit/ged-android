@@ -35,11 +35,7 @@ internal object ConversationMapper {
         participants = conversationDTO.participants
     )
 
-    fun toDomain(
-        conversationId: String,
-        interlocutor: User,
-        messages: List<Message>
-    ) = Conversation(
+    fun toDomain(conversationId: String, interlocutor: User, messages: List<Message>) = Conversation(
         id = conversationId,
         interlocutor = interlocutor,
         messages = messages

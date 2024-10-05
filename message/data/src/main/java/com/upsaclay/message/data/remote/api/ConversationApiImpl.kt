@@ -8,15 +8,14 @@ import com.upsaclay.common.domain.i
 import com.upsaclay.message.data.model.CONVERSATIONS_TABLE_NAME
 import com.upsaclay.message.data.remote.ConversationField
 import com.upsaclay.message.data.remote.model.RemoteConversation
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 
-
-internal class ConversationApiImpl: ConversationApi {
+internal class ConversationApiImpl : ConversationApi {
     private val conversationsCollection = Firebase.firestore.collection(CONVERSATIONS_TABLE_NAME)
 
     override fun listenAllConversations(userId: Int): Flow<List<RemoteConversation>> = callbackFlow {
@@ -32,7 +31,7 @@ internal class ConversationApiImpl: ConversationApi {
                         0 -> emptyList()
                         1 -> {
                             val conversation = it.documents.first().toObject(RemoteConversation::class.java)
-                            if(conversation != null) listOf(conversation) else emptyList()
+                            if (conversation != null) listOf(conversation) else emptyList()
                         }
                         else -> it.toObjects(RemoteConversation::class.java)
                     }
@@ -43,18 +42,16 @@ internal class ConversationApiImpl: ConversationApi {
         awaitClose { listener.remove() }
     }
 
-    override suspend fun createConversation(remoteConversation: RemoteConversation): String {
-        return suspendCoroutine { continuation ->
-            conversationsCollection.add(remoteConversation)
-                .addOnSuccessListener {
-                    i("Conversation created successfully")
-                    continuation.resume(it.id)
-                }
-                .addOnFailureListener { e ->
-                    e("Error creating conversations", e)
-                    continuation.resumeWithException(e)
-                }
-        }
+    override suspend fun createConversation(remoteConversation: RemoteConversation): String = suspendCoroutine { continuation ->
+        conversationsCollection.add(remoteConversation)
+            .addOnSuccessListener {
+                i("Conversation created successfully")
+                continuation.resume(it.id)
+            }
+            .addOnFailureListener { e ->
+                e("Error creating conversations", e)
+                continuation.resumeWithException(e)
+            }
     }
 
     override fun updateConversation(remoteConversation: RemoteConversation) {

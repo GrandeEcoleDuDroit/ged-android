@@ -18,7 +18,7 @@ internal class UserConversationRepositoryImpl(
     private val internalConversationRepository: InternalConversationRepository,
     private val internalMessageRepository: InternalMessageRepository,
     private val userRepository: UserRepository
-): ConversationRepository {
+) : ConversationRepository {
     private val _conversations = MutableStateFlow<List<Conversation>>(emptyList())
     override val conversations: Flow<List<Conversation>> = _conversations
     private val currentUser = userRepository.currentUserFlow

@@ -6,9 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
-internal class AnnouncementLocalDataSource(
-    private val announcementDao: AnnouncementDao
-) {
+internal class AnnouncementLocalDataSource(private val announcementDao: AnnouncementDao) {
     suspend fun getAllAnnouncements(): Flow<List<Announcement>> = withContext(Dispatchers.IO) {
         announcementDao.getAllAnnouncements().map { announcementLocals ->
             announcementLocals.map { it.toDomain() }

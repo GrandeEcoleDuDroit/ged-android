@@ -37,21 +37,19 @@ data class LocalAnnouncement(
     val userProfilePictureUrl: String?
 ) {
     companion object {
-        fun fromDomain(announcement: Announcement): LocalAnnouncement {
-            return LocalAnnouncement(
-                announcementId = announcement.id,
-                announcementTitle = announcement.title,
-                announcementContent = announcement.content,
-                announcementDate = ConvertLocalDateTimeUseCase().toTimestamp(announcement.date),
-                userId = announcement.author.id,
-                userFirstName = announcement.author.firstName,
-                userLastName = announcement.author.lastName,
-                userEmail = announcement.author.email,
-                userSchoolLevel = announcement.author.schoolLevel,
-                userIsMember = announcement.author.isMember,
-                userProfilePictureUrl = announcement.author.profilePictureUrl
-            )
-        }
+        fun fromDomain(announcement: Announcement): LocalAnnouncement = LocalAnnouncement(
+            announcementId = announcement.id,
+            announcementTitle = announcement.title,
+            announcementContent = announcement.content,
+            announcementDate = ConvertLocalDateTimeUseCase().toTimestamp(announcement.date),
+            userId = announcement.author.id,
+            userFirstName = announcement.author.firstName,
+            userLastName = announcement.author.lastName,
+            userEmail = announcement.author.email,
+            userSchoolLevel = announcement.author.schoolLevel,
+            userIsMember = announcement.author.isMember,
+            userProfilePictureUrl = announcement.author.profilePictureUrl
+        )
     }
 
     fun toDomain() = Announcement(

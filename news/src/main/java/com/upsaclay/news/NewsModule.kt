@@ -1,6 +1,5 @@
 package com.upsaclay.news
 
-
 import com.upsaclay.news.domain.usecase.ConvertAnnouncementToJsonUseCase
 import com.upsaclay.news.domain.usecase.CreateAnnouncementUseCase
 import com.upsaclay.news.domain.usecase.DeleteAnnouncementUseCase

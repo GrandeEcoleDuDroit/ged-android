@@ -2,7 +2,7 @@ package com.upsaclay.common.domain
 
 import timber.log.Timber
 
-fun  Any.d(message: String) {
+fun Any.d(message: String) {
     Timber.tag(javaClass.simpleName).d(message)
 }
 

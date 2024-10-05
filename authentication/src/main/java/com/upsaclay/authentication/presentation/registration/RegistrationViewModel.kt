@@ -19,7 +19,7 @@ internal const val MAX_REGISTRATION_STEP = 3
 
 class RegistrationViewModel(
     private val isAccountExistUseCase: IsAccountExistUseCase,
-    private val registrationUseCase: RegistrationUseCase,
+    private val registrationUseCase: RegistrationUseCase
 ) : ViewModel() {
     private val _registrationState = MutableStateFlow(RegistrationState.NOT_REGISTERED)
     val registrationState: StateFlow<RegistrationState> = _registrationState

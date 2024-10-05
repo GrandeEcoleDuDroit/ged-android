@@ -37,10 +37,7 @@ import com.upsaclay.gedoise.data.BottomNavigationItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainTopBar(
-    navController: NavController,
-    user: com.upsaclay.common.domain.model.User
-) {
+fun MainTopBar(navController: NavController, user: com.upsaclay.common.domain.model.User) {
     TopAppBar(
         title = {
             Text(
@@ -54,7 +51,7 @@ fun MainTopBar(
         navigationIcon = {
             IconButton(
                 onClick = {
-                    if(navController.currentDestination?.route != com.upsaclay.common.domain.model.Screen.NEWS.route) {
+                    if (navController.currentDestination?.route != com.upsaclay.common.domain.model.Screen.NEWS.route) {
                         navController.navigate(com.upsaclay.common.domain.model.Screen.NEWS.route)
                     }
                 }
@@ -78,10 +75,7 @@ fun MainTopBar(
 }
 
 @Composable
-fun MainBottomBar(
-    navController: NavController,
-    bottomNavigationItems: List<BottomNavigationItem>
-) {
+fun MainBottomBar(navController: NavController, bottomNavigationItems: List<BottomNavigationItem>) {
     val currentRoute = remember {
         navController.currentDestination?.route
     }
@@ -179,7 +173,7 @@ private fun MainBottomBarPreview() {
         BottomNavigationItem.Home(),
         messageWithNotification,
         calendarWithNews,
-        BottomNavigationItem.Forum(),
+        BottomNavigationItem.Forum()
     )
 
     GedoiseTheme {

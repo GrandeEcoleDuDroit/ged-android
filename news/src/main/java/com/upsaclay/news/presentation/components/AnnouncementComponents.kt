@@ -27,10 +27,7 @@ import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.news.announcementFixture
 
 @Composable
-internal fun AnnouncementItem(
-    modifier: Modifier = Modifier,
-    announcement: com.upsaclay.news.domain.model.Announcement
-) {
+internal fun AnnouncementItem(modifier: Modifier = Modifier, announcement: com.upsaclay.news.domain.model.Announcement) {
     val context = LocalContext.current
     val localDateTimeFormatterUseCase = LocalDateTimeFormatterUseCase()
     val getElapsedTimeUseCase = GetElapsedTimeUseCase()
@@ -98,10 +95,7 @@ internal fun AnnouncementItem(
 }
 
 @Composable
-internal fun AnnouncementItemWithContent(
-    announcement: com.upsaclay.news.domain.model.Announcement,
-    onClick: () -> Unit
-) {
+internal fun AnnouncementItemWithContent(announcement: com.upsaclay.news.domain.model.Announcement, onClick: () -> Unit) {
     val getElapsedTimeUseCase = GetElapsedTimeUseCase()
     val localDateTimeFormatterUseCase = LocalDateTimeFormatterUseCase()
     val elapsedTime = getElapsedTimeUseCase.fromLocalDateTime(announcement.date)
@@ -142,7 +136,7 @@ internal fun AnnouncementItemWithContent(
             .clickable(onClick = onClick)
             .fillMaxWidth()
             .padding(MaterialTheme.spacing.smallMedium),
-        verticalAlignment = Alignment.Top,
+        verticalAlignment = Alignment.Top
     ) {
         ProfilePicture(
             imageUrl = announcement.author.profilePictureUrl,
@@ -166,7 +160,7 @@ internal fun AnnouncementItemWithContent(
                 Text(
                     text = elapsedTimeValue,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = GedoiseColor.PreviewText,
+                    color = GedoiseColor.PreviewText
                 )
             }
 

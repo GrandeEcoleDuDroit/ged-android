@@ -20,7 +20,7 @@ import com.upsaclay.common.presentation.theme.GedoiseColor.Secondary
 import com.upsaclay.common.presentation.theme.GedoiseColor.Tertiary
 import com.upsaclay.common.presentation.theme.GedoiseColor.White
 
-private val LightColorScheme = lightColorScheme (
+private val LightColorScheme = lightColorScheme(
     primary = Primary,
     secondary = Secondary,
     tertiary = Tertiary,
@@ -42,10 +42,7 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 @Composable
-fun GedoiseTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
-) {
+fun GedoiseTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val colors = when {
         darkTheme -> DarkColorScheme
         else -> LightColorScheme

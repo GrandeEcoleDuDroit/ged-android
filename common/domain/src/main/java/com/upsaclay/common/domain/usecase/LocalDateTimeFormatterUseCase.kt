@@ -6,7 +6,7 @@ import java.util.Locale
 
 class LocalDateTimeFormatterUseCase {
     fun formatDayMonthYear(localDateTime: LocalDateTime): String {
-        val formatter = if(Locale.getDefault().language == "fr") {
+        val formatter = if (Locale.getDefault().language == "fr") {
             DateTimeFormatter.ofPattern("dd MMMyyyy", Locale.FRENCH)
         } else {
             DateTimeFormatter.ofPattern("MMM dd, yyyy", Locale.ENGLISH)

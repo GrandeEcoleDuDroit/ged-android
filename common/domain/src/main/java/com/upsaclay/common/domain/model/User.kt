@@ -2,7 +2,6 @@ package com.upsaclay.common.domain.model
 
 import com.upsaclay.common.domain.capitalizeFirstLetter
 
-
 data class User(
     val id: Int = -1,
     val firstName: String,
@@ -14,10 +13,8 @@ data class User(
 ) {
     val fullName: String = "${firstName.capitalizeFirstLetter()} ${lastName.capitalizeFirstLetter()}"
 
-    fun isUpdated(user: com.upsaclay.common.domain.model.User): Boolean {
-        return this.id == user.id &&
-                this.profilePictureUrl != user.profilePictureUrl ||
-                this.isMember != user.isMember ||
-                this.schoolLevel != user.schoolLevel
-    }
+    fun isUpdated(user: com.upsaclay.common.domain.model.User): Boolean = this.id == user.id &&
+        this.profilePictureUrl != user.profilePictureUrl ||
+        this.isMember != user.isMember ||
+        this.schoolLevel != user.schoolLevel
 }

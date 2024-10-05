@@ -4,7 +4,6 @@ plugins {
     alias(libs.plugins.composeCompiler)
 }
 
-
 android {
     namespace = "com.upsaclay.common"
     compileSdk = 34
@@ -22,7 +21,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -57,7 +56,6 @@ dependencies {
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.coil.compose)
     implementation(libs.jakewharton.timber)
-
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

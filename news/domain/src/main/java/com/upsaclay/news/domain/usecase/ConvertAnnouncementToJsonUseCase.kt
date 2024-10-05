@@ -10,11 +10,7 @@ class ConvertAnnouncementToJsonUseCase {
         .registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeSerializer())
         .create()
 
-    fun toJson(announcement: Announcement): String {
-        return gson.toJson(announcement)
-    }
+    fun toJson(announcement: Announcement): String = gson.toJson(announcement)
 
-    fun fromJson(jsonAnnouncement: String): Announcement {
-        return gson.fromJson(jsonAnnouncement, Announcement::class.java)
-    }
+    fun fromJson(jsonAnnouncement: String): Announcement = gson.fromJson(jsonAnnouncement, Announcement::class.java)
 }

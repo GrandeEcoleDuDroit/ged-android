@@ -34,7 +34,7 @@ internal class AnnouncementRepositoryImpl(
             val announcementsToUpdate = remoteAnnouncements.filter { remoteValue ->
                 localAnnouncements.any { localValue ->
                     localValue.isUpdated(remoteValue) ||
-                            localValue.author.isUpdated(remoteValue.author)
+                        localValue.author.isUpdated(remoteValue.author)
                 }
             }
 
@@ -42,28 +42,23 @@ internal class AnnouncementRepositoryImpl(
         }
     }
 
-    override suspend fun getAnnouncement(announcementId: Int): Announcement? {
-        return announcementLocalDataSource.getAnnouncement(announcementId)
-    }
+    override suspend fun getAnnouncement(announcementId: Int): Announcement? = announcementLocalDataSource.getAnnouncement(announcementId)
 
-    override suspend fun createAnnouncement(announcement: Announcement): Result<Int> {
-        return announcementRemoteDataSource.createAnnouncement(announcement)
+    override suspend fun createAnnouncement(announcement: Announcement): Result<Int> =
+        announcementRemoteDataSource.createAnnouncement(announcement)
             .onSuccess { announcementId ->
                 announcementLocalDataSource.upsertAnnouncement(announcement.copy(id = announcementId))
             }
-    }
 
-    override suspend fun updateAnnouncement(announcement: Announcement): Result<Unit> {
-        return announcementRemoteDataSource.updateAnnouncement(announcement)
+    override suspend fun updateAnnouncement(announcement: Announcement): Result<Unit> =
+        announcementRemoteDataSource.updateAnnouncement(announcement)
             .onSuccess {
                 announcementLocalDataSource.upsertAnnouncement(announcement)
             }
-    }
 
-    override suspend fun deleteAnnouncement(announcement: Announcement): Result<Unit> {
-        return announcementRemoteDataSource.deleteAnnouncement(announcement.id)
+    override suspend fun deleteAnnouncement(announcement: Announcement): Result<Unit> =
+        announcementRemoteDataSource.deleteAnnouncement(announcement.id)
             .onSuccess {
                 announcementLocalDataSource.deleteAnnouncement(announcement)
             }
-    }
 }

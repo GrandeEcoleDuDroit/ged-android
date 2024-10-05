@@ -10,16 +10,13 @@ import kotlinx.coroutines.flow.map
 internal class InternalMessageRepositoryImpl(
     private val messageRemoteDataSource: MessageRemoteDataSource,
     private val messageLocalDataSource: MessageLocalDataSource
-): InternalMessageRepository {
-    override fun listenLastMessages(conversationId: String): Flow<List<MessageDTO>> {
-        return messageRemoteDataSource.listenLastMessages(conversationId).map { remoteMessages ->
+) : InternalMessageRepository {
+    override fun listenLastMessages(conversationId: String): Flow<List<MessageDTO>> =
+        messageRemoteDataSource.listenLastMessages(conversationId).map { remoteMessages ->
             remoteMessages.map(MessageMapper::toDTO)
         }
-    }
 
-    override suspend fun getMessages(conversationId: String, limit: Long): List<MessageDTO> {
-        return messageRemoteDataSource
-            .getMessages(conversationId, limit)
-            .map(MessageMapper::toDTO)
-    }
+    override suspend fun getMessages(conversationId: String, limit: Long): List<MessageDTO> = messageRemoteDataSource
+        .getMessages(conversationId, limit)
+        .map(MessageMapper::toDTO)
 }

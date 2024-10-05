@@ -22,9 +22,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.upsaclay.authentication.R
 import com.upsaclay.authentication.domain.model.RegistrationState
+import com.upsaclay.authentication.presentation.components.LargeButton
 import com.upsaclay.authentication.presentation.components.OutlinedEmailInput
 import com.upsaclay.authentication.presentation.components.OutlinedPasswordInput
-import com.upsaclay.authentication.presentation.components.LargeButton
 import com.upsaclay.authentication.presentation.components.RegistrationTopBar
 import com.upsaclay.common.domain.model.Screen
 import com.upsaclay.common.presentation.components.ErrorText
@@ -34,10 +34,7 @@ import com.upsaclay.common.presentation.theme.spacing
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun SecondRegistrationScreen(
-    navController: NavController,
-    registrationViewModel: RegistrationViewModel = koinViewModel()
-) {
+fun SecondRegistrationScreen(navController: NavController, registrationViewModel: RegistrationViewModel = koinViewModel()) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val registrationState by registrationViewModel.registrationState.collectAsState()
     var errorMessage by remember { mutableStateOf("") }
@@ -56,7 +53,7 @@ fun SecondRegistrationScreen(
     }
 
     isError = registrationState == RegistrationState.UNRECOGNIZED_ACCOUNT ||
-            registrationState == RegistrationState.INPUT_ERROR
+        registrationState == RegistrationState.INPUT_ERROR
 
     errorMessage = when (registrationState) {
         RegistrationState.UNRECOGNIZED_ACCOUNT ->
@@ -80,7 +77,7 @@ fun SecondRegistrationScreen(
         ) {
             Text(
                 text = stringResource(id = R.string.enter_school_credentials),
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleMedium
             )
             OutlinedEmailInput(
                 text = email,
@@ -145,18 +142,18 @@ private fun SecondRegistrationScreenPreview() {
             ) {
                 Text(
                     text = stringResource(id = R.string.enter_school_credentials),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleMedium
                 )
 
                 OutlinedEmailInput(
                     text = mail,
-                    onValueChange = {},
+                    onValueChange = {}
                 )
                 Spacer(Modifier.height(MaterialTheme.spacing.small))
 
                 OutlinedPasswordInput(
                     text = password,
-                    onValueChange = {},
+                    onValueChange = {}
                 )
             }
 

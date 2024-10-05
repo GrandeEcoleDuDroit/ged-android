@@ -48,7 +48,9 @@ val commonDataModule = module {
     }
 
     single {
-        get<Retrofit>(qualifier = named(SERVER_1_RETROFIT_QUALIFIER)).create(com.upsaclay.common.data.remote.api.UserRetrofitApi::class.java)
+        get<Retrofit>(
+            qualifier = named(SERVER_1_RETROFIT_QUALIFIER)
+        ).create(com.upsaclay.common.data.remote.api.UserRetrofitApi::class.java)
     }
 
     singleOf(::DrawableRepositoryImpl) { bind<com.upsaclay.common.domain.repository.DrawableRepository>() }
