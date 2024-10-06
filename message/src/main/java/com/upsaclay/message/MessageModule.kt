@@ -10,7 +10,7 @@ import com.upsaclay.message.data.remote.api.MessageApi
 import com.upsaclay.message.data.remote.api.MessageApiImpl
 import com.upsaclay.message.data.repository.ConversationRepository
 import com.upsaclay.message.data.repository.ConversationRepositoryImpl
-import com.upsaclay.message.data.repository.MessageRepository
+import com.upsaclay.message.domain.repository.MessageRepository
 import com.upsaclay.message.data.repository.MessageRepositoryImpl
 import com.upsaclay.message.data.repository.UserConversationRepositoryImpl
 import com.upsaclay.message.domain.repository.UserConversationRepository

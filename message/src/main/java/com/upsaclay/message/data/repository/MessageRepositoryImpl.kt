@@ -4,6 +4,7 @@ import com.upsaclay.message.data.local.MessageLocalDataSource
 import com.upsaclay.message.data.mapper.MessageMapper
 import com.upsaclay.message.data.model.MessageDTO
 import com.upsaclay.message.data.remote.MessageRemoteDataSource
+import com.upsaclay.message.domain.repository.MessageRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

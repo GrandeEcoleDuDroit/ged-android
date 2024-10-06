@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upsaclay.authentication.domain.repository.AuthenticationRepository
 import com.upsaclay.common.domain.model.User
-import com.upsaclay.common.domain.usecase.GetCurrentUserFlowUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 

@@ -49,7 +49,7 @@ fun UserItem(
 
 @Preview(showBackground = true)
 @Composable
-fun UserItemPreview() {
+private fun UserItemPreview() {
     GedoiseTheme {
         UserItem(user = userFixture, onClick = { })
     }

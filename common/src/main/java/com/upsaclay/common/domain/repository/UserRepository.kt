@@ -1,11 +1,10 @@
 package com.upsaclay.common.domain.repository
 
 import com.upsaclay.common.domain.model.User
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 interface UserRepository {
-    val currentUserFlow: Flow<User>
-    val currentUser: User?
+    val currentUser: StateFlow<User?>
 
     suspend fun createUser(user: User): Int?
 

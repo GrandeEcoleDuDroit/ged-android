@@ -7,9 +7,8 @@ import com.upsaclay.common.domain.model.User
 import com.upsaclay.common.domain.repository.UserRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 internal class UserRepositoryImpl(
@@ -17,8 +16,7 @@ internal class UserRepositoryImpl(
     private val userLocalDataSource: UserLocalDataSource
 ): UserRepository {
     private val _currentUser = MutableStateFlow<User?>(null)
-    override val currentUserFlow: Flow<User> = _currentUser.filterNotNull()
-    override val currentUser: User? get() = _currentUser.value
+    override val currentUser: StateFlow<User?> = _currentUser
 
     init {
         CoroutineScope(Dispatchers.IO).launch {

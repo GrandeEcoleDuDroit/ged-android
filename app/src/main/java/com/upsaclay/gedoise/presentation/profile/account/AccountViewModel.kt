@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upsaclay.common.domain.model.User
 import com.upsaclay.common.domain.usecase.DeleteUserProfilePictureUseCase
-import com.upsaclay.common.domain.usecase.GetCurrentUserFlowUseCase
 import com.upsaclay.common.domain.usecase.UpdateUserProfilePictureUseCase
 import com.upsaclay.gedoise.data.profile.AccountScreenState
 import kotlinx.coroutines.flow.Flow

@@ -6,6 +6,7 @@ import com.upsaclay.message.data.mapper.MessageMapper
 import com.upsaclay.message.data.model.ConversationDTO
 import com.upsaclay.message.domain.model.Conversation
 import com.upsaclay.message.domain.model.Message
+import com.upsaclay.message.domain.repository.MessageRepository
 import com.upsaclay.message.domain.repository.UserConversationRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,7 +22,7 @@ class UserConversationRepositoryImpl(
 ): UserConversationRepository {
     private val _conversations = MutableStateFlow<List<Conversation>>(emptyList())
     override val conversations: Flow<List<Conversation>> = _conversations
-    private val currentUser = userRepository.currentUserFlow
+    private val currentUser = userRepository.currentUser
     private var previousConversations = emptyList<ConversationDTO>()
 
     init {
