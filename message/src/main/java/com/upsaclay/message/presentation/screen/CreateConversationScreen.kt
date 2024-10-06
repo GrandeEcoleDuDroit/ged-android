@@ -20,11 +20,7 @@ import com.upsaclay.message.presentation.components.UserItem
 import com.upsaclay.message.presentation.viewmodel.ConversationViewModel
 
 @Composable
-fun CreateConversationScreen(
-    modifier: Modifier = Modifier,
-    navController: NavController,
-    conversationViewModel: ConversationViewModel
-) {
+fun CreateConversationScreen(modifier: Modifier = Modifier, navController: NavController, conversationViewModel: ConversationViewModel) {
     val users = conversationViewModel.users.collectAsState(emptyList()).value
 
     LaunchedEffect(Unit) {
@@ -36,8 +32,8 @@ fun CreateConversationScreen(
             UserItem(
                 user = user,
                 onClick = {
-                    navController.navigate(Screen.CHAT.route + "?userId=${user.id}") {
-                        popUpTo(Screen.CREATE_CONVERSATION.route) { inclusive = true }
+                    navController.navigate(com.upsaclay.common.domain.model.Screen.CHAT.route + "?userId=${user.id}") {
+                        popUpTo(com.upsaclay.common.domain.model.Screen.CREATE_CONVERSATION.route) { inclusive = true }
                         launchSingleTop = true
                     }
                 }

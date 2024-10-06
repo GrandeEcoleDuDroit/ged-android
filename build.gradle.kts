@@ -7,4 +7,9 @@ plugins {
     alias(libs.plugins.composeCompiler) apply false
     alias(libs.plugins.googleServices) apply false
     alias(libs.plugins.firebaseCrashlytics) apply false
+    alias(libs.plugins.spotless) apply false
+}
+
+subprojects {
+    apply(from = "$rootDir/spotless.gradle")
 }

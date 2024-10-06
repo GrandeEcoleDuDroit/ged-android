@@ -92,7 +92,7 @@ private fun SmallTopBarBackPreview() {
     GedoiseTheme {
         SmallTopBarBack(
             onBackClick = {},
-            title = "Title",
+            title = "Title"
         )
     }
 }

@@ -17,8 +17,8 @@ import com.upsaclay.common.presentation.theme.GedoiseTheme
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun OverlayLoadingScreen(){
-    val backgroundColor = if(isSystemInDarkTheme()) {
+fun OverlayLoadingScreen() {
+    val backgroundColor = if (isSystemInDarkTheme()) {
         GedoiseColor.DarkBackground
     } else {
         GedoiseColor.LittleTransparentWhite
@@ -29,7 +29,7 @@ fun OverlayLoadingScreen(){
             .background(backgroundColor)
             .zIndex(1000f)
             .pointerInteropFilter { true }
-    ){
+    ) {
         CircularProgressBar(
             modifier = Modifier.align(Alignment.Center),
             scale = 2.5f
@@ -45,7 +45,7 @@ fun OverlayLoadingScreen(){
 
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun LoadingScreenPreview(){
+private fun LoadingScreenPreview() {
     GedoiseTheme {
         OverlayLoadingScreen()
     }

@@ -26,7 +26,7 @@ fun CreateGroupConversationScreen(
                 user = user,
                 onClick = {
                     val userJson = gson.toJson(user)
-                    navController.navigate(Screen.CHAT.route + "?user=$userJson")
+                    navController.navigate(com.upsaclay.common.domain.model.Screen.CHAT.route + "?user=$userJson")
                 }
             )
         }

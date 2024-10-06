@@ -6,7 +6,7 @@ import com.upsaclay.common.domain.model.Screen
 import com.upsaclay.gedoise.R
 
 sealed class BottomNavigationItem(
-    open val screen: Screen,
+    open val screen: com.upsaclay.common.domain.model.Screen,
     @StringRes open val label: Int,
     open var badges: Int,
     open var hasNews: Boolean,
@@ -14,7 +14,7 @@ sealed class BottomNavigationItem(
     @StringRes open val iconDescription: Int
 ) {
     data class Home(
-        override val screen: Screen = Screen.NEWS,
+        override val screen: com.upsaclay.common.domain.model.Screen = com.upsaclay.common.domain.model.Screen.NEWS,
         override val label: Int = R.string.home,
         override var badges: Int = 0,
         override var hasNews: Boolean = false,
@@ -23,7 +23,7 @@ sealed class BottomNavigationItem(
     ) : BottomNavigationItem(screen, label, badges, hasNews, icon, iconDescription)
 
     data class Message(
-        override val screen: Screen = Screen.CONVERSATIONS,
+        override val screen: com.upsaclay.common.domain.model.Screen = com.upsaclay.common.domain.model.Screen.CONVERSATIONS,
         override val label: Int = R.string.message,
         override var badges: Int = 0,
         override var hasNews: Boolean = false,
@@ -32,7 +32,7 @@ sealed class BottomNavigationItem(
     ) : BottomNavigationItem(screen, label, badges, hasNews, icon, iconDescription)
 
     data class Calendar(
-        override val screen: Screen = Screen.CALENDAR,
+        override val screen: com.upsaclay.common.domain.model.Screen = com.upsaclay.common.domain.model.Screen.CALENDAR,
         override val label: Int = R.string.calendar,
         override var badges: Int = 0,
         override var hasNews: Boolean = false,
@@ -41,7 +41,7 @@ sealed class BottomNavigationItem(
     ) : BottomNavigationItem(screen, label, badges, hasNews, icon, iconDescription)
 
     data class Forum(
-        override val screen: Screen = Screen.FORUM,
+        override val screen: com.upsaclay.common.domain.model.Screen = com.upsaclay.common.domain.model.Screen.FORUM,
         override val label: Int = R.string.forum,
         override var badges: Int = 0,
         override var hasNews: Boolean = false,

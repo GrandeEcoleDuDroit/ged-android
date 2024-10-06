@@ -8,10 +8,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class ProfileViewModel(
-    private val authenticationRepository: AuthenticationRepository,
+    private val authenticationRepository: com.upsaclay.authentication.domain.repository.AuthenticationRepository,
     getCurrentUserFlowUseCase: GetCurrentUserFlowUseCase
 ) : ViewModel() {
-    val user: Flow<User?> = getCurrentUserFlowUseCase()
+    val user: Flow<com.upsaclay.common.domain.model.User?> = getCurrentUserFlowUseCase()
 
     fun logout() {
         viewModelScope.launch {

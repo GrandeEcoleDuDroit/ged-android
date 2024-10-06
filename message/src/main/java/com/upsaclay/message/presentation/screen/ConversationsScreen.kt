@@ -61,15 +61,12 @@ import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun ConversationScreen(
-    navController: NavController,
-    conversationViewModel : ConversationViewModel = koinViewModel()
-) {
+fun ConversationScreen(navController: NavController, conversationViewModel: ConversationViewModel = koinViewModel()) {
     val conversations = conversationViewModel.conversations.collectAsState(emptyList()).value
     var expanded by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        if(expanded) {
+        if (expanded) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -98,7 +95,7 @@ fun ConversationScreen(
                 TextButton(
                     contentPadding = PaddingValues(MaterialTheme.spacing.default),
                     modifier = Modifier.height(MaterialTheme.spacing.large),
-                    onClick = { navController.navigate(Screen.CREATE_CONVERSATION.route) },
+                    onClick = { navController.navigate(com.upsaclay.common.domain.model.Screen.CREATE_CONVERSATION.route) }
                 ) {
                     Text(
                         text = stringResource(id = R.string.new_conversation),
@@ -125,8 +122,8 @@ fun ConversationScreen(
             modifier = Modifier.align(Alignment.BottomEnd),
             expanded = expanded,
             onToggleClick = { expanded = !expanded },
-            onNewConversationClick = { navController.navigate(Screen.CREATE_CONVERSATION.route)},
-            onNewGroupClick = { navController.navigate(Screen.CREATE_GROUP_CONVERSATION.route) }
+            onNewConversationClick = { navController.navigate(com.upsaclay.common.domain.model.Screen.CREATE_CONVERSATION.route) },
+            onNewGroupClick = { navController.navigate(com.upsaclay.common.domain.model.Screen.CREATE_GROUP_CONVERSATION.route) }
         )
     }
 }
@@ -137,10 +134,10 @@ private fun FloatingActionButtonSection(
     expanded: Boolean,
     onToggleClick: () -> Unit,
     onNewConversationClick: () -> Unit,
-    onNewGroupClick: () -> Unit,
+    onNewGroupClick: () -> Unit
 ) {
     val rotation by animateFloatAsState(
-        targetValue = if(expanded) 0f else -90f,
+        targetValue = if (expanded) 0f else -90f,
         label = "rotateFab"
     )
 
@@ -167,7 +164,7 @@ private fun FloatingActionButtonSection(
 
                 SmallFloatingActionButton(
                     containerColor = MaterialTheme.colorScheme.surface,
-                    onClick = onNewGroupClick,
+                    onClick = onNewGroupClick
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_group_add),
@@ -178,7 +175,7 @@ private fun FloatingActionButtonSection(
             }
         }
 
-        if(expanded) {
+        if (expanded) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.smallMedium)
@@ -228,7 +225,7 @@ private fun ConversationsScreenPreview() {
 //    val conversations = emptyList<ConversationPreview>()
     var expanded by remember { mutableStateOf(false) }
     val rotation by animateFloatAsState(
-        targetValue = if(expanded) 0f else -90f,
+        targetValue = if (expanded) 0f else -90f,
         label = "rotateFab",
         animationSpec = tween(durationMillis = 200, easing = Ease)
     )
@@ -263,11 +260,11 @@ private fun ConversationsScreenPreview() {
                     TextButton(
                         contentPadding = PaddingValues(MaterialTheme.spacing.default),
                         modifier = Modifier.height(MaterialTheme.spacing.large),
-                        onClick = {},
+                        onClick = {}
                     ) {
                         Text(
                             text = stringResource(id = R.string.new_conversation),
-                            fontWeight = FontWeight.Bold,
+                            fontWeight = FontWeight.Bold
                         )
                     }
                 }

@@ -41,8 +41,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.upsaclay.common.domain.model.ClickableMenuItemData
 import com.upsaclay.common.domain.model.Screen
+import com.upsaclay.common.presentation.ClickableMenuItemData
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.SensibleActionDialog
 import com.upsaclay.common.presentation.components.SimpleClickableItem
@@ -52,8 +52,6 @@ import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.showToast
 import com.upsaclay.news.R
 import com.upsaclay.news.announcementFixture
-import com.upsaclay.news.domain.model.Announcement
-import com.upsaclay.news.domain.model.AnnouncementState
 import com.upsaclay.news.presentation.components.AnnouncementItem
 import com.upsaclay.news.presentation.viewmodel.NewsViewModel
 import kotlinx.coroutines.launch
@@ -61,15 +59,11 @@ import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReadAnnouncementScreen(
-    modifier: Modifier = Modifier,
-    navController: NavController,
-    newsViewModel: NewsViewModel = koinViewModel()
-) {
+fun ReadAnnouncementScreen(modifier: Modifier = Modifier, navController: NavController, newsViewModel: NewsViewModel = koinViewModel()) {
     val displayAnnouncement = newsViewModel.displayedAnnouncement
 
-    if(displayAnnouncement == null) {
-        newsViewModel.updateAnnouncementState(AnnouncementState.ANNOUNCEMENT_DISPLAY_ERROR)
+    if (displayAnnouncement == null) {
+        newsViewModel.updateAnnouncementState(com.upsaclay.news.domain.model.AnnouncementState.ANNOUNCEMENT_DISPLAY_ERROR)
         navController.popBackStack()
     }
 
@@ -86,7 +80,8 @@ fun ReadAnnouncementScreen(
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     val user = newsViewModel.user.collectAsState(initial = null).value
-    val state = newsViewModel.announcementState.collectAsState(initial = AnnouncementState.DEFAULT).value
+    val state =
+        newsViewModel.announcementState.collectAsState(initial = com.upsaclay.news.domain.model.AnnouncementState.DEFAULT).value
     val hideBottomSheet: () -> Unit = {
         scope.launch { sheetState.hide() }.invokeOnCompletion {
             if (!sheetState.isVisible) {
@@ -97,17 +92,17 @@ fun ReadAnnouncementScreen(
 
     LaunchedEffect(state) {
         when (state) {
-            AnnouncementState.ANNOUNCEMENT_DELETE_ERROR -> {
+            com.upsaclay.news.domain.model.AnnouncementState.ANNOUNCEMENT_DELETE_ERROR -> {
                 showLoadingDialog = false
                 showToast(context, R.string.announcement_delete_error)
             }
 
-            AnnouncementState.ANNOUNCEMENT_DELETED -> {
+            com.upsaclay.news.domain.model.AnnouncementState.ANNOUNCEMENT_DELETED -> {
                 showLoadingDialog = false
                 navController.popBackStack()
             }
 
-            AnnouncementState.LOADING -> showLoadingDialog = true
+            com.upsaclay.news.domain.model.AnnouncementState.LOADING -> showLoadingDialog = true
 
             else -> {}
         }
@@ -185,7 +180,7 @@ fun ReadAnnouncementScreen(
             announcement.title?.let {
                 Text(
                     text = it,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleMedium
                 )
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
             }
@@ -206,12 +201,8 @@ fun ReadAnnouncementScreen(
     }
 }
 
-
 @Composable
-private fun EditableTopSection(
-    announcement: Announcement,
-    onEditClick: () -> Unit
-) {
+private fun EditableTopSection(announcement: com.upsaclay.news.domain.model.Announcement, onEditClick: () -> Unit) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         AnnouncementItem(
             announcement = announcement,
@@ -245,7 +236,7 @@ private fun EditAnnouncementModelBottomSheet(
 ) {
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
-        sheetState = sheetState,
+        sheetState = sheetState
     ) {
         menuItemData.forEach { menuItemData ->
             SimpleClickableItem(
@@ -260,10 +251,7 @@ private fun EditAnnouncementModelBottomSheet(
 }
 
 @Composable
-private fun DeleteAnnouncementDialog(
-    onConfirm: () -> Unit,
-    onCancel: () -> Unit
-) {
+private fun DeleteAnnouncementDialog(onConfirm: () -> Unit, onCancel: () -> Unit) {
     SensibleActionDialog(
         text = stringResource(id = R.string.delete_announcement_dialog_text),
         onDismiss = onCancel,
@@ -281,7 +269,7 @@ private fun DeleteAnnouncementDialog(
 
 @Preview(showBackground = true)
 @Composable
-private fun ReadOnlyAnnouncementScreenPreview(){
+private fun ReadOnlyAnnouncementScreenPreview() {
     val announcement = announcementFixture
 
     GedoiseTheme {
@@ -298,7 +286,7 @@ private fun ReadOnlyAnnouncementScreenPreview(){
             announcement.title?.let {
                 Text(
                     text = it,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleMedium
                 )
             }
 
@@ -314,7 +302,7 @@ private fun ReadOnlyAnnouncementScreenPreview(){
 
 @Preview(showBackground = true)
 @Composable
-private fun EditableAnnouncementScreenPreview(){
+private fun EditableAnnouncementScreenPreview() {
     val announcement = announcementFixture
 
     GedoiseTheme {
@@ -324,7 +312,6 @@ private fun EditableAnnouncementScreenPreview(){
                 .verticalScroll(rememberScrollState())
                 .padding(MaterialTheme.spacing.medium)
         ) {
-
             EditableTopSection(
                 announcement = announcement,
                 onEditClick = {}
@@ -335,7 +322,7 @@ private fun EditableAnnouncementScreenPreview(){
             announcement.title?.let {
                 Text(
                     text = it,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleMedium
                 )
             }
 

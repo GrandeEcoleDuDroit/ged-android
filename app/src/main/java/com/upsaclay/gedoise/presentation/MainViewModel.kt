@@ -8,7 +8,7 @@ import com.upsaclay.gedoise.data.BottomNavigationItemType
 import kotlinx.coroutines.flow.Flow
 
 class MainViewModel(
-    isUserAuthenticatedUseCase: IsUserAuthenticatedUseCase,
+    isUserAuthenticatedUseCase: com.upsaclay.authentication.domain.usecase.IsUserAuthenticatedUseCase,
     getCurrentUserFlowUseCase: GetCurrentUserFlowUseCase
 ) : ViewModel() {
     val bottomNavigationItem: Map<BottomNavigationItemType, BottomNavigationItem> = mapOf(
@@ -18,5 +18,5 @@ class MainViewModel(
         BottomNavigationItemType.FORUM to BottomNavigationItem.Forum()
     )
     val isAuthenticated: Flow<Boolean> = isUserAuthenticatedUseCase()
-    val user: Flow<User> = getCurrentUserFlowUseCase()
+    val user: Flow<com.upsaclay.common.domain.model.User> = getCurrentUserFlowUseCase()
 }

@@ -1,0 +1,22 @@
+root = true
+
+[*]
+charset = utf-8
+indent_style = space
+trim_trailing_whitespace = true
+
+[*.{kt,kts}]
+indent_size = 4
+max_line_length = 140
+ktlint_function_naming_ignore_when_annotated_with = Composable, Test
+ktlint_function_signature_body_expression_wrapping = default
+ktlint_standard = enabled
+ktlint_experimental = enabled
+ktlint_code_style = android_studio
+ktlint_standard_comment-spacing = disabled
+ktlint_standard_condition-wrapping = disabled
+ktlint_standard_package-name = disabled
+ktlint_experimental_package-naming = disabled
+ktlint_standard_trailing-comma-on-declaration-site = disabled
+ktlint_standard_trailing-comma-on-call-site = disabled
+ij_kotlin_allow_trailing_comma = false

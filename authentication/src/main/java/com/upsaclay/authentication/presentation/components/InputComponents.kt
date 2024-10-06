@@ -52,7 +52,7 @@ internal fun OutlinedEmailInput(
         keyboardActions = keyboardActions,
         singleLine = true,
         enabled = isEnable,
-        readOnly = readOnly,
+        readOnly = readOnly
     )
 }
 

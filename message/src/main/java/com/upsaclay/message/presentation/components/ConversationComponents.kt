@@ -39,33 +39,42 @@ import com.upsaclay.message.utils.messagesFixture
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ConversationItem(
-    modifier: Modifier = Modifier,
-    conversation: Conversation,
-    onClick: () -> Unit,
-    onLongClick: () -> Unit
-) {
+fun ConversationItem(modifier: Modifier = Modifier, conversation: Conversation, onClick: () -> Unit, onLongClick: () -> Unit) {
     val lastMessage = conversation.messages.firstOrNull()
     val getElapsedTimeUseCase = GetElapsedTimeUseCase()
     val localDateTimeFormatterUseCase = LocalDateTimeFormatterUseCase()
 
-    val elapsedTimeValue: String = if(lastMessage != null) {
+    val elapsedTimeValue: String = if (lastMessage != null) {
         val elapsedTime = getElapsedTimeUseCase.fromLocalDateTime(lastMessage.date)
 
-        when(elapsedTime) {
-            is ElapsedTime.Now -> stringResource(id = com.upsaclay.common.R.string.now)
+        when (elapsedTime) {
+            is com.upsaclay.common.domain.model.ElapsedTime.Now -> stringResource(id = com.upsaclay.common.R.string.now)
 
-            is ElapsedTime.Minute -> stringResource(com.upsaclay.common.R.string.minute_ago_short, elapsedTime.value)
+            is com.upsaclay.common.domain.model.ElapsedTime.Minute -> stringResource(
+                com.upsaclay.common.R.string.minute_ago_short,
+                elapsedTime.value
+            )
 
-            is ElapsedTime.Hour -> stringResource(com.upsaclay.common.R.string.hour_ago_short, elapsedTime.value)
+            is com.upsaclay.common.domain.model.ElapsedTime.Hour -> stringResource(
+                com.upsaclay.common.R.string.hour_ago_short,
+                elapsedTime.value
+            )
 
-            is ElapsedTime.Day -> stringResource(com.upsaclay.common.R.string.day_ago_short, elapsedTime.value)
+            is com.upsaclay.common.domain.model.ElapsedTime.Day -> stringResource(
+                com.upsaclay.common.R.string.day_ago_short,
+                elapsedTime.value
+            )
 
-            is ElapsedTime.Week -> stringResource(com.upsaclay.common.R.string.week_ago_short, elapsedTime.value)
+            is com.upsaclay.common.domain.model.ElapsedTime.Week -> stringResource(
+                com.upsaclay.common.R.string.week_ago_short,
+                elapsedTime.value
+            )
 
-            is ElapsedTime.Later -> localDateTimeFormatterUseCase.formatDayMonthYear(elapsedTime.value)
+            is com.upsaclay.common.domain.model.ElapsedTime.Later -> localDateTimeFormatterUseCase.formatDayMonthYear(elapsedTime.value)
         }
-    } else ""
+    } else {
+        ""
+    }
 
     val unreadMessage = lastMessage?.let {
         it.senderId == conversation.interlocutor.id && !it.isRead
@@ -134,7 +143,6 @@ fun ConversationItem(
                         .background(MaterialTheme.colorScheme.error)
                         .size(10.dp)
                 )
-
             } else {
                 Column(modifier = Modifier.weight(1f)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -193,7 +201,7 @@ private fun ReadConversationItemPreview() {
         id = "1",
         interlocutor = userFixture2,
         messages = messagesFixture
-            .map { it.copy(isRead = true, date = it.date.minusDays(2)) },
+            .map { it.copy(isRead = true, date = it.date.minusDays(2)) }
     )
     GedoiseTheme {
         ConversationItem(
@@ -211,7 +219,7 @@ private fun UnreadConversationItemPreview() {
     val conversation = Conversation(
         id = "1",
         interlocutor = userFixture2,
-        messages = messagesFixture,
+        messages = messagesFixture
     )
     GedoiseTheme {
         ConversationItem(

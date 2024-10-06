@@ -11,9 +11,17 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/authentication" />
+            <option value="$PROJECT_DIR$/authentication/data" />
+            <option value="$PROJECT_DIR$/authentication/domain" />
             <option value="$PROJECT_DIR$/common" />
+            <option value="$PROJECT_DIR$/common/data" />
+            <option value="$PROJECT_DIR$/common/domain" />
             <option value="$PROJECT_DIR$/message" />
+            <option value="$PROJECT_DIR$/message/data" />
+            <option value="$PROJECT_DIR$/message/domain" />
             <option value="$PROJECT_DIR$/news" />
+            <option value="$PROJECT_DIR$/news/data" />
+            <option value="$PROJECT_DIR$/news/domain" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />
