@@ -31,11 +31,14 @@ internal class UserRepositoryImpl(
         }
     }
 
-    override suspend fun getUser(userId: Int): User? = userRemoteDataSource.getUser(userId)?.toDomain()
+    override suspend fun getUser(userId: Int): User? =
+        userRemoteDataSource.getUser(userId)?.toDomain()
 
-    override suspend fun getAllUsers(): List<User> = userRemoteDataSource.getAllUsers().map { it.toDomain() }
+    override suspend fun getAllUsers(): List<User> =
+        userRemoteDataSource.getAllUsers().map { it.toDomain() }
 
-    override suspend fun getOnlineUsers(): List<User> = userRemoteDataSource.getOnlineUsers().map { it.toDomain() }
+    override suspend fun getOnlineUsers(): List<User> =
+        userRemoteDataSource.getOnlineUsers().map { it.toDomain() }
 
     override suspend fun createUser(user: User): Int? {
         val userDTO = UserDTO.fromDomain(user)
@@ -43,12 +46,16 @@ internal class UserRepositoryImpl(
         return userId?.also { userLocalDataSource.setUser(userDTO.copy(userId = userId)) }
     }
 
-    override suspend fun updateProfilePictureUrl(userId: Int, profilePictureUrl: String): Result<Unit> =
+    override suspend fun updateProfilePictureUrl(
+        userId: Int,
+        profilePictureUrl: String
+    ): Result<Unit> =
         userRemoteDataSource.updateProfilePictureUrl(userId, profilePictureUrl)
             .onSuccess { userLocalDataSource.updateProfilePictureUrl(profilePictureUrl) }
 
-    override suspend fun deleteProfilePictureUrl(userId: Int): Result<Unit> = userRemoteDataSource.deleteProfilePictureUrl(userId)
-        .onSuccess { userLocalDataSource.deleteProfilePictureUrl() }
+    override suspend fun deleteProfilePictureUrl(userId: Int): Result<Unit> =
+        userRemoteDataSource.deleteProfilePictureUrl(userId)
+            .onSuccess { userLocalDataSource.deleteProfilePictureUrl() }
 
     private suspend fun refreshUser() {
         userLocalDataSource.getCurrentUser()?.let { localUser ->

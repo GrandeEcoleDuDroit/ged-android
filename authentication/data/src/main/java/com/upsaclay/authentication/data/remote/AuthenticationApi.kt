@@ -13,5 +13,5 @@ internal interface AuthenticationApi {
         @Field("username") username: String,
         @Field("password") password: String,
         @Field("state") hash: String
-    ): Response<com.upsaclay.common.domain.model.ServerResponse.EmptyResponse>
+    ): Response<ServerResponse.EmptyResponse>
 }

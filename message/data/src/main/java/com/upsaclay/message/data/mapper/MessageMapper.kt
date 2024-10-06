@@ -1,10 +1,13 @@
 package com.upsaclay.message.data.mapper
 
+import com.google.firebase.Timestamp
+import com.upsaclay.message.data.local.model.LocalMessage
 import com.upsaclay.message.data.model.MessageDTO
 import com.upsaclay.message.data.remote.model.RemoteMessage
 import com.upsaclay.message.domain.model.Message
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.ZoneOffset
 
 internal object MessageMapper {
     fun toDTO(remoteMessage: RemoteMessage) = MessageDTO(
@@ -24,5 +27,25 @@ internal object MessageMapper {
         date = messageDTO.date,
         isRead = messageDTO.isRead,
         type = messageDTO.type
+    )
+
+    fun toLocal(conversationId: String, message: Message) = LocalMessage(
+        messageId = message.id,
+        senderId = message.senderId,
+        conversationId = conversationId,
+        text = message.text,
+        timestamp = message.date.toInstant(ZoneOffset.UTC).toEpochMilli(),
+        isRead = message.isRead,
+        type = message.type
+    )
+
+    fun toRemote(conversationId: String, message: Message) = RemoteMessage(
+        messageId = message.id,
+        conversationId = conversationId,
+        senderId = message.senderId,
+        text = message.text,
+        timestamp = Timestamp(message.date.toInstant(ZoneOffset.UTC)),
+        isRead = message.isRead,
+        type = message.type
     )
 }

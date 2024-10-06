@@ -7,4 +7,6 @@ internal interface MessageApi {
     fun listenLastMessages(conversationId: String): Flow<List<RemoteMessage>>
 
     suspend fun getMessages(conversationId: String, limit: Long): List<RemoteMessage>
+
+    suspend fun addMessage(conversationId: String, remoteMessage: RemoteMessage): Result<String>
 }

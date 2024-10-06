@@ -4,7 +4,10 @@ import com.upsaclay.common.data.local.UserDataStore
 import com.upsaclay.common.data.local.UserLocalDataSource
 import com.upsaclay.common.data.remote.ImageRemoteDataSource
 import com.upsaclay.common.data.remote.UserRemoteDataSource
+import com.upsaclay.common.data.remote.api.ImageApi
+import com.upsaclay.common.data.remote.api.UserFirebaseApi
 import com.upsaclay.common.data.remote.api.UserFirebaseApiImpl
+import com.upsaclay.common.data.remote.api.UserRetrofitApi
 import com.upsaclay.common.data.repository.DrawableRepositoryImpl
 import com.upsaclay.common.data.repository.FileRepositoryImpl
 import com.upsaclay.common.data.repository.ImageRepositoryImpl
@@ -44,24 +47,24 @@ val commonDataModule = module {
     }
 
     single {
-        get<Retrofit>(qualifier = named(SERVER_1_RETROFIT_QUALIFIER)).create(com.upsaclay.common.data.remote.api.ImageApi::class.java)
+        get<Retrofit>(qualifier = named(SERVER_1_RETROFIT_QUALIFIER)).create(ImageApi::class.java)
     }
 
     single {
         get<Retrofit>(
             qualifier = named(SERVER_1_RETROFIT_QUALIFIER)
-        ).create(com.upsaclay.common.data.remote.api.UserRetrofitApi::class.java)
+        ).create(UserRetrofitApi::class.java)
     }
 
-    singleOf(::DrawableRepositoryImpl) { bind<com.upsaclay.common.domain.repository.DrawableRepository>() }
-    singleOf(::FileRepositoryImpl) { bind<com.upsaclay.common.domain.repository.FileRepository>() }
+    singleOf(::DrawableRepositoryImpl) { bind<DrawableRepository>() }
+    singleOf(::FileRepositoryImpl) { bind<FileRepository>() }
 
-    singleOf(::ImageRepositoryImpl) { bind<com.upsaclay.common.domain.repository.ImageRepository>() }
+    singleOf(::ImageRepositoryImpl) { bind<ImageRepository>() }
     singleOf(::ImageRemoteDataSource)
 
-    singleOf(::UserRepositoryImpl) { bind<com.upsaclay.common.domain.repository.UserRepository>() }
+    singleOf(::UserRepositoryImpl) { bind<UserRepository>() }
     singleOf(::UserRemoteDataSource)
     singleOf(::UserLocalDataSource)
     singleOf(::UserDataStore)
-    singleOf(::UserFirebaseApiImpl) { bind<com.upsaclay.common.data.remote.api.UserFirebaseApi>() }
+    singleOf(::UserFirebaseApiImpl) { bind<UserFirebaseApi>() }
 }

@@ -4,8 +4,8 @@ import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.common.domain.repository.UserRepository
 
 class DeleteUserProfilePictureUseCase(
-    private val userRepository: com.upsaclay.common.domain.repository.UserRepository,
-    private val imageRepository: com.upsaclay.common.domain.repository.ImageRepository
+    private val userRepository: UserRepository,
+    private val imageRepository: ImageRepository
 ) {
     suspend operator fun invoke(userId: Int, currentProfilePictureUrl: String): Result<Unit> {
         val urlDeletionResult = userRepository.deleteProfilePictureUrl(userId)

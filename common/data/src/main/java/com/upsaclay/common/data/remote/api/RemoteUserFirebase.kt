@@ -38,7 +38,7 @@ internal data class RemoteUserFirebase(
     var isOnline: Boolean = false
 ) {
     companion object {
-        fun fromDomain(user: com.upsaclay.common.domain.model.User) = RemoteUserFirebase(
+        fun fromDomain(user: User) = RemoteUserFirebase(
             userId = user.id,
             firstName = user.firstName,
             lastName = user.lastName,
@@ -59,7 +59,7 @@ internal data class RemoteUserFirebase(
         )
     }
 
-    fun toDomain() = com.upsaclay.common.domain.model.User(
+    fun toDomain() = User(
         id = userId,
         firstName = this.firstName,
         lastName = this.lastName,

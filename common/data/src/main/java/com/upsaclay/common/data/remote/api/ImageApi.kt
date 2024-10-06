@@ -12,8 +12,8 @@ import retrofit2.http.Path
 internal interface ImageApi {
     @Multipart
     @POST("image/upload")
-    suspend fun uploadImage(@Part image: MultipartBody.Part): Response<com.upsaclay.common.domain.model.ServerResponse.EmptyResponse>
+    suspend fun uploadImage(@Part image: MultipartBody.Part): Response<ServerResponse.EmptyResponse>
 
     @DELETE("image/{filename}")
-    suspend fun deleteImage(@Path("filename") filename: String): Response<com.upsaclay.common.domain.model.ServerResponse.EmptyResponse>
+    suspend fun deleteImage(@Path("filename") filename: String): Response<ServerResponse.EmptyResponse>
 }

@@ -34,7 +34,10 @@ import com.upsaclay.common.presentation.theme.spacing
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun SecondRegistrationScreen(navController: NavController, registrationViewModel: RegistrationViewModel = koinViewModel()) {
+fun SecondRegistrationScreen(
+    navController: NavController,
+    registrationViewModel: RegistrationViewModel = koinViewModel()
+) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val registrationState by registrationViewModel.registrationState.collectAsState()
     var errorMessage by remember { mutableStateOf("") }
@@ -48,12 +51,12 @@ fun SecondRegistrationScreen(navController: NavController, registrationViewModel
 
     LaunchedEffect(registrationState) {
         if (registrationState == RegistrationState.RECOGNIZED_ACCOUNT) {
-            navController.navigate(com.upsaclay.common.domain.model.Screen.THIRD_REGISTRATION_SCREEN.route)
+            navController.navigate(Screen.THIRD_REGISTRATION_SCREEN.route)
         }
     }
 
     isError = registrationState == RegistrationState.UNRECOGNIZED_ACCOUNT ||
-        registrationState == RegistrationState.INPUT_ERROR
+            registrationState == RegistrationState.INPUT_ERROR
 
     errorMessage = when (registrationState) {
         RegistrationState.UNRECOGNIZED_ACCOUNT ->

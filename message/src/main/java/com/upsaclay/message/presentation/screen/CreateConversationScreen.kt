@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
+import com.google.gson.Gson
 import com.upsaclay.common.domain.model.Screen
 import com.upsaclay.common.presentation.components.SmallTopBarBack
 import com.upsaclay.common.presentation.theme.GedoiseTheme
@@ -32,8 +33,9 @@ fun CreateConversationScreen(modifier: Modifier = Modifier, navController: NavCo
             UserItem(
                 user = user,
                 onClick = {
-                    navController.navigate(com.upsaclay.common.domain.model.Screen.CHAT.route + "?userId=${user.id}") {
-                        popUpTo(com.upsaclay.common.domain.model.Screen.CREATE_CONVERSATION.route) { inclusive = true }
+                    val userJson = Gson().toJson(user)
+                    navController.navigate(Screen.CHAT.route + "?user=$userJson") {
+                        popUpTo(Screen.CREATE_CONVERSATION.route) { inclusive = true }
                         launchSingleTop = true
                     }
                 }

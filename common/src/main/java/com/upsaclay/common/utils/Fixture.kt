@@ -1,7 +1,5 @@
 package com.upsaclay.common.utils
 
-import com.upsaclay.common.domain.model.User
-
 val userFixture = com.upsaclay.common.domain.model.User(
     12,
     "Pierre",

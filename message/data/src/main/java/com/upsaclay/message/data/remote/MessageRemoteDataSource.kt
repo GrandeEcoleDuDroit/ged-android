@@ -8,4 +8,8 @@ internal class MessageRemoteDataSource(private val messageApi: MessageApi) {
     fun listenLastMessages(conversationId: String): Flow<List<RemoteMessage>> = messageApi.listenLastMessages(conversationId)
 
     suspend fun getMessages(conversationId: String, limit: Long): List<RemoteMessage> = messageApi.getMessages(conversationId, limit)
+
+    suspend fun addMessage(conversationId: String, remoteMessage: RemoteMessage): Result<String> {
+        return messageApi.addMessage(conversationId, remoteMessage)
+    }
 }

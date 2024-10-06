@@ -11,10 +11,11 @@ data class User(
     val isMember: Boolean = false,
     val profilePictureUrl: String? = null
 ) {
-    val fullName: String = "${firstName.capitalizeFirstLetter()} ${lastName.capitalizeFirstLetter()}"
+    val fullName: String =
+        "${firstName.capitalizeFirstLetter()} ${lastName.capitalizeFirstLetter()}"
 
-    fun isUpdated(user: com.upsaclay.common.domain.model.User): Boolean = this.id == user.id &&
-        this.profilePictureUrl != user.profilePictureUrl ||
-        this.isMember != user.isMember ||
-        this.schoolLevel != user.schoolLevel
+    fun isUpdated(user: User): Boolean = this.id == user.id &&
+            this.profilePictureUrl != user.profilePictureUrl ||
+            this.isMember != user.isMember ||
+            this.schoolLevel != user.schoolLevel
 }

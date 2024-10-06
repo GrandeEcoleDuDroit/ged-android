@@ -11,6 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -21,7 +22,7 @@ internal class UserConversationRepositoryImpl(
 ) : ConversationRepository {
     private val _conversations = MutableStateFlow<List<Conversation>>(emptyList())
     override val conversations: Flow<List<Conversation>> = _conversations
-    private val currentUser = userRepository.currentUserFlow
+    private val currentUser = userRepository.currentUser.filterNotNull()
     private var previousConversations = emptyList<ConversationDTO>()
 
     init {
@@ -49,6 +50,10 @@ internal class UserConversationRepositoryImpl(
                 previousConversations = conversationsDTO
             }
         }
+    }
+
+    override suspend fun createConversation(conversation: Conversation): String {
+        TODO("Not yet implemented")
     }
 
     private suspend fun updateConversation(conversationsDTO: List<ConversationDTO>) {

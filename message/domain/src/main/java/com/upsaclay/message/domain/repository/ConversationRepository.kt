@@ -5,4 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface ConversationRepository {
     val conversations: Flow<List<Conversation>>
+
+    suspend fun createConversation(conversation: Conversation): String
 }

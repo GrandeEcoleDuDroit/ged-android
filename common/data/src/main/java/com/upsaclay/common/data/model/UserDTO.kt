@@ -13,7 +13,7 @@ internal data class UserDTO(
     @SerializedName("USER_PROFILE_PICTURE_URL") val userProfilePictureUrl: String? = null
 ) {
     companion object {
-        fun fromDomain(user: com.upsaclay.common.domain.model.User) = UserDTO(
+        fun fromDomain(user: User) = UserDTO(
             userId = if (user.id == -1) null else user.id,
             userFirstName = user.firstName,
             userLastName = user.lastName,
@@ -24,7 +24,7 @@ internal data class UserDTO(
         )
     }
 
-    fun toDomain() = com.upsaclay.common.domain.model.User(
+    fun toDomain() = User(
         id = this.userId ?: -1,
         firstName = this.userFirstName,
         lastName = this.userLastName,

@@ -12,7 +12,11 @@ class UpdateUserProfilePictureUseCase(
     private val imageRepository: ImageRepository,
     private val userRepository: UserRepository
 ) {
-    suspend operator fun invoke(userId: Int, profilePictureUri: Uri, currentUserProfilePictureUrl: String?): Result<Unit> {
+    suspend operator fun invoke(
+        userId: Int,
+        profilePictureUri: Uri,
+        currentUserProfilePictureUrl: String?
+    ): Result<Unit> {
         val currentTime = System.currentTimeMillis()
         val fileName = "$userId-profile-picture-$currentTime"
         val profilePictureFile = fileRepository.createFileFromUri(fileName, profilePictureUri)
@@ -25,7 +29,8 @@ class UpdateUserProfilePictureUseCase(
                     currentUserProfilePictureUrl?.let { deleteProfilePictureImage(it) }
                 }
         } else {
-            val exception = uploadImageResult.exceptionOrNull() ?: IOException("Error uploading image")
+            val exception =
+                uploadImageResult.exceptionOrNull() ?: IOException("Error uploading image")
             Result.failure(exception)
         }
     }

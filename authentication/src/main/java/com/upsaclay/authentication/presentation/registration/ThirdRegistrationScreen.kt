@@ -40,7 +40,10 @@ import com.upsaclay.common.presentation.theme.spacing
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun ThirdRegistrationScreen(navController: NavController, registrationViewModel: RegistrationViewModel = koinViewModel()) {
+fun ThirdRegistrationScreen(
+    navController: NavController,
+    registrationViewModel: RegistrationViewModel = koinViewModel()
+) {
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri ->
@@ -50,8 +53,8 @@ fun ThirdRegistrationScreen(navController: NavController, registrationViewModel:
     val registrationState by registrationViewModel.registrationState.collectAsState()
 
     if (registrationState == RegistrationState.REGISTERED) {
-        navController.navigate(com.upsaclay.common.domain.model.Screen.NEWS.route) {
-            popUpTo(com.upsaclay.common.domain.model.Screen.NEWS.route) { inclusive = true }
+        navController.navigate(Screen.NEWS.route) {
+            popUpTo(Screen.NEWS.route) { inclusive = true }
         }
     }
 
@@ -165,7 +168,9 @@ fun ThirdRegistrationScreenPreview() {
                     Image(
                         painter = painterResource(id = com.upsaclay.common.R.drawable.default_profile_picture),
                         contentDescription = "",
-                        modifier = Modifier.size(100.dp).scale(2f)
+                        modifier = Modifier
+                            .size(100.dp)
+                            .scale(2f)
                     )
                     ProfilePicture(
                         imageUrl = null,

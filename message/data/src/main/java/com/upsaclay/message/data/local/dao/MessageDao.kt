@@ -1,6 +1,7 @@
 package com.upsaclay.message.data.local.dao
 
 import androidx.room.Dao
+import androidx.room.Insert
 import androidx.room.Query
 import com.upsaclay.message.data.local.model.LocalMessage
 import com.upsaclay.message.data.remote.MessageField
@@ -24,4 +25,7 @@ interface MessageDao {
             "OFFSET :offset"
     )
     suspend fun getMessages(conversationId: String, offset: Int): List<LocalMessage>
+
+    @Insert
+    suspend fun insertMessage(localMessage: LocalMessage)
 }

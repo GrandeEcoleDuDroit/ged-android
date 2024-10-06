@@ -75,7 +75,12 @@ fun ProfilePictureWithIcon(
 }
 
 @Composable
-fun ProfilePicture(modifier: Modifier = Modifier, scaleImage: Float = 1f, imageUrl: String?, onClick: (() -> Unit)? = null) {
+fun ProfilePicture(
+    modifier: Modifier = Modifier,
+    scaleImage: Float = 1f,
+    imageUrl: String?,
+    onClick: (() -> Unit)? = null
+) {
     AsyncImage(
         model = imageUrl ?: R.drawable.default_profile_picture,
         contentDescription = "",
@@ -94,7 +99,12 @@ fun ProfilePicture(modifier: Modifier = Modifier, scaleImage: Float = 1f, imageU
 }
 
 @Composable
-fun ProfilePicture(modifier: Modifier = Modifier, scaleImage: Float = 1f, imageUri: Uri?, onClick: (() -> Unit)? = null) {
+fun ProfilePicture(
+    modifier: Modifier = Modifier,
+    scaleImage: Float = 1f,
+    imageUri: Uri?,
+    onClick: (() -> Unit)? = null
+) {
     AsyncImage(
         model = imageUri ?: R.drawable.default_profile_picture,
         contentDescription = "",

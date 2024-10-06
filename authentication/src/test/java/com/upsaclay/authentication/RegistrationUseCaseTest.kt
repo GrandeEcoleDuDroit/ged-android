@@ -2,7 +2,6 @@ package com.upsaclay.authentication
 
 import android.net.Uri
 import com.upsaclay.authentication.domain.usecase.RegistrationUseCase
-import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.UpdateUserProfilePictureUseCase
 import com.upsaclay.common.utils.userFixture
 import io.mockk.coEvery
@@ -26,7 +25,13 @@ class RegistrationUseCaseTest {
         registrationUseCase = RegistrationUseCase(userRepository, updateUserProfilePictureUseCase)
 
         coEvery { userRepository.createUser(any()) } returns 0
-        coEvery { updateUserProfilePictureUseCase(any(), any(), any()) } returns Result.success(Unit)
+        coEvery {
+            updateUserProfilePictureUseCase(
+                any(),
+                any(),
+                any()
+            )
+        } returns Result.success(Unit)
     }
 
     @Test

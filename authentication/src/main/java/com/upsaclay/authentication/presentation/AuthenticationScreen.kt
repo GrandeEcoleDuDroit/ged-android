@@ -50,7 +50,6 @@ import com.upsaclay.authentication.presentation.components.LargeButton
 import com.upsaclay.authentication.presentation.components.LoadingLargeButton
 import com.upsaclay.authentication.presentation.components.OutlinedEmailInput
 import com.upsaclay.authentication.presentation.components.OutlinedPasswordInput
-import com.upsaclay.common.R as CoreResource
 import com.upsaclay.common.domain.model.Screen
 import com.upsaclay.common.presentation.components.ErrorText
 import com.upsaclay.common.presentation.components.OverlayLoadingScreen
@@ -58,9 +57,13 @@ import com.upsaclay.common.presentation.theme.GedoiseColor.Primary
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.spacing
 import org.koin.androidx.compose.koinViewModel
+import com.upsaclay.common.R as CoreResource
 
 @Composable
-fun AuthenticationScreen(navController: NavController, authenticationViewModel: AuthenticationViewModel = koinViewModel()) {
+fun AuthenticationScreen(
+    navController: NavController,
+    authenticationViewModel: AuthenticationViewModel = koinViewModel()
+) {
     val authenticationState by authenticationViewModel.authenticationState.collectAsState()
     var isError by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
@@ -73,11 +76,11 @@ fun AuthenticationScreen(navController: NavController, authenticationViewModel: 
     val password = authenticationViewModel.password
 
     if (authenticationState == AuthenticationState.AUTHENTICATED) {
-        navController.navigate(com.upsaclay.common.domain.model.Screen.NEWS.route)
+        navController.navigate(Screen.NEWS.route)
     }
 
     isError = authenticationState == AuthenticationState.AUTHENTICATION_ERROR ||
-        authenticationState == AuthenticationState.INPUT_ERROR
+            authenticationState == AuthenticationState.INPUT_ERROR
 
     errorMessage = when (authenticationState) {
         AuthenticationState.AUTHENTICATION_ERROR ->
@@ -138,7 +141,7 @@ fun AuthenticationScreen(navController: NavController, authenticationViewModel: 
                     keyboardController?.hide()
                     authenticationViewModel.login()
                 },
-                onRegistrationClick = { navController.navigate(com.upsaclay.common.domain.model.Screen.FIRST_REGISTRATION_SCREEN.route) },
+                onRegistrationClick = { navController.navigate(Screen.FIRST_REGISTRATION_SCREEN.route) },
                 isError = isError,
                 isEnable = authenticationState != AuthenticationState.LOADING
             )

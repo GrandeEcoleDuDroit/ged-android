@@ -8,7 +8,10 @@ class RegistrationUseCase(
     private val userRepository: com.upsaclay.common.domain.repository.UserRepository,
     private val updateUserProfilePictureUseCase: UpdateUserProfilePictureUseCase
 ) {
-    suspend operator fun invoke(user: com.upsaclay.common.domain.model.User, profilePictureUri: Uri?): Result<Int> =
+    suspend operator fun invoke(
+        user: com.upsaclay.common.domain.model.User,
+        profilePictureUri: Uri?
+    ): Result<Int> =
         userRepository.createUser(user)?.let { userId ->
             profilePictureUri?.let {
                 updateUserProfilePictureUseCase(userId, profilePictureUri, null)

@@ -29,7 +29,10 @@ import kotlinx.collections.immutable.persistentListOf
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun FirstRegistrationScreen(navController: NavController, registrationViewModel: RegistrationViewModel = koinViewModel()) {
+fun FirstRegistrationScreen(
+    navController: NavController,
+    registrationViewModel: RegistrationViewModel = koinViewModel()
+) {
     var selectedItem by remember {
         mutableStateOf(registrationViewModel.schoolLevel)
     }
@@ -81,7 +84,7 @@ fun FirstRegistrationScreen(navController: NavController, registrationViewModel:
             text = stringResource(id = com.upsaclay.common.R.string.next),
             onClick = {
                 registrationViewModel.updateSchoolLevel(selectedItem)
-                navController.navigate(com.upsaclay.common.domain.model.Screen.SECOND_REGISTRATION_SCREEN.route)
+                navController.navigate(Screen.SECOND_REGISTRATION_SCREEN.route)
             },
             modifier = Modifier
                 .align(Alignment.BottomCenter)

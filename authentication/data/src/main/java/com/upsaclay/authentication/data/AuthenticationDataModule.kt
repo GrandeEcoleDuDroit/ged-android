@@ -1,6 +1,7 @@
 package com.upsaclay.authentication.data
 
 import com.upsaclay.authentication.data.local.AuthenticationLocalDataSource
+import com.upsaclay.authentication.data.remote.AuthenticationApi
 import com.upsaclay.authentication.data.remote.AuthenticationRemoteDataSource
 import com.upsaclay.authentication.data.repository.AuthenticationRepositoryImpl
 import com.upsaclay.authentication.domain.repository.AuthenticationRepository
@@ -24,7 +25,7 @@ val authenticationDataModule = module {
 
     single {
         get<Retrofit>(qualifier = named(PARIS_SACLAY_SERVER_QUALIFIER))
-            .create(com.upsaclay.authentication.data.remote.AuthenticationApi::class.java)
+            .create(AuthenticationApi::class.java)
     }
 
     singleOf(::AuthenticationRepositoryImpl) { bind<AuthenticationRepository>() }

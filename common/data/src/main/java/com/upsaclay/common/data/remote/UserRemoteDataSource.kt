@@ -6,11 +6,14 @@ import com.upsaclay.common.data.remote.api.RemoteUserFirebase
 import com.upsaclay.common.data.remote.api.UserFirebaseApi
 import com.upsaclay.common.data.remote.api.UserRetrofitApi
 import com.upsaclay.common.domain.e
-import java.io.IOException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.IOException
 
-internal class UserRemoteDataSource(private val userRetrofitApi: UserRetrofitApi, private val userFirebaseApi: UserFirebaseApi) {
+internal class UserRemoteDataSource(
+    private val userRetrofitApi: UserRetrofitApi,
+    private val userFirebaseApi: UserFirebaseApi
+) {
     suspend fun getCurrentUser(userId: Int): UserDTO? = withContext(Dispatchers.IO) {
         try {
             val response = userRetrofitApi.getUser(userId)
@@ -70,18 +73,19 @@ internal class UserRemoteDataSource(private val userRetrofitApi: UserRetrofitApi
         }
     }
 
-    suspend fun updateProfilePictureUrl(userId: Int, newProfilePictureUrl: String): Result<Unit> = withContext(Dispatchers.IO) {
-        try {
-            userRetrofitApi.updateProfilePictureUrl(userId, newProfilePictureUrl)
-            userFirebaseApi.updateProfilePictureUrl(userId.toString(), newProfilePictureUrl)
-        } catch (e: IOException) {
-            e("Error updating user profile picture url: ${e.message}", e)
-            Result.failure(e)
-        } catch (e: FirebaseFirestoreException) {
-            e("Error updating user profile picture url: ${e.message}", e)
-            Result.failure(e)
+    suspend fun updateProfilePictureUrl(userId: Int, newProfilePictureUrl: String): Result<Unit> =
+        withContext(Dispatchers.IO) {
+            try {
+                userRetrofitApi.updateProfilePictureUrl(userId, newProfilePictureUrl)
+                userFirebaseApi.updateProfilePictureUrl(userId.toString(), newProfilePictureUrl)
+            } catch (e: IOException) {
+                e("Error updating user profile picture url: ${e.message}", e)
+                Result.failure(e)
+            } catch (e: FirebaseFirestoreException) {
+                e("Error updating user profile picture url: ${e.message}", e)
+                Result.failure(e)
+            }
         }
-    }
 
     suspend fun deleteProfilePictureUrl(userId: Int): Result<Unit> = withContext(Dispatchers.IO) {
         try {

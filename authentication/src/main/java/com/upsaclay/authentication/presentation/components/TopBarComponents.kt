@@ -27,7 +27,12 @@ import com.upsaclay.common.presentation.theme.spacing
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun RegistrationTopBar(navController: NavController, currentStep: Int, maxStep: Int, content: @Composable BoxScope.() -> Unit) {
+internal fun RegistrationTopBar(
+    navController: NavController,
+    currentStep: Int,
+    maxStep: Int,
+    content: @Composable BoxScope.() -> Unit
+) {
     Scaffold(
         topBar = {
             TopAppBar(
