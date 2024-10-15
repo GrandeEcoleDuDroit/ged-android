@@ -2,11 +2,13 @@ package com.upsaclay.authentication.data.repository
 
 import android.security.keystore.UserNotAuthenticatedException
 import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.upsaclay.authentication.data.remote.firebase.FirebaseAuthenticationRemoteDataSource
 import com.upsaclay.authentication.domain.model.exception.AuthenticationException
 import com.upsaclay.authentication.domain.model.exception.FirebaseAuthErrorCode
+import com.upsaclay.authentication.domain.model.exception.TooManyRequestException
 import com.upsaclay.authentication.domain.repository.FirebaseAuthenticationRepository
 import com.upsaclay.common.domain.model.exception.NetworkException
 
@@ -19,6 +21,22 @@ class FirebaseAuthenticationRepositoryImpl(
         result.onFailure { e ->
             return when(e) {
                 is FirebaseNetworkException -> Result.failure(NetworkException("Error network connection ${e.message}", e))
+
+                is FirebaseAuthInvalidCredentialsException -> {
+                    Result.failure(
+                        AuthenticationException(
+                            "Error to sign in with email and password with Firebase: ${e.message}",
+                            e,
+                            FirebaseAuthErrorCode.INVALID_CREDENTIALS
+                        )
+                    )
+                }
+
+                is FirebaseTooManyRequestsException -> {
+                    Result.failure(
+                        TooManyRequestException("Error to sign in with email and password with Firebase: ${e.message}",e,)
+                    )
+                }
 
                 is FirebaseAuthException -> {
                     Result.failure(
@@ -45,6 +63,11 @@ class FirebaseAuthenticationRepositoryImpl(
                     )
                 }
 
+                is FirebaseTooManyRequestsException ->
+                    Result.failure(
+                        TooManyRequestException("Error to sign up with email and password with Firebase: ${e.message}", e)
+                    )
+
                 else -> Result.failure(e)
             }
         }
@@ -55,7 +78,11 @@ class FirebaseAuthenticationRepositoryImpl(
         val result = firebaseAuthenticationRemoteDataSource.sendVerificationEmail()
         result.onFailure { e ->
             return when(e) {
-                is FirebaseNetworkException -> Result.failure(NetworkException("Error network connection ${e.message}", e))
+                is FirebaseNetworkException ->
+                    Result.failure(NetworkException("Error network connection ${e.message}", e))
+
+                is FirebaseTooManyRequestsException ->
+                    Result.failure(TooManyRequestException("Error to send verification email with Firebase: ${e.message}", e))
 
                 is UserNotAuthenticatedException ->
                     Result.failure(

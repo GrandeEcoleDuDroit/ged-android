@@ -10,6 +10,9 @@ class CreateNewUserUseCase(
     suspend operator fun invoke(user: User): Result<Unit> {
         return userRepository.createUserWithOracle(user)?.let { userId ->
             userRepository.createUserWithFirestore(user.copy(id = userId))
+                .onSuccess {
+                    userRepository.setCurrentUser(user.copy(id = userId))
+                }
         } ?: Result.failure(IOException())
     }
 }

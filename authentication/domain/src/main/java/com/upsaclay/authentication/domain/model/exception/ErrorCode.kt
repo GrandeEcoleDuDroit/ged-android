@@ -3,6 +3,7 @@ package com.upsaclay.authentication.domain.model.exception
 
 enum class FirebaseAuthErrorCode {
     EMAIL_ALREADY_EXIST,
+    INVALID_CREDENTIALS,
     UNKNOWN;
 
     companion object {

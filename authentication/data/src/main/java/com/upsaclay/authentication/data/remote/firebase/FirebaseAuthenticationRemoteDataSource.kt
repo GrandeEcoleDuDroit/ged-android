@@ -1,6 +1,7 @@
 package com.upsaclay.authentication.data.remote.firebase
 
 import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuthException
 import com.upsaclay.common.domain.e
 import kotlinx.coroutines.Dispatchers
@@ -19,6 +20,9 @@ class FirebaseAuthenticationRemoteDataSource(
         } catch (e: FirebaseNetworkException) {
             e("Error network connection ${e.message}", e)
             Result.failure(e)
+        } catch (e: FirebaseTooManyRequestsException) {
+            e("Error to sign in with email and password with Firebase: ${e.message}", e)
+            Result.failure(e)
         }
     }
 
@@ -29,6 +33,12 @@ class FirebaseAuthenticationRemoteDataSource(
         } catch (e: FirebaseAuthException) {
             e("Error to sign up with email and password with Firebase: ${e.message}", e)
             Result.failure(e)
+        } catch (e: FirebaseNetworkException) {
+            e("Error network connection ${e.message}", e)
+            Result.failure(e)
+        } catch (e: FirebaseTooManyRequestsException) {
+            e("Error to sign up with email and password with Firebase: ${e.message}", e)
+            Result.failure(e)
         }
     }
 
@@ -37,6 +47,12 @@ class FirebaseAuthenticationRemoteDataSource(
             firebaseAuthenticationApi.sendVerificationEmail()
             Result.success(Unit)
         } catch (e: FirebaseAuthException) {
+            e("Error to send verification email with Firebase: ${e.message}", e)
+            Result.failure(e)
+        } catch (e: FirebaseNetworkException) {
+            e("Error network connection ${e.message}", e)
+            Result.failure(e)
+        } catch (e: FirebaseTooManyRequestsException) {
             e("Error to send verification email with Firebase: ${e.message}", e)
             Result.failure(e)
         }

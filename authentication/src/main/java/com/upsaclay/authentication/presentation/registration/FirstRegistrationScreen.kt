@@ -59,6 +59,7 @@ fun FirstRegistrationScreen(
         registrationViewModel.resetLastName()
         registrationViewModel.resetEmail()
         registrationViewModel.resetPassword()
+        registrationViewModel.resetSchoolLevel()
     }
 
     RegistrationTopBar(

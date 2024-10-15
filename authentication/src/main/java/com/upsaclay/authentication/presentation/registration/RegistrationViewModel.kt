@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.upsaclay.authentication.domain.model.RegistrationState
 import com.upsaclay.authentication.domain.model.exception.AuthenticationException
 import com.upsaclay.authentication.domain.model.exception.FirebaseAuthErrorCode
+import com.upsaclay.authentication.domain.model.exception.TooManyRequestException
 import com.upsaclay.authentication.domain.usecase.IsUserEmailVerifiedUseCase
 import com.upsaclay.common.domain.usecase.CreateNewUserUseCase
 import com.upsaclay.authentication.domain.usecase.RegisterUseCase
@@ -17,9 +18,11 @@ import com.upsaclay.authentication.domain.usecase.SetUserAuthenticatedUseCase
 import com.upsaclay.authentication.domain.usecase.VerifyEmailFormatUseCase
 import com.upsaclay.common.domain.uppercaseFirstLetter
 import com.upsaclay.common.domain.model.User
+import com.upsaclay.common.domain.usecase.GetCurrentUserUseCase
 import com.upsaclay.common.domain.usecase.IsUserExistUseCase
 import com.upsaclay.common.domain.usecase.UpdateUserProfilePictureUseCase
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -32,7 +35,8 @@ class RegistrationViewModel(
     private val updateUserProfilePictureUseCase: UpdateUserProfilePictureUseCase,
     private val sendVerificationEmailUseCase: SendVerificationEmailUseCase,
     private val isUserEmailVerifiedUseCase: IsUserEmailVerifiedUseCase,
-    private val setUserAuthenticatedUseCase: SetUserAuthenticatedUseCase
+    private val setUserAuthenticatedUseCase: SetUserAuthenticatedUseCase,
+    private val getCurrentUserUseCase: GetCurrentUserUseCase,
 ) : ViewModel() {
     private val _registrationState = MutableStateFlow(RegistrationState.NOT_REGISTERED)
     val registrationState: StateFlow<RegistrationState> = _registrationState
@@ -102,6 +106,24 @@ class RegistrationViewModel(
         _registrationState.value = RegistrationState.NOT_REGISTERED
     }
 
+    fun getCurrentUserIfNeeded() {
+        if(email.isBlank()) {
+            _registrationState.value = RegistrationState.LOADING
+
+            viewModelScope.launch {
+                getCurrentUserUseCase()?.let { user ->
+                    firstName = user.firstName
+                    lastName = user.lastName
+                    email = user.email
+                    schoolLevel = user.schoolLevel
+                    _registrationState.value = RegistrationState.OK
+                } ?: run {
+                    _registrationState.value = RegistrationState.UNRECOGNIZED_ACCOUNT
+                }
+            }
+        }
+    }
+
     fun verifyNamesInputs(): Boolean {
         return if(firstName.isBlank() || lastName.isBlank()) {
             _registrationState.value = RegistrationState.INPUTS_EMPTY_ERROR
@@ -149,7 +171,7 @@ class RegistrationViewModel(
         _registrationState.value = RegistrationState.LOADING
 
         viewModelScope.launch {
-            isUserExistUseCase(email)
+            isUserExistUseCase(email.trim())
                 .onSuccess { isExist ->
                     _registrationState.value = if(isExist) {
                          RegistrationState.USER_ALREADY_EXIST
@@ -177,6 +199,7 @@ class RegistrationViewModel(
                     createNewUserUseCase(user)
                         .onSuccess {
                             setUserAuthenticatedUseCase(true)
+                            _registrationState.value = RegistrationState.REGISTERED
                         }
                         .onFailure {
                             setUserAuthenticatedUseCase(false)
@@ -201,17 +224,19 @@ class RegistrationViewModel(
         viewModelScope.launch {
             sendVerificationEmailUseCase.sendVerificationEmail()
                 .onSuccess { _registrationState.value = RegistrationState.OK }
-                .onFailure { _registrationState.value = RegistrationState.ERROR }
-        }
-    }
+                .onFailure { e ->
+                    when(e) {
+                        is AuthenticationException -> {
+                            _registrationState.value = when(e.code) {
+                                FirebaseAuthErrorCode.EMAIL_ALREADY_EXIST -> RegistrationState.USER_ALREADY_EXIST
+                                else -> RegistrationState.ERROR
+                            }
+                        }
+                        is TooManyRequestException -> _registrationState.value = RegistrationState.TOO_MANY_REQUESTS
 
-    fun forwardVerificationEmail() {
-        _registrationState.value = RegistrationState.LOADING
-
-        viewModelScope.launch {
-            sendVerificationEmailUseCase.sendVerificationEmail()
-                .onSuccess { _registrationState.value = RegistrationState.OK }
-                .onFailure { _registrationState.value = RegistrationState.ERROR }
+                        else -> _registrationState.value = RegistrationState.ERROR
+                    }
+                }
         }
     }
 
@@ -220,8 +245,10 @@ class RegistrationViewModel(
 
         viewModelScope.launch {
             if(isUserEmailVerifiedUseCase()) {
+                delay(900)
                 _registrationState.value = RegistrationState.EMAIL_VERIFIED
             } else {
+                delay(900)
                 _registrationState.value = RegistrationState.EMAIL_NOT_VERIFIED
             }
         }

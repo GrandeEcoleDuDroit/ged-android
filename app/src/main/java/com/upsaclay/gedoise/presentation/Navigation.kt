@@ -7,6 +7,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,6 +29,9 @@ import com.upsaclay.common.domain.model.Screen
 import com.upsaclay.common.domain.model.User
 import com.upsaclay.common.presentation.components.SmallTopBarBack
 import com.upsaclay.gedoise.data.BottomNavigationItem
+import com.upsaclay.gedoise.presentation.components.MainBottomBar
+import com.upsaclay.gedoise.presentation.components.MainTopBar
+import com.upsaclay.gedoise.presentation.components.SplashScreen
 import com.upsaclay.gedoise.presentation.profile.ProfileScreen
 import com.upsaclay.gedoise.presentation.profile.account.AccountScreen
 import com.upsaclay.message.presentation.screen.ConversationScreen
@@ -41,6 +45,7 @@ import com.upsaclay.news.presentation.screen.NewsScreen
 import com.upsaclay.news.presentation.screen.ReadAnnouncementScreen
 import com.upsaclay.news.presentation.viewmodel.EditAnnouncementViewModel
 import com.upsaclay.news.presentation.viewmodel.NewsViewModel
+import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 import org.koin.java.KoinJavaComponent.inject
@@ -49,7 +54,7 @@ import org.koin.java.KoinJavaComponent.inject
 fun Navigation(mainViewModel: MainViewModel = koinViewModel()) {
     val navController = rememberNavController()
     val user = mainViewModel.user.collectAsState(null).value
-    val isAuthenticated = mainViewModel.isAuthenticated.collectAsState(false).value
+    val isAuthenticated = mainViewModel.isAuthenticated.collectAsState(null).value
 
     val sharedRegistrationViewModel: RegistrationViewModel = koinViewModel()
     val sharedNewsViewModel: NewsViewModel = koinViewModel()
@@ -58,16 +63,24 @@ fun Navigation(mainViewModel: MainViewModel = koinViewModel()) {
     val convertAnnouncementToJsonUseCase: ConvertAnnouncementToJsonUseCase by inject(
         ConvertAnnouncementToJsonUseCase::class.java
     )
-    val startDestination = if (isAuthenticated) {
-        Screen.AUTHENTICATION.route
-    } else {
-        Screen.AUTHENTICATION.route
+
+    LaunchedEffect(key1 = isAuthenticated) {
+        delay(1000)
+        if (isAuthenticated == true) {
+            navController.navigate(Screen.NEWS.route)
+        } else {
+            navController.navigate(Screen.AUTHENTICATION.route)
+        }
     }
 
     NavHost(
         navController = navController,
-        startDestination = startDestination
+        startDestination = Screen.SPLASH.route
     ) {
+        composable(Screen.SPLASH.route) {
+            SplashScreen()
+        }
+
         composable(Screen.AUTHENTICATION.route) {
             AuthenticationScreen(navController = navController)
         }

@@ -18,5 +18,6 @@ enum class Screen(val route: String) {
     CALENDAR("calendar_screen"),
     FORUM("forum_screen"),
     PROFILE("profile_screen"),
-    ACCOUNT("account_screen")
+    ACCOUNT("account_screen"),
+    SPLASH("splash_screen")
 }

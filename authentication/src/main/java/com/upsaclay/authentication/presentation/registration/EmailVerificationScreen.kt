@@ -1,5 +1,6 @@
 package com.upsaclay.authentication.presentation.registration
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -31,6 +32,7 @@ import com.upsaclay.common.presentation.components.TopLinearLoadingScreen
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.showToast
+import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -43,6 +45,8 @@ fun EmailVerificationScreen(
     val isLoading = registrationState == RegistrationState.LOADING
     val context = LocalContext.current
     val text = stringResource(id = R.string.email_verification_text, registrationViewModel.email)
+    var isForwardEmailButtonEnable by remember { mutableStateOf(true) }
+    var isForwardButtonClicked by remember { mutableStateOf(false) }
 
     errorMessage = when(registrationState) {
         RegistrationState.EMAIL_NOT_VERIFIED -> stringResource(id = R.string.email_not_verified)
@@ -51,7 +55,13 @@ fun EmailVerificationScreen(
 
     LaunchedEffect(Unit) {
         registrationViewModel.resetRegistrationState()
-        registrationViewModel.sendVerificationEmail()
+        registrationViewModel.getCurrentUserIfNeeded()
+    }
+
+    LaunchedEffect(isForwardButtonClicked) {
+        isForwardEmailButtonEnable = false
+        delay(60000)
+        isForwardEmailButtonEnable = true
     }
 
     LaunchedEffect(registrationState) {
@@ -61,10 +71,28 @@ fun EmailVerificationScreen(
                     popUpTo(navController.graph.id) { inclusive = true }
                 }
             }
+
+            RegistrationState.UNRECOGNIZED_ACCOUNT -> {
+                registrationViewModel.resetRegistrationState()
+                showToast(
+                    context = context,
+                    stringRes = com.upsaclay.common.R.string.unknown_error
+                )
+                navController.navigate(Screen.AUTHENTICATION.route) {
+                    popUpTo(navController.graph.id) { inclusive = true }
+                }
+            }
+
+            RegistrationState.OK -> {
+                registrationViewModel.resetRegistrationState()
+                registrationViewModel.sendVerificationEmail()
+            }
+
             RegistrationState.ERROR -> {
                 registrationViewModel.resetRegistrationState()
                 showToast(context = context, stringRes = com.upsaclay.common.R.string.unknown_error)
             }
+
             else -> { }
         }
     }
@@ -76,6 +104,7 @@ fun EmailVerificationScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
             .padding(MaterialTheme.spacing.medium)
     ) {
         Column {
@@ -88,15 +117,16 @@ fun EmailVerificationScreen(
 
             Spacer(Modifier.height(MaterialTheme.spacing.medium))
 
-            Text(
-                text = text,
-                style = MaterialTheme.typography.bodyLarge
-            )
+            Text(text = text, style = MaterialTheme.typography.bodyLarge)
 
             Spacer(Modifier.height(MaterialTheme.spacing.medium))
 
             TextButton(
-                onClick = { registrationViewModel.forwardVerificationEmail() }
+                onClick = {
+                    isForwardButtonClicked = true
+                    registrationViewModel.sendVerificationEmail()
+                },
+                enabled = !isForwardEmailButtonEnable
             ) {
                 Text(text = stringResource(id = R.string.forward_verification_email),)
             }
@@ -140,6 +170,7 @@ private fun EmailVerificationScreenPreview() {
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
                 .padding(MaterialTheme.spacing.medium)
         ) {
             Column {

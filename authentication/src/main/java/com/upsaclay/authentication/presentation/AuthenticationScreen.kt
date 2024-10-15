@@ -101,6 +101,9 @@ fun AuthenticationScreen(
         AuthenticationState.AUTHENTICATED_USER_NOT_FOUND ->
             stringResource(id = R.string.authenticated_user_not_found)
 
+        AuthenticationState.TOO_MANY_REQUESTS_ERROR ->
+            stringResource(id = R.string.too_many_request_error)
+
         else -> ""
     }
 
@@ -160,16 +163,21 @@ fun AuthenticationScreen(
 
     if(showVerifyEmailDialog) {
         SimpleDialog(
-            title = stringResource(id = R.string.email_not_verified_dialog_title),
             message = stringResource(id = R.string.email_not_verified_dialog_message),
             confirmText = stringResource(id = com.upsaclay.common.R.string.keep_going),
-            onDismiss = { showVerifyEmailDialog = false },
+            onDismiss = {
+                showVerifyEmailDialog = false
+                authenticationViewModel.resetAuthenticationState()
+            },
             onConfirm = {
                 navController.navigate(Screen.CHECK_EMAIL_VERIFIED_SCREEN.route) {
                     popUpTo(navController.graph.id) { inclusive = true }
                 }
             },
-            onCancel = { showVerifyEmailDialog = false }
+            onCancel = {
+                showVerifyEmailDialog = false
+                authenticationViewModel.resetAuthenticationState()
+            }
         )
     }
 

@@ -77,7 +77,7 @@ fun ThirdRegistrationScreen(
             RegistrationState.USER_NOT_EXIST -> {
                 registrationViewModel.register()
             }
-            RegistrationState.OK -> {
+            RegistrationState.REGISTERED -> {
                 registrationViewModel.resetRegistrationState()
                 navController.navigate(Screen.CHECK_EMAIL_VERIFIED_SCREEN.route) {
                     popUpTo(navController.graph.id) { inclusive = true }

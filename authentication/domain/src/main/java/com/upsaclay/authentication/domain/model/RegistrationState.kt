@@ -4,6 +4,7 @@ enum class RegistrationState {
     OK,
     ERROR,
     ERROR_NETWORK,
+    TOO_MANY_REQUESTS,
     LOADING,
     REGISTERED,
     NOT_REGISTERED,

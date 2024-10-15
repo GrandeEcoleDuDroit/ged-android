@@ -46,6 +46,10 @@ fun SecondRegistrationScreen(
     val registrationState = registrationViewModel.registrationState.collectAsState().value
     val isLoading = registrationState == RegistrationState.LOADING
 
+    LaunchedEffect(Unit) {
+        registrationViewModel.resetRegistrationState()
+    }
+
     RegistrationTopBar(
         navController = navController
     ) {

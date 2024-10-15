@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upsaclay.authentication.domain.model.AuthenticationState
 import com.upsaclay.authentication.domain.model.exception.AuthenticationException
+import com.upsaclay.authentication.domain.model.exception.FirebaseAuthErrorCode
+import com.upsaclay.authentication.domain.model.exception.TooManyRequestException
 import com.upsaclay.authentication.domain.usecase.IsUserEmailVerifiedUseCase
 import com.upsaclay.authentication.domain.usecase.LoginUseCase
 import com.upsaclay.authentication.domain.usecase.SetUserAuthenticatedUseCase
@@ -67,7 +69,15 @@ class AuthenticationViewModel(
                     _authenticationState.value = when(e) {
                         is NetworkException -> AuthenticationState.NETWORK_ERROR
 
-                        is AuthenticationException -> AuthenticationState.AUTHENTICATION_ERROR
+                        is TooManyRequestException -> AuthenticationState.TOO_MANY_REQUESTS_ERROR
+
+                        is AuthenticationException -> {
+                            if(e.code == FirebaseAuthErrorCode.INVALID_CREDENTIALS) {
+                                AuthenticationState.AUTHENTICATION_ERROR
+                            } else {
+                                AuthenticationState.UNKNOWN_ERROR
+                            }
+                        }
 
                         else -> AuthenticationState.UNKNOWN_ERROR
                     }
