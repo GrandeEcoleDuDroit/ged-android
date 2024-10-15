@@ -1,4 +1,4 @@
-package com.upsaclay.gedoise.presentation.profile.account
+package com.upsaclay.gedoise.presentation.account
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -43,8 +43,8 @@ import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.showToast
 import com.upsaclay.common.utils.userFixture
 import com.upsaclay.gedoise.R
-import com.upsaclay.gedoise.data.profile.AccountInfo
-import com.upsaclay.gedoise.data.profile.AccountScreenState
+import com.upsaclay.gedoise.data.account.AccountInfo
+import com.upsaclay.gedoise.data.account.AccountScreenState
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.launch

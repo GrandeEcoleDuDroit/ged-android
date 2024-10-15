@@ -54,6 +54,7 @@ fun SimpleDialog(
 
 @Composable
 fun SensibleActionDialog(
+    title: String? = null,
     message: String,
     confirmText: String,
     cancelText: String = stringResource(id = R.string.cancel),
@@ -62,6 +63,7 @@ fun SensibleActionDialog(
     onCancel: () -> Unit
 ) {
     AlertDialog(
+        title = { title?.let { Text(text = title) } },
         text = {
             Text(text = message, style = MaterialTheme.typography.bodyLarge)
         },
@@ -84,7 +86,7 @@ fun SensibleActionDialog(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoadingDialog(text: String = stringResource(id = R.string.loading)) {
+fun LoadingDialog(message: String = stringResource(id = R.string.loading)) {
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
 
     BasicAlertDialog(
@@ -106,7 +108,7 @@ fun LoadingDialog(text: String = stringResource(id = R.string.loading)) {
             Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))
 
             Text(
-                text = text,
+                text = message,
                 style = MaterialTheme.typography.bodySmall,
                 textAlign = TextAlign.Center
             )
@@ -156,7 +158,7 @@ private fun SensibleActionDialogPreview() {
 private fun InformationDialogPreview() {
     GedoiseTheme {
         LoadingDialog(
-            text = "Waiting..."
+            message = "Waiting..."
         )
     }
 }

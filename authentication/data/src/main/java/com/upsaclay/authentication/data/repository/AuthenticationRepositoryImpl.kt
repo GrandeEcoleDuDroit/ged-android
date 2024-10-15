@@ -37,8 +37,4 @@ internal class AuthenticationRepositoryImpl(
     override suspend fun setAuthenticated(isAuthenticated: Boolean) {
         authenticationLocalDataSource.setAuthenticationState(isAuthenticated)
     }
-
-    override suspend fun logout() {
-        authenticationLocalDataSource.setAuthenticationState(false)
-    }
 }

@@ -5,6 +5,8 @@ interface FirebaseAuthenticationApi {
 
     suspend fun signUpWithEmailAndPassword(email: String, password: String)
 
+    suspend fun signOut()
+
     suspend fun sendVerificationEmail()
 
     fun isUserEmailVerified(): Boolean

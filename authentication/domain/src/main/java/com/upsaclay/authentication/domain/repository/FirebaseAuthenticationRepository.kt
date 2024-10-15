@@ -5,6 +5,8 @@ interface FirebaseAuthenticationRepository {
 
     suspend fun registerWithEmailAndPassword(email: String, password: String): Result<Unit>
 
+    suspend fun logout(): Result<Unit>
+
     suspend fun sendVerificationEmail(): Result<Unit>
 
     fun isUserEmailVerified(): Boolean

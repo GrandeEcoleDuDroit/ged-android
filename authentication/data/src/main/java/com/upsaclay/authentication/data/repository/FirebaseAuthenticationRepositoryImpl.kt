@@ -17,7 +17,6 @@ class FirebaseAuthenticationRepositoryImpl(
 ): FirebaseAuthenticationRepository {
     override suspend fun loginWithEmailAndPassword(email: String, password: String): Result<Unit> {
         val result = firebaseAuthenticationRemoteDataSource.signInWithEmailAndPassword(email, password)
-
         result.onFailure { e ->
             return when(e) {
                 is FirebaseNetworkException -> Result.failure(NetworkException("Error network connection ${e.message}", e))
@@ -67,6 +66,22 @@ class FirebaseAuthenticationRepositoryImpl(
                     Result.failure(
                         TooManyRequestException("Error to sign up with email and password with Firebase: ${e.message}", e)
                     )
+
+                else -> Result.failure(e)
+            }
+        }
+        return result
+    }
+
+    override suspend fun logout(): Result<Unit> {
+        val result = firebaseAuthenticationRemoteDataSource.signOut()
+        result.onFailure { e ->
+            return when(e) {
+                is FirebaseNetworkException ->
+                    Result.failure(NetworkException("Error network connection ${e.message}", e))
+
+                is FirebaseAuthException ->
+                    Result.failure(AuthenticationException("Error to sign out with Firebase: ${e.message}", e))
 
                 else -> Result.failure(e)
             }

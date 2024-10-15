@@ -65,6 +65,10 @@ internal class UserRepositoryImpl(
         userLocalDataSource.setUser(UserMapper.toDTO(user))
     }
 
+    override suspend fun removeCurrentUser() {
+        userLocalDataSource.removeCurrentUser()
+    }
+
     override suspend fun updateProfilePictureUrl(userId: Int, profilePictureUrl: String): Result<Unit> {
         return userRemoteDataSource.updateProfilePictureUrl(userId, profilePictureUrl)
             .onSuccess { userLocalDataSource.updateProfilePictureUrl(profilePictureUrl) }

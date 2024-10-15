@@ -22,6 +22,11 @@ class FirebaseAuthenticationApiImpl: FirebaseAuthenticationApi {
             .addOnFailureListener { e -> continuation.resumeWithException(e) }
     }
 
+    override suspend fun signOut() = suspendCoroutine { continuation ->
+        firebaseAuth.signOut()
+        continuation.resume(Unit)
+    }
+
     override suspend fun sendVerificationEmail() = suspendCoroutine { continuation ->
         val currentUser = firebaseAuth.currentUser
             ?: return@suspendCoroutine continuation.resumeWithException(UserNotAuthenticatedException("User not found"))

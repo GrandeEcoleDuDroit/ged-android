@@ -42,6 +42,22 @@ class FirebaseAuthenticationRemoteDataSource(
         }
     }
 
+    suspend fun signOut(): Result<Unit> = withContext(Dispatchers.IO) {
+        try {
+            firebaseAuthenticationApi.signOut()
+            Result.success(Unit)
+        } catch (e: FirebaseAuthException) {
+            e("Error to logout with Firebase: ${e.message}", e)
+            Result.failure(e)
+        } catch (e: FirebaseNetworkException) {
+            e("Error network connection ${e.message}", e)
+            Result.failure(e)
+        } catch (e: FirebaseTooManyRequestsException) {
+            e("Error to logout with Firebase: ${e.message}", e)
+            Result.failure(e)
+        }
+    }
+
     suspend fun sendVerificationEmail(): Result<Unit> = withContext(Dispatchers.IO) {
         try {
             firebaseAuthenticationApi.sendVerificationEmail()

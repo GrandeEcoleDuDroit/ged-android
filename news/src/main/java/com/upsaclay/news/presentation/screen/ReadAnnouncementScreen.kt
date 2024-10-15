@@ -109,7 +109,7 @@ fun ReadAnnouncementScreen(modifier: Modifier = Modifier, navController: NavCont
     }
 
     if (showLoadingDialog) {
-        LoadingDialog(text = stringResource(id = com.upsaclay.common.R.string.deletion))
+        LoadingDialog(message = stringResource(id = com.upsaclay.common.R.string.deletion))
     }
 
     val bottomSheetItemData: List<ClickableMenuItemData> = listOf(

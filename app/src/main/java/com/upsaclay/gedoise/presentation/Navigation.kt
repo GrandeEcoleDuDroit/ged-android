@@ -9,6 +9,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -33,7 +37,7 @@ import com.upsaclay.gedoise.presentation.components.MainBottomBar
 import com.upsaclay.gedoise.presentation.components.MainTopBar
 import com.upsaclay.gedoise.presentation.components.SplashScreen
 import com.upsaclay.gedoise.presentation.profile.ProfileScreen
-import com.upsaclay.gedoise.presentation.profile.account.AccountScreen
+import com.upsaclay.gedoise.presentation.account.AccountScreen
 import com.upsaclay.message.presentation.screen.ConversationScreen
 import com.upsaclay.message.presentation.screen.CreateConversationScreen
 import com.upsaclay.message.presentation.screen.CreateGroupConversationScreen
@@ -64,18 +68,22 @@ fun Navigation(mainViewModel: MainViewModel = koinViewModel()) {
         ConvertAnnouncementToJsonUseCase::class.java
     )
 
+    var startDestination by remember { mutableStateOf(Screen.SPLASH.route) }
+
     LaunchedEffect(key1 = isAuthenticated) {
-        delay(1000)
-        if (isAuthenticated == true) {
-            navController.navigate(Screen.NEWS.route)
-        } else {
-            navController.navigate(Screen.AUTHENTICATION.route)
+        if(startDestination == Screen.SPLASH.route) {
+            delay(1000)
+            startDestination = if (isAuthenticated == true) {
+                Screen.NEWS.route
+            } else {
+                Screen.AUTHENTICATION.route
+            }
         }
     }
 
     NavHost(
         navController = navController,
-        startDestination = Screen.SPLASH.route
+        startDestination = startDestination
     ) {
         composable(Screen.SPLASH.route) {
             SplashScreen()

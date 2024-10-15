@@ -23,6 +23,8 @@ interface UserRepository {
 
     suspend fun setCurrentUser(user: User)
 
+    suspend fun removeCurrentUser()
+
     suspend fun updateProfilePictureUrl(userId: Int, profilePictureUrl: String): Result<Unit>
 
     suspend fun deleteProfilePictureUrl(userId: Int): Result<Unit>

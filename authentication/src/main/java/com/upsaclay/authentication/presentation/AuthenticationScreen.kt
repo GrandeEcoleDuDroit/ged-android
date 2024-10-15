@@ -80,14 +80,6 @@ fun AuthenticationScreen(
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
 
-    if (authenticationState == AuthenticationState.AUTHENTICATED) {
-        navController.navigate(Screen.NEWS.route) {
-            popUpTo(navController.graph.id) {
-                inclusive = true
-            }
-        }
-    }
-
     inputsError = authenticationState == AuthenticationState.AUTHENTICATION_ERROR ||
             authenticationState == AuthenticationState.INPUTS_EMPTY_ERROR
 
@@ -124,7 +116,6 @@ fun AuthenticationScreen(
             AuthenticationState.NETWORK_ERROR -> {
                 showToast(context = context, stringRes = com.upsaclay.common.R.string.network_error)
             }
-
 
             AuthenticationState.EMAIL_NOT_VERIFIED -> {
                 showVerifyEmailDialog = true
@@ -219,7 +210,8 @@ fun AuthenticationScreen(
             LoginButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.login),
-                isLoading = authenticationState == AuthenticationState.LOADING,
+                isLoading = authenticationState == AuthenticationState.LOADING ||
+                        authenticationState == AuthenticationState.AUTHENTICATED,
                 onClick = {
                     keyboardController?.hide()
                     authenticationViewModel.login()

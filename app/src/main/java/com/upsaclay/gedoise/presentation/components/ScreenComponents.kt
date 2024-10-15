@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -14,7 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,6 +26,9 @@ import com.upsaclay.gedoise.R
 
 @Composable
 fun SplashScreen(){
+    val localConfiguration = LocalConfiguration.current
+    val screenWith = localConfiguration.screenWidthDp.dp
+
     Column (
         modifier = Modifier
             .fillMaxSize()
@@ -41,7 +44,7 @@ fun SplashScreen(){
 
         Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
 
-        LinearProgressBar()
+        LinearProgressBar(modifier = Modifier.width(screenWith * 0.8f))
     }
 }
 
