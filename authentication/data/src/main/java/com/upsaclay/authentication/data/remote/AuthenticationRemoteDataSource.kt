@@ -1,5 +1,7 @@
 package com.upsaclay.authentication.data.remote
 
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.upsaclay.authentication.data.remote.google.GoogleAuthenticationApi
 import com.upsaclay.common.data.formatHttpError
 import com.upsaclay.common.domain.e
 import com.upsaclay.common.domain.i
@@ -7,11 +9,13 @@ import java.io.IOException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-internal class AuthenticationRemoteDataSource(private val authenticationApi: AuthenticationApi) {
-    suspend fun login(email: String, password: String, hash: String): Result<Unit> = withContext(Dispatchers.IO) {
+internal class AuthenticationRemoteDataSource(
+    private val authenticationRetrofitApi: AuthenticationRetrofitApi
+) {
+    suspend fun loginWithParisSaclay(email: String, password: String, hash: String): Result<Unit> = withContext(Dispatchers.IO) {
         i("Logging in with Paris-Saclay...")
         try {
-            val response = authenticationApi.login(email, password, hash)
+            val response = authenticationRetrofitApi.login(email, password, hash)
             if (response.isSuccessful) {
                 Result.success(Unit)
             } else {

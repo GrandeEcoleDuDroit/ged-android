@@ -253,7 +253,7 @@ private fun EditAnnouncementModelBottomSheet(
 @Composable
 private fun DeleteAnnouncementDialog(onConfirm: () -> Unit, onCancel: () -> Unit) {
     SensibleActionDialog(
-        text = stringResource(id = R.string.delete_announcement_dialog_text),
+        message = stringResource(id = R.string.delete_announcement_dialog_text),
         onDismiss = onCancel,
         confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
         onConfirm = onConfirm,

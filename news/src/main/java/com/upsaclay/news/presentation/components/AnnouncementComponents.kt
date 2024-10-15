@@ -71,7 +71,7 @@ internal fun AnnouncementItem(modifier: Modifier = Modifier, announcement: com.u
     ) {
         ProfilePicture(
             imageUrl = announcement.author.profilePictureUrl,
-            scaleImage = 0.45f
+            scale = 0.45f
         )
 
         Spacer(modifier = Modifier.width(MaterialTheme.spacing.smallMedium))
@@ -140,7 +140,7 @@ internal fun AnnouncementItemWithContent(announcement: com.upsaclay.news.domain.
     ) {
         ProfilePicture(
             imageUrl = announcement.author.profilePictureUrl,
-            scaleImage = 0.5f
+            scale = 0.5f
         )
 
         Spacer(modifier = Modifier.width(MaterialTheme.spacing.smallMedium))

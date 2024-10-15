@@ -45,8 +45,7 @@ class AccountViewModel(
 
         profilePictureUri?.let { uri ->
             viewModelScope.launch {
-                val (id, profilePictureUrl) = user.first()?.id to user.first()?.profilePictureUrl
-                updateUserProfilePictureUseCase(id!!, uri, profilePictureUrl)
+                updateUserProfilePictureUseCase(uri)
                     .onSuccess {
                         _accountScreenState.value =
                             AccountScreenState.PROFILE_PICTURE_UPDATED

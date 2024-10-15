@@ -101,7 +101,7 @@ fun AccountScreen(navController: NavController, accountViewModel: AccountViewMod
 
     if (showDeleteProfilePictureDialog) {
         SensibleActionDialog(
-            text = stringResource(id = R.string.delete_profile_picture_dialog_text),
+            message = stringResource(id = R.string.delete_profile_picture_dialog_text),
             confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
             onConfirm = {
                 showDeleteProfilePictureDialog = false
@@ -114,7 +114,7 @@ fun AccountScreen(navController: NavController, accountViewModel: AccountViewMod
 
     if (showCancelModificationDialog) {
         SensibleActionDialog(
-            text = stringResource(id = com.upsaclay.common.R.string.discard_modification_dialog_text),
+            message = stringResource(id = com.upsaclay.common.R.string.discard_modification_dialog_text),
             confirmText = stringResource(id = com.upsaclay.common.R.string.discard),
             onConfirm = {
                 accountViewModel.resetProfilePictureUri()
@@ -234,7 +234,7 @@ private fun ProfilePictureSection(isEdited: Boolean, profilePictureUri: Uri?, pr
         } else {
             ProfilePicture(
                 imageUri = uri,
-                scaleImage = scaleImage,
+                scale = scaleImage,
                 onClick = onClick
             )
         }

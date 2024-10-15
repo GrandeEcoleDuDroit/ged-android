@@ -27,7 +27,13 @@ import com.upsaclay.common.presentation.theme.spacing
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun RegistrationTopBar(navController: NavController, currentStep: Int, maxStep: Int, content: @Composable BoxScope.() -> Unit) {
+internal fun RegistrationTopBar(
+    navController: NavController,
+    currentStep: Int,
+    maxStep: Int,
+    withBackButton: Boolean = true,
+    content: @Composable BoxScope.() -> Unit
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -36,17 +42,19 @@ internal fun RegistrationTopBar(navController: NavController, currentStep: Int, 
                         text = stringResource(id = R.string.registration),
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Start
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            painter = painterResource(id = com.upsaclay.common.R.drawable.ic_partial_arrow_left),
-                            contentDescription = stringResource(
-                                id = com.upsaclay.common.R.string.arrow_back_icon_description
+                    if (withBackButton) {
+                        IconButton(onClick = { navController.popBackStack() }) {
+                            Icon(
+                                painter = painterResource(id = com.upsaclay.common.R.drawable.ic_partial_arrow_left),
+                                contentDescription = stringResource(
+                                    id = com.upsaclay.common.R.string.arrow_back_icon_description
+                                )
                             )
-                        )
+                        }
                     }
                 },
                 actions = {
@@ -54,7 +62,7 @@ internal fun RegistrationTopBar(navController: NavController, currentStep: Int, 
                         text = stringResource(id = R.string.step, currentStep, maxStep),
                         style = MaterialTheme.typography.bodyLarge,
                         color = Color.Gray,
-                        modifier = Modifier.padding(end = MaterialTheme.spacing.medium)
+                        modifier = Modifier.padding(end = MaterialTheme.spacing.smallMedium)
                     )
                 }
             )
@@ -88,6 +96,7 @@ internal fun RegistrationTopBarPreview() {
         RegistrationTopBar(
             navController = rememberNavController(),
             currentStep = 1,
+            withBackButton = true,
             maxStep = 3
         ) {}
     }

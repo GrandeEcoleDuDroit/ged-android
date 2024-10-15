@@ -5,7 +5,9 @@ import kotlinx.coroutines.flow.Flow
 interface AuthenticationRepository {
     val isAuthenticated: Flow<Boolean>
 
-    suspend fun login(email: String, password: String, hash: String): Result<Unit>
+    suspend fun loginWithParisSaclay(email: String, password: String, hash: String): Result<Unit>
+
+    suspend fun setAuthenticated(isAuthenticated: Boolean)
 
     suspend fun logout()
 }

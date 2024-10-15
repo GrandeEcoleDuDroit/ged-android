@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -17,7 +18,7 @@ import com.upsaclay.common.presentation.theme.GedoiseTheme
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun OverlayLoadingScreen() {
+fun OverlayCircularLoadingScreen() {
     val backgroundColor = if (isSystemInDarkTheme()) {
         GedoiseColor.DarkBackground
     } else {
@@ -37,16 +38,52 @@ fun OverlayLoadingScreen() {
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun OverlayLinearLoadingScreen() {
+    val backgroundColor = if (isSystemInDarkTheme()) {
+        GedoiseColor.DarkBackground
+    } else {
+        GedoiseColor.LittleTransparentWhite
+    }
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(backgroundColor)
+            .zIndex(1000f)
+            .pointerInteropFilter { true }
+    ) {
+        LinearProgressBar(
+            modifier = Modifier.align(Alignment.TopStart).fillMaxWidth(),
+        )
+    }
+}
+
+@Composable
+fun TopLinearLoadingScreen() {
+    Box(modifier = Modifier.fillMaxSize().zIndex(1000f)) {
+        LinearProgressBar(modifier = Modifier.fillMaxWidth().align(Alignment.TopStart))
+    }
+}
+
 /*
  =====================================================================
                                 Preview
  =====================================================================
  */
 
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(showBackground = true)
 @Composable
 private fun LoadingScreenPreview() {
     GedoiseTheme {
-        OverlayLoadingScreen()
+        OverlayCircularLoadingScreen()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun OverlayLinearLoadingScreenPreview() {
+    GedoiseTheme {
+        OverlayLinearLoadingScreen()
     }
 }

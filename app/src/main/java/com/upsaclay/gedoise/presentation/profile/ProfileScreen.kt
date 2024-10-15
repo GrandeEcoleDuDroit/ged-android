@@ -105,7 +105,7 @@ private fun TopSection(profilePictureUrl: String?, userFullName: String, userEma
         ) {
             ProfilePicture(
                 imageUrl = profilePictureUrl,
-                scaleImage = 0.7f
+                scale = 0.7f
             )
 
             Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))

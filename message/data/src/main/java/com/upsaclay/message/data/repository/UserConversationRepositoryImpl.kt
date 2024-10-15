@@ -55,7 +55,7 @@ internal class UserConversationRepositoryImpl(
         val currentUserId = currentUser.first().id
         val conversations = conversationsDTO.mapNotNull { conversationDTO ->
             val interlocutorId = conversationDTO.participants.first { it != currentUserId }
-            val interlocutor = userRepository.getUser(interlocutorId)
+            val interlocutor = userRepository.getUserWithFirestore(interlocutorId)
             val messages = internalMessageRepository.getMessages(conversationDTO.conversationId, 10).map(MessageMapper::toDomain)
             interlocutor?.let { ConversationMapper.toDomain(conversationDTO.conversationId, it, messages) }
         }
