@@ -18,7 +18,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.upsaclay.authentication.presentation.AuthenticationScreen
-import com.upsaclay.authentication.presentation.registration.CheckEmailVerifiedScreen
+import com.upsaclay.authentication.presentation.registration.EmailVerificationScreen
 import com.upsaclay.authentication.presentation.registration.FirstRegistrationScreen
 import com.upsaclay.authentication.presentation.registration.SecondRegistrationScreen
 import com.upsaclay.authentication.presentation.registration.RegistrationViewModel
@@ -94,7 +94,7 @@ fun Navigation(mainViewModel: MainViewModel = koinViewModel()) {
         }
 
         composable(Screen.CHECK_EMAIL_VERIFIED_SCREEN.route) {
-            CheckEmailVerifiedScreen(
+            EmailVerificationScreen(
                 navController = navController,
                 registrationViewModel = sharedRegistrationViewModel
             )

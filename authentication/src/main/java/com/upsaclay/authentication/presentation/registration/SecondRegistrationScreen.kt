@@ -47,9 +47,7 @@ fun SecondRegistrationScreen(
     val isLoading = registrationState == RegistrationState.LOADING
 
     RegistrationTopBar(
-        navController = navController,
-        currentStep = 2,
-        maxStep = MAX_REGISTRATION_STEP
+        navController = navController
     ) {
         Column(
             modifier = Modifier
@@ -126,9 +124,7 @@ private fun ThirdRegistrationScreenPreview() {
         }
 
         RegistrationTopBar(
-            navController = rememberNavController(),
-            currentStep = 2,
-            maxStep = MAX_REGISTRATION_STEP
+            navController = rememberNavController()
         ) {
             Column(
                 modifier = Modifier.fillMaxSize(),

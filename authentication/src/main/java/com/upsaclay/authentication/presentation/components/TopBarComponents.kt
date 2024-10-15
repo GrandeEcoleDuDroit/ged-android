@@ -29,8 +29,6 @@ import com.upsaclay.common.presentation.theme.spacing
 @Composable
 internal fun RegistrationTopBar(
     navController: NavController,
-    currentStep: Int,
-    maxStep: Int,
     withBackButton: Boolean = true,
     content: @Composable BoxScope.() -> Unit
 ) {
@@ -56,14 +54,6 @@ internal fun RegistrationTopBar(
                             )
                         }
                     }
-                },
-                actions = {
-                    Text(
-                        text = stringResource(id = R.string.step, currentStep, maxStep),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = Color.Gray,
-                        modifier = Modifier.padding(end = MaterialTheme.spacing.smallMedium)
-                    )
                 }
             )
         }
@@ -95,9 +85,7 @@ internal fun RegistrationTopBarPreview() {
     GedoiseTheme {
         RegistrationTopBar(
             navController = rememberNavController(),
-            currentStep = 1,
-            withBackButton = true,
-            maxStep = 3
+            withBackButton = true
         ) {}
     }
 }

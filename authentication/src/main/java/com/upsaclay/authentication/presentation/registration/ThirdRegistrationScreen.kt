@@ -93,9 +93,7 @@ fun ThirdRegistrationScreen(
     }
 
     RegistrationTopBar(
-        navController = navController,
-        currentStep = 3,
-        maxStep = MAX_REGISTRATION_STEP
+        navController = navController
     ) {
         Column(
             modifier = Modifier
@@ -185,9 +183,7 @@ private fun ThirdRegistrationScreenPreview() {
         }
 
         RegistrationTopBar(
-            navController = rememberNavController(),
-            currentStep = 3,
-            maxStep = MAX_REGISTRATION_STEP
+            navController = rememberNavController()
         ) {
             Column(
                 modifier = Modifier

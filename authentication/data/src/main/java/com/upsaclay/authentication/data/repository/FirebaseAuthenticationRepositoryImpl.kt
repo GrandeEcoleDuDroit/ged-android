@@ -3,6 +3,7 @@ package com.upsaclay.authentication.data.repository
 import android.security.keystore.UserNotAuthenticatedException
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuthException
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.upsaclay.authentication.data.remote.firebase.FirebaseAuthenticationRemoteDataSource
 import com.upsaclay.authentication.domain.model.exception.AuthenticationException
 import com.upsaclay.authentication.domain.model.exception.FirebaseAuthErrorCode

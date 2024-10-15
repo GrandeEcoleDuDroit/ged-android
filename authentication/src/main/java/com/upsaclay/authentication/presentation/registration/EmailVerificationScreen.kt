@@ -22,10 +22,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.upsaclay.authentication.R
 import com.upsaclay.authentication.domain.model.RegistrationState
-import com.upsaclay.authentication.presentation.components.RegistrationTopBar
 import com.upsaclay.common.domain.model.Screen
 import com.upsaclay.common.presentation.components.ErrorText
 import com.upsaclay.common.presentation.components.PrimaryButton
@@ -36,7 +34,7 @@ import com.upsaclay.common.utils.showToast
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun CheckEmailVerifiedScreen(
+fun EmailVerificationScreen(
     navController: NavController,
     registrationViewModel: RegistrationViewModel = koinViewModel()
 ) {
@@ -49,6 +47,11 @@ fun CheckEmailVerifiedScreen(
     errorMessage = when(registrationState) {
         RegistrationState.EMAIL_NOT_VERIFIED -> stringResource(id = R.string.email_not_verified)
         else -> ""
+    }
+
+    LaunchedEffect(Unit) {
+        registrationViewModel.resetRegistrationState()
+        registrationViewModel.sendVerificationEmail()
     }
 
     LaunchedEffect(registrationState) {
@@ -123,7 +126,7 @@ fun CheckEmailVerifiedScreen(
 
 @Preview(showBackground = true)
 @Composable
-private fun ThirdRegistrationScreenPreview() {
+private fun EmailVerificationScreenPreview() {
     var isLoading by remember { mutableStateOf(false) }
     val email = "patrick.dupont@email.com"
     val isError = false

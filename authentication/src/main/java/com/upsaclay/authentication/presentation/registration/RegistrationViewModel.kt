@@ -24,8 +24,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-internal const val MAX_REGISTRATION_STEP = 4
-
 class RegistrationViewModel(
     private val createNewUserUseCase: CreateNewUserUseCase,
     private val registerUseCase: RegisterUseCase,
@@ -179,9 +177,6 @@ class RegistrationViewModel(
                     createNewUserUseCase(user)
                         .onSuccess {
                             setUserAuthenticatedUseCase(true)
-                            sendVerificationEmailUseCase.sendVerificationEmail()
-                                .onSuccess { _registrationState.value = RegistrationState.OK }
-                                .onFailure { _registrationState.value = RegistrationState.ERROR }
                         }
                         .onFailure {
                             setUserAuthenticatedUseCase(false)
@@ -197,6 +192,16 @@ class RegistrationViewModel(
                     }
                     _registrationState.value = RegistrationState.ERROR
                 }
+        }
+    }
+
+    fun sendVerificationEmail() {
+        _registrationState.value = RegistrationState.LOADING
+
+        viewModelScope.launch {
+            sendVerificationEmailUseCase.sendVerificationEmail()
+                .onSuccess { _registrationState.value = RegistrationState.OK }
+                .onFailure { _registrationState.value = RegistrationState.ERROR }
         }
     }
 
