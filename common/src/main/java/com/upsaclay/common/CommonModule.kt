@@ -9,7 +9,9 @@ import com.upsaclay.common.domain.usecase.GetCurrentUserUseCase
 import com.upsaclay.common.domain.usecase.GetDrawableUriUseCase
 import com.upsaclay.common.domain.usecase.GetElapsedTimeUseCase
 import com.upsaclay.common.domain.usecase.GetUserUseCase
+import com.upsaclay.common.domain.usecase.IsUserExistUseCase
 import com.upsaclay.common.domain.usecase.LocalDateTimeFormatterUseCase
+import com.upsaclay.common.domain.usecase.SetCurrentUserUseCase
 import com.upsaclay.common.domain.usecase.UpdateUserProfilePictureUseCase
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
@@ -25,6 +27,8 @@ val commonModule = module {
     singleOf(::GetDrawableUriUseCase)
     singleOf(::GetElapsedTimeUseCase)
     singleOf(::GetUserUseCase)
+    singleOf(::IsUserExistUseCase)
     singleOf(::LocalDateTimeFormatterUseCase)
+    singleOf(::SetCurrentUserUseCase)
     singleOf(::UpdateUserProfilePictureUseCase)
 }

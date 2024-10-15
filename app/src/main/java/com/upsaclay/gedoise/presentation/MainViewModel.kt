@@ -7,9 +7,10 @@ import com.upsaclay.common.domain.usecase.GetCurrentUserFlowUseCase
 import com.upsaclay.gedoise.data.BottomNavigationItem
 import com.upsaclay.gedoise.data.BottomNavigationItemType
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 class MainViewModel(
-    isUserAuthenticatedUseCase: com.upsaclay.authentication.domain.usecase.IsUserAuthenticatedUseCase,
+    isUserAuthenticatedUseCase: IsUserAuthenticatedUseCase,
     getCurrentUserFlowUseCase: GetCurrentUserFlowUseCase
 ) : ViewModel() {
     val bottomNavigationItem: Map<BottomNavigationItemType, BottomNavigationItem> = mapOf(
@@ -19,5 +20,5 @@ class MainViewModel(
         BottomNavigationItemType.FORUM to BottomNavigationItem.Forum()
     )
     val isAuthenticated: Flow<Boolean> = isUserAuthenticatedUseCase()
-    val user: Flow<com.upsaclay.common.domain.model.User> = getCurrentUserFlowUseCase()
+    val user: Flow<User> = getCurrentUserFlowUseCase()
 }

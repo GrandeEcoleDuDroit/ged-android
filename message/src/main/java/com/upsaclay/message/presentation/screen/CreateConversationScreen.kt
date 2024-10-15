@@ -32,8 +32,8 @@ fun CreateConversationScreen(modifier: Modifier = Modifier, navController: NavCo
             UserItem(
                 user = user,
                 onClick = {
-                    navController.navigate(com.upsaclay.common.domain.model.Screen.CHAT.route + "?userId=${user.id}") {
-                        popUpTo(com.upsaclay.common.domain.model.Screen.CREATE_CONVERSATION.route) { inclusive = true }
+                    navController.navigate(Screen.CHAT.route + "?userId=${user.id}") {
+                        popUpTo(Screen.CREATE_CONVERSATION.route) { inclusive = true }
                         launchSingleTop = true
                     }
                 }
