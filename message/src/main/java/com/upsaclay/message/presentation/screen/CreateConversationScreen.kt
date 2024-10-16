@@ -21,22 +21,21 @@ import com.upsaclay.message.presentation.components.UserItem
 import com.upsaclay.message.presentation.viewmodel.ConversationViewModel
 
 @Composable
-fun CreateConversationScreen(modifier: Modifier = Modifier, navController: NavController, conversationViewModel: ConversationViewModel) {
+fun CreateConversationScreen(
+    modifier: Modifier = Modifier,
+    navController: NavController,
+    conversationViewModel: ConversationViewModel
+) {
     val users = conversationViewModel.users.collectAsState(emptyList()).value
-
-    LaunchedEffect(Unit) {
-        conversationViewModel.fetchAllUsers()
-    }
 
     LazyColumn(modifier = modifier) {
         items(users) { user ->
             UserItem(
                 user = user,
                 onClick = {
-                    val userJson = Gson().toJson(user)
-                    navController.navigate(Screen.CHAT.route + "?user=$userJson") {
+                    conversationViewModel.createNewConversation(user)
+                    navController.navigate(Screen.CHAT.route + "?interlocutorId=${user.id}") {
                         popUpTo(Screen.CREATE_CONVERSATION.route) { inclusive = true }
-                        launchSingleTop = true
                     }
                 }
             )

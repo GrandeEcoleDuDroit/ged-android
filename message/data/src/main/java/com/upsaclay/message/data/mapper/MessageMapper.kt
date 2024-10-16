@@ -5,6 +5,7 @@ import com.upsaclay.message.data.local.model.LocalMessage
 import com.upsaclay.message.data.model.MessageDTO
 import com.upsaclay.message.data.remote.model.RemoteMessage
 import com.upsaclay.message.domain.model.Message
+import com.upsaclay.message.domain.model.MessageType
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZoneOffset
@@ -26,7 +27,7 @@ internal object MessageMapper {
         text = messageDTO.text,
         date = messageDTO.date,
         isRead = messageDTO.isRead,
-        type = messageDTO.type
+        type = MessageType.valueOf(messageDTO.type.uppercase())
     )
 
     fun toLocal(conversationId: String, message: Message) = LocalMessage(
@@ -36,7 +37,8 @@ internal object MessageMapper {
         text = message.text,
         timestamp = message.date.toInstant(ZoneOffset.UTC).toEpochMilli(),
         isRead = message.isRead,
-        type = message.type
+        isSent = message.isSent,
+        type = message.type.name.lowercase()
     )
 
     fun toRemote(conversationId: String, message: Message) = RemoteMessage(
@@ -46,6 +48,6 @@ internal object MessageMapper {
         text = message.text,
         timestamp = Timestamp(message.date.toInstant(ZoneOffset.UTC)),
         isRead = message.isRead,
-        type = message.type
+        type = message.type.name.lowercase()
     )
 }

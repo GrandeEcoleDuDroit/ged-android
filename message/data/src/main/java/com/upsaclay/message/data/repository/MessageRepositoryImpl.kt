@@ -10,12 +10,14 @@ internal class MessageRepositoryImpl(
     private val messageLocalDataSource: MessageLocalDataSource,
     private val messageRemoteDataSource: MessageRemoteDataSource
 ): MessageRepository {
-    override suspend fun sendMessage(conversationId: String, message: Message): Result<String> {
+    override suspend fun sendMessage(conversationId: String, message: Message): Result<Unit> {
+        val localMessage = MessageMapper.toLocal(conversationId, message)
+        messageLocalDataSource.insertMessage(localMessage)
+
         val remoteMessage = MessageMapper.toRemote(conversationId, message)
         return messageRemoteDataSource.addMessage(conversationId, remoteMessage)
-            .onSuccess { messageId ->
-                val localMessage = MessageMapper.toLocal(conversationId, message.copy(id = messageId))
-                messageLocalDataSource.addMessage(localMessage)
+            .onSuccess {
+                messageLocalDataSource.updateMessage(localMessage.copy(isSent = true))
             }
     }
 }

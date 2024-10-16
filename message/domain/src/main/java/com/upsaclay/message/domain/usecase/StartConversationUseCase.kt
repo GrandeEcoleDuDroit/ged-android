@@ -10,7 +10,7 @@ class StartConversationUseCase(
     private val messageRepository: MessageRepository
 ) {
     suspend fun invoke(conversation: Conversation, message: Message) {
-        val conversationId = conversationRepository.createConversation(conversation)
-        messageRepository.sendMessage(conversationId, message)
+        conversationRepository.createConversation(conversation)
+        messageRepository.sendMessage(conversation.id, message)
     }
 }

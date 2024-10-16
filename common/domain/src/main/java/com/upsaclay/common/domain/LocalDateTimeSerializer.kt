@@ -1,4 +1,4 @@
-package com.upsaclay.common.domain.usecase
+package com.upsaclay.common.domain
 
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
@@ -10,7 +10,7 @@ import java.lang.reflect.Type
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class LocalDateTimeSerializer : JsonSerializer<LocalDateTime>, JsonDeserializer<LocalDateTime> {
+object LocalDateTimeSerializer: JsonSerializer<LocalDateTime>, JsonDeserializer<LocalDateTime> {
     private val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
 
     override fun serialize(
@@ -18,7 +18,7 @@ class LocalDateTimeSerializer : JsonSerializer<LocalDateTime>, JsonDeserializer<
         typeOfSrc: Type?,
         context: JsonSerializationContext?
     ): JsonElement {
-        return JsonPrimitive(formatter.format(src))
+        return JsonPrimitive(src?.let { formatter.format(it) })
     }
 
     override fun deserialize(
@@ -26,6 +26,7 @@ class LocalDateTimeSerializer : JsonSerializer<LocalDateTime>, JsonDeserializer<
         typeOfT: Type?,
         context: JsonDeserializationContext?
     ): LocalDateTime {
-        return LocalDateTime.parse(json?.asString, formatter)
+        json ?: throw IllegalArgumentException("JSON element is null")
+        return LocalDateTime.parse(json.asString, formatter)
     }
 }

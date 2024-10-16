@@ -11,6 +11,7 @@ import com.upsaclay.authentication.domain.usecase.IsAccountExistUseCase
 import com.upsaclay.authentication.domain.usecase.RegistrationUseCase
 import com.upsaclay.common.domain.model.User
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -22,7 +23,7 @@ class RegistrationViewModel(
     private val registrationUseCase: RegistrationUseCase
 ) : ViewModel() {
     private val _registrationState = MutableStateFlow(RegistrationState.NOT_REGISTERED)
-    val registrationState: StateFlow<RegistrationState> = _registrationState
+    val registrationState: Flow<RegistrationState> = _registrationState
     var email by mutableStateOf("")
         private set
     var password by mutableStateOf("")

@@ -4,6 +4,7 @@ import com.upsaclay.common.utils.userFixture
 import com.upsaclay.common.utils.userFixture2
 import com.upsaclay.message.domain.model.Conversation
 import com.upsaclay.message.domain.model.Message
+import com.upsaclay.message.domain.model.MessageType
 import java.time.LocalDateTime
 
 val messageFixture = Message(
@@ -12,7 +13,7 @@ val messageFixture = Message(
     text = "Salut, bien et toi ? Oui bien sûr.",
     date = LocalDateTime.of(2024, 7, 20, 10, 0),
     isRead = true,
-    type = "text"
+    type = MessageType.TEXT
 )
 
 val messageFixture2 = Message(
@@ -21,7 +22,7 @@ val messageFixture2 = Message(
     text = "Salut ça va ? Cela fait longtemps que j'attend de te parler. Pourrait-on se voir ?",
     date = LocalDateTime.now(),
     isRead = false,
-    type = "text"
+    type = MessageType.TEXT
 )
 
 val messagesFixture = listOf(

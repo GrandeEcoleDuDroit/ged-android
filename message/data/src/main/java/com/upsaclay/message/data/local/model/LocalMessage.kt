@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.upsaclay.message.data.model.MESSAGES_TABLE_NAME
-import com.upsaclay.message.data.remote.MessageField
+import com.upsaclay.message.data.model.MessageField
 
 @Entity(tableName = MESSAGES_TABLE_NAME)
 data class LocalMessage(
@@ -21,6 +21,8 @@ data class LocalMessage(
     val timestamp: Long,
     @ColumnInfo(name = MessageField.IS_READ)
     val isRead: Boolean,
+    @ColumnInfo(name = MessageField.Local.IS_SENT)
+    val isSent: Boolean,
     @ColumnInfo(name = MessageField.TYPE)
     val type: String
 )

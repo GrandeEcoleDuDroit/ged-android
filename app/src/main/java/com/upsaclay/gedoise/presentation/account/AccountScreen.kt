@@ -1,4 +1,4 @@
-package com.upsaclay.gedoise.presentation.profile.account
+package com.upsaclay.gedoise.presentation.account
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult

@@ -16,18 +16,23 @@ internal object ConversationMapper {
         val type = object : TypeToken<List<Int>>() {}.type
         return ConversationDTO(
             conversationId = localConversation.conversationId,
-            participants = gson.fromJson(localConversation.participants, type)
+            participants = gson.fromJson(localConversation.usersIdsJson, type)
         )
     }
 
+    fun toDTO(conversation: Conversation, participants: List<Int>) = ConversationDTO(
+        conversationId = conversation.id,
+        participants = participants
+    )
+
     fun toLocal(conversationDTO: ConversationDTO) = LocalConversation(
         conversationId = conversationDTO.conversationId,
-        participants = gson.toJson(conversationDTO.participants)
+        usersIdsJson = gson.toJson(conversationDTO.participants)
     )
 
     fun toLocal(remoteConversation: RemoteConversation) = LocalConversation(
         conversationId = remoteConversation.conversationId,
-        participants = gson.toJson(remoteConversation.participants)
+        usersIdsJson = gson.toJson(remoteConversation.participants)
     )
 
     fun toRemote(conversationDTO: ConversationDTO) = RemoteConversation(

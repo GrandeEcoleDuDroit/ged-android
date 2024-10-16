@@ -1,7 +1,6 @@
 package com.upsaclay.message.presentation.screen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,6 +20,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,16 +33,17 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.upsaclay.common.domain.model.User
+import com.upsaclay.common.presentation.components.OverlayLoadingScreen
 import com.upsaclay.common.presentation.components.TransparentFocusedTextField
 import com.upsaclay.common.presentation.theme.GedoiseColor
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.userFixture
 import com.upsaclay.message.R
-import com.upsaclay.message.domain.model.ChatState
 import com.upsaclay.message.domain.model.Message
 import com.upsaclay.message.presentation.components.ChatTopBar
 import com.upsaclay.message.presentation.components.ReceiveMessageItem
@@ -54,25 +55,23 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ChatScreen(
+    interlocutorId: Int,
     navController: NavController,
     chatViewModel: ChatViewModel = koinViewModel()
 ) {
-    val conversation = chatViewModel.conversation.collectAsState().value
-    val interlocutor = conversation?.interlocutor ?: chatViewModel.interlocutor.collectAsState().value
-    val currentUser = chatViewModel.currentUser
-    val text = chatViewModel.text
-    val chatState = chatViewModel.chatState.collectAsState().value
+    val conversation = chatViewModel.conversation.collectAsState(null).value
+    val currentUser = chatViewModel.currentUser.collectAsState(null).value
 
-    if(chatState == ChatState.LOADING) {
-        Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background))
+    LaunchedEffect(Unit) {
+        chatViewModel.getConversation(interlocutorId)
     }
 
-    if (interlocutor != null && currentUser != null) {
+    if (conversation != null && currentUser != null) {
         Scaffold(
             topBar = {
                 ChatTopBar(
                     navController = navController,
-                    interlocutor = interlocutor
+                    interlocutor = conversation.interlocutor
                 )
             }
         ) { innerPadding ->
@@ -84,61 +83,31 @@ fun ChatScreen(
                     bottom = MaterialTheme.spacing.small
                 )
             ) {
-                MessageSection(
+                DisplayMessageSection(
                     modifier = Modifier.weight(1f),
-                    messages = conversation?.messages ?: emptyList(),
-                    currentUser = currentUser
+                    messages = conversation.messages,
+                    currentUser = currentUser,
+                    interlocutor = conversation.interlocutor
                 )
 
-                Row(
-                    modifier = Modifier.padding(top = MaterialTheme.spacing.small),
-                    verticalAlignment = Alignment.Bottom
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .clip(ShapeDefaults.ExtraLarge)
-                            .background(GedoiseColor.LightGray)
-                            .weight(1f)
-                            .padding(horizontal = MaterialTheme.spacing.medium)
-                    ) {
-                        TransparentFocusedTextField(
-                            modifier = Modifier.padding(vertical = MaterialTheme.spacing.smallMedium),
-                            defaultValue = text,
-                            onValueChange = { chatViewModel.updateText(it) },
-                            placeholder = { Text(text = stringResource(id = R.string.message_placeholder)) },
-                            backgroundColor = GedoiseColor.LightGray,
-                            displayKeyboard = false
-                        )
-                    }
-
-                    if(text.isNotBlank()) {
-                        IconButton(
-                            onClick = { chatViewModel.sendMessage() },
-                            colors = IconButtonColors(
-                                containerColor = MaterialTheme.colorScheme.primary,
-                                contentColor = Color.White,
-                                disabledContainerColor = IconButtonDefaults.iconButtonColors().disabledContainerColor,
-                                disabledContentColor = IconButtonDefaults.iconButtonColors().disabledContentColor
-                            )
-                        ) {
-                            Icon(
-                                modifier = Modifier.scale(0.8f),
-                                imageVector = Icons.AutoMirrored.Filled.Send,
-                                contentDescription = stringResource(id = R.string.send_message_icon_description)
-                            )
-                        }
-                    }
-                }
+                MessageInputSection(
+                    text = chatViewModel.messageToSend,
+                    onTextChange = { chatViewModel.updateMessageToSend(it) },
+                    onSendClick = { chatViewModel.sendMessage() }
+                )
             }
         }
+    } else {
+        OverlayLoadingScreen(scale = 1f)
     }
 }
 
 @Composable
-private fun MessageSection(
+private fun DisplayMessageSection(
     modifier: Modifier = Modifier,
     messages: List<Message>,
-    currentUser: User
+    currentUser: User,
+    interlocutor: User
 ) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
@@ -146,25 +115,82 @@ private fun MessageSection(
     ) {
         if(messages.isNotEmpty()) {
             itemsIndexed(messages) { index, message ->
-                val sameSender = index > 0 && message.sender == messages[index - 1].sender
-                val spacing =
-                    if (sameSender) MaterialTheme.spacing.extraSmall else MaterialTheme.spacing.smallMedium
-                val isCurrentUserSender = message.sender.id == currentUser.id
+                val sameSender = index > 0 && message.senderId == messages[index - 1].senderId
 
-                Spacer(modifier = Modifier.height(spacing))
+                val spacerHeight: Dp = if (sameSender) {
+                    MaterialTheme.spacing.extraSmall
+                } else {
+                    MaterialTheme.spacing.smallMedium
+                }
+
+                val isCurrentUserSender = message.senderId == currentUser.id
+
+                Spacer(modifier = Modifier.height(spacerHeight))
 
                 if (isCurrentUserSender) {
                     SentMessageItem(text = message.text)
                 } else {
-                    val displayProfilePicture = index == 0 || !sameSender
-                    val paddingModifier =
-                        if (displayProfilePicture) Modifier else Modifier.padding(start = MaterialTheme.spacing.extraLarge)
+                    val displayProfilePicture: Boolean = index == 0 || !sameSender
+
+                    val receiveMessageItemModifier = if (displayProfilePicture) {
+                        Modifier
+                    } else {
+                        Modifier.padding(start = MaterialTheme.spacing.extraLarge)
+                    }
+
                     ReceiveMessageItem(
-                        modifier = paddingModifier,
+                        modifier = receiveMessageItemModifier,
                         message = message,
-                        displayProfilePicture = displayProfilePicture
+                        displayProfilePicture = displayProfilePicture,
+                        profilePictureUrl = interlocutor.profilePictureUrl
                     )
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun MessageInputSection(
+    text: String,
+    onTextChange: (String) -> Unit,
+    onSendClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier.padding(top = MaterialTheme.spacing.small),
+        verticalAlignment = Alignment.Bottom
+    ) {
+        Row(
+            modifier = Modifier
+                .clip(ShapeDefaults.ExtraLarge)
+                .background(GedoiseColor.LightGray)
+                .weight(1f)
+                .padding(horizontal = MaterialTheme.spacing.medium)
+        ) {
+            TransparentFocusedTextField(
+                modifier = Modifier.padding(vertical = MaterialTheme.spacing.smallMedium),
+                onValueChange = onTextChange,
+                placeholder = { Text(text = stringResource(id = R.string.message_placeholder)) },
+                backgroundColor = GedoiseColor.LightGray,
+                displayKeyboard = false
+            )
+        }
+
+        if(text.isNotBlank()) {
+            IconButton(
+                onClick = onSendClick,
+                colors = IconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = Color.White,
+                    disabledContainerColor = IconButtonDefaults.iconButtonColors().disabledContainerColor,
+                    disabledContentColor = IconButtonDefaults.iconButtonColors().disabledContentColor
+                )
+            ) {
+                Icon(
+                    modifier = Modifier.scale(0.8f),
+                    imageVector = Icons.AutoMirrored.Filled.Send,
+                    contentDescription = stringResource(id = R.string.send_message_icon_description)
+                )
             }
         }
     }
@@ -199,10 +225,11 @@ private fun ChatScreenPreview() {
                         bottom = MaterialTheme.spacing.small
                     )
                 ) {
-                    MessageSection(
+                    DisplayMessageSection(
                         modifier = Modifier.weight(1f),
                         messages = messagesFixture,
-                        currentUser = userFixture
+                        currentUser = userFixture,
+                        interlocutor = conversationFixture.interlocutor
                     )
 
                     Row(

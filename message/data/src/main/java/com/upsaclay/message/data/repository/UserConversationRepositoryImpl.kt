@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 internal class UserConversationRepositoryImpl(
     private val internalConversationRepository: InternalConversationRepository,
     private val internalMessageRepository: InternalMessageRepository,
-    private val userRepository: UserRepository
+    userRepository: UserRepository
 ) : ConversationRepository {
     private val _conversations = MutableStateFlow<List<Conversation>>(emptyList())
     override val conversations: Flow<List<Conversation>> = _conversations
@@ -28,21 +28,19 @@ internal class UserConversationRepositoryImpl(
     init {
         CoroutineScope(Dispatchers.IO).launch {
             currentUser.collect {
-                internalConversationRepository.listenAllConversations(it.id)
+                internalConversationRepository.listenRemoteConversations(it.id)
             }
         }
 
         CoroutineScope(Dispatchers.IO).launch {
             internalConversationRepository.conversationsDTO.collect { conversationsDTO ->
-                updateConversation(conversationsDTO)
-
                 val newsConversationsDTO = conversationsDTO - previousConversations.toSet()
 
                 newsConversationsDTO.forEach { conversationDTO ->
                     launch {
                         internalMessageRepository.listenLastMessages(conversationDTO.conversationId).collect { messagesDTO ->
                             val messages = messagesDTO.map(MessageMapper::toDomain)
-                            addNewConversationMessages(conversationDTO.conversationId, messages)
+                            updateConversationsMessages(conversationDTO.conversationId, messages)
                         }
                     }
                 }
@@ -52,22 +50,12 @@ internal class UserConversationRepositoryImpl(
         }
     }
 
-    override suspend fun createConversation(conversation: Conversation): String {
-        TODO("Not yet implemented")
+    override suspend fun createConversation(conversation: Conversation) {
+        val participantsIds = listOf(currentUser.first().id, conversation.interlocutor.id)
+        internalConversationRepository.createConversation(ConversationMapper.toDTO(conversation, participantsIds))
     }
 
-    private suspend fun updateConversation(conversationsDTO: List<ConversationDTO>) {
-        val currentUserId = currentUser.first().id
-        val conversations = conversationsDTO.mapNotNull { conversationDTO ->
-            val interlocutorId = conversationDTO.participants.first { it != currentUserId }
-            val interlocutor = userRepository.getUser(interlocutorId)
-            val messages = internalMessageRepository.getMessages(conversationDTO.conversationId, 10).map(MessageMapper::toDomain)
-            interlocutor?.let { ConversationMapper.toDomain(conversationDTO.conversationId, it, messages) }
-        }
-        _conversations.value = conversations
-    }
-
-    private fun addNewConversationMessages(conversationId: String, messages: List<Message>) {
+    private fun updateConversationsMessages(conversationId: String, messages: List<Message>) {
         _conversations.value = _conversations.value.map { conversation ->
             if (conversation.id == conversationId) {
                 val updatedMessages = messages.filterNot { conversation.messages.contains(it) } + conversation.messages

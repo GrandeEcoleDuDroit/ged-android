@@ -39,7 +39,7 @@ fun SecondRegistrationScreen(
     registrationViewModel: RegistrationViewModel = koinViewModel()
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
-    val registrationState by registrationViewModel.registrationState.collectAsState()
+    val registrationState by registrationViewModel.registrationState.collectAsState(RegistrationState.NOT_REGISTERED)
     var errorMessage by remember { mutableStateOf("") }
     var isError by remember { mutableStateOf(false) }
     val email = registrationViewModel.email

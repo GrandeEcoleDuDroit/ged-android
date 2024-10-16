@@ -13,7 +13,6 @@ import com.upsaclay.news.domain.usecase.ConvertAnnouncementToJsonUseCase
 import com.upsaclay.news.domain.usecase.DeleteAnnouncementUseCase
 import com.upsaclay.news.domain.usecase.GetAllAnnouncementsUseCase
 import com.upsaclay.news.domain.usecase.GetAnnouncementUseCase
-import com.upsaclay.news.domain.usecase.GetOnlineUserUseCase
 import com.upsaclay.news.domain.usecase.RefreshAnnouncementsUseCase
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -27,11 +26,8 @@ class NewsViewModel(
     private val refreshAnnouncementsUseCase: RefreshAnnouncementsUseCase,
     private val deleteAnnouncementUseCase: DeleteAnnouncementUseCase,
     private val convertAnnouncementToJsonUseCase: ConvertAnnouncementToJsonUseCase,
-    private val getAnnouncementUseCase: GetAnnouncementUseCase,
-    private val getOnlineUserUseCase: GetOnlineUserUseCase
+    private val getAnnouncementUseCase: GetAnnouncementUseCase
 ) : ViewModel() {
-    private val _onlineUsers = MutableStateFlow(emptyList<User>())
-    val onlineUsers: StateFlow<List<User>> = _onlineUsers
     private val _announcementState = MutableStateFlow(AnnouncementState.DEFAULT)
     val announcementState: Flow<AnnouncementState> = _announcementState
     val announcements: Flow<List<Announcement>> = getAllAnnouncementUseCase()
@@ -78,12 +74,6 @@ class NewsViewModel(
                 .onFailure {
                     _announcementState.value = AnnouncementState.ANNOUNCEMENT_DELETE_ERROR
                 }
-        }
-    }
-
-    fun getOnlineUsers() {
-        viewModelScope.launch {
-            _onlineUsers.value = getOnlineUserUseCase()
         }
     }
 }

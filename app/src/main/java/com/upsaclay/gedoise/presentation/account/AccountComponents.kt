@@ -1,4 +1,4 @@
-package com.upsaclay.gedoise.presentation.profile.account
+package com.upsaclay.gedoise.presentation.account
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

@@ -6,7 +6,7 @@ import com.google.firebase.firestore.firestore
 import com.upsaclay.common.domain.e
 import com.upsaclay.common.domain.i
 import com.upsaclay.message.data.model.CONVERSATIONS_TABLE_NAME
-import com.upsaclay.message.data.remote.ConversationField
+import com.upsaclay.message.data.model.ConversationField
 import com.upsaclay.message.data.remote.model.RemoteConversation
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -51,17 +51,6 @@ internal class ConversationApiImpl : ConversationApi {
             .addOnFailureListener { e ->
                 e("Error creating conversations", e)
                 continuation.resumeWithException(e)
-            }
-    }
-
-    override fun updateConversation(remoteConversation: RemoteConversation) {
-        conversationsCollection.document(remoteConversation.conversationId)
-            .set(remoteConversation, SetOptions.merge())
-            .addOnSuccessListener {
-                i("Conversation updated successfully")
-            }
-            .addOnFailureListener { e ->
-                e("Error updating conversations", e)
             }
     }
 }

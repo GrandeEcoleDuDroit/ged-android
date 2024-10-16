@@ -7,6 +7,7 @@ import com.upsaclay.common.data.remote.api.UserFirebaseApi
 import com.upsaclay.common.data.remote.api.UserRetrofitApi
 import com.upsaclay.common.domain.e
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import java.io.IOException
 
@@ -41,22 +42,7 @@ internal class UserRemoteDataSource(
         }
     }
 
-    suspend fun getAllUsers(): List<RemoteUserFirebase> = try {
-        userFirebaseApi.getAllUsers()
-    } catch (e: Exception) {
-        e("Error getting all users: ${e.message}", e)
-        emptyList()
-    }
-
-    suspend fun getOnlineUsers(): List<RemoteUserFirebase> = try {
-        userFirebaseApi.getOnlineUsers()
-    } catch (e: IOException) {
-        e("Error getting all online users: ${e.message}", e)
-        emptyList()
-    } catch (e: FirebaseFirestoreException) {
-        e("Error getting all online users: ${e.message}", e)
-        emptyList()
-    }
+    suspend fun getAllUsers(): Flow<List<RemoteUserFirebase>> = userFirebaseApi.getAllUsers()
 
     suspend fun createUser(userDTO: UserDTO): Int? = withContext(Dispatchers.IO) {
         try {

@@ -37,7 +37,7 @@ import com.upsaclay.gedoise.data.BottomNavigationItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainTopBar(navController: NavController, user: com.upsaclay.common.domain.model.User) {
+fun MainTopBar(navController: NavController, user: User) {
     TopAppBar(
         title = {
             Text(
@@ -51,8 +51,8 @@ fun MainTopBar(navController: NavController, user: com.upsaclay.common.domain.mo
         navigationIcon = {
             IconButton(
                 onClick = {
-                    if (navController.currentDestination?.route != com.upsaclay.common.domain.model.Screen.NEWS.route) {
-                        navController.navigate(com.upsaclay.common.domain.model.Screen.NEWS.route)
+                    navController.navigate(Screen.NEWS.route) {
+                        launchSingleTop = true
                     }
                 }
             ) {
@@ -65,7 +65,7 @@ fun MainTopBar(navController: NavController, user: com.upsaclay.common.domain.mo
         },
         actions = {
             IconButton(
-                onClick = { navController.navigate(com.upsaclay.common.domain.model.Screen.PROFILE.route) },
+                onClick = { navController.navigate(Screen.PROFILE.route) },
                 modifier = Modifier.clip(shape = CircleShape)
             ) {
                 ProfilePicture(imageUrl = user.profilePictureUrl)
@@ -75,7 +75,10 @@ fun MainTopBar(navController: NavController, user: com.upsaclay.common.domain.mo
 }
 
 @Composable
-fun MainBottomBar(navController: NavController, bottomNavigationItems: List<BottomNavigationItem>) {
+fun MainBottomBar(
+    navController: NavController,
+    bottomNavigationItems: List<BottomNavigationItem>
+) {
     val currentRoute = remember {
         navController.currentDestination?.route
     }
@@ -85,8 +88,8 @@ fun MainBottomBar(navController: NavController, bottomNavigationItems: List<Bott
             NavigationBarItem(
                 selected = navigationItem.screen.route == currentRoute,
                 onClick = {
-                    if (navigationItem.screen.route != currentRoute) {
-                        navController.navigate(navigationItem.screen.route)
+                    navController.navigate(navigationItem.screen.route) {
+                        launchSingleTop = true
                     }
                 },
                 icon = {

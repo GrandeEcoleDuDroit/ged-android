@@ -2,6 +2,10 @@ package com.upsaclay.common.data.remote.api
 
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
+import com.upsaclay.common.domain.e
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -21,36 +25,23 @@ internal class UserFirebaseApiImpl : UserFirebaseApi {
                 }
         }
 
-    override suspend fun getAllUsers(): List<RemoteUserFirebase> =
-        suspendCoroutine { continuation ->
-            users.get()
-                .addOnSuccessListener { querySnapshot ->
-                    val allUsers = querySnapshot.documents.mapNotNull {
-                        it.toObject(
-                            RemoteUserFirebase::class.java
-                        )
-                    }
-                    continuation.resume(allUsers)
+    override suspend fun getAllUsers(): Flow<List<RemoteUserFirebase>> = callbackFlow {
+            val listener = users.addSnapshotListener { value, error ->
+                error?.let {
+                    e("Error getting all users", it)
+                    trySend(emptyList())
                 }
-                .addOnFailureListener { e ->
-                    continuation.resumeWithException(e)
-                }
-        }
 
-    override suspend fun getOnlineUsers(): List<RemoteUserFirebase> =
-        suspendCoroutine { continuation ->
-            users.whereEqualTo("is_online", true).get()
-                .addOnSuccessListener { querySnapshot ->
-                    val allOnlineUsers = querySnapshot.documents.mapNotNull {
-                        it.toObject(
-                            RemoteUserFirebase::class.java
-                        )
-                    }
-                    continuation.resume(allOnlineUsers)
-                }
-                .addOnFailureListener { e ->
-                    continuation.resumeWithException(e)
-                }
+                val allUsers = value?.documents?.mapNotNull {
+                    it.toObject(
+                        RemoteUserFirebase::class.java
+                    )
+                } ?: emptyList()
+
+                trySend(allUsers)
+            }
+
+            awaitClose { listener.remove() }
         }
 
     override suspend fun createUser(remoteUserFirebase: RemoteUserFirebase): Result<Unit> =

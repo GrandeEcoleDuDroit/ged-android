@@ -88,7 +88,7 @@ fun TransparentTextField(
 @Composable
 fun TransparentFocusedTextField(
     modifier: Modifier = Modifier,
-    defaultValue: String,
+    defaultValue: String = "",
     onValueChange: (String) -> Unit,
     placeholder: @Composable (() -> Unit),
     textStyle: TextStyle = TextStyle.Default,
@@ -177,7 +177,20 @@ private fun TransparentTextFieldPreview() {
             placeholder = { Text("Placeholder") },
             backgroundColor = MaterialTheme.colorScheme.background,
             padding = MaterialTheme.spacing.medium,
-            shape = ShapeDefaults.ExtraLarge
+            shape = ShapeDefaults.ExtraLarge,
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun TransparentFocusedTextFiedl() {
+    var text by remember { mutableStateOf("") }
+    GedoiseTheme {
+        TransparentFocusedTextField(
+            defaultValue = "",
+            onValueChange = { text = it },
+            placeholder = { Text(text = "Placeholder") }
         )
     }
 }

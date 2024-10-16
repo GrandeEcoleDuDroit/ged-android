@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -17,22 +18,17 @@ import com.upsaclay.common.presentation.theme.GedoiseTheme
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun OverlayLoadingScreen() {
-    val backgroundColor = if (isSystemInDarkTheme()) {
-        GedoiseColor.DarkBackground
-    } else {
-        GedoiseColor.LittleTransparentWhite
-    }
+fun OverlayLoadingScreen(scale: Float = 2.5f) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(backgroundColor)
+            .background(MaterialTheme.colorScheme.background)
             .zIndex(1000f)
             .pointerInteropFilter { true }
     ) {
         CircularProgressBar(
             modifier = Modifier.align(Alignment.Center),
-            scale = 2.5f
+            scale = scale
         )
     }
 }

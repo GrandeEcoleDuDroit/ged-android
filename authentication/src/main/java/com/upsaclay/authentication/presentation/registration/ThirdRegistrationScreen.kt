@@ -50,7 +50,7 @@ fun ThirdRegistrationScreen(
             registrationViewModel.updateProfilePictureUri(uri)
         }
     )
-    val registrationState by registrationViewModel.registrationState.collectAsState()
+    val registrationState by registrationViewModel.registrationState.collectAsState(RegistrationState.NOT_REGISTERED)
 
     if (registrationState == RegistrationState.REGISTERED) {
         navController.navigate(Screen.NEWS.route) {

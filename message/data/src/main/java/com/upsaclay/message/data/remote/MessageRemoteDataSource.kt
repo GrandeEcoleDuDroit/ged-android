@@ -9,7 +9,7 @@ internal class MessageRemoteDataSource(private val messageApi: MessageApi) {
 
     suspend fun getMessages(conversationId: String, limit: Long): List<RemoteMessage> = messageApi.getMessages(conversationId, limit)
 
-    suspend fun addMessage(conversationId: String, remoteMessage: RemoteMessage): Result<String> {
+    suspend fun addMessage(conversationId: String, remoteMessage: RemoteMessage): Result<Unit> {
         return messageApi.addMessage(conversationId, remoteMessage)
     }
 }

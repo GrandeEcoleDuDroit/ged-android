@@ -1,9 +1,7 @@
 package com.upsaclay.message.presentation.screen
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.Ease
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.slideIn
@@ -61,7 +59,10 @@ import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun ConversationScreen(navController: NavController, conversationViewModel: ConversationViewModel = koinViewModel()) {
+fun ConversationScreen(
+    navController: NavController,
+    conversationViewModel: ConversationViewModel = koinViewModel()
+) {
     val conversations = conversationViewModel.conversations.collectAsState(emptyList()).value
     var expanded by remember { mutableStateOf(false) }
 
@@ -95,7 +96,9 @@ fun ConversationScreen(navController: NavController, conversationViewModel: Conv
                 TextButton(
                     contentPadding = PaddingValues(MaterialTheme.spacing.default),
                     modifier = Modifier.height(MaterialTheme.spacing.large),
-                    onClick = { navController.navigate(com.upsaclay.common.domain.model.Screen.CREATE_CONVERSATION.route) }
+                    onClick = {
+                        navController.navigate(Screen.CREATE_CONVERSATION.route)
+                    }
                 ) {
                     Text(
                         text = stringResource(id = R.string.new_conversation),
@@ -110,21 +113,21 @@ fun ConversationScreen(navController: NavController, conversationViewModel: Conv
                         modifier = Modifier.fillMaxWidth(),
                         conversation = conversation,
                         onClick = {
-//                            navController.navigate(Screen.CHAT.route + "?conversationId=${conversation.id}")
+                            navController.navigate(Screen.CHAT.route + "?interlocutorId=${conversation.interlocutor.id}")
                         },
                         onLongClick = { }
                     )
                 }
             }
-        }
 
-        FloatingActionButtonSection(
-            modifier = Modifier.align(Alignment.BottomEnd),
-            expanded = expanded,
-            onToggleClick = { expanded = !expanded },
-            onNewConversationClick = { navController.navigate(com.upsaclay.common.domain.model.Screen.CREATE_CONVERSATION.route) },
-            onNewGroupClick = { navController.navigate(com.upsaclay.common.domain.model.Screen.CREATE_GROUP_CONVERSATION.route) }
-        )
+            FloatingActionButtonSection(
+                modifier = Modifier.align(Alignment.BottomEnd),
+                expanded = expanded,
+                onToggleClick = { expanded = !expanded },
+                onNewConversationClick = { navController.navigate(Screen.CREATE_CONVERSATION.route) },
+                onNewGroupClick = { navController.navigate(Screen.CREATE_GROUP_CONVERSATION.route) }
+            )
+        }
     }
 }
 
@@ -158,7 +161,7 @@ private fun FloatingActionButtonSection(
                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.smallMedium)
             ) {
                 Text(
-                    text = stringResource(id = R.string.group),
+                    text = stringResource(id = R.string.new_group),
                     style = MaterialTheme.typography.labelMedium
                 )
 
@@ -181,7 +184,7 @@ private fun FloatingActionButtonSection(
                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.smallMedium)
             ) {
                 Text(
-                    text = stringResource(id = R.string.conversation),
+                    text = stringResource(id = R.string.new_conversation),
                     style = MaterialTheme.typography.labelMedium
                 )
 
@@ -204,7 +207,7 @@ private fun FloatingActionButtonSection(
                 Icon(
                     modifier = Modifier.rotate(rotation),
                     painter = painterResource(id = com.upsaclay.common.R.drawable.ic_add),
-                    contentDescription = ""
+                    contentDescription = stringResource(id = R.string.ic_fab_button_add_description)
                 )
             }
         }
@@ -222,13 +225,7 @@ private fun FloatingActionButtonSection(
 @Composable
 private fun ConversationsScreenPreview() {
     val conversations = conversationsFixture.sortedByDescending { it.messages.last().date }
-//    val conversations = emptyList<ConversationPreview>()
     var expanded by remember { mutableStateOf(false) }
-    val rotation by animateFloatAsState(
-        targetValue = if (expanded) 0f else -90f,
-        label = "rotateFab",
-        animationSpec = tween(durationMillis = 200, easing = Ease)
-    )
 
     GedoiseTheme {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

@@ -46,6 +46,7 @@ fun SentMessageItem(
 @Composable
 fun ReceiveMessageItem(
     modifier: Modifier = Modifier,
+    profilePictureUrl: String?,
     message: Message,
     displayProfilePicture: Boolean
 ) {
@@ -56,7 +57,7 @@ fun ReceiveMessageItem(
         verticalAlignment = Alignment.Bottom
     ) {
         if(displayProfilePicture) {
-            ProfilePicture(imageUrl = message.sender.profilePictureUrl, scaleImage = 0.3f)
+            ProfilePicture(imageUrl = profilePictureUrl, scaleImage = 0.3f)
         }
 
         Spacer(modifier = Modifier.width(MaterialTheme.spacing.small))
@@ -120,7 +121,8 @@ private fun ReceiveMessageItemPreview() {
     GedoiseTheme {
         ReceiveMessageItem(
             message = messageFixture.copy(text = mediumText),
-            displayProfilePicture = true
+            displayProfilePicture = true,
+            profilePictureUrl = ""
         )
     }
 }

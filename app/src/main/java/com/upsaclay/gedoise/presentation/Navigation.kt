@@ -7,8 +7,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
+import androidx.navigation.NavType.Companion.IntType
 import androidx.navigation.NavType.Companion.StringType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -22,9 +24,12 @@ import com.upsaclay.authentication.presentation.registration.ThirdRegistrationSc
 import com.upsaclay.common.domain.model.Screen
 import com.upsaclay.common.domain.model.User
 import com.upsaclay.common.presentation.components.SmallTopBarBack
+import com.upsaclay.common.utils.showToast
+import com.upsaclay.gedoise.R
 import com.upsaclay.gedoise.data.BottomNavigationItem
 import com.upsaclay.gedoise.presentation.profile.ProfileScreen
-import com.upsaclay.gedoise.presentation.profile.account.AccountScreen
+import com.upsaclay.gedoise.presentation.account.AccountScreen
+import com.upsaclay.message.presentation.screen.ChatScreen
 import com.upsaclay.message.presentation.screen.ConversationScreen
 import com.upsaclay.message.presentation.screen.CreateConversationScreen
 import com.upsaclay.message.presentation.screen.CreateGroupConversationScreen
@@ -56,7 +61,7 @@ fun Navigation(mainViewModel: MainViewModel = koinViewModel()) {
     val startDestination = if (isAuthenticated) {
         Screen.NEWS.route
     } else {
-        Screen.NEWS.route
+        Screen.AUTHENTICATION.route
     }
 
     NavHost(
@@ -193,27 +198,18 @@ fun Navigation(mainViewModel: MainViewModel = koinViewModel()) {
             }
         }
 
-//        composable(
-//            route = Screen.CHAT.route + "?conversationId={conversationId}",
-//            arguments = listOf(navArgument("conversationId") { type = StringType })
-//        ) { backStackEntry ->
-//            val conversationId = backStackEntry.arguments?.getString("conversationId")
-//            val chatViewModel: ChatViewModel = koinViewModel(
-//                parameters = { parametersOf(conversationId, null) }
-//            )
-//            ChatScreen(navController, chatViewModel)
-//        }
-//
-//        composable(
-//            route = Screen.CHAT.route + "?userId={userId}",
-//            arguments = listOf(navArgument("userId") { type = IntType })
-//        ) { backStackEntry ->
-//            val interlocutorId = backStackEntry.arguments?.getInt("userId")
-//            val chatViewModel: ChatViewModel = koinViewModel(
-//                parameters = { parametersOf(null, interlocutorId) }
-//            )
-//            ChatScreen(navController, chatViewModel)
-//        }
+        composable(
+            route = Screen.CHAT.route + "?interlocutorId={interlocutorId}",
+            arguments = listOf(navArgument("interlocutorId") { type = IntType })
+        ) { backStackEntry ->
+            val interlocutorId = backStackEntry.arguments?.getInt("interlocutorId")
+            interlocutorId?.let {
+                ChatScreen(interlocutorId = interlocutorId, navController = navController)
+            } ?: run {
+                navController.navigate(Screen.CONVERSATIONS.route)
+                showToast(context = LocalContext.current, stringRes = R.string.occurred_error)
+            }
+        }
 
         composable(Screen.CALENDAR.route) {
             user?.let {

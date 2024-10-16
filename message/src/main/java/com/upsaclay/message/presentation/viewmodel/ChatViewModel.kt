@@ -7,45 +7,49 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upsaclay.common.domain.model.User
 import com.upsaclay.common.domain.usecase.GetCurrentUserUseCase
-import com.upsaclay.common.domain.usecase.GetUserUseCase
-import com.upsaclay.message.domain.model.ChatState
 import com.upsaclay.message.domain.model.Conversation
 import com.upsaclay.message.domain.model.Message
+import com.upsaclay.message.domain.model.MessageType
 import com.upsaclay.message.domain.usecase.GetConversationUseCase
 import com.upsaclay.message.domain.usecase.SendMessageUseCase
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class ChatViewModel(
-    private val getConversationUseCase: GetConversationUseCase,
     getCurrentUserUseCase: GetCurrentUserUseCase,
-    private val getUserUseCase: GetUserUseCase,
+    private val getConversationUseCase: GetConversationUseCase,
     private val sendMessageUseCase: SendMessageUseCase
 ): ViewModel() {
-    private val _chatState = MutableStateFlow(ChatState.DEFAULT)
-    val chatState: StateFlow<ChatState> = _chatState
-
     private val _conversation = MutableStateFlow<Conversation?>(null)
-    val conversation: StateFlow<Conversation?> = _conversation
+    val conversation: Flow<Conversation?> = _conversation
 
-    val currentUser: User? = getCurrentUserUseCase().value
-    var text: String by mutableStateOf("")
+    val currentUser: Flow<User> = getCurrentUserUseCase().filterNotNull()
+    var messageToSend: String by mutableStateOf("")
         private set
 
-    fun updateText(text: String) {
-        this.text = text
+    fun updateMessageToSend(text: String) {
+        this.messageToSend = text
     }
 
-    fun sendMessage(conversationId: String?, message: Message) {
+    fun sendMessage() {
         viewModelScope.launch {
-            sendMessageUseCase(conversationId, message)
+            val message = Message(
+                senderId = currentUser.first().id,
+                text = messageToSend,
+                type = MessageType.TEXT
+            )
+
+            sendMessageUseCase(_conversation.value!!.id, message)
         }
     }
 
-    fun getConversation(conversationId: String) {
+    fun getConversation(interlocutorId: Int) {
         viewModelScope.launch {
-            getConversationUseCase(conversationId).collect {
+            getConversationUseCase(interlocutorId).collect {
                 _conversation.value = it
             }
         }

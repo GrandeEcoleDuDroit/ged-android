@@ -5,11 +5,9 @@ import com.upsaclay.message.data.remote.model.RemoteConversation
 import kotlinx.coroutines.flow.Flow
 
 internal class ConversationRemoteDataSource(private val conversationApi: ConversationApi) {
-    fun listenAllConversations(userId: Int): Flow<List<RemoteConversation>> = conversationApi.listenAllConversations(userId)
+    fun listenAllConversations(userId: Int): Flow<List<RemoteConversation>> =
+        conversationApi.listenAllConversations(userId)
 
-    fun updateConversation(remoteConversation: RemoteConversation) {
-        conversationApi.updateConversation(remoteConversation)
-    }
-
-    suspend fun createConversation(remoteConversation: RemoteConversation): String = conversationApi.createConversation(remoteConversation)
+    suspend fun createConversation(remoteConversation: RemoteConversation): String =
+        conversationApi.createConversation(remoteConversation)
 }

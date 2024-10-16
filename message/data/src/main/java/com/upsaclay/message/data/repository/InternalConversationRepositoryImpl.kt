@@ -8,6 +8,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 internal class InternalConversationRepositoryImpl(
@@ -15,31 +16,25 @@ internal class InternalConversationRepositoryImpl(
     private val conversationRemoteDataSource: ConversationRemoteDataSource
 ) : InternalConversationRepository {
     private val _conversationsDTO = MutableStateFlow<List<ConversationDTO>>(emptyList())
-    override val conversationsDTO: Flow<List<ConversationDTO>> = _conversationsDTO
+    override val conversationsDTO: StateFlow<List<ConversationDTO>> = _conversationsDTO
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
-            conversationLocalDataSource.getAllConversationsFlow().collect { localConversations ->
+            conversationLocalDataSource.getAllConversations().collect { localConversations ->
                 _conversationsDTO.value = localConversations.map { ConversationMapper.fromLocal(it) }
             }
         }
     }
 
-    override suspend fun listenAllConversations(userId: Int) {
+    override suspend fun listenRemoteConversations(userId: Int) {
         conversationRemoteDataSource.listenAllConversations(userId).collect { remoteConversations ->
             remoteConversations.forEach {
-                conversationLocalDataSource.upsertConversation(ConversationMapper.toLocal(it))
+                conversationLocalDataSource.insertConversation(ConversationMapper.toLocal(it))
             }
         }
     }
 
     override suspend fun createConversation(conversationDTO: ConversationDTO) {
-        conversationRemoteDataSource.createConversation(ConversationMapper.toRemote(conversationDTO))
-        conversationLocalDataSource.upsertConversation(ConversationMapper.toLocal(conversationDTO))
-    }
-
-    override suspend fun updateConversation(conversationDTO: ConversationDTO) {
-        conversationRemoteDataSource.updateConversation(ConversationMapper.toRemote(conversationDTO))
-        conversationLocalDataSource.upsertConversation(ConversationMapper.toLocal(conversationDTO))
+        conversationLocalDataSource.insertConversation(ConversationMapper.toLocal(conversationDTO))
     }
 }

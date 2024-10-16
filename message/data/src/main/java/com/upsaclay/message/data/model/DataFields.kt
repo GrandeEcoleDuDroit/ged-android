@@ -1,4 +1,4 @@
-package com.upsaclay.message.data.remote
+package com.upsaclay.message.data.model
 
 internal object ConversationField {
     const val CONVERSATION_ID = "conversation_id"
@@ -13,4 +13,8 @@ internal object MessageField {
     const val TIMESTAMP = "timestamp"
     const val IS_READ = "is_read"
     const val TYPE = "type"
+
+    object Local {
+        const val IS_SENT = "is_sent"
+    }
 }
