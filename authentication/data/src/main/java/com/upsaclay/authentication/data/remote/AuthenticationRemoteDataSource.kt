@@ -1,7 +1,5 @@
 package com.upsaclay.authentication.data.remote
 
-import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
-import com.upsaclay.authentication.data.remote.google.GoogleAuthenticationApi
 import com.upsaclay.common.data.formatHttpError
 import com.upsaclay.common.domain.e
 import com.upsaclay.common.domain.i

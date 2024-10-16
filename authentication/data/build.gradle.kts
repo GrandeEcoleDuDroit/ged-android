@@ -40,9 +40,6 @@ dependencies {
     implementation(libs.koin)
     implementation(libs.koin.core)
     implementation(libs.firebase.auth)
-    implementation(libs.androidx.credentials)
-    implementation(libs.androidx.credentials.playservices.auth)
-    implementation(libs.android.identity.googleid)
 
     testImplementation(libs.junit)
 
