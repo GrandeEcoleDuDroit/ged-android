@@ -59,19 +59,6 @@ class SendMessageUseCaseTest {
     }
 
     @Test
-    fun sendMessageUseCase_should_update_local_conversation_to_created_state_when_creation_succeeds() = runTest {
-        // Given
-        val conversation = conversationFixture.copy(state = ConversationState.DRAFT)
-
-        // When
-        useCase(conversation, messageFixture, userFixture.id)
-
-        // Then
-        coVerify {
-            conversationRepository.updateLocalConversation(conversation.copy(state = ConversationState.CREATED)) }
-    }
-
-    @Test
     fun sendMessageUseCase_should_update_local_conversation_state_to_error_state_when_creation_fails() = runTest {
         // Given
         val conversation = conversationFixture.copy(state = ConversationState.DRAFT)
@@ -85,27 +72,15 @@ class SendMessageUseCaseTest {
     }
 
     @Test
-    fun sendMessageUseCase_should_create_message_with_loading_state() = runTest {
+    fun sendMessageUseCase_should_create_local_message_with_sending_state() = runTest {
         // Given
-        val message = messageFixture.copy(state = MessageState.ERROR)
+        val message = messageFixture.copy(state = MessageState.DRAFT)
 
         // When
         useCase(conversationFixture, message, userFixture.id)
 
         // Then
-        coVerify { messageRepository.createRemoteMessage(message.copy(state = MessageState.SENDING)) }
-    }
-
-    @Test
-    fun sendMessageUseCase_should_update_local_message_to_created_state_when_creation_succeeds() = runTest {
-        // Given
-        val message = messageFixture.copy(state = MessageState.SENDING)
-
-        // When
-        useCase(conversationFixture, message, userFixture.id)
-
-        // Then
-        coVerify { messageRepository.updateLocalMessage(message.copy(state = MessageState.SENT)) }
+        coVerify { messageRepository.createLocalMessage(message.copy(state = MessageState.SENDING)) }
     }
 
     @Test
