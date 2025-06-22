@@ -13,7 +13,6 @@ import com.upsaclay.message.domain.entity.MessageState
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
 import com.upsaclay.message.domain.usecase.MessageNotificationUseCase
-import com.upsaclay.message.domain.usecase.ResendMessageUseCase
 import com.upsaclay.message.domain.usecase.SendMessageUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -33,7 +32,6 @@ class ChatViewModel(
     private val conversationRepository: ConversationRepository,
     private val messageRepository: MessageRepository,
     private val sendMessageUseCase: SendMessageUseCase,
-    private val resendMessageUseCase: ResendMessageUseCase,
     private val messageNotificationUseCase: MessageNotificationUseCase,
 ): ViewModel() {
     private val user: User? = userRepository.currentUser
@@ -51,7 +49,7 @@ class ChatViewModel(
     init {
         listenConversation()
         emitNewMessageReceived()
-        seeMessage()
+        seeMessages()
         seeNewMessage()
         clearChatNotifications()
     }
@@ -64,8 +62,8 @@ class ChatViewModel(
 
     fun sendMessage() {
         try {
-            val text = _uiState.value.text.takeUnless { it.isEmpty() } ?: return
-            val conversation = _uiState.value.conversation
+            val text = uiState.value.text.takeUnless { it.isEmpty() } ?: return
+            val conversation = uiState.value.conversation
             val user = requireNotNull(user)
             val message = Message(
                 id = GenerateIdUseCase.longId,
@@ -74,9 +72,13 @@ class ChatViewModel(
                 recipientId = conversation.interlocutor.id,
                 content = text,
                 date = LocalDateTime.now(ZoneOffset.UTC),
-                state = MessageState.SENDING
+                state = MessageState.DRAFT
             )
-            sendMessageUseCase(message, conversation, user.id)
+            sendMessageUseCase(
+                conversation = conversation,
+                message = message,
+                userId = user.id
+            )
             _uiState.update { it.copy(text = "") }
         } catch (_: IllegalArgumentException) {
             viewModelScope.launch {
@@ -86,10 +88,19 @@ class ChatViewModel(
     }
 
     fun resendErrorMessage(message: Message) {
-        viewModelScope.launch {
-            resendMessageUseCase(
-                message.copy(date = LocalDateTime.now(ZoneOffset.UTC))
-            )
+        try {
+            val user = requireNotNull(user)
+            viewModelScope.launch {
+                sendMessageUseCase(
+                    conversation = uiState.value.conversation,
+                    message = message.copy(date = LocalDateTime.now(ZoneOffset.UTC)),
+                    userId = user.id
+                )
+            }
+        } catch (_: IllegalArgumentException) {
+            viewModelScope.launch {
+                _event.emit(SingleUiEvent.Error(com.upsaclay.common.R.string.current_user_not_found))
+            }
         }
     }
 
@@ -99,7 +110,7 @@ class ChatViewModel(
         }
     }
 
-    fun seeMessage() {
+    private fun seeMessages() {
         viewModelScope.launch {
             user?.let {
                 messageRepository.updateSeenMessages(conversation.id, it.id)

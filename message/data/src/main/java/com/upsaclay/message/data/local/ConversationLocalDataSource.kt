@@ -12,11 +12,6 @@ import kotlinx.coroutines.withContext
 internal class ConversationLocalDataSource(
     private val conversationDao: ConversationDao
 ) {
-    fun getConversationsFlow(): Flow<List<Conversation>> =
-        conversationDao.getConversationsFlow().map { localConversations ->
-            localConversations.map { it.toConversation() }
-        }
-
     suspend fun getConversations(): List<Conversation> =
         conversationDao.getConversations().map { it.toConversation() }
 

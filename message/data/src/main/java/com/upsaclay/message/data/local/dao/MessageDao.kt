@@ -4,6 +4,7 @@ import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import androidx.room.Upsert
@@ -54,9 +55,6 @@ interface MessageDao {
         WHERE $STATE = 'SENDING'
     """)
     suspend fun getUnsentMessages(): List<LocalMessage>
-
-    @Insert
-    fun insertMessage(localMessage: LocalMessage)
 
     @Update
     suspend fun updateMessage(localMessage: LocalMessage)

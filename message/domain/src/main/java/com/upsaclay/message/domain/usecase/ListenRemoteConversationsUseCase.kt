@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 class ListenRemoteConversationsUseCase(
     private val userRepository: UserRepository,
     private val conversationRepository: ConversationRepository,
+    private val listenRemoteMessagesUseCase: ListenRemoteMessagesUseCase,
     private val scope: CoroutineScope
 ) {
     private var job: Job? = null
@@ -25,6 +26,7 @@ class ListenRemoteConversationsUseCase(
                         .catch { e("Failed to fetch conversations", it) }
                         .collect { conversation ->
                             conversationRepository.upsertLocalConversation(conversation)
+                            listenRemoteMessagesUseCase.start(conversation)
                         }
                 }
         }

@@ -1,6 +1,7 @@
 package com.upsaclay.message.data.remote.api
 
 import com.google.firebase.Firebase
+import com.google.firebase.firestore.MetadataChanges
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.firestore
 import com.upsaclay.message.data.model.CONVERSATIONS_TABLE_NAME
@@ -17,7 +18,7 @@ internal class ConversationApiImpl: ConversationApi {
     override fun listenConversations(userId: String): Flow<RemoteConversation> = callbackFlow {
         val listener = conversationsCollection
             .whereArrayContains(ConversationField.Remote.PARTICIPANTS, userId)
-            .addSnapshotListener { snapshot, error ->
+            .addSnapshotListener(MetadataChanges.INCLUDE) { snapshot, error ->
                 error?.let {
                     close(it)
                     return@addSnapshotListener

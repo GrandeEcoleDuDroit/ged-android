@@ -31,9 +31,8 @@ internal class MessageRepositoryImpl(
         offsetTime: LocalDateTime?
     ): Flow<Message> = messageRemoteDataSource.listenMessages(conversationId, interlocutorId, offsetTime)
 
-    override suspend fun createMessage(message: Message) {
-        messageLocalDataSource.insertMessage(message)
-        messageRemoteDataSource.createMessage(message)
+    override suspend fun createLocalMessage(message: Message) {
+        messageLocalDataSource.upsertMessage(message)
     }
 
     override suspend fun createRemoteMessage(message: Message) {

@@ -7,16 +7,19 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertFalse
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class ListenRemoteMessagesUseCaseTest {
     private val messageRepository: MessageRepository = mockk()
     private val conversationRepository: ConversationRepository = mockk()
@@ -27,7 +30,6 @@ class ListenRemoteMessagesUseCaseTest {
 
     @Before
     fun setUp() {
-        every { conversationRepository.getConversationsFlow() } returns flowOf(listOf(conversationFixture))
         coEvery { conversationRepository.upsertLocalConversation(any()) } returns Unit
         coEvery { conversationRepository.fetchRemoteConversations(any()) } returns flowOf(conversationFixture)
         coEvery { messageRepository.getLastMessage(any()) } returns messageFixture
@@ -35,32 +37,24 @@ class ListenRemoteMessagesUseCaseTest {
         coEvery { messageRepository.upsertLocalMessage(any()) } returns Unit
 
         useCase = ListenRemoteMessagesUseCase(
-            conversationRepository = conversationRepository,
             messageRepository = messageRepository,
             scope = testScope
         )
     }
 
     @Test
-    fun filteredConversationsFlow_should_not_return_already_fetched_conversation() = runTest {
+    fun listenRemoteMessages_should_not_listen_same_conversation_twice() = runTest {
         // Given
-        val conversations = listOf(
-            conversationFixture,
-            conversationFixture.copy(id = "another_new_conversation_id")
-        )
+        val conversations = listOf(conversationFixture)
         useCase.messageJobs = mutableMapOf(
             conversationFixture.id to ListenRemoteMessagesUseCase.MessageJob(conversations[0], Job())
         )
-        every { conversationRepository.getConversationsFlow() } returns flowOf(conversations)
 
         // When
-        val result = useCase.filteredConversationsFlow()
+        useCase.start(conversations[0])
 
         // Then
-        assert(
-            result.first().count() == 1 &&
-                    result.first().first() == conversations[1]
-        )
+        assert(useCase.messageJobs.count() == 1)
     }
 
     @Test
@@ -88,14 +82,15 @@ class ListenRemoteMessagesUseCaseTest {
     }
 
     @Test
-    fun stop_should_stop_listening() = runTest {
+    fun stop_should_stop_listening() = runTest(testScope.testScheduler) {
         // Given
-        useCase.start()
+        useCase.start(conversationFixture)
+        advanceUntilIdle()
 
         // When
         useCase.stop()
 
         // Then
-        assertFalse(useCase.job!!.isActive)
+        assert(useCase.messageJobs.isEmpty())
     }
 }
