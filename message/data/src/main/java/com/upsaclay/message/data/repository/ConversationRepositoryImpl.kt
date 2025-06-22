@@ -25,8 +25,6 @@ internal class ConversationRepositoryImpl(
 ) : ConversationRepository {
     private val interlocutors = mutableMapOf<String, User>()
 
-    override fun getConversationsFlow(): Flow<List<Conversation>> = conversationLocalDataSource.getConversationsFlow()
-
     override suspend fun getConversations(): List<Conversation> = conversationLocalDataSource.getConversations()
 
     override fun getConversationFlow(interlocutorId: String): Flow<Conversation> =
@@ -51,9 +49,8 @@ internal class ConversationRepositoryImpl(
             }
     }
 
-    override suspend fun createConversation(conversation: Conversation, userId: String) {
+    override suspend fun createLocalConversation(conversation: Conversation) {
         conversationLocalDataSource.upsertConversation(conversation)
-        conversationRemoteDataSource.createConversation(conversation, userId)
     }
 
     override suspend fun createRemoteConversation(conversation: Conversation, userId: String) {

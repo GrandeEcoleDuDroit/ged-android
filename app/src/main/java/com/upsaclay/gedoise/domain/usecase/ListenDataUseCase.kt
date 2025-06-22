@@ -10,7 +10,6 @@ class ListenDataUseCase(
 ) {
     fun start() {
         listenRemoteConversationsUseCase.start()
-        listenRemoteMessagesUseCase.start()
         listenRemoteUserUseCase.start()
     }
 

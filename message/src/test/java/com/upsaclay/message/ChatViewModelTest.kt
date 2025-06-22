@@ -9,7 +9,6 @@ import com.upsaclay.message.domain.messagesFixture
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
 import com.upsaclay.message.domain.usecase.MessageNotificationUseCase
-import com.upsaclay.message.domain.usecase.ResendMessageUseCase
 import com.upsaclay.message.domain.usecase.SendMessageUseCase
 import com.upsaclay.message.presentation.chat.ChatViewModel
 import io.mockk.coEvery
@@ -34,7 +33,6 @@ class ChatViewModelTest {
     private val conversationRepository: ConversationRepository = mockk()
     private val messageRepository: MessageRepository = mockk()
     private val sendMessageUseCase: SendMessageUseCase = mockk()
-    private val resendMessageUseCase: ResendMessageUseCase = mockk()
     private val messageNotificationUseCase: MessageNotificationUseCase = mockk()
 
     private lateinit var chatViewModel: ChatViewModel
@@ -50,7 +48,6 @@ class ChatViewModelTest {
         every { messageRepository.getPagingMessages(any()) } returns flowOf(PagingData.from(messagesFixture))
         every { messageRepository.getLastMessageFlow(any()) } returns flowOf(messageFixture)
         every { sendMessageUseCase(any(), any(), any()) } returns Unit
-        coEvery { resendMessageUseCase(any()) } returns Unit
         coEvery { messageRepository.updateSeenMessages(any(), any()) } returns Unit
         coEvery { messageNotificationUseCase.clearNotifications(any()) } returns Unit
         coEvery { messageNotificationUseCase.sendNotification(any()) } returns Unit
@@ -61,7 +58,6 @@ class ChatViewModelTest {
             conversationRepository = conversationRepository,
             messageRepository = messageRepository,
             sendMessageUseCase = sendMessageUseCase,
-            resendMessageUseCase = resendMessageUseCase,
             messageNotificationUseCase = messageNotificationUseCase,
         )
     }
