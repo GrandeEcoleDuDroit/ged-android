@@ -76,36 +76,3 @@ internal fun RemoteConversation.toMap(): Map<String, Any> {
     }
     return data
 }
-
-fun LocalConversationMessage.toConversationMessage() = ConversationMessage(
-    conversation = this.toConversation(),
-    lastMessage = this.toMessage()
-)
-
-private fun LocalConversationMessage.toConversation() = Conversation(
-    id = conversationId,
-    interlocutor = User(
-        id = interlocutorId,
-        firstName = interlocutorFirstName,
-        lastName = interlocutorLastName,
-        email = interlocutorEmail,
-        schoolLevel = interlocutorSchoolLevel,
-        isMember = interlocutorIsMember,
-        profilePictureUrl = UrlUtils.formatProfilePictureUrl(interlocutorProfilePictureFileName)
-    ),
-    createdAt = createdAt.toLocalDateTimeUTC(),
-    state = ConversationState.valueOf(conversationState),
-    deleteTime = conversationDeleteTime?.toLocalDateTimeUTC()
-)
-
-private fun LocalConversationMessage.toMessage() = Message(
-    id = messageId,
-    senderId = senderId,
-    recipientId = recipientId,
-    conversationId = conversationId,
-    content = content,
-    date = messageTimestamp.toLocalDateTimeUTC(),
-    seen = seen,
-    state = MessageState.valueOf(messageState)
-)
-

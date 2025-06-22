@@ -22,7 +22,7 @@ import com.upsaclay.message.R
 import com.upsaclay.message.domain.conversationsUIFixture
 import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.ConversationUi
-import com.upsaclay.message.domain.toConversation
+import com.upsaclay.message.domain.mapper.toConversation
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel

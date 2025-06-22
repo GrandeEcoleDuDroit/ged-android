@@ -1,4 +1,4 @@
-package com.upsaclay.message.domain
+package com.upsaclay.message.domain.converter
 
 import com.google.gson.GsonBuilder
 import com.upsaclay.common.domain.LocalDateTimeAdapter
@@ -6,7 +6,7 @@ import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.ConversationMessage
 import java.time.LocalDateTime
 
-object MessageJsonConverter {
+object ConversationJsonConverter {
     fun toConversation(conversationJson: String): Conversation? {
         return runCatching {
             GsonBuilder()
@@ -21,14 +21,5 @@ object MessageJsonConverter {
             .registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeAdapter)
             .create()
             .toJson(conversation)
-    }
-
-    fun toConversationMessage(conversationMessageJson: String): ConversationMessage? {
-        return runCatching {
-            GsonBuilder()
-                .registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeAdapter)
-                .create()
-                .fromJson(conversationMessageJson, ConversationMessage::class.java)
-        }.getOrNull()
     }
 }
