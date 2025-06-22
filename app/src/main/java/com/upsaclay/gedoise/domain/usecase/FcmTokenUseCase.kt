@@ -3,6 +3,7 @@ package com.upsaclay.gedoise.domain.usecase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.upsaclay.authentication.domain.repository.AuthenticationRepository
 import com.upsaclay.common.domain.ConnectivityObserver
+import com.upsaclay.common.domain.d
 import com.upsaclay.common.domain.entity.FcmToken
 import com.upsaclay.common.domain.repository.CredentialsRepository
 import com.upsaclay.common.domain.repository.UserRepository
@@ -37,6 +38,7 @@ class FcmTokenUseCase(
                        credentialsRepository.removeUnsentFcmToken()
                        FirebaseMessaging.getInstance().deleteToken()
                        val token = FirebaseMessaging.getInstance().token.await()
+                       d("New FCM token: $token")
                        credentialsRepository.storeUnsentFcmToken(FcmToken(null, token))
                    }
                }

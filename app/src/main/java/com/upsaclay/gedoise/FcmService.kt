@@ -7,8 +7,9 @@ import com.upsaclay.common.domain.entity.FcmDataType
 import com.upsaclay.common.domain.entity.FcmToken
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.gedoise.domain.usecase.FcmTokenUseCase
-import com.upsaclay.message.domain.MessageJsonConverter
-import com.upsaclay.message.presentation.MessageNotificationPresenter
+import com.upsaclay.message.domain.converter.ConversationJsonConverter
+import com.upsaclay.message.domain.converter.NotificationMessageJsonConverter
+import com.upsaclay.message.notification.NotificationMessageManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -19,7 +20,7 @@ import org.koin.android.ext.android.inject
 
 class FcmService: FirebaseMessagingService() {
     private var job: Job? = null
-    private val messageNotificationPresenter: MessageNotificationPresenter by inject<MessageNotificationPresenter>()
+    private val notificationMessageManager: NotificationMessageManager by inject<NotificationMessageManager>()
     private val fcmTokenUseCase: FcmTokenUseCase by inject<FcmTokenUseCase>()
     private val userRepository: UserRepository by inject<UserRepository>()
     private val scope = CoroutineScope(SupervisorJob())
@@ -52,8 +53,8 @@ class FcmService: FirebaseMessagingService() {
 
     private suspend fun showMessageNotification(extra: Bundle?) {
         extra?.getString("value")?.let { value ->
-            MessageJsonConverter.toConversationMessage(value)?.let  {
-                messageNotificationPresenter.showNotification(it)
+            NotificationMessageJsonConverter.toNotificationMessage(value)?.let  {
+                notificationMessageManager.showNotification(it)
             }
         }
     }
