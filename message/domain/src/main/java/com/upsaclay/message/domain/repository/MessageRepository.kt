@@ -16,7 +16,7 @@ interface MessageRepository {
 
     fun fetchRemoteMessages(conversationId: String, interlocutorId: String, offsetTime: LocalDateTime?): Flow<Message>
 
-    suspend fun createMessage(message: Message)
+    suspend fun createLocalMessage(message: Message)
 
     suspend fun createRemoteMessage(message: Message)
 

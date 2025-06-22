@@ -16,7 +16,9 @@ data class Conversation(
     val deleteTime: LocalDateTime? = null
 ) {
     val shouldBeCreated: Boolean
-        get() = state == ConversationState.DRAFT || state == ConversationState.ERROR
+        get() = state == ConversationState.DRAFT ||
+                state == ConversationState.ERROR ||
+                state == ConversationState.DELETING
 }
 
 enum class ConversationState {

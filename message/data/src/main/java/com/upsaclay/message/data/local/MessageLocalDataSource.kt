@@ -45,12 +45,6 @@ internal class MessageLocalDataSource(private val messageDao: MessageDao) {
         messageDao.getUnsentMessages().map { it.toMessage() }
     }
 
-    suspend fun insertMessage(message: Message) {
-        withContext(Dispatchers.IO) {
-            messageDao.insertMessage(message.toLocal())
-        }
-    }
-
     suspend fun updateMessage(message: Message) {
         withContext(Dispatchers.IO) {
             messageDao.updateMessage(message.toLocal())

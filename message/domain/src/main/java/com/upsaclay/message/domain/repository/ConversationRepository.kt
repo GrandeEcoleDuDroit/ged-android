@@ -5,8 +5,6 @@ import kotlinx.coroutines.flow.Flow
 import java.time.LocalDateTime
 
 interface ConversationRepository {
-    fun getConversationsFlow(): Flow<List<Conversation>>
-
     suspend fun getConversations(): List<Conversation>
 
     fun getConversationFlow(interlocutorId: String): Flow<Conversation>
@@ -15,7 +13,7 @@ interface ConversationRepository {
 
     suspend fun fetchRemoteConversations(userId: String): Flow<Conversation>
 
-    suspend fun createConversation(conversation: Conversation, userId: String)
+    suspend fun createLocalConversation(conversation: Conversation)
 
     suspend fun createRemoteConversation(conversation: Conversation, userId: String)
 

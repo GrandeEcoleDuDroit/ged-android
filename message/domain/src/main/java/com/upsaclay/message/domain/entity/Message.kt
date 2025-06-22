@@ -14,6 +14,7 @@ data class Message(
 )
 
 enum class MessageState {
+    DRAFT,
     SENDING,
     SENT,
     ERROR
