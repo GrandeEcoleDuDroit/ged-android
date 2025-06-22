@@ -20,7 +20,6 @@ class ListenDataUseCaseTest {
 
     @Before
     fun setUp() {
-        every { listenRemoteMessagesUseCase.start() } returns Unit
         every { listenRemoteMessagesUseCase.stop() } returns Unit
         every { listenRemoteConversationsUseCase.start() } returns Unit
         every { listenRemoteConversationsUseCase.stop() } returns Unit
@@ -41,7 +40,6 @@ class ListenDataUseCaseTest {
 
         // Then
         coVerify { listenRemoteConversationsUseCase.start() }
-        coVerify { listenRemoteMessagesUseCase.start() }
         coVerify { listenRemoteUserUseCase.start() }
     }
 
