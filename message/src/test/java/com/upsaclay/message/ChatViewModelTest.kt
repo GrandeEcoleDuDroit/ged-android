@@ -10,6 +10,7 @@ import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
 import com.upsaclay.message.domain.usecase.MessageNotificationUseCase
 import com.upsaclay.message.domain.usecase.SendMessageUseCase
+import com.upsaclay.message.notification.NotificationMessageManager
 import com.upsaclay.message.presentation.chat.ChatViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -23,8 +24,6 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.setMain
 import org.junit.Before
 import org.junit.Test
-import java.time.LocalDateTime
-import java.time.ZoneOffset
 import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -34,6 +33,7 @@ class ChatViewModelTest {
     private val messageRepository: MessageRepository = mockk()
     private val sendMessageUseCase: SendMessageUseCase = mockk()
     private val messageNotificationUseCase: MessageNotificationUseCase = mockk()
+    private val notificationMessageManager: NotificationMessageManager = mockk()
 
     private lateinit var chatViewModel: ChatViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
@@ -49,7 +49,7 @@ class ChatViewModelTest {
         every { messageRepository.getLastMessageFlow(any()) } returns flowOf(messageFixture)
         every { sendMessageUseCase(any(), any(), any()) } returns Unit
         coEvery { messageRepository.updateSeenMessages(any(), any()) } returns Unit
-        coEvery { messageNotificationUseCase.clearNotifications(any()) } returns Unit
+        coEvery { notificationMessageManager.clearNotifications(any()) } returns Unit
         coEvery { messageNotificationUseCase.sendNotification(any()) } returns Unit
 
         chatViewModel = ChatViewModel(
@@ -58,7 +58,7 @@ class ChatViewModelTest {
             conversationRepository = conversationRepository,
             messageRepository = messageRepository,
             sendMessageUseCase = sendMessageUseCase,
-            messageNotificationUseCase = messageNotificationUseCase,
+            notificationMessageManager = notificationMessageManager
         )
     }
 

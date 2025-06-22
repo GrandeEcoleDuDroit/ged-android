@@ -5,6 +5,7 @@ import com.upsaclay.message.domain.entity.ConversationMessage
 import com.upsaclay.message.domain.entity.ConversationState
 import com.upsaclay.message.domain.entity.Message
 import com.upsaclay.message.domain.entity.MessageState
+import com.upsaclay.message.domain.entity.NotificationMessage
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
 import kotlinx.coroutines.CoroutineScope
@@ -21,7 +22,7 @@ class SendMessageUseCase(
             try {
                 createDataLocally(conversation, message)
                 createDataRemotely(conversation, message, userId)
-                messageNotificationUseCase.sendNotification(ConversationMessage(conversation, message))
+                messageNotificationUseCase.sendNotification(NotificationMessage(conversation, message))
             } catch (_: Exception) {
                 if (conversation.state == ConversationState.DRAFT) {
                     conversationRepository.updateLocalConversation(conversation.copy(state = ConversationState.ERROR))

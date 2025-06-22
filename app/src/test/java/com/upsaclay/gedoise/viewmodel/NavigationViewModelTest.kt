@@ -5,7 +5,7 @@ import com.upsaclay.authentication.domain.repository.AuthenticationRepository
 import com.upsaclay.common.domain.repository.RouteRepository
 import com.upsaclay.gedoise.presentation.navigation.NavigationViewModel
 import com.upsaclay.gedoise.presentation.navigation.TopLevelDestination
-import com.upsaclay.message.domain.MessageJsonConverter
+import com.upsaclay.message.domain.converter.ConversationJsonConverter
 import com.upsaclay.message.domain.conversationFixture
 import com.upsaclay.message.domain.usecase.GetUnreadConversationsCountUseCase
 import com.upsaclay.message.presentation.chat.ChatRoute
@@ -85,7 +85,7 @@ class NavigationViewModelTest {
     fun intentToNavigate_should_navigate_to_screen_when_authenticated() = runTest {
         // Given
         every { authenticationRepository.isAuthenticated } returns true
-        val route = ChatRoute(MessageJsonConverter.toConversationJson(conversationFixture))
+        val route = ChatRoute(ConversationJsonConverter.toConversationJson(conversationFixture))
 
         // When
         navigationViewModel = NavigationViewModel(
@@ -105,7 +105,7 @@ class NavigationViewModelTest {
     fun intentToNavigate_should_not_navigate_when_unauthenticated() = runTest {
         // Given
         every { authenticationRepository.isAuthenticated } returns false
-        val route = ChatRoute(MessageJsonConverter.toConversationJson(conversationFixture))
+        val route = ChatRoute(ConversationJsonConverter.toConversationJson(conversationFixture))
 
         // When
         navigationViewModel = NavigationViewModel(

@@ -1,4 +1,4 @@
-package com.upsaclay.message.presentation
+package com.upsaclay.message.notification
 
 import android.annotation.SuppressLint
 import android.app.Notification
@@ -20,91 +20,56 @@ import androidx.core.graphics.createBitmap
 import androidx.core.graphics.drawable.IconCompat
 import com.upsaclay.common.R
 import com.upsaclay.common.domain.IntentHelper
-import com.upsaclay.common.domain.entity.SystemEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.extensions.toEpochMilliUTC
 import com.upsaclay.common.domain.repository.ImageRepository
-import com.upsaclay.common.domain.repository.RouteRepository
-import com.upsaclay.common.domain.usecase.SharedEventsUseCase
-import com.upsaclay.message.domain.MessageJsonConverter
+import com.upsaclay.message.domain.converter.ConversationJsonConverter
 import com.upsaclay.message.domain.entity.Conversation
-import com.upsaclay.message.domain.entity.ConversationMessage
 import com.upsaclay.message.domain.entity.Message
+import com.upsaclay.message.domain.entity.NotificationMessages
 import com.upsaclay.message.domain.usecase.MESSAGE_CHANNEL_NOTIFICATION_ID
-import com.upsaclay.message.presentation.chat.ChatRoute
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 const val CONVERSATION_ID_EXTRA = "conversation_id_extra"
 
 @SuppressLint("MissingPermission")
-class MessageNotificationPresenter (
+class NotificationMessagePresenter (
     private val context: Context,
     private val imageRepository: ImageRepository,
-    private val sharedEventsUseCase: SharedEventsUseCase,
-    private val routeRepository: RouteRepository,
     private val intentHelper: IntentHelper
 ) {
     private val notificationManager = NotificationManagerCompat.from(context)
-    private val scope = CoroutineScope(Dispatchers.Main)
 
     fun start() {
-        listenSystemEvents()
-        createMessageNotificationChannel()
+        createNotificationChannel()
     }
 
-    suspend fun showNotification(conversationMessage: ConversationMessage) {
-        if (isCurrentMessageScreen(conversationMessage.conversation.id) ||
-            !notificationManager.areNotificationsEnabled()
-        ) {
+    suspend fun showNotification(notificationMessages: NotificationMessages) {
+        if (!notificationManager.areNotificationsEnabled()) {
             return
         }
 
-        val message = conversationMessage.lastMessage
-        val interlocutor = conversationMessage.conversation.interlocutor
-        val intent = buildConversationIntent(conversationMessage.conversation)
+        val messages = notificationMessages.messages
+        val interlocutor = notificationMessages.conversation.interlocutor
+        val intent = buildConversationIntent(notificationMessages.conversation)
         val userIcon = createUserIcon(interlocutor.profilePictureUrl)
         val user = buildPerson(interlocutor, userIcon)
 
-        val notification = buildMessageNotification(
+        val notification = buildNotification(
             interlocutor = interlocutor,
-            message = message,
-            conversationId = conversationMessage.conversation.id,
+            messages = messages,
+            conversationId = notificationMessages.conversation.id,
             person = user,
             intent = intent
         )
 
-        notificationManager.notify(message.id.toInt(), notification)
+        notificationManager.notify(notificationMessages.conversation.id.hashCode(), notification)
     }
 
-    private fun listenSystemEvents() {
-        scope.launch {
-            sharedEventsUseCase.systemEvents.collect { event ->
-                when (event) {
-                    is SystemEvent.ClearNotifications -> clearNotifications(event.notificationGroupId)
-                }
-            }
-        }
+    fun clearNotification(conversationId: String) {
+        notificationManager.cancel(conversationId.hashCode())
     }
 
-    private fun clearNotifications(notificationGroupId: String) {
-        notificationManager.activeNotifications.filter {
-            it.notification.group == notificationGroupId
-        }.forEach {
-            notificationManager.cancel(it.id)
-        }
-    }
-
-    private fun isCurrentMessageScreen(conversationId: String): Boolean {
-        val messageScreen = routeRepository.currentRoute as? ChatRoute
-        return messageScreen
-            ?.conversationJson
-            ?.let(MessageJsonConverter::toConversation)
-            ?.id == conversationId
-    }
-
-    private fun createMessageNotificationChannel() {
+    private fun createNotificationChannel() {
         val channel = NotificationChannel(
             MESSAGE_CHANNEL_NOTIFICATION_ID,
             "Message",
@@ -118,7 +83,7 @@ class MessageNotificationPresenter (
 
     private fun buildConversationIntent(conversation: Conversation): PendingIntent {
         val intent = intentHelper.getMainActivityIntent(context).apply {
-            putExtra(CONVERSATION_ID_EXTRA, MessageJsonConverter.toConversationJson(conversation))
+            putExtra(CONVERSATION_ID_EXTRA, ConversationJsonConverter.toConversationJson(conversation))
             addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
         }
 
@@ -167,38 +132,36 @@ class MessageNotificationPresenter (
         return output
     }
 
-    private fun buildMessageNotification(
+    private fun buildNotification(
         interlocutor: User,
-        message: Message,
+        messages: List<Message>,
         conversationId: String,
         person: Person,
         intent: PendingIntent
     ): Notification {
-        val messageKey = message.date.toEpochMilliUTC().toString()
-        val notificationBuilder = NotificationCompat.Builder(context, MESSAGE_CHANNEL_NOTIFICATION_ID)
-            .setContentTitle(interlocutor.fullName)
-            .setContentText(message.content)
-            .setSmallIcon(R.drawable.ic_notification)
-            .setColor(context.getColor(R.color.icon_background_color))
-            .setGroup(conversationId)
-            .setCategory(Notification.CATEGORY_MESSAGE)
-            .setSortKey(messageKey)
-            .setContentIntent(intent)
-            .setAutoCancel(true)
-            .setStyle(
-                NotificationCompat.MessagingStyle(person)
-                    .addMessage(
+        val messageStyle = NotificationCompat
+            .MessagingStyle(person)
+            .setConversationTitle(interlocutor.fullName)
+            .also {
+                messages.forEach { message ->
+                    it.addMessage(
                         message.content,
                         message.date.toEpochMilliUTC(),
                         person
                     )
-                    .setConversationTitle(interlocutor.fullName)
-            )
+                }
+            }
 
-        val newGroup = notificationManager.activeNotifications.none { it.notification.group == conversationId }
-        if (newGroup) {
-            notificationBuilder.setGroupSummary(true)
-        }
+
+        val notificationBuilder = NotificationCompat.Builder(context, MESSAGE_CHANNEL_NOTIFICATION_ID)
+            .setContentTitle(interlocutor.fullName)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setColor(context.getColor(R.color.icon_background_color))
+            .setCategory(Notification.CATEGORY_MESSAGE)
+            .setContentIntent(intent)
+            .setAutoCancel(true)
+            .setStyle(messageStyle)
+
         return notificationBuilder.build()
     }
 }
