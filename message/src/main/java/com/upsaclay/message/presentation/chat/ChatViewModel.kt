@@ -14,6 +14,7 @@ import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
 import com.upsaclay.message.domain.usecase.MessageNotificationUseCase
 import com.upsaclay.message.domain.usecase.SendMessageUseCase
+import com.upsaclay.message.notification.NotificationMessageManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,7 +33,7 @@ class ChatViewModel(
     private val conversationRepository: ConversationRepository,
     private val messageRepository: MessageRepository,
     private val sendMessageUseCase: SendMessageUseCase,
-    private val messageNotificationUseCase: MessageNotificationUseCase,
+    private val notificationMessageManager: NotificationMessageManager,
 ): ViewModel() {
     private val user: User? = userRepository.currentUser
     private val _uiState = MutableStateFlow(
@@ -152,7 +153,7 @@ class ChatViewModel(
 
     private fun clearChatNotifications() {
         viewModelScope.launch {
-            messageNotificationUseCase.clearNotifications(_uiState.value.conversation.id)
+            notificationMessageManager.clearNotifications(_uiState.value.conversation.id)
         }
     }
 
