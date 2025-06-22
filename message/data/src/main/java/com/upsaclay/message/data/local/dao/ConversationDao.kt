@@ -16,9 +16,6 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface ConversationDao {
     @Query("SELECT * FROM $CONVERSATIONS_TABLE_NAME")
-    fun getConversationsFlow(): Flow<List<LocalConversation>>
-
-    @Query("SELECT * FROM $CONVERSATIONS_TABLE_NAME")
     suspend fun getConversations(): List<LocalConversation>
 
     @Query("SELECT * FROM $CONVERSATIONS_TABLE_NAME WHERE $INTERLOCUTOR_ID = :interlocutorId")

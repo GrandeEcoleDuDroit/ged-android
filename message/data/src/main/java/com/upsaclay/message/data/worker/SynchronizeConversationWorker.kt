@@ -6,6 +6,7 @@ import androidx.work.WorkerParameters
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.message.domain.entity.ConversationState
 import com.upsaclay.message.domain.repository.ConversationRepository
+import com.upsaclay.message.domain.repository.MessageRepository
 import org.koin.java.KoinJavaComponent.inject
 
 internal class SynchronizeConversationWorker (
@@ -13,6 +14,7 @@ internal class SynchronizeConversationWorker (
     params: WorkerParameters
 ): CoroutineWorker(context, params) {
     private val conversationRepository: ConversationRepository by inject(ConversationRepository::class.java)
+    private val messageRepository: MessageRepository by inject(MessageRepository::class.java)
     private val userRepository: UserRepository by inject(UserRepository::class.java)
 
     override suspend fun doWork(): Result {
@@ -22,12 +24,12 @@ internal class SynchronizeConversationWorker (
                 when (conversation.state) {
                     ConversationState.CREATING -> {
                         conversationRepository.createRemoteConversation(conversation, userId)
-                        conversationRepository.updateLocalConversation(conversation.copy(state = ConversationState.CREATED))
                     }
 
                     ConversationState.DELETING -> {
                         conversation.deleteTime?.let {
                             conversationRepository.deleteConversation(conversation, userId, it)
+                            messageRepository.deleteLocalMessages(conversation.id)
                         }
                     }
 

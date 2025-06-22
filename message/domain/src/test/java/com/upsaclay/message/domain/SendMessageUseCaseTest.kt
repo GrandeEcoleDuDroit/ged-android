@@ -2,8 +2,9 @@ package com.upsaclay.message.domain
 
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.message.domain.entity.ConversationState
-import com.upsaclay.message.domain.usecase.CreateConversationUseCase
-import com.upsaclay.message.domain.usecase.CreateMessageUseCase
+import com.upsaclay.message.domain.entity.MessageState
+import com.upsaclay.message.domain.repository.ConversationRepository
+import com.upsaclay.message.domain.repository.MessageRepository
 import com.upsaclay.message.domain.usecase.MessageNotificationUseCase
 import com.upsaclay.message.domain.usecase.SendMessageUseCase
 import io.mockk.coEvery
@@ -18,8 +19,8 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SendMessageUseCaseTest {
-    private val createConversationUseCase: CreateConversationUseCase = mockk()
-    private val createMessageUseCase: CreateMessageUseCase = mockk()
+    private val conversationRepository: ConversationRepository = mockk()
+    private val messageRepository: MessageRepository = mockk()
     private val messageNotificationUseCase: MessageNotificationUseCase = mockk()
 
     private lateinit var useCase: SendMessageUseCase
@@ -27,45 +28,103 @@ class SendMessageUseCaseTest {
 
     @Before
     fun setUp() {
+        coEvery { conversationRepository.updateLocalConversation(any()) } returns Unit
+        coEvery { conversationRepository.createLocalConversation(any()) } returns Unit
+        coEvery { conversationRepository.createRemoteConversation(any(), any()) } returns Unit
+        coEvery { messageRepository.updateLocalMessage(any()) } returns Unit
+        coEvery { messageRepository.createLocalMessage(any()) } returns Unit
+        coEvery { messageRepository.createRemoteMessage(any()) } returns Unit
         coEvery { messageNotificationUseCase.sendNotification(any()) } returns Unit
 
         useCase = SendMessageUseCase(
-            createConversationUseCase = createConversationUseCase,
-            createMessageUseCase = createMessageUseCase,
+            conversationRepository = conversationRepository,
+            messageRepository = messageRepository,
             messageNotificationUseCase = messageNotificationUseCase,
             scope = testScope
         )
     }
 
     @Test
-    fun sendMessageUseCase_should_create_conversation_when_not_created() = runTest {
+    fun sendMessageUseCase_should_create_local_conversation_with_creating_state_when_not_created() = runTest {
         // Given
         val conversation = conversationFixture.copy(state = ConversationState.DRAFT)
 
         // When
-        useCase(
-            messageFixture,
-            conversation,
-            userFixture.id
-        )
+        useCase(conversation, messageFixture, userFixture.id)
 
         // Then
-        coVerify { createConversationUseCase(conversation, userFixture.id) }
+        coVerify {
+            conversationRepository.createLocalConversation(conversation.copy(state = ConversationState.CREATING))
+        }
     }
 
     @Test
-    fun sendMessageUseCase_should_create_message() = runTest {
+    fun sendMessageUseCase_should_update_local_conversation_to_created_state_when_creation_succeeds() = runTest {
+        // Given
+        val conversation = conversationFixture.copy(state = ConversationState.DRAFT)
+
         // When
-        useCase(messageFixture, conversationFixture, userFixture.id)
+        useCase(conversation, messageFixture, userFixture.id)
 
         // Then
-        coEvery { createMessageUseCase(messageFixture) }
+        coVerify {
+            conversationRepository.updateLocalConversation(conversation.copy(state = ConversationState.CREATED)) }
+    }
+
+    @Test
+    fun sendMessageUseCase_should_update_local_conversation_state_to_error_state_when_creation_fails() = runTest {
+        // Given
+        val conversation = conversationFixture.copy(state = ConversationState.DRAFT)
+        coEvery { conversationRepository.createRemoteConversation(any(), any()) } throws Exception()
+
+        // When
+        useCase(conversation, messageFixture, userFixture.id)
+
+        // Then
+        coVerify { conversationRepository.updateLocalConversation(conversation.copy(state = ConversationState.ERROR)) }
+    }
+
+    @Test
+    fun sendMessageUseCase_should_create_message_with_loading_state() = runTest {
+        // Given
+        val message = messageFixture.copy(state = MessageState.ERROR)
+
+        // When
+        useCase(conversationFixture, message, userFixture.id)
+
+        // Then
+        coVerify { messageRepository.createRemoteMessage(message.copy(state = MessageState.SENDING)) }
+    }
+
+    @Test
+    fun sendMessageUseCase_should_update_local_message_to_created_state_when_creation_succeeds() = runTest {
+        // Given
+        val message = messageFixture.copy(state = MessageState.SENDING)
+
+        // When
+        useCase(conversationFixture, message, userFixture.id)
+
+        // Then
+        coVerify { messageRepository.updateLocalMessage(message.copy(state = MessageState.SENT)) }
+    }
+
+    @Test
+    fun sendMessageUseCase_should_update_local_message_state_to_error_state_when_fails() = runTest {
+        // Given
+        val message = messageFixture.copy(state = MessageState.SENDING)
+        coEvery { messageRepository.createRemoteMessage(any()) } throws Exception()
+
+        // When
+        useCase(conversationFixture, message, userFixture.id)
+
+        // Then
+        coVerify { messageRepository.updateLocalMessage(message.copy(state = MessageState.ERROR)) }
     }
 
     @Test
     fun sendMessageUseCase_should_send_notification() = runTest {
         // When
-        useCase(messageFixture, conversationFixture, userFixture.id)
+        useCase(conversationFixture, messageFixture, userFixture.id)
 
         // Then
         coEvery { messageNotificationUseCase.sendNotification(any()) }

@@ -51,7 +51,7 @@ fun ConversationItem(
     val interlocutor = conversationUi.interlocutor
     val elapsedTimeValue = getElapsedTimeValue(lastMessage.date)
     val text = when(lastMessage.state) {
-        MessageState.SENT, MessageState.ERROR -> lastMessage.content
+        MessageState.SENT, MessageState.DRAFT, MessageState.ERROR -> lastMessage.content
         MessageState.SENDING -> stringResource(R.string.sending)
     }
     val isNotSender = lastMessage.senderId == interlocutor.id
@@ -85,7 +85,7 @@ private fun SwitchConversationItem(
         onClick = onClick,
         onLongClick = onLongClick
     ) { innerModifier ->
-        if (conversationState == ConversationState.CREATING || conversationState == ConversationState.DELETING) {
+        if (conversationState == ConversationState.DELETING) {
             ReadConversationItemContent(
                 modifier = innerModifier
                     .alpha(0.5f)

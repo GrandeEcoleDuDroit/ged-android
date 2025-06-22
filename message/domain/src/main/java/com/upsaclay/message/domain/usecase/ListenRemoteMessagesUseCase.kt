@@ -3,53 +3,33 @@ package com.upsaclay.message.domain.usecase
 import com.upsaclay.common.domain.e
 import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.Message
-import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
 class ListenRemoteMessagesUseCase(
-    private val conversationRepository: ConversationRepository,
     private val messageRepository: MessageRepository,
     private val scope: CoroutineScope
 ) {
-    internal var job: Job? = null
     internal var messageJobs = mutableMapOf<String, MessageJob>()
 
-    fun start() {
-        job?.cancel()
-        job = scope.launch {
-            filteredConversationsFlow()
-                .collect { conversations ->
-                    conversations.forEach { conversation ->
-                        messageJobs[conversation.id]?.job?.cancel()
-                        val job = scope.launch {
-                            listenRemoteMessages(conversation)
-                        }
-                        messageJobs[conversation.id] = MessageJob(conversation, job)
-                    }
-                }
+    fun start(conversation: Conversation) {
+        if (messageJobs[conversation.id]?.conversation == conversation) {
+            return
         }
+        messageJobs[conversation.id]?.job?.cancel()
+        val job = scope.launch {
+            listenRemoteMessages(conversation)
+        }
+        messageJobs[conversation.id] = MessageJob(conversation, job)
     }
 
     fun stop() {
-        job?.cancel()
         messageJobs.values.forEach { it.job.cancel() }
         messageJobs.clear()
-    }
-
-    internal fun filteredConversationsFlow(): Flow<List<Conversation>> {
-        return conversationRepository.getConversationsFlow()
-            .map {
-                it.filter { conversation ->
-                    messageJobs[conversation.id]?.conversation != conversation
-                }
-            }
     }
 
     internal suspend fun listenRemoteMessages(conversation: Conversation) {

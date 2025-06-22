@@ -20,7 +20,6 @@ val messageModule = module {
             conversationRepository = get(),
             messageRepository = get(),
             sendMessageUseCase = get(),
-            resendMessageUseCase = get(),
             messageNotificationUseCase = get()
         )
     }

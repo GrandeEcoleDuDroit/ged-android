@@ -9,7 +9,6 @@ import com.upsaclay.message.domain.messagesFixture
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
 import com.upsaclay.message.domain.usecase.MessageNotificationUseCase
-import com.upsaclay.message.domain.usecase.ResendMessageUseCase
 import com.upsaclay.message.domain.usecase.SendMessageUseCase
 import com.upsaclay.message.presentation.chat.ChatViewModel
 import io.mockk.coEvery
