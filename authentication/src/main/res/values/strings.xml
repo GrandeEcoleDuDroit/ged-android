@@ -16,6 +16,10 @@
     <string name="enter_first_last_name">Saisissez votre nom</string>
     <string name="enter_email_password">Saisissez votre adresse e-mail et votre mot de passe</string>
     <string name="select_level_school">Sélectionnez votre niveau d\'étude</string>
+    <string name="send_text">Envoyer</string>
+    <string name="inexistante_email">Veuillez entrer une adresse e-mail valide.</string>
+    <string name="field_blanck_email">Champs obligatoire</string>
+    <string name="validation_message">Si le compte existe un lien vous sera envoyé sur votre boîte mail</string>
 
     <string name="invalid_credentials_error">Adresse e-mail ou mot de passe incorrect.</string>
     <string name="incorrect_email_format_error">Veuillez entrer une adresse e-mail valide.</string>

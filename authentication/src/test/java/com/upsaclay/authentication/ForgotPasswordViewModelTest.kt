@@ -1,5 +1,7 @@
 package com.upsaclay.authentication
 
+import com.upsaclay.common.R as commonR
+import com.upsaclay.authentication.R as authenticationR
 import com.upsaclay.authentication.domain.usecase.ForgotPasswordUseCase
 import com.upsaclay.authentication.presentation.forgopassword.ForgotPasswordViewModel
 import io.mockk.coEvery
@@ -48,20 +50,29 @@ class ForgotPasswordViewModelTest {
         forgetPasswordViewModel.sendMail()
 
         coVerify { forgotPasswordUseCase(email) }
+
+
     }
 
     @Test
     fun sendEmail_should_be_display_connexion_error() {
+        forgetPasswordViewModel.sendMail()
 
+        Assert.assertEquals(commonR.string.no_internet_connection,forgetPasswordViewModel.uiState.value.emailCode)
     }
 
     @Test
     fun sendEmail_should_be_display_inexistante_email_error() {
+        forgetPasswordViewModel.sendMail()
 
+        Assert.assertEquals(authenticationR.string.inexistante_email,forgetPasswordViewModel.uiState.value.emailCode)
     }
 
     @Test
     fun sendEmail_should_be_display_field_blanck_error() {
+        forgetPasswordViewModel.sendMail()
+
+        Assert.assertEquals(commonR.string.empty_field_error,forgetPasswordViewModel.uiState.value.emailCode)
 
     }
 }
