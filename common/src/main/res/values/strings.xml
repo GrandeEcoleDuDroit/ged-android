@@ -26,8 +26,8 @@
     <string name="modify">Modifier</string>
     <string name="publish">Publier</string>
     <string name="discard">Abandonner</string>
-    <string name="deletion">Supression...</string>
-    <string name="loading">Chargement...</string>
+    <string name="deletion">Supression…</string>
+    <string name="loading">Chargement…</string>
     <string name="search">Rechercher</string>
     <string name="edit">Editer</string>
     <string name="ok">OK</string>
@@ -63,4 +63,5 @@
     <string name="user_not_found">L\'utilisateur n\'a pas été trouvé. Veuillez vous reconnecter.</string>
     <string name="timeout_error">Le service a mis trop de temps à répondre. Veuillez réessayer.</string>
     <string name="no_internet_connection">Aucune connexion Internet.</string>
+    <string name="send">Envoyer\n</string>
 </resources>
