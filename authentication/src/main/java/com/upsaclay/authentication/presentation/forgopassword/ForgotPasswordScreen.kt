@@ -43,6 +43,7 @@ import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.components.PrimaryButton
 import com.upsaclay.common.presentation.components.OutlineTextField
 import com.upsaclay.common.presentation.components.BackTopBar
+import com.upsaclay.common.presentation.components.LinearProgressBar
 import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.mediumPadding
 import kotlinx.coroutines.flow.collectLatest
@@ -82,6 +83,7 @@ fun ForgotPasswordDestination(
     ForgotPasswordScreen(
         email = uiState.email,
         onBackClick = onBackClick,
+        loading = uiState.loading,
         onValueChange = viewModel::onEmailChange,
         onButtonClick = viewModel::sendMail
     )
@@ -124,6 +126,10 @@ fun ForgotPasswordScreen(
                 BackTopBar(onBackClick = onBackClick,
                     title = stringResource(authenticationR.string.forgot_password)
                 )
+
+                if (loading) {
+                    LinearProgressBar(modifier = Modifier.fillMaxWidth())
+                }
 
                 Text(
                     text = stringResource(id = authenticationR.string.enter_email),
