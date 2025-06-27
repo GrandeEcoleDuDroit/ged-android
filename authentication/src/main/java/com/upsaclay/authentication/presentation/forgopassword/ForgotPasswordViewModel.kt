@@ -6,8 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.upsaclay.authentication.R as authenticationR
 import com.upsaclay.common.R as commonR
 import com.upsaclay.authentication.domain.usecase.ForgotPasswordUseCase
-import com.upsaclay.common.domain.entity.DuplicateDataException
-import com.upsaclay.common.domain.entity.ForbiddenException
+import com.upsaclay.common.domain.entity.NoInternetConnectionException
 import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.domain.usecase.VerifyEmailFormatUseCase
 import com.upsaclay.common.utils.mapNetworkErrorMessage
@@ -41,8 +40,11 @@ class ForgotPasswordViewModel(
             try {
                 forgotPasswordUseCase(email = _uiState.value.email)
                 _event.emit(SingleUiEvent.Success())
-            } catch (exception : Exception){
-                _event.emit(SingleUiEvent.Error(mapErrorMessage(exception)))
+            } catch (noInternetConnexion : NoInternetConnectionException){
+                _event.emit(SingleUiEvent.Error(mapErrorMessage(noInternetConnexion)))
+            }
+            catch (_ : Exception) {
+                _uiState.update { it.copy(emailCode = validateEmail(email = _uiState.value.email)) }
             }
             finally {
                 _uiState.update { it.copy(loading = false) }
@@ -51,26 +53,25 @@ class ForgotPasswordViewModel(
     }
 
     fun resetValues() {
-        _uiState.update { it.copy(email = "") }
+        _uiState.update { it.copy(email = "",loading = false) }
     }
 
     private fun validateInputs(email: String): Boolean {
         _uiState.update {
             it.copy(
-                emailError = validateEmail(email),
+                emailCode = validateEmail(email),
             )
         }
 
         return with(_uiState.value) {
-            emailError == null
+            emailCode == null
         }
     }
 
     private fun mapErrorMessage(e: Exception): Int {
         return mapNetworkErrorMessage(e) {
             when (it) {
-                // TODO : changer l'implémentation pour obtenir les cas d'exception avec leur message ici
-                is NotImplementedError -> authenticationR.string.email_already_associated
+                is NoInternetConnectionException -> commonR.string.no_internet_connection
                 else -> commonR.string.unknown_error
             }
         }
@@ -86,7 +87,6 @@ class ForgotPasswordViewModel(
 
     internal data class ForgotPasswordUiState(
         var email: String = "",
-        var emailError : Int? = null,
         var loading : Boolean = false,
         @StringRes val emailCode : Int? = null
     )

@@ -74,6 +74,8 @@ fun AuthenticationForm(
             )
         }
 
+        Text(text = stringResource(R.string.forgot_password), modifier = Modifier.align(Alignment.Start))
+
         LoginButton(
             modifier = Modifier
                 .fillMaxWidth()

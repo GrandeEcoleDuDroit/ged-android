@@ -83,6 +83,7 @@ fun ForgotPasswordDestination(
     ForgotPasswordScreen(
         email = uiState.email,
         onBackClick = onBackClick,
+        errorMessage = uiState.emailCode,
         loading = uiState.loading,
         onValueChange = viewModel::onEmailChange,
         onButtonClick = viewModel::sendMail
@@ -124,7 +125,7 @@ fun ForgotPasswordScreen(
                     }
             ) {
                 BackTopBar(onBackClick = onBackClick,
-                    title = stringResource(authenticationR.string.forgot_password)
+                    title = stringResource(authenticationR.string.forgot_password),
                 )
 
                 if (loading) {
