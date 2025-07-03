@@ -33,6 +33,10 @@ internal class AuthenticationRepositoryImpl(
     override suspend fun registerWithEmailAndPassword(email: String, password: String): String =
         firebaseAuthenticationRepository.registerWithEmailAndPassword(email, password)
 
+    override suspend fun createANewPassword(email: String) {
+        firebaseAuthenticationRepository.createANewPassword(email)
+    }
+
     override suspend fun logout() {
         firebaseAuthenticationRepository.logout()
         setAuthenticated(false)

@@ -28,4 +28,12 @@ class FirebaseAuthenticationApiImpl: FirebaseAuthenticationApi {
     }
 
     override fun isAuthenticated(): Boolean = firebaseAuth.currentUser != null
+    override suspend fun resetPassword(email: String) {
+        suspendCancellableCoroutine { continuation -> firebaseAuth.sendPasswordResetEmail(email)
+            .addOnCompleteListener {  continuation.resume(it) }
+            .addOnFailureListener { continuation.resumeWithException(it)  }
+        }
+    }
+
+
 }

@@ -1,5 +1,6 @@
 package com.upsaclay.authentication.presentation.forgopassword
 
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
@@ -11,6 +12,10 @@ data object ForgotPasswordBaseRoute: Route
 @Serializable
 data object ForgotPasswordRoute: Route
 
+
+fun NavController.navigateToForgotPassword() {
+    navigate(route = ForgotPasswordRoute)
+}
 fun NavGraphBuilder.forgotPasswordSection(
     onBackClick: () -> Unit,
 ) {

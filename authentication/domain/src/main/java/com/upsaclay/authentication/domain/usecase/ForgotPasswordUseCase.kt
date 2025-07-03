@@ -1,15 +1,20 @@
 package com.upsaclay.authentication.domain.usecase
 
-class ForgotPasswordUseCase {
+import com.upsaclay.authentication.domain.repository.AuthenticationRepository
+import com.upsaclay.common.domain.ConnectivityObserver
+import com.upsaclay.common.domain.entity.NoInternetConnectionException
 
-    operator fun invoke(email : String){
-        TODO("réfléchir à comment utiliser ce code : Firebase.auth.sendPasswordResetEmail(email)\n" +
-                "            .addOnCompleteListener { task ->\n" +
-                "                if (task.isSuccessful) {\n" +
-                "                    Log.d(TAG, \"Email sent.\")\n" +
-                "                }\n" +
-                "            }" + "qui l'utilise et qui renvoie quel donnée en sachant que c'est le vue modède qui doit choisir quel message à afficher" +
-                "au useCase de rempplir le cas d'utilisation nécéssaire au vue modèle, et à la classe qui wrape Firebase.auth de donner l'utils pour envoyer le mail" +
-                "de réinisitalisation")
+class ForgotPasswordUseCase(
+    private var authenticationRepository: AuthenticationRepository,
+    private var connectivityObserver: ConnectivityObserver
+) {
+    suspend operator fun invoke(email : String){
+        if(!connectivityObserver.isConnected)
+            throw NoInternetConnectionException()
+        try {
+            authenticationRepository.createANewPassword(email)
+        } catch (ex : Exception){
+          TODO("est ce la bonne implémentation ?")
+        }
     }
 }

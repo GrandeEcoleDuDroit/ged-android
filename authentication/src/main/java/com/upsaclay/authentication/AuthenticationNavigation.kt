@@ -13,13 +13,16 @@ import kotlinx.serialization.Serializable
 fun NavGraphBuilder.authenticationSection(
     onRegistrationClick: () -> Unit,
     onLoginClick: () -> Unit,
+    onForgotPasswordScreen: () -> Unit,
     registrationDestinations: NavGraphBuilder.() -> Unit
 ) {
     navigation<AuthenticationBaseRoute>(startDestination = AuthenticationRoute) {
         composable<AuthenticationRoute> {
             AuthenticationDestination(
                 onRegistrationClick = onRegistrationClick,
-                onLoginClick = onLoginClick
+                onLoginClick = onLoginClick,
+                onForgotPasswordScreen = onForgotPasswordScreen
+
             )
         }
         registrationDestinations()

@@ -7,5 +7,7 @@ interface FirebaseAuthenticationRepository {
 
     suspend fun registerWithEmailAndPassword(email: String, password: String): String
 
+    suspend fun createANewPassword(email: String)
+
     fun logout()
 }

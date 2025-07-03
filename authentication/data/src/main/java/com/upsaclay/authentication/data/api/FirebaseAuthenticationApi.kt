@@ -8,4 +8,6 @@ interface FirebaseAuthenticationApi {
     fun signOut()
 
     fun isAuthenticated(): Boolean
+
+    suspend fun resetPassword(email : String)
 }

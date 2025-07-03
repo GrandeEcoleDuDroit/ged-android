@@ -44,7 +44,8 @@ fun AuthenticationForm(
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onLoginClick: () -> Unit,
-    onRegistrationClick: () -> Unit
+    onRegistrationClick: () -> Unit,
+    onForgotPasswordClick : () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     val passwordFocusRequester = remember { FocusRequester() }
@@ -74,7 +75,12 @@ fun AuthenticationForm(
             )
         }
 
-        Text(text = stringResource(R.string.forgot_password), modifier = Modifier.align(Alignment.Start))
+        Text(
+            text = stringResource(R.string.forgot_password),
+            modifier = Modifier
+                .align(Alignment.Start)
+                .clickable(onClick = onForgotPasswordClick),
+        )
 
         LoginButton(
             modifier = Modifier
@@ -180,7 +186,8 @@ private fun AuthenticationFormPreview() {
                 onEmailChange = {},
                 onPasswordChange = {},
                 onLoginClick = {},
-                onRegistrationClick = {}
+                onRegistrationClick = {},
+                onForgotPasswordClick = {}
             )
         }
     }

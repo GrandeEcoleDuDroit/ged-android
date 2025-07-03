@@ -10,6 +10,8 @@ interface AuthenticationRepository {
 
     suspend fun registerWithEmailAndPassword(email: String, password: String): String
 
+    suspend fun createANewPassword(email: String)
+
     suspend fun logout()
 
     suspend fun setAuthenticated(isAuthenticated: Boolean)

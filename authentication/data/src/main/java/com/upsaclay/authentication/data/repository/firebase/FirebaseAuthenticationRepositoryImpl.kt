@@ -34,6 +34,15 @@ class FirebaseAuthenticationRepositoryImpl(
         }
     }
 
+    override suspend fun createANewPassword(email: String) {
+        return withContext(Dispatchers.IO) {
+            handleNetworkException(
+                message = "Failed to create a new password",
+                block = { firebaseAuthenticationApi.resetPassword(email)}
+            )
+        }
+    }
+
     override fun logout() {
         firebaseAuthenticationApi.signOut()
     }
