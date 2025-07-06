@@ -18,21 +18,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.upsaclay.common.domain.entity.ElapsedTime
-import com.upsaclay.common.domain.usecase.GetElapsedTimeUseCase
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.previewText
 import com.upsaclay.common.presentation.theme.spacing
-import com.upsaclay.common.utils.FormatLocalDateTimeUseCase
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.common.utils.getElapsedTimeValue
-import com.upsaclay.news.domain.longAnnouncementFixture
 import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.domain.entity.AnnouncementState
+import com.upsaclay.news.domain.longAnnouncementFixture
 
 @Composable
 internal fun AnnouncementHeader(

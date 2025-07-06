@@ -1,7 +1,6 @@
 package com.upsaclay.message.domain.usecase
 
 import com.upsaclay.message.domain.entity.Conversation
-import com.upsaclay.message.domain.entity.ConversationMessage
 import com.upsaclay.message.domain.entity.ConversationState
 import com.upsaclay.message.domain.entity.Message
 import com.upsaclay.message.domain.entity.MessageState

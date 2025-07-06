@@ -12,7 +12,6 @@ import com.upsaclay.message.domain.entity.Message
 import com.upsaclay.message.domain.entity.MessageState
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
-import com.upsaclay.message.domain.usecase.MessageNotificationUseCase
 import com.upsaclay.message.domain.usecase.SendMessageUseCase
 import com.upsaclay.message.notification.NotificationMessageManager
 import kotlinx.coroutines.flow.Flow
@@ -83,7 +82,7 @@ class ChatViewModel(
             _uiState.update { it.copy(text = "") }
         } catch (_: IllegalArgumentException) {
             viewModelScope.launch {
-                _event.emit(SingleUiEvent.Error(com.upsaclay.common.R.string.current_user_not_found))
+                _event.emit(SingleUiEvent.Error(com.upsaclay.common.R.string.current_user_not_found_error))
             }
         }
     }
@@ -100,7 +99,7 @@ class ChatViewModel(
             }
         } catch (_: IllegalArgumentException) {
             viewModelScope.launch {
-                _event.emit(SingleUiEvent.Error(com.upsaclay.common.R.string.current_user_not_found))
+                _event.emit(SingleUiEvent.Error(com.upsaclay.common.R.string.current_user_not_found_error))
             }
         }
     }

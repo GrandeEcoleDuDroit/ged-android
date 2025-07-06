@@ -33,7 +33,6 @@ import com.upsaclay.message.presentation.conversation.create.CreateConversationR
 import com.upsaclay.message.presentation.conversation.create.createConversationScreen
 import com.upsaclay.message.presentation.conversation.create.navigateToCreateConversation
 import com.upsaclay.message.presentation.conversation.navigateToConversation
-import com.upsaclay.news.presentation.NewsBaseRoute
 import com.upsaclay.news.presentation.NewsRoute
 import com.upsaclay.news.presentation.announcement.createannouncement.createAnnouncementScreen
 import com.upsaclay.news.presentation.announcement.createannouncement.navigateToCreateAnnouncement

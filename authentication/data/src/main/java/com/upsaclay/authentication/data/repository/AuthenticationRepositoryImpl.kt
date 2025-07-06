@@ -6,8 +6,8 @@ import com.upsaclay.authentication.domain.repository.AuthenticationRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 internal class AuthenticationRepositoryImpl(
@@ -15,8 +15,12 @@ internal class AuthenticationRepositoryImpl(
     private val authenticationLocalDataSource: AuthenticationLocalDataSource,
     scope: CoroutineScope
 ) : AuthenticationRepository {
-    private val _authenticated = authenticationLocalDataSource.getAuthenticationState()
-        .map { it && firebaseAuthenticationRepository.isAuthenticated() }
+    private val _authenticated = combine(
+        authenticationLocalDataSource.listenAuthenticationState(),
+        firebaseAuthenticationRepository.listenAuthenticationState(),
+    ) { localAuthState, firebaseAuthState ->
+        localAuthState && firebaseAuthState
+    }
         .stateIn(
             scope = scope,
             started = SharingStarted.Eagerly,
