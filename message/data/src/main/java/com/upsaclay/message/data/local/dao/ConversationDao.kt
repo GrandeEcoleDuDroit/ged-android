@@ -8,8 +8,6 @@ import androidx.room.Update
 import androidx.room.Upsert
 import com.upsaclay.message.data.local.model.LocalConversation
 import com.upsaclay.message.data.model.CONVERSATIONS_TABLE_NAME
-import com.upsaclay.message.data.model.ConversationField
-import com.upsaclay.message.data.model.ConversationField.Local.CONVERSATION_STATE
 import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_ID
 import kotlinx.coroutines.flow.Flow
 

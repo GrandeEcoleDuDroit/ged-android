@@ -4,6 +4,7 @@ import MainViewModel
 import androidx.room.Room
 import com.upsaclay.common.ConnectivityObserverImpl
 import com.upsaclay.common.data.GED_SERVER_QUALIFIER
+import com.upsaclay.common.data.TokenProvider
 import com.upsaclay.common.data.local.FcmDataStore
 import com.upsaclay.common.data.local.FcmLocalDataSource
 import com.upsaclay.common.data.remote.api.FcmApi
@@ -11,9 +12,11 @@ import com.upsaclay.common.domain.ConnectivityObserver
 import com.upsaclay.common.domain.IntentHelper
 import com.upsaclay.common.domain.e
 import com.upsaclay.common.domain.repository.RouteRepository
+import com.upsaclay.common.domain.repository.FcmTokenRepository
 import com.upsaclay.gedoise.data.GedoiseDatabase
-import com.upsaclay.common.data.WorkerLauncher
 import com.upsaclay.gedoise.data.repository.RouteRepositoryImpl
+import com.upsaclay.gedoise.data.repository.TokenProviderImpl
+import com.upsaclay.common.data.repository.FcmTokenRepositoryImpl
 import com.upsaclay.gedoise.domain.usecase.ClearDataUseCase
 import com.upsaclay.gedoise.domain.usecase.FcmTokenUseCase
 import com.upsaclay.gedoise.domain.usecase.ListenDataUseCase
@@ -41,7 +44,7 @@ val appModule = module {
         CoroutineScope(
     SupervisorJob() +
             Dispatchers.IO +
-            CoroutineExceptionHandler { coroutineContext, throwable ->
+            CoroutineExceptionHandler { _, throwable ->
                 e("Uncaught error in backgroundScope", throwable)
             }
         )
@@ -75,6 +78,7 @@ val appModule = module {
     singleOf(::RouteRepositoryImpl) { bind<RouteRepository>() }
     singleOf(::FcmLocalDataSource)
     singleOf(::FcmDataStore)
+    singleOf(::TokenProviderImpl) { bind<TokenProvider>() }
 
     viewModelOf(::NavigationViewModel)
     viewModelOf(::ProfileViewModel)
@@ -86,7 +90,7 @@ val appModule = module {
     single {
         FcmTokenUseCase(
             userRepository = get(),
-            credentialsRepository = get(),
+            fcmTokenRepository = get(),
             authenticationRepository = get(),
             connectivityObserver = get(),
             scope = get(BACKGROUND_SCOPE)

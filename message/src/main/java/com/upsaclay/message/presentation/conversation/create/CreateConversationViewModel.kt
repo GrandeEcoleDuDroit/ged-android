@@ -95,7 +95,7 @@ class CreateConversationViewModel(
     private fun mapErrorMessage(e: Throwable): Int {
         return mapNetworkErrorMessage(e) {
             when (e) {
-                is IllegalArgumentException -> com.upsaclay.common.R.string.current_user_not_found
+                is IllegalArgumentException -> com.upsaclay.common.R.string.current_user_not_found_error
                 else -> com.upsaclay.common.R.string.unknown_error
             }
         }

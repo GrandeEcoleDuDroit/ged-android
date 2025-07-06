@@ -8,7 +8,7 @@ class MessageWorkerLauncher(
     private val messageWorkerBuilder: MessageWorkerBuilder
 ): WorkerLauncher(context) {
     override fun launch() {
-        workerManager.enqueue(messageWorkerBuilder.buildSynchronizeMessageWorkerRequest())
         workerManager.enqueue(messageWorkerBuilder.buildSynchronizeConversationWorkerRequest())
+        workerManager.enqueue(messageWorkerBuilder.buildSynchronizeMessageWorkerRequest())
     }
 }

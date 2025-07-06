@@ -5,9 +5,7 @@ import com.upsaclay.common.domain.LocalDateTimeAdapter
 import com.upsaclay.common.domain.NotificationApi
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.NotificationUseCase
-import com.upsaclay.message.domain.entity.ConversationMessage
 import com.upsaclay.message.domain.entity.NotificationMessage
-import com.upsaclay.message.domain.entity.NotificationMessages
 import com.upsaclay.message.domain.mapper.toFcm
 import java.time.LocalDateTime
 
