@@ -7,7 +7,6 @@ import com.upsaclay.common.domain.entity.FcmDataType
 import com.upsaclay.common.domain.entity.FcmToken
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.gedoise.domain.usecase.FcmTokenUseCase
-import com.upsaclay.message.domain.converter.ConversationJsonConverter
 import com.upsaclay.message.domain.converter.NotificationMessageJsonConverter
 import com.upsaclay.message.notification.NotificationMessageManager
 import kotlinx.coroutines.CoroutineScope

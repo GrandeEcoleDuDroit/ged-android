@@ -29,6 +29,7 @@ import com.upsaclay.common.presentation.components.SensibleActionDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.Tablets
 import com.upsaclay.common.utils.mediumPadding
 import com.upsaclay.message.R
 import com.upsaclay.message.domain.conversationFixture
@@ -149,7 +150,7 @@ private fun ChatScreen(
                 messages = messages,
                 interlocutor = conversation.interlocutor,
                 newMessageEvent = newMessageEvent,
-                onClickSendMessage = {
+                onErrorMessageClick = {
                     if (it.state == MessageState.ERROR) {
                         messageClicked = it
                         showBottomSheet = true
@@ -182,6 +183,7 @@ private fun ChatScreen(
  */
 
 @Phones
+@Tablets
 @Composable
 private fun ChatScreenPreview() {
     var text by remember { mutableStateOf("") }

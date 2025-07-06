@@ -2,7 +2,7 @@ package com.upsaclay.common.domain.repository
 
 import com.upsaclay.common.domain.entity.FcmToken
 
-interface CredentialsRepository {
+interface FcmTokenRepository {
     suspend fun getUnsentFcmToken(): FcmToken?
 
     suspend fun sendFcmToken(token: FcmToken)

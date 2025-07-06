@@ -5,8 +5,8 @@ import com.upsaclay.authentication.domain.repository.AuthenticationRepository
 import com.upsaclay.common.domain.repository.RouteRepository
 import com.upsaclay.gedoise.presentation.navigation.NavigationViewModel
 import com.upsaclay.gedoise.presentation.navigation.TopLevelDestination
-import com.upsaclay.message.domain.converter.ConversationJsonConverter
 import com.upsaclay.message.domain.conversationFixture
+import com.upsaclay.message.domain.converter.ConversationJsonConverter
 import com.upsaclay.message.domain.usecase.GetUnreadConversationsCountUseCase
 import com.upsaclay.message.presentation.chat.ChatRoute
 import com.upsaclay.news.presentation.NewsBaseRoute

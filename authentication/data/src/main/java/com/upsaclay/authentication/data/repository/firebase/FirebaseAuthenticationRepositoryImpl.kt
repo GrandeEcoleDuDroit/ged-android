@@ -12,12 +12,15 @@ import com.upsaclay.common.data.exceptions.mapFirebaseException
 import com.upsaclay.common.domain.entity.DuplicateDataException
 import com.upsaclay.common.domain.entity.ForbiddenException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 class FirebaseAuthenticationRepositoryImpl(
     private val firebaseAuthenticationApi: FirebaseAuthenticationApi
 ): FirebaseAuthenticationRepository {
-    override fun isAuthenticated(): Boolean = firebaseAuthenticationApi.isAuthenticated()
+    override fun listenAuthenticationState(): Flow<Boolean> = firebaseAuthenticationApi.listenAuthenticationState()
+
+    override fun getIdToken(): String? = firebaseAuthenticationApi.getIdToken()
 
     override suspend fun loginWithEmailAndPassword(email: String, password: String) {
         withContext(Dispatchers.IO) {

@@ -19,3 +19,18 @@ import androidx.compose.ui.tooling.preview.Preview
     uiMode = Configuration.UI_MODE_NIGHT_YES
 )
 annotation class Phones
+
+@Preview(
+    name = "Tablet",
+    group = "tablets",
+    device = Devices.TABLET,
+    showBackground = true
+)
+@Preview(
+    name = "Tablet Dark",
+    group = "tablets",
+    device = Devices.TABLET,
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+annotation class Tablets

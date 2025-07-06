@@ -3,7 +3,6 @@ package com.upsaclay.message.domain.converter
 import com.google.gson.GsonBuilder
 import com.upsaclay.common.domain.LocalDateTimeAdapter
 import com.upsaclay.message.domain.entity.Conversation
-import com.upsaclay.message.domain.entity.ConversationMessage
 import java.time.LocalDateTime
 
 object ConversationJsonConverter {

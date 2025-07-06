@@ -21,5 +21,5 @@ internal class AuthenticationLocalDataSource(context: Context) {
         store.setValue(authenticationKey, isAuthenticated)
     }
 
-    fun getAuthenticationState(): Flow<Boolean> = store.getFlowValue(authenticationKey).map { it ?: false }
+    fun listenAuthenticationState(): Flow<Boolean> = store.getFlowValue(authenticationKey).map { it ?: false }
 }

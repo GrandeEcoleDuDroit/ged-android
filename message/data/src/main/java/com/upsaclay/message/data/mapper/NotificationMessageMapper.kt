@@ -10,7 +10,6 @@ import com.upsaclay.message.domain.entity.ConversationState
 import com.upsaclay.message.domain.entity.Message
 import com.upsaclay.message.domain.entity.MessageState
 import com.upsaclay.message.domain.entity.NotificationMessage
-import com.upsaclay.message.domain.entity.NotificationMessages
 
 fun LocalNotificationMessage.toNotificationMessage() = NotificationMessage(
     conversation = this.toConversation(),

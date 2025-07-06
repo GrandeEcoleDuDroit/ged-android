@@ -26,7 +26,9 @@ import com.upsaclay.common.presentation.components.PullToRefreshComponent
 import com.upsaclay.common.presentation.components.SensibleActionDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.Tablets
 import com.upsaclay.news.R
+import com.upsaclay.news.domain.announcementsFixture
 import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.presentation.announcement.components.CreateAnnouncementFAB
 import kotlinx.coroutines.launch
@@ -167,13 +169,14 @@ private fun NewsScreen(
  */
 
 @Phones
+@Tablets
 @Composable
 private fun NewsScreenPreview() {
     GedoiseTheme {
         NewsScreen(
             user = userFixture,
             refreshing = false,
-            announcements = null,
+            announcements = announcementsFixture,
             bottomBar = {},
             onRefresh = {},
             onAnnouncementClick = {},
