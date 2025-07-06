@@ -79,13 +79,15 @@ private fun SwitchConversationItem(
     onClick: () -> Unit,
     onLongClick: () -> Unit
 ) {
+    val loading = conversationState == ConversationState.CREATING || conversationState == ConversationState.DELETING
     ConversationItemStructure(
-        modifier = modifier,
+        modifier = modifier
+            .alpha(if (loading) 0.5f else 1f),
         interlocutor = interlocutor,
         onClick = onClick,
         onLongClick = onLongClick
     ) { innerModifier ->
-        if (conversationState == ConversationState.DELETING) {
+        if (loading) {
             ReadConversationItemContent(
                 modifier = innerModifier
                     .alpha(0.5f)

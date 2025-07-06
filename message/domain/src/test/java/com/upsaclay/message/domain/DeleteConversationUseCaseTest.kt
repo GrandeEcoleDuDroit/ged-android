@@ -1,10 +1,6 @@
 package com.upsaclay.message.domain
 
 import com.upsaclay.common.domain.userFixture
-import com.upsaclay.message.domain.entity.Conversation
-import com.upsaclay.message.domain.entity.ConversationState
-import com.upsaclay.message.domain.entity.Message
-import com.upsaclay.message.domain.entity.MessageState
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
 import com.upsaclay.message.domain.usecase.DeleteConversationUseCase
@@ -12,14 +8,12 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.job
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
-import java.time.LocalDateTime
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DeleteConversationUseCaseTest {

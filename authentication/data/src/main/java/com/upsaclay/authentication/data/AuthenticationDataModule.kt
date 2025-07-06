@@ -24,7 +24,7 @@ val authenticationDataModule = module {
         CoroutineScope(
     SupervisorJob() +
             Dispatchers.IO +
-            CoroutineExceptionHandler { coroutineContext, throwable ->
+            CoroutineExceptionHandler { _, throwable ->
                 e("Uncaught error in backgroundScope", throwable)
             }
         )

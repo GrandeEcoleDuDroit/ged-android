@@ -7,14 +7,14 @@ import com.upsaclay.common.domain.d
 import com.upsaclay.common.domain.e
 import com.upsaclay.common.domain.entity.FcmToken
 import com.upsaclay.common.domain.entity.InternalServerException
-import com.upsaclay.common.domain.repository.CredentialsRepository
+import com.upsaclay.common.domain.repository.FcmTokenRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class CredentialsRepositoryImpl(
+class FcmTokenRepositoryImpl(
     private val fcmLocalDataSource: FcmLocalDataSource,
-    private val fcmApi: FcmApi
-): CredentialsRepository {
+    private val fcmApi: FcmApi,
+): FcmTokenRepository {
     override suspend fun getUnsentFcmToken(): FcmToken? = fcmLocalDataSource.getUnsentFcmToken()
 
     override suspend fun sendFcmToken(token: FcmToken) {

@@ -6,7 +6,6 @@ import com.upsaclay.common.domain.entity.FcmData
 import com.upsaclay.common.domain.entity.FcmDataType
 import com.upsaclay.common.domain.entity.FcmMessage
 import com.upsaclay.common.domain.entity.User
-import com.upsaclay.message.domain.entity.ConversationMessage
 import com.upsaclay.message.domain.entity.NotificationMessage
 import com.upsaclay.message.domain.entity.NotificationMessages
 import com.upsaclay.message.domain.usecase.MESSAGE_CHANNEL_NOTIFICATION_ID

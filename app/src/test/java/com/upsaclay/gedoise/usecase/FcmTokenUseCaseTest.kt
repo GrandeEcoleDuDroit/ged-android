@@ -3,7 +3,7 @@ package com.upsaclay.gedoise.usecase
 import com.upsaclay.authentication.domain.repository.AuthenticationRepository
 import com.upsaclay.common.domain.ConnectivityObserver
 import com.upsaclay.common.domain.fcmTokenFixture
-import com.upsaclay.common.domain.repository.CredentialsRepository
+import com.upsaclay.common.domain.repository.FcmTokenRepository
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.gedoise.domain.usecase.FcmTokenUseCase
 import io.mockk.coEvery
@@ -23,7 +23,7 @@ import org.junit.Test
 class FcmTokenUseCaseTest {
     private val userRepository: UserRepository = mockk()
     private val authenticationRepository: AuthenticationRepository = mockk()
-    private val credentialsRepository: CredentialsRepository = mockk()
+    private val fcmTokenRepository: FcmTokenRepository = mockk()
     private val connectivityObserver: ConnectivityObserver = mockk()
 
     private lateinit var useCase: FcmTokenUseCase
@@ -33,15 +33,15 @@ class FcmTokenUseCaseTest {
     fun setUp() {
         every { authenticationRepository.authenticated } returns flowOf(true)
         every { connectivityObserver.connected } returns flowOf(true)
-        coEvery { credentialsRepository.getUnsentFcmToken() } returns fcmTokenFixture
-        coEvery { credentialsRepository.removeUnsentFcmToken() } returns Unit
-        coEvery { credentialsRepository.storeUnsentFcmToken(any()) } returns Unit
-        coEvery { credentialsRepository.sendFcmToken(any()) } returns Unit
+        coEvery { fcmTokenRepository.getUnsentFcmToken() } returns fcmTokenFixture
+        coEvery { fcmTokenRepository.removeUnsentFcmToken() } returns Unit
+        coEvery { fcmTokenRepository.storeUnsentFcmToken(any()) } returns Unit
+        coEvery { fcmTokenRepository.sendFcmToken(any()) } returns Unit
 
         useCase = FcmTokenUseCase(
             userRepository = userRepository,
             authenticationRepository = authenticationRepository,
-            credentialsRepository = credentialsRepository,
+            fcmTokenRepository = fcmTokenRepository,
             connectivityObserver = connectivityObserver,
             scope = testScope
         )
@@ -53,7 +53,7 @@ class FcmTokenUseCaseTest {
         useCase.listenEvents()
 
         // Then
-        coVerify { credentialsRepository.sendFcmToken(fcmTokenFixture) }
+        coVerify { fcmTokenRepository.sendFcmToken(fcmTokenFixture) }
     }
 
     @Test
@@ -65,7 +65,7 @@ class FcmTokenUseCaseTest {
         useCase.listenEvents()
 
         // Then
-        coVerify { credentialsRepository.removeUnsentFcmToken() }
+        coVerify { fcmTokenRepository.removeUnsentFcmToken() }
     }
 
     @Test
@@ -76,19 +76,19 @@ class FcmTokenUseCaseTest {
         useCase.sendFcmToken(fcmTokenFixture)
 
         // Then
-        coVerify { credentialsRepository.removeUnsentFcmToken() }
+        coVerify { fcmTokenRepository.removeUnsentFcmToken() }
     }
 
     @Test
     fun sendFcmToken_should_store_unsent_token_when_fails() = runTest {
         // Given
-        coEvery { credentialsRepository.sendFcmToken(any()) } throws Exception()
+        coEvery { fcmTokenRepository.sendFcmToken(any()) } throws Exception()
 
         // When
         useCase.sendFcmToken(fcmTokenFixture)
 
         // Then
-        coVerify { credentialsRepository.storeUnsentFcmToken(fcmTokenFixture) }
+        coVerify { fcmTokenRepository.storeUnsentFcmToken(fcmTokenFixture) }
     }
 
     @Test
@@ -97,6 +97,6 @@ class FcmTokenUseCaseTest {
         useCase.storeToken(fcmTokenFixture)
 
         // Then
-        coVerify { credentialsRepository.storeUnsentFcmToken(fcmTokenFixture) }
+        coVerify { fcmTokenRepository.storeUnsentFcmToken(fcmTokenFixture) }
     }
 }
