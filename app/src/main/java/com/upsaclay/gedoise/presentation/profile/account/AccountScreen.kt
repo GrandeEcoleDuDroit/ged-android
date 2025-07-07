@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
@@ -179,7 +180,9 @@ fun AccountScreen(
                             }
                         )
 
-                        AccountInfoItems(user = user)
+                        SelectionContainer {
+                            AccountInfoItems(user = user)
+                        }
 
                         if (showBottomSheet) {
                             AccountModelBottomSheet(
