@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -131,39 +132,42 @@ fun ReadAnnouncementScreen(
             }
         }
     ) { contentPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(
-                    top = contentPadding.calculateTopPadding(),
-                    start = MaterialTheme.spacing.medium,
-                    end = MaterialTheme.spacing.medium,
-                    bottom = MaterialTheme.spacing.medium
+        SelectionContainer  {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(
+                        top = contentPadding.calculateTopPadding(),
+                        start = MaterialTheme.spacing.medium,
+                        end = MaterialTheme.spacing.medium,
+                        bottom = MaterialTheme.spacing.medium
+                    )
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+            ) {
+                ReadAnnouncementTopSection(
+                    user = user,
+                    announcement = announcement,
+                    onEditIconClick = { showBottomSheet = true }
                 )
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
-        ) {
-            ReadAnnouncementTopSection(
-                user = user,
-                announcement = announcement,
-                onEditIconClick = { showBottomSheet = true }
-            )
 
-            announcement.title?.let {
+
+                announcement.title?.let {
+                    Text(
+                        modifier = Modifier.testTag(stringResource(id = R.string.read_screen_announcement_title_tag)),
+                        text = it,
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = MaterialTheme.typography.titleMedium.fontSize * 1.3f
+                    )
+                }
+
                 Text(
-                    modifier = Modifier.testTag(stringResource(id = R.string.read_screen_announcement_title_tag)),
-                    text = it,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = MaterialTheme.typography.titleMedium.fontSize * 1.3f
+                    modifier = Modifier.testTag(stringResource(id = R.string.read_screen_announcement_content_tag)),
+                    text = announcement.content,
+                    style = MaterialTheme.typography.bodyLarge
                 )
             }
-
-            Text(
-                modifier = Modifier.testTag(stringResource(id = R.string.read_screen_announcement_content_tag)),
-                text = announcement.content,
-                style = MaterialTheme.typography.bodyLarge
-            )
         }
 
         if (showBottomSheet) {

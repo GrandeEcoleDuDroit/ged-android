@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -34,14 +35,16 @@ fun AnnouncementInput(
     onTitleChange: (String) -> Unit,
     onContentChange: (String) -> Unit
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
-    ) {
-        AnnouncementTitleInput(title = title, onTitleChange = onTitleChange)
-        AnnouncementContentInput(content = content, onContentChange = onContentChange)
+    SelectionContainer {
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+        ) {
+            AnnouncementTitleInput(title = title, onTitleChange = onTitleChange)
+            AnnouncementContentInput(content = content, onContentChange = onContentChange)
+        }
     }
 }
 
