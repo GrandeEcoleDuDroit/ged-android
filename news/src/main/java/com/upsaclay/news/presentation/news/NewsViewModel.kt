@@ -36,6 +36,7 @@ class NewsViewModel(
     val event: SharedFlow<SingleUiEvent> = _event
 
     init {
+        synchronizeAnnouncements()
         initUiState()
     }
 
@@ -91,6 +92,17 @@ class NewsViewModel(
                 _event.emit(SingleUiEvent.Success(R.string.announcement_deleted))
             } catch (e: Exception) {
                 _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
+            }
+        }
+    }
+
+    private fun synchronizeAnnouncements() {
+        viewModelScope.launch {
+            try {
+                refreshAnnouncementUseCase()
+            } catch (e: Exception) {
+                delay(500)
+                _event.emit(SingleUiEvent.Error(mapErrorMessage(e)))
             }
         }
     }
