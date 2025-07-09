@@ -14,7 +14,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.authentication.R
 import com.upsaclay.authentication.presentation.components.OutlinePasswordTextField
-import com.upsaclay.common.presentation.components.OutlineTextField
+import com.upsaclay.common.presentation.components.SimpleOutlinedTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.Phones
@@ -38,7 +38,7 @@ fun ThirdRegistrationForm(
             style = MaterialTheme.typography.titleMedium
         )
 
-        OutlineTextField(
+        SimpleOutlinedTextField(
             modifier = Modifier
                 .fillMaxWidth()
                 .testTag(stringResource(R.string.registration_screen_email_input_tag)),
