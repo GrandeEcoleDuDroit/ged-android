@@ -12,11 +12,9 @@ import com.upsaclay.common.domain.ConnectivityObserver
 import com.upsaclay.common.domain.IntentHelper
 import com.upsaclay.common.domain.e
 import com.upsaclay.common.domain.repository.RouteRepository
-import com.upsaclay.common.domain.repository.FcmTokenRepository
 import com.upsaclay.gedoise.data.GedoiseDatabase
 import com.upsaclay.gedoise.data.repository.RouteRepositoryImpl
 import com.upsaclay.gedoise.data.repository.TokenProviderImpl
-import com.upsaclay.common.data.repository.FcmTokenRepositoryImpl
 import com.upsaclay.gedoise.domain.usecase.ClearDataUseCase
 import com.upsaclay.gedoise.domain.usecase.FcmTokenUseCase
 import com.upsaclay.gedoise.domain.usecase.ListenDataUseCase

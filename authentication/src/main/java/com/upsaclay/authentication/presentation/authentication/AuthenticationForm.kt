@@ -27,7 +27,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import com.upsaclay.authentication.R
 import com.upsaclay.authentication.presentation.components.LoginButton
 import com.upsaclay.authentication.presentation.components.OutlinePasswordTextField
-import com.upsaclay.common.presentation.components.OutlineTextField
+import com.upsaclay.common.presentation.components.SimpleOutlinedTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.Phones
@@ -109,7 +109,7 @@ private fun CredentialsInputs(
     Column(
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
     ) {
-        OutlineTextField(
+        SimpleOutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = email,
             label = stringResource(com.upsaclay.common.R.string.email),
