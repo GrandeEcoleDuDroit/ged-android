@@ -7,8 +7,8 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import com.upsaclay.common.domain.userFixture
-import com.upsaclay.news.domain.longAnnouncementFixture
 import com.upsaclay.news.domain.announcementsFixture
+import com.upsaclay.news.domain.longAnnouncementFixture
 import com.upsaclay.news.presentation.news.NewsDestination
 import com.upsaclay.news.presentation.news.NewsViewModel
 import io.mockk.coEvery

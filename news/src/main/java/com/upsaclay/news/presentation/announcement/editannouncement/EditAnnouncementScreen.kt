@@ -1,5 +1,6 @@
 package com.upsaclay.news.presentation.announcement.editannouncement
 
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
@@ -26,7 +27,7 @@ import com.upsaclay.common.utils.mediumPadding
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.domain.longAnnouncementFixture
-import com.upsaclay.news.presentation.announcement.components.AnnouncementInput
+import com.upsaclay.news.presentation.announcement.components.EditAnnouncementInput
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -112,10 +113,11 @@ private fun EditAnnouncementScreen(
                     snackbarData = it
                 )
             }
-        }
-    ) { contentPadding ->
-        AnnouncementInput(
-            modifier = Modifier.mediumPadding(contentPadding),
+        },
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+    ) { innerPadding ->
+        EditAnnouncementInput(
+            modifier = Modifier.mediumPadding(innerPadding),
             title = title,
             content = content,
             onTitleChange = onTitleChange,

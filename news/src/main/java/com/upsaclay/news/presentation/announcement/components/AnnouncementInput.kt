@@ -28,7 +28,7 @@ import com.upsaclay.common.utils.Phones
 import com.upsaclay.news.R
 
 @Composable
-fun AnnouncementInput(
+fun CreateAnnouncementInput(
     modifier: Modifier = Modifier,
     title: String,
     content: String,
@@ -37,13 +37,44 @@ fun AnnouncementInput(
 ) {
     SelectionContainer {
         Column(
-            modifier = modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
+            modifier = modifier.fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
         ) {
-            AnnouncementTitleInput(title = title, onTitleChange = onTitleChange)
-            AnnouncementContentInput(content = content, onContentChange = onContentChange)
+            AnnouncementTitleInput(
+                title = title,
+                onTitleChange = onTitleChange,
+                focused = true
+            )
+            AnnouncementContentInput(
+                content = content,
+                onContentChange = onContentChange
+            )
+        }
+    }
+}
+
+@Composable
+fun EditAnnouncementInput(
+    modifier: Modifier = Modifier,
+    title: String,
+    content: String,
+    onTitleChange: (String) -> Unit,
+    onContentChange: (String) -> Unit
+) {
+    SelectionContainer(modifier = modifier) {
+        Column(
+            modifier = Modifier.verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+        ) {
+            AnnouncementTitleInput(
+                title = title,
+                onTitleChange = onTitleChange
+            )
+            AnnouncementContentInput(
+                content = content,
+                onContentChange = onContentChange,
+                focused = true
+            )
         }
     }
 }
@@ -51,52 +82,80 @@ fun AnnouncementInput(
 @Composable
 private fun AnnouncementTitleInput(
     title: String,
-    onTitleChange: (String) -> Unit
+    onTitleChange: (String) -> Unit,
+    focused: Boolean = false
 ) {
     val textStyle = MaterialTheme.typography.titleLarge.copy(
         fontWeight = FontWeight.SemiBold,
         fontSize = MaterialTheme.typography.titleMedium.fontSize * 1.3f
     )
-    TransparentFocusedTextField(
-        modifier = Modifier.fillMaxWidth(),
-        value = title,
-        placeholder = {
-            Text(
-                text = stringResource(id = R.string.title_field_entry),
-                style = textStyle,
-                color = MaterialTheme.colorScheme.hintText
-            )
-        },
-        onValueChange = {
-            val truncated = if (it.length <= 300) it else it.take(300)
-            onTitleChange(truncated)
-        },
-        textStyle = textStyle
-    )
+    val placeholder: @Composable () -> Unit = {
+        Text(
+            text = stringResource(id = R.string.title_field_entry),
+            style = textStyle,
+            color = MaterialTheme.colorScheme.hintText
+        )
+    }
+    val onValueChange: (String) -> Unit = {
+        val truncated = if (it.length <= 300) it else it.take(300)
+        onTitleChange(truncated)
+    }
+
+    if (focused) {
+        TransparentFocusedTextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = title,
+            placeholder = placeholder,
+            onValueChange = onValueChange,
+            textStyle = textStyle
+        )
+    } else {
+        TransparentTextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = title,
+            placeholder = placeholder,
+            onValueChange = onValueChange,
+            textStyle = textStyle
+        )
+    }
 }
 
 @Composable
 private fun AnnouncementContentInput(
     content: String,
-    onContentChange: (String) -> Unit
+    onContentChange: (String) -> Unit,
+    focused: Boolean = false
 ) {
     val textStyle = MaterialTheme.typography.bodyLarge
-    TransparentTextField(
-        modifier = Modifier.fillMaxWidth(),
-        value = content,
-        placeholder = {
-            Text(
-                text = stringResource(id = R.string.content_field_entry),
-                style = textStyle,
-                color = MaterialTheme.colorScheme.hintText
-            )
-        },
-        onValueChange = {
-            val truncated = if (it.length <= 2000) it else it.take(2000)
-            onContentChange(truncated)
-        },
-        textStyle = textStyle
-    )
+    val onValueChange: (String) -> Unit = {
+        val truncated = if (it.length <= 2000) it else it.take(2000)
+        onContentChange(truncated)
+    }
+    val placeholder: @Composable () -> Unit = {
+        Text(
+            text = stringResource(id = R.string.content_field_entry),
+            style = textStyle,
+            color = MaterialTheme.colorScheme.hintText
+        )
+    }
+
+    if (focused) {
+        TransparentFocusedTextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = content,
+            placeholder = placeholder,
+            onValueChange = onValueChange,
+            textStyle = textStyle,
+        )
+    } else {
+        TransparentTextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = content,
+            placeholder = placeholder,
+            onValueChange = onValueChange,
+            textStyle = textStyle
+        )
+    }
 }
 
 /*
@@ -113,7 +172,7 @@ private fun AnnouncementInputPreview() {
 
     GedoiseTheme {
         Surface {
-            AnnouncementInput(
+            CreateAnnouncementInput(
                 modifier = Modifier.padding(MaterialTheme.spacing.medium),
                 title = title,
                 content = content,

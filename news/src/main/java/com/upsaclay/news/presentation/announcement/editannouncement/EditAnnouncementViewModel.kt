@@ -84,7 +84,7 @@ class EditAnnouncementViewModel(
     }
 
     private fun validateContent(content: String): Boolean {
-        return content != announcement.content && content.isNotBlank()
+        return content.trim() != announcement.content && content.isNotBlank()
     }
 
     data class EditAnnouncementUiState(
