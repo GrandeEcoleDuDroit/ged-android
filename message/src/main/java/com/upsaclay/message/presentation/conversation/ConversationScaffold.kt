@@ -19,7 +19,7 @@ fun ConversationScaffold(
     content: @Composable (PaddingValues) -> Unit,
 ) {
     Scaffold(
-        topBar = { TitleTopBar(title = stringResource(R.string.messages)) },
+        topBar = { TitleTopBar(title = stringResource(com.upsaclay.common.R.string.messages)) },
         bottomBar = bottomBar,
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState) {
