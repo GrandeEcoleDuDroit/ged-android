@@ -4,7 +4,6 @@
     <string name="ic_group_add_description">Nouveau groupe</string>
     <string name="ic_fab_button_add_description">Ouvrir le pannel des boutons flottants</string>
 
-    <string name="messages">Messages</string>
     <string name="new_conversation">Nouvelle conversation</string>
     <string name="new_group">Nouveau groupe</string>
     <string name="start_conversation">Démarrer une conversation avec vos amis.</string>

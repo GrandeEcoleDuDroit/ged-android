@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="announcement_author_picture_description">Announcement author\'s photo</string>
+    <string name="recent_announcements">Recent announcements</string>
+    <string name="news_ged">GED News</string>
+    <string name="no_announcement">No announcements</string>
+    <string name="announcement">Announcement</string>
+    <string name="announcement_item_more_vert_description">Show announcement editing options</string>
+    <string name="new_announcement">New announcement</string>
+    <string name="edit_announcement">Edit announcement</string>
+    <string name="announcement_sent">Announcement sent</string>
+    <string name="delete_announcement_dialog_title">Delete announcement</string>
+    <string name="delete_announcement_dialog_text">Are you sure you want to delete this announcement ?</string>
+    <string name="title_field_entry">Title</string>
+    <string name="content_field_entry">Content</string>
+
+    <string name="announcement_refresh_error">Unable to refresh announcements</string>
+    <string name="announcement_deleted">Announcement deleted</string>
+</resources>

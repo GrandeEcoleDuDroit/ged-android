@@ -31,7 +31,7 @@ fun FirstRegistrationForm(
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
     ) {
         Text(
-            text = stringResource(id = R.string.enter_first_last_name),
+            text = stringResource(id = R.string.enter_name),
             style = MaterialTheme.typography.titleMedium
         )
 
