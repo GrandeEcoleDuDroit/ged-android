@@ -2,7 +2,6 @@ package com.upsaclay.news.presentation.announcement.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -35,9 +34,9 @@ fun CreateAnnouncementInput(
     onTitleChange: (String) -> Unit,
     onContentChange: (String) -> Unit
 ) {
-    SelectionContainer {
+    SelectionContainer(modifier = modifier) {
         Column(
-            modifier = modifier.fillMaxSize(),
+            modifier = Modifier.verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
         ) {
             AnnouncementTitleInput(

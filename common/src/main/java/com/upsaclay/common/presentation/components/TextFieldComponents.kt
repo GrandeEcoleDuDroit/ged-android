@@ -32,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.stringResource
@@ -85,7 +86,7 @@ fun SimpleOutlinedTextField(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
 @Composable
 fun TransparentTextField(
     modifier: Modifier = Modifier,
@@ -96,23 +97,61 @@ fun TransparentTextField(
     enabled: Boolean = true
 ) {
     val colors: TextFieldColors = TextFieldDefaults.colors()
+    var textLayoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
+    val lastVisibility = remember { mutableStateOf(false) }
+    val isKeyboardVisible = WindowInsets.isImeVisible
+    var textFieldValue by remember {
+        mutableStateOf(
+            TextFieldValue(
+                text = value,
+                selection = TextRange(value.length)
+            )
+        )
+    }
+    var isFocused by remember { mutableStateOf(false) }
+    val bringIntoViewRequester = remember { BringIntoViewRequester() }
+    val coroutineScope = rememberCoroutineScope()
     val backgroundColor = MaterialTheme.colorScheme.background
+
+    LaunchedEffect(isKeyboardVisible) {
+        val goToCursor = isKeyboardVisible != lastVisibility.value && isKeyboardVisible && isFocused
+        if (goToCursor) {
+            textLayoutResult?.let {
+                val cursorRect = it.getCursorRect(textFieldValue.selection.start)
+                coroutineScope.launch {
+                    bringIntoViewRequester.bringIntoView(cursorRect)
+                }
+            }
+        }
+    }
 
     BasicTextField(
         modifier = modifier
             .background(backgroundColor)
-            .padding(MaterialTheme.spacing.default),
+            .padding(MaterialTheme.spacing.default)
+            .bringIntoViewRequester(bringIntoViewRequester)
+            .onFocusChanged { isFocused = it.isFocused },
         enabled = enabled,
-        value = value,
-        onValueChange = onValueChange,
+        value = textFieldValue,
+        onValueChange = {
+            textFieldValue = it
+            onValueChange(it.text)
+        },
         textStyle = textStyle.copy(color = MaterialTheme.colorScheme.onBackground),
         keyboardOptions = KeyboardOptions(
             capitalization = KeyboardCapitalization.Sentences
         ),
-        cursorBrush = SolidColor(colors.cursorColor)
+        cursorBrush = SolidColor(colors.cursorColor),
+        onTextLayout = {
+            textLayoutResult = it
+            val cursorRect = it.getCursorRect(textFieldValue.selection.start)
+            coroutineScope.launch {
+                bringIntoViewRequester.bringIntoView(cursorRect)
+            }
+        }
     ) { innerTextField ->
         TextFieldDefaults.DecorationBox(
-            value = value,
+            value = textFieldValue.text,
             innerTextField = innerTextField,
             enabled = true,
             singleLine = false,
@@ -152,6 +191,7 @@ fun TransparentFocusedTextField(
             )
         )
     }
+    var isFocused by remember { mutableStateOf(false) }
     val bringIntoViewRequester = remember { BringIntoViewRequester() }
     val coroutineScope = rememberCoroutineScope()
     val backgroundColor = MaterialTheme.colorScheme.background
@@ -161,8 +201,9 @@ fun TransparentFocusedTextField(
         focusRequester.requestFocus()
     }
 
-    LaunchedEffect(isKeyboardVisible) {
-        if (isKeyboardVisible != lastVisibility.value && isKeyboardVisible) {
+    LaunchedEffect(isKeyboardVisible && isFocused) {
+        val goToCursor = isKeyboardVisible != lastVisibility.value && isKeyboardVisible && isFocused
+        if (goToCursor) {
             textLayoutResult?.let {
                 val cursorRect = it.getCursorRect(textFieldValue.selection.start)
                 coroutineScope.launch {
@@ -176,7 +217,8 @@ fun TransparentFocusedTextField(
         modifier = modifier
             .focusRequester(focusRequester)
             .background(backgroundColor)
-            .bringIntoViewRequester(bringIntoViewRequester),
+            .bringIntoViewRequester(bringIntoViewRequester)
+            .onFocusChanged { isFocused = it.isFocused },
         enabled = enabled,
         value = textFieldValue,
         onValueChange = {
