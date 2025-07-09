@@ -1,11 +1,17 @@
 package com.upsaclay.common.presentation.components
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -21,27 +27,29 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.Phones
 import kotlinx.coroutines.android.awaitFrame
+import kotlinx.coroutines.launch
 
 @Composable
-fun OutlineTextField(
+fun SimpleOutlinedTextField(
     modifier: Modifier = Modifier,
     value: String,
     label: String,
@@ -85,16 +93,15 @@ fun TransparentTextField(
     onValueChange: (String) -> Unit,
     placeholder: @Composable (() -> Unit),
     textStyle: TextStyle = TextStyle.Default,
-    backgroundColor: Color = MaterialTheme.colorScheme.background,
-    padding: Dp = MaterialTheme.spacing.default,
     enabled: Boolean = true
 ) {
     val colors: TextFieldColors = TextFieldDefaults.colors()
+    val backgroundColor = MaterialTheme.colorScheme.background
 
     BasicTextField(
         modifier = modifier
             .background(backgroundColor)
-            .padding(padding),
+            .padding(MaterialTheme.spacing.default),
         enabled = enabled,
         value = value,
         onValueChange = onValueChange,
@@ -123,50 +130,73 @@ fun TransparentTextField(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
 @Composable
 fun TransparentFocusedTextField(
     modifier: Modifier = Modifier,
-    value: String = "",
+    value: String,
     onValueChange: (String) -> Unit,
     placeholder: @Composable (() -> Unit),
     textStyle: TextStyle = TextStyle.Default,
-    backgroundColor: Color = MaterialTheme.colorScheme.background,
-    padding: PaddingValues = PaddingValues(MaterialTheme.spacing.default),
-    shape: Shape = TextFieldDefaults.shape,
-    displayKeyboard: Boolean = true,
-    enabled: Boolean = true
+    enabled: Boolean = true,
 ) {
     val focusRequester = remember { FocusRequester() }
-    val colors: TextFieldColors = TextFieldDefaults.colors()
+    var textLayoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
+    val lastVisibility = remember { mutableStateOf(false) }
+    val isKeyboardVisible = WindowInsets.isImeVisible
+    var textFieldValue by remember {
+        mutableStateOf(
+            TextFieldValue(
+                text = value,
+                selection = TextRange(value.length)
+            )
+        )
+    }
+    val bringIntoViewRequester = remember { BringIntoViewRequester() }
+    val coroutineScope = rememberCoroutineScope()
+    val backgroundColor = MaterialTheme.colorScheme.background
 
-    if (displayKeyboard) {
-        LaunchedEffect(Unit) {
-            awaitFrame()
-            focusRequester.requestFocus()
+    LaunchedEffect(Unit) {
+        awaitFrame()
+        focusRequester.requestFocus()
+    }
+
+    LaunchedEffect(isKeyboardVisible) {
+        if (isKeyboardVisible != lastVisibility.value && isKeyboardVisible) {
+            textLayoutResult?.let {
+                val cursorRect = it.getCursorRect(textFieldValue.selection.start)
+                coroutineScope.launch {
+                    bringIntoViewRequester.bringIntoView(cursorRect)
+                }
+            }
         }
     }
 
     BasicTextField(
-        modifier =  modifier
-            .then(if (displayKeyboard) Modifier.focusRequester(focusRequester) else Modifier)
-            .clip(shape)
+        modifier = modifier
+            .focusRequester(focusRequester)
             .background(backgroundColor)
-            .padding(padding),
+            .bringIntoViewRequester(bringIntoViewRequester),
         enabled = enabled,
-        value = value,
+        value = textFieldValue,
         onValueChange = {
-            onValueChange(it)
+            textFieldValue = it
+            onValueChange(it.text)
         },
         textStyle = textStyle.copy(color = MaterialTheme.colorScheme.onBackground),
-        keyboardOptions = KeyboardOptions(
-            capitalization = KeyboardCapitalization.Sentences
-        ),
-        cursorBrush = SolidColor(colors.cursorColor)
+        keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
+        cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+        onTextLayout = {
+            textLayoutResult = it
+            val cursorRect = it.getCursorRect(textFieldValue.selection.start)
+            coroutineScope.launch {
+                bringIntoViewRequester.bringIntoView(cursorRect)
+            }
+        }
     ) { innerTextField ->
         val interactionSource = remember { MutableInteractionSource() }
         TextFieldDefaults.DecorationBox(
-            value = value,
+            value = textFieldValue.text,
             innerTextField = innerTextField,
             enabled = true,
             singleLine = false,
@@ -197,7 +227,7 @@ private fun OutlinedTextFieldPreview() {
 
     GedoiseTheme {
         Surface {
-            OutlineTextField(
+            SimpleOutlinedTextField(
                 modifier = Modifier.padding(MaterialTheme.spacing.small),
                 value = text,
                 label = "Label",
@@ -217,9 +247,7 @@ private fun TransparentTextFieldPreview() {
             modifier = Modifier.fillMaxWidth(),
             value = text,
             onValueChange = { text = it },
-            placeholder = { Text("Placeholder") },
-            backgroundColor = MaterialTheme.colorScheme.background,
-            padding = MaterialTheme.spacing.medium,
+            placeholder = { Text("Placeholder") }
         )
     }
 }

@@ -17,7 +17,7 @@ import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.common.utils.mediumPadding
 import com.upsaclay.news.R
-import com.upsaclay.news.presentation.announcement.components.AnnouncementInput
+import com.upsaclay.news.presentation.announcement.components.CreateAnnouncementInput
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -72,7 +72,7 @@ private fun CreateAnnouncementScreen(
             )
         }
     ) { contentPadding ->
-        AnnouncementInput(
+        CreateAnnouncementInput(
             modifier = Modifier.mediumPadding(contentPadding),
             title = title,
             content = content,
