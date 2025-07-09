@@ -96,7 +96,7 @@ fun ProfileScreen(
         topBar = {
             BackTopBar(
                 onBackClick = onBackClick,
-                title = stringResource(id = R.string.profile)
+                title = stringResource(id = com.upsaclay.common.R.string.profile)
             )
         }
     ) {
