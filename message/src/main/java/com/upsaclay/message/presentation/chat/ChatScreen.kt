@@ -21,17 +21,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.lifecycle.compose.LifecycleStartEffect
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.rememberNavController
 import androidx.paging.PagingData
 import com.upsaclay.common.domain.entity.SingleUiEvent
+import com.upsaclay.common.presentation.components.SensibleActionDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.Tablets
 import com.upsaclay.common.utils.mediumPadding
+import com.upsaclay.message.R
 import com.upsaclay.message.domain.conversationFixture
 import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.Message
+import com.upsaclay.message.domain.entity.MessageState
 import com.upsaclay.message.domain.messagesFixture
 import com.upsaclay.message.presentation.chat.ChatViewModel.MessageEvent
 import kotlinx.coroutines.flow.Flow
@@ -70,14 +74,6 @@ fun ChatDestination(
         }
     }
 
-    LifecycleStartEffect(Unit) {
-        viewModel.seeMessage()
-
-        onStopOrDispose {
-            viewModel.stopSeeingMessage()
-        }
-    }
-
     ChatScreen(
         conversation = conversation,
         messages = viewModel.messages,
@@ -86,7 +82,9 @@ fun ChatDestination(
         newMessageEvent = newMessageEvent,
         onTextChange = viewModel::onTextChange,
         onSendMessage = viewModel::sendMessage,
-        onBackClick = onBackClick
+        onResendMessageClick = viewModel::resendErrorMessage,
+        onDeleteMessageClick = viewModel::deleteErrorMessage,
+        onBackClick = onBackClick,
     )
 }
 
@@ -99,9 +97,27 @@ private fun ChatScreen(
     newMessageEvent: MessageEvent.NewMessage?,
     onTextChange: (String) -> Unit,
     onSendMessage: () -> Unit,
+    onResendMessageClick: (Message) -> Unit,
+    onDeleteMessageClick: (Message) -> Unit,
     onBackClick: () -> Unit
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
+    var showBottomSheet by remember { mutableStateOf(false) }
+    var messageClicked: Message? by remember { mutableStateOf(null) }
+    var showDeleteMessageDialog by remember { mutableStateOf(false) }
+
+    if (showDeleteMessageDialog) {
+        SensibleActionDialog(
+            title = stringResource(id = R.string.delete_message_dialog_title),
+            text = stringResource(id = R.string.delete_message_dialog_message),
+            confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
+            onConfirm = {
+                showDeleteMessageDialog = false
+                messageClicked?.let(onDeleteMessageClick)
+            },
+            onCancel = { showDeleteMessageDialog  = false }
+        )
+    }
 
     Scaffold(
         topBar = {
@@ -133,7 +149,13 @@ private fun ChatScreen(
                 modifier = Modifier.weight(1f),
                 messages = messages,
                 interlocutor = conversation.interlocutor,
-                newMessageEvent = newMessageEvent
+                newMessageEvent = newMessageEvent,
+                onErrorMessageClick = {
+                    if (it.state == MessageState.ERROR) {
+                        messageClicked = it
+                        showBottomSheet = true
+                    }
+                }
             )
 
             MessageInput(
@@ -141,6 +163,14 @@ private fun ChatScreen(
                 value = text,
                 onValueChange = onTextChange,
                 onSendClick = onSendMessage
+            )
+        }
+
+        if (showBottomSheet) {
+            ChatBottomSheet(
+                onDismiss = { showBottomSheet = false },
+                onResendMessageClick = { messageClicked?.let(onResendMessageClick) },
+                onDeleteMessageClick = { showDeleteMessageDialog = true }
             )
         }
     }
@@ -153,6 +183,7 @@ private fun ChatScreen(
  */
 
 @Phones
+@Tablets
 @Composable
 private fun ChatScreenPreview() {
     var text by remember { mutableStateOf("") }
@@ -165,6 +196,8 @@ private fun ChatScreenPreview() {
             newMessageEvent = null,
             onTextChange = { text = it },
             onSendMessage = {},
+            onDeleteMessageClick = {},
+            onResendMessageClick = {},
             onBackClick = {}
         )
     }

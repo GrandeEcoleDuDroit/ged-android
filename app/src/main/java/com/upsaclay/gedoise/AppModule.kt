@@ -1,25 +1,27 @@
 package com.upsaclay.gedoise
 
+import MainViewModel
 import androidx.room.Room
 import com.upsaclay.common.ConnectivityObserverImpl
 import com.upsaclay.common.data.GED_SERVER_QUALIFIER
+import com.upsaclay.common.data.TokenProvider
 import com.upsaclay.common.data.local.FcmDataStore
 import com.upsaclay.common.data.local.FcmLocalDataSource
 import com.upsaclay.common.data.remote.api.FcmApi
 import com.upsaclay.common.domain.ConnectivityObserver
 import com.upsaclay.common.domain.IntentHelper
 import com.upsaclay.common.domain.e
+import com.upsaclay.common.domain.repository.RouteRepository
 import com.upsaclay.gedoise.data.GedoiseDatabase
-import com.upsaclay.gedoise.data.repository.ScreenRepositoryImpl
-import com.upsaclay.common.domain.repository.ScreenRepository
+import com.upsaclay.gedoise.data.repository.RouteRepositoryImpl
+import com.upsaclay.gedoise.data.repository.TokenProviderImpl
 import com.upsaclay.gedoise.domain.usecase.ClearDataUseCase
-import com.upsaclay.gedoise.domain.usecase.DataListeningUseCase
 import com.upsaclay.gedoise.domain.usecase.FcmTokenUseCase
+import com.upsaclay.gedoise.domain.usecase.ListenDataUseCase
 import com.upsaclay.gedoise.domain.usecase.ListenRemoteUserUseCase
+import com.upsaclay.gedoise.presentation.navigation.NavigationViewModel
 import com.upsaclay.gedoise.presentation.profile.ProfileViewModel
 import com.upsaclay.gedoise.presentation.profile.account.AccountViewModel
-import com.upsaclay.gedoise.presentation.viewmodels.MainViewModel
-import com.upsaclay.gedoise.presentation.viewmodels.NavigationViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -40,7 +42,7 @@ val appModule = module {
         CoroutineScope(
     SupervisorJob() +
             Dispatchers.IO +
-            CoroutineExceptionHandler { coroutineContext, throwable ->
+            CoroutineExceptionHandler { _, throwable ->
                 e("Uncaught error in backgroundScope", throwable)
             }
         )
@@ -63,6 +65,7 @@ val appModule = module {
     single { get<GedoiseDatabase>().conversationDao() }
     single { get<GedoiseDatabase>().messageDao() }
     single { get<GedoiseDatabase>().conversationMessageDao() }
+    single { get<GedoiseDatabase>().notificationMessageDao() }
 
     single<ConnectivityObserver> {
         ConnectivityObserverImpl(
@@ -70,9 +73,10 @@ val appModule = module {
             scope = get(BACKGROUND_SCOPE)
         )
     }
-    singleOf(::ScreenRepositoryImpl) { bind<ScreenRepository>() }
+    singleOf(::RouteRepositoryImpl) { bind<RouteRepository>() }
     singleOf(::FcmLocalDataSource)
     singleOf(::FcmDataStore)
+    singleOf(::TokenProviderImpl) { bind<TokenProvider>() }
 
     viewModelOf(::NavigationViewModel)
     viewModelOf(::ProfileViewModel)
@@ -80,11 +84,11 @@ val appModule = module {
     viewModelOf(::MainViewModel)
 
     singleOf(::ClearDataUseCase)
-    singleOf(::DataListeningUseCase)
+    singleOf(::ListenDataUseCase)
     single {
         FcmTokenUseCase(
             userRepository = get(),
-            credentialsRepository = get(),
+            fcmTokenRepository = get(),
             authenticationRepository = get(),
             connectivityObserver = get(),
             scope = get(BACKGROUND_SCOPE)
@@ -92,7 +96,6 @@ val appModule = module {
     }
     single {
         ListenRemoteUserUseCase(
-            authenticationRepository = get(),
             userRepository = get(),
             scope = get(BACKGROUND_SCOPE)
         )

@@ -1,5 +1,6 @@
 package com.upsaclay.gedoise.presentation
 
+import MainViewModel
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -14,12 +15,12 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.upsaclay.common.domain.entity.FcmDataType
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.gedoise.presentation.navigation.GedNavHost
+import com.upsaclay.gedoise.presentation.navigation.NavigationViewModel
 import com.upsaclay.gedoise.presentation.navigation.SplashRoute
-import com.upsaclay.gedoise.presentation.viewmodels.MainViewModel
-import com.upsaclay.gedoise.presentation.viewmodels.NavigationViewModel
-import com.upsaclay.message.domain.MessageJsonConverter
-import com.upsaclay.message.presentation.CONVERSATION_ID_EXTRA
-import com.upsaclay.message.presentation.MessageNotificationPresenter
+import com.upsaclay.message.domain.converter.ConversationJsonConverter
+import com.upsaclay.message.domain.converter.NotificationMessageJsonConverter
+import com.upsaclay.message.notification.CONVERSATION_ID_EXTRA
+import com.upsaclay.message.notification.NotificationMessageManager
 import com.upsaclay.message.presentation.chat.ChatRoute
 import kotlinx.serialization.InternalSerializationApi
 import org.koin.android.ext.android.inject
@@ -30,11 +31,11 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class MainActivity : ComponentActivity() {
     private val mainViewModel: MainViewModel by viewModel()
     private val navigationViewModel: NavigationViewModel by viewModel()
-    private val messageNotificationPresenter: MessageNotificationPresenter by inject<MessageNotificationPresenter>()
+    private val notificationMessageManager: NotificationMessageManager by inject<NotificationMessageManager>()
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
-                messageNotificationPresenter.start()
+                notificationMessageManager.start()
             }
         }
 
@@ -64,12 +65,12 @@ class MainActivity : ComponentActivity() {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                 == PackageManager.PERMISSION_GRANTED
             ) {
-                messageNotificationPresenter.start()
+                notificationMessageManager.start()
             } else {
                 requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         } else {
-            messageNotificationPresenter.start()
+            notificationMessageManager.start()
         }
     }
 
@@ -95,8 +96,8 @@ class MainActivity : ComponentActivity() {
         when (type) {
             FcmDataType.MESSAGE.toString() -> {
                 extras?.getString("value")?.let { value ->
-                    MessageJsonConverter.toConversationMessage(value)?.let {
-                        val conversationJson = MessageJsonConverter.toConversationJson(it.conversation)
+                    NotificationMessageJsonConverter.toNotificationMessage(value)?.let {
+                        val conversationJson = ConversationJsonConverter.toConversationJson(it.conversation)
                         navigationViewModel.intentToNavigate(ChatRoute(conversationJson))
                     }
                 }

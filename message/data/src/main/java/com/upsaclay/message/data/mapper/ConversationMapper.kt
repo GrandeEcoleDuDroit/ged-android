@@ -4,17 +4,13 @@ import com.upsaclay.common.data.extensions.toLocalDateTime
 import com.upsaclay.common.data.extensions.toTimestamp
 import com.upsaclay.common.domain.UrlUtils
 import com.upsaclay.common.domain.entity.User
-import com.upsaclay.common.domain.extensions.toLocalDateTime
-import com.upsaclay.common.domain.extensions.toLong
+import com.upsaclay.common.domain.extensions.toEpochMilliUTC
+import com.upsaclay.common.domain.extensions.toLocalDateTimeUTC
 import com.upsaclay.message.data.local.model.LocalConversation
-import com.upsaclay.message.data.local.model.LocalConversationMessage
 import com.upsaclay.message.data.model.ConversationField
 import com.upsaclay.message.data.remote.model.RemoteConversation
 import com.upsaclay.message.domain.entity.Conversation
-import com.upsaclay.message.domain.entity.ConversationMessage
 import com.upsaclay.message.domain.entity.ConversationState
-import com.upsaclay.message.domain.entity.Message
-import com.upsaclay.message.domain.entity.MessageState
 
 fun Conversation.toLocal() = LocalConversation(
     conversationId = id,
@@ -24,16 +20,17 @@ fun Conversation.toLocal() = LocalConversation(
     interlocutorEmail = interlocutor.email,
     interlocutorIsMember = interlocutor.isMember,
     interlocutorSchoolLevel = interlocutor.schoolLevel,
-    interlocutorProfilePictureFileName = UrlUtils.getFileNameFromUrl(interlocutor.profilePictureFileName),
-    createdAt = createdAt.toLong(),
+    interlocutorProfilePictureFileName = UrlUtils.getFileNameFromUrl(interlocutor.profilePictureUrl),
+    createdAt = createdAt.toEpochMilliUTC(),
     conversationState = state.name,
-    conversationDeleteTime = deleteTime?.toLong()
+    conversationDeleteTime = deleteTime?.toEpochMilliUTC()
 )
 
 internal fun Conversation.toRemote(userId: String) = RemoteConversation(
     conversationId = id,
     participants = listOf(userId, interlocutor.id),
-    createdAt = createdAt.toTimestamp()
+    createdAt = createdAt.toTimestamp(),
+    deleteTime = deleteTime?.let { mapOf(userId to it.toTimestamp()) }
 )
 
 fun LocalConversation.toConversation(): Conversation {
@@ -44,15 +41,15 @@ fun LocalConversation.toConversation(): Conversation {
         email = interlocutorEmail,
         schoolLevel = interlocutorSchoolLevel,
         isMember = interlocutorIsMember,
-        profilePictureFileName = UrlUtils.formatProfilePictureUrl(interlocutorProfilePictureFileName)
+        profilePictureUrl = UrlUtils.formatProfilePictureUrl(interlocutorProfilePictureFileName)
     )
 
     return Conversation(
         id = conversationId,
         interlocutor = interlocutor,
-        createdAt = createdAt.toLocalDateTime(),
+        createdAt = createdAt.toLocalDateTimeUTC(),
         state = ConversationState.valueOf(conversationState),
-        deleteTime = conversationDeleteTime?.toLocalDateTime()
+        deleteTime = conversationDeleteTime?.toLocalDateTimeUTC()
     )
 }
 
@@ -71,40 +68,7 @@ internal fun RemoteConversation.toMap(): Map<String, Any> {
     data[ConversationField.Remote.PARTICIPANTS] = participants
     data[ConversationField.CREATED_AT] = createdAt
     deleteTime?.let {
-        data[ConversationField.Remote.DELETE_TIME] = it
+        data[ConversationField.DELETE_TIME] = it
     }
     return data
 }
-
-fun LocalConversationMessage.toConversationMessage() = ConversationMessage(
-    conversation = this.toConversation(),
-    lastMessage = this.toMessage()
-)
-
-private fun LocalConversationMessage.toConversation() = Conversation(
-    id = conversationId,
-    interlocutor = User(
-        id = interlocutorId,
-        firstName = interlocutorFirstName,
-        lastName = interlocutorLastName,
-        email = interlocutorEmail,
-        schoolLevel = interlocutorSchoolLevel,
-        isMember = interlocutorIsMember,
-        profilePictureFileName = UrlUtils.formatProfilePictureUrl(interlocutorProfilePictureFileName)
-    ),
-    createdAt = createdAt.toLocalDateTime(),
-    state = ConversationState.valueOf(conversationState),
-    deleteTime = conversationDeleteTime?.toLocalDateTime()
-)
-
-private fun LocalConversationMessage.toMessage() = Message(
-    id = messageId,
-    senderId = senderId,
-    recipientId = recipientId,
-    conversationId = conversationId,
-    content = content,
-    date = messageTimestamp.toLocalDateTime(),
-    seen = seen,
-    state = MessageState.valueOf(messageState)
-)
-

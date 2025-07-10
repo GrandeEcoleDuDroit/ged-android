@@ -47,7 +47,7 @@ fun RecentAnnouncementBottomSheet(
     ) {
         ClickableItem(
             modifier = Modifier.fillMaxWidth(),
-            text = { Text(text = stringResource(id = R.string.resend_announcement)) },
+            text = { Text(text = stringResource(id = com.upsaclay.common.R.string.resend)) },
             icon = {
                 Icon(
                     imageVector = Icons.Default.Refresh,

@@ -6,23 +6,25 @@ import androidx.paging.PagingData
 import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.UserRepository
+import com.upsaclay.common.domain.usecase.GenerateIdUseCase
 import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.Message
+import com.upsaclay.message.domain.entity.MessageState
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
-import com.upsaclay.message.domain.usecase.MessageNotificationUseCase
 import com.upsaclay.message.domain.usecase.SendMessageUseCase
-import kotlinx.coroutines.Job
+import com.upsaclay.message.notification.NotificationMessageManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.Duration
 import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 class ChatViewModel(
     private val conversation: Conversation,
@@ -30,7 +32,7 @@ class ChatViewModel(
     private val conversationRepository: ConversationRepository,
     private val messageRepository: MessageRepository,
     private val sendMessageUseCase: SendMessageUseCase,
-    private val messageNotificationUseCase: MessageNotificationUseCase,
+    private val notificationMessageManager: NotificationMessageManager,
 ): ViewModel() {
     private val user: User? = userRepository.currentUser
     private val _uiState = MutableStateFlow(
@@ -43,12 +45,12 @@ class ChatViewModel(
     internal val messages: Flow<PagingData<Message>> = messageRepository.getPagingMessages(conversation.id)
     private val _event = MutableSharedFlow<SingleUiEvent>()
     internal val event: Flow<SingleUiEvent> = _event
-    private var readMessageJob: Job? = null
 
     init {
         listenConversation()
         emitNewMessageReceived()
-        seeMessage()
+        seeMessages()
+        seeNewMessage()
         clearChatNotifications()
     }
 
@@ -60,42 +62,81 @@ class ChatViewModel(
 
     fun sendMessage() {
         try {
-            val text = _uiState.value.text.takeUnless { it.isEmpty() } ?: return
-            val conversation = _uiState.value.conversation
+            val text = uiState.value.text.takeUnless { it.isEmpty() } ?: return
+            val conversation = uiState.value.conversation
             val user = requireNotNull(user)
-            sendMessageUseCase(conversation, user, text)
+            val message = Message(
+                id = GenerateIdUseCase.longId,
+                conversationId = conversation.id,
+                senderId = user.id,
+                recipientId = conversation.interlocutor.id,
+                content = text,
+                date = LocalDateTime.now(ZoneOffset.UTC),
+                state = MessageState.DRAFT
+            )
+            sendMessageUseCase(
+                conversation = conversation,
+                message = message,
+                userId = user.id
+            )
             _uiState.update { it.copy(text = "") }
         } catch (_: IllegalArgumentException) {
             viewModelScope.launch {
-                _event.emit(SingleUiEvent.Error(com.upsaclay.common.R.string.user_not_found))
+                _event.emit(SingleUiEvent.Error(com.upsaclay.common.R.string.current_user_not_found_error))
             }
         }
     }
 
-    fun seeMessage() {
-        readMessageJob = viewModelScope.launch {
-            user ?: return@launch
-            messageRepository.getUnreadMessagesByUser(conversation.id, user.id)
-                .collectLatest { messages ->
-                    messages.forEach {
-                        messageRepository.updateSeenMessage(it.copy(seen = true))
-                    }
-                }
+    fun resendErrorMessage(message: Message) {
+        try {
+            val user = requireNotNull(user)
+            viewModelScope.launch {
+                sendMessageUseCase(
+                    conversation = uiState.value.conversation,
+                    message = message.copy(date = LocalDateTime.now(ZoneOffset.UTC)),
+                    userId = user.id
+                )
+            }
+        } catch (_: IllegalArgumentException) {
+            viewModelScope.launch {
+                _event.emit(SingleUiEvent.Error(com.upsaclay.common.R.string.current_user_not_found_error))
+            }
         }
     }
 
-    fun stopSeeingMessage() {
-        readMessageJob?.cancel()
-        readMessageJob = null
+    fun deleteErrorMessage(message: Message) {
+        viewModelScope.launch {
+            messageRepository.deleteLocalMessage(message)
+        }
+    }
+
+    private fun seeMessages() {
+        viewModelScope.launch {
+            user?.let {
+                messageRepository.updateSeenMessages(conversation.id, it.id)
+            }
+        }
     }
 
     private fun emitNewMessageReceived() {
         viewModelScope.launch {
-            messageRepository.getLastMessage(conversation.id)
-                .filter { it.senderId != user?.id }
-                .filter { Duration.between(it.date, LocalDateTime.now()).toMinutes() < 1L }
+            messageRepository.getLastMessageFlow(conversation.id)
+                .filterNotNull()
+                .filter { Duration.between(it.date, LocalDateTime.now(ZoneOffset.UTC)).toMinutes() < 1L }
                 .collect {
                     _event.emit(MessageEvent.NewMessage(it))
+                }
+        }
+    }
+
+    private fun seeNewMessage() {
+        viewModelScope.launch {
+            messageRepository.getLastMessageFlow(conversation.id)
+                .filterNotNull()
+                .filter { it.senderId != user?.id }
+                .filter { it.seen.not() }
+                .collect {
+                    messageRepository.updateSeenMessage(it)
                 }
         }
     }
@@ -111,7 +152,7 @@ class ChatViewModel(
 
     private fun clearChatNotifications() {
         viewModelScope.launch {
-            messageNotificationUseCase.clearNotifications(_uiState.value.conversation.id)
+            notificationMessageManager.clearNotifications(_uiState.value.conversation.id)
         }
     }
 

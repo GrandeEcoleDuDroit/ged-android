@@ -3,8 +3,9 @@ package com.upsaclay.gedoise.domain.usecase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.upsaclay.authentication.domain.repository.AuthenticationRepository
 import com.upsaclay.common.domain.ConnectivityObserver
+import com.upsaclay.common.domain.d
 import com.upsaclay.common.domain.entity.FcmToken
-import com.upsaclay.common.domain.repository.CredentialsRepository
+import com.upsaclay.common.domain.repository.FcmTokenRepository
 import com.upsaclay.common.domain.repository.UserRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.combine
@@ -17,7 +18,7 @@ import kotlinx.serialization.InternalSerializationApi
 class FcmTokenUseCase(
     private val userRepository: UserRepository,
     private val authenticationRepository: AuthenticationRepository,
-    private val credentialsRepository: CredentialsRepository,
+    private val fcmTokenRepository: FcmTokenRepository,
     private val connectivityObserver: ConnectivityObserver,
     private val scope: CoroutineScope
 ) {
@@ -31,15 +32,16 @@ class FcmTokenUseCase(
            }
                .collect { isAuthenticated ->
                    if (isAuthenticated) {
-                       credentialsRepository.getUnsentFcmToken()?.let { fcmToken ->
+                       fcmTokenRepository.getUnsentFcmToken()?.let { fcmToken ->
                            val userId = fcmToken.userId ?: userRepository.currentUser?.id ?: return@let
                            sendFcmToken(fcmToken.copy(userId = userId))
                        }
                    } else {
-                       credentialsRepository.removeUnsentFcmToken()
+                       fcmTokenRepository.removeUnsentFcmToken()
                        FirebaseMessaging.getInstance().deleteToken()
                        val token = FirebaseMessaging.getInstance().token.await()
-                       credentialsRepository.storeUnsentFcmToken(FcmToken(null, token))
+                       d("New FCM token: $token")
+                       fcmTokenRepository.storeUnsentFcmToken(FcmToken(null, token))
                    }
                }
            }
@@ -47,15 +49,15 @@ class FcmTokenUseCase(
 
     suspend fun sendFcmToken(fcmToken: FcmToken) {
         runCatching {
-            credentialsRepository.sendFcmToken(fcmToken)
-            credentialsRepository.removeUnsentFcmToken()
+            fcmTokenRepository.sendFcmToken(fcmToken)
+            fcmTokenRepository.removeUnsentFcmToken()
         }
             .onFailure {
-                credentialsRepository.storeUnsentFcmToken(fcmToken)
+                fcmTokenRepository.storeUnsentFcmToken(fcmToken)
             }
     }
 
     suspend fun storeToken(fcmToken: FcmToken) {
-        credentialsRepository.storeUnsentFcmToken(fcmToken)
+        fcmTokenRepository.storeUnsentFcmToken(fcmToken)
     }
 }

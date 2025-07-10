@@ -8,12 +8,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.authentication.R
 import com.upsaclay.authentication.presentation.components.OutlinePasswordTextField
-import com.upsaclay.common.presentation.components.OutlineTextField
+import com.upsaclay.common.presentation.components.SimpleOutlinedTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.Phones
@@ -25,6 +26,7 @@ fun ThirdRegistrationForm(
     loading: Boolean,
     @StringRes emailError: Int?,
     @StringRes passwordError: Int?,
+    @StringRes errorMessage: Int?,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit
 ) {
@@ -36,7 +38,7 @@ fun ThirdRegistrationForm(
             style = MaterialTheme.typography.titleMedium
         )
 
-        OutlineTextField(
+        SimpleOutlinedTextField(
             modifier = Modifier
                 .fillMaxWidth()
                 .testTag(stringResource(R.string.registration_screen_email_input_tag)),
@@ -56,6 +58,15 @@ fun ThirdRegistrationForm(
             onValueChange = onPasswordChange,
             errorMessage = passwordError
         )
+
+        errorMessage?.let {
+            Text(
+                modifier = Modifier.align(Alignment.Start),
+                text = stringResource(it),
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
     }
 }
 
@@ -76,6 +87,7 @@ private fun PreviewThirdRegistrationForm() {
                 loading = false,
                 emailError = null,
                 passwordError = null,
+                errorMessage = null,
                 onEmailChange = {},
                 onPasswordChange = {}
             )

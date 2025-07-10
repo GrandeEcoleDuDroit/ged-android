@@ -7,13 +7,12 @@ import com.upsaclay.common.domain.entity.FcmDataType
 import com.upsaclay.common.domain.entity.FcmToken
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.gedoise.domain.usecase.FcmTokenUseCase
-import com.upsaclay.message.domain.MessageJsonConverter
-import com.upsaclay.message.presentation.MessageNotificationPresenter
+import com.upsaclay.message.domain.converter.NotificationMessageJsonConverter
+import com.upsaclay.message.notification.NotificationMessageManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import kotlinx.serialization.InternalSerializationApi
@@ -22,7 +21,7 @@ import org.koin.android.ext.android.inject
 @OptIn(InternalSerializationApi::class)
 class FcmService: FirebaseMessagingService() {
     private var job: Job? = null
-    private val messageNotificationPresenter: MessageNotificationPresenter by inject<MessageNotificationPresenter>()
+    private val notificationMessageManager: NotificationMessageManager by inject<NotificationMessageManager>()
     private val fcmTokenUseCase: FcmTokenUseCase by inject<FcmTokenUseCase>()
     private val userRepository: UserRepository by inject<UserRepository>()
     private val scope = CoroutineScope(SupervisorJob())
@@ -32,7 +31,6 @@ class FcmService: FirebaseMessagingService() {
         job?.cancel()
         job = scope.launch(Dispatchers.IO) {
             userRepository.user
-                .filterNotNull()
                 .take(1)
                 .collect {
                     fcmTokenUseCase.sendFcmToken(FcmToken(it.id, tokenValue))
@@ -56,8 +54,8 @@ class FcmService: FirebaseMessagingService() {
 
     private suspend fun showMessageNotification(extra: Bundle?) {
         extra?.getString("value")?.let { value ->
-            MessageJsonConverter.toConversationMessage(value)?.let  {
-                messageNotificationPresenter.showNotification(it)
+            NotificationMessageJsonConverter.toNotificationMessage(value)?.let  {
+                notificationMessageManager.showNotification(it)
             }
         }
     }

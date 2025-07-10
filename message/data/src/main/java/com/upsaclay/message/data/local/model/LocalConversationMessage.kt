@@ -3,12 +3,11 @@ package com.upsaclay.message.data.local.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.upsaclay.message.data.model.CONVERSATION_MESSAGES_TABLE_NAME
 import com.upsaclay.message.data.model.ConversationField
 import com.upsaclay.message.data.model.MessageField
 
-private const val TABLE_NAME = "conversation_message"
-
-@Entity(tableName = TABLE_NAME)
+@Entity(tableName = CONVERSATION_MESSAGES_TABLE_NAME)
 data class LocalConversationMessage(
     @PrimaryKey
     @ColumnInfo(name = ConversationField.CONVERSATION_ID) val conversationId: String,
@@ -23,7 +22,7 @@ data class LocalConversationMessage(
     @ColumnInfo(name = ConversationField.Local.CONVERSATION_STATE) val conversationState: String,
     @ColumnInfo(name = ConversationField.Local.CONVERSATION_DELETE_TIME) val conversationDeleteTime: Long?,
 
-    @ColumnInfo(name = MessageField.MESSAGE_ID) val messageId: Int,
+    @ColumnInfo(name = MessageField.MESSAGE_ID) val messageId: Long,
     @ColumnInfo(name = MessageField.SENDER_ID) val senderId: String,
     @ColumnInfo(name = MessageField.RECIPIENT_ID) val recipientId: String,
     @ColumnInfo(name = MessageField.CONTENT) val content: String,

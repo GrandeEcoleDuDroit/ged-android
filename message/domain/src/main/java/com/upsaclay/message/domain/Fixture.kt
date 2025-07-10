@@ -10,15 +10,17 @@ import com.upsaclay.message.domain.entity.ConversationState
 import com.upsaclay.message.domain.entity.ConversationUi
 import com.upsaclay.message.domain.entity.Message
 import com.upsaclay.message.domain.entity.MessageState
-import kotlinx.serialization.InternalSerializationApi
+import com.upsaclay.message.domain.entity.NotificationMessage
+import com.upsaclay.message.domain.entity.NotificationMessages
 import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 val messageFixture = Message(
     id = 1,
     senderId = userFixture.id,
     recipientId = userFixture2.id,
     conversationId = "1",
-    content = "Salut, bien et toi ? Oui bien sûr.",
+    content = "Salut, bien et toi ? Oui bien sûr. On se retrouve à la cafétéria ?",
     date = LocalDateTime.of(2024, 7, 20, 10, 0),
     seen = true,
     state = MessageState.SENT
@@ -30,21 +32,21 @@ val messageFixture2 = Message(
     recipientId = userFixture2.id,
     conversationId = "1",
     content = "Salut ça va ? Cela fait longtemps que j'attend de te parler. Pourrait-on se voir ?",
-    date = LocalDateTime.now(),
+    date = LocalDateTime.now(ZoneOffset.UTC),
     seen = false,
     state = MessageState.SENT
 )
 
 val messagesFixture = listOf(
     messageFixture.copy(id = 1),
-    messageFixture2.copy(id = 2, date = LocalDateTime.now().minusDays(2)),
-    messageFixture.copy(id = 3, date = LocalDateTime.now().minusDays(1)),
-    messageFixture2.copy(id = 4, date = LocalDateTime.now()),
-    messageFixture2.copy(id = 5, date = LocalDateTime.now()),
-    messageFixture2.copy(id = 6, date = LocalDateTime.now()),
-    messageFixture2.copy(id = 7, date = LocalDateTime.now()),
-    messageFixture2.copy(id = 8, date = LocalDateTime.now()),
-    messageFixture2.copy(id = 9, date = LocalDateTime.now()),
+    messageFixture2.copy(id = 2, date = LocalDateTime.now(ZoneOffset.UTC).minusDays(2)),
+    messageFixture.copy(id = 3, date = LocalDateTime.now(ZoneOffset.UTC).minusDays(1)),
+    messageFixture2.copy(id = 4, date = LocalDateTime.now(ZoneOffset.UTC)),
+    messageFixture2.copy(id = 5, date = LocalDateTime.now(ZoneOffset.UTC)),
+    messageFixture2.copy(id = 6, date = LocalDateTime.now(ZoneOffset.UTC)),
+    messageFixture2.copy(id = 7, date = LocalDateTime.now(ZoneOffset.UTC)),
+    messageFixture2.copy(id = 8, date = LocalDateTime.now(ZoneOffset.UTC)),
+    messageFixture2.copy(id = 9, date = LocalDateTime.now(ZoneOffset.UTC)),
 )
 
 val conversationUiFixture = ConversationUi(
@@ -82,31 +84,53 @@ val conversationsUIFixture = listOf(
 val conversationsFixture = listOf(
     conversationFixture,
     conversationFixture.copy(
-        createdAt = LocalDateTime.now().minusMinutes(1),
+        createdAt = LocalDateTime.now(ZoneOffset.UTC).minusMinutes(1),
     ),
     conversationFixture.copy(
-        createdAt = LocalDateTime.now().minusMinutes(20),
+        createdAt = LocalDateTime.now(ZoneOffset.UTC).minusMinutes(20),
     ),
     conversationFixture.copy(
-        createdAt = LocalDateTime.now().minusHours(1),
+        createdAt = LocalDateTime.now(ZoneOffset.UTC).minusHours(1),
     ),
     conversationFixture.copy(
-        createdAt = LocalDateTime.now().minusHours(2),
+        createdAt = LocalDateTime.now(ZoneOffset.UTC).minusHours(2),
     ),
     conversationFixture.copy(
-        createdAt = LocalDateTime.now().minusDays(1)
+        createdAt = LocalDateTime.now(ZoneOffset.UTC).minusDays(1)
     ),
     conversationFixture.copy(
-        createdAt = LocalDateTime.now().minusDays(2)
+        createdAt = LocalDateTime.now(ZoneOffset.UTC).minusDays(2)
     ),
     conversationFixture.copy(
-        createdAt = LocalDateTime.now().minusWeeks(3)
+        createdAt = LocalDateTime.now(ZoneOffset.UTC).minusWeeks(3)
     ),
     conversationFixture.copy(
-       createdAt = LocalDateTime.now().minusMonths(1)
+       createdAt = LocalDateTime.now(ZoneOffset.UTC).minusMonths(1)
     )
 )
 
 val conversationsMessageFixture = listOf(
     conversationMessageFixture
+)
+
+val notificationMessageFixture = NotificationMessage(
+    conversation = conversationFixture,
+    message = messageFixture
+)
+
+val notificationMessageListFixture = listOf(
+    notificationMessageFixture,
+    notificationMessageFixture.copy(
+        conversation = conversationFixture.copy(id = "2"),
+        message = messageFixture
+    ),
+    notificationMessageFixture.copy(
+        conversation = conversationFixture.copy(id = "3"),
+        message = messageFixture2
+    )
+)
+
+val notificationMessagesFixture = NotificationMessages(
+    conversation = conversationFixture,
+    messages = messagesFixture
 )

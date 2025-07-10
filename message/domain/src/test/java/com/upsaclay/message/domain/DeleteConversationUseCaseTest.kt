@@ -1,7 +1,6 @@
 package com.upsaclay.message.domain
 
 import com.upsaclay.common.domain.userFixture
-import com.upsaclay.message.domain.entity.ConversationState
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
 import com.upsaclay.message.domain.usecase.DeleteConversationUseCase
@@ -11,6 +10,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
@@ -25,7 +25,8 @@ class DeleteConversationUseCaseTest {
 
     @Before
     fun setUp() {
-        coEvery { conversationRepository.deleteConversation(any(), any()) } returns Unit
+        coEvery { conversationRepository.updateLocalConversation(any()) } returns Unit
+        coEvery { conversationRepository.deleteConversation(any(), any(), any()) } returns Unit
         coEvery { messageRepository.deleteLocalMessages(any()) } returns Unit
 
         useCase = DeleteConversationUseCase(
@@ -36,14 +37,25 @@ class DeleteConversationUseCaseTest {
     }
 
     @Test
-    fun deleteConversation_should_update_conversation_state_to_loading() = runTest {
-        // Given
-        val conversation = conversationFixture.copy(state = ConversationState.LOADING)
-
+    fun deleteConversation_should_delete_conversation() = runTest(testScope.testScheduler) {
         // When
-        useCase(conversation, userFixture.id)
+        useCase(
+            conversationFixture,
+            userFixture.id
+        )
+        testScope.advanceUntilIdle()
 
         // Then
-        coVerify { conversationRepository.upsertLocalConversation(conversation) }
+        coVerify { conversationRepository.deleteConversation(any(), userFixture.id, any()) }
+    }
+
+    @Test
+    fun deleteConversation_should_delete_local_conversation_messages() = runTest(testScope.testScheduler) {
+        // When
+        useCase(conversationFixture, userFixture.id)
+        testScope.advanceUntilIdle()
+
+        // Then
+        coVerify { messageRepository.deleteLocalMessages(any()) }
     }
 }

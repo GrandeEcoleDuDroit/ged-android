@@ -9,7 +9,6 @@ import com.upsaclay.message.domain.messageFixture
 import com.upsaclay.message.domain.messageFixture2
 import com.upsaclay.message.presentation.chat.ChatDestination
 import com.upsaclay.message.presentation.chat.ChatViewModel
-import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -33,7 +32,6 @@ class ChatScreenTest {
         every { chatViewModel.uiState } returns MutableStateFlow(uiState)
         every { chatViewModel.event } returns MutableSharedFlow()
         every { chatViewModel.sendMessage() } returns Unit
-        coEvery { chatViewModel.seeMessage() } returns Unit
     }
 
     @Test

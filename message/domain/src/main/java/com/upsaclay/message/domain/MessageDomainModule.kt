@@ -2,12 +2,13 @@ package com.upsaclay.message.domain
 
 import com.upsaclay.common.domain.e
 import com.upsaclay.common.domain.usecase.NotificationUseCase
-import com.upsaclay.message.domain.entity.ConversationMessage
+import com.upsaclay.message.domain.entity.NotificationMessage
 import com.upsaclay.message.domain.usecase.DeleteConversationUseCase
+import com.upsaclay.message.domain.usecase.GetConversationUseCase
 import com.upsaclay.message.domain.usecase.GetConversationsUiUseCase
-import com.upsaclay.message.domain.usecase.GetLocalConversationUseCase
 import com.upsaclay.message.domain.usecase.GetUnreadConversationsCountUseCase
-import com.upsaclay.message.domain.usecase.ListenRemoteConversationsMessagesUseCase
+import com.upsaclay.message.domain.usecase.ListenRemoteConversationsUseCase
+import com.upsaclay.message.domain.usecase.ListenRemoteMessagesUseCase
 import com.upsaclay.message.domain.usecase.MessageNotificationUseCase
 import com.upsaclay.message.domain.usecase.SendMessageUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -40,21 +41,27 @@ val messageDomainModule = module {
         )
     }
     singleOf(::GetConversationsUiUseCase)
-    singleOf(::GetLocalConversationUseCase)
+    singleOf(::GetConversationUseCase)
     singleOf(::GetUnreadConversationsCountUseCase)
     single {
-        ListenRemoteConversationsMessagesUseCase(
+        ListenRemoteConversationsUseCase(
             userRepository = get(),
             conversationRepository = get(),
+            listenRemoteMessagesUseCase = get(),
+            scope = get(BACKGROUND_SCOPE)
+        )
+    }
+    single {
+        ListenRemoteMessagesUseCase(
             messageRepository = get(),
             scope = get(BACKGROUND_SCOPE)
         )
     }
-    singleOf(::MessageNotificationUseCase) { bind<NotificationUseCase<ConversationMessage>>() }
+    singleOf(::MessageNotificationUseCase) { bind<NotificationUseCase<NotificationMessage>>() }
     single {
         SendMessageUseCase(
-            messageRepository = get(),
             conversationRepository = get(),
+            messageRepository = get(),
             messageNotificationUseCase = get(),
             scope = get(BACKGROUND_SCOPE)
         )

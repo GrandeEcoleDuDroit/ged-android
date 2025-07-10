@@ -6,18 +6,21 @@ import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.serialization.InternalSerializationApi
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
-@OptIn(InternalSerializationApi::class)
+
 class DeleteConversationUseCase(
     private val conversationRepository: ConversationRepository,
     private val messageRepository: MessageRepository,
     private val scope: CoroutineScope
 ) {
     operator fun invoke(conversation: Conversation, userId: String) {
+        val deleteTime = LocalDateTime.now(ZoneOffset.UTC)
+        val updatedConversation = conversation.copy(deleteTime = deleteTime)
         scope.launch {
-            conversationRepository.upsertLocalConversation(conversation.copy(state = ConversationState.LOADING))
-            conversationRepository.deleteConversation(conversation, userId)
+            conversationRepository.updateLocalConversation(updatedConversation.copy(state = ConversationState.DELETING))
+            conversationRepository.deleteConversation(updatedConversation, userId, deleteTime)
             messageRepository.deleteLocalMessages(conversation.id)
         }
     }

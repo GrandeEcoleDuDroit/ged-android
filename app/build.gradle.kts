@@ -10,19 +10,20 @@ plugins {
 
 android {
     namespace = "com.upsaclay.gedoise"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.upsaclay.gedoise"
         minSdk = 29
-        targetSdk = 34
-        versionCode = 1
+        targetSdk = 35
+        versionCode = 4
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
+        signingConfig = signingConfigs.getByName("debug")
     }
 
     buildTypes {
@@ -68,6 +69,7 @@ dependencies {
     implementation(libs.androidx.paging.runtime.ktx)
     implementation(libs.androidx.room.paging)
     implementation(libs.firebase.messaging.ktx)
+    implementation(libs.androidx.work.runtime.ktx)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
     implementation(libs.koin)
@@ -96,6 +98,7 @@ dependencies {
     testImplementation(kotlin("test"))
     testImplementation(libs.koin.test)
     testImplementation(libs.koin.test.junit4)
+
     androidTestImplementation(libs.mockk.android)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

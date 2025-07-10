@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import com.upsaclay.authentication.R
-import com.upsaclay.common.presentation.components.OutlineTextField
+import com.upsaclay.common.presentation.components.SimpleOutlinedTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.Phones
@@ -31,11 +31,11 @@ fun FirstRegistrationForm(
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
     ) {
         Text(
-            text = stringResource(id = R.string.enter_first_last_name),
+            text = stringResource(id = R.string.enter_name),
             style = MaterialTheme.typography.titleMedium
         )
 
-        OutlineTextField(
+        SimpleOutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = firstName,
             label = stringResource(com.upsaclay.common.R.string.first_name),
@@ -44,7 +44,7 @@ fun FirstRegistrationForm(
             errorMessage = firstNameError
         )
 
-        OutlineTextField(
+        SimpleOutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = lastName,
             label = stringResource(com.upsaclay.common.R.string.last_name),

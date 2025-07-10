@@ -6,8 +6,7 @@ import kotlinx.serialization.InternalSerializationApi
 
 @OptIn(InternalSerializationApi::class)
 interface UserRepository {
-    val user: Flow<User?>
-
+    val user: Flow<User>
     val currentUser: User?
 
     suspend fun getUsers(): List<User>
@@ -22,13 +21,13 @@ interface UserRepository {
 
     suspend fun createUser(user: User)
 
-    suspend fun storeUser(user: User?)
+    suspend fun storeUser(user: User)
 
     suspend fun deleteCurrentUser()
 
     suspend fun updateProfilePictureFileName(userId: String, fileName: String)
 
-    suspend fun deleteProfilePictureUrl(userId: String)
+    suspend fun deleteProfilePictureFileName(userId: String)
 
     suspend fun isUserExist(email: String): Boolean
 }

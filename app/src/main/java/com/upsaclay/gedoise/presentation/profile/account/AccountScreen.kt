@@ -3,6 +3,7 @@
 package com.upsaclay.gedoise.presentation.profile.account
 
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
@@ -59,15 +61,16 @@ fun AccountDestination(
         }
     }
 
+    BackHandler(enabled = uiState.screenState == AccountScreenState.EDIT) {
+        viewModel.cancelEdit()
+    }
+
     LaunchedEffect(Unit) {
         viewModel.event.collectLatest { event ->
             when (event) {
                 is SingleUiEvent.Error -> showSnackBar(context.getString(event.messageId))
 
-                is SingleUiEvent.Success -> {
-                    showSnackBar(context.getString(event.messageId))
-                    viewModel.resetValues()
-                }
+                is SingleUiEvent.Success -> showSnackBar(context.getString(event.messageId))
             }
         }
     }
@@ -82,7 +85,7 @@ fun AccountDestination(
         onScreenStateChange = viewModel::onScreenStateChange,
         onDeleteProfilePictureClick = viewModel::deleteProfilePicture,
         onSaveProfilePictureClick = viewModel::updateProfilePicture,
-        onCancelUpdateProfilePictureClick = viewModel::resetValues,
+        onCancelUpdateProfilePictureClick = viewModel::cancelEdit,
         onBackClick = onBackClick
     )
 }
@@ -166,7 +169,7 @@ fun AccountScreen(
                             modifier = Modifier.testTag(stringResource(id = R.string.account_screen_profile_picture_tag)),
                             isEdited = screenState == AccountScreenState.EDIT,
                             profilePictureUri = profilePictureUri,
-                            profilePictureUrl = user.profilePictureFileName,
+                            profilePictureUrl = user.profilePictureUrl,
                             onClick = {
                                 if (screenState == AccountScreenState.EDIT) {
                                     singlePhotoPickerLauncher.launch(
@@ -180,7 +183,9 @@ fun AccountScreen(
                             }
                         )
 
-                        AccountInfoItems(user = user)
+                        SelectionContainer {
+                            AccountInfoItems(user = user)
+                        }
 
                         if (showBottomSheet) {
                             AccountModelBottomSheet(
@@ -190,7 +195,7 @@ fun AccountScreen(
                                         PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                                     )
                                 },
-                                showDeleteProfilePicture = user.profilePictureFileName != null,
+                                showDeleteProfilePicture = user.profilePictureUrl != null,
                                 onDeleteProfilePictureClick = {
                                     showDeleteProfilePictureDialog = true
                                 }

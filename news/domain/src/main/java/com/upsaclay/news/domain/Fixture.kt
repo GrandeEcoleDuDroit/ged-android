@@ -8,8 +8,7 @@ import com.upsaclay.news.domain.entity.AnnouncementState
 import kotlinx.serialization.InternalSerializationApi
 import java.time.LocalDateTime
 
-@OptIn(InternalSerializationApi::class)
-val announcementFixture = Announcement(
+val longAnnouncementFixture = Announcement(
     id = "1",
     title = "🌴Planification des congés d'été - Soumission des demandes avant le 15 juin 😎☀️",
     date = LocalDateTime.of(2024, 7, 20, 10, 0),
@@ -31,10 +30,21 @@ val announcementFixture = Announcement(
     state = AnnouncementState.PUBLISHED
 )
 
+val announcementFixture = Announcement(
+    id = "1",
+    title = "New single of Seal",
+    date = LocalDateTime.of(2024, 7, 20, 10, 0),
+    content = "Hello,\n\n" +
+            "This is a man's world. But it wouldn't be nothing, nothing without a woman or a girl." +
+            "Patrick Dupont\n",
+    author = userFixture,
+    state = AnnouncementState.PUBLISHED
+)
+
 val announcementsFixture = listOf(
-    announcementFixture,
-    announcementFixture,
-    announcementFixture,
-    announcementFixture,
-    announcementFixture
+    longAnnouncementFixture,
+    longAnnouncementFixture,
+    longAnnouncementFixture,
+    longAnnouncementFixture,
+    longAnnouncementFixture
 )

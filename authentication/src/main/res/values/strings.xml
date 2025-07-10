@@ -5,7 +5,6 @@
     <string name="show_password_icon_description">Icône pour montrer le mot de passe</string>
     <string name="hide_password_icon_description">Icône pour cacher le mot de passe</string>
     <string name="login">Se connecter</string>
-    <string name="continue_with_google">Continuer avec Google</string>
     <string name="password">Mot de passe</string>
     <string name="sign_up">S\'inscrire</string>
     <string name="not_register_yet">Pas encore inscrit ?</string>
@@ -13,7 +12,7 @@
 
     <string name="registration">Inscription</string>
     <string name="partial_arrow_left_icon_description">Icône de retour à l\'écran précédent</string>
-    <string name="enter_first_last_name">Saisissez votre nom</string>
+    <string name="enter_name">Saisissez votre nom</string>
     <string name="enter_email_password">Saisissez votre adresse e-mail et votre mot de passe</string>
     <string name="select_level_school">Sélectionnez votre niveau d\'étude</string>
     <string name="send_text">Envoyer</string>
@@ -24,6 +23,7 @@
     <string name="enter_email">Saisissez votre adresse e-mail</string>
 
     <string name="invalid_credentials_error">Adresse e-mail ou mot de passe incorrect.</string>
+    <string name="user_disabled_error">Votre compte a été désactivé. Veuillez contacter le support</string>
     <string name="incorrect_email_format_error">Veuillez entrer une adresse e-mail valide.</string>
     <string name="password_length_error">Le mot de passe doit comporter au moins 8 caractères.</string>
     <string name="email_already_associated">Cette adresse e-mail est déjà utilisée.</string>

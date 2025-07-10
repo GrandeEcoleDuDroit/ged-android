@@ -3,7 +3,7 @@ package com.upsaclay.message.domain.entity
 import java.time.LocalDateTime
 
 data class Message(
-    val id: Int,
+    val id: Long,
     val senderId: String,
     val recipientId: String,
     val conversationId: String,
@@ -14,7 +14,8 @@ data class Message(
 )
 
 enum class MessageState {
-    LOADING,
+    DRAFT,
+    SENDING,
     SENT,
     ERROR
 }

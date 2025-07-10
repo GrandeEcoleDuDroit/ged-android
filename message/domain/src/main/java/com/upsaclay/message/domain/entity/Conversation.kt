@@ -4,7 +4,6 @@ import com.upsaclay.common.domain.LocalDateTimeSerializer
 import com.upsaclay.common.domain.entity.User
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.Serializable
-import java.time.Duration
 import java.time.LocalDateTime
 
 @InternalSerializationApi @Serializable
@@ -18,12 +17,15 @@ data class Conversation(
     val deleteTime: LocalDateTime? = null
 ) {
     val shouldBeCreated: Boolean
-        get() = state == ConversationState.DRAFT || state == ConversationState.ERROR
+        get() = state == ConversationState.DRAFT ||
+                state == ConversationState.ERROR ||
+                state == ConversationState.DELETING
 }
 
 enum class ConversationState {
     DRAFT,
-    LOADING,
+    CREATING,
     CREATED,
+    DELETING,
     ERROR
 }

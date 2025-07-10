@@ -4,6 +4,7 @@ import com.upsaclay.common.domain.e
 import com.upsaclay.message.data.local.ConversationLocalDataSource
 import com.upsaclay.message.data.local.ConversationMessageLocalDataSource
 import com.upsaclay.message.data.local.MessageLocalDataSource
+import com.upsaclay.message.data.local.NotificationMessageLocalDataSource
 import com.upsaclay.message.data.remote.ConversationRemoteDataSource
 import com.upsaclay.message.data.remote.MessageRemoteDataSource
 import com.upsaclay.message.data.remote.api.ConversationApi
@@ -13,13 +14,18 @@ import com.upsaclay.message.data.remote.api.MessageApiImpl
 import com.upsaclay.message.data.repository.ConversationMessageRepositoryImpl
 import com.upsaclay.message.data.repository.ConversationRepositoryImpl
 import com.upsaclay.message.data.repository.MessageRepositoryImpl
+import com.upsaclay.message.data.repository.NotificationMessageRepositoryImpl
+import com.upsaclay.message.data.worker.MessageWorkerBuilder
+import com.upsaclay.message.data.worker.MessageWorkerLauncher
 import com.upsaclay.message.domain.repository.ConversationMessageRepository
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
+import com.upsaclay.message.domain.repository.NotificationMessageRepository
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
@@ -43,17 +49,27 @@ val messageDataModule = module {
     singleOf(::ConversationLocalDataSource)
 
     singleOf(::ConversationRepositoryImpl) { bind<ConversationRepository>() }
-
     single<ConversationMessageRepository> {
         ConversationMessageRepositoryImpl(
             conversationMessageLocalDataSource = get(),
             scope = get(BACKGROUND_SCOPE)
         )
     }
+
     singleOf(::ConversationMessageLocalDataSource)
 
     singleOf(::MessageRepositoryImpl) { bind<MessageRepository>() }
     singleOf(::MessageApiImpl) { bind<MessageApi>() }
     singleOf(::MessageRemoteDataSource)
     singleOf(::MessageLocalDataSource)
+    singleOf(::MessageWorkerBuilder)
+    single {
+        MessageWorkerLauncher(
+            context = androidContext(),
+            messageWorkerBuilder = get()
+        )
+    }
+
+    singleOf(::NotificationMessageRepositoryImpl) { bind<NotificationMessageRepository>() }
+    singleOf(::NotificationMessageLocalDataSource)
 }

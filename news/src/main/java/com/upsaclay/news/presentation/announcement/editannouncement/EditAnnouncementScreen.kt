@@ -1,18 +1,11 @@
 package com.upsaclay.news.presentation.announcement.editannouncement
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -25,19 +18,16 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.presentation.components.EditTopBar
 import com.upsaclay.common.presentation.components.LoadingDialog
-import com.upsaclay.common.presentation.components.TransparentFocusedTextField
-import com.upsaclay.common.presentation.components.TransparentTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.hintText
-import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.mediumPadding
 import com.upsaclay.news.R
-import com.upsaclay.news.domain.announcementFixture
 import com.upsaclay.news.domain.entity.Announcement
+import com.upsaclay.news.domain.longAnnouncementFixture
+import com.upsaclay.news.presentation.announcement.components.EditAnnouncementInput
 import kotlinx.coroutines.launch
 import kotlinx.serialization.InternalSerializationApi
 import org.koin.androidx.compose.koinViewModel
@@ -103,6 +93,7 @@ private fun EditAnnouncementScreen(
     Scaffold(
         topBar = {
             EditTopBar(
+                title = stringResource(id = R.string.edit_announcement),
                 onCancelClick = {
                     focusManager.clearFocus()
                     keyboardController?.hide()
@@ -124,57 +115,16 @@ private fun EditAnnouncementScreen(
                     snackbarData = it
                 )
             }
-        }
-    ) { contentPadding ->
-        Box(
-            modifier = Modifier
-                .padding(
-                    top = contentPadding.calculateTopPadding(),
-                    start = MaterialTheme.spacing.medium,
-                    end = MaterialTheme.spacing.medium,
-                    bottom = MaterialTheme.spacing.medium
-                )
-                .fillMaxSize()
-        ) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
-            ) {
-                TransparentFocusedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = title,
-                    placeholder = {
-                        Text(
-                            text = stringResource(id = R.string.title_field_entry),
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = MaterialTheme.typography.titleMedium.fontSize * 1.3f,
-                            color = MaterialTheme.colorScheme.hintText
-                        )
-                    },
-                    onValueChange = onTitleChange,
-                    textStyle = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = MaterialTheme.typography.titleMedium.fontSize * 1.3f
-                    ),
-                    enabled = !loading
-                )
-
-                TransparentTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = content,
-                    placeholder = {
-                        Text(
-                            text = stringResource(id = R.string.content_field_entry),
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.hintText
-                        )
-                    },
-                    onValueChange = onContentChange,
-                    textStyle = MaterialTheme.typography.bodyLarge,
-                    enabled = !loading
-                )
-            }
-        }
+        },
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+    ) { innerPadding ->
+        EditAnnouncementInput(
+            modifier = Modifier.mediumPadding(innerPadding),
+            title = title,
+            content = content,
+            onTitleChange = onTitleChange,
+            onContentChange = onContentChange
+        )
     }
 }
 
@@ -191,8 +141,8 @@ private fun EditAnnouncementScreenPreview() {
     GedoiseTheme {
         Surface {
             EditAnnouncementScreen(
-                title = announcementFixture.title ?: "",
-                content = announcementFixture.content,
+                title = longAnnouncementFixture.title ?: "",
+                content = longAnnouncementFixture.content,
                 loading = false,
                 updateEnabled = false,
                 snackbarHostState = SnackbarHostState(),

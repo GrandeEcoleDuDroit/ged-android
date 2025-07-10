@@ -52,7 +52,8 @@ internal fun MessageFeed(
     modifier: Modifier = Modifier,
     messages: Flow<PagingData<Message>>,
     interlocutor: User,
-    newMessageEvent: MessageEvent.NewMessage?
+    newMessageEvent: MessageEvent.NewMessage?,
+    onErrorMessageClick: (Message) -> Unit
 ) {
     val listState = rememberLazyListState()
     val scope = rememberCoroutineScope()
@@ -65,9 +66,7 @@ internal fun MessageFeed(
     LaunchedEffect(newMessageEvent) {
         newMessageEvent?.let { event ->
             when {
-                listState.firstVisibleItemIndex <= 1 &&
-                        listState.layoutInfo.visibleItemsInfo.size < messageItems.itemCount ->
-                    listState.animateScrollToItem(0)
+                listState.firstVisibleItemIndex <= 1 -> listState.animateScrollToItem(0)
 
                 listState.firstVisibleItemIndex > 1 && event.message.senderId == interlocutor.id ->
                     showNewMessageIndicator = true
@@ -117,7 +116,8 @@ internal fun MessageFeed(
                         modifier = Modifier
                             .testTag(stringResource(R.string.chat_screen_send_message_item_tag) + index),
                         message = message,
-                        showSeen = showSeenMessage
+                        showSeen = showSeenMessage,
+                        onClick = { onErrorMessageClick(message) }
                     )
                 } else {
                     ReceiveMessageItem(
@@ -125,7 +125,7 @@ internal fun MessageFeed(
                             .testTag(stringResource(R.string.chat_screen_receive_message_item_tag) + index),
                         message = message,
                         displayProfilePicture = displayProfilePicture,
-                        profilePictureUrl = interlocutor.profilePictureFileName
+                        profilePictureUrl = interlocutor.profilePictureUrl
                     )
                 }
 
@@ -183,7 +183,8 @@ private fun MessageFeedPreview() {
                     .mediumPadding(),
                 messages = flowOf(PagingData.from(messagesFixture)),
                 interlocutor = conversationFixture.interlocutor,
-                newMessageEvent = null
+                newMessageEvent = null,
+                onErrorMessageClick = {}
             )
         }
     }

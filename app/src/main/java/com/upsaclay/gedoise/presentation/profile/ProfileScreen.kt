@@ -2,15 +2,14 @@ package com.upsaclay.gedoise.presentation.profile
 
 import android.content.res.Configuration
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -100,7 +99,7 @@ fun ProfileScreen(
         topBar = {
             BackTopBar(
                 onBackClick = onBackClick,
-                title = stringResource(id = R.string.profile)
+                title = stringResource(id = com.upsaclay.common.R.string.profile)
             )
         }
     ) {
@@ -113,7 +112,7 @@ fun ProfileScreen(
             ) {
                 Column {
                     TopSection(
-                        profilePictureUrl = user.profilePictureFileName,
+                        profilePictureUrl = user.profilePictureUrl,
                         userFullName = user.fullName
                     )
 
@@ -169,14 +168,13 @@ private fun TopSection(profilePictureUrl: String?, userFullName: String) {
                 end = MaterialTheme.spacing.medium,
                 bottom = MaterialTheme.spacing.medium
             ),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
     ) {
         ProfilePicture(
             url = profilePictureUrl,
             scale = 0.7f
         )
-
-        Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))
 
         Text(
             text = userFullName,

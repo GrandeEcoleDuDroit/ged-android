@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="presentation_text">The app that brings together all the GED news, made for Gedois by Gedois.</string>
+    <string name="title_login_screen">Gedoise Application</string>
+    <string name="show_password_icon_description">Icon to show password</string>
+    <string name="hide_password_icon_description">Icon to hide password</string>
+    <string name="login">Log in</string>
+    <string name="password">Password</string>
+    <string name="sign_up">Sign up</string>
+    <string name="not_register_yet">Not registered yet ?</string>
+    <string name="mandatory_field">Required field</string>
+
+    <string name="registration">Registration</string>
+    <string name="partial_arrow_left_icon_description">Icon to go back to the previous screen</string>
+    <string name="enter_name">Enter your name</string>
+    <string name="enter_email_password">Enter your email and password</string>
+    <string name="select_level_school">Select your school level</string>
+
+    <string name="invalid_credentials_error">Incorrect email or password.</string>
+    <string name="user_disabled_error">Your account has been disabled. Please contact support.</string>
+    <string name="incorrect_email_format_error">Please enter a valid email address.</string>
+    <string name="password_length_error">Password must be at least 8 characters long.</string>
+    <string name="email_already_associated">This email address is already in use.</string>
+    <string name="user_not_white_listed">Registration is currently limited to authorized users.</string>
+</resources>
