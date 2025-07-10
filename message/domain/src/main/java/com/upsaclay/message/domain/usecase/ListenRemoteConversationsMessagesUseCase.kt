@@ -11,7 +11,9 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
+import kotlinx.serialization.InternalSerializationApi
 
+@OptIn(InternalSerializationApi::class)
 class ListenRemoteConversationsMessagesUseCase(
     private val userRepository: UserRepository,
     private val conversationRepository: ConversationRepository,
@@ -65,6 +67,7 @@ class ListenRemoteConversationsMessagesUseCase(
     }
 }
 
+@OptIn(InternalSerializationApi::class)
 private data class MessageListeningJob(
     val conversation: Conversation,
     val job: Job

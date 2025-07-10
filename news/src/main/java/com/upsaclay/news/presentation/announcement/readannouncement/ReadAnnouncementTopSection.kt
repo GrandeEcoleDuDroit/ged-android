@@ -26,7 +26,9 @@ import com.upsaclay.news.R
 import com.upsaclay.news.domain.announcementFixture
 import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.presentation.announcement.components.AnnouncementHeader
+import kotlinx.serialization.InternalSerializationApi
 
+@InternalSerializationApi
 @Composable
 fun ReadAnnouncementTopSection(
     user: User,

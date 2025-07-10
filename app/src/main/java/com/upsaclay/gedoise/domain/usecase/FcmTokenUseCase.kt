@@ -11,7 +11,9 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import kotlinx.serialization.InternalSerializationApi
 
+@OptIn(InternalSerializationApi::class)
 class FcmTokenUseCase(
     private val userRepository: UserRepository,
     private val authenticationRepository: AuthenticationRepository,

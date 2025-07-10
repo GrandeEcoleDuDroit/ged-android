@@ -11,8 +11,10 @@ import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.serialization.InternalSerializationApi
 import java.time.LocalDateTime
 
+@OptIn(InternalSerializationApi::class)
 class SendMessageUseCase(
     private val messageRepository: MessageRepository,
     private val conversationRepository: ConversationRepository,

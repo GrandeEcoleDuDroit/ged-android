@@ -1,3 +1,5 @@
+@file:OptIn(InternalSerializationApi::class)
+
 package com.upsaclay.news.presentation.announcement.createannouncement
 
 import androidx.lifecycle.ViewModel
@@ -10,6 +12,7 @@ import com.upsaclay.news.domain.usecase.CreateAnnouncementUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.serialization.InternalSerializationApi
 import java.time.LocalDateTime
 
 class CreateAnnouncementViewModel(
@@ -18,6 +21,7 @@ class CreateAnnouncementViewModel(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(CreateAnnouncementUiState())
     internal val uiState : StateFlow<CreateAnnouncementUiState> = _uiState
+    @InternalSerializationApi
     private val user: User? = userRepository.currentUser
 
     fun onTitleChange(title: String) {

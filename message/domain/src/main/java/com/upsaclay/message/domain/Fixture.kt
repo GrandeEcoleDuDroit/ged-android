@@ -1,3 +1,5 @@
+@file:OptIn(InternalSerializationApi::class)
+
 package com.upsaclay.message.domain
 
 import com.upsaclay.common.domain.userFixture
@@ -8,6 +10,7 @@ import com.upsaclay.message.domain.entity.ConversationState
 import com.upsaclay.message.domain.entity.ConversationUi
 import com.upsaclay.message.domain.entity.Message
 import com.upsaclay.message.domain.entity.MessageState
+import kotlinx.serialization.InternalSerializationApi
 import java.time.LocalDateTime
 
 val messageFixture = Message(

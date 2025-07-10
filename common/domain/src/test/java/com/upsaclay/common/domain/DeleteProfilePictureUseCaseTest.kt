@@ -7,6 +7,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.InternalSerializationApi
 import org.junit.Before
 import org.junit.Test
 
@@ -27,6 +28,7 @@ class DeleteProfilePictureUseCaseTest {
         )
     }
 
+    @OptIn(InternalSerializationApi::class)
     @Test
     fun deleteProfilePictureUseCase_should_delete_image() = runTest {
         // Given

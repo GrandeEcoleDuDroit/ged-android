@@ -34,8 +34,10 @@ import com.upsaclay.news.domain.announcementsFixture
 import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.presentation.announcement.components.CreateAnnouncementFAB
 import kotlinx.coroutines.launch
+import kotlinx.serialization.InternalSerializationApi
 import org.koin.androidx.compose.koinViewModel
 
+@InternalSerializationApi
 @Composable
 fun NewsDestination(
     onAnnouncementClick: (String) -> Unit,

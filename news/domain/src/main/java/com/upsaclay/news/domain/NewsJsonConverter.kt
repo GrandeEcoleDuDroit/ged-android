@@ -1,8 +1,11 @@
+@file:OptIn(InternalSerializationApi::class)
+
 package com.upsaclay.news.domain
 
 import com.google.gson.GsonBuilder
 import com.upsaclay.common.domain.LocalDateTimeAdapter
 import com.upsaclay.news.domain.entity.Announcement
+import kotlinx.serialization.InternalSerializationApi
 import java.time.LocalDateTime
 
 object NewsJsonConverter {

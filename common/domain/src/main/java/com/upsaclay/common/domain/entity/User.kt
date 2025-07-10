@@ -1,9 +1,10 @@
 package com.upsaclay.common.domain.entity
 
 import com.upsaclay.common.domain.extensions.uppercaseFirstLetter
+import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.Serializable
 
-@Serializable
+@InternalSerializationApi @Serializable
 data class User(
     val id: String,
     val firstName: String,

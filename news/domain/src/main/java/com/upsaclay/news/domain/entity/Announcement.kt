@@ -2,10 +2,11 @@ package com.upsaclay.news.domain.entity
 
 import com.upsaclay.common.domain.LocalDateTimeSerializer
 import com.upsaclay.common.domain.entity.User
+import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 
-@Serializable
+@InternalSerializationApi @Serializable
 data class Announcement(
     val id: String,
     val title: String? = null,

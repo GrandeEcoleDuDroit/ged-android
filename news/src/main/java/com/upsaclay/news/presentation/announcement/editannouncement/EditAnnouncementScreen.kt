@@ -39,9 +39,11 @@ import com.upsaclay.news.R
 import com.upsaclay.news.domain.announcementFixture
 import com.upsaclay.news.domain.entity.Announcement
 import kotlinx.coroutines.launch
+import kotlinx.serialization.InternalSerializationApi
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
+@InternalSerializationApi
 @Composable
 fun EditAnnouncementDestination(
     announcement: Announcement,
@@ -182,6 +184,7 @@ private fun EditAnnouncementScreen(
  =====================================================================
  */
 
+@OptIn(InternalSerializationApi::class)
 @Phones
 @Composable
 private fun EditAnnouncementScreenPreview() {

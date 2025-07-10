@@ -1,3 +1,5 @@
+@file:OptIn(InternalSerializationApi::class)
+
 package com.upsaclay.gedoise.presentation.profile.account
 
 import android.net.Uri
@@ -21,6 +23,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.InternalSerializationApi
 
 class AccountViewModel(
     private val updateProfilePictureUseCase: UpdateProfilePictureUseCase,

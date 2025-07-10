@@ -36,9 +36,11 @@ import com.upsaclay.message.presentation.chat.ChatRoute
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.serialization.InternalSerializationApi
 
 const val CONVERSATION_ID_EXTRA = "conversation_id_extra"
 
+@OptIn(InternalSerializationApi::class)
 @SuppressLint("MissingPermission")
 class MessageNotificationPresenter (
     private val context: Context,

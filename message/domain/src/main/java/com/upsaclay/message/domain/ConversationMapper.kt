@@ -1,3 +1,5 @@
+@file:OptIn(InternalSerializationApi::class)
+
 package com.upsaclay.message.domain
 
 import com.upsaclay.common.domain.entity.FcmData
@@ -10,6 +12,7 @@ import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.ConversationMessage
 import com.upsaclay.message.domain.entity.ConversationUi
 import com.upsaclay.message.domain.usecase.MESSAGE_CHANNEL_NOTIFICATION_ID
+import kotlinx.serialization.InternalSerializationApi
 
 fun ConversationUi.toConversation() = Conversation(
     id = id,

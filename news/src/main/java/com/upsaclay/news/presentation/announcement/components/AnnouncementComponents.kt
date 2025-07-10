@@ -1,3 +1,5 @@
+@file:OptIn(InternalSerializationApi::class)
+
 package com.upsaclay.news.presentation.announcement.components
 
 import androidx.compose.foundation.clickable
@@ -32,7 +34,9 @@ import com.upsaclay.common.utils.Phones
 import com.upsaclay.news.domain.announcementFixture
 import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.domain.entity.AnnouncementState
+import kotlinx.serialization.InternalSerializationApi
 
+@OptIn(InternalSerializationApi::class)
 @Composable
 internal fun AnnouncementHeader(
     modifier: Modifier = Modifier,

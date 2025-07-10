@@ -42,8 +42,10 @@ import com.upsaclay.common.presentation.theme.darkGray
 import com.upsaclay.common.presentation.theme.lightGray
 import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.gedoise.R
+import kotlinx.serialization.InternalSerializationApi
 import org.koin.androidx.compose.koinViewModel
 
+@OptIn(InternalSerializationApi::class)
 @Composable
 fun ProfileDestination(
     onAccountClick: () -> Unit,
@@ -60,6 +62,7 @@ fun ProfileDestination(
     )
 }
 
+@OptIn(InternalSerializationApi::class)
 @Composable
 fun ProfileScreen(
     user: User?,
@@ -189,6 +192,7 @@ private fun TopSection(profilePictureUrl: String?, userFullName: String) {
  =====================================================================
  */
 
+@OptIn(InternalSerializationApi::class)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun ProfileScreenPreview() {

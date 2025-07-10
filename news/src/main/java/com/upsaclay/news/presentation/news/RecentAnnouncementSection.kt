@@ -1,3 +1,5 @@
+@file:OptIn(InternalSerializationApi::class)
+
 package com.upsaclay.news.presentation.news
 
 import androidx.compose.foundation.layout.Arrangement
@@ -24,7 +26,9 @@ import com.upsaclay.news.domain.announcementsFixture
 import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.domain.entity.AnnouncementState
 import com.upsaclay.news.presentation.announcement.components.ShortAnnouncementItem
+import kotlinx.serialization.InternalSerializationApi
 
+@InternalSerializationApi
 @Composable
 fun RecentAnnouncementSection(
     modifier: Modifier = Modifier,

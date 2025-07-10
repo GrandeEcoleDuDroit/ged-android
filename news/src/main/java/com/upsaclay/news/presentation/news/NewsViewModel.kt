@@ -22,7 +22,9 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.serialization.InternalSerializationApi
 
+@InternalSerializationApi
 class NewsViewModel(
     private val recreateAnnouncementUseCase: RecreateAnnouncementUseCase,
     private val deleteAnnouncementUseCase: DeleteAnnouncementUseCase,

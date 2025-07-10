@@ -2,7 +2,9 @@ package com.upsaclay.message.domain.repository
 
 import com.upsaclay.message.domain.entity.Conversation
 import kotlinx.coroutines.flow.Flow
+import kotlinx.serialization.InternalSerializationApi
 
+@OptIn(InternalSerializationApi::class)
 interface ConversationRepository {
     fun getConversationFlow(interlocutorId: String): Flow<Conversation>
 

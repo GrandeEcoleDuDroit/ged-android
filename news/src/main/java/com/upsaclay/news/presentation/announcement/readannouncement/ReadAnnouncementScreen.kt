@@ -37,9 +37,11 @@ import com.upsaclay.common.utils.Phones
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.announcementFixture
 import com.upsaclay.news.domain.entity.Announcement
+import kotlinx.serialization.InternalSerializationApi
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
+@InternalSerializationApi
 @Composable
 fun ReadAnnouncementDestination(
     announcementId: String,

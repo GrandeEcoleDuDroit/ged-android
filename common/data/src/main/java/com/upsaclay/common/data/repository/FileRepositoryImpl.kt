@@ -40,5 +40,5 @@ internal class FileRepositoryImpl(private val context: Context) : FileRepository
     }
 
     override fun getFileType(uri: Uri): String? =
-        context.contentResolver.getType(uri)?.split("/")?.last()
+        context.contentResolver.getType(uri)?.split("/")?.last() // TODO : question ? faut-il pas split une deuxième fois pour récupérer le type du fichier
 }

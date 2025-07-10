@@ -8,10 +8,12 @@ import com.upsaclay.common.domain.usecase.NotificationUseCase
 import com.upsaclay.common.domain.usecase.SharedEventsUseCase
 import com.upsaclay.message.domain.entity.ConversationMessage
 import com.upsaclay.message.domain.toFcm
+import kotlinx.serialization.InternalSerializationApi
 import java.time.LocalDateTime
 
 const val MESSAGE_CHANNEL_NOTIFICATION_ID = "message_channel_notification_id"
 
+@OptIn(InternalSerializationApi::class)
 class MessageNotificationUseCase(
     private val notificationApi: NotificationApi,
     private val userRepository: UserRepository,

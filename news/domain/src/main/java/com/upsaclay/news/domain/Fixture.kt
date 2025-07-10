@@ -1,10 +1,14 @@
+@file:OptIn(InternalSerializationApi::class)
+
 package com.upsaclay.news.domain
 
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.domain.entity.AnnouncementState
+import kotlinx.serialization.InternalSerializationApi
 import java.time.LocalDateTime
 
+@OptIn(InternalSerializationApi::class)
 val announcementFixture = Announcement(
     id = "1",
     title = "🌴Planification des congés d'été - Soumission des demandes avant le 15 juin 😎☀️",

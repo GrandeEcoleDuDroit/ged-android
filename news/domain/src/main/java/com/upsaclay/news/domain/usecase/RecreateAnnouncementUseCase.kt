@@ -7,6 +7,7 @@ import com.upsaclay.news.domain.entity.AnnouncementState
 import com.upsaclay.news.domain.repository.AnnouncementRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.serialization.InternalSerializationApi
 import java.time.LocalDateTime
 
 class RecreateAnnouncementUseCase(
@@ -14,6 +15,7 @@ class RecreateAnnouncementUseCase(
     private val connectivityObserver: ConnectivityObserver,
     private val scope: CoroutineScope
 ) {
+    @OptIn(InternalSerializationApi::class)
     operator fun invoke(announcement: Announcement) {
         if (!connectivityObserver.isConnected) {
             throw NoInternetConnectionException()

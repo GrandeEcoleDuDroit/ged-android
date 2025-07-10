@@ -6,7 +6,9 @@ import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.serialization.InternalSerializationApi
 
+@OptIn(InternalSerializationApi::class)
 class DeleteConversationUseCase(
     private val conversationRepository: ConversationRepository,
     private val messageRepository: MessageRepository,

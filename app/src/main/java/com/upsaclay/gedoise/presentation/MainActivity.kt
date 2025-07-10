@@ -21,9 +21,11 @@ import com.upsaclay.message.domain.MessageJsonConverter
 import com.upsaclay.message.presentation.CONVERSATION_ID_EXTRA
 import com.upsaclay.message.presentation.MessageNotificationPresenter
 import com.upsaclay.message.presentation.chat.ChatRoute
+import kotlinx.serialization.InternalSerializationApi
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+@OptIn(InternalSerializationApi::class)
 @SuppressLint("MissingPermission")
 class MainActivity : ComponentActivity() {
     private val mainViewModel: MainViewModel by viewModel()

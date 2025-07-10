@@ -4,8 +4,10 @@ import com.google.gson.GsonBuilder
 import com.upsaclay.common.domain.LocalDateTimeAdapter
 import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.ConversationMessage
+import kotlinx.serialization.InternalSerializationApi
 import java.time.LocalDateTime
 
+@OptIn(InternalSerializationApi::class)
 object MessageJsonConverter {
     fun toConversation(conversationJson: String): Conversation? {
         return runCatching {

@@ -1,3 +1,5 @@
+@file:OptIn(InternalSerializationApi::class)
+
 package com.upsaclay.gedoise.presentation.profile.account
 
 import androidx.compose.foundation.layout.Arrangement
@@ -28,6 +30,7 @@ import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.gedoise.R
 import com.upsaclay.gedoise.presentation.components.AccountInfoItem
+import kotlinx.serialization.InternalSerializationApi
 
 @Composable
 fun AccountInfoItems(user: User) {

@@ -37,7 +37,10 @@ class ForgotPasswordScreenKtTest {
         every { viewModel.sendMail() } returns Unit
         rule.setContent {
             ForgotPasswordScreen(
-                email = uiStateFixture.email
+                email = uiStateFixture.email,
+                onBackClick = {},
+                onButtonClick = {},
+                onValueChange = {}
             )
         }
     }

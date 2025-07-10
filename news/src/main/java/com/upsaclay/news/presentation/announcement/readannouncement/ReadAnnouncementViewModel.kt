@@ -20,7 +20,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.InternalSerializationApi
 
+@InternalSerializationApi
 class ReadAnnouncementViewModel(
     announcementId: String,
     userRepository: UserRepository,
