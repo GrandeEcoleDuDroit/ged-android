@@ -1,4 +1,4 @@
-@file:OptIn(InternalSerializationApi::class)
+
 
 package com.upsaclay.gedoise.presentation.profile.account
 
@@ -43,7 +43,7 @@ import com.upsaclay.gedoise.presentation.components.AccountModelBottomSheet
 import com.upsaclay.gedoise.presentation.components.AccountTopBar
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.serialization.InternalSerializationApi
+
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

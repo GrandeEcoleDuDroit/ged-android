@@ -1,4 +1,4 @@
-@file:OptIn(InternalSerializationApi::class)
+
 
 package com.upsaclay.common.domain.usecase
 
@@ -9,7 +9,7 @@ import com.upsaclay.common.domain.repository.FileRepository
 import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.common.domain.repository.UserRepository
 import kotlinx.coroutines.withTimeout
-import kotlinx.serialization.InternalSerializationApi
+
 
 class UpdateProfilePictureUseCase(
     private val fileRepository: FileRepository,

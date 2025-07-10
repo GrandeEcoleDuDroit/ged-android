@@ -5,12 +5,12 @@ import com.upsaclay.news.presentation.announcement.createannouncement.CreateAnno
 import com.upsaclay.news.presentation.announcement.editannouncement.EditAnnouncementViewModel
 import com.upsaclay.news.presentation.announcement.readannouncement.ReadAnnouncementViewModel
 import com.upsaclay.news.presentation.news.NewsViewModel
-import kotlinx.serialization.InternalSerializationApi
+
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.dsl.module
 
-@OptIn(InternalSerializationApi::class)
+
 val newsModule = module {
     viewModelOf(::NewsViewModel)
     viewModelOf(::CreateAnnouncementViewModel)

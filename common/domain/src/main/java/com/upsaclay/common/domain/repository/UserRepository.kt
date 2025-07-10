@@ -2,9 +2,9 @@ package com.upsaclay.common.domain.repository
 
 import com.upsaclay.common.domain.entity.User
 import kotlinx.coroutines.flow.Flow
-import kotlinx.serialization.InternalSerializationApi
 
-@OptIn(InternalSerializationApi::class)
+
+
 interface UserRepository {
     val user: Flow<User>
     val currentUser: User?

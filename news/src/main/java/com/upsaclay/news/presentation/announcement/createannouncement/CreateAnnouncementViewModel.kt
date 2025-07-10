@@ -1,4 +1,4 @@
-@file:OptIn(InternalSerializationApi::class)
+
 
 package com.upsaclay.news.presentation.announcement.createannouncement
 
@@ -12,7 +12,7 @@ import com.upsaclay.news.domain.usecase.CreateAnnouncementUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.serialization.InternalSerializationApi
+
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 

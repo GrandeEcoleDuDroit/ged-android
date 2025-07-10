@@ -1,10 +1,10 @@
-@file:OptIn(InternalSerializationApi::class)
+
 
 package com.upsaclay.common.domain
 
 import com.upsaclay.common.domain.entity.FcmToken
 import com.upsaclay.common.domain.entity.User
-import kotlinx.serialization.InternalSerializationApi
+
 
 val userFixture = User(
     "12",

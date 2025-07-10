@@ -5,7 +5,7 @@ import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.ConversationState
 import com.upsaclay.message.domain.repository.ConversationRepository
-import kotlinx.serialization.InternalSerializationApi
+
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 

@@ -2,9 +2,9 @@ package com.upsaclay.news.domain.repository
 
 import com.upsaclay.news.domain.entity.Announcement
 import kotlinx.coroutines.flow.Flow
-import kotlinx.serialization.InternalSerializationApi
 
-@OptIn(InternalSerializationApi::class)
+
+
 interface AnnouncementRepository {
     val announcements: Flow<List<Announcement>>
 

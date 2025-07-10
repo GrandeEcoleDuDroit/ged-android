@@ -1,4 +1,4 @@
-@file:OptIn(InternalSerializationApi::class)
+
 
 package com.upsaclay.news.presentation.announcement.editannouncement
 
@@ -9,7 +9,7 @@ import androidx.navigation.toRoute
 import com.upsaclay.common.domain.entity.Route
 import com.upsaclay.news.domain.NewsJsonConverter
 import com.upsaclay.news.domain.entity.Announcement
-import kotlinx.serialization.InternalSerializationApi
+
 import kotlinx.serialization.Serializable
 
 @Serializable data class EditAnnouncementRoute(val announcementJson: String): Route

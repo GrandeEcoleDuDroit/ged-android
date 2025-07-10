@@ -1,5 +1,3 @@
-@file:OptIn(InternalSerializationApi::class)
-
 package com.upsaclay.message.domain
 
 import com.upsaclay.common.domain.userFixture

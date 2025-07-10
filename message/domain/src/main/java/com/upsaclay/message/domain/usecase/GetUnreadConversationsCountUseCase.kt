@@ -6,9 +6,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.mapLatest
-import kotlinx.serialization.InternalSerializationApi
 
-@OptIn(ExperimentalCoroutinesApi::class, InternalSerializationApi::class)
+
+@OptIn(ExperimentalCoroutinesApi::class)
 class GetUnreadConversationsCountUseCase(
     private val conversationMessageRepository: ConversationMessageRepository,
     private val userRepository: UserRepository

@@ -7,7 +7,7 @@ import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.NotificationUseCase
 import com.upsaclay.message.domain.entity.NotificationMessage
 import com.upsaclay.message.domain.mapper.toFcm
-import kotlinx.serialization.InternalSerializationApi
+
 import java.time.LocalDateTime
 
 const val MESSAGE_CHANNEL_NOTIFICATION_ID = "message_channel_notification_id"

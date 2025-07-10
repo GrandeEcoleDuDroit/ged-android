@@ -5,9 +5,9 @@ import com.upsaclay.common.domain.entity.NoInternetConnectionException
 import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.domain.entity.AnnouncementState
 import com.upsaclay.news.domain.repository.AnnouncementRepository
-import kotlinx.serialization.InternalSerializationApi
 
-@OptIn(InternalSerializationApi::class)
+
+
 class DeleteAnnouncementUseCase(
     private val announcementRepository: AnnouncementRepository,
     private val connectivityObserver: ConnectivityObserver

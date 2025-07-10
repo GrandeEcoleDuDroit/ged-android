@@ -15,10 +15,10 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
-import kotlinx.serialization.InternalSerializationApi
+
 import org.koin.android.ext.android.inject
 
-@OptIn(InternalSerializationApi::class)
+
 class FcmService: FirebaseMessagingService() {
     private var job: Job? = null
     private val notificationMessageManager: NotificationMessageManager by inject<NotificationMessageManager>()

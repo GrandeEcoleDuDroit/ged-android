@@ -1,4 +1,4 @@
-@file:OptIn(InternalSerializationApi::class)
+
 
 package com.upsaclay.news.presentation.announcement.components
 

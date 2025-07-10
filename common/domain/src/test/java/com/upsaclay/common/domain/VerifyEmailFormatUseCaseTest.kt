@@ -1,12 +1,12 @@
 package com.upsaclay.common.domain
 
 import com.upsaclay.common.domain.usecase.VerifyEmailFormatUseCase
-import kotlinx.serialization.InternalSerializationApi
+
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
 
-@OptIn(InternalSerializationApi::class)
+
 class VerifyEmailFormatUseCaseTest {
     private lateinit var verifyEmailFormatUseCase: VerifyEmailFormatUseCase
 

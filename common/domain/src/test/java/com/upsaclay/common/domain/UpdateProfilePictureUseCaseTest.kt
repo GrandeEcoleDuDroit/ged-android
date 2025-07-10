@@ -1,4 +1,4 @@
-@file:OptIn(InternalSerializationApi::class)
+
 
 package com.upsaclay.common.domain
 
@@ -17,7 +17,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.InternalSerializationApi
+
 import org.junit.Before
 import org.junit.Test
 import java.io.File

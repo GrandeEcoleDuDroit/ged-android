@@ -2,7 +2,7 @@ package com.upsaclay.message.domain.entity
 
 import com.upsaclay.common.domain.LocalDateTimeSerializer
 import com.upsaclay.common.domain.entity.User
-import kotlinx.serialization.InternalSerializationApi
+
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 

@@ -44,7 +44,7 @@ import com.upsaclay.news.presentation.announcement.readannouncement.navigateToRe
 import com.upsaclay.news.presentation.announcement.readannouncement.readAnnouncementScreen
 import com.upsaclay.news.presentation.navigateToNews
 import com.upsaclay.news.presentation.newsSection
-import kotlinx.serialization.InternalSerializationApi
+
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 

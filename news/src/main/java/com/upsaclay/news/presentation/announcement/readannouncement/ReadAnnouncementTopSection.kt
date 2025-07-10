@@ -26,7 +26,7 @@ import com.upsaclay.news.R
 import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.domain.longAnnouncementFixture
 import com.upsaclay.news.presentation.announcement.components.AnnouncementHeader
-import kotlinx.serialization.InternalSerializationApi
+
 
 @InternalSerializationApi
 @Composable
