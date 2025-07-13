@@ -17,12 +17,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import coil3.compose.AsyncImagePainter
 import com.upsaclay.common.R
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.profilePictureLoading
@@ -78,6 +80,24 @@ fun ProfilePictureWithIcon(
         iconColor = iconColor,
         contentDescription = contentDescription,
         onClick = onClick
+    )
+}
+
+@Composable
+fun LargeAsyncImage(
+    modifier: Modifier = Modifier,
+    model: Any,
+    onError: () -> Painter
+) {
+    val color = MaterialTheme.colorScheme.profilePictureLoading
+
+    AsyncImage(
+        model = model,
+        contentDescription = "",
+        contentScale = ContentScale.Crop,
+        modifier = modifier,
+        onLoading = { ColorPainter(color) },
+        onError = { onError() }
     )
 }
 

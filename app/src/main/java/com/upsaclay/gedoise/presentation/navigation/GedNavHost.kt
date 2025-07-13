@@ -17,7 +17,6 @@ import com.upsaclay.authentication.presentation.registration.secondregistration.
 import com.upsaclay.authentication.presentation.registration.secondregistration.secondRegistrationScreen
 import com.upsaclay.authentication.presentation.registration.thirdregistration.navigateToThirdRegistration
 import com.upsaclay.authentication.presentation.registration.thirdregistration.thirdRegistrationScreen
-import com.upsaclay.common.domain.d
 import com.upsaclay.common.domain.entity.Route
 import com.upsaclay.gedoise.presentation.components.MainBottomBar
 import com.upsaclay.gedoise.presentation.profile.account.accountScreen
@@ -33,6 +32,8 @@ import com.upsaclay.message.presentation.conversation.create.CreateConversationR
 import com.upsaclay.message.presentation.conversation.create.createConversationScreen
 import com.upsaclay.message.presentation.conversation.create.navigateToCreateConversation
 import com.upsaclay.message.presentation.conversation.navigateToConversation
+import com.upsaclay.forum.presentation.forumSection
+import com.upsaclay.forum.presentation.navigateToForum
 import com.upsaclay.news.presentation.NewsRoute
 import com.upsaclay.news.presentation.announcement.createannouncement.createAnnouncementScreen
 import com.upsaclay.news.presentation.announcement.createannouncement.navigateToCreateAnnouncement
@@ -71,6 +72,7 @@ fun GedNavHost(
                 navigateToNews(navOptions = navOptions)
             }
             TopLevelDestinationRoute.MESSAGE -> navigateToConversation(navOptions = navOptions)
+            TopLevelDestinationRoute.FORUM -> navigateToForum(navOptions = navOptions)
         }
     }
 
@@ -84,7 +86,6 @@ fun GedNavHost(
 
     LaunchedEffect(Unit) {
         navigationViewModel.routesToNavigate.collect { routes ->
-            d("Navigatagata to routes: $routes")
             routes.forEach {
                 when (it) {
                     is ConversationRoute -> navController.navigateToConversation()
@@ -172,5 +173,11 @@ fun GedNavHost(
                 onBackClick = navController::popBackStack
             )
         }
+
+        forumSection(
+            bottomBar = bottomBar,
+            onMissionClick = {},
+            forumDestinations = { }
+        )
     }
 }
