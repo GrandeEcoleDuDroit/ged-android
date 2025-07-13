@@ -30,7 +30,7 @@ import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.common.utils.Tablets
-import com.upsaclay.common.utils.mediumPadding
+import com.upsaclay.common.extension.mediumPadding
 import com.upsaclay.message.R
 import com.upsaclay.message.domain.conversationFixture
 import com.upsaclay.message.domain.entity.Conversation

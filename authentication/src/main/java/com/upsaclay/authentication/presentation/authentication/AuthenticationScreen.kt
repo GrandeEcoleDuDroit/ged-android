@@ -44,7 +44,7 @@ import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.Phones
-import com.upsaclay.common.utils.mediumPadding
+import com.upsaclay.common.extension.mediumPadding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel

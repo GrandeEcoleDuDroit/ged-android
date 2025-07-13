@@ -3,7 +3,6 @@
     <string name="home">Home</string>
     <string name="messages">Messages</string>
     <string name="calendar">Calendar</string>
-    <string name="forum">Forum</string>
     <string name="profile">Profile</string>
 
     <string name="home_icon_description">Icon to access the home page</string>
@@ -31,6 +30,8 @@
     <string name="edit">Edit</string>
     <string name="resend">Resend</string>
     <string name="ok">OK</string>
+    <string name="see">See</string>
+
     <string name="arrow_back_icon_description">Go back</string>
     <string name="ged_logo_description">Logo of the university La Grande École du Droit</string>
     <string name="profile_picture_description">User\'s profile picture</string>
