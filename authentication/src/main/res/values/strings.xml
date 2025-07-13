@@ -23,10 +23,10 @@
     <string name="email_already_associated">Cette adresse e-mail est déjà utilisée.</string>
     <string name="user_not_white_listed">L\'inscription est actuellement limitée aux utilisateurs autorisés.</string>
 
-    <string name="authentication_screen_login_button_tag">Authentication Screen Login Button Tag</string>
-    <string name="authentication_screen_registration_button_tag">Authentication Screen Registration Button Tag</string>
+    <string name="authentication_screen_login_button_tag" translatable="false">Authentication Screen Login Button Tag</string>
+    <string name="authentication_screen_registration_button_tag" translatable="false">Authentication Screen Registration Button Tag</string>
 
-    <string name="registration_screen_next_button_tag">Registration Screen Next Button Tag</string>
-    <string name="registration_screen_email_input_tag">Registration Screen Email Input Tag</string>
-    <string name="registration_screen_password_input_tag">Registration Screen Password Input Tag</string>
+    <string name="registration_screen_next_button_tag" translatable="false">Registration Screen Next Button Tag</string>
+    <string name="registration_screen_email_input_tag" translatable="false">Registration Screen Email Input Tag</string>
+    <string name="registration_screen_password_input_tag" translatable="false">Registration Screen Password Input Tag</string>
 </resources>
