@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.upsaclay.message"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 29

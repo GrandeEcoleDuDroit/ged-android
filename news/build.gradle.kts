@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.upsaclay.news"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 29
@@ -81,5 +81,4 @@ dependencies {
     implementation(project(":common"))
     implementation(project(":common:domain"))
     implementation(project(":news:domain"))
-    implementation(project(":authentication:domain"))
 }

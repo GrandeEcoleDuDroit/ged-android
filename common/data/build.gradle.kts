@@ -8,7 +8,7 @@ val LOCAL_SERVER_URL: String by project
 
 android {
     namespace = "com.upsaclay.common.data"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 29

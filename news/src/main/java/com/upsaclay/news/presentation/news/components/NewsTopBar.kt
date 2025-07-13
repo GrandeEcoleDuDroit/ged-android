@@ -1,4 +1,4 @@
-package com.upsaclay.news.presentation.news
+package com.upsaclay.news.presentation.news.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.shape.CircleShape
@@ -16,6 +16,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import com.upsaclay.common.R
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
@@ -29,7 +30,7 @@ fun NewsTopBar(
     TopAppBar(
         title = {
             Text(
-                text = stringResource(com.upsaclay.common.R.string.app_name),
+                text = stringResource(R.string.app_name),
                 fontWeight = FontWeight.SemiBold,
                 style = MaterialTheme.typography.titleLarge
             )
@@ -40,8 +41,8 @@ fun NewsTopBar(
                 enabled = false
             ) {
                 Image(
-                    painter = painterResource(id = com.upsaclay.common.R.drawable.ged_logo),
-                    contentDescription = stringResource(id = com.upsaclay.common.R.string.ged_logo_description),
+                    painter = painterResource(id = R.drawable.ged_logo),
+                    contentDescription = stringResource(id = R.string.ged_logo_description),
                     contentScale = ContentScale.Fit
                 )
             }

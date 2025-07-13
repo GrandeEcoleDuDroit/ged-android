@@ -23,7 +23,7 @@ import com.upsaclay.common.presentation.components.EditTopBar
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
-import com.upsaclay.common.utils.mediumPadding
+import com.upsaclay.common.extension.mediumPadding
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.domain.longAnnouncementFixture

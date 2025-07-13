@@ -40,6 +40,7 @@ import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.darkGray
 import com.upsaclay.common.presentation.theme.lightGray
 import com.upsaclay.common.presentation.theme.spacing
+import com.upsaclay.common.utils.Phones
 import com.upsaclay.gedoise.R
 import org.koin.androidx.compose.koinViewModel
 
@@ -67,11 +68,6 @@ fun ProfileScreen(
     onBackClick: () -> Unit,
 ) {
     var showLogoutDialog by remember { mutableStateOf(false) }
-    val dividerColor = if (isSystemInDarkTheme()) {
-        MaterialTheme.colorScheme.darkGray
-    } else {
-        MaterialTheme.colorScheme.lightGray
-    }
 
     DisposableEffect(Unit) {
         onDispose { showLogoutDialog = false }
@@ -113,7 +109,7 @@ fun ProfileScreen(
                         userFullName = user.fullName
                     )
 
-                    HorizontalDivider(color = dividerColor)
+                    HorizontalDivider()
 
                     ClickableItem(
                         modifier = Modifier
@@ -187,7 +183,7 @@ private fun TopSection(profilePictureUrl: String?, userFullName: String) {
  =====================================================================
  */
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Phones
 @Composable
 fun ProfileScreenPreview() {
     GedoiseTheme {

@@ -47,7 +47,7 @@ internal val secondaryContainerDark = Color(0xFF444958)
 internal val backgroundDark = Color(0xFF191919)
 internal val onBackgroundDark = white
 internal val outlineDark = Color(0xFF939393)
-internal val outlineVariantDark = Color(0xFFC4C8D0)
+internal val outlineVariantDark = Color(0xFF3C3C3C)
 
 val ColorScheme.black: Color
     @Composable

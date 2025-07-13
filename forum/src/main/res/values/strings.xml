@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="no_mission">Aucune mission</string>
+    <string name="everyone">Tout le monde</string>
+    <string name="participants_amount" translatable="false">%d/%d</string>
+
+    <string name="no_mission_tag" translatable="false">No mission tag</string>
+    <string name="missions_card_tag" translatable="false">Missions card tag</string>
+    <string name="missions_card_school_level_tag" translatable="false">Mission card school level tag</string>
+</resources>

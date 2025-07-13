@@ -31,6 +31,8 @@ import com.upsaclay.news.R
 import com.upsaclay.news.domain.announcementsFixture
 import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.presentation.announcement.components.CreateAnnouncementFAB
+import com.upsaclay.news.presentation.news.components.NewsScaffold
+import com.upsaclay.news.presentation.news.components.NewsTopBar
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -108,26 +110,12 @@ private fun NewsScreen(
         )
     }
 
-    Scaffold(
-        topBar = {
-            NewsTopBar(
-                userProfilePictureUrl = user?.profilePictureUrl,
-                onProfilePictureClick = onProfilePictureClick
-            )
-        },
-        bottomBar = bottomBar,
-        snackbarHost = {
-            SnackbarHost(snackbarHostState) {
-                Snackbar(it)
-            }
-        },
-        floatingActionButton = {
-            if (user?.isMember == true) {
-                CreateAnnouncementFAB(
-                    onClick = onCreateAnnouncementClick
-                )
-            }
-        }
+    NewsScaffold(
+        user = user,
+        onCreateAnnouncementClick = onCreateAnnouncementClick,
+        onProfilePictureClick = onProfilePictureClick,
+        snackbarHostState = snackbarHostState,
+        bottomBar = bottomBar
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
             PullToRefreshComponent(
@@ -162,6 +150,7 @@ private fun NewsScreen(
         }
     }
 }
+
 /*
  =====================================================================
                                 Preview
