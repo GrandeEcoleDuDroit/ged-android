@@ -23,18 +23,18 @@
     <string name="error_fetch_conversations">Une erreur est survenue durant la récupération des conversations</string>
     <string name="no_conversation">Aucune conversation</string>
 
-    <string name="conversation_screen_conversation_item_tag">Conversation Screen Conversation Item Tag</string>
-    <string name="conversation_screen_empty_conversation_item_tag">Conversation Screen Empty Conversation Item Tag</string>
-    <string name="conversation_screen_empty_conversation_text_tag">Conversation Screen Empty Conversation Text Tag</string>
-    <string name="conversation_screen_read_conversation_item_tag">Conversation Screen Read Conversation Item Tag</string>
-    <string name="conversation_screen_unread_conversation_item_tag">Conversation Screen Unread Conversation Item Tag</string>
-    <string name="conversation_screen_create_conversation_button_tag">Conversation Screen Create Conversation Button Tag</string>
+    <string name="conversation_screen_conversation_item_tag" translatable="false">Conversation Screen Conversation Item Tag</string>
+    <string name="conversation_screen_empty_conversation_item_tag" translatable="false">Conversation Screen Empty Conversation Item Tag</string>
+    <string name="conversation_screen_empty_conversation_text_tag" translatable="false">Conversation Screen Empty Conversation Text Tag</string>
+    <string name="conversation_screen_read_conversation_item_tag" translatable="false">Conversation Screen Read Conversation Item Tag</string>
+    <string name="conversation_screen_unread_conversation_item_tag" translatable="false">Conversation Screen Unread Conversation Item Tag</string>
+    <string name="conversation_screen_create_conversation_button_tag" translatable="false">Conversation Screen Create Conversation Button Tag</string>
 
-    <string name="chat_screen_lazy_column_item_tag">Chat Screen Lazy Column Item Tag</string>
-    <string name="chat_screen_send_message_item_tag">Chat Screen Send Message Item Tag</string>
-    <string name="chat_screen_receive_message_item_tag">Chat Screen Receive Message Item Tag</string>
-    <string name="chat_screen_message_indicator_tag">Chat Screen Message Indicator Tag</string>
-    <string name="chat_screen_message_text_tag">Chat Screen Receive Message Text Tag</string>
-    <string name="chat_screen_message_input_tag">Chat Screen Message Input Tag</string>
-    <string name="chat_screen_send_button_tag">Chat Screen Send Button Tag</string>
+    <string name="chat_screen_lazy_column_item_tag" translatable="false">Chat Screen Lazy Column Item Tag</string>
+    <string name="chat_screen_send_message_item_tag" translatable="false">Chat Screen Send Message Item Tag</string>
+    <string name="chat_screen_receive_message_item_tag" translatable="false">Chat Screen Receive Message Item Tag</string>
+    <string name="chat_screen_message_indicator_tag" translatable="false">Chat Screen Message Indicator Tag</string>
+    <string name="chat_screen_message_text_tag" translatable="false">Chat Screen Receive Message Text Tag</string>
+    <string name="chat_screen_message_input_tag" translatable="false">Chat Screen Message Input Tag</string>
+    <string name="chat_screen_send_button_tag" translatable="false">Chat Screen Send Button Tag</string>
 </resources>

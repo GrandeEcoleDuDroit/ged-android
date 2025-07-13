@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Grande Ecole du Droit</string>
+    <string name="app_name" translatable="false">Grande Ecole du Droit</string>
 
     <string name="home">Accueil</string>
     <string name="messages">Messages</string>
     <string name="calendar">Calendrier</string>
-    <string name="forum">Forum</string>
+    <string name="forum" translatable="false">Forum</string>
     <string name="profile">Profil</string>
 
     <string name="home_icon_description">Icône pour accéder à la page d\'accueil</string>
@@ -33,6 +33,8 @@
     <string name="edit">Editer</string>
     <string name="resend">Renvoyer</string>
     <string name="ok">OK</string>
+    <string name="see">Voir</string>
+
     <string name="arrow_back_icon_description">Retour en arrière</string>
     <string name="ged_logo_description">Logo de l\'université de La Grande École du Droit</string>
     <string name="profile_picture_description">Photo de profil de l\'utilisateur</string>

@@ -26,7 +26,7 @@ import com.upsaclay.common.presentation.components.SimpleDropDownMenu
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.Phones
-import com.upsaclay.common.utils.mediumPadding
+import com.upsaclay.common.extension.mediumPadding
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

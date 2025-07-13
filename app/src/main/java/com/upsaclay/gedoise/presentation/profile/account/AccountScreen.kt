@@ -35,7 +35,7 @@ import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.SensibleActionDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
-import com.upsaclay.common.utils.mediumPadding
+import com.upsaclay.common.extension.mediumPadding
 import com.upsaclay.gedoise.R
 import com.upsaclay.gedoise.presentation.components.AccountModelBottomSheet
 import com.upsaclay.gedoise.presentation.components.AccountTopBar

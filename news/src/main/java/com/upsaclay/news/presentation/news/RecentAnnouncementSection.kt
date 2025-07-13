@@ -52,9 +52,7 @@ fun RecentAnnouncementSection(
             if (announcements.isEmpty()) {
                 item {
                     Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = MaterialTheme.spacing.medium),
+                        modifier = Modifier.fillMaxWidth(),
                         text = stringResource(id = R.string.no_announcement),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.previewText,

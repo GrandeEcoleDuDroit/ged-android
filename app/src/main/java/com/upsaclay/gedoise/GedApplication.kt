@@ -14,6 +14,7 @@ import com.upsaclay.message.data.messageDataModule
 import com.upsaclay.message.data.worker.MessageWorkerLauncher
 import com.upsaclay.message.domain.messageDomainModule
 import com.upsaclay.message.messageModule
+import com.upsaclay.forum.forumModule
 import com.upsaclay.news.data.newsDataModule
 import com.upsaclay.news.domain.newsDomainModule
 import com.upsaclay.news.newsModule
@@ -45,7 +46,8 @@ class GedApplication : Application() {
                     newsDataModule,
                     messageModule,
                     messageDomainModule,
-                    messageDataModule
+                    messageDataModule,
+                    forumModule,
                 )
             )
         }
