@@ -2,6 +2,8 @@ package com.upsaclay.common.presentation.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
@@ -65,6 +67,10 @@ val ColorScheme.darkGray: Color
     @Composable
     get() = com.upsaclay.common.presentation.theme.darkGray
 
+val ColorScheme.dynamicGray: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) darkGray else lightGray
+
 val ColorScheme.gold: Color
     @Composable
     get() = Color(0xFFB98129)
@@ -85,10 +91,17 @@ val ColorScheme.previewText: Color
     @Composable
     get() = if(isSystemInDarkTheme()) Color(0xFFA1A4B0) else Color(0xFF6F7181)
 
-val ColorScheme.profilePictureLoading: Color
+val ColorScheme.backgroundLoadingImage: Color
     @Composable
     get() = if (isSystemInDarkTheme()) Color(0xFF323232) else Color(0xFFE6E6E6)
 
 val ColorScheme.hintText: Color
     @Composable
     get() = if (isSystemInDarkTheme()) Color(0xFF929298) else Color(0xFF8C8C8C)
+
+val ColorScheme.outlinedTextFieldColor: TextFieldColors
+    @Composable
+    get() = OutlinedTextFieldDefaults.colors(
+        unfocusedContainerColor = Color.Transparent,
+        focusedContainerColor = Color.Transparent
+    )

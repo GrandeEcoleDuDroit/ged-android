@@ -136,7 +136,7 @@ private fun ThirdRegistrationScreen(
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
                         .testTag(stringResource(R.string.registration_screen_next_button_tag)),
-                    isEnable = !loading,
+                    enable = !loading,
                     text = stringResource(id = com.upsaclay.common.R.string.next),
                     onClick = onRegistrationClick
                 )

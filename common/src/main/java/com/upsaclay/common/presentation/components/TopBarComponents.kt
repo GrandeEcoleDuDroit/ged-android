@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.Placeholder
 import com.upsaclay.common.R
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.inputForeground
@@ -81,7 +82,7 @@ fun EditTopBar(
     onCancelClick: () -> Unit,
     onActionClick: () -> Unit,
     isButtonEnable: Boolean = true,
-    buttonText: String
+    actionLabel: String
 ) {
     TopAppBar(
         modifier = modifier,
@@ -105,7 +106,7 @@ fun EditTopBar(
                 colors = ButtonDefaults.buttonColors(contentColor = MaterialTheme.colorScheme.white),
                 onClick = onActionClick
             ) {
-                Text(text = buttonText)
+                Text(text = actionLabel)
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
@@ -212,7 +213,7 @@ private fun EditTopBarPreview() {
             title = "Title",
             onCancelClick = { },
             onActionClick = { },
-            buttonText = "Enregister"
+            actionLabel = "Enregister"
         )
     }
 }

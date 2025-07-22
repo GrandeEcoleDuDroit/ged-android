@@ -22,7 +22,7 @@ import androidx.compose.ui.res.stringResource
 import com.upsaclay.authentication.R
 import com.upsaclay.authentication.presentation.components.RegistrationScaffold
 import com.upsaclay.common.presentation.components.PrimaryButton
-import com.upsaclay.common.presentation.components.SimpleDropDownMenu
+import com.upsaclay.common.presentation.components.SingleSelectionDropDownMenu
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.Phones
@@ -75,7 +75,7 @@ private fun SecondRegistrationScreen(
                     style = MaterialTheme.typography.titleMedium
                 )
 
-                SimpleDropDownMenu(
+                SingleSelectionDropDownMenu(
                     items = schoolLevels,
                     selectedItem = schoolLevel,
                     onItemClicked = { item ->

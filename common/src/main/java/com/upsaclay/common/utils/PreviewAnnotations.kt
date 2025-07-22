@@ -8,7 +8,8 @@ import androidx.compose.ui.tooling.preview.Preview
     name = "Phone",
     group = "phones",
     device = Devices.PHONE,
-    showBackground = true
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_NO
 )
 
 @Preview(
@@ -24,7 +25,8 @@ annotation class Phones
     name = "Tablet",
     group = "tablets",
     device = Devices.TABLET,
-    showBackground = true
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_NO
 )
 @Preview(
     name = "Tablet Dark",

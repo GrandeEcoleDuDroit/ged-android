@@ -95,17 +95,13 @@ private fun AnnouncementTitleInput(
             color = MaterialTheme.colorScheme.hintText
         )
     }
-    val onValueChange: (String) -> Unit = {
-        val truncated = if (it.length <= 300) it else it.take(300)
-        onTitleChange(truncated)
-    }
 
     if (focused) {
         TransparentFocusedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = title,
             placeholder = placeholder,
-            onValueChange = onValueChange,
+            onValueChange = onTitleChange,
             textStyle = textStyle
         )
     } else {
@@ -113,7 +109,7 @@ private fun AnnouncementTitleInput(
             modifier = Modifier.fillMaxWidth(),
             value = title,
             placeholder = placeholder,
-            onValueChange = onValueChange,
+            onValueChange = onTitleChange,
             textStyle = textStyle
         )
     }
@@ -126,10 +122,7 @@ private fun AnnouncementContentInput(
     focused: Boolean = false
 ) {
     val textStyle = MaterialTheme.typography.bodyLarge
-    val onValueChange: (String) -> Unit = {
-        val truncated = if (it.length <= 2000) it else it.take(2000)
-        onContentChange(truncated)
-    }
+
     val placeholder: @Composable () -> Unit = {
         Text(
             text = stringResource(id = R.string.content_field_entry),
@@ -143,7 +136,7 @@ private fun AnnouncementContentInput(
             modifier = Modifier.fillMaxWidth(),
             value = content,
             placeholder = placeholder,
-            onValueChange = onValueChange,
+            onValueChange = onContentChange,
             textStyle = textStyle,
         )
     } else {
@@ -151,7 +144,7 @@ private fun AnnouncementContentInput(
             modifier = Modifier.fillMaxWidth(),
             value = content,
             placeholder = placeholder,
-            onValueChange = onValueChange,
+            onValueChange = onContentChange,
             textStyle = textStyle
         )
     }

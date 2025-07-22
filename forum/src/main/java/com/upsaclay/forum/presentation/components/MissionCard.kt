@@ -71,7 +71,6 @@ private fun CardHeader(
         .background(MaterialTheme.colorScheme.secondaryContainer)
         .padding(MaterialTheme.spacing.medium)
 
-
     imageUrl?.let {
         LargeAsyncImage(
             modifier = if (isError) defaultImageModifier else modifier.fillMaxWidth(),
