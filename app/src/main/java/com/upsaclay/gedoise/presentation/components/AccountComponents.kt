@@ -128,7 +128,7 @@ internal fun AccountTopBar(
             title = stringResource(id = R.string.edit_profile),
             onCancelClick = onCancelClick,
             onActionClick = onSaveClick,
-            buttonText = stringResource(id = com.upsaclay.common.R.string.save)
+            actionLabel = stringResource(id = com.upsaclay.common.R.string.save)
         )
     } else {
         BackTopBar(

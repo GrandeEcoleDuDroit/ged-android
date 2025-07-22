@@ -29,11 +29,12 @@
     <string name="deletion">Supression...</string>
     <string name="loading">Chargement...</string>
     <string name="search">Rechercher</string>
-    <string name="search_ellipsis">Rechercher…</string>
+    <string name="search_ellipsis">Rechercher</string>
     <string name="edit">Editer</string>
     <string name="resend">Renvoyer</string>
     <string name="ok">OK</string>
     <string name="see">Voir</string>
+    <string name="see_all">Voir tout</string>
 
     <string name="arrow_back_icon_description">Retour en arrière</string>
     <string name="ged_logo_description">Logo de l\'université de La Grande École du Droit</string>

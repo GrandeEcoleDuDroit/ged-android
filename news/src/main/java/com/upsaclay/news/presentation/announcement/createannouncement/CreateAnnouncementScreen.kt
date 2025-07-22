@@ -56,7 +56,7 @@ private fun CreateAnnouncementScreen(
         topBar = {
             EditTopBar(
                 modifier = Modifier.fillMaxWidth(),
-                buttonText = stringResource(id = com.upsaclay.common.R.string.publish),
+                actionLabel = stringResource(id = com.upsaclay.common.R.string.publish),
                 title = stringResource(id = R.string.new_announcement),
                 onCancelClick = {
                     focusManager.clearFocus()

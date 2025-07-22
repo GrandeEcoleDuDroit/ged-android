@@ -20,13 +20,15 @@ fun NavController.navigateToForum(navOptions: NavOptions? = null) {
 fun NavGraphBuilder.forumSection(
     bottomBar: @Composable () -> Unit,
     onMissionClick: (Mission) -> Unit,
+    onCreateMissionClick: () -> Unit,
     forumDestinations: NavGraphBuilder.() -> Unit
 ) {
     navigation<ForumBaseRoute>(startDestination = ForumRoute) {
         composable<ForumRoute> {
             ForumDestination(
                 bottomBar = bottomBar,
-                onMissionClick = onMissionClick
+                onMissionClick = onMissionClick,
+                onCreateMissionClick = onCreateMissionClick,
             )
         }
         forumDestinations()

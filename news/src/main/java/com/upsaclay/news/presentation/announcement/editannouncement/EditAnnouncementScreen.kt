@@ -103,7 +103,7 @@ private fun EditAnnouncementScreen(
                     onUpdateAnnouncementClick()
                 },
                 isButtonEnable = updateEnabled && !loading,
-                buttonText = stringResource(id = com.upsaclay.common.R.string.save)
+                actionLabel = stringResource(id = com.upsaclay.common.R.string.save)
             )
         },
         snackbarHost = {
