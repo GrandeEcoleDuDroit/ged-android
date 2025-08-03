@@ -8,18 +8,24 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -29,8 +35,6 @@ import com.upsaclay.common.R
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.cursor
 import com.upsaclay.common.presentation.theme.inputBackground
-import com.upsaclay.common.presentation.theme.previewText
-import com.upsaclay.common.presentation.theme.spacing
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,14 +42,25 @@ fun StaticSearchBar(
     modifier: Modifier = Modifier,
     placeholder: String = stringResource(R.string.search),
     query: String,
+    onQueryChange: (String) -> Unit,
+    onResetQuery: () -> Unit = { onQueryChange("") },
     textStyle: TextStyle = TextStyle.Default,
-    icon: @Composable () -> Unit = {
+    leadingIcon: @Composable () -> Unit = {
         Icon(
             imageVector = Icons.Default.Search,
             contentDescription = null
         )
     },
-    onQueryChange: (String) -> Unit,
+    trailingIcon: @Composable () -> Unit = {
+        if (query.isNotEmpty()) {
+            IconButton(onClick = onResetQuery) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = null
+                )
+            }
+        }
+    }
 ) {
     BasicTextField(
         modifier = modifier,
@@ -60,7 +75,7 @@ fun StaticSearchBar(
         TextFieldDefaults.DecorationBox(
             innerTextField = innerTextField,
             value = query,
-            placeholder = { Text(text = placeholder, color = MaterialTheme.colorScheme.previewText) },
+            placeholder = { Text(text = placeholder) },
             shape = ShapeDefaults.ExtraLarge,
             enabled = true,
             colors = TextFieldDefaults.colors(
@@ -72,7 +87,8 @@ fun StaticSearchBar(
             ),
             contentPadding = PaddingValues(),
             singleLine = true,
-            leadingIcon = icon,
+            leadingIcon = leadingIcon,
+            trailingIcon = trailingIcon,
             visualTransformation = VisualTransformation.None,
             interactionSource = remember { MutableInteractionSource() }
         )
@@ -88,15 +104,15 @@ fun StaticSearchBar(
 @Preview(showBackground = true)
 @Composable
 private fun SearchBarPreview() {
+    var query by remember { mutableStateOf("") }
     GedoiseTheme {
         Box(
-            modifier = Modifier.padding(MaterialTheme.spacing.small)
+            modifier = Modifier.padding(dimensionResource(R.dimen.small_padding))
         ) {
             StaticSearchBar(
                 modifier = Modifier.fillMaxWidth(),
-                placeholder = "Search",
-                query = "",
-                onQueryChange = {}
+                query = query,
+                onQueryChange = { query = it }
             )
         }
     }

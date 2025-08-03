@@ -21,12 +21,15 @@
     <string name="add_image">Ajouter image</string>
     <string name="remove_task">Supprimer tâche</string>
     <string name="remove_image">Supprimer image mission</string>
-    <string name="add_manager">Ajouter manager</string>
+    <string name="add_manager">Ajouter gérant</string>
     <string name="remove_manager">Supprimer manager</string>
     <string name="add">Ajouter</string>
     <string name="task">Tâche</string>
     <string name="new_task">Nouvelle tâche</string>
     <string name="task_removed">Tâche supprimé</string>
     <string name="undo">Annuler</string>
-    <string name="add_task">Ajouter une tâche</string>
+    <string name="add_task">Ajouter tâche</string>
+    <string name="enter_task">Entrer tâche</string>
+    <string name="new_image">Nouvelle image</string>
+    <string name="delete_mission_image_dialog_text">Supprimer image ?</string>
 </resources>

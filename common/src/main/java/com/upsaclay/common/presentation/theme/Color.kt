@@ -4,6 +4,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
@@ -77,11 +78,11 @@ val ColorScheme.gold: Color
 
 val ColorScheme.inputBackground: Color
     @Composable
-    get() = if(isSystemInDarkTheme()) Color(0xFF323232) else Color(0xFFEEEEEE)
+    get() = if (isSystemInDarkTheme()) Color(0xFF323232) else Color(0xFFEEEEEE)
 
 val ColorScheme.inputForeground: Color
     @Composable
-    get() = if(isSystemInDarkTheme()) Color(0xFFBEBEBE) else Color(0xFF646464)
+    get() = if (isSystemInDarkTheme()) Color(0xFFBEBEBE) else Color(0xFF646464)
 
 val ColorScheme.cursor: Color
     @Composable
@@ -89,11 +90,11 @@ val ColorScheme.cursor: Color
 
 val ColorScheme.previewText: Color
     @Composable
-    get() = if(isSystemInDarkTheme()) Color(0xFFA1A4B0) else Color(0xFF6F7181)
+    get() = if (isSystemInDarkTheme()) Color(0xFFA1A4B0) else Color(0xFF6F7181)
 
 val ColorScheme.backgroundLoadingImage: Color
     @Composable
-    get() = if (isSystemInDarkTheme()) Color(0xFF323232) else Color(0xFFE6E6E6)
+    get() = if (isSystemInDarkTheme()) Color(0xFF323232) else Color(0xFFEEEEEE)
 
 val ColorScheme.hintText: Color
     @Composable
@@ -104,4 +105,13 @@ val ColorScheme.outlinedTextFieldColor: TextFieldColors
     get() = OutlinedTextFieldDefaults.colors(
         unfocusedContainerColor = Color.Transparent,
         focusedContainerColor = Color.Transparent
+    )
+
+val ColorScheme.transparentTextFieldColor: TextFieldColors
+    @Composable
+    get() = TextFieldDefaults.colors(
+        unfocusedContainerColor = Color.Transparent,
+        focusedContainerColor = Color.Transparent,
+        focusedIndicatorColor = Color.Transparent,
+        unfocusedIndicatorColor = Color.Transparent,
     )

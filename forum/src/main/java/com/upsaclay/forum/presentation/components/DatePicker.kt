@@ -1,37 +1,34 @@
-package com.upsaclay.forum.presentation.createmission.components
+package com.upsaclay.forum.presentation.components
 
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.presentation.components.SimpleOutlinedTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.spacing
-import com.upsaclay.common.utils.FormatLocalDateTimeUseCase
+import com.upsaclay.common.utils.FormatLocalDateHelper
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.forum.R
-import java.time.LocalDateTime
+import java.time.LocalDate
 
 @Composable
-fun DatePicker(
+fun OutlinedDatePicker(
     modifier: Modifier = Modifier,
-    date: LocalDateTime,
+    date: LocalDate,
     onClick: () -> Unit,
     label: String
 ) {
     SimpleOutlinedTextField(
         modifier = modifier
-            .fillMaxWidth()
             .pointerInput(date) {
                 awaitEachGesture {
                     awaitFirstDown(pass = PointerEventPass.Initial)
@@ -41,7 +38,7 @@ fun DatePicker(
                     }
                 }
             },
-        value = FormatLocalDateTimeUseCase.formatDayMonthYear(date),
+        value = FormatLocalDateHelper.formatDayMonthYear(date),
         onValueChange = {},
         readOnly = true,
         label = label,
@@ -62,12 +59,12 @@ fun DatePicker(
 
 @Phones
 @Composable
-private fun DatePickerFieldPreview() {
+private fun OutlinedDatePickerPreview() {
     GedoiseTheme {
         Surface {
-            DatePicker(
-                modifier = Modifier.padding(MaterialTheme.spacing.small),
-                date = LocalDateTime.now(),
+            OutlinedDatePicker(
+                modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.small_padding)),
+                date = LocalDate.now(),
                 onClick = {},
                 label = stringResource(R.string.start_date)
             )

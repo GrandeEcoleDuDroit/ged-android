@@ -27,12 +27,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.Placeholder
 import com.upsaclay.common.R
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.inputForeground
-import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.presentation.theme.white
 import com.upsaclay.common.utils.Phones
 
@@ -97,11 +96,11 @@ fun EditTopBar(
         },
         actions = {
             Button(
-                modifier = Modifier.padding(end = MaterialTheme.spacing.small),
+                modifier = Modifier.padding(end = dimensionResource(R.dimen.small_padding)),
                 enabled = isButtonEnable,
                 contentPadding = PaddingValues(
-                    vertical = MaterialTheme.spacing.default,
-                    horizontal = MaterialTheme.spacing.smallMedium
+                    vertical = dimensionResource(com.upsaclay.common.R.dimen.default_padding),
+                    horizontal = dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)
                 ),
                 colors = ButtonDefaults.buttonColors(contentColor = MaterialTheme.colorScheme.white),
                 onClick = onActionClick

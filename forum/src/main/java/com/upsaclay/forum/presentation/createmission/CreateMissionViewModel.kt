@@ -12,11 +12,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
+import java.time.LocalDate
 
 class CreateMissionViewModel(
     private val userRepository: UserRepository
-): ViewModel() {
+) : ViewModel() {
     private val _uiState = MutableStateFlow(CreateMissionUiState())
     val uiState: StateFlow<CreateMissionUiState> = _uiState
     private var defaultUsers: List<User> = emptyList()
@@ -31,7 +31,7 @@ class CreateMissionViewModel(
         _uiState.update {
             it.copy(
                 title = title,
-                createEnabled = validateCreate()
+                createEnabled = validateCreate(title = title)
             )
         }
     }
@@ -41,7 +41,7 @@ class CreateMissionViewModel(
         _uiState.update {
             it.copy(
                 description = description,
-                createEnabled = validateCreate()
+                createEnabled = validateCreate(description = description)
             )
         }
     }
@@ -57,7 +57,7 @@ class CreateMissionViewModel(
         }
     }
 
-    fun onStartDateChange(date: LocalDateTime) {
+    fun onStartDateChange(date: LocalDate) {
         _uiState.update {
             it.copy(
                 startDate = date,
@@ -66,7 +66,7 @@ class CreateMissionViewModel(
         }
     }
 
-    fun onEndDateChange(date: LocalDateTime) {
+    fun onEndDateChange(date: LocalDate) {
         _uiState.update {
             it.copy(
                 startDate = if (!validateEndDate(it.startDate, date)) date else it.startDate,
@@ -77,11 +77,23 @@ class CreateMissionViewModel(
 
     fun onFrequencyChange(frequency: String) {
         if (frequency.length > 100) return
-        _uiState.update { it.copy(frequency = frequency) }
+        _uiState.update {
+            it.copy(
+                frequency = frequency,
+                createEnabled = validateCreate(frequency = frequency)
+            )
+        }
     }
 
     fun onSaveSelectedManagers(selectedManagers: List<User>) {
         _uiState.update { it.copy(selectedManagers = selectedManagers) }
+    }
+
+    fun onRemoveManager(manager: User) {
+        _uiState.update { currentState ->
+            val updatedManagers = currentState.selectedManagers - manager
+            currentState.copy(selectedManagers = updatedManagers)
+        }
     }
 
     fun onMissionImageUriChange(uri: Uri?) {
@@ -95,25 +107,25 @@ class CreateMissionViewModel(
     fun onAddTask(task: Task) {
         _uiState.update {
             it.copy(
-                tasks = it.tasks + task,
+                tasks = it.tasks + (task.id to task),
                 currentTask = ""
             )
         }
     }
 
     fun onEditTask(task: Task) {
-        _uiState.update {
-            it.copy(
-                tasks = it.tasks.map { existingTask ->
-                    if (existingTask.id == task.id) task else existingTask
-                }
+        _uiState.update { state ->
+            state.copy(
+                tasks = state.tasks + (task.id to task)
             )
         }
     }
 
     fun onRemoveTask(task: Task) {
-        _uiState.update {
-            it.copy(tasks = it.tasks - task)
+        _uiState.update { state ->
+            state.copy(
+                tasks = state.tasks - task.id
+            )
         }
     }
 
@@ -170,37 +182,36 @@ class CreateMissionViewModel(
         }
     }
 
-    private fun validateCreate(): Boolean {
-        val state = _uiState.value
-        return validateTitle(state.title) &&
-                validateDescription(state.description) &&
-                validateEndDate(state.startDate, state.endDate) &&
-                validateFrequency(state.frequency) &&
-                validateManagers(state.selectedManagers)
+    private fun validateCreate(
+        title: String = _uiState.value.title,
+        description: String = _uiState.value.description,
+        frequency: String = _uiState.value.frequency
+    ): Boolean {
+        return validateTitle(title) &&
+                validateDescription(description) &&
+                validateFrequency(frequency)
     }
 
     private fun validateTitle(title: String): Boolean = title.isNotBlank()
 
     private fun validateDescription(description: String): Boolean = description.isNotBlank()
 
-    private fun validateEndDate(startDate: LocalDateTime, endDate: LocalDateTime?): Boolean =
-        endDate == null || endDate.isEqual(startDate) || endDate.isAfter(startDate)
+    private fun validateEndDate(startDate: LocalDate, endDate: LocalDate): Boolean =
+        endDate.isEqual(startDate) || endDate.isAfter(startDate)
 
     private fun validateFrequency(frequency: String): Boolean = frequency.isNotBlank()
-
-    private fun validateManagers(managers: List<User>): Boolean = managers.isNotEmpty()
 
     data class CreateMissionUiState(
         val title: String = "",
         val description: String = "",
         val selectedSchoolLevels: List<SchoolLevel> = emptyList(),
         val schoolLevels: List<SchoolLevel> = SchoolLevel.entries,
-        val startDate: LocalDateTime = LocalDateTime.now(),
-        val endDate: LocalDateTime = LocalDateTime.now(),
+        val startDate: LocalDate = LocalDate.now(),
+        val endDate: LocalDate = LocalDate.now(),
         val frequency: String = "",
         val selectedManagers: List<User> = emptyList(),
         val currentTask: String = "",
-        val tasks: List<Task> = emptyList(),
+        val tasks: Map<Int, Task> = emptyMap(),
         val imageUri: Uri? = null,
         val users: List<User> = emptyList(),
         val userQuery: String = "",

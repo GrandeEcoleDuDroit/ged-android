@@ -1,17 +1,17 @@
-package com.upsaclay.forum.presentation.components
+package com.upsaclay.forum.presentation.components.bottomsheets
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -27,20 +27,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.TextFieldValue
 import com.upsaclay.common.domain.usecase.GenerateIdUseCase
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.forum.R
 import com.upsaclay.forum.domain.entity.Task
 import com.upsaclay.forum.domain.taskFixture
+import kotlinx.coroutines.android.awaitFrame
+import kotlinx.coroutines.delay
 
 @Composable
-fun EditTaskBottomSheet(
+fun EditTaskModalBottomSheet(
     initialTask: Task,
     onDismissRequest: () -> Unit,
     onEditClick: (Task) -> Unit
@@ -62,7 +65,7 @@ fun EditTaskBottomSheet(
 }
 
 @Composable
-fun AddTaskBottomSheet(
+fun AddTaskModalBottomSheet(
     onDismissRequest: () -> Unit,
     onAddClick: (Task) -> Unit
 ) {
@@ -93,7 +96,6 @@ private fun TaskModalBottomSheet(
     onDismissRequest: () -> Unit
 ) {
     val focusRequester = remember { FocusRequester() }
-    val keyboardController = LocalSoftwareKeyboardController.current
     var textFieldValue by remember {
         mutableStateOf(
             TextFieldValue(
@@ -103,33 +105,38 @@ private fun TaskModalBottomSheet(
         )
     }
 
-    LaunchedEffect(Unit) {
-        focusRequester.requestFocus()
-    }
+    val state = rememberModalBottomSheetState(
+        confirmValueChange = {
+            if (it == SheetValue.Hidden) {
+                focusRequester.freeFocus()
+                onDismissRequest()
+                true
+            } else {
+                false
+            }
+        }
+    )
 
     ModalBottomSheet(
-        onDismissRequest = {
-            keyboardController?.hide()
-            onDismissRequest()
-        },
-        sheetState = rememberModalBottomSheetState(),
-        windowInsets = WindowInsets.ime
+        onDismissRequest = {},
+        sheetState = state
     ) {
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
             OutlinedTextField(
+                modifier = Modifier
+                    .focusRequester(focusRequester)
+                    .fillMaxWidth(),
                 value = textFieldValue,
-                onValueChange =  {
+                onValueChange = {
                     if (it.text.length < 100) {
                         textFieldValue = it
                         onValueChange(it.text)
                     }
                 },
-                placeholder = { Text(text = stringResource(R.string.task)) },
-                modifier = Modifier
-                    .focusRequester(focusRequester)
-                    .fillMaxWidth(),
+                keyboardOptions = KeyboardOptions(KeyboardCapitalization.Sentences),
+                placeholder = { Text(text = stringResource(R.string.enter_task)) },
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedBorderColor = Color.Transparent,
                     focusedBorderColor = Color.Transparent
@@ -139,22 +146,25 @@ private fun TaskModalBottomSheet(
             TextButton(
                 modifier = Modifier
                     .align(Alignment.End)
-                    .padding(end = MaterialTheme.spacing.medium),
-                onClick = {
-                    onClick(
-                        task.copy(value = task.value.trim())
-                    )
-                },
+                    .padding(end = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                onClick = { onClick(task.copy(value = task.value.trim())) },
                 enabled = enabled,
             ) {
                 Text(
                     text = labelButton,
-                    style = MaterialTheme.typography.labelLarge
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.SemiBold
                 )
             }
         }
 
-        Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)))
+    }
+
+    LaunchedEffect(Unit) {
+        awaitFrame()
+        delay(200)
+        focusRequester.requestFocus()
     }
 }
 
@@ -170,7 +180,7 @@ private fun EditTaskBottomSheetPreview() {
 
     GedoiseTheme {
         Surface {
-            EditTaskBottomSheet(
+            EditTaskModalBottomSheet(
                 initialTask = taskFixture,
                 onDismissRequest = {},
                 onEditClick = {}

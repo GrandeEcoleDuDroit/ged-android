@@ -20,6 +20,8 @@ import com.upsaclay.authentication.presentation.registration.thirdregistration.t
 import com.upsaclay.common.domain.entity.Route
 import com.upsaclay.forum.presentation.createmission.createMissionScreen
 import com.upsaclay.forum.presentation.createmission.navigateToCreateMission
+import com.upsaclay.forum.presentation.forumSection
+import com.upsaclay.forum.presentation.navigateToForum
 import com.upsaclay.gedoise.presentation.components.MainBottomBar
 import com.upsaclay.gedoise.presentation.profile.account.accountScreen
 import com.upsaclay.gedoise.presentation.profile.account.navigateToAccount
@@ -34,8 +36,6 @@ import com.upsaclay.message.presentation.conversation.create.CreateConversationR
 import com.upsaclay.message.presentation.conversation.create.createConversationScreen
 import com.upsaclay.message.presentation.conversation.create.navigateToCreateConversation
 import com.upsaclay.message.presentation.conversation.navigateToConversation
-import com.upsaclay.forum.presentation.forumSection
-import com.upsaclay.forum.presentation.navigateToForum
 import com.upsaclay.news.presentation.NewsRoute
 import com.upsaclay.news.presentation.announcement.createannouncement.createAnnouncementScreen
 import com.upsaclay.news.presentation.announcement.createannouncement.navigateToCreateAnnouncement

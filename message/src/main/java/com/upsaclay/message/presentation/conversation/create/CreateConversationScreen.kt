@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,7 +34,6 @@ import com.upsaclay.common.presentation.components.CircularProgressBar
 import com.upsaclay.common.presentation.components.UserItem
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.previewText
-import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.message.domain.entity.Conversation
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -113,13 +113,13 @@ fun CreateConversationScreen(
     ) { innerPadding ->
         Column(
             modifier = Modifier.padding(innerPadding),
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.small_padding))
         ) {
             if (loading) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = MaterialTheme.spacing.medium),
+                        .padding(top = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
                     contentAlignment = Alignment.TopCenter
                 ) {
                     CircularProgressBar()
@@ -155,8 +155,8 @@ private fun UsersFeed(
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = MaterialTheme.spacing.medium),
-                    text = stringResource(id = com.upsaclay.common.R.string.users_not_found),
+                        .padding(top = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                    text = stringResource(id = com.upsaclay.common.R.string.no_user),
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.previewText
                 )

@@ -36,6 +36,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextRange
@@ -45,7 +46,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.presentation.theme.outlinedTextFieldColor
 import com.upsaclay.common.utils.Phones
 import kotlinx.coroutines.android.awaitFrame
@@ -148,6 +148,7 @@ fun TransparentTextField(
     onValueChange: (String) -> Unit,
     placeholder: @Composable (() -> Unit),
     textStyle: TextStyle = TextStyle.Default,
+    minLines: Int = 1,
     enabled: Boolean = true
 ) {
     val colors: TextFieldColors = TextFieldDefaults.colors()
@@ -182,7 +183,7 @@ fun TransparentTextField(
     BasicTextField(
         modifier = modifier
             .background(backgroundColor)
-            .padding(MaterialTheme.spacing.default)
+            .padding(dimensionResource(com.upsaclay.common.R.dimen.default_padding))
             .bringIntoViewRequester(bringIntoViewRequester)
             .onFocusChanged { isFocused = it.isFocused },
         enabled = enabled,
@@ -202,7 +203,8 @@ fun TransparentTextField(
             coroutineScope.launch {
                 bringIntoViewRequester.bringIntoView(cursorRect)
             }
-        }
+        },
+        minLines = minLines
     ) { innerTextField ->
         TextFieldDefaults.DecorationBox(
             value = textFieldValue.text,
@@ -218,7 +220,7 @@ fun TransparentTextField(
                 unfocusedIndicatorColor = Color.Transparent
             ),
             placeholder = placeholder,
-            contentPadding = PaddingValues(MaterialTheme.spacing.default)
+            contentPadding = PaddingValues(dimensionResource(com.upsaclay.common.R.dimen.default_padding))
         )
     }
 }
@@ -305,7 +307,7 @@ fun TransparentFocusedTextField(
                 unfocusedIndicatorColor = Color.Transparent
             ),
             placeholder = placeholder,
-            contentPadding = PaddingValues(MaterialTheme.spacing.default)
+            contentPadding = PaddingValues(dimensionResource(com.upsaclay.common.R.dimen.default_padding))
         )
     }
 }
@@ -324,7 +326,7 @@ private fun SimpleOutlinedTextFieldPreview() {
     GedoiseTheme {
         Surface {
             SimpleOutlinedTextField(
-                modifier = Modifier.padding(MaterialTheme.spacing.small),
+                modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.small_padding)),
                 value = text,
                 label = "Label",
                 onValueChange = { text = it }
@@ -341,7 +343,7 @@ private fun SimpleTextFieldPreview() {
     GedoiseTheme {
         Surface {
             SimpleTextField(
-                modifier = Modifier.padding(MaterialTheme.spacing.small),
+                modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.small_padding)),
                 value = text,
                 label = "Label",
                 onValueChange = { text = it }
