@@ -1,6 +1,7 @@
 package com.upsaclay.common.presentation.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,11 +11,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -27,13 +27,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.upsaclay.common.R
+import com.upsaclay.common.domain.entity.User
+import com.upsaclay.common.domain.userFixture
+import com.upsaclay.common.extension.smallMediumSpacing
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.spacing
+import com.upsaclay.common.utils.Phones
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -83,12 +87,41 @@ fun ClickableItem(
     Row(
         modifier = modifier
             .clickable(onClick = onClick)
-            .padding(MaterialTheme.spacing.medium),
+            .padding(dimensionResource(R.dimen.medium_padding)),
         verticalAlignment = Alignment.CenterVertically
     ) {
         icon()
-        Spacer(modifier = Modifier.width(MaterialTheme.spacing.smallMedium))
+        Spacer(modifier = Modifier.width(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)))
         text()
+    }
+}
+
+@Composable
+fun UserItem(
+    modifier: Modifier = Modifier,
+    user: User,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(
+                horizontal = dimensionResource(R.dimen.medium_padding),
+                vertical = dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)
+            ),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.smallMediumSpacing()
+    ) {
+        ProfilePicture(
+            url = user.profilePictureUrl,
+            scale = 0.5f
+        )
+
+        Text(
+            text = user.fullName,
+            style = MaterialTheme.typography.titleMedium
+        )
     }
 }
 
@@ -98,22 +131,24 @@ fun ClickableItem(
  =====================================================================
  */
 
-@Preview(showBackground = true)
+@Phones
 @Composable
 private fun ClickableMenuItemPreview() {
     GedoiseTheme {
-        Column {
-            ClickableItem(
-                modifier = Modifier.width(300.dp),
-                text = { Text(text = "Item") },
-                icon = {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_fill_person),
-                        contentDescription = null
-                    )
-                },
-                onClick = {}
-            )
+        Surface {
+            Column {
+                ClickableItem(
+                    modifier = Modifier.width(300.dp),
+                    text = { Text(text = "Item") },
+                    icon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_fill_person),
+                            contentDescription = null
+                        )
+                    },
+                    onClick = {}
+                )
+            }
         }
     }
 }
@@ -121,7 +156,6 @@ private fun ClickableMenuItemPreview() {
 @Preview(showBackground = true, widthDp = 200, heightDp = 200)
 @Composable
 private fun PullRefreshComponentPreview() {
-    val itemList = listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
     var isRefreshing by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
@@ -134,16 +168,24 @@ private fun PullRefreshComponentPreview() {
             onRefresh = { },
             isRefreshing = isRefreshing
         ) {
-            LazyColumn(modifier = Modifier.padding(MaterialTheme.spacing.medium)) {
-                items(itemList) {
-                    Text(
-                        text = it.toString(),
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    HorizontalDivider(modifier = Modifier.padding(vertical = MaterialTheme.spacing.extraSmall))
+            LazyColumn(modifier = Modifier.padding(dimensionResource(R.dimen.medium_padding))) {
+                item {
+                    Text(text = "Pull to refresh", style = MaterialTheme.typography.titleLarge)
                 }
             }
+        }
+    }
+}
+
+@Phones
+@Composable
+private fun UserItemPreview() {
+    GedoiseTheme {
+        Surface {
+            UserItem(
+                user = userFixture,
+                onClick = { }
+            )
         }
     }
 }

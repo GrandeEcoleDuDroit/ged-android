@@ -12,12 +12,12 @@ import com.upsaclay.common.presentation.theme.GedoiseTheme
 fun PrimaryButton(
     modifier: Modifier = Modifier,
     text: String,
-    isEnable: Boolean = true,
+    enable: Boolean = true,
     onClick: () -> Unit
 ) {
     Button(
         modifier = modifier,
-        enabled = isEnable,
+        enabled = enable,
         onClick = onClick
     ) {
         Text(text = text)

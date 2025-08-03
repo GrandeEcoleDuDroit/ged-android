@@ -14,11 +14,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.upsaclay.common.presentation.theme.previewText
-import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.message.R
 import com.upsaclay.message.domain.conversationsUIFixture
@@ -55,7 +55,7 @@ private fun EmptyConversationText(onCreateClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = MaterialTheme.spacing.medium)
+            .padding(top = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
             .testTag(stringResource(R.string.conversation_screen_empty_conversation_text_tag)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -67,8 +67,8 @@ private fun EmptyConversationText(onCreateClick: () -> Unit) {
         )
 
         TextButton(
-            contentPadding = PaddingValues(MaterialTheme.spacing.default),
-            modifier = Modifier.height(MaterialTheme.spacing.large),
+            contentPadding = PaddingValues(dimensionResource(com.upsaclay.common.R.dimen.default_padding)),
+            modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.large_padding)),
             onClick = onCreateClick
         ) {
             Text(

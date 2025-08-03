@@ -24,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.upsaclay.common.domain.entity.SingleUiEvent
@@ -33,7 +34,6 @@ import com.upsaclay.common.presentation.components.BackTopBar
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.SensibleActionDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.entity.Announcement
@@ -138,12 +138,12 @@ fun ReadAnnouncementScreen(
                     .fillMaxSize()
                     .padding(
                         top = contentPadding.calculateTopPadding(),
-                        start = MaterialTheme.spacing.medium,
-                        end = MaterialTheme.spacing.medium,
-                        bottom = MaterialTheme.spacing.medium
+                        start = dimensionResource(com.upsaclay.common.R.dimen.medium_padding),
+                        end = dimensionResource(com.upsaclay.common.R.dimen.medium_padding),
+                        bottom = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)
                     )
                     .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+                verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
             ) {
                 ReadAnnouncementTopSection(
                     user = user,

@@ -8,14 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Snackbar
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,19 +23,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.usersFixture
-import com.upsaclay.common.presentation.components.BackTopBar
 import com.upsaclay.common.presentation.components.CircularProgressBar
-import com.upsaclay.common.presentation.components.SearchTopBar
+import com.upsaclay.common.presentation.components.UserItem
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.previewText
-import com.upsaclay.common.presentation.theme.spacing
-import com.upsaclay.message.R
 import com.upsaclay.message.domain.entity.Conversation
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -105,52 +96,30 @@ fun CreateConversationScreen(
         search = false
     }
 
-    Scaffold(
-        topBar = {
-            if (!search) {
-                BackTopBar(
-                    onBackClick = {
-                        keyboardController?.hide()
-                        onBackClick()
-                    },
-                    title = stringResource(id = R.string.new_conversation),
-                    leadingIcon = {
-                        IconButton(
-                            onClick = { search = true }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Search,
-                                contentDescription = null
-                            )
-                        }
-                    }
-                )
-            } else {
-                SearchTopBar(
-                    query = query,
-                    onQueryChange = onQueryChange,
-                    onBackClick = {
-                        search = false
-                        onResetQuery()
-                    }
-                )
-            }
+    CreateConversationScaffold(
+        search = search,
+        query = query,
+        onQueryChange = onQueryChange,
+        onSearchBackClick = {
+            search = false
+            onResetQuery()
         },
-        snackbarHost = {
-            SnackbarHost(snackbarHostState) {
-                Snackbar(it)
-            }
-        }
-    ) { paddingValues ->
+        onBackClick = {
+            keyboardController?.hide()
+            onBackClick()
+        },
+        onSearchClick = { search = true },
+        snackbarHostState = snackbarHostState
+    ) { innerPadding ->
         Column(
-            modifier = Modifier.padding(paddingValues),
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+            modifier = Modifier.padding(innerPadding),
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.small_padding))
         ) {
             if (loading) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = MaterialTheme.spacing.medium),
+                        .padding(top = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
                     contentAlignment = Alignment.TopCenter
                 ) {
                     CircularProgressBar()
@@ -178,7 +147,7 @@ private fun UsersFeed(
             items(users) { user ->
                 UserItem(
                     user = user,
-                    onClick = onUserClick
+                    onClick = { onUserClick(user) }
                 )
             }
         } else {
@@ -186,8 +155,8 @@ private fun UsersFeed(
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = MaterialTheme.spacing.medium),
-                    text = stringResource(id = com.upsaclay.common.R.string.users_not_found),
+                        .padding(top = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                    text = stringResource(id = com.upsaclay.common.R.string.no_user),
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.previewText
                 )

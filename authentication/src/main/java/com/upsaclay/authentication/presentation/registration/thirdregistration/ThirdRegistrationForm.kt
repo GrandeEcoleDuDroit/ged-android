@@ -11,12 +11,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.authentication.R
 import com.upsaclay.authentication.presentation.components.OutlinePasswordTextField
 import com.upsaclay.common.presentation.components.SimpleOutlinedTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.Phones
 
 @Composable
@@ -31,7 +31,7 @@ fun ThirdRegistrationForm(
     onPasswordChange: (String) -> Unit
 ) {
     Column(
-        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
     ) {
         Text(
             text = stringResource(id = R.string.enter_email_password),

@@ -4,8 +4,8 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.upsaclay.common.R
 import com.upsaclay.common.domain.entity.Route
-import com.upsaclay.message.presentation.conversation.ConversationRoute
 import com.upsaclay.forum.presentation.ForumRoute
+import com.upsaclay.message.presentation.conversation.ConversationRoute
 import com.upsaclay.news.presentation.NewsRoute
 
 sealed class TopLevelDestination(

@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -31,7 +32,6 @@ import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.previewText
-import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.common.utils.getElapsedTimeValue
 import com.upsaclay.message.R
@@ -134,11 +134,11 @@ private fun ConversationItemStructure(
                 onLongClick = onLongClick
             )
             .padding(
-                horizontal = MaterialTheme.spacing.medium,
-                vertical = MaterialTheme.spacing.smallMedium
+                horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding),
+                vertical = dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)
             ),
         verticalAlignment = Alignment.Top,
-        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
     ) {
         ProfilePicture(
             url = interlocutor.profilePictureUrl,
@@ -176,7 +176,7 @@ private fun UnreadConversationItemContent(
         modifier = modifier
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.smallMedium)
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding))
     ) {
         DefaultConversationItemContent(
             modifier = Modifier.weight(1f),
@@ -207,11 +207,11 @@ private fun DefaultConversationItemContent(
 ) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.veryExtraSmall)
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding))
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.smallMedium)
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding))
         ) {
             Text(
                 modifier = Modifier.weight(1f, fill = false),

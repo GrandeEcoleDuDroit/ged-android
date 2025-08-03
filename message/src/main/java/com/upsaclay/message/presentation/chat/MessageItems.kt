@@ -42,6 +42,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.PlatformTextStyle
@@ -57,9 +58,8 @@ import com.upsaclay.common.presentation.theme.black
 import com.upsaclay.common.presentation.theme.cursor
 import com.upsaclay.common.presentation.theme.inputBackground
 import com.upsaclay.common.presentation.theme.inputForeground
-import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.presentation.theme.white
-import com.upsaclay.common.utils.FormatLocalDateTimeUseCase
+import com.upsaclay.common.utils.FormatLocalDateTimeHelper
 import com.upsaclay.message.R
 import com.upsaclay.message.domain.entity.Message
 import com.upsaclay.message.domain.entity.MessageState
@@ -100,8 +100,8 @@ fun SentMessageItem(
 
                 Text(
                     modifier = Modifier.padding(
-                        top = MaterialTheme.spacing.extraSmall,
-                        end = MaterialTheme.spacing.smallMedium
+                        top = dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding),
+                        end = dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)
                     ),
                     text = stringResource(id = R.string.message_seen),
                     style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Light),
@@ -144,7 +144,7 @@ fun ReceiveMessageItem(
 
     Row(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.small_padding)),
         verticalAlignment = Alignment.Bottom
     ) {
         if (displayProfilePicture) {
@@ -179,15 +179,15 @@ private fun MessageText(
 ) {
     FlowRow(
         modifier = modifier
-            .clip(RoundedCornerShape(MaterialTheme.spacing.medium))
+            .clip(RoundedCornerShape(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)))
             .clickable(
                 enabled = onClick != null,
                 onClick = onClick ?: {}
             )
             .background(backgroundColor)
             .padding(
-                vertical = MaterialTheme.spacing.small,
-                horizontal = MaterialTheme.spacing.smallMedium
+                vertical = dimensionResource(com.upsaclay.common.R.dimen.small_padding),
+                horizontal = dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)
             ),
         horizontalArrangement = Arrangement.End
     ) {
@@ -200,9 +200,9 @@ private fun MessageText(
 
         Text(
             modifier = Modifier
-                .padding(start = MaterialTheme.spacing.small)
+                .padding(start = dimensionResource(com.upsaclay.common.R.dimen.small_padding))
                 .align(Alignment.Bottom),
-            text = FormatLocalDateTimeUseCase.formatHourMinute(date),
+            text = FormatLocalDateTimeHelper.formatHourMinute(date),
             style = MaterialTheme.typography.labelSmall,
             color = dateTimeTextColor
         )
@@ -223,7 +223,7 @@ fun MessageInput(
         modifier = modifier
             .clip(ShapeDefaults.ExtraLarge)
             .background(MaterialTheme.colorScheme.inputBackground)
-            .padding(end = MaterialTheme.spacing.small),
+            .padding(end = dimensionResource(com.upsaclay.common.R.dimen.small_padding)),
         verticalAlignment = Alignment.CenterVertically
     ) {
         BasicTextField(
@@ -258,8 +258,8 @@ fun MessageInput(
                 visualTransformation = VisualTransformation.None,
                 interactionSource = interactionSource,
                 contentPadding = PaddingValues(
-                    horizontal = MaterialTheme.spacing.medium,
-                    vertical = MaterialTheme.spacing.smallMedium
+                    horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding),
+                    vertical = dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)
                 )
             )
         }
@@ -289,7 +289,7 @@ fun NewMessageIndicator(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = MaterialTheme.spacing.smallMedium),
+            .padding(vertical = dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)),
         Arrangement.Center
     ) {
         Surface(
@@ -301,8 +301,8 @@ fun NewMessageIndicator(
             Text(
                 modifier = Modifier
                     .padding(
-                        horizontal = MaterialTheme.spacing.large,
-                        vertical = MaterialTheme.spacing.smallMedium
+                        horizontal = dimensionResource(com.upsaclay.common.R.dimen.large_padding),
+                        vertical = dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)
                     ),
                 text = stringResource(id = R.string.new_message),
                 style = MaterialTheme.typography.labelMedium,
@@ -339,11 +339,11 @@ private fun SentMessageItemPreview() {
                 showSeen = true
             )
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+            Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.small_padding)))
 
             SentMessageItem(message = messageFixture.copy(state = MessageState.ERROR))
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+            Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.small_padding)))
 
             SentMessageItem(message = messageFixture.copy(state = MessageState.SENDING))
         }
@@ -361,7 +361,7 @@ private fun ReceiveMessageItemPreview() {
                 profilePictureUrl = ""
             )
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+            Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.small_padding)))
 
             ReceiveMessageItem(
                 message = messageFixture,

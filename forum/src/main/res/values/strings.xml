@@ -1,10 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="no_mission">Aucune mission</string>
-    <string name="everyone">Tout le monde</string>
     <string name="participants_amount" translatable="false">%d/%d</string>
+    <string name="new_mission">Nouvelle mission</string>
+    <string name="title">Titre</string>
+    <string name="description">Description</string>
+    <string name="informations">Informations</string>
+    <string name="everyone">Tout le monde</string>
+    <string name="start_date">Date de début</string>
+    <string name="end_date">Date de fin</string>
+    <string name="frequency">Fréquence</string>
+    <string name="mission_managers">Gérants de la mission</string>
+    <string name="participants">Participants</string>
+    <string name="tasks">Tâches</string>
+    <string name="school_level">Niveau scolaire</string>
 
     <string name="no_mission_tag" translatable="false">No mission tag</string>
     <string name="missions_card_tag" translatable="false">Missions card tag</string>
     <string name="missions_card_school_level_tag" translatable="false">Mission card school level tag</string>
+    <string name="add_image">Ajouter image</string>
+    <string name="remove_task">Supprimer tâche</string>
+    <string name="remove_image">Supprimer image mission</string>
+    <string name="add_manager">Ajouter gérant</string>
+    <string name="remove_manager">Supprimer manager</string>
+    <string name="add">Ajouter</string>
+    <string name="task">Tâche</string>
+    <string name="new_task">Nouvelle tâche</string>
+    <string name="task_removed">Tâche supprimé</string>
+    <string name="undo">Annuler</string>
+    <string name="add_task">Ajouter tâche</string>
+    <string name="enter_task">Entrer tâche</string>
+    <string name="new_image">Nouvelle image</string>
+    <string name="delete_mission_image_dialog_text">Supprimer image ?</string>
 </resources>
