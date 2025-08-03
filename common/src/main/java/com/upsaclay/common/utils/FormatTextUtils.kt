@@ -14,6 +14,6 @@ fun getElapsedTimeValue(date: LocalDateTime): String {
         is ElapsedTime.Hour -> stringResource(com.upsaclay.common.R.string.hour_ago_short, elapsedTime.value)
         is ElapsedTime.Day -> stringResource(com.upsaclay.common.R.string.day_ago_short, elapsedTime.value)
         is ElapsedTime.Week -> stringResource(com.upsaclay.common.R.string.week_ago_short, elapsedTime.value)
-        is ElapsedTime.Later -> FormatLocalDateTimeUseCase.formatDayMonthYear(elapsedTime.value)
+        is ElapsedTime.Later -> FormatLocalDateTimeHelper.formatDayMonthYear(elapsedTime.value)
     }
 }

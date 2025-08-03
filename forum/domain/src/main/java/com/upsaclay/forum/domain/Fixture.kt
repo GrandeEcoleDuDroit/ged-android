@@ -4,6 +4,7 @@ import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.domain.userFixture2
 import com.upsaclay.forum.domain.entity.Mission
+import com.upsaclay.forum.domain.entity.Task
 
 val missionFixture = Mission(
     id = "1",
@@ -41,4 +42,12 @@ val missionsFixture = listOf(
         participants = listOf(userFixture2, userFixture),
         schoolLevels = listOf(SchoolLevel.GED_1, SchoolLevel.GED_2, SchoolLevel.GED_3)
     )
+)
+
+val taskFixture = Task(1, "Task 1")
+
+val tasksFixture = listOf(
+    taskFixture,
+    taskFixture.copy(id = 2, value = "Task 2"),
+    taskFixture.copy(id = 3, value = "Task 3")
 )

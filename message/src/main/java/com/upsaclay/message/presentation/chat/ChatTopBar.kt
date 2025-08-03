@@ -18,6 +18,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
@@ -26,7 +27,6 @@ import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.spacing
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,8 +41,8 @@ fun ChatTopBar(
         modifier = Modifier
             .background(color = color.containerColor)
             .padding(
-                horizontal = MaterialTheme.spacing.extraSmall,
-                vertical = MaterialTheme.spacing.small
+                horizontal = dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding),
+                vertical = dimensionResource(com.upsaclay.common.R.dimen.small_padding)
             )
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
@@ -59,7 +59,7 @@ fun ChatTopBar(
 
         ProfilePicture(url = interlocutor.profilePictureUrl, scale = 0.4f)
 
-        Spacer(modifier = Modifier.width(MaterialTheme.spacing.smallMedium))
+        Spacer(modifier = Modifier.width(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)))
 
         Text(text = interlocutor.fullName, style = MaterialTheme.typography.titleMedium)
     }

@@ -1,7 +1,5 @@
 package com.upsaclay.forum.presentation.components
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,23 +11,18 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.extension.smallSpacing
-import com.upsaclay.common.presentation.components.LargeAsyncImage
 import com.upsaclay.common.presentation.components.PrimaryButton
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.forum.R
 import com.upsaclay.forum.domain.entity.Mission
@@ -43,50 +36,22 @@ fun MissionCard(
 ) {
     OutlinedCard(modifier = modifier) {
         Column {
-            CardHeader(imageUrl = mission.imageUrl)
+            MissionImage(
+                modifier = Modifier.fillMaxWidth(),
+                model = mission.imageUrl
+            )
 
             CardBody(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
-                        horizontal = MaterialTheme.spacing.medium,
-                        vertical = MaterialTheme.spacing.small
+                        horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding),
+                        vertical = dimensionResource(com.upsaclay.common.R.dimen.small_padding)
                     ),
                 mission = mission,
                 onClick = onClick
             )
         }
-    }
-}
-
-@Composable
-private fun CardHeader(
-    modifier: Modifier = Modifier,
-    imageUrl: String?
-) {
-    val errorPainter = painterResource(R.drawable.ic_default_mission_image)
-    var isError by remember { mutableStateOf(false) }
-    val defaultImageModifier = modifier
-        .fillMaxWidth()
-        .background(MaterialTheme.colorScheme.secondaryContainer)
-        .padding(MaterialTheme.spacing.medium)
-
-
-    imageUrl?.let {
-        LargeAsyncImage(
-            modifier = if (isError) defaultImageModifier else modifier.fillMaxWidth(),
-            model = it,
-            onError = {
-                isError = true
-                errorPainter
-            }
-        )
-    } ?: run {
-        Image(
-            painter = painterResource(R.drawable.ic_default_mission_image),
-            contentDescription = null,
-            modifier = defaultImageModifier
-        )
     }
 }
 
@@ -220,7 +185,7 @@ private fun MissionCardPreview() {
     GedoiseTheme {
         Surface {
             MissionCard(
-                modifier = Modifier.padding(MaterialTheme.spacing.medium),
+                modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
                 mission = missionFixture,
                 onClick = {}
             )

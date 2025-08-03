@@ -25,7 +25,7 @@ class MissionFeedTest {
         }
 
         rule
-            .onNodeWithTag( rule.activity.getString(R.string.no_mission_tag))
+            .onNodeWithTag(rule.activity.getString(R.string.no_mission_tag))
             .assertExists()
     }
 

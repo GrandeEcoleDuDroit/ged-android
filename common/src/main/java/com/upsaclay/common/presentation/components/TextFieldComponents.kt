@@ -20,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -35,6 +36,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextRange
@@ -44,7 +46,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.spacing
+import com.upsaclay.common.presentation.theme.outlinedTextFieldColor
 import com.upsaclay.common.utils.Phones
 import kotlinx.coroutines.android.awaitFrame
 import kotlinx.coroutines.launch
@@ -58,8 +60,12 @@ fun SimpleOutlinedTextField(
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     @StringRes errorMessage: Int? = null,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
     enabled: Boolean = true,
-    readOnly: Boolean = false
+    readOnly: Boolean = false,
+    singleLine: Boolean = true,
+    minLines: Int = 1,
 ) {
     val errorText: (@Composable () -> Unit)? = errorMessage?.let {
         {
@@ -79,10 +85,58 @@ fun SimpleOutlinedTextField(
         keyboardOptions = keyboardOptions,
         isError = errorMessage != null,
         keyboardActions = keyboardActions,
-        singleLine = true,
+        singleLine = singleLine,
+        supportingText = errorText,
+        leadingIcon = leadingIcon,
+        trailingIcon = trailingIcon,
+        enabled = enabled,
+        readOnly = readOnly,
+        minLines = minLines
+    )
+}
+
+@Composable
+fun SimpleTextField(
+    modifier: Modifier = Modifier,
+    value: String,
+    label: String,
+    onValueChange: (String) -> Unit,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    @StringRes errorMessage: Int? = null,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
+    enabled: Boolean = true,
+    readOnly: Boolean = false,
+    singleLine : Boolean = true,
+    minLines: Int = 1,
+) {
+    val errorText: (@Composable () -> Unit)? = errorMessage?.let {
+        {
+            Text(
+                text = stringResource(errorMessage),
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
+    }
+
+    TextField(
+        modifier = modifier,
+        value = value,
+        label = { Text(text = label) },
+        onValueChange = onValueChange,
+        keyboardOptions = keyboardOptions,
+        isError = errorMessage != null,
+        keyboardActions = keyboardActions,
+        leadingIcon = leadingIcon,
+        trailingIcon = trailingIcon,
+        singleLine = singleLine,
         supportingText = errorText,
         enabled = enabled,
-        readOnly = readOnly
+        readOnly = readOnly,
+        colors = MaterialTheme.colorScheme.outlinedTextFieldColor,
+        minLines = minLines
     )
 }
 
@@ -94,6 +148,7 @@ fun TransparentTextField(
     onValueChange: (String) -> Unit,
     placeholder: @Composable (() -> Unit),
     textStyle: TextStyle = TextStyle.Default,
+    minLines: Int = 1,
     enabled: Boolean = true
 ) {
     val colors: TextFieldColors = TextFieldDefaults.colors()
@@ -128,7 +183,7 @@ fun TransparentTextField(
     BasicTextField(
         modifier = modifier
             .background(backgroundColor)
-            .padding(MaterialTheme.spacing.default)
+            .padding(dimensionResource(com.upsaclay.common.R.dimen.default_padding))
             .bringIntoViewRequester(bringIntoViewRequester)
             .onFocusChanged { isFocused = it.isFocused },
         enabled = enabled,
@@ -148,7 +203,8 @@ fun TransparentTextField(
             coroutineScope.launch {
                 bringIntoViewRequester.bringIntoView(cursorRect)
             }
-        }
+        },
+        minLines = minLines
     ) { innerTextField ->
         TextFieldDefaults.DecorationBox(
             value = textFieldValue.text,
@@ -164,7 +220,7 @@ fun TransparentTextField(
                 unfocusedIndicatorColor = Color.Transparent
             ),
             placeholder = placeholder,
-            contentPadding = PaddingValues(MaterialTheme.spacing.default)
+            contentPadding = PaddingValues(dimensionResource(com.upsaclay.common.R.dimen.default_padding))
         )
     }
 }
@@ -251,7 +307,7 @@ fun TransparentFocusedTextField(
                 unfocusedIndicatorColor = Color.Transparent
             ),
             placeholder = placeholder,
-            contentPadding = PaddingValues(MaterialTheme.spacing.default)
+            contentPadding = PaddingValues(dimensionResource(com.upsaclay.common.R.dimen.default_padding))
         )
     }
 }
@@ -264,13 +320,30 @@ fun TransparentFocusedTextField(
 
 @Phones
 @Composable
-private fun OutlinedTextFieldPreview() {
+private fun SimpleOutlinedTextFieldPreview() {
     var text by remember { mutableStateOf("") }
 
     GedoiseTheme {
         Surface {
             SimpleOutlinedTextField(
-                modifier = Modifier.padding(MaterialTheme.spacing.small),
+                modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.small_padding)),
+                value = text,
+                label = "Label",
+                onValueChange = { text = it }
+            )
+        }
+    }
+}
+
+@Phones
+@Composable
+private fun SimpleTextFieldPreview() {
+    var text by remember { mutableStateOf("") }
+
+    GedoiseTheme {
+        Surface {
+            SimpleTextField(
+                modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.small_padding)),
                 value = text,
                 label = "Label",
                 onValueChange = { text = it }

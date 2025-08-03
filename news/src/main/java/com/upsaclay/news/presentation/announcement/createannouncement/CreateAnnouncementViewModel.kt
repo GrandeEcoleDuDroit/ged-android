@@ -22,6 +22,7 @@ class CreateAnnouncementViewModel(
     private val user: User? = userRepository.currentUser
 
     fun onTitleChange(title: String) {
+        if (title.length > 300) return
         _uiState.update {
             it.copy(
                 title = title,
@@ -31,6 +32,7 @@ class CreateAnnouncementViewModel(
     }
 
     fun onContentChange(content: String) {
+        if (content.length > 2000) return
         _uiState.update {
             it.copy(
                 content = content,

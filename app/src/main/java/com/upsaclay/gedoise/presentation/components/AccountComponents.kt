@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -26,7 +27,6 @@ import com.upsaclay.common.presentation.components.ClickableItem
 import com.upsaclay.common.presentation.components.EditTopBar
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.previewText
-import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.gedoise.R
 import com.upsaclay.gedoise.presentation.profile.account.AccountInfo
 import kotlinx.coroutines.launch
@@ -94,7 +94,7 @@ internal fun AccountModelBottomSheet(
                 }
             )
         }
-        Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.large_padding)))
     }
 }
 
@@ -128,7 +128,7 @@ internal fun AccountTopBar(
             title = stringResource(id = R.string.edit_profile),
             onCancelClick = onCancelClick,
             onActionClick = onSaveClick,
-            buttonText = stringResource(id = com.upsaclay.common.R.string.save)
+            actionLabel = stringResource(id = com.upsaclay.common.R.string.save)
         )
     } else {
         BackTopBar(

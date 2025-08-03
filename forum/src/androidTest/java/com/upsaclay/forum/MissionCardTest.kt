@@ -27,7 +27,7 @@ class MissionCardTest {
         }
 
         rule
-            .onNodeWithTag( rule.activity.getString(R.string.missions_card_school_level_tag))
+            .onNodeWithTag(rule.activity.getString(R.string.missions_card_school_level_tag))
             .assertTextContains(SchoolLevel.GED_1.toString())
     }
 
@@ -43,7 +43,7 @@ class MissionCardTest {
         }
 
         rule
-            .onNodeWithTag( rule.activity.getString(R.string.missions_card_school_level_tag))
+            .onNodeWithTag(rule.activity.getString(R.string.missions_card_school_level_tag))
             .assertTextContains("")
     }
 }

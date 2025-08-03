@@ -8,7 +8,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.presentation.components.TitleTopBar
-import com.upsaclay.message.R
 import com.upsaclay.message.presentation.conversation.create.CreateConversationFAB
 
 @Composable

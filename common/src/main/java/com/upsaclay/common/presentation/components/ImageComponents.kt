@@ -17,18 +17,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import coil3.compose.AsyncImagePainter
 import com.upsaclay.common.R
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.profilePictureLoading
-import com.upsaclay.common.presentation.theme.spacing
+import com.upsaclay.common.presentation.theme.backgroundLoadingImage
 
 @Composable
 fun ProfilePicture(
@@ -87,17 +85,16 @@ fun ProfilePictureWithIcon(
 fun LargeAsyncImage(
     modifier: Modifier = Modifier,
     model: Any,
-    onError: () -> Painter
 ) {
-    val color = MaterialTheme.colorScheme.profilePictureLoading
+    val color = MaterialTheme.colorScheme.backgroundLoadingImage
 
     AsyncImage(
         model = model,
         contentDescription = "",
-        contentScale = ContentScale.Crop,
         modifier = modifier,
+        contentScale = ContentScale.Crop,
         onLoading = { ColorPainter(color) },
-        onError = { onError() }
+        onError = { ColorPainter(color) }
     )
 }
 
@@ -108,7 +105,7 @@ private fun ProfileImage(
     model: Any,
     onClick: (() -> Unit)? = null
 ) {
-    val color = MaterialTheme.colorScheme.profilePictureLoading
+    val color = MaterialTheme.colorScheme.backgroundLoadingImage
 
     AsyncImage(
         model = model,
@@ -140,7 +137,7 @@ private fun ProfileImageWithIcon(
     contentDescription: String,
     onClick: (() -> Unit)?
 ) {
-    val color = MaterialTheme.colorScheme.profilePictureLoading
+    val color = MaterialTheme.colorScheme.backgroundLoadingImage
 
     Box(modifier = modifier.size(100.dp * scale)) {
         AsyncImage(
@@ -185,7 +182,7 @@ private fun ProfileImageWithIcon(
                 contentDescription = "",
                 tint = iconColor,
                 modifier = Modifier
-                    .padding(MaterialTheme.spacing.extraSmall)
+                    .padding(dimensionResource(R.dimen.extra_small_padding))
                     .size(16.dp * scale)
             )
         }

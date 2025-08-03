@@ -16,9 +16,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.presentation.components.ClickableItem
-import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.news.R
 import kotlinx.coroutines.launch
 
@@ -84,6 +84,6 @@ fun ReadAnnouncementBottomSheet(
             }
         )
 
-        Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
+        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.extra_large_padding)))
     }
 }

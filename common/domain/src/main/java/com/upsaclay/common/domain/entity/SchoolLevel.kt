@@ -7,7 +7,7 @@ enum class SchoolLevel {
     GED_4;
 
     companion object {
-        fun fromString(value: String): SchoolLevel? = SchoolLevel.entries.find { it.name == value }
+        fun fromString(value: String): SchoolLevel? = SchoolLevel.entries.find { it.toString() == value }
     }
 
     override fun toString(): String {

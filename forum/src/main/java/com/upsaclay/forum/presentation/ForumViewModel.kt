@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.upsaclay.forum.domain.entity.Mission
 import kotlinx.coroutines.flow.MutableStateFlow
 
-class ForumViewModel: ViewModel() {
+class ForumViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(MissionUiState())
     internal val uiState = _uiState
 

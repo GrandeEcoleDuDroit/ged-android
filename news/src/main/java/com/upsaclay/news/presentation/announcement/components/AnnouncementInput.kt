@@ -16,13 +16,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.upsaclay.common.presentation.components.TransparentFocusedTextField
 import com.upsaclay.common.presentation.components.TransparentTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.hintText
-import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.news.R
 
@@ -37,7 +37,7 @@ fun CreateAnnouncementInput(
     SelectionContainer(modifier = modifier) {
         Column(
             modifier = Modifier.verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
         ) {
             AnnouncementTitleInput(
                 title = title,
@@ -63,7 +63,7 @@ fun EditAnnouncementInput(
     SelectionContainer(modifier = modifier) {
         Column(
             modifier = Modifier.verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
         ) {
             AnnouncementTitleInput(
                 title = title,
@@ -95,17 +95,13 @@ private fun AnnouncementTitleInput(
             color = MaterialTheme.colorScheme.hintText
         )
     }
-    val onValueChange: (String) -> Unit = {
-        val truncated = if (it.length <= 300) it else it.take(300)
-        onTitleChange(truncated)
-    }
 
     if (focused) {
         TransparentFocusedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = title,
             placeholder = placeholder,
-            onValueChange = onValueChange,
+            onValueChange = onTitleChange,
             textStyle = textStyle
         )
     } else {
@@ -113,7 +109,7 @@ private fun AnnouncementTitleInput(
             modifier = Modifier.fillMaxWidth(),
             value = title,
             placeholder = placeholder,
-            onValueChange = onValueChange,
+            onValueChange = onTitleChange,
             textStyle = textStyle
         )
     }
@@ -126,10 +122,7 @@ private fun AnnouncementContentInput(
     focused: Boolean = false
 ) {
     val textStyle = MaterialTheme.typography.bodyLarge
-    val onValueChange: (String) -> Unit = {
-        val truncated = if (it.length <= 2000) it else it.take(2000)
-        onContentChange(truncated)
-    }
+
     val placeholder: @Composable () -> Unit = {
         Text(
             text = stringResource(id = R.string.content_field_entry),
@@ -143,7 +136,7 @@ private fun AnnouncementContentInput(
             modifier = Modifier.fillMaxWidth(),
             value = content,
             placeholder = placeholder,
-            onValueChange = onValueChange,
+            onValueChange = onContentChange,
             textStyle = textStyle,
         )
     } else {
@@ -151,7 +144,7 @@ private fun AnnouncementContentInput(
             modifier = Modifier.fillMaxWidth(),
             value = content,
             placeholder = placeholder,
-            onValueChange = onValueChange,
+            onValueChange = onContentChange,
             textStyle = textStyle
         )
     }
@@ -172,7 +165,7 @@ private fun AnnouncementInputPreview() {
     GedoiseTheme {
         Surface {
             CreateAnnouncementInput(
-                modifier = Modifier.padding(MaterialTheme.spacing.medium),
+                modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
                 title = title,
                 content = content,
                 onTitleChange = { title = it },
