@@ -34,6 +34,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -41,10 +42,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.upsaclay.authentication.R
 import com.upsaclay.common.domain.entity.SingleUiEvent
-import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.spacing
-import com.upsaclay.common.utils.Phones
 import com.upsaclay.common.extension.mediumPadding
+import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.utils.Phones
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -137,7 +137,7 @@ private fun AuthenticationScreen(
             ) {
                 HeaderSection()
 
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
+                Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.extra_large_padding)))
 
                 AuthenticationForm(
                     email = email,
@@ -166,7 +166,7 @@ private fun HeaderSection() {
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.small_padding)),
     ) {
         Image(
             painter = painterResource(id = com.upsaclay.common.R.drawable.ged_logo),

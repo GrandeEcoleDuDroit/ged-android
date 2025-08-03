@@ -23,5 +23,8 @@
     <string name="new_task">New task</string>
     <string name="task_removed">Task deleted</string>
     <string name="undo">Undo</string>
-    <string name="add_task">Ajouter une tâche</string>
+    <string name="add_task">Add task</string>
+    <string name="enter_task">Enter task</string>
+    <string name="new_image">New image</string>
+    <string name="delete_mission_image_dialog_text">Delete image ?</string>
 </resources>

@@ -64,6 +64,6 @@
     <string name="user_not_found_title_dialog">User not found.</string>
     <string name="current_user_not_found_error">User not found. Please log in again.</string>
     <string name="timeout_error">The service took too long to respond. Please try again.</string>
-    <string name="users_not_found">No users found.</string>
+    <string name="no_user">No users.</string>
     <string name="no_internet_connection">No internet connection.</string>
 </resources>

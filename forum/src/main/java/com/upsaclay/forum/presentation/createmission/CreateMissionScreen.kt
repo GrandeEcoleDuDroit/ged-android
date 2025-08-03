@@ -4,24 +4,19 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Snackbar
-import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.entity.User
@@ -29,18 +24,19 @@ import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.domain.usersFixture
 import com.upsaclay.common.presentation.components.DatePickerModal
 import com.upsaclay.common.presentation.components.EditTopBar
+import com.upsaclay.common.presentation.components.SensibleActionDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.forum.R
+import com.upsaclay.forum.domain.entity.MissionBottomSheetType
 import com.upsaclay.forum.domain.entity.Task
 import com.upsaclay.forum.domain.tasksFixture
-import com.upsaclay.forum.presentation.components.AddTaskBottomSheet
-import com.upsaclay.forum.presentation.components.SelectManagerModalBottomSheet
-import com.upsaclay.forum.presentation.components.EditTaskBottomSheet
-import kotlinx.coroutines.launch
+import com.upsaclay.forum.presentation.components.bottomsheets.AddTaskModalBottomSheet
+import com.upsaclay.forum.presentation.components.bottomsheets.EditTaskModalBottomSheet
+import com.upsaclay.forum.presentation.components.bottomsheets.ImageModalBottomSheet
+import com.upsaclay.forum.presentation.components.bottomsheets.SelectManagerModalBottomSheet
 import org.koin.androidx.compose.koinViewModel
-import java.time.LocalDateTime
+import java.time.LocalDate
 
 @Composable
 fun CreateMissionDestination(
@@ -58,7 +54,7 @@ fun CreateMissionDestination(
         startDate = uiState.startDate,
         endDate = uiState.endDate,
         frequency = uiState.frequency,
-        tasks = uiState.tasks,
+        tasks = uiState.tasks.values.toList(),
         imageUri = uiState.imageUri,
         users = uiState.users,
         userQuery = uiState.userQuery,
@@ -71,10 +67,11 @@ fun CreateMissionDestination(
         onEndDateChange = viewModel::onEndDateChange,
         onFrequencyChange = viewModel::onFrequencyChange,
         onSaveSelectedMangers = viewModel::onSaveSelectedManagers,
+        onRemoveManagerClick = viewModel::onRemoveManager,
         onUserQueryChange = viewModel::onUserQueryChange,
         onResetUserQuery = viewModel::onResetUserQuery,
         onImageUriChange = viewModel::onMissionImageUriChange,
-        onRemoveImageUriClick = viewModel::onRemoveImageUri,
+        onRemoveMissionImageClick = viewModel::onRemoveImageUri,
         onAddTaskClick = viewModel::onAddTask,
         onEditTaskClick = viewModel::onEditTask,
         onRemoveTaskClick = viewModel::onRemoveTask,
@@ -89,8 +86,8 @@ fun CreateMissionScreen(
     description: String,
     schoolLevels: List<SchoolLevel>,
     selectedSchoolLevels: List<SchoolLevel>,
-    startDate: LocalDateTime,
-    endDate: LocalDateTime,
+    startDate: LocalDate,
+    endDate: LocalDate,
     frequency: String,
     tasks: List<Task>,
     imageUri: Uri?,
@@ -101,14 +98,15 @@ fun CreateMissionScreen(
     onTitleChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
     onSelectedSchoolLevelChange: (SchoolLevel) -> Unit,
-    onStartDateChange: (LocalDateTime) -> Unit,
-    onEndDateChange: (LocalDateTime) -> Unit,
+    onStartDateChange: (LocalDate) -> Unit,
+    onEndDateChange: (LocalDate) -> Unit,
     onFrequencyChange: (String) -> Unit,
     onSaveSelectedMangers: (List<User>) -> Unit,
+    onRemoveManagerClick: (User) -> Unit,
     onUserQueryChange: (String) -> Unit,
     onResetUserQuery: () -> Unit,
     onImageUriChange: (Uri?) -> Unit,
-    onRemoveImageUriClick: () -> Unit,
+    onRemoveMissionImageClick: () -> Unit,
     onAddTaskClick: (Task) -> Unit,
     onEditTaskClick: (Task) -> Unit,
     onRemoveTaskClick: (Task) -> Unit,
@@ -117,30 +115,25 @@ fun CreateMissionScreen(
 ) {
     var showStartDateModal by remember { mutableStateOf(false) }
     var showEndDateModal by remember { mutableStateOf(false) }
-    var showSelectManagerBottomSheet by remember { mutableStateOf(false) }
-    var showAddTaskBottomSheet by remember { mutableStateOf(false) }
-    var showEditTaskBottomSheet by remember { mutableStateOf(false) }
-    var selectedTask by remember { mutableStateOf<Task?>(null) }
-    val snackbarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
-    val context = LocalContext.current
+    var bottomSheetType by remember { mutableStateOf<MissionBottomSheetType?>(null) }
+    var showDeleteMissionDialog by remember { mutableStateOf(false) }
+    val focusManager = LocalFocusManager.current
 
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = { uri -> uri?.let(onImageUriChange) }
+        onResult = onImageUriChange
     )
 
-    fun showSnackBar(message: String, actionLabel: String, actionPerformed: () -> Unit) {
-        scope.launch {
-            val result = snackbarHostState.showSnackbar(
-                message = message,
-                actionLabel = actionLabel,
-                duration = SnackbarDuration.Short
-            )
-            if (result == SnackbarResult.ActionPerformed) {
-                actionPerformed()
-            }
-        }
+    if (showDeleteMissionDialog) {
+        SensibleActionDialog(
+            text = stringResource(id = R.string.delete_mission_image_dialog_text),
+            confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
+            onConfirm = {
+                showDeleteMissionDialog = false
+                onRemoveMissionImageClick()
+            },
+            onCancel = { showDeleteMissionDialog = false }
+        )
     }
 
     Scaffold(
@@ -152,17 +145,16 @@ fun CreateMissionScreen(
                 actionLabel = stringResource(com.upsaclay.common.R.string.publish),
                 isButtonEnable = createEnabled
             )
-        },
-        snackbarHost = {
-            SnackbarHost(snackbarHostState) {
-               Snackbar(it)
-            }
         }
     ) { innerPadding ->
         CreateMissionForm(
             modifier = Modifier
                 .padding(innerPadding)
-                .padding(bottom = MaterialTheme.spacing.medium),
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onTap = { focusManager.clearFocus() }
+                    )
+                },
             title = title,
             description = description,
             schoolLevels = schoolLevels,
@@ -179,29 +171,74 @@ fun CreateMissionScreen(
             onStartDateClick = { showStartDateModal = true },
             onEndDateClick = { showEndDateModal = true },
             onFrequencyChange = onFrequencyChange,
-            onShowManagerListClick = { showSelectManagerBottomSheet = true },
-            onAddTaskClick = { showAddTaskBottomSheet = true },
-            onEditTaskClick = {
-                selectedTask = it
-                showEditTaskBottomSheet = true
-             },
-            onRemoveTaskClick = {
-                onRemoveTaskClick(it)
-                showSnackBar(
-                    message = context.getString(R.string.task_removed),
-                    actionLabel = context.getString(R.string.undo),
-                    actionPerformed = { onAddTaskClick(it) }
-                )
-            },
-            onImageClick = {
-                singlePhotoPickerLauncher.launch(
-                    PickVisualMediaRequest(
-                        ActivityResultContracts.PickVisualMedia.ImageOnly
-                    )
-                )
-            },
-            onRemoveImageClick = onRemoveImageUriClick
+            onShowManagerListClick = { bottomSheetType = MissionBottomSheetType.SelectManager },
+            onRemoveManagerClick = onRemoveManagerClick,
+            onAddTaskClick = { bottomSheetType = MissionBottomSheetType.AddTask },
+            onEditTaskClick = { bottomSheetType = MissionBottomSheetType.EditTask(it) },
+            onRemoveTaskClick = onRemoveTaskClick,
+            onImageClick = { bottomSheetType = MissionBottomSheetType.ModifyImage },
+            onRemoveImageClick = onRemoveMissionImageClick
         )
+    }
+
+    when (bottomSheetType) {
+        is MissionBottomSheetType.AddTask -> {
+            AddTaskModalBottomSheet(
+                onDismissRequest = { bottomSheetType = null },
+                onAddClick = { task ->
+                    onAddTaskClick(task)
+                    bottomSheetType = null
+                }
+            )
+        }
+
+        is MissionBottomSheetType.EditTask -> {
+            (bottomSheetType as? MissionBottomSheetType.EditTask)?.task?.let {
+                EditTaskModalBottomSheet(
+                    initialTask = it,
+                    onDismissRequest = { bottomSheetType = null },
+                    onEditClick = { task ->
+                        onEditTaskClick(task)
+                        bottomSheetType = null
+                    }
+                )
+            }
+        }
+
+        is MissionBottomSheetType.SelectManager -> {
+            SelectManagerModalBottomSheet(
+                users = users,
+                selectedManagers = selectedManagers,
+                userQuery = userQuery,
+                onUserQueryChange = onUserQueryChange,
+                onResetQuery = onResetUserQuery,
+                onSaveClick = {
+                    onSaveSelectedMangers(it)
+                    bottomSheetType = null
+                },
+                onDismissRequest = {
+                    onResetUserQuery()
+                    bottomSheetType = null
+                }
+            )
+        }
+
+        is MissionBottomSheetType.ModifyImage -> {
+            ImageModalBottomSheet(
+                onNewProfilePictureClick = {
+                    singlePhotoPickerLauncher.launch(
+                        PickVisualMediaRequest(
+                            ActivityResultContracts.PickVisualMedia.ImageOnly
+                        )
+                    )
+                },
+                showDeleteImage = imageUri != null,
+                onDeleteClick = { showDeleteMissionDialog = true },
+                onDismiss = { bottomSheetType = null }
+            )
+        }
+
+        else -> Unit
     }
 
     if (showStartDateModal) {
@@ -228,47 +265,6 @@ fun CreateMissionScreen(
             onDismiss = { showEndDateModal = false }
         )
     }
-
-    if (showSelectManagerBottomSheet) {
-        SelectManagerModalBottomSheet(
-            users = users,
-            selectedManagers = selectedManagers,
-            userQuery = userQuery,
-            onUserQueryChange = onUserQueryChange,
-            onResetQuery = onResetUserQuery,
-            onSaveClick = {
-                onSaveSelectedMangers(it)
-                showSelectManagerBottomSheet = false
-            },
-            onDismiss = {
-                onResetUserQuery()
-                showSelectManagerBottomSheet = false
-            }
-        )
-    }
-
-    if (showEditTaskBottomSheet) {
-        selectedTask?.let {
-            EditTaskBottomSheet(
-                initialTask = it,
-                onDismissRequest = { showEditTaskBottomSheet = false },
-                onEditClick = { task ->
-                    onEditTaskClick(task)
-                    showEditTaskBottomSheet = false
-                }
-            )
-        }
-    }
-
-    if (showAddTaskBottomSheet) {
-        AddTaskBottomSheet(
-            onDismissRequest = { showAddTaskBottomSheet = false },
-            onAddClick = { task ->
-                onAddTaskClick(task)
-                showAddTaskBottomSheet = false
-            }
-        )
-    }
 }
 
 /*
@@ -293,8 +289,8 @@ private fun CreateMissionScreenPreview() {
                 description = description,
                 schoolLevels = listOf(SchoolLevel.GED_1, SchoolLevel.GED_2),
                 selectedSchoolLevels = emptyList(),
-                startDate = LocalDateTime.now(),
-                endDate = LocalDateTime.now(),
+                startDate = LocalDate.now(),
+                endDate = LocalDate.now(),
                 frequency = frequency,
                 selectedManagers = listOf(userFixture),
                 tasks = tasks,
@@ -305,6 +301,7 @@ private fun CreateMissionScreenPreview() {
                 onTitleChange = { title = it },
                 onDescriptionChange = { description = it },
                 onSelectedSchoolLevelChange = {},
+                onRemoveManagerClick = {},
                 onStartDateChange = {},
                 onEndDateChange = {},
                 onFrequencyChange = { frequency = it },
@@ -312,7 +309,7 @@ private fun CreateMissionScreenPreview() {
                 onUserQueryChange = {},
                 onResetUserQuery = {},
                 onImageUriChange = {},
-                onRemoveImageUriClick = {},
+                onRemoveMissionImageClick = {},
                 onAddTaskClick = {
                     tasks = tasks + it
                     currentTask = ""

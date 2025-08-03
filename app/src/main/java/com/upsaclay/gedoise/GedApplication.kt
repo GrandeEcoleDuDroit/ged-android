@@ -9,12 +9,12 @@ import com.upsaclay.authentication.data.authenticationDataModule
 import com.upsaclay.authentication.domain.authenticationDomainModule
 import com.upsaclay.common.data.commonDataModule
 import com.upsaclay.common.domain.commonDomainModule
+import com.upsaclay.forum.forumModule
 import com.upsaclay.gedoise.domain.usecase.FcmTokenUseCase
 import com.upsaclay.message.data.messageDataModule
 import com.upsaclay.message.data.worker.MessageWorkerLauncher
 import com.upsaclay.message.domain.messageDomainModule
 import com.upsaclay.message.messageModule
-import com.upsaclay.forum.forumModule
 import com.upsaclay.news.data.newsDataModule
 import com.upsaclay.news.domain.newsDomainModule
 import com.upsaclay.news.newsModule

@@ -16,13 +16,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.upsaclay.common.presentation.components.TransparentFocusedTextField
 import com.upsaclay.common.presentation.components.TransparentTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.hintText
-import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.news.R
 
@@ -37,7 +37,7 @@ fun CreateAnnouncementInput(
     SelectionContainer(modifier = modifier) {
         Column(
             modifier = Modifier.verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
         ) {
             AnnouncementTitleInput(
                 title = title,
@@ -63,7 +63,7 @@ fun EditAnnouncementInput(
     SelectionContainer(modifier = modifier) {
         Column(
             modifier = Modifier.verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
         ) {
             AnnouncementTitleInput(
                 title = title,
@@ -165,7 +165,7 @@ private fun AnnouncementInputPreview() {
     GedoiseTheme {
         Surface {
             CreateAnnouncementInput(
-                modifier = Modifier.padding(MaterialTheme.spacing.medium),
+                modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
                 title = title,
                 content = content,
                 onTitleChange = { title = it },

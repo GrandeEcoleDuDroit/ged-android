@@ -6,7 +6,7 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-object FormatLocalDateTimeUseCase {
+object FormatLocalDateTimeHelper {
 
     private fun toZonedDateTime(localDateTime: LocalDateTime): ZonedDateTime {
         return localDateTime.atZone(ZoneId.systemDefault())

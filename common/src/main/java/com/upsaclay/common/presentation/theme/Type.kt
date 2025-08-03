@@ -1,6 +1,10 @@
 package com.upsaclay.common.presentation.theme
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 
 // Set of Material typography styles to start with
 val Typography = Typography(
@@ -33,3 +37,10 @@ val Typography = Typography(
         letterSpacing = 0.5.sp
     )*/
 )
+
+val Typography.titleMediumLarge: TextStyle
+    @Composable
+    get() = MaterialTheme.typography.titleLarge.copy(
+        fontWeight = FontWeight.SemiBold,
+        fontSize = MaterialTheme.typography.titleMedium.fontSize * 1.3f
+    )

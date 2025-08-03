@@ -12,16 +12,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.R
 import com.upsaclay.common.domain.extensions.toEpochMilliUTC
-import com.upsaclay.common.domain.extensions.toLocalDateTimeUTC
+import com.upsaclay.common.domain.extensions.toLocalDateUTC
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
-import java.time.LocalDateTime
+import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DatePickerModal(
-    onDateSelected: (LocalDateTime?) -> Unit,
-    startDateLimit: LocalDateTime? = null,
+    onDateSelected: (LocalDate?) -> Unit,
+    startDateLimit: LocalDate? = null,
     onDismiss: () -> Unit
 ) {
     val datePickerState = rememberDatePickerState(
@@ -35,7 +35,7 @@ fun DatePickerModal(
         onDismissRequest = onDismiss,
         confirmButton = {
             TextButton(onClick = {
-                onDateSelected(datePickerState.selectedDateMillis?.toLocalDateTimeUTC())
+                onDateSelected(datePickerState.selectedDateMillis?.toLocalDateUTC())
                 onDismiss()
             }) {
                 Text(text = stringResource(R.string.ok))

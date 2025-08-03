@@ -19,9 +19,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.presentation.theme.outlinedTextFieldColor
 import com.upsaclay.common.utils.Phones
 
@@ -78,6 +78,7 @@ fun MultiSelectionDropDownMenu(
     onItemClicked: (String) -> Unit,
     expanded: Boolean,
     isEnable: Boolean = true,
+    singleLine: Boolean = false,
     leadingIcon: @Composable (() -> Unit)? = null,
     onExpandedChange: (Boolean) -> Unit,
     onDismissRequest: () -> Unit
@@ -95,6 +96,7 @@ fun MultiSelectionDropDownMenu(
             leadingIcon = leadingIcon,
             readOnly = true,
             enabled = isEnable,
+            singleLine = singleLine,
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             colors = MaterialTheme.colorScheme.outlinedTextFieldColor
         )
@@ -145,7 +147,7 @@ private fun SimpleDropDownMenuPreview() {
     GedoiseTheme {
         Surface {
             SingleSelectionDropDownMenu(
-                modifier = Modifier.padding(MaterialTheme.spacing.extraSmall),
+                modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding)),
                 items = items,
                 selectedItem = selectedItem,
                 onItemClicked = { item ->
@@ -177,7 +179,7 @@ private fun MultiDropDownMenuPreview() {
     GedoiseTheme {
         Surface {
             MultiSelectionDropDownMenu(
-                modifier = Modifier.padding(MaterialTheme.spacing.extraSmall),
+                modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding)),
                 items = items,
                 selectedItems = selectedItems,
                 value = selectedItems.joinToString(" - "),
