@@ -49,6 +49,10 @@ class FirebaseAuthenticationApiImpl: FirebaseAuthenticationApi {
         firebaseAuth.signOut()
     }
 
+    override fun isAuthenticated(): Boolean {
+        TODO("Not yet implemented")
+    }
+
     private fun refreshAndCacheToken() {
         firebaseAuth.addIdTokenListener(FirebaseAuth.IdTokenListener { auth ->
             auth.currentUser?.getIdToken(false)?.addOnSuccessListener { result ->
