@@ -1,7 +1,5 @@
 package com.upsaclay.gedoise.presentation.profile
 
-import android.content.res.Configuration
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,10 +23,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
@@ -37,13 +35,9 @@ import com.upsaclay.common.presentation.components.ClickableItem
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.components.SensibleActionDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.darkGray
-import com.upsaclay.common.presentation.theme.lightGray
-import com.upsaclay.common.presentation.theme.spacing
+import com.upsaclay.common.utils.Phones
 import com.upsaclay.gedoise.R
-
 import org.koin.androidx.compose.koinViewModel
-
 
 @Composable
 fun ProfileDestination(
@@ -61,7 +55,6 @@ fun ProfileDestination(
     )
 }
 
-
 @Composable
 fun ProfileScreen(
     user: User?,
@@ -70,11 +63,6 @@ fun ProfileScreen(
     onBackClick: () -> Unit,
 ) {
     var showLogoutDialog by remember { mutableStateOf(false) }
-    val dividerColor = if (isSystemInDarkTheme()) {
-        MaterialTheme.colorScheme.darkGray
-    } else {
-        MaterialTheme.colorScheme.lightGray
-    }
 
     DisposableEffect(Unit) {
         onDispose { showLogoutDialog = false }
@@ -116,7 +104,7 @@ fun ProfileScreen(
                         userFullName = user.fullName
                     )
 
-                    HorizontalDivider(color = dividerColor)
+                    HorizontalDivider()
 
                     ClickableItem(
                         modifier = Modifier
@@ -164,12 +152,12 @@ private fun TopSection(profilePictureUrl: String?, userFullName: String) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                start = MaterialTheme.spacing.medium,
-                end = MaterialTheme.spacing.medium,
-                bottom = MaterialTheme.spacing.medium
+                start = dimensionResource(com.upsaclay.common.R.dimen.medium_padding),
+                end = dimensionResource(com.upsaclay.common.R.dimen.medium_padding),
+                bottom = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)
             ),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
     ) {
         ProfilePicture(
             url = profilePictureUrl,
@@ -190,8 +178,7 @@ private fun TopSection(profilePictureUrl: String?, userFullName: String) {
  =====================================================================
  */
 
-
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Phones
 @Composable
 fun ProfileScreenPreview() {
     GedoiseTheme {

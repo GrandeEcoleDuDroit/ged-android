@@ -15,11 +15,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.previewText
-import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.announcementsFixture
@@ -38,13 +38,13 @@ fun RecentAnnouncementSection(
 ) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.small_padding))
     ) {
         Text(
             text = stringResource(id = R.string.recent_announcements),
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier
-                .padding(horizontal = MaterialTheme.spacing.medium)
+                .padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
                 .testTag(stringResource(id = R.string.news_screen_empty_announcement_text_tag))
         )
 
@@ -56,9 +56,7 @@ fun RecentAnnouncementSection(
             if (announcements.isEmpty()) {
                 item {
                     Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = MaterialTheme.spacing.medium),
+                        modifier = Modifier.fillMaxWidth(),
                         text = stringResource(id = R.string.no_announcement),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.previewText,

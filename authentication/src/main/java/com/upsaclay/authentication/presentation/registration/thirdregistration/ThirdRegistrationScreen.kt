@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -25,16 +24,16 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.authentication.R
 import com.upsaclay.authentication.presentation.components.RegistrationScaffold
 import com.upsaclay.common.domain.entity.SingleUiEvent
+import com.upsaclay.common.extension.mediumPadding
 import com.upsaclay.common.presentation.components.LinearProgressBar
 import com.upsaclay.common.presentation.components.PrimaryButton
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.Phones
-import com.upsaclay.common.utils.mediumPadding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -107,7 +106,7 @@ private fun ThirdRegistrationScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(top = paddingValues.calculateTopPadding()),
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.smallMedium)
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding))
         ) {
             if (loading) {
                 LinearProgressBar(modifier = Modifier.fillMaxWidth())
@@ -136,7 +135,7 @@ private fun ThirdRegistrationScreen(
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
                         .testTag(stringResource(R.string.registration_screen_next_button_tag)),
-                    isEnable = !loading,
+                    enable = !loading,
                     text = stringResource(id = com.upsaclay.common.R.string.next),
                     onClick = onRegistrationClick
                 )

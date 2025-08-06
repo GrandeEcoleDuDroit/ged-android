@@ -19,13 +19,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.previewText
-import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.common.utils.getElapsedTimeValue
 import com.upsaclay.news.domain.entity.Announcement
@@ -41,7 +41,7 @@ internal fun AnnouncementHeader(
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.smallMedium)
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding))
     ) {
         ProfilePicture(
             url = announcement.author.profilePictureUrl,
@@ -76,7 +76,7 @@ internal fun ShortAnnouncementItem(
             DefaultShortAnnouncementItem(
                 modifier = modifier
                     .clickable(onClick = onClick)
-                    .padding(MaterialTheme.spacing.smallMedium),
+                    .padding(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)),
                 announcement = announcement,
                 elapsedTimeValue = elapsedTimeValue
             )
@@ -111,7 +111,7 @@ private fun DefaultShortAnnouncementItem(
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.Top,
-        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.smallMedium)
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding))
     ) {
         ProfilePicture(
             url = announcement.author.profilePictureUrl,
@@ -128,7 +128,7 @@ private fun DefaultShortAnnouncementItem(
                     modifier = Modifier.weight(fill = false, weight = 1f)
                 )
 
-                Spacer(modifier = Modifier.width(MaterialTheme.spacing.small))
+                Spacer(modifier = Modifier.width(dimensionResource(com.upsaclay.common.R.dimen.small_padding)))
 
                 Text(
                     text = elapsedTimeValue,
@@ -160,7 +160,7 @@ private fun PublishingShortAnnouncementItem(
     DefaultShortAnnouncementItem(
         modifier = modifier
             .clickable(onClick = onClick)
-            .padding(MaterialTheme.spacing.smallMedium)
+            .padding(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding))
             .alpha(0.5f),
         announcement = announcement,
         elapsedTimeValue = elapsedTimeValue,
@@ -178,7 +178,7 @@ private fun ErrorShortAnnouncementItem(
         modifier = modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(MaterialTheme.spacing.smallMedium),
+            .padding(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         DefaultShortAnnouncementItem(
@@ -220,7 +220,7 @@ private fun DefaultShortAnnouncementItemPreview() {
         Surface {
             DefaultShortAnnouncementItem(
                 modifier = Modifier
-                    .padding(MaterialTheme.spacing.smallMedium)
+                    .padding(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding))
                     .clickable(onClick = {}),
                 announcement = longAnnouncementFixture,
                 elapsedTimeValue = "1 min"

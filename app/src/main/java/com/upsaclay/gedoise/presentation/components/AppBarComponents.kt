@@ -146,8 +146,9 @@ private fun MainBottomBarPreview() {
     val navController = rememberNavController()
 
     val itemList = listOf(
-        TopLevelDestination.Home(),
-        TopLevelDestination.Message(badges = 5)
+        TopLevelDestination.Home,
+        TopLevelDestination.Message(badges = 5),
+        TopLevelDestination.Forum
     )
 
     GedoiseTheme {

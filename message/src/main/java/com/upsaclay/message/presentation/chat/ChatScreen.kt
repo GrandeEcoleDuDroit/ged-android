@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
@@ -21,16 +20,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.rememberNavController
 import androidx.paging.PagingData
 import com.upsaclay.common.domain.entity.SingleUiEvent
+import com.upsaclay.common.extension.mediumPadding
 import com.upsaclay.common.presentation.components.SensibleActionDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.common.utils.Tablets
-import com.upsaclay.common.utils.mediumPadding
 import com.upsaclay.message.R
 import com.upsaclay.message.domain.conversationFixture
 import com.upsaclay.message.domain.entity.Conversation
@@ -132,7 +131,7 @@ private fun ChatScreen(
         },
         snackbarHost = {
             SnackbarHost(
-                modifier = Modifier.padding(bottom = MaterialTheme.spacing.veryExtraLarge),
+                modifier = Modifier.padding(bottom = dimensionResource(com.upsaclay.common.R.dimen.extra_large_padding)),
                 hostState = snackbarHostState
             ) {
                 Snackbar(it)
@@ -143,7 +142,7 @@ private fun ChatScreen(
             modifier = Modifier
                 .mediumPadding(paddingValues)
                 .fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.small_padding))
         ) {
             MessageFeed(
                 modifier = Modifier.weight(1f),

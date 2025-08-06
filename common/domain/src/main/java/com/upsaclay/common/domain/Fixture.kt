@@ -28,14 +28,42 @@ val userFixture2 = User(
 
 val usersFixture = listOf(
     userFixture,
-    userFixture,
-    userFixture,
-    userFixture,
     userFixture2,
-    userFixture2,
-    userFixture2,
-    userFixture2,
-    userFixture2
+    userFixture.copy(
+        id = "14",
+        firstName = "Marie",
+        lastName = "Curie",
+        email = "marie@email.com"
+    ),
+    userFixture.copy(
+        id = "15",
+        firstName = "Albert",
+        lastName = "Einstein",
+        email = "albert@email.com"
+    ),
+    userFixture.copy(
+        id = "16",
+        firstName = "Isaac",
+        lastName = "Newton",
+        email = "issac@email.com"
+    ),
+    userFixture.copy(
+        id = "17",
+        firstName = "Galileo",
+        lastName = "Galilei",
+        email = "galil@email.com"
+    ),
+    userFixture.copy(
+        id = "18",
+        firstName = "Ada",
+        lastName = "Lovelace",
+        email = "ada@email.com"
+    ),
+    userFixture.copy(
+        id = "19",
+        firstName = "Charles",
+        lastName = "Darwin",
+        email = "charles@email.com"
+    ),
 )
-
 val fcmTokenFixture = FcmToken(userFixture.id, "token")

@@ -18,15 +18,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.authentication.R
 import com.upsaclay.authentication.presentation.components.RegistrationScaffold
+import com.upsaclay.common.extension.mediumPadding
 import com.upsaclay.common.presentation.components.PrimaryButton
-import com.upsaclay.common.presentation.components.SimpleDropDownMenu
+import com.upsaclay.common.presentation.components.SingleSelectionDropDownMenu
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.spacing
 import com.upsaclay.common.utils.Phones
-import com.upsaclay.common.utils.mediumPadding
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -68,14 +68,14 @@ private fun SecondRegistrationScreen(
                 }
         ) {
             Column(
-                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+                verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
             ) {
                 Text(
                     text = stringResource(id = R.string.select_level_school),
                     style = MaterialTheme.typography.titleMedium
                 )
 
-                SimpleDropDownMenu(
+                SingleSelectionDropDownMenu(
                     items = schoolLevels,
                     selectedItem = schoolLevel,
                     onItemClicked = { item ->

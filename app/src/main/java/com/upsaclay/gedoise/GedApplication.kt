@@ -9,6 +9,7 @@ import com.upsaclay.authentication.data.authenticationDataModule
 import com.upsaclay.authentication.domain.authenticationDomainModule
 import com.upsaclay.common.data.commonDataModule
 import com.upsaclay.common.domain.commonDomainModule
+import com.upsaclay.forum.forumModule
 import com.upsaclay.gedoise.domain.usecase.FcmTokenUseCase
 import com.upsaclay.message.data.messageDataModule
 import com.upsaclay.message.data.worker.MessageWorkerLauncher
@@ -45,7 +46,8 @@ class GedApplication : Application() {
                     newsDataModule,
                     messageModule,
                     messageDomainModule,
-                    messageDataModule
+                    messageDataModule,
+                    forumModule,
                 )
             )
         }

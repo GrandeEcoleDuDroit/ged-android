@@ -13,7 +13,7 @@ fun NavController.navigateToCreateAnnouncement() {
 }
 
 fun NavGraphBuilder.createAnnouncementScreen(
-    onBackClick: () -> Unit,
+    onBackClick: () -> Unit
 ) {
     composable<CreateAnnouncementRoute> {
         CreateAnnouncementDestination(

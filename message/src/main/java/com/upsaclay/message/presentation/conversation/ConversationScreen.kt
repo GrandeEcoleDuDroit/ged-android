@@ -3,6 +3,7 @@ package com.upsaclay.message.presentation.conversation
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -14,10 +15,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.presentation.components.SensibleActionDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.utils.Phones
 import com.upsaclay.message.R
 import com.upsaclay.message.domain.conversationsUIFixture
 import com.upsaclay.message.domain.entity.Conversation
@@ -129,18 +130,20 @@ private fun ConversationScreen(
  =====================================================================
  */
 
-@Preview(showBackground = true)
+@Phones
 @Composable
 private fun ConversationsScreenPreview() {
     val conversations = conversationsUIFixture.sortedByDescending { it.lastMessage.date }
 
     GedoiseTheme {
-        ConversationScreen(
-            conversations = conversations,
-            onConversationClick = {},
-            onDeleteConversation = {},
-            onCreateConversation = {},
-            bottomBar = {}
-        )
+        Surface {
+            ConversationScreen(
+                conversations = conversations,
+                onConversationClick = {},
+                onDeleteConversation = {},
+                onCreateConversation = {},
+                bottomBar = {}
+            )
+        }
     }
 }
