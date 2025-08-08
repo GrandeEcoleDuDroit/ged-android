@@ -14,7 +14,9 @@ import com.upsaclay.common.domain.e
 import com.upsaclay.common.domain.repository.RouteRepository
 import com.upsaclay.gedoise.data.GedoiseDatabase
 import com.upsaclay.gedoise.data.repository.RouteRepositoryImpl
+import com.upsaclay.gedoise.data.repository.SendMailRepositoryImpl
 import com.upsaclay.gedoise.data.repository.TokenProviderImpl
+import com.upsaclay.gedoise.domain.repository.SendMailRepository
 import com.upsaclay.gedoise.domain.usecase.ClearDataUseCase
 import com.upsaclay.gedoise.domain.usecase.FcmTokenUseCase
 import com.upsaclay.gedoise.domain.usecase.ListenDataUseCase
@@ -22,6 +24,7 @@ import com.upsaclay.gedoise.domain.usecase.ListenRemoteUserUseCase
 import com.upsaclay.gedoise.presentation.navigation.NavigationViewModel
 import com.upsaclay.gedoise.presentation.profile.ProfileViewModel
 import com.upsaclay.gedoise.presentation.profile.account.AccountViewModel
+import com.upsaclay.gedoise.presentation.profile.supportContact.SupportContactViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -77,6 +80,7 @@ val appModule = module {
     singleOf(::FcmLocalDataSource)
     singleOf(::FcmDataStore)
     singleOf(::TokenProviderImpl) { bind<TokenProvider>() }
+    singleOf(::SendMailRepositoryImpl) { bind<SendMailRepository>() }
 
     viewModelOf(::NavigationViewModel)
     viewModelOf(::ProfileViewModel)
