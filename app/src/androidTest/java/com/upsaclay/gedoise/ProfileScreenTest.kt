@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import com.upsaclay.gedoise.presentation.profile.supportContact.SupportContactScreen
 
 class ProfileScreenTest {
     @get:Rule
@@ -48,4 +49,17 @@ class ProfileScreenTest {
         // Then
         rule.onNodeWithTag(rule.activity.getString(R.string.profile_screen_logout_button_tag)).assertExists()
     }
+
+    @Test
+    fun support_page_should_be_there_when_button_is_clicked() {
+        rule.setContent {
+            SupportContactScreen()
+        }
+
+        rule.onNodeWithTag(rule.activity.getString(R.string.support_contact_screen_support_button_tag)).performClick()
+
+        rule.onNodeWithTag(rule.activity.getString(R.string.support_contact_screen_support_button_tag)).assertExists()
+    }
+
+
 }

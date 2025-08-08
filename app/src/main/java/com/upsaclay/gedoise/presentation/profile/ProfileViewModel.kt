@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ProfileViewModel(
-    userRepository: UserRepository,
+    private val userRepository: UserRepository,
     private val authenticationRepository: AuthenticationRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ProfileUiState())

@@ -38,4 +38,6 @@
     <string name="account_screen_profile_picture_tag" translatable="false">Account screen profile picture tag</string>
     <string name="account_screen_snackbar_tag" translatable="false">Account screen snackbar tag</string>
     <string name="account_screen_member_tag" translatable="false">Account screen member user text tag</string>
+    <string name="support_contact_screen_support_button_tag" translatable="false">Support Contact String Button</string>
+    <string name="send_support_mail_button" translatable="false">Send mail button tag</string>
 </resources>

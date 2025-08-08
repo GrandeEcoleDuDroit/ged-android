@@ -1,0 +1,26 @@
+package com.upsaclay.gedoise.presentation.profile.supportContact
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+
+class SupportContactViewModel : ViewModel() {
+    private val _uiState = MutableStateFlow(SupportContactUiState())
+
+    val uiState : SharedFlow<SupportContactUiState> = _uiState
+
+    fun sendMail() {
+        TODO("Not yet implemented")
+    }
+
+    fun onTextChange(message: String?): Unit {
+        _uiState.update { it.copy(message = message) }
+    }
+
+    data class SupportContactUiState(
+        var message : String? = null
+    )
+}
