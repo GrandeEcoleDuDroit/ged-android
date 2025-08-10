@@ -14,12 +14,14 @@ fun NavController.navigateToProfile() {
 
 fun NavGraphBuilder.profileScreen(
     onAccountClick: () -> Unit,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onSupportContactClick: () -> Unit
 ) {
     composable<ProfileRoute> {
         ProfileDestination(
             onAccountClick = onAccountClick,
-            onBackClick = onBackClick
+            onBackClick = onBackClick,
+            onSupportContactClick = onSupportContactClick
         )
     }
 }

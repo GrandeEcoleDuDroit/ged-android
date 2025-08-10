@@ -43,6 +43,7 @@ import org.koin.androidx.compose.koinViewModel
 fun ProfileDestination(
     onAccountClick: () -> Unit,
     onBackClick: () -> Unit,
+    onSupportContactClick: () -> Unit,
     viewModel: ProfileViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -51,7 +52,8 @@ fun ProfileDestination(
         user = uiState.user,
         onLogoutClick = viewModel::logout,
         onAccountClick = onAccountClick,
-        onBackClick = onBackClick
+        onBackClick = onBackClick,
+        onSupportContactClick = onSupportContactClick
     )
 }
 
@@ -61,6 +63,7 @@ fun ProfileScreen(
     onLogoutClick: () -> Unit,
     onAccountClick: () -> Unit,
     onBackClick: () -> Unit,
+    onSupportContactClick : () -> Unit
 ) {
     var showLogoutDialog by remember { mutableStateOf(false) }
 
@@ -119,6 +122,20 @@ fun ProfileScreen(
                             )
                         },
                         onClick = onAccountClick
+                    )
+                    ClickableItem(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag(stringResource(id = R.string.profile_screen_account_info_button_tag)),
+                        text = { Text(text = stringResource(id = R.string.support)) },
+                        icon = {
+                            Icon(
+                                modifier = Modifier.size(28.dp),
+                                painter = painterResource(id = com.upsaclay.common.R.drawable.ic_support),
+                                contentDescription = stringResource(id = R.string.support_icon_description)
+                            )
+                        },
+                        onClick = onSupportContactClick
                     )
 
                     ClickableItem(
@@ -186,7 +203,8 @@ fun ProfileScreenPreview() {
             user = userFixture,
             onLogoutClick = {},
             onAccountClick = {},
-            onBackClick = {}
+            onBackClick = {},
+            onSupportContactClick = {}
         )
     }
 }

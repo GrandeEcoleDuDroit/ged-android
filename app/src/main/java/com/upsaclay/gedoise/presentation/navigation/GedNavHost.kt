@@ -27,6 +27,9 @@ import com.upsaclay.gedoise.presentation.profile.account.accountScreen
 import com.upsaclay.gedoise.presentation.profile.account.navigateToAccount
 import com.upsaclay.gedoise.presentation.profile.navigateToProfile
 import com.upsaclay.gedoise.presentation.profile.profileScreen
+import com.upsaclay.gedoise.presentation.profile.supportContact.SupportContactScreen
+import com.upsaclay.gedoise.presentation.profile.supportContact.navigateToSupportContact
+import com.upsaclay.gedoise.presentation.profile.supportContact.supportContactScreen
 import com.upsaclay.message.presentation.chat.ChatRoute
 import com.upsaclay.message.presentation.chat.chatScreen
 import com.upsaclay.message.presentation.chat.navigateToChat
@@ -149,8 +152,10 @@ fun GedNavHost(
 
             profileScreen(
                 onAccountClick = navController::navigateToAccount,
-                onBackClick = navController::popBackStack
+                onBackClick = navController::popBackStack,
+                onSupportContactClick = navController::navigateToSupportContact
             )
+            supportContactScreen(onBackClick = navController::popBackStack)
 
             accountScreen(onBackClick = navController::popBackStack)
         }
