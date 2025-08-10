@@ -27,7 +27,6 @@ import com.upsaclay.gedoise.presentation.profile.account.accountScreen
 import com.upsaclay.gedoise.presentation.profile.account.navigateToAccount
 import com.upsaclay.gedoise.presentation.profile.navigateToProfile
 import com.upsaclay.gedoise.presentation.profile.profileScreen
-import com.upsaclay.gedoise.presentation.profile.supportContact.SupportContactScreen
 import com.upsaclay.gedoise.presentation.profile.supportContact.navigateToSupportContact
 import com.upsaclay.gedoise.presentation.profile.supportContact.supportContactScreen
 import com.upsaclay.message.presentation.chat.ChatRoute

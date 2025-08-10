@@ -8,12 +8,12 @@ import kotlinx.serialization.Serializable
 
 @Serializable data object SupportContactRoute : Route
 
-fun NavController.navigateToSupportContact(): Unit {
+fun NavController.navigateToSupportContact() {
     navigate(route = SupportContactRoute)
 }
 
 fun NavGraphBuilder.supportContactScreen(
-    onBackClick: () -> Unit): Unit {
+    onBackClick: () -> Unit){
     composable<SupportContactRoute> {
         SupportContactDestination(onBackClick = onBackClick)
     }
