@@ -16,11 +16,16 @@ class SupportContactViewModel : ViewModel() {
         TODO("Not yet implemented")
     }
 
-    fun onTextChange(message: String?): Unit {
+    fun onMessageChange(message: String?): Unit {
         _uiState.update { it.copy(message = message) }
     }
 
+    fun onObjetChange(objet: String?): Unit {
+        _uiState.update { it.copy(objet = objet) }
+    }
+
     data class SupportContactUiState(
+        var objet : String? = null,
         var message : String? = null
     )
 }

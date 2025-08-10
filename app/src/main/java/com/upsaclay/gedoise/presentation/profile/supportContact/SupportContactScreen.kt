@@ -14,25 +14,38 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.upsaclay.common.presentation.components.BackTopBar
+import com.upsaclay.common.presentation.components.PrimaryButton
 import com.upsaclay.common.presentation.components.SimpleOutlinedTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.gedoise.R
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SupportContactDestination(
-    onBackClick: () -> Unit)
+    onBackClick: () -> Unit,
+    viewModel: SupportContactViewModel = koinViewModel()
+)
 : Unit {
-    SupportContactScreen(onBackClick = onBackClick)
+    SupportContactScreen(
+        onBackClick = onBackClick,
+        onObjetChange = viewModel::onObjetChange,
+        onMessageChange = viewModel::onMessageChange,
+        onSendMail = viewModel::sendMail
+    )
     
 }
 
 @Composable
 fun SupportContactScreen(
-    onBackClick : () -> Unit
+    onBackClick : () -> Unit,
+    onObjetChange : (String) -> Unit,
+    onMessageChange : (String) -> Unit,
+    onSendMail : () -> Unit
 ){
     Scaffold(
         topBar = {
@@ -52,9 +65,9 @@ fun SupportContactScreen(
                 verticalArrangement = Arrangement.Top
             ) {
                 SimpleOutlinedTextField(
-                    value = stringResource(commonR.string.email),
-                    label = stringResource(commonR.string.email),
-                    onValueChange = {},
+                    value = stringResource(R.string.objet),
+                    label = stringResource(R.string.objet),
+                    onValueChange = onObjetChange,
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -63,10 +76,18 @@ fun SupportContactScreen(
                 SimpleOutlinedTextField(
                     value = stringResource(R.string.message),
                     label = stringResource(R.string.message),
-                    onValueChange = {},
+                    onValueChange = onMessageChange,
                     modifier = Modifier
-                        .fillMaxHeight(0.90f)
+                        .fillMaxHeight(0.80f)
                         .fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                PrimaryButton(
+                    modifier = Modifier.testTag(stringResource(R.string.send_support_mail_button_tag)),
+                    text = stringResource(R.string.send_support_mail_button),
+                    onClick = onSendMail
                 )
             }
         }
@@ -78,7 +99,10 @@ fun SupportContactScreen(
 fun SupportContactScreenPreview(): Unit {
     GedoiseTheme {
         SupportContactScreen(
-            onBackClick = {}
+            onBackClick = {},
+            onMessageChange = { },
+            onObjetChange = { },
+            onSendMail = { }
         )
     }
 }
