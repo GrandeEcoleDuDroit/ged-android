@@ -2,12 +2,15 @@ package com.upsaclay.gedoise.presentation.profile.supportContact
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.upsaclay.gedoise.domain.usecase.SendMailUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class SupportContactViewModel : ViewModel() {
+class SupportContactViewModel(
+    private val sendMailUseCase: SendMailUseCase
+) : ViewModel() {
     private val _uiState = MutableStateFlow(SupportContactUiState())
 
     val uiState : SharedFlow<SupportContactUiState> = _uiState
