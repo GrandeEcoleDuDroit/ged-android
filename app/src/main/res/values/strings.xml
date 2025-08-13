@@ -42,5 +42,8 @@
     <string name="send_support_mail_button_tag" translatable="false">Send mail button tag</string>
     <string name="message">Message</string>
     <string name="send_support_mail_button">Envoyer l\'email</string>
-    <string name="objet">Objet</string>
+    <string name="subject">Objet</string>
+    <string name="send_mail_via">Envoyer l\'email via …</string>
+    <string name="no_email_app_found">Aucun application de messagerie trouvée</string>
+
 </resources>

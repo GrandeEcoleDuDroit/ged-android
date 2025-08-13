@@ -16,19 +16,24 @@ class SupportContactViewModel(
     val uiState : SharedFlow<SupportContactUiState> = _uiState
 
     fun sendMail() {
-        TODO("Not yet implemented")
+        viewModelScope.launch {
+            sendMailUseCase(
+                _uiState.value.subject,
+                _uiState.value.message
+            )
+        }
     }
 
     fun onMessageChange(message: String?): Unit {
         _uiState.update { it.copy(message = message) }
     }
 
-    fun onObjetChange(objet: String?): Unit {
-        _uiState.update { it.copy(objet = objet) }
+    fun onSubjectChange(subject: String?): Unit {
+        _uiState.update { it.copy(subject = subject) }
     }
 
     data class SupportContactUiState(
-        var objet : String? = null,
+        var subject : String? = null,
         var message : String? = null
     )
 }

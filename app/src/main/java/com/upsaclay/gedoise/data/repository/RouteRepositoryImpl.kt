@@ -2,7 +2,6 @@ package com.upsaclay.gedoise.data.repository
 
 import com.upsaclay.common.domain.entity.Route
 import com.upsaclay.common.domain.repository.RouteRepository
-import com.upsaclay.gedoise.domain.repository.SendMailRepository
 
 internal class RouteRepositoryImpl: RouteRepository {
     private var _currentRoute: Route? = null

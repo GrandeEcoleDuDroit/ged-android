@@ -88,7 +88,12 @@ val appModule = module {
 
     singleOf(::ClearDataUseCase)
     singleOf(::ListenDataUseCase)
-    singleOf(::SendMailUseCase)
+
+    single{
+        SendMailUseCase(
+            context = androidContext()
+        )
+    }
 
     single {
         FcmTokenUseCase(

@@ -33,11 +33,10 @@ fun SupportContactDestination(
 : Unit {
     SupportContactScreen(
         onBackClick = onBackClick,
-        onObjetChange = viewModel::onObjetChange,
+        onObjetChange = viewModel::onSubjectChange,
         onMessageChange = viewModel::onMessageChange,
         onSendMail = viewModel::sendMail
     )
-    
 }
 
 @Composable
@@ -65,8 +64,8 @@ fun SupportContactScreen(
                 verticalArrangement = Arrangement.Top
             ) {
                 SimpleOutlinedTextField(
-                    value = stringResource(R.string.objet),
-                    label = stringResource(R.string.objet),
+                    value = stringResource(R.string.subject),
+                    label = stringResource(R.string.subject),
                     onValueChange = onObjetChange,
                     modifier = Modifier.fillMaxWidth()
                 )
