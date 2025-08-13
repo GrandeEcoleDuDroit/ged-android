@@ -2,6 +2,7 @@ package com.upsaclay.gedoise.viewmodel
 
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.userFixture
+import com.upsaclay.gedoise.domain.usecase.SendMailUseCase
 import com.upsaclay.gedoise.presentation.profile.supportContact.SupportContactViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -18,25 +19,35 @@ import org.junit.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class SupportContactViewModelTest {
 
-    private val userRepository : UserRepository = mockk()
     private lateinit var viewModel : SupportContactViewModel
+    private val sendMailUseCase : SendMailUseCase = mockk()
     private val testDispatcher = UnconfinedTestDispatcher()
 
     @Before
     fun setUp(){
+        coEvery { sendMailUseCase(any(),any()) } returns Unit
         Dispatchers.setMain(testDispatcher)
-
-        every { userRepository.user } returns MutableStateFlow(userFixture)
-        coEvery { userRepository.getCurrentUser() } returns userFixture
-
-        viewModel = SupportContactViewModel()
+        viewModel = SupportContactViewModel(sendMailUseCase)
     }
 
     @Test
     fun send_mail_shout_send_mail(){
         viewModel.sendMail()
+        coVerify { sendMailUseCase(any(),any()) }
 
-        coVerify { userRepository.getCurrentUser() }
+    }
+
+    @Test
+    fun on_subject_change_should_update_subject(){
+        viewModel.onSubjectChange("hello")
+        assert(viewModel.uiState.value.subject == "hello")
+
+    }
+
+    @Test
+    fun on_message_change_should_update_message() {
+        viewModel.onMessageChange("hello")
+        assert(viewModel.uiState.value.message == "hello")
     }
 
 }

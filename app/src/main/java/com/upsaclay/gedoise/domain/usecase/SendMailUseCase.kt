@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.net.toUri
-import com.upsaclay.gedoise.GedApplication
 import com.upsaclay.gedoise.R
 import android.widget.Toast
 

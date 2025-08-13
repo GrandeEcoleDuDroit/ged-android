@@ -126,7 +126,7 @@ fun ProfileScreen(
                     ClickableItem(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .testTag(stringResource(id = R.string.profile_screen_account_info_button_tag)),
+                            .testTag(stringResource(R.string.support_contact_screen_support_button_tag)),
                         text = { Text(text = stringResource(id = R.string.support)) },
                         icon = {
                             Icon(

@@ -39,7 +39,8 @@ class ProfileScreenTest {
                 user = uiState.user,
                 onLogoutClick = profileViewModel::logout,
                 onAccountClick = { },
-                onBackClick = { }
+                onBackClick = { },
+                onSupportContactClick = {  }
             )
         }
 
@@ -53,7 +54,13 @@ class ProfileScreenTest {
     @Test
     fun support_page_should_be_there_when_button_is_clicked() {
         rule.setContent {
-            SupportContactScreen()
+            ProfileScreen(
+                user = uiState.user,
+                onLogoutClick = profileViewModel::logout,
+                onAccountClick = { },
+                onBackClick = { },
+                onSupportContactClick = {  }
+            )
         }
 
         rule.onNodeWithTag(rule.activity.getString(R.string.support_contact_screen_support_button_tag)).performClick()
