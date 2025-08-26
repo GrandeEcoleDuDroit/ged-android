@@ -9,3 +9,10 @@ plugins {
     alias(libs.plugins.firebase.crashlytics) apply false
     alias(libs.plugins.kotlin.serialization) apply false
 }
+subprojects {
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+        kotlinOptions {
+            freeCompilerArgs += "-opt-in=kotlinx.serialization.InternalSerializationApi"
+        }
+    }
+}

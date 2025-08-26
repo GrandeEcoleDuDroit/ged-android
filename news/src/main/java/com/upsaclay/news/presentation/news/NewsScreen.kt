@@ -32,7 +32,7 @@ import kotlinx.coroutines.launch
 
 import org.koin.androidx.compose.koinViewModel
 
-@InternalSerializationApi
+
 @Composable
 fun NewsDestination(
     onAnnouncementClick: (String) -> Unit,

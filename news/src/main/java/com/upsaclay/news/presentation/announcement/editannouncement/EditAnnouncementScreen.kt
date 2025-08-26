@@ -33,7 +33,7 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
-@InternalSerializationApi
+
 @Composable
 fun EditAnnouncementDestination(
     announcement: Announcement,

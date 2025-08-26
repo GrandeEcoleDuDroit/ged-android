@@ -6,7 +6,7 @@ import com.upsaclay.common.domain.entity.User
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 
-@InternalSerializationApi @Serializable
+@Serializable
 data class Announcement(
     val id: String,
     val title: String? = null,

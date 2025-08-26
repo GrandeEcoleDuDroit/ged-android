@@ -6,7 +6,7 @@ import com.upsaclay.common.domain.entity.User
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 
-@InternalSerializationApi @Serializable
+@Serializable
 data class Conversation(
     val id: String,
     val interlocutor: User,

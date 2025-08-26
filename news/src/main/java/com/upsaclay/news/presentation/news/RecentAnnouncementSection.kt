@@ -28,7 +28,7 @@ import com.upsaclay.news.domain.entity.AnnouncementState
 import com.upsaclay.news.presentation.announcement.components.ShortAnnouncementItem
 
 
-@InternalSerializationApi
+
 @Composable
 fun RecentAnnouncementSection(
     modifier: Modifier = Modifier,

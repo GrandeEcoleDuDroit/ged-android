@@ -2,7 +2,7 @@ package com.upsaclay.common.domain.entity
 
 import kotlinx.serialization.Serializable
 
-@InternalSerializationApi @Serializable
+@Serializable
 data class User(
     val id: String,
     val firstName: String,

@@ -22,7 +22,7 @@ class CreateAnnouncementViewModel(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(CreateAnnouncementUiState())
     internal val uiState : StateFlow<CreateAnnouncementUiState> = _uiState
-    @InternalSerializationApi
+
     private val user: User? = userRepository.currentUser
 
     fun onTitleChange(title: String) {

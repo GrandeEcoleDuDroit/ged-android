@@ -27,7 +27,7 @@ import com.upsaclay.news.domain.longAnnouncementFixture
 import com.upsaclay.news.presentation.announcement.components.AnnouncementHeader
 
 
-@InternalSerializationApi
+
 @Composable
 fun ReadAnnouncementTopSection(
     user: User,

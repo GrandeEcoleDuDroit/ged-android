@@ -39,8 +39,8 @@ class ForgotPasswordScreenKtTest {
             ForgotPasswordScreen(
                 email = uiStateFixture.email,
                 onBackClick = {},
-                onResetPasswordClick = {},
-                onValueChange = {}
+                onResetPasswordClick = viewModel::resetPassword,
+                onValueChange = viewModel::onEmailChange
             )
         }
     }
@@ -48,7 +48,7 @@ class ForgotPasswordScreenKtTest {
     @Test
     fun send_button_should_be_present() {
 
-        val button : SemanticsNodeInteraction = rule.onNodeWithText(rule.activity.getString(authenticationR.string.send_text))
+        val button : SemanticsNodeInteraction = rule.onNodeWithTag(rule.activity.getString(authenticationR.string.forgot_password_screen_next_button_tag))
 
         button.performClick()
 
@@ -60,7 +60,7 @@ class ForgotPasswordScreenKtTest {
     @Test
     fun field_should_be_present() {
 
-        val field : SemanticsNodeInteraction = rule.onNodeWithTag("email field")
+        val field : SemanticsNodeInteraction = rule.onNodeWithTag(rule.activity.getString(authenticationR.string.forgot_password_screen_email_input_tag))
 
         field.assertExists()
 
@@ -70,10 +70,8 @@ class ForgotPasswordScreenKtTest {
     fun validation_message_text_should_be_there_when_button_clicked() {
 
 
-        val button : SemanticsNodeInteraction = rule.onNodeWithText(rule.activity.getString(authenticationR.string.send_text))
-        val field : SemanticsNodeInteraction = rule.onNodeWithText("email field")
+        val button : SemanticsNodeInteraction = rule.onNodeWithTag(rule.activity.getString(authenticationR.string.forgot_password_screen_next_button_tag))
 
-        field.performTextInput(email)
         button.performClick()
 
         val texteMessage : SemanticsNodeInteraction = rule.onNodeWithText(rule.activity.getString(authenticationR.string.validation_message))
@@ -86,7 +84,7 @@ class ForgotPasswordScreenKtTest {
     @Test
     fun inexistante_mail_message_text_should_be_there_when_button_clicked() {
 
-        val button: SemanticsNodeInteraction = rule.onNodeWithText(rule.activity.getString(authenticationR.string.send_text))
+        val button : SemanticsNodeInteraction = rule.onNodeWithTag(rule.activity.getString(authenticationR.string.forgot_password_screen_next_button_tag))
 
         button.performClick()
 
@@ -111,7 +109,7 @@ class ForgotPasswordScreenKtTest {
     @Test
     fun blanck_field_message_text_should_be_there_when_button_clicked() {
 
-        val button: SemanticsNodeInteraction = rule.onNodeWithText(rule.activity.getString(authenticationR.string.send_text))
+        val button : SemanticsNodeInteraction = rule.onNodeWithTag(rule.activity.getString(authenticationR.string.forgot_password_screen_next_button_tag))
 
         button.performClick()
 

@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 
-@InternalSerializationApi
+
 class NewsViewModel(
     private val resendAnnouncementUseCase: ResendAnnouncementUseCase,
     private val deleteAnnouncementUseCase: DeleteAnnouncementUseCase,

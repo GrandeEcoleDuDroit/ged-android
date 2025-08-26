@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -129,7 +130,10 @@ fun ForgotPasswordScreen(
 
                     )
 
-                SimpleOutlinedTextField(modifier = Modifier.fillMaxWidth(0.90f),
+                SimpleOutlinedTextField(
+                    modifier = Modifier
+                        .fillMaxWidth(0.90f)
+                        .testTag(stringResource(authenticationR.string.forgot_password_screen_email_input_tag)),
                     value = email,
                     onValueChange = onValueChange,
                     label = stringResource(id = commonR.string.email),
@@ -143,6 +147,7 @@ fun ForgotPasswordScreen(
                     modifier = Modifier
                         .fillMaxWidth(0.90f)
                         .height(65.dp)
+                        .testTag(stringResource(authenticationR.string.forgot_password_screen_next_button_tag))
 
                 ){
                     if (loading) {

@@ -21,8 +21,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-
-@InternalSerializationApi
 class ReadAnnouncementViewModel(
     announcementId: String,
     userRepository: UserRepository,

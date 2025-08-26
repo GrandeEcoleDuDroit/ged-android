@@ -15,7 +15,7 @@ fun NavController.navigateToReadAnnouncement(announcementId: String) {
     navigate(route = ReadAnnouncementRoute(announcementId))
 }
 
-@InternalSerializationApi
+
 fun NavGraphBuilder.readAnnouncementScreen(
     onBackClick: () -> Unit,
     onEditClick: (Announcement) -> Unit

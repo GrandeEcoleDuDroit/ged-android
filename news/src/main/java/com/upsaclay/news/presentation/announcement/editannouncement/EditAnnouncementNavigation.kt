@@ -14,7 +14,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable data class EditAnnouncementRoute(val announcementJson: String): Route
 
-@InternalSerializationApi
+
 fun NavController.navigateToEditAnnouncement(announcement: Announcement) {
     navigate(route = EditAnnouncementRoute(NewsJsonConverter.fromAnnouncement(announcement)))
 }

@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 
-@InternalSerializationApi
+
 class EditAnnouncementViewModel(
     private val announcement: Announcement,
     private val updateAnnouncementUseCase: UpdateAnnouncementUseCase

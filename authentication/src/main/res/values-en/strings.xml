@@ -16,10 +16,16 @@
     <string name="enter_email_password">Enter your email and password</string>
     <string name="select_level_school">Select your school level</string>
 
+    <string name="enter_email">Enter your email adress</string>
     <string name="invalid_credentials_error">Incorrect email or password.</string>
     <string name="user_disabled_error">Your account has been disabled. Please contact support.</string>
     <string name="incorrect_email_format_error">Please enter a valid email address.</string>
     <string name="password_length_error">Password must be at least 8 characters long.</string>
     <string name="email_already_associated">This email address is already in use.</string>
     <string name="user_not_white_listed">Registration is currently limited to authorized users.</string>
+    <string name="send_text">Send</string>
+    <string name="inexistante_email">Please enter a valide email adress</string>
+    <string name="field_blanck_email">Required field</string>
+    <string name="validation_message">If the account exists, an email will be send</string>
+    <string name="forgot_password">"Forgot password "</string>
 </resources>
