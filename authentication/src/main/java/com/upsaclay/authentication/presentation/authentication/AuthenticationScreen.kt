@@ -53,7 +53,7 @@ import org.koin.androidx.compose.koinViewModel
 fun AuthenticationDestination(
     onRegistrationClick: () -> Unit,
     onLoginClick: () -> Unit,
-    onForgotPasswordScreen: () -> Unit,
+    onForgotPasswordClick: () -> Unit,
     viewModel: AuthenticationViewModel = koinViewModel()
 ) {
     val context = LocalContext.current
@@ -93,7 +93,7 @@ fun AuthenticationDestination(
         onPasswordChange = viewModel::onPasswordChange,
         onRegistrationClick = onRegistrationClick,
         onLoginClick = viewModel::login,
-        onForgotPasswordScreen = onForgotPasswordScreen
+        onForgotPasswordScreen = onForgotPasswordClick
     )
 }
 

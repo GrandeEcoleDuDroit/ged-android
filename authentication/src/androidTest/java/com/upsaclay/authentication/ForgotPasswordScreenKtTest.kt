@@ -34,12 +34,12 @@ class ForgotPasswordScreenKtTest {
     fun setUp() {
         every { viewModel.uiState } returns MutableStateFlow(ForgotPasswordViewModel.ForgotPasswordUiState())
         every { viewModel.onEmailChange(email) } returns Unit
-        every { viewModel.sendMail() } returns Unit
+        every { viewModel.resetPassword() } returns Unit
         rule.setContent {
             ForgotPasswordScreen(
                 email = uiStateFixture.email,
                 onBackClick = {},
-                onButtonClick = {},
+                onResetPasswordClick = {},
                 onValueChange = {}
             )
         }

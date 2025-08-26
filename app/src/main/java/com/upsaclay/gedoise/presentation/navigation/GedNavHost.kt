@@ -53,7 +53,6 @@ import org.koin.androidx.compose.koinViewModel
 
 @Serializable data object SplashRoute: Route
 
-@InternalSerializationApi
 @Composable
 fun GedNavHost(
     navigationViewModel: NavigationViewModel = koinViewModel()
@@ -115,7 +114,7 @@ fun GedNavHost(
         authenticationSection(
             onRegistrationClick = navController::navigateToFirstRegistration,
             onLoginClick = navController::navigateToNews,
-            onForgotPasswordScreen = navController::navigateToForgotPassword
+            onForgotPasswordClick = navController::navigateToForgotPassword
         ) {
             firstRegistrationScreen(
                 onBackClick = navController::popBackStack,

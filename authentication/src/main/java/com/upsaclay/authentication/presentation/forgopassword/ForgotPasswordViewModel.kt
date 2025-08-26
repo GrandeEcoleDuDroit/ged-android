@@ -4,8 +4,7 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upsaclay.authentication.R as authenticationR
-import com.upsaclay.common.R as commonR
-import com.upsaclay.authentication.domain.usecase.ForgotPasswordUseCase
+import com.upsaclay.authentication.domain.usecase.ResetPasswordUseCase
 import com.upsaclay.common.domain.entity.NoInternetConnectionException
 import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.domain.usecase.VerifyEmailFormatUseCase
@@ -18,7 +17,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ForgotPasswordViewModel(
-    private val forgotPasswordUseCase: ForgotPasswordUseCase,
+    private val resetPasswordUseCase: ResetPasswordUseCase,
 ) : ViewModel() {
 
     private val _event = MutableSharedFlow<SingleUiEvent>()
@@ -32,13 +31,13 @@ class ForgotPasswordViewModel(
         }
     }
 
-    fun sendMail() {
+    fun resetPassword() {
 
         if(!validateInputs(_uiState.value.email)) return
         _uiState.update { it.copy(loading = true) }
         viewModelScope.launch {
             try {
-                forgotPasswordUseCase(email = _uiState.value.email)
+                resetPasswordUseCase(email = _uiState.value.email)
                 _event.emit(SingleUiEvent.Success())
             } catch (noInternetConnexion : NoInternetConnectionException){
                 _event.emit(SingleUiEvent.Error(mapErrorMessage(noInternetConnexion)))
@@ -69,12 +68,7 @@ class ForgotPasswordViewModel(
     }
 
     private fun mapErrorMessage(e: Exception): Int {
-        return mapNetworkErrorMessage(e) {
-            when (it) {
-                is NoInternetConnectionException -> commonR.string.no_internet_connection
-                else -> commonR.string.unknown_error
-            }
-        }
+        return mapNetworkErrorMessage(e)
     }
 
     private fun validateEmail(email: String): Int? {

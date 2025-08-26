@@ -13,7 +13,8 @@ fun PrimaryButton(
     modifier: Modifier = Modifier,
     text: String,
     enable: Boolean = true,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    content: @Composable () -> Unit = {}
 ) {
     Button(
         modifier = modifier,

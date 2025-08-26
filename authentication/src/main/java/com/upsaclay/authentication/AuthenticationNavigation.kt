@@ -13,7 +13,7 @@ import kotlinx.serialization.Serializable
 fun NavGraphBuilder.authenticationSection(
     onRegistrationClick: () -> Unit,
     onLoginClick: () -> Unit,
-    onForgotPasswordScreen: () -> Unit,
+    onForgotPasswordClick: () -> Unit,
     registrationDestinations: NavGraphBuilder.() -> Unit
 ) {
     navigation<AuthenticationBaseRoute>(startDestination = AuthenticationRoute) {
@@ -21,7 +21,7 @@ fun NavGraphBuilder.authenticationSection(
             AuthenticationDestination(
                 onRegistrationClick = onRegistrationClick,
                 onLoginClick = onLoginClick,
-                onForgotPasswordScreen = onForgotPasswordScreen
+                onForgotPasswordClick = onForgotPasswordClick
 
             )
         }

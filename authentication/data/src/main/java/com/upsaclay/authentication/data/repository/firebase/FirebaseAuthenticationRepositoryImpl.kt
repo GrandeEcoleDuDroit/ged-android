@@ -13,6 +13,7 @@ import com.upsaclay.common.domain.entity.DuplicateDataException
 import com.upsaclay.common.domain.entity.ForbiddenException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class FirebaseAuthenticationRepositoryImpl(
@@ -42,12 +43,14 @@ class FirebaseAuthenticationRepositoryImpl(
         }
     }
 
-    override suspend fun createANewPassword(email: String) {
+    override suspend fun resetPassword(email: String) {
         return withContext(Dispatchers.IO) {
-            handleNetworkException(
+            mapFirebaseException(
                 message = "Failed to create a new password",
-                block = { firebaseAuthenticationApi.resetPassword(email)}
+                block = { firebaseAuthenticationApi.resetPassword(email)},
+                specificMap = ::mapAuthException
             )
+
         }
     }
 
