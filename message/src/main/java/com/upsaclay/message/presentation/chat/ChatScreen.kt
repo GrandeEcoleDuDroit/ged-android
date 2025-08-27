@@ -6,10 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Snackbar
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,7 +21,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import androidx.paging.PagingData
 import com.upsaclay.common.domain.entity.SingleUiEvent
@@ -80,7 +76,6 @@ fun ChatDestination(
         conversation = conversation,
         messages = viewModel.messages,
         text = uiState.text,
-        snackbarHostState = snackbarHostState,
         newMessageEvent = newMessageEvent,
         onTextChange = viewModel::onTextChange,
         onSendMessage = viewModel::sendMessage,
@@ -95,7 +90,6 @@ private fun ChatScreen(
     conversation: Conversation,
     messages: Flow<PagingData<Message>>,
     text: String,
-    snackbarHostState: SnackbarHostState = SnackbarHostState(),
     newMessageEvent: MessageEvent.NewMessage?,
     onTextChange: (String) -> Unit,
     onSendMessage: () -> Unit,
@@ -191,9 +185,8 @@ private fun ChatScreenPreview() {
             newMessageEvent = null,
             onTextChange = { text = it },
             onSendMessage = {},
-            onDeleteMessageClick = {},
             onResendMessageClick = {},
-            onBackClick = {}
-        )
+            onDeleteMessageClick = {}
+        ) {}
     }
 }
