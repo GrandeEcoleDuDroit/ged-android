@@ -1,7 +1,10 @@
 package com.upsaclay.news.presentation.news
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,6 +20,8 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.presentation.theme.darkGray
+import com.upsaclay.common.presentation.theme.lightGray
 import com.upsaclay.common.presentation.theme.previewText
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.news.R
@@ -30,19 +35,31 @@ fun RecentAnnouncementSection(
     modifier: Modifier = Modifier,
     announcements: List<Announcement>,
     onAnnouncementClick: (String) -> Unit,
-    onUncreatedAnnouncementClick: (Announcement) -> Unit
+    onUncreatedAnnouncementClick: (Announcement) -> Unit,
+    onAllAnnouncementClick: () -> Unit
 ) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.small_padding))
     ) {
-        Text(
-            text = stringResource(id = R.string.recent_announcements),
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier
-                .padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
-                .testTag(stringResource(id = R.string.news_screen_empty_announcement_text_tag))
-        )
+        Row {
+            Text(
+                text = stringResource(id = R.string.recent_announcements),
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier
+                    .padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+                    .testTag(stringResource(id = R.string.news_screen_empty_announcement_text_tag))
+            )
+            Spacer(Modifier.weight(1f))
+            Text(
+                modifier = Modifier
+                    .testTag(stringResource(R.string.news_screen_all_announcements_option_tag))
+                    .clickable{ onAllAnnouncementClick() },
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.darkGray,
+                text = stringResource(R.string.see_all),
+            )
+        }
 
         LazyColumn(
             modifier = Modifier.fillMaxWidth(),
@@ -92,6 +109,7 @@ private fun RecentAnnouncementContentPreview() {
             RecentAnnouncementSection(
                 announcements = announcementsFixture,
                 onAnnouncementClick = { },
+                onAllAnnouncementClick = { },
                 onUncreatedAnnouncementClick = { }
             )
         }

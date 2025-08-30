@@ -37,6 +37,8 @@ import com.upsaclay.message.presentation.conversation.create.createConversationS
 import com.upsaclay.message.presentation.conversation.create.navigateToCreateConversation
 import com.upsaclay.message.presentation.conversation.navigateToConversation
 import com.upsaclay.news.presentation.NewsRoute
+import com.upsaclay.news.presentation.allAnnouncement.allAnnouncementScreen
+import com.upsaclay.news.presentation.allAnnouncement.navigateToAllAnnouncement
 import com.upsaclay.news.presentation.announcement.createannouncement.createAnnouncementScreen
 import com.upsaclay.news.presentation.announcement.createannouncement.navigateToCreateAnnouncement
 import com.upsaclay.news.presentation.announcement.editannouncement.editAnnouncementScreen
@@ -132,6 +134,7 @@ fun GedNavHost(
             onAnnouncementClick = navController::navigateToReadAnnouncement,
             onCreateAnnouncementClick = navController::navigateToCreateAnnouncement,
             onProfilePictureClick = navController::navigateToProfile,
+            onAllAnnouncementClick = navController::navigateToAllAnnouncement,
             bottomBar = bottomBar
         ) {
             createAnnouncementScreen(
@@ -153,6 +156,12 @@ fun GedNavHost(
             )
 
             accountScreen(onBackClick = navController::popBackStack)
+
+            allAnnouncementScreen(
+                onAnnouncementClick = navController::navigateToReadAnnouncement,
+                onBackClick = navController::popBackStack,
+                bottomBar = bottomBar,
+            )
         }
 
         conversationSection(

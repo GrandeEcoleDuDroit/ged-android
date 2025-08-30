@@ -1,6 +1,7 @@
 package com.upsaclay.news
 
 import com.upsaclay.news.domain.entity.Announcement
+import com.upsaclay.news.presentation.allAnnouncement.AllAnnouncementViewModel
 import com.upsaclay.news.presentation.announcement.createannouncement.CreateAnnouncementViewModel
 import com.upsaclay.news.presentation.announcement.editannouncement.EditAnnouncementViewModel
 import com.upsaclay.news.presentation.announcement.readannouncement.ReadAnnouncementViewModel
@@ -12,6 +13,7 @@ import org.koin.dsl.module
 val newsModule = module {
     viewModelOf(::NewsViewModel)
     viewModelOf(::CreateAnnouncementViewModel)
+    viewModelOf(::AllAnnouncementViewModel)
     viewModel { (announcementId: String) ->
         ReadAnnouncementViewModel(
             announcementId = announcementId,

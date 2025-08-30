@@ -16,4 +16,6 @@
 
     <string name="announcement_refresh_error">Unable to refresh announcements</string>
     <string name="announcement_deleted">Announcement deleted</string>
+    <string name="all_annoucements">All annoucements</string>
+    <string name="see_all">See all</string>
 </resources>

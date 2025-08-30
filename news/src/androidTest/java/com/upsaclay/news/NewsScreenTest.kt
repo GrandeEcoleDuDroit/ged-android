@@ -49,6 +49,7 @@ class NewsScreenTest {
                 onAnnouncementClick = {},
                 onCreateAnnouncementClick = {},
                 onProfilePictureClick = {},
+                onAllAnnouncementClick = {},
                 bottomBar = {},
                 viewModel = newsViewModel
             )
@@ -60,6 +61,25 @@ class NewsScreenTest {
     }
 
     @Test
+    fun all_annoncement_option_should_be_displayed() {
+        // When
+        rule.setContent {
+            NewsDestination(
+                onAnnouncementClick = {},
+                onCreateAnnouncementClick = {},
+                onProfilePictureClick = {},
+                onAllAnnouncementClick = {},
+                bottomBar = {},
+                viewModel = newsViewModel
+            )
+        }
+
+        // Then
+        rule.onNodeWithTag(rule.activity.getString(R.string.news_screen_all_announcements_option_tag))
+            .assertExists()
+    }
+
+    @Test
     fun no_empty_announcements_show_announcements() {
         // When
         rule.setContent {
@@ -67,6 +87,7 @@ class NewsScreenTest {
                 onAnnouncementClick = {},
                 onCreateAnnouncementClick = {},
                 onProfilePictureClick = {},
+                onAllAnnouncementClick = {},
                 bottomBar = {},
                 viewModel = newsViewModel
             )
@@ -89,6 +110,7 @@ class NewsScreenTest {
                 onAnnouncementClick = {},
                 onCreateAnnouncementClick = {},
                 onProfilePictureClick = {},
+                onAllAnnouncementClick = {},
                 bottomBar = {},
                 viewModel = newsViewModel
             )
@@ -116,6 +138,7 @@ class NewsScreenTest {
                 onAnnouncementClick = {},
                 onCreateAnnouncementClick = {},
                 onProfilePictureClick = {},
+                onAllAnnouncementClick = {},
                 bottomBar = {},
                 viewModel = newsViewModel
             )

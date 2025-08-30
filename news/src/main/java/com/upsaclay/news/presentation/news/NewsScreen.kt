@@ -36,6 +36,7 @@ fun NewsDestination(
     onAnnouncementClick: (String) -> Unit,
     onCreateAnnouncementClick: () -> Unit,
     onProfilePictureClick: () -> Unit,
+    onAllAnnouncementClick: () -> Unit,
     bottomBar: @Composable () -> Unit,
     viewModel: NewsViewModel = koinViewModel()
 ) {
@@ -69,7 +70,8 @@ fun NewsDestination(
         onCreateAnnouncementClick = onCreateAnnouncementClick,
         onResendAnnouncementClick = viewModel::resendAnnouncement,
         onDeleteAnnouncementClick = viewModel::deleteAnnouncement,
-        onProfilePictureClick = onProfilePictureClick
+        onProfilePictureClick = onProfilePictureClick,
+        onAllAnnouncementClick = onAllAnnouncementClick
     )
 }
 
@@ -85,7 +87,8 @@ private fun NewsScreen(
     onCreateAnnouncementClick: () -> Unit,
     onResendAnnouncementClick: (Announcement) -> Unit,
     onDeleteAnnouncementClick: (Announcement) -> Unit,
-    onProfilePictureClick: () -> Unit
+    onProfilePictureClick: () -> Unit,
+    onAllAnnouncementClick: () -> Unit
 ) {
     var showAnnouncementBottomSheet by remember { mutableStateOf(false) }
     var showDeleteAnnouncementDialog by remember { mutableStateOf(false) }
@@ -123,6 +126,7 @@ private fun NewsScreen(
                             modifier = Modifier.weight(1f),
                             announcements = it,
                             onAnnouncementClick = onAnnouncementClick,
+                            onAllAnnouncementClick = onAllAnnouncementClick,
                             onUncreatedAnnouncementClick = { announcement ->
                                 announcementClicked = announcement
                                 showAnnouncementBottomSheet = true
@@ -159,15 +163,16 @@ private fun NewsScreenPreview() {
     GedoiseTheme {
         NewsScreen(
             user = userFixture,
-            refreshing = false,
             announcements = announcementsFixture,
+            refreshing = false,
             bottomBar = {},
             onRefresh = {},
             onAnnouncementClick = {},
             onResendAnnouncementClick = {},
             onDeleteAnnouncementClick = {},
             onCreateAnnouncementClick = {},
-            onProfilePictureClick = {}
+            onProfilePictureClick = {},
+            onAllAnnouncementClick = {}
         )
     }
 }

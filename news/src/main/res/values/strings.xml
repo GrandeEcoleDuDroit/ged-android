@@ -36,4 +36,7 @@
     <string name="create_screen_post_button_tag" translatable="false">Create screen post button tag</string>
 
     <string name="edit_screen_snackbar_tag" translatable="false">Edit screen snackbar tag</string>
+    <string name="news_screen_all_announcements_option_tag" translatable="false">News screen all annoucements options\n</string>
+    <string name="all_annoucements">Toutes les annonces</string>
+    <string name="see_all">Voir tout</string>
 </resources>
