@@ -21,7 +21,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.darkGray
-import com.upsaclay.common.presentation.theme.lightGray
 import com.upsaclay.common.presentation.theme.previewText
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.news.R

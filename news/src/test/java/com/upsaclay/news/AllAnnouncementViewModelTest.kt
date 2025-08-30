@@ -6,7 +6,6 @@ import com.upsaclay.news.domain.announcementsFixture
 import com.upsaclay.news.domain.repository.AnnouncementRepository
 import com.upsaclay.news.domain.usecase.RefreshAnnouncementUseCase
 import com.upsaclay.news.presentation.allAnnouncement.AllAnnouncementViewModel
-import com.upsaclay.news.presentation.news.NewsViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every

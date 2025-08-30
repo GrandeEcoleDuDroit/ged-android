@@ -7,7 +7,6 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.upsaclay.common.domain.entity.Route
-import com.upsaclay.news.presentation.news.NewsDestination
 import kotlinx.serialization.Serializable
 
 @Serializable data object AllAnnouncementBaseRoute: Route

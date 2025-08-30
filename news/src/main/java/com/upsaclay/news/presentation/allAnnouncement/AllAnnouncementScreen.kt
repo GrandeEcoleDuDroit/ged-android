@@ -27,8 +27,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.upsaclay.common.domain.entity.SingleUiEvent
-import com.upsaclay.common.domain.entity.User
-import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.presentation.components.BackTopBar
 import com.upsaclay.common.presentation.components.PullToRefreshComponent
 import com.upsaclay.common.presentation.theme.GedoiseTheme
@@ -71,7 +69,6 @@ fun AllAnnouncementDestination(
 
 
     AllAnnouncementScreen(
-        user = uiState.user,
         announcements = uiState.announcements,
         refreshing = uiState.refreshing,
         bottomBar = bottomBar,
@@ -84,7 +81,6 @@ fun AllAnnouncementDestination(
 
 @Composable
 private fun AllAnnouncementScreen(
-    user: User?,
     announcements: List<Announcement>?,
     refreshing: Boolean,
     bottomBar: @Composable () -> Unit,
@@ -122,7 +118,7 @@ private fun AllAnnouncementScreen(
                         text = stringResource(id = R.string.all_annoucements),
                         style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier
-                            .padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+                            .padding(horizontal = dimensionResource(commonR.dimen.medium_padding))
                             .testTag(stringResource(id = R.string.news_screen_all_announcements_option_tag))
                     )
 
@@ -175,13 +171,11 @@ private fun AllAnnouncementScreen(
 private fun NewsScreenPreview() {
     GedoiseTheme {
         AllAnnouncementScreen(
-            user = userFixture,
-            refreshing = false,
             announcements = announcementsFixture,
+            refreshing = false,
             bottomBar = {},
             onRefresh = {},
-            onAnnouncementClick = {},
-            onBackClick = {}
-        )
+            onAnnouncementClick = {}
+        ) {}
     }
 }
