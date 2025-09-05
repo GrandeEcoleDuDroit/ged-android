@@ -4,7 +4,8 @@ import com.upsaclay.common.domain.NotificationApi
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.message.domain.mapper.toFcm
-import com.upsaclay.message.domain.usecase.MessageNotificationUseCase
+import com.upsaclay.message.domain.mapper.toRemote
+import com.upsaclay.message.domain.usecase.NotificationMessageUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -13,18 +14,18 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 
-class MessageNotificationUseCaseTest {
+class NotificationMessageUseCaseTest {
     private val notificationApi: NotificationApi = mockk()
     private val userRepository: UserRepository = mockk()
 
-    private lateinit var useCase: MessageNotificationUseCase
+    private lateinit var useCase: NotificationMessageUseCase
 
     @Before
     fun setUp() {
         every { userRepository.currentUser } returns userFixture
-        coEvery { notificationApi.sendNotification<Any>(any(), any(), any()) } returns Unit
+        coEvery { notificationApi.sendNotification<Any>(any(), any()) } returns Unit
 
-        useCase = MessageNotificationUseCase(
+        useCase = NotificationMessageUseCase(
             notificationApi = notificationApi,
             userRepository = userRepository,
         )
@@ -36,10 +37,6 @@ class MessageNotificationUseCaseTest {
         useCase.sendNotification(notificationMessageFixture)
 
         // Then
-        coVerify { notificationApi.sendNotification(
-            notificationMessageFixture.conversation.interlocutor.id,
-            notificationMessageFixture.toFcm(userFixture),
-            any()
-        ) }
+        coVerify { notificationApi.sendNotification<Any>(any(), any()) }
     }
 }

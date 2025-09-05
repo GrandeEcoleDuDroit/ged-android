@@ -6,7 +6,7 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import com.upsaclay.message.data.local.dao.MessageDao
 import com.upsaclay.message.data.mapper.toLocal
-import com.upsaclay.message.data.mapper.toMessage
+import com.upsaclay.message.data.mapper.toMessageContent
 import com.upsaclay.message.domain.entity.Message
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -24,25 +24,25 @@ internal class MessageLocalDataSource(private val messageDao: MessageDao) {
             ),
             pagingSourceFactory = { messageDao.getMessages(conversationId) }
         ).flow.map { messages ->
-            messages.map { it.toMessage() }
+            messages.map { it.toMessageContent() }
         }
     }
 
     suspend fun getUnreadMessagesByUser(conversationId: String, userId: String): List<Message> {
         return withContext(Dispatchers.IO) {
-            messageDao.getUnreadMessagesByUser(conversationId, userId).map { it.toMessage() }
+            messageDao.getUnreadMessagesByUser(conversationId, userId).map { it.toMessageContent() }
         }
     }
 
     fun getLastMessageFlow(conversationId: String): Flow<Message?> =
-        messageDao.getLastMessageFlow(conversationId).map { it?.toMessage() }
+        messageDao.getLastMessageFlow(conversationId).map { it?.toMessageContent() }
 
     suspend fun getLastMessage(conversationId: String): Message? = withContext(Dispatchers.IO) {
-        messageDao.getLastMessage(conversationId)?.toMessage()
+        messageDao.getLastMessage(conversationId)?.toMessageContent()
     }
 
     suspend fun getUnsentMessages(): List<Message> = withContext(Dispatchers.IO) {
-        messageDao.getUnsentMessages().map { it.toMessage() }
+        messageDao.getUnsentMessages().map { it.toMessageContent() }
     }
 
     suspend fun updateMessage(message: Message) {

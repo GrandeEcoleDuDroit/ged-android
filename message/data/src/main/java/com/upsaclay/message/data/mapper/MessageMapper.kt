@@ -9,7 +9,7 @@ import com.upsaclay.message.data.remote.model.RemoteMessage
 import com.upsaclay.message.domain.entity.Message
 import com.upsaclay.message.domain.entity.MessageState
 
-internal fun RemoteMessage.toMessage() = Message(
+internal fun RemoteMessage.toMessageContent() = Message(
     id = messageId,
     senderId = senderId,
     recipientId = recipientId,
@@ -20,7 +20,7 @@ internal fun RemoteMessage.toMessage() = Message(
     state = MessageState.SENT
 )
 
-fun LocalMessage.toMessage() = Message(
+fun LocalMessage.toMessageContent() = Message(
     id = messageId,
     senderId = senderId,
     recipientId = recipientId,
