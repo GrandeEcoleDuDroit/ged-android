@@ -12,8 +12,8 @@ import com.upsaclay.message.domain.entity.MessageState
 import com.upsaclay.message.domain.entity.NotificationMessage
 
 fun LocalNotificationMessage.toNotificationMessage() = NotificationMessage(
-    conversation = this.toConversation(),
-    message = this.toMessage()
+    conversation = toConversation(),
+    messageContent = toMessageContent()
 )
 
 fun NotificationMessage.toLocal() = LocalNotificationMessage(
@@ -28,13 +28,8 @@ fun NotificationMessage.toLocal() = LocalNotificationMessage(
     createdAt = conversation.createdAt.toEpochMilliUTC(),
     conversationState = conversation.state.name,
     conversationDeleteTime = conversation.deleteTime?.toEpochMilliUTC(),
-    messageId = message.id,
-    senderId = message.senderId,
-    recipientId = message.recipientId,
-    content = message.content,
-    messageTimestamp = message.date.toEpochMilliUTC(),
-    seen = message.seen,
-    messageState = message.state.name
+    content = messageContent.content,
+    messageTimestamp = messageContent.date,
 )
 
 private fun LocalNotificationMessage.toConversation() = Conversation(
@@ -53,14 +48,8 @@ private fun LocalNotificationMessage.toConversation() = Conversation(
     deleteTime = conversationDeleteTime?.toLocalDateTimeUTC()
 )
 
-private fun LocalNotificationMessage.toMessage() = Message(
-    id = messageId,
-    senderId = senderId,
-    recipientId = recipientId,
-    conversationId = conversationId,
+private fun LocalNotificationMessage.toMessageContent() = NotificationMessage.MessageContent(
     content = content,
-    date = messageTimestamp.toLocalDateTimeUTC(),
-    seen = seen,
-    state = MessageState.valueOf(messageState)
+    date = messageTimestamp,
 )
 

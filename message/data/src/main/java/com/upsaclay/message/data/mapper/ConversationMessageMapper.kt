@@ -13,7 +13,7 @@ import com.upsaclay.message.domain.entity.MessageState
 
 fun LocalConversationMessage.toConversationMessage() = ConversationMessage(
     conversation = this.toConversation(),
-    lastMessage = this.toMessage()
+    lastMessage = this.toMessageContent()
 )
 
 private fun LocalConversationMessage.toConversation() = Conversation(
@@ -32,7 +32,7 @@ private fun LocalConversationMessage.toConversation() = Conversation(
     deleteTime = conversationDeleteTime?.toLocalDateTimeUTC()
 )
 
-private fun LocalConversationMessage.toMessage() = Message(
+private fun LocalConversationMessage.toMessageContent() = Message(
     id = messageId,
     senderId = senderId,
     recipientId = recipientId,

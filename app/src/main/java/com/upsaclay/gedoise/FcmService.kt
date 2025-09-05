@@ -3,11 +3,13 @@ package com.upsaclay.gedoise
 import android.content.Intent
 import android.os.Bundle
 import com.google.firebase.messaging.FirebaseMessagingService
-import com.upsaclay.common.domain.entity.FcmDataType
+import com.google.gson.Gson
 import com.upsaclay.common.domain.entity.FcmToken
+import com.upsaclay.common.domain.entity.fcm.FcmDataType
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.gedoise.domain.usecase.FcmTokenUseCase
-import com.upsaclay.message.domain.converter.NotificationMessageJsonConverter
+import com.upsaclay.message.domain.entity.RemoteNotificationMessage
+import com.upsaclay.message.domain.mapper.toNotificationMessage
 import com.upsaclay.message.notification.NotificationMessageManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +25,7 @@ class FcmService: FirebaseMessagingService() {
     private val fcmTokenUseCase: FcmTokenUseCase by inject<FcmTokenUseCase>()
     private val userRepository: UserRepository by inject<UserRepository>()
     private val scope = CoroutineScope(SupervisorJob())
+    private val gson = Gson()
 
     override fun onNewToken(tokenValue: String) {
         super.onNewToken(tokenValue)
@@ -52,9 +55,8 @@ class FcmService: FirebaseMessagingService() {
 
     private suspend fun showMessageNotification(extra: Bundle?) {
         extra?.getString("value")?.let { value ->
-            NotificationMessageJsonConverter.toNotificationMessage(value)?.let  {
-                notificationMessageManager.showNotification(it)
-            }
+            val notificationMessage = gson.fromJson(value, RemoteNotificationMessage::class.java).toNotificationMessage()
+            notificationMessageManager.showNotification(notificationMessage)
         }
     }
 }
