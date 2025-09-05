@@ -10,13 +10,8 @@ import com.upsaclay.message.data.model.NOTIFICATION_MESSAGE_TABLE_NAME
 @Entity(tableName = NOTIFICATION_MESSAGE_TABLE_NAME)
 data class LocalNotificationMessage(
     @PrimaryKey
-    @ColumnInfo(name = MessageField.MESSAGE_ID) val messageId: Long,
-    @ColumnInfo(name = MessageField.SENDER_ID) val senderId: String,
-    @ColumnInfo(name = MessageField.RECIPIENT_ID) val recipientId: String,
     @ColumnInfo(name = MessageField.CONTENT) val content: String,
     @ColumnInfo(name = MessageField.TIMESTAMP) val messageTimestamp: Long,
-    @ColumnInfo(name = MessageField.SEEN) val seen: Boolean,
-    @ColumnInfo(name = MessageField.Local.STATE) val messageState: String,
 
     @ColumnInfo(name = ConversationField.CONVERSATION_ID) val conversationId: String,
     @ColumnInfo(name = ConversationField.Local.INTERLOCUTOR_ID) val interlocutorId: String,

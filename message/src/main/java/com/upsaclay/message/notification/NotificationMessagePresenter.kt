@@ -23,11 +23,12 @@ import com.upsaclay.common.domain.IntentHelper
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.extensions.toEpochMilliUTC
 import com.upsaclay.common.domain.repository.ImageRepository
+import com.upsaclay.message.domain.NotificationMessageUtils
 import com.upsaclay.message.domain.converter.ConversationJsonConverter
 import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.Message
+import com.upsaclay.message.domain.entity.NotificationMessage
 import com.upsaclay.message.domain.entity.NotificationMessages
-import com.upsaclay.message.domain.usecase.MESSAGE_CHANNEL_NOTIFICATION_ID
 
 const val CONVERSATION_ID_EXTRA = "conversation_id_extra"
 
@@ -57,7 +58,6 @@ class NotificationMessagePresenter (
         val notification = buildNotification(
             interlocutor = interlocutor,
             messages = messages,
-            conversationId = notificationMessages.conversation.id,
             person = user,
             intent = intent
         )
@@ -71,7 +71,7 @@ class NotificationMessagePresenter (
 
     private fun createNotificationChannel() {
         val channel = NotificationChannel(
-            MESSAGE_CHANNEL_NOTIFICATION_ID,
+            NotificationMessageUtils.CHANNEL_ID,
             "Message",
             NotificationManager.IMPORTANCE_HIGH
         ).apply {
@@ -134,8 +134,7 @@ class NotificationMessagePresenter (
 
     private fun buildNotification(
         interlocutor: User,
-        messages: List<Message>,
-        conversationId: String,
+        messages: List<NotificationMessage.MessageContent>,
         person: Person,
         intent: PendingIntent
     ): Notification {
@@ -146,14 +145,14 @@ class NotificationMessagePresenter (
                 messages.forEach { message ->
                     it.addMessage(
                         message.content,
-                        message.date.toEpochMilliUTC(),
+                        message.date,
                         person
                     )
                 }
             }
 
 
-        val notificationBuilder = NotificationCompat.Builder(context, MESSAGE_CHANNEL_NOTIFICATION_ID)
+        val notificationBuilder = NotificationCompat.Builder(context, NotificationMessageUtils.CHANNEL_ID)
             .setContentTitle(interlocutor.fullName)
             .setSmallIcon(R.drawable.ic_notification)
             .setColor(context.getColor(R.color.icon_background_color))

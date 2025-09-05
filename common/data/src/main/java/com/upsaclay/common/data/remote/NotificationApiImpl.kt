@@ -4,10 +4,12 @@ import com.google.gson.Gson
 import com.upsaclay.common.data.remote.api.FcmApi
 import com.upsaclay.common.domain.NotificationApi
 import com.upsaclay.common.domain.e
-import com.upsaclay.common.domain.entity.FcmMessage
+import com.upsaclay.common.domain.entity.fcm.FcmMessage
 
 internal class NotificationApiImpl(private val fcmApi: FcmApi): NotificationApi {
-    override suspend fun <T> sendNotification(recipientId: String, fcmMessage: FcmMessage<T>, gson: Gson) {
+    private val gson = Gson()
+    
+    override suspend fun <T> sendNotification(recipientId: String, fcmMessage: FcmMessage<T>) {
         try {
             val response = fcmApi.sendNotification(recipientId, gson.toJson(fcmMessage))
             if (!response.isSuccessful) {

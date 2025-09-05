@@ -1,5 +1,6 @@
 package com.upsaclay.message.domain
 
+import com.upsaclay.common.domain.extensions.toEpochMilliUTC
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.domain.userFixture2
 import com.upsaclay.message.domain.entity.Conversation
@@ -111,24 +112,27 @@ val conversationsMessageFixture = listOf(
     conversationMessageFixture
 )
 
+val messageContentFixture = NotificationMessage.MessageContent(
+    content = messageFixture.content,
+    date = messageFixture.date.toEpochMilliUTC()
+)
+
 val notificationMessageFixture = NotificationMessage(
     conversation = conversationFixture,
-    message = messageFixture
+    messageContent = messageContentFixture
 )
 
 val notificationMessageListFixture = listOf(
     notificationMessageFixture,
     notificationMessageFixture.copy(
         conversation = conversationFixture.copy(id = "2"),
-        message = messageFixture
+        messageContent = messageContentFixture.copy(
+            content = messageFixture2.content,
+            date = messageFixture2.date.toEpochMilliUTC()
+        )
     ),
     notificationMessageFixture.copy(
         conversation = conversationFixture.copy(id = "3"),
-        message = messageFixture2
+        messageContent = messageContentFixture
     )
-)
-
-val notificationMessagesFixture = NotificationMessages(
-    conversation = conversationFixture,
-    messages = messagesFixture
 )

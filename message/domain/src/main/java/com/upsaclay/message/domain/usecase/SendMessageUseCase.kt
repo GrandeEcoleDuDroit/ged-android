@@ -1,5 +1,7 @@
 package com.upsaclay.message.domain.usecase
 
+import com.upsaclay.common.domain.d
+import com.upsaclay.common.domain.extensions.toEpochMilliUTC
 import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.ConversationState
 import com.upsaclay.message.domain.entity.Message
@@ -13,7 +15,7 @@ import kotlinx.coroutines.launch
 class SendMessageUseCase(
     private val conversationRepository: ConversationRepository,
     private val messageRepository: MessageRepository,
-    private val messageNotificationUseCase: MessageNotificationUseCase,
+    private val notificationMessageUseCase: NotificationMessageUseCase,
     private val scope: CoroutineScope
 ) {
     operator fun invoke(conversation: Conversation, message: Message, userId: String) {
@@ -21,7 +23,15 @@ class SendMessageUseCase(
             try {
                 createDataLocally(conversation, message)
                 createDataRemotely(conversation, message, userId)
-                messageNotificationUseCase.sendNotification(NotificationMessage(conversation, message))
+                notificationMessageUseCase.sendNotification(
+                    NotificationMessage(
+                        conversation,
+                        NotificationMessage.MessageContent(
+                            message.content,
+                            message.date.toEpochMilliUTC()
+                        )
+                    )
+                )
             } catch (_: Exception) {
                 if (conversation.state == ConversationState.DRAFT) {
                     conversationRepository.updateLocalConversation(conversation.copy(state = ConversationState.ERROR))

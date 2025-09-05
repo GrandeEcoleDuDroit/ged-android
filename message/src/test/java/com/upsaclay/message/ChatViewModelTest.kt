@@ -8,7 +8,7 @@ import com.upsaclay.message.domain.messageFixture
 import com.upsaclay.message.domain.messagesFixture
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
-import com.upsaclay.message.domain.usecase.MessageNotificationUseCase
+import com.upsaclay.message.domain.usecase.NotificationMessageUseCase
 import com.upsaclay.message.domain.usecase.SendMessageUseCase
 import com.upsaclay.message.notification.NotificationMessageManager
 import com.upsaclay.message.presentation.chat.ChatViewModel
@@ -32,7 +32,7 @@ class ChatViewModelTest {
     private val conversationRepository: ConversationRepository = mockk()
     private val messageRepository: MessageRepository = mockk()
     private val sendMessageUseCase: SendMessageUseCase = mockk()
-    private val messageNotificationUseCase: MessageNotificationUseCase = mockk()
+    private val notificationMessageUseCase: NotificationMessageUseCase = mockk()
     private val notificationMessageManager: NotificationMessageManager = mockk()
 
     private lateinit var chatViewModel: ChatViewModel
@@ -50,7 +50,7 @@ class ChatViewModelTest {
         every { sendMessageUseCase(any(), any(), any()) } returns Unit
         coEvery { messageRepository.updateSeenMessages(any(), any()) } returns Unit
         coEvery { notificationMessageManager.clearNotifications(any()) } returns Unit
-        coEvery { messageNotificationUseCase.sendNotification(any()) } returns Unit
+        coEvery { notificationMessageUseCase.sendNotification(any()) } returns Unit
 
         chatViewModel = ChatViewModel(
             conversation = conversationFixture,

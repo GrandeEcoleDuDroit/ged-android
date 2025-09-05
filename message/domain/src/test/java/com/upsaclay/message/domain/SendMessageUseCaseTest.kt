@@ -5,7 +5,7 @@ import com.upsaclay.message.domain.entity.ConversationState
 import com.upsaclay.message.domain.entity.MessageState
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
-import com.upsaclay.message.domain.usecase.MessageNotificationUseCase
+import com.upsaclay.message.domain.usecase.NotificationMessageUseCase
 import com.upsaclay.message.domain.usecase.SendMessageUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -21,7 +21,7 @@ import org.junit.Test
 class SendMessageUseCaseTest {
     private val conversationRepository: ConversationRepository = mockk()
     private val messageRepository: MessageRepository = mockk()
-    private val messageNotificationUseCase: MessageNotificationUseCase = mockk()
+    private val notificationMessageUseCase: NotificationMessageUseCase = mockk()
 
     private lateinit var useCase: SendMessageUseCase
     private val testScope = TestScope(UnconfinedTestDispatcher())
@@ -34,12 +34,12 @@ class SendMessageUseCaseTest {
         coEvery { messageRepository.updateLocalMessage(any()) } returns Unit
         coEvery { messageRepository.createLocalMessage(any()) } returns Unit
         coEvery { messageRepository.createRemoteMessage(any()) } returns Unit
-        coEvery { messageNotificationUseCase.sendNotification(any()) } returns Unit
+        coEvery { notificationMessageUseCase.sendNotification(any()) } returns Unit
 
         useCase = SendMessageUseCase(
             conversationRepository = conversationRepository,
             messageRepository = messageRepository,
-            messageNotificationUseCase = messageNotificationUseCase,
+            notificationMessageUseCase = notificationMessageUseCase,
             scope = testScope
         )
     }
@@ -102,6 +102,6 @@ class SendMessageUseCaseTest {
         useCase(conversationFixture, messageFixture, userFixture.id)
 
         // Then
-        coEvery { messageNotificationUseCase.sendNotification(any()) }
+        coEvery { notificationMessageUseCase.sendNotification(any()) }
     }
 }

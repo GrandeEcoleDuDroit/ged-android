@@ -9,16 +9,19 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.upsaclay.common.domain.entity.FcmDataType
+import com.google.gson.Gson
+import com.upsaclay.common.domain.entity.fcm.FcmDataType
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.gedoise.presentation.navigation.GedNavHost
 import com.upsaclay.gedoise.presentation.navigation.NavigationViewModel
 import com.upsaclay.gedoise.presentation.navigation.SplashRoute
 import com.upsaclay.message.domain.converter.ConversationJsonConverter
-import com.upsaclay.message.domain.converter.NotificationMessageJsonConverter
+import com.upsaclay.message.domain.entity.RemoteNotificationMessage
+import com.upsaclay.message.domain.mapper.toNotificationMessage
 import com.upsaclay.message.notification.CONVERSATION_ID_EXTRA
 import com.upsaclay.message.notification.NotificationMessageManager
 import com.upsaclay.message.presentation.chat.ChatRoute
@@ -36,6 +39,7 @@ class MainActivity : ComponentActivity() {
                 notificationMessageManager.start()
             }
         }
+    private val gson = Gson()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,10 +98,9 @@ class MainActivity : ComponentActivity() {
         when (type) {
             FcmDataType.MESSAGE.toString() -> {
                 extras?.getString("value")?.let { value ->
-                    NotificationMessageJsonConverter.toNotificationMessage(value)?.let {
-                        val conversationJson = ConversationJsonConverter.toConversationJson(it.conversation)
-                        navigationViewModel.intentToNavigate(ChatRoute(conversationJson))
-                    }
+                    val notificationMessage = gson.fromJson(value, RemoteNotificationMessage::class.java).toNotificationMessage()
+                    val conversationJson = ConversationJsonConverter.toConversationJson(notificationMessage.conversation)
+                    navigationViewModel.intentToNavigate(ChatRoute(conversationJson))
                 }
             }
 
