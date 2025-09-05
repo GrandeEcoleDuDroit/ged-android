@@ -70,7 +70,7 @@ class NotificationManagerTest {
         // Given
         val notificationMessages = NotificationMessages(
             conversation = notificationMessageFixture.conversation,
-            messages = listOf(notificationMessageFixture.message)
+            messages = listOf(notificationMessageFixture.messageContent)
         )
         every { routeRepository.currentRoute } returns ChatRoute(
             conversationJson = ConversationJsonConverter.toConversationJson(notificationMessageFixture.conversation)
@@ -88,7 +88,7 @@ class NotificationManagerTest {
         // Given
         val notificationMessages = NotificationMessages(
             conversation = notificationMessageFixture.conversation,
-            messages = listOf(notificationMessageFixture.message)
+            messages = listOf(notificationMessageFixture.messageContent)
         )
 
         // When
