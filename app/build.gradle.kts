@@ -123,7 +123,4 @@ dependencies {
     implementation(project(":news"))
     implementation(project(":news:domain"))
     implementation(project(":news:data"))
-
-    implementation(project(":forum"))
-    implementation(project(":forum:domain"))
 }

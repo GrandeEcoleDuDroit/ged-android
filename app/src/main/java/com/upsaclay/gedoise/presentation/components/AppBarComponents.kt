@@ -147,8 +147,7 @@ private fun MainBottomBarPreview() {
 
     val itemList = listOf(
         TopLevelDestination.Home,
-        TopLevelDestination.Message(badges = 5),
-        TopLevelDestination.Forum
+        TopLevelDestination.Message(badges = 5)
     )
 
     GedoiseTheme {
