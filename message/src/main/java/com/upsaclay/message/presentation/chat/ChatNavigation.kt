@@ -18,22 +18,22 @@ data class ChatRoute(val conversationJson: String): Route {
     }
 }
 
+
 fun NavController.navigateToChat(
     conversation: Conversation,
-    navOptions: NavOptionsBuilder.() -> Unit = {}
+    navOptionsBuilder: NavOptionsBuilder.() -> Unit = {}
 ) {
-    navigate(route = ChatRoute(ConversationJsonConverter.toConversationJson(conversation))) {
-        navOptions()
-    }
+    navigate(
+        route = ChatRoute(ConversationJsonConverter.toConversationJson(conversation)),
+        builder = navOptionsBuilder
+    )
 }
 
 fun NavController.navigateToChat(
     conversationMessageJson: String,
-    navOptions: NavOptionsBuilder.() -> Unit = {}
+    navOptionsBuilder: NavOptionsBuilder.() -> Unit = {}
 ) {
-    navigate(route = ChatRoute(conversationMessageJson)) {
-        navOptions()
-    }
+    navigate(route = ChatRoute(conversationMessageJson), builder = navOptionsBuilder)
 }
 
 fun NavGraphBuilder.chatScreen(onBackClick: () -> Unit) {
