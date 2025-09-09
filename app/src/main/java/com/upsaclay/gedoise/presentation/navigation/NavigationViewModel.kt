@@ -101,8 +101,7 @@ class NavigationViewModel(
     data class NavigationState(
         val topLevelDestinations: List<TopLevelDestination> = listOf(
             TopLevelDestination.Home,
-            TopLevelDestination.Message(),
-            TopLevelDestination.Forum
+            TopLevelDestination.Message()
         ),
         val startDestination: Route = SplashRoute,
     )
