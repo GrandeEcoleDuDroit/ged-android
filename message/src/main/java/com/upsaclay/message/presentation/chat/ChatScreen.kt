@@ -83,7 +83,7 @@ fun ChatDestination(
         onSendMessage = viewModel::sendMessage,
         onResendMessageClick = viewModel::resendErrorMessage,
         onDeleteMessageClick = viewModel::deleteErrorMessage,
-        onBackClick = onBackClick,
+        onBackClick = onBackClick
     )
 }
 
@@ -121,9 +121,8 @@ private fun ChatScreen(
     Scaffold(
         topBar = {
             ChatTopBar(
-                navController = rememberNavController(),
                 interlocutor = conversation.interlocutor,
-                onClickBack = {
+                onBackClick = {
                     keyboardController?.hide()
                     onBackClick()
                 }

@@ -26,6 +26,7 @@ import com.upsaclay.gedoise.presentation.profile.profileScreen
 import com.upsaclay.message.presentation.chat.ChatRoute
 import com.upsaclay.message.presentation.chat.chatScreen
 import com.upsaclay.message.presentation.chat.navigateToChat
+import com.upsaclay.message.presentation.conversation.ConversationBaseRoute
 import com.upsaclay.message.presentation.conversation.ConversationRoute
 import com.upsaclay.message.presentation.conversation.conversationSection
 import com.upsaclay.message.presentation.conversation.create.CreateConversationRoute
@@ -167,7 +168,11 @@ fun GedNavHost(
             )
 
             chatScreen(
-                onBackClick = navController::popBackStack
+                onBackClick = {
+                    navController.navigateToConversation {
+                        popUpTo(ConversationBaseRoute)
+                    }
+                }
             )
         }
     }

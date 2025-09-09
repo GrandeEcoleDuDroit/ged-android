@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
+import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.upsaclay.common.domain.entity.Route
@@ -13,7 +14,11 @@ import kotlinx.serialization.Serializable
 @Serializable data object ConversationBaseRoute: Route
 @Serializable data object ConversationRoute: Route
 
-fun NavController.navigateToConversation(navOptions: NavOptions? = null) {
+fun NavController.navigateToConversation(navOptionsBuilder: NavOptionsBuilder.() -> Unit = {}) {
+    navigate(route = ConversationBaseRoute, builder = navOptionsBuilder)
+}
+
+fun NavController.navigateToConversation(navOptions: NavOptions) {
     navigate(route = ConversationBaseRoute, navOptions = navOptions)
 }
 
