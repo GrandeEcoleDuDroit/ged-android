@@ -18,10 +18,6 @@ import com.upsaclay.authentication.presentation.registration.secondregistration.
 import com.upsaclay.authentication.presentation.registration.thirdregistration.navigateToThirdRegistration
 import com.upsaclay.authentication.presentation.registration.thirdregistration.thirdRegistrationScreen
 import com.upsaclay.common.domain.entity.Route
-import com.upsaclay.forum.presentation.createmission.createMissionScreen
-import com.upsaclay.forum.presentation.createmission.navigateToCreateMission
-import com.upsaclay.forum.presentation.forumSection
-import com.upsaclay.forum.presentation.navigateToForum
 import com.upsaclay.gedoise.presentation.components.MainBottomBar
 import com.upsaclay.gedoise.presentation.profile.account.accountScreen
 import com.upsaclay.gedoise.presentation.profile.account.navigateToAccount
@@ -30,6 +26,7 @@ import com.upsaclay.gedoise.presentation.profile.profileScreen
 import com.upsaclay.message.presentation.chat.ChatRoute
 import com.upsaclay.message.presentation.chat.chatScreen
 import com.upsaclay.message.presentation.chat.navigateToChat
+import com.upsaclay.message.presentation.conversation.ConversationBaseRoute
 import com.upsaclay.message.presentation.conversation.ConversationRoute
 import com.upsaclay.message.presentation.conversation.conversationSection
 import com.upsaclay.message.presentation.conversation.create.CreateConversationRoute
@@ -74,7 +71,6 @@ fun GedNavHost(
                 navigateToNews(navOptions = navOptions)
             }
             TopLevelDestinationRoute.MESSAGE -> navigateToConversation(navOptions = navOptions)
-            TopLevelDestinationRoute.FORUM -> navigateToForum(navOptions = navOptions)
         }
     }
 
@@ -172,18 +168,11 @@ fun GedNavHost(
             )
 
             chatScreen(
-                onBackClick = navController::popBackStack
-            )
-        }
-
-        forumSection(
-            bottomBar = bottomBar,
-            onMissionClick = {},
-            onCreateMissionClick = navController::navigateToCreateMission
-        ) {
-            createMissionScreen(
-                onCreateMissionClick = navController::popBackStack,
-                onBackClick = navController::popBackStack
+                onBackClick = {
+                    navController.navigateToConversation {
+                        popUpTo(ConversationBaseRoute)
+                    }
+                }
             )
         }
     }
