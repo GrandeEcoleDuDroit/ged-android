@@ -15,7 +15,6 @@ class RefreshAnnouncementUseCase(
 
     suspend operator fun invoke() {
         if (!connectivityObserver.isConnected) {
-            delay(1500)
             throw NoInternetConnectionException()
         }
 

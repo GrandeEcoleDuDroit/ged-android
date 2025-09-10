@@ -64,7 +64,7 @@ val commonDataModule = module {
 
     single<Retrofit>(GED_SERVER_QUALIFIER) {
         Retrofit.Builder()
-            .baseUrl(BuildConfig.SERVER_URL)
+            .baseUrl("https://gedserver.dedyn.io:3000")
             .client(get(OKHTTP_CLIENT_QUALIFIER))
             .addConverterFactory(GsonConverterFactory.create())
             .build()
