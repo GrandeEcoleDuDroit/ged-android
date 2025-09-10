@@ -18,8 +18,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -36,38 +34,27 @@ class NewsViewModel(
     val event: SharedFlow<SingleUiEvent> = _event
 
     init {
-        synchronizeAnnouncements()
-        initUiState()
-    }
-
-    private fun initUiState() {
-        combine(
-            userRepository.user,
-            announcementRepository.announcements
-        ) { user, announcements ->
-            _uiState.update {
-                NewsUiState(
-                    user = user,
-                    announcements = announcements.map {
-                        it.copy(
-                            title = it.title?.takeIf { it.isNotBlank() }?.take(100),
-                            content = it.content.take(100)
-                        )
-                    }
-                )
-            }
-        }.launchIn(viewModelScope)
+        listenAnnouncements()
+        listenUser()
     }
 
     fun refreshAnnouncements() {
         viewModelScope.launch {
-            _uiState.update { it.copy(refreshing = true) }
+            _uiState.update {
+                it.copy(refreshing = true)
+            }
+
             try {
                 refreshAnnouncementUseCase()
-                _uiState.update { it.copy(refreshing = false) }
+                delay(500)
+                _uiState.update {
+                    it.copy(refreshing = false)
+                }
             } catch (e: Exception) {
                 delay(500)
-                _uiState.update { it.copy(refreshing = false) }
+                _uiState.update {
+                    it.copy(refreshing = false)
+                }
                 _event.emit(SingleUiEvent.Error(mapErrorMessage(e)))
             }
         }
@@ -96,13 +83,29 @@ class NewsViewModel(
         }
     }
 
-    private fun synchronizeAnnouncements() {
+    private fun listenAnnouncements() {
         viewModelScope.launch {
-            try {
-                refreshAnnouncementUseCase()
-            } catch (e: Exception) {
-                delay(500)
-                _event.emit(SingleUiEvent.Error(mapErrorMessage(e)))
+            announcementRepository.announcements.collect { announcements ->
+                _uiState.update { state ->
+                    state.copy(
+                        announcements = announcements.map {
+                            it.copy(
+                                title = it.title?.takeIf { it.isNotBlank() }?.take(100),
+                                content = it.content.take(100)
+                            )
+                        }
+                    )
+                }
+            }
+        }
+    }
+
+    private fun listenUser() {
+        viewModelScope.launch {
+            userRepository.user.collect { user ->
+                _uiState.update {
+                    it.copy(user = user)
+                }
             }
         }
     }
