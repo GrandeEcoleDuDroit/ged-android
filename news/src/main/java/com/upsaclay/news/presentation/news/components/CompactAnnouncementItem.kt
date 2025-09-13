@@ -1,4 +1,4 @@
-package com.upsaclay.news.presentation.announcement.components
+package com.upsaclay.news.presentation.news.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,6 +21,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.upsaclay.common.R
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.previewText
@@ -31,39 +32,7 @@ import com.upsaclay.news.domain.entity.AnnouncementState
 import com.upsaclay.news.domain.longAnnouncementFixture
 
 @Composable
-internal fun AnnouncementHeader(
-    modifier: Modifier = Modifier,
-    announcement: Announcement
-) {
-    val elapsedTimeValue = getElapsedTimeValue(announcement.date)
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding))
-    ) {
-        ProfilePicture(
-            url = announcement.author.profilePictureUrl,
-            scale = 0.45f
-        )
-
-        Text(
-            modifier = Modifier.weight(fill = false, weight = 1f),
-            text = announcement.author.fullName,
-            style = MaterialTheme.typography.titleMedium,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
-
-        Text(
-            text = elapsedTimeValue,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.previewText
-        )
-    }
-}
-
-@Composable
-internal fun ShortAnnouncementItem(
+internal fun CompactAnnouncementItem(
     modifier: Modifier = Modifier,
     announcement: Announcement,
     onClick: () -> Unit
@@ -71,17 +40,17 @@ internal fun ShortAnnouncementItem(
     val elapsedTimeValue = getElapsedTimeValue(announcement.date)
     when (announcement.state) {
         AnnouncementState.PUBLISHED, AnnouncementState.DRAFT -> {
-            DefaultShortAnnouncementItem(
+            DefaultItem(
                 modifier = modifier
                     .clickable(onClick = onClick)
-                    .padding(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)),
+                    .padding(dimensionResource(R.dimen.small_medium_padding)),
                 announcement = announcement,
                 elapsedTimeValue = elapsedTimeValue
             )
         }
 
         AnnouncementState.PUBLISHING -> {
-            PublishingShortAnnouncementItem(
+            PublishingItem(
                 modifier = modifier,
                 announcement = announcement,
                 elapsedTimeValue = elapsedTimeValue,
@@ -90,7 +59,7 @@ internal fun ShortAnnouncementItem(
         }
 
         AnnouncementState.ERROR -> {
-            ErrorShortAnnouncementItem(
+            ErrorItem(
                 modifier = modifier,
                 announcement = announcement,
                 elapsedTimeValue = elapsedTimeValue,
@@ -101,7 +70,7 @@ internal fun ShortAnnouncementItem(
 }
 
 @Composable
-private fun DefaultShortAnnouncementItem(
+private fun DefaultItem(
     modifier: Modifier = Modifier,
     announcement: Announcement,
     elapsedTimeValue: String
@@ -149,16 +118,16 @@ private fun DefaultShortAnnouncementItem(
 }
 
 @Composable
-private fun PublishingShortAnnouncementItem(
+private fun PublishingItem(
     modifier: Modifier = Modifier,
     announcement: Announcement,
     elapsedTimeValue: String,
     onClick: () -> Unit
 ) {
-    DefaultShortAnnouncementItem(
+    DefaultItem(
         modifier = modifier
             .clickable(onClick = onClick)
-            .padding(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding))
+            .padding(dimensionResource(R.dimen.small_medium_padding))
             .alpha(0.5f),
         announcement = announcement,
         elapsedTimeValue = elapsedTimeValue,
@@ -166,7 +135,7 @@ private fun PublishingShortAnnouncementItem(
 }
 
 @Composable
-private fun ErrorShortAnnouncementItem(
+private fun ErrorItem(
     modifier: Modifier = Modifier,
     announcement: Announcement,
     elapsedTimeValue: String,
@@ -179,7 +148,7 @@ private fun ErrorShortAnnouncementItem(
             .padding(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        DefaultShortAnnouncementItem(
+        DefaultItem(
             modifier = Modifier.weight(1f),
             announcement = announcement,
             elapsedTimeValue = elapsedTimeValue
@@ -201,24 +170,12 @@ private fun ErrorShortAnnouncementItem(
 
 @Phones
 @Composable
-private fun FullAnnouncementHeaderPreview() {
+private fun DefaultItemPreview() {
     GedoiseTheme {
         Surface {
-            AnnouncementHeader(
-                announcement = longAnnouncementFixture
-            )
-        }
-    }
-}
-
-@Phones
-@Composable
-private fun DefaultShortAnnouncementItemPreview() {
-    GedoiseTheme {
-        Surface {
-            DefaultShortAnnouncementItem(
+            DefaultItem(
                 modifier = Modifier
-                    .padding(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding))
+                    .padding(dimensionResource(R.dimen.small_medium_padding))
                     .clickable(onClick = {}),
                 announcement = longAnnouncementFixture,
                 elapsedTimeValue = "1 min"
@@ -229,10 +186,10 @@ private fun DefaultShortAnnouncementItemPreview() {
 
 @Phones
 @Composable
-private fun PublishingShortAnnouncementItemPreview() {
+private fun PublishingItemPreview() {
     GedoiseTheme {
         Surface {
-            PublishingShortAnnouncementItem(
+            PublishingItem(
                 announcement = longAnnouncementFixture,
                 elapsedTimeValue = "1 min",
                 onClick = { }
@@ -243,10 +200,10 @@ private fun PublishingShortAnnouncementItemPreview() {
 
 @Phones
 @Composable
-private fun ErrorShortAnnouncementItemPreview() {
+private fun ErrorItemPreview() {
     GedoiseTheme {
         Surface {
-            ErrorShortAnnouncementItem(
+            ErrorItem(
                 announcement = longAnnouncementFixture.copy(state = AnnouncementState.ERROR),
                 elapsedTimeValue = "1 min",
                 onClick = { }

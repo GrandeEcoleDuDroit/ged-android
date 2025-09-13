@@ -12,45 +12,32 @@ import com.upsaclay.news.domain.usecase.DeleteAnnouncementUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ReadAnnouncementViewModel(
-    announcementId: String,
-    userRepository: UserRepository,
-    announcementRepository: AnnouncementRepository,
+    private val announcementId: String,
+    private val userRepository: UserRepository,
+    private val announcementRepository: AnnouncementRepository,
     private val deleteAnnouncementUseCase: DeleteAnnouncementUseCase
 ) : ViewModel() {
-    private val loading = MutableStateFlow(false)
-    internal val uiState: StateFlow<ReadAnnouncementUiState> = combine(
-        announcementRepository.getAnnouncementFlow(announcementId)
-            .filterNotNull()
-            .map { announcement ->
-                announcement.copy(
-                    title = announcement.title?.takeIf { it.isNotBlank() }
-                )
-            },
-        userRepository.user,
-        loading,
-        ReadAnnouncementViewModel::ReadAnnouncementUiState
-    ).stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5_000),
-        ReadAnnouncementUiState()
-    )
+    private val _uiState = MutableStateFlow(ReadAnnouncementUiState())
+    val uiState: StateFlow<ReadAnnouncementUiState> = _uiState
 
     private val _singleUiEvent = MutableSharedFlow<SingleUiEvent>()
     val singleUiEvent: SharedFlow<SingleUiEvent> = _singleUiEvent
 
+    init {
+        listenAnnouncement()
+        listenUser()
+    }
+
     fun deleteAnnouncement() {
         val announcement = uiState.value.announcement ?: return
-        loading.update { true }
+        _uiState.update { it.copy(loading = true) }
 
         viewModelScope.launch {
             try {
@@ -59,12 +46,34 @@ class ReadAnnouncementViewModel(
             } catch (e: Exception) {
                 _singleUiEvent.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
             } finally {
-                loading.update { false }
+                _uiState.update { it.copy(loading = false) }
             }
         }
     }
 
-    internal data class ReadAnnouncementUiState(
+    private fun listenAnnouncement() {
+        viewModelScope.launch {
+            announcementRepository.getAnnouncementFlow(announcementId)
+                .filterNotNull()
+                .map {
+                    it.copy(
+                        title = it.title?.takeIf { it.isNotBlank() }
+                    )
+                }.collect {
+                    _uiState.update { state -> state.copy(announcement = it) }
+                }
+        }
+    }
+
+    private fun listenUser() {
+        viewModelScope.launch {
+            userRepository.user.collect { user ->
+                _uiState.update { state -> state.copy(user = user) }
+            }
+        }
+    }
+
+    data class ReadAnnouncementUiState(
         val announcement: Announcement? = null,
         val user: User? = null,
         val loading: Boolean = false

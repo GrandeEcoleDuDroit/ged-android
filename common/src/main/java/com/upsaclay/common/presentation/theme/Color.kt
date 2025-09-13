@@ -115,3 +115,7 @@ val ColorScheme.transparentTextFieldColor: TextFieldColors
         focusedIndicatorColor = Color.Transparent,
         unfocusedIndicatorColor = Color.Transparent,
     )
+
+val ColorScheme.listDivider: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color(0xFF3C3C3C) else Color(0xFFDCDCDC)

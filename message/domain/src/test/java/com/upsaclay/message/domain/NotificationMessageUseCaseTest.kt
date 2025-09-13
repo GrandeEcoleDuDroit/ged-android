@@ -3,8 +3,6 @@ package com.upsaclay.message.domain
 import com.upsaclay.common.domain.NotificationApi
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.userFixture
-import com.upsaclay.message.domain.mapper.toFcm
-import com.upsaclay.message.domain.mapper.toRemote
 import com.upsaclay.message.domain.usecase.NotificationMessageUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
