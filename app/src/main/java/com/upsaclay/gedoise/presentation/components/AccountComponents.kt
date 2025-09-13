@@ -116,6 +116,7 @@ internal fun AccountInfoItem(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun AccountTopBar(
     isEdited: Boolean,

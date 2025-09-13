@@ -20,6 +20,7 @@ fun NavController.navigateToNews(navOptions: NavOptions? = null) {
 fun NavGraphBuilder.newsSection(
     onAnnouncementClick: (String) -> Unit,
     onCreateAnnouncementClick: () -> Unit,
+    onSeeAllAnnouncementClick: () -> Unit,
     onProfilePictureClick: () -> Unit,
     bottomBar: @Composable () -> Unit,
     newsDestinations: NavGraphBuilder.() -> Unit
@@ -29,6 +30,7 @@ fun NavGraphBuilder.newsSection(
             NewsDestination(
                 onAnnouncementClick = onAnnouncementClick,
                 onCreateAnnouncementClick = onCreateAnnouncementClick,
+                onSeeAllAnnouncementClick = onSeeAllAnnouncementClick,
                 onProfilePictureClick = onProfilePictureClick,
                 bottomBar = bottomBar
             )

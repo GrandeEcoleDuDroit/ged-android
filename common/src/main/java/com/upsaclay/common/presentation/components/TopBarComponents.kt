@@ -18,6 +18,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -57,7 +58,8 @@ fun BackTopBar(
             contentDescription = stringResource(id = R.string.arrow_back_icon_description)
         )
     },
-    leadingIcon: @Composable (RowScope.() -> Unit) = {}
+    leadingIcon: @Composable (RowScope.() -> Unit) = {},
+    scrollBehavior: TopAppBarScrollBehavior? = null
 ) {
     TopAppBar(
         title = { Text(text = title) },
@@ -68,8 +70,10 @@ fun BackTopBar(
         },
         actions = leadingIcon,
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.background
-        )
+            containerColor = MaterialTheme.colorScheme.background,
+            scrolledContainerColor = MaterialTheme.colorScheme.background
+        ),
+        scrollBehavior = scrollBehavior
     )
 }
 
@@ -193,6 +197,7 @@ private fun TitleTopBarPreview() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Phones
 @Composable
 private fun BackTopBarPreview() {
