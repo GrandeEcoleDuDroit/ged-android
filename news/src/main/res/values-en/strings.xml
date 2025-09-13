@@ -4,6 +4,7 @@
     <string name="recent_announcements">Recent announcements</string>
     <string name="news_ged">GED News</string>
     <string name="no_announcement">No announcements</string>
+    <string name="all_announcements">All announcements</string>
     <string name="announcement">Announcement</string>
     <string name="announcement_item_more_vert_description">Show announcement editing options</string>
     <string name="new_announcement">New announcement</string>

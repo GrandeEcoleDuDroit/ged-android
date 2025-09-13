@@ -1,6 +1,5 @@
 package com.upsaclay.message.domain.usecase
 
-import com.upsaclay.common.domain.d
 import com.upsaclay.common.domain.extensions.toEpochMilliUTC
 import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.ConversationState

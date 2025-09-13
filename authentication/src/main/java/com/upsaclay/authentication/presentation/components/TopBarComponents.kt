@@ -1,6 +1,7 @@
 package com.upsaclay.authentication.presentation.components
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
@@ -13,6 +14,7 @@ import com.upsaclay.common.presentation.components.BackTopBar
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun RegistrationScaffold(
     onBackClick: () -> Unit,
