@@ -21,12 +21,10 @@ import androidx.core.graphics.drawable.IconCompat
 import com.upsaclay.common.R
 import com.upsaclay.common.domain.IntentHelper
 import com.upsaclay.common.domain.entity.User
-import com.upsaclay.common.domain.extensions.toEpochMilliUTC
 import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.message.domain.NotificationMessageUtils
 import com.upsaclay.message.domain.converter.ConversationJsonConverter
 import com.upsaclay.message.domain.entity.Conversation
-import com.upsaclay.message.domain.entity.Message
 import com.upsaclay.message.domain.entity.NotificationMessage
 import com.upsaclay.message.domain.entity.NotificationMessages
 

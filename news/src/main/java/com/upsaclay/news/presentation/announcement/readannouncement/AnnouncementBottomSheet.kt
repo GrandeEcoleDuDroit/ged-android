@@ -1,8 +1,6 @@
 package com.upsaclay.news.presentation.announcement.readannouncement
 
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -16,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.presentation.components.ClickableItem
 import com.upsaclay.news.R
@@ -24,7 +21,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReadAnnouncementBottomSheet(
+fun AnnouncementBottomSheet(
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onDismiss: () -> Unit
@@ -83,7 +80,5 @@ fun ReadAnnouncementBottomSheet(
                 onDeleteClick()
             }
         )
-
-        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.extra_large_padding)))
     }
 }

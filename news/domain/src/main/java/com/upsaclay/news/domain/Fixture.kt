@@ -22,7 +22,7 @@ val longAnnouncementFixture = Announcement(
             "une validation en temps utile.\n\n" +
             "Je reste à votre disposition pour toute précision complémentaire.\n\n" +
             "Bien cordialement,\n" +
-            "Patrick Dupont\n",
+            "Patrick Dupont",
     author = userFixture,
     state = AnnouncementState.PUBLISHED
 )
@@ -32,15 +32,15 @@ val announcementFixture = Announcement(
     title = "New single of Seal",
     date = LocalDateTime.of(2024, 7, 20, 10, 0),
     content = "Hello,\n\n" +
-            "This is a man's world. But it wouldn't be nothing, nothing without a woman or a girl." +
-            "Patrick Dupont\n",
+            "This is a man's world. But it wouldn't be nothing, nothing without a woman or a girl.\n" +
+            "Patrick Dupont",
     author = userFixture,
     state = AnnouncementState.PUBLISHED
 )
 
 val announcementsFixture = listOf(
-    longAnnouncementFixture,
-    longAnnouncementFixture,
+    announcementFixture,
+    announcementFixture,
     longAnnouncementFixture,
     longAnnouncementFixture,
     longAnnouncementFixture

@@ -3,6 +3,7 @@ package com.upsaclay.message.presentation.conversation.create
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -18,6 +19,7 @@ import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.message.R
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateConversationScaffold(
     search: Boolean,

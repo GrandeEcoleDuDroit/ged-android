@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
@@ -26,7 +27,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture2
@@ -81,6 +81,7 @@ fun ReadAnnouncementDestination(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReadAnnouncementScreen(
     user: User,
@@ -145,10 +146,10 @@ fun ReadAnnouncementScreen(
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
             ) {
-                ReadAnnouncementTopSection(
+                AnnouncementTopSection(
                     user = user,
                     announcement = announcement,
-                    onEditIconClick = { showBottomSheet = true }
+                    onEditClick = { showBottomSheet = true }
                 )
 
 
@@ -156,22 +157,20 @@ fun ReadAnnouncementScreen(
                     Text(
                         modifier = Modifier.testTag(stringResource(id = R.string.read_screen_announcement_title_tag)),
                         text = it,
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = MaterialTheme.typography.titleMedium.fontSize * 1.3f
+                        style = MaterialTheme.typography.titleMedium,
                     )
                 }
 
                 Text(
                     modifier = Modifier.testTag(stringResource(id = R.string.read_screen_announcement_content_tag)),
                     text = announcement.content,
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.bodyMedium
                 )
             }
         }
 
         if (showBottomSheet) {
-            ReadAnnouncementBottomSheet(
+            AnnouncementBottomSheet(
                 onEditClick = {
                     showBottomSheet = false
                     onEditClick(announcement)

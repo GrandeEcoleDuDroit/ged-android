@@ -35,6 +35,7 @@ import org.koin.androidx.compose.koinViewModel
 fun NewsDestination(
     onAnnouncementClick: (String) -> Unit,
     onCreateAnnouncementClick: () -> Unit,
+    onSeeAllAnnouncementClick: () -> Unit,
     onProfilePictureClick: () -> Unit,
     bottomBar: @Composable () -> Unit,
     viewModel: NewsViewModel = koinViewModel()
@@ -69,6 +70,7 @@ fun NewsDestination(
         onCreateAnnouncementClick = onCreateAnnouncementClick,
         onResendAnnouncementClick = viewModel::resendAnnouncement,
         onDeleteAnnouncementClick = viewModel::deleteAnnouncement,
+        onSeeAllAnnouncementClick = onSeeAllAnnouncementClick,
         onProfilePictureClick = onProfilePictureClick
     )
 }
@@ -85,6 +87,7 @@ private fun NewsScreen(
     onCreateAnnouncementClick: () -> Unit,
     onResendAnnouncementClick: (Announcement) -> Unit,
     onDeleteAnnouncementClick: (Announcement) -> Unit,
+    onSeeAllAnnouncementClick: () -> Unit,
     onProfilePictureClick: () -> Unit
 ) {
     var showAnnouncementBottomSheet by remember { mutableStateOf(false) }
@@ -126,7 +129,8 @@ private fun NewsScreen(
                             onUncreatedAnnouncementClick = { announcement ->
                                 announcementClicked = announcement
                                 showAnnouncementBottomSheet = true
-                            }
+                            },
+                            onSeeAllAnnouncementClick = onSeeAllAnnouncementClick
                         )
                     }
                 }
@@ -167,6 +171,7 @@ private fun NewsScreenPreview() {
             onResendAnnouncementClick = {},
             onDeleteAnnouncementClick = {},
             onCreateAnnouncementClick = {},
+            onSeeAllAnnouncementClick = {},
             onProfilePictureClick = {}
         )
     }
