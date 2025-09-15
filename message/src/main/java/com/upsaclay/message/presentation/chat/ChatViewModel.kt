@@ -7,8 +7,10 @@ import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.GenerateIdUseCase
+import com.upsaclay.common.utils.mapNetworkErrorMessage
 import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.Message
+import com.upsaclay.message.domain.entity.MessageReport
 import com.upsaclay.message.domain.entity.MessageState
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
@@ -87,7 +89,7 @@ class ChatViewModel(
         }
     }
 
-    fun resendErrorMessage(message: Message) {
+    fun resendMessage(message: Message) {
         try {
             val user = requireNotNull(user)
             viewModelScope.launch {
@@ -104,9 +106,20 @@ class ChatViewModel(
         }
     }
 
-    fun deleteErrorMessage(message: Message) {
+    fun deleteMessage(message: Message) {
         viewModelScope.launch {
             messageRepository.deleteLocalMessage(message)
+        }
+    }
+
+    fun reportMessage(report: MessageReport) {
+        viewModelScope.launch {
+            try {
+                messageRepository.reportMessage(report)
+                _event.emit(MessageEvent.MessageReported)
+            } catch (e: Exception) {
+                _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
+            }
         }
     }
 
@@ -163,5 +176,7 @@ class ChatViewModel(
 
     internal sealed class MessageEvent: SingleUiEvent {
         data class NewMessage(val message: Message): MessageEvent()
+
+        data object MessageReported: MessageEvent()
     }
 }
