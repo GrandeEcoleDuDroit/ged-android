@@ -5,6 +5,7 @@ import com.upsaclay.news.data.remote.api.AnnouncementApi
 import com.upsaclay.news.data.toAnnouncement
 import com.upsaclay.news.data.toRemote
 import com.upsaclay.news.domain.entity.Announcement
+import com.upsaclay.news.domain.entity.AnnouncementReport
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -35,6 +36,16 @@ internal class AnnouncementRemoteDataSource(private val announcementApi: Announc
         withContext(Dispatchers.IO) {
             mapServerResponseException(
                 block = { announcementApi.updateAnnouncement(announcement.toRemote()) }
+            )
+        }
+    }
+
+    suspend fun reportAnnouncement(report: AnnouncementReport) {
+        withContext(Dispatchers.IO) {
+            mapServerResponseException(
+                block = {
+                    announcementApi.reportAnnouncement(report.toRemote())
+                }
             )
         }
     }

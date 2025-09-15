@@ -40,7 +40,11 @@ import com.upsaclay.common.utils.Phones
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.announcementsFixture
 import com.upsaclay.news.domain.entity.Announcement
-import com.upsaclay.news.presentation.announcement.readannouncement.AnnouncementBottomSheet
+import com.upsaclay.news.domain.entity.AnnouncementReport
+import com.upsaclay.news.domain.entity.AnnouncementState
+import com.upsaclay.news.presentation.announcement.components.AnnouncementBottomSheet
+import com.upsaclay.news.presentation.announcement.components.ErrorAnnouncementBottomSheet
+import com.upsaclay.news.presentation.announcement.components.ReportAnnouncementBottomSheet
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -79,12 +83,13 @@ fun AllAnnouncementsDestination(
             loading = uiState.loading,
             refreshing = uiState.refreshing,
             snackbarHostState = snackbarHostState,
+            onBackClick = onBackClick,
             onRefresh = viewModel::refreshAnnouncements,
             onAnnouncementClick = onAnnouncementClick,
-            onResendAnnouncement = viewModel::resendAnnouncement,
+            onResendAnnouncementClick = viewModel::resendAnnouncement,
             onEditAnnouncementClick = onEditAnnouncementClick,
-            onDeleteAnnouncement = viewModel::deleteAnnouncement,
-            onBackClick = onBackClick
+            onReportAnnouncementClick = viewModel::reportAnnouncement,
+            onDeleteAnnouncementClick = viewModel::deleteAnnouncement
         )
     }
 }
@@ -97,17 +102,19 @@ private fun AllAnnouncementsScreen(
     loading: Boolean,
     refreshing: Boolean,
     snackbarHostState: SnackbarHostState = SnackbarHostState(),
+    onBackClick: () -> Unit,
     onRefresh: () -> Unit,
     onAnnouncementClick: (String) -> Unit,
-    onResendAnnouncement: (Announcement) -> Unit,
+    onResendAnnouncementClick: (Announcement) -> Unit,
     onEditAnnouncementClick: (Announcement) -> Unit,
-    onDeleteAnnouncement: (Announcement) -> Unit,
-    onBackClick: () -> Unit
+    onReportAnnouncementClick: (AnnouncementReport) -> Unit,
+    onDeleteAnnouncementClick: (Announcement) -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     var showBottomSheet by remember { mutableStateOf(false) }
     var showDeleteAnnouncementDialog by remember { mutableStateOf(false) }
-    var announcementSelected by remember { mutableStateOf<Announcement?>(null) }
+    var announcementClicked by remember { mutableStateOf<Announcement?>(null) }
+    var showReportBottomSheet by remember { mutableStateOf(false) }
 
     if (showDeleteAnnouncementDialog) {
         SensibleActionDialog(
@@ -117,7 +124,7 @@ private fun AllAnnouncementsScreen(
             confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
             onConfirm = {
                 showDeleteAnnouncementDialog = false
-                announcementSelected?.let(onDeleteAnnouncement)
+                announcementClicked?.let(onDeleteAnnouncementClick)
             },
             onCancel = { showDeleteAnnouncementDialog = false }
         )
@@ -163,14 +170,13 @@ private fun AllAnnouncementsScreen(
                             ListDivider()
 
                             ExtendedAnnouncementItem(
-                                user = user,
                                 announcement = announcement,
                                 onClick = { onAnnouncementClick(announcement.id) },
-                                onEditClick = {
-                                    announcementSelected = announcement
+                                onOptionClick = {
+                                    announcementClicked = announcement
                                     showBottomSheet = true
                                 },
-                                onResendAnnouncementClick = { onResendAnnouncement(announcement) }
+                                onResendAnnouncementClick = { onResendAnnouncementClick(announcement) }
                             )
 
                             if (index == announcements.lastIndex) {
@@ -184,16 +190,67 @@ private fun AllAnnouncementsScreen(
     }
 
     if (showBottomSheet) {
-        AnnouncementBottomSheet(
-            onEditClick = {
-                showBottomSheet = false
-                announcementSelected?.let(onEditAnnouncementClick)
+        announcementClicked?.let { announcement ->
+            when (announcement.state) {
+                AnnouncementState.ERROR -> {
+                    ErrorAnnouncementBottomSheet(
+                        onResendClick = {
+                            showBottomSheet = false
+                            onResendAnnouncementClick(announcement)
+                        },
+                        onDeleteClick = {
+                            showBottomSheet = false
+                            onDeleteAnnouncementClick(announcement)
+                        },
+                        onDismiss = { showBottomSheet = false }
+                    )
+                }
+
+                else -> {
+                    AnnouncementBottomSheet(
+                        isEditable = user.isMember && announcement.author.id == user.id,
+                        onEditClick = {
+                            showBottomSheet = false
+                            announcementClicked?.let(onEditAnnouncementClick)
+                        },
+                        onReportClick = {
+                            showBottomSheet = false
+                            showReportBottomSheet = true
+                        },
+                        onDeleteClick = {
+                            showBottomSheet = false
+                            showDeleteAnnouncementDialog = true
+                        },
+                        onDismiss = { showBottomSheet = false }
+                    )
+                }
+            }
+        }
+    }
+
+    if (showReportBottomSheet) {
+        ReportAnnouncementBottomSheet(
+            onReportClick = { reason ->
+                showReportBottomSheet = false
+
+                announcementClicked?.let { announcement ->
+                    onReportAnnouncementClick(
+                        AnnouncementReport(
+                            announcementId = announcement.id,
+                            userInfo = AnnouncementReport.UserInfo(
+                                fullName = user.fullName,
+                                email = user.email
+                            ),
+                            authorInfo = AnnouncementReport.UserInfo(
+                                fullName = announcement.author.fullName,
+                                email = announcement.author.email
+                            ),
+                            reason = reason,
+                        )
+                    )
+                }
             },
-            onDeleteClick = {
-                showBottomSheet = false
-                showDeleteAnnouncementDialog = true
-            },
-            onDismiss = { showBottomSheet = false }
+            onDismiss = { showReportBottomSheet = false }
         )
     }
 }
@@ -213,12 +270,13 @@ private fun AllAnnouncementsScreenPreview() {
             announcements = announcementsFixture,
             loading = false,
             refreshing = false,
+            onBackClick = {},
             onRefresh = {},
             onAnnouncementClick = {},
-            onResendAnnouncement = {},
+            onResendAnnouncementClick = {},
             onEditAnnouncementClick = {},
-            onDeleteAnnouncement = {},
-            onBackClick = {}
+            onReportAnnouncementClick = {},
+            onDeleteAnnouncementClick = {}
         )
     }
 }

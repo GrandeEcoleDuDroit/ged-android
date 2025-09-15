@@ -6,7 +6,7 @@
     <string name="no_announcement">No announcements</string>
     <string name="all_announcements">All announcements</string>
     <string name="announcement">Announcement</string>
-    <string name="announcement_item_more_vert_description">Show announcement editing options</string>
+    <string name="announcement_option_icon_description">Show announcement options</string>
     <string name="new_announcement">New announcement</string>
     <string name="edit_announcement">Edit announcement</string>
     <string name="announcement_sent">Announcement sent</string>
@@ -17,4 +17,5 @@
 
     <string name="announcement_refresh_error">Unable to refresh announcements</string>
     <string name="announcement_deleted">Announcement deleted</string>
+    <string name="announcement_reported">Announcement reported</string>
 </resources>

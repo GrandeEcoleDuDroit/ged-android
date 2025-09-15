@@ -129,6 +129,7 @@ fun GedNavHost(
         newsSection(
             onAnnouncementClick = navController::navigateToReadAnnouncement,
             onCreateAnnouncementClick = navController::navigateToCreateAnnouncement,
+            onEditAnnouncementClick = navController::navigateToEditAnnouncement,
             onSeeAllAnnouncementClick = navController::navigateToAllAnnouncement,
             onProfilePictureClick = navController::navigateToProfile,
             bottomBar = bottomBar
