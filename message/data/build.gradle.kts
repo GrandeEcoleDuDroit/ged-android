@@ -47,6 +47,8 @@ dependencies {
     implementation(libs.firebase.firestore)
     implementation(libs.koin)
     implementation(libs.koin.core)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
 
     testImplementation(libs.junit)
 

@@ -21,6 +21,7 @@ internal class ImageRemoteDataSource(private val imageApi: ImageApi) {
             val requestBody = file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
             val multipartBody = MultipartBody.Part.createFormData("image", file.name, requestBody)
             mapServerResponseException(
+                message = "Failed to upload image",
                 block = { imageApi.uploadImage(multipartBody) }
             )
         }
@@ -29,6 +30,7 @@ internal class ImageRemoteDataSource(private val imageApi: ImageApi) {
     suspend fun deleteImage(fileName: String) {
         withContext(Dispatchers.IO) {
             mapServerResponseException(
+                message = "Failed to delete image",
                block = { imageApi.deleteImage(fileName) }
            )
         }

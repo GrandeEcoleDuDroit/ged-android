@@ -1,0 +1,133 @@
+package com.upsaclay.message.presentation.chat
+
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import com.upsaclay.common.presentation.components.ClickableItem
+import com.upsaclay.message.domain.entity.MessageReport
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SentMessageBottomSheet(
+    onResendMessageClick: () -> Unit,
+    onDeleteMessageClick: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    ModalBottomSheet(
+        onDismissRequest = onDismiss
+    ) {
+        ClickableItem(
+            modifier = Modifier.fillMaxWidth(),
+            text = {
+                Text(text = stringResource(id = com.upsaclay.common.R.string.resend))
+            },
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.Refresh,
+                    contentDescription = null
+                )
+            },
+            onClick = onResendMessageClick
+        )
+
+        ClickableItem(
+            modifier = Modifier.fillMaxWidth(),
+            text = {
+                Text(
+                    text = stringResource(id = com.upsaclay.common.R.string.delete),
+                    color = MaterialTheme.colorScheme.error
+                )
+            },
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.error
+                )
+            },
+            onClick = onDeleteMessageClick
+        )
+
+        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.large_padding)))
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ReceivedMessageBottomSheet(
+    onReportClick: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    ModalBottomSheet(
+        onDismissRequest = onDismiss
+    ) {
+        ClickableItem(
+            modifier = Modifier.fillMaxWidth(),
+            text = {
+                Text(
+                    text = stringResource(id = com.upsaclay.common.R.string.report),
+                    color = MaterialTheme.colorScheme.error
+                )
+            },
+            icon = {
+                Icon(
+                    painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_report),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.error
+                )
+            },
+            onClick = onReportClick
+        )
+
+        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.large_padding)))
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ReportMessageBottomSheet(
+    onReasonClick: (MessageReport.Reason) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val state = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
+    ModalBottomSheet(
+        sheetState = state,
+        onDismissRequest = onDismiss,
+    ) {
+        Text(
+            text = stringResource(com.upsaclay.common.R.string.report),
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.small_padding)))
+
+        MessageReport.Reason.entries.forEach {
+            ClickableItem(
+                modifier = Modifier.fillMaxWidth(),
+                text = { Text(text = it.toString()) },
+                onClick = { onReasonClick(it) }
+            )
+        }
+
+        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.large_padding)))
+    }
+}
