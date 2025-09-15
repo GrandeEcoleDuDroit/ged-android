@@ -37,4 +37,5 @@
     <string name="chat_screen_message_text_tag" translatable="false">Chat Screen Receive Message Text Tag</string>
     <string name="chat_screen_message_input_tag" translatable="false">Chat Screen Message Input Tag</string>
     <string name="chat_screen_send_button_tag" translatable="false">Chat Screen Send Button Tag</string>
+    <string name="message_reported">Message signalé</string>
 </resources>

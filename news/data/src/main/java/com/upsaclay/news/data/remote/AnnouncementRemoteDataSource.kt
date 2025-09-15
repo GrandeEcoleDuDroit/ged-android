@@ -12,6 +12,7 @@ import kotlinx.coroutines.withContext
 internal class AnnouncementRemoteDataSource(private val announcementApi: AnnouncementApi) {
     suspend fun getAnnouncement(): List<Announcement> = withContext(Dispatchers.IO) {
         mapServerResponseException(
+            message = "Failed to fetch announcements",
             block = { announcementApi.getAnnouncements() }
         )?.map { it.toAnnouncement() } ?: emptyList()
     }
@@ -19,6 +20,7 @@ internal class AnnouncementRemoteDataSource(private val announcementApi: Announc
     suspend fun createAnnouncement(announcement: Announcement) {
         withContext(Dispatchers.IO) {
             mapServerResponseException(
+                message = "Failed to create announcement",
                 block = { announcementApi.createAnnouncement(announcement.toRemote()) }
             )
         }
@@ -27,6 +29,7 @@ internal class AnnouncementRemoteDataSource(private val announcementApi: Announc
     suspend fun deleteAnnouncement(id: String) {
         withContext(Dispatchers.IO) {
             mapServerResponseException(
+                message = "Failed to delete announcement",
                 block = { announcementApi.deleteAnnouncement(id) }
             )
         }
@@ -35,6 +38,7 @@ internal class AnnouncementRemoteDataSource(private val announcementApi: Announc
     suspend fun updateAnnouncement(announcement: Announcement) {
         withContext(Dispatchers.IO) {
             mapServerResponseException(
+                message = "Failed to update announcement",
                 block = { announcementApi.updateAnnouncement(announcement.toRemote()) }
             )
         }

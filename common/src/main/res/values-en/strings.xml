@@ -32,6 +32,7 @@
     <string name="ok">OK</string>
     <string name="see">See</string>
     <string name="see_all">See all</string>
+    <string name="report">Report</string>
 
     <string name="arrow_back_icon_description">Go back</string>
     <string name="ged_logo_description">Logo of the university La Grande École du Droit</string>
@@ -66,5 +67,4 @@
     <string name="timeout_error">The service took too long to respond. Please try again.</string>
     <string name="no_user">No users.</string>
     <string name="no_internet_connection">No internet connection.</string>
-    <string name="report">Signaler</string>
 </resources>

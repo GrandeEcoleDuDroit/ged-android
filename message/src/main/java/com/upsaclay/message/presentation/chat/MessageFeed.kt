@@ -40,6 +40,7 @@ import com.upsaclay.common.utils.Phones
 import com.upsaclay.message.R
 import com.upsaclay.message.domain.conversationFixture
 import com.upsaclay.message.domain.entity.Message
+import com.upsaclay.message.domain.entity.MessageState
 import com.upsaclay.message.domain.messagesFixture
 import com.upsaclay.message.presentation.chat.ChatViewModel.MessageEvent
 import kotlinx.coroutines.flow.Flow
@@ -53,7 +54,8 @@ internal fun MessageFeed(
     messages: Flow<PagingData<Message>>,
     interlocutor: User,
     newMessageEvent: MessageEvent.NewMessage?,
-    onErrorMessageClick: (Message) -> Unit
+    onErrorSentMessageClick: (Message) -> Unit,
+    onReceivedMessageLongClick: (Message) -> Unit
 ) {
     val listState = rememberLazyListState()
     val scope = rememberCoroutineScope()
@@ -90,47 +92,39 @@ internal fun MessageFeed(
                 contentType = messageItems.itemContentType { "MessageFeed" }
             ) { index ->
                 val message = messageItems[index] ?: return@items
-                val isSender = message.senderId != interlocutor.id
-                val isFirstMessage = index == messageItems.itemCount - 1
-                val isLastMessage = index == 0
-                val previousMessage = if (index + 1 < messageItems.itemCount) {
-                    messageItems[index + 1]
-                } else null
+                val previousMessage = messageItems.takeIf {
+                    index + 1 < messageItems.itemCount
+                }?.get(index + 1)
+                val condition = MessageCondition(
+                    message = message,
+                    interlocutor = interlocutor,
+                    messageSize = messageItems.itemCount,
+                    index = index,
+                    previousMessage = previousMessage
+                )
 
-                val previousSenderId = previousMessage?.senderId ?: ""
-                val sameSender = previousSenderId == message.senderId
-                val showSeenMessage = isLastMessage && isSender && message.seen
-
-                val sameTime = previousMessage?.let {
-                    Duration.between(it.date, message.date).toMinutes() < 2L
-                } ?: false
-
-                val sameDay = previousMessage?.let {
-                    Duration.between(it.date, message.date).toDays() < 2L
-                } ?: false
-
-                val displayProfilePicture = !sameTime || isFirstMessage || !sameSender
-
-                if (isSender) {
+                if (condition.isSender) {
                     SentMessageItem(
                         modifier = Modifier
                             .testTag(stringResource(R.string.chat_screen_send_message_item_tag) + index),
                         message = message,
-                        showSeen = showSeenMessage,
-                        onClick = { onErrorMessageClick(message) }
+                        showSeen = condition.showSeenMessage,
+                        clickEnabled = message.state == MessageState.ERROR,
+                        onClick = { onErrorSentMessageClick(message) }
                     )
                 } else {
-                    ReceiveMessageItem(
+                    ReceivedMessageItem(
                         modifier = Modifier
                             .testTag(stringResource(R.string.chat_screen_receive_message_item_tag) + index),
                         message = message,
-                        displayProfilePicture = displayProfilePicture,
-                        profilePictureUrl = interlocutor.profilePictureUrl
+                        displayProfilePicture = condition.displayProfilePicture,
+                        profilePictureUrl = interlocutor.profilePictureUrl,
+                        onLongClick = { onReceivedMessageLongClick(message) }
                     )
                 }
 
-                if (isFirstMessage || !sameDay) {
-                    val topPadding = if (isFirstMessage) {
+                if (condition.isFirstMessage || !condition.sameDay) {
+                    val topPadding = if (condition.isFirstMessage) {
                         dimensionResource(com.upsaclay.common.R.dimen.default_padding)
                     } else {
                         dimensionResource(com.upsaclay.common.R.dimen.medium_large_padding)
@@ -146,7 +140,11 @@ internal fun MessageFeed(
                         textAlign = TextAlign.Center
                     )
                 } else {
-                    Spacer(modifier = Modifier.height(messagePadding(sameSender, sameTime)))
+                    Spacer(
+                        modifier = Modifier.height(
+                            messagePadding(condition.sameSender, condition.sameTime)
+                        )
+                    )
                 }
             }
         }
@@ -160,6 +158,28 @@ internal fun MessageFeed(
             )
         }
     }
+}
+
+private data class MessageCondition(
+    private val message: Message,
+    private val interlocutor: User,
+    private val messageSize: Int,
+    private val index: Int,
+    private val previousMessage: Message?
+) {
+    val isSender = message.senderId != interlocutor.id
+    val isFirstMessage = index == messageSize - 1
+    val isLastMessage = index == 0
+    val previousSenderId = previousMessage?.senderId ?: ""
+    val sameSender = previousSenderId == message.senderId
+    val showSeenMessage = isLastMessage && isSender && message.seen
+    val sameTime = previousMessage?.let {
+        Duration.between(it.date, message.date).toMinutes() < 2L
+    } ?: false
+    val sameDay = previousMessage?.let {
+        Duration.between(it.date, message.date).toDays() < 2L
+    } ?: false
+    val displayProfilePicture = !sameTime || isFirstMessage || !sameSender
 }
 
 @Composable
@@ -178,13 +198,12 @@ private fun MessageFeedPreview() {
     GedoiseTheme {
         Surface {
             MessageFeed(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .mediumPadding(),
+                modifier = Modifier.mediumPadding(),
                 messages = flowOf(PagingData.from(messagesFixture)),
                 interlocutor = conversationFixture.interlocutor,
                 newMessageEvent = null,
-                onErrorMessageClick = {}
+                onErrorSentMessageClick = {},
+                onReceivedMessageLongClick = {}
             )
         }
     }
