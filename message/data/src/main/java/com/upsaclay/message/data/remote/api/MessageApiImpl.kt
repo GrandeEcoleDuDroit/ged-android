@@ -4,17 +4,24 @@ import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.MetadataChanges
 import com.google.firebase.firestore.firestore
+import com.upsaclay.common.data.remote.ServerResponse
 import com.upsaclay.message.data.model.CONVERSATIONS_TABLE_NAME
 import com.upsaclay.message.data.model.MESSAGES_TABLE_NAME
 import com.upsaclay.message.data.model.MessageField
 import com.upsaclay.message.data.remote.model.RemoteMessage
+import com.upsaclay.message.data.remote.model.RemoteMessageReport
 import com.upsaclay.message.data.remote.withOffsetTime
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
+import retrofit2.Response
+import retrofit2.http.Body
+import retrofit2.http.POST
 
-internal class MessageApiImpl : MessageApi {
+internal class MessageApiImpl(
+    private val messageServerApi: MessageServerApi
+) : MessageApi {
     private val conversationsCollection = Firebase.firestore.collection(CONVERSATIONS_TABLE_NAME)
 
     override fun listenMessages(
@@ -61,4 +68,13 @@ internal class MessageApiImpl : MessageApi {
             .update(MessageField.SEEN, remoteMessage.seen)
             .await()
     }
+
+    override suspend fun reportMessage(report: RemoteMessageReport): Response<ServerResponse> {
+        return messageServerApi.reportMessage(report)
+    }
+}
+
+internal interface MessageServerApi {
+    @POST("messages/report")
+    suspend fun reportMessage(@Body report: RemoteMessageReport): Response<ServerResponse>
 }

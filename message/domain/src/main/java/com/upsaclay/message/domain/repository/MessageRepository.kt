@@ -2,6 +2,7 @@ package com.upsaclay.message.domain.repository
 
 import androidx.paging.PagingData
 import com.upsaclay.message.domain.entity.Message
+import com.upsaclay.message.domain.entity.MessageReport
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDateTime
 
@@ -33,4 +34,6 @@ interface MessageRepository {
     suspend fun deleteLocalMessages()
 
     suspend fun deleteLocalMessages(conversationId: String)
+
+    suspend fun reportMessage(messageReport: MessageReport)
 }

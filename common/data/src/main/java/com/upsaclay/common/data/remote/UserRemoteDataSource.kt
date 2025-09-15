@@ -54,6 +54,7 @@ internal class UserRemoteDataSource(
     suspend fun updateProfilePictureFileName(userId: String, fileName: String) {
         withContext(Dispatchers.IO) {
             mapServerResponseException(
+                message = "Failed to update profile picture",
                 block = { userOracleApi.updateProfilePictureFileName(userId, fileName) }
             )
             mapFirebaseException(
@@ -65,9 +66,11 @@ internal class UserRemoteDataSource(
     suspend fun deleteProfilePictureFileName(userId: String) {
         withContext(Dispatchers.IO) {
             mapServerResponseException(
+                message = "Failed to delete profile picture",
                 block = { userOracleApi.deleteProfilePictureFileName(userId) }
             )
             mapFirebaseException(
+                message = "Failed to delete profile picture",
                 block = { userFirestoreApi.updateProfilePictureFileName(userId, null) }
             )
         }
@@ -82,12 +85,14 @@ internal class UserRemoteDataSource(
 
     private suspend fun createUserWithFirestore(user: User) {
         mapFirebaseException(
+            message = "Failed to create user in Firestore",
             block = { userFirestoreApi.createUser(user.toFirestoreUser()) }
         )
     }
 
     private suspend fun createUserWithOracle(user: User) {
         mapServerResponseException(
+            message = "Failed to create user in Oracle",
             block = { userOracleApi.createUser(user.toOracleUser()) },
             specificMap = {
                 val errorMessage = formatHttpError(it)

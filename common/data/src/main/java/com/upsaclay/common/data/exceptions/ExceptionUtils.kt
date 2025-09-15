@@ -28,18 +28,21 @@ suspend fun <T> Any.mapFirebaseException(
     }
 }
 
-suspend fun <T> mapServerResponseException(
+suspend fun <T> Any.mapServerResponseException(
     block: suspend () -> Response<T>,
+    message: String? = null,
     specificMap: ((Response<T>) -> T?)? = null
 ): T? {
     val response = block()
     return if (response.isSuccessful) {
         response.body()
     } else {
+        val errorMessage = formatHttpError(response)
         specificMap?.let {
+            e("$message: $errorMessage", Exception(errorMessage))
             it(response)
         } ?: run {
-            val errorMessage = formatHttpError(response)
+            e("$message: $errorMessage", Exception(errorMessage))
             throw InternalServerException(errorMessage)
         }
     }

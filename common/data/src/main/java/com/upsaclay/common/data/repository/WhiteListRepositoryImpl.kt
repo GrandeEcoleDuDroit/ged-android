@@ -11,6 +11,7 @@ class WhiteListRepositoryImpl(
 ): WhiteListRepository {
     override suspend fun isUserWhiteListed(email: String): Boolean = withContext(Dispatchers.IO) {
         mapServerResponseException(
+            message = "Failed to check if user is whitelisted",
             block = { whiteListApi.isUserWhiteListed(email) }
         ) == true
     }
