@@ -9,6 +9,7 @@ import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.utils.mapNetworkErrorMessage
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.entity.Announcement
+import com.upsaclay.news.domain.entity.AnnouncementReport
 import com.upsaclay.news.domain.repository.AnnouncementRepository
 import com.upsaclay.news.domain.usecase.DeleteAnnouncementUseCase
 import com.upsaclay.news.domain.usecase.RefreshAnnouncementUseCase
@@ -71,6 +72,21 @@ class AllAnnouncementsViewModel(
             try {
                 deleteAnnouncementUseCase(announcement)
                 _event.emit(SingleUiEvent.Success(R.string.announcement_deleted))
+            } catch (e: Exception) {
+                _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
+            } finally {
+                _uiState.update { it.copy(loading = false) }
+            }
+        }
+    }
+
+    fun reportAnnouncement(report: AnnouncementReport) {
+        _uiState.update { it.copy(loading = true) }
+
+        viewModelScope.launch {
+            try {
+                announcementRepository.reportAnnouncement(report)
+                _event.emit(SingleUiEvent.Success(R.string.announcement_reported))
             } catch (e: Exception) {
                 _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
             } finally {

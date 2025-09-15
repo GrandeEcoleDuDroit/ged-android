@@ -29,15 +29,14 @@ import com.upsaclay.news.R
 import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.domain.entity.AnnouncementState
 import com.upsaclay.news.domain.longAnnouncementFixture
-import com.upsaclay.news.presentation.announcement.readannouncement.AnnouncementTopSection
+import com.upsaclay.news.presentation.announcement.readannouncement.AnnouncementHeader
 
 @Composable
 internal fun ExtendedAnnouncementItem(
     modifier: Modifier = Modifier,
-    user: User,
     announcement: Announcement,
     onClick: () -> Unit,
-    onEditClick: () -> Unit,
+    onOptionClick: () -> Unit,
     onResendAnnouncementClick: () -> Unit
 ) {
     when (announcement.state) {
@@ -46,28 +45,25 @@ internal fun ExtendedAnnouncementItem(
                 modifier = modifier
                     .clickable(onClick = onClick)
                     .padding(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)),
-                user = user,
                 announcement = announcement,
-                onEditClick = onEditClick
+                onOptionClick = onOptionClick
             )
         }
 
         AnnouncementState.PUBLISHING -> {
             PublishingItem(
                 modifier = modifier.clickable(onClick = onClick),
-                user = user,
                 announcement = announcement,
-                onEditClick = onEditClick
+                onOptionClick = onOptionClick
             )
         }
 
         AnnouncementState.ERROR -> {
             ErrorItem(
                 modifier = modifier.clickable(onClick = onClick),
-                user = user,
                 announcement = announcement,
                 onResendAnnouncementClick = onResendAnnouncementClick,
-                onEditClick = onEditClick
+                onOptionClick = onOptionClick
             )
         }
     }
@@ -76,18 +72,16 @@ internal fun ExtendedAnnouncementItem(
 @Composable
 private fun DefaultItem(
     modifier: Modifier = Modifier,
-    user: User,
     announcement: Announcement,
-    onEditClick: () -> Unit
+    onOptionClick: () -> Unit
 ) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.mediumSpacing()
     ) {
-        AnnouncementTopSection(
-            user = user,
+        AnnouncementHeader(
             announcement = announcement,
-            onEditClick = onEditClick
+            onOptionClick = onOptionClick
         )
 
         announcement.title?.let {
@@ -109,27 +103,24 @@ private fun DefaultItem(
 @Composable
 private fun PublishingItem(
     modifier: Modifier = Modifier,
-    user: User,
     announcement: Announcement,
-    onEditClick: () -> Unit
+    onOptionClick: () -> Unit
 ) {
     DefaultItem(
         modifier = modifier
             .padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
             .alpha(0.5f),
-        user = user,
         announcement = announcement,
-        onEditClick = onEditClick
+        onOptionClick = onOptionClick
     )
 }
 
 @Composable
 private fun ErrorItem(
     modifier: Modifier = Modifier,
-    user: User,
     announcement: Announcement,
     onResendAnnouncementClick: () -> Unit,
-    onEditClick: () -> Unit
+    onOptionClick: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -155,9 +146,8 @@ private fun ErrorItem(
 
         DefaultItem(
             modifier = Modifier.weight(1f),
-            user = user,
             announcement = announcement,
-            onEditClick = onEditClick
+            onOptionClick = onOptionClick
         )
     }
 }
@@ -176,9 +166,8 @@ private fun DefaultItemPreview() {
         Surface {
             DefaultItem(
                 modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)),
-                user = userFixture,
                 announcement = longAnnouncementFixture,
-                onEditClick = {}
+                onOptionClick = {}
             )
         }
     }
@@ -190,9 +179,8 @@ private fun PublishingItemPreview() {
     GedoiseTheme {
         Surface {
             PublishingItem(
-                user = userFixture,
                 announcement = longAnnouncementFixture,
-                onEditClick = {}
+                onOptionClick = {}
             )
         }
     }
@@ -204,10 +192,9 @@ private fun ErrorItemPreview() {
     GedoiseTheme {
         Surface {
             ErrorItem(
-                user = userFixture,
                 announcement = longAnnouncementFixture.copy(state = AnnouncementState.ERROR),
                 onResendAnnouncementClick = {},
-                onEditClick = {}
+                onOptionClick = {}
             )
         }
     }

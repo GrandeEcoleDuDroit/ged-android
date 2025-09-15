@@ -37,7 +37,10 @@ import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.entity.Announcement
+import com.upsaclay.news.domain.entity.AnnouncementReport
 import com.upsaclay.news.domain.longAnnouncementFixture
+import com.upsaclay.news.presentation.announcement.components.AnnouncementBottomSheet
+import com.upsaclay.news.presentation.announcement.components.ReportAnnouncementBottomSheet
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -55,7 +58,7 @@ fun ReadAnnouncementDestination(
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
-        viewModel.singleUiEvent.collect { event ->
+        viewModel.event.collect { event ->
             when (event) {
                 is SingleUiEvent.Error -> {
                     snackbarHostState.showSnackbar(
@@ -63,7 +66,13 @@ fun ReadAnnouncementDestination(
                     )
                 }
 
-                is SingleUiEvent.Success -> onBackClick()
+                is ReadAnnouncementViewModel.ReadAnnouncementUiEvent.AnnouncementReported -> {
+                    snackbarHostState.showSnackbar(
+                        message = context.getString(event.messageId)
+                    )
+                }
+
+                is ReadAnnouncementViewModel.ReadAnnouncementUiEvent.AnnouncementDeleted -> onBackClick()
             }
         }
     }
@@ -74,9 +83,10 @@ fun ReadAnnouncementDestination(
             announcement = uiState.announcement!!,
             loading = uiState.loading,
             snackbarHostState = snackbarHostState,
-            onDeleteAnnouncement = viewModel::deleteAnnouncement,
             onBackClick = onBackClick,
-            onEditClick = onEditClick
+            onEditAnnouncementClick = onEditClick,
+            onReportAnnouncementClick = viewModel::reportAnnouncement,
+            onDeleteAnnouncementClick = viewModel::deleteAnnouncement
         )
     }
 }
@@ -88,13 +98,14 @@ fun ReadAnnouncementScreen(
     announcement: Announcement,
     loading: Boolean = false,
     snackbarHostState: SnackbarHostState,
-    onDeleteAnnouncement: () -> Unit,
     onBackClick: () -> Unit,
-    onEditClick: (Announcement) -> Unit
+    onEditAnnouncementClick: (Announcement) -> Unit,
+    onReportAnnouncementClick: (AnnouncementReport) -> Unit,
+    onDeleteAnnouncementClick: () -> Unit
 ) {
     var showDeleteAnnouncementDialog by remember { mutableStateOf(false) }
-
     var showBottomSheet by remember { mutableStateOf(false) }
+    var showReportBottomSheet by remember { mutableStateOf(false) }
 
     if (showDeleteAnnouncementDialog) {
         SensibleActionDialog(
@@ -104,7 +115,7 @@ fun ReadAnnouncementScreen(
             confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
             onConfirm = {
                 showDeleteAnnouncementDialog = false
-                onDeleteAnnouncement()
+                onDeleteAnnouncementClick()
             },
             onCancel = { showDeleteAnnouncementDialog = false }
         )
@@ -146,12 +157,10 @@ fun ReadAnnouncementScreen(
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
             ) {
-                AnnouncementTopSection(
-                    user = user,
+                AnnouncementHeader(
                     announcement = announcement,
-                    onEditClick = { showBottomSheet = true }
+                    onOptionClick = { showBottomSheet = true }
                 )
-
 
                 announcement.title?.let {
                     Text(
@@ -171,15 +180,43 @@ fun ReadAnnouncementScreen(
 
         if (showBottomSheet) {
             AnnouncementBottomSheet(
+                isEditable = user.isMember && user.id == announcement.author.id,
                 onEditClick = {
                     showBottomSheet = false
-                    onEditClick(announcement)
+                    onEditAnnouncementClick(announcement)
+                },
+                onReportClick = {
+                    showBottomSheet = false
+                    showReportBottomSheet = true
                 },
                 onDeleteClick = {
                     showBottomSheet = false
                     showDeleteAnnouncementDialog = true
                 },
                 onDismiss = { showBottomSheet = false }
+            )
+        }
+
+        if (showReportBottomSheet) {
+            ReportAnnouncementBottomSheet(
+                onReportClick = { reason ->
+                    showReportBottomSheet = false
+                    onReportAnnouncementClick(
+                        AnnouncementReport(
+                            announcementId = announcement.id,
+                            userInfo = AnnouncementReport.UserInfo(
+                                fullName = user.fullName,
+                                email = user.email
+                            ),
+                            authorInfo = AnnouncementReport.UserInfo(
+                                fullName = announcement.author.fullName,
+                                email = announcement.author.email
+                            ),
+                            reason = reason,
+                        )
+                    )
+                },
+                onDismiss = { showReportBottomSheet = false }
             )
         }
     }
@@ -200,9 +237,10 @@ private fun NonEditableAnnouncementScreenPreview() {
                 user = userFixture2,
                 announcement = longAnnouncementFixture,
                 snackbarHostState = SnackbarHostState(),
-                onDeleteAnnouncement = {},
                 onBackClick = {},
-                onEditClick = {}
+                onEditAnnouncementClick = {},
+                onReportAnnouncementClick = {},
+                onDeleteAnnouncementClick = {}
             )
         }
     }
@@ -217,9 +255,10 @@ private fun EditableAnnouncementScreenPreview() {
                 user = longAnnouncementFixture.author,
                 announcement = longAnnouncementFixture,
                 snackbarHostState = SnackbarHostState(),
-                onDeleteAnnouncement = {},
                 onBackClick = {},
-                onEditClick = {}
+                onEditAnnouncementClick = {},
+                onReportAnnouncementClick = {},
+                onDeleteAnnouncementClick = {}
             )
         }
     }

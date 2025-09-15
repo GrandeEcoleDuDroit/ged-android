@@ -35,6 +35,7 @@
     <string name="ok">OK</string>
     <string name="see">Voir</string>
     <string name="see_all">Voir tout</string>
+    <string name="report">Signaler</string>
 
     <string name="arrow_back_icon_description">Retour en arrière</string>
     <string name="ged_logo_description">Logo de l\'université de La Grande École du Droit</string>

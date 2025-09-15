@@ -8,8 +8,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -17,8 +22,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.upsaclay.common.R
@@ -35,7 +44,8 @@ import com.upsaclay.news.domain.longAnnouncementFixture
 internal fun CompactAnnouncementItem(
     modifier: Modifier = Modifier,
     announcement: Announcement,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onOptionClick: () -> Unit
 ) {
     val elapsedTimeValue = getElapsedTimeValue(announcement.date)
     when (announcement.state) {
@@ -45,7 +55,8 @@ internal fun CompactAnnouncementItem(
                     .clickable(onClick = onClick)
                     .padding(dimensionResource(R.dimen.small_medium_padding)),
                 announcement = announcement,
-                elapsedTimeValue = elapsedTimeValue
+                elapsedTimeValue = elapsedTimeValue,
+                onOptionClick = onOptionClick
             )
         }
 
@@ -54,7 +65,8 @@ internal fun CompactAnnouncementItem(
                 modifier = modifier,
                 announcement = announcement,
                 elapsedTimeValue = elapsedTimeValue,
-                onClick = onClick
+                onClick = onClick,
+                onOptionClick = onOptionClick
             )
         }
 
@@ -63,7 +75,8 @@ internal fun CompactAnnouncementItem(
                 modifier = modifier,
                 announcement = announcement,
                 elapsedTimeValue = elapsedTimeValue,
-                onClick = onClick
+                onClick = onClick,
+                onOptionClick = onOptionClick
             )
         }
     }
@@ -73,11 +86,12 @@ internal fun CompactAnnouncementItem(
 private fun DefaultItem(
     modifier: Modifier = Modifier,
     announcement: Announcement,
-    elapsedTimeValue: String
+    elapsedTimeValue: String,
+    onOptionClick: () -> Unit
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.Top,
+        verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding))
     ) {
         ProfilePicture(
@@ -85,7 +99,9 @@ private fun DefaultItem(
             scale = 0.5f
         )
 
-        Column {
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = announcement.author.fullName,
@@ -114,6 +130,20 @@ private fun DefaultItem(
                 overflow = TextOverflow.Ellipsis
             )
         }
+
+        IconButton(
+            onClick = onOptionClick,
+            modifier = Modifier
+                .size(30.dp)
+                .clip(CircleShape)
+                .testTag(stringResource(id = com.upsaclay.news.R.string.announcement_option_button_tag))
+        ) {
+            Icon(
+                imageVector = Icons.Default.MoreVert,
+                tint = Color.Gray,
+                contentDescription = stringResource(id = com.upsaclay.news.R.string.announcement_option_icon_description)
+            )
+        }
     }
 }
 
@@ -122,7 +152,8 @@ private fun PublishingItem(
     modifier: Modifier = Modifier,
     announcement: Announcement,
     elapsedTimeValue: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onOptionClick: () -> Unit
 ) {
     DefaultItem(
         modifier = modifier
@@ -131,6 +162,7 @@ private fun PublishingItem(
             .alpha(0.5f),
         announcement = announcement,
         elapsedTimeValue = elapsedTimeValue,
+        onOptionClick = onOptionClick
     )
 }
 
@@ -139,7 +171,8 @@ private fun ErrorItem(
     modifier: Modifier = Modifier,
     announcement: Announcement,
     elapsedTimeValue: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onOptionClick: () -> Unit
 ) {
     Row(
         modifier = modifier
@@ -147,17 +180,19 @@ private fun ErrorItem(
             .clickable(onClick = onClick)
             .padding(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)),
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding))
     ) {
-        DefaultItem(
-            modifier = Modifier.weight(1f),
-            announcement = announcement,
-            elapsedTimeValue = elapsedTimeValue
-        )
-
         Icon(
             painter = painterResource(com.upsaclay.common.R.drawable.ic_error),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.error
+        )
+
+        DefaultItem(
+            modifier = Modifier.weight(1f),
+            announcement = announcement,
+            elapsedTimeValue = elapsedTimeValue,
+            onOptionClick = onOptionClick
         )
     }
 }
@@ -178,7 +213,8 @@ private fun DefaultItemPreview() {
                     .padding(dimensionResource(R.dimen.small_medium_padding))
                     .clickable(onClick = {}),
                 announcement = longAnnouncementFixture,
-                elapsedTimeValue = "1 min"
+                elapsedTimeValue = "1 min",
+                onOptionClick = {}
             )
         }
     }
@@ -192,7 +228,8 @@ private fun PublishingItemPreview() {
             PublishingItem(
                 announcement = longAnnouncementFixture,
                 elapsedTimeValue = "1 min",
-                onClick = { }
+                onClick = {},
+                onOptionClick = {}
             )
         }
     }
@@ -206,7 +243,8 @@ private fun ErrorItemPreview() {
             ErrorItem(
                 announcement = longAnnouncementFixture.copy(state = AnnouncementState.ERROR),
                 elapsedTimeValue = "1 min",
-                onClick = { }
+                onClick = {},
+                onOptionClick = {}
             )
         }
     }

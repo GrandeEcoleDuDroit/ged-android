@@ -2,6 +2,7 @@ package com.upsaclay.news.data.remote.api
 
 import com.upsaclay.common.data.remote.ServerResponse
 import com.upsaclay.news.data.remote.model.RemoteAnnouncement
+import com.upsaclay.news.data.remote.model.RemoteAnnouncementReport
 import com.upsaclay.news.data.remote.model.RemoteAnnouncementWithUser
 import retrofit2.Response
 import retrofit2.http.Body
@@ -22,4 +23,7 @@ internal interface AnnouncementApi {
 
     @POST("announcements/update")
     suspend fun updateAnnouncement(@Body remoteAnnouncement: RemoteAnnouncement): Response<ServerResponse>
+
+    @POST("announcements/report")
+    suspend fun reportAnnouncement(@Body remoteAnnouncementReport: RemoteAnnouncementReport): Response<ServerResponse>
 }

@@ -33,7 +33,8 @@ fun RecentAnnouncementSection(
     announcements: List<Announcement>,
     onAnnouncementClick: (String) -> Unit,
     onUncreatedAnnouncementClick: (Announcement) -> Unit,
-    onSeeAllAnnouncementClick: () -> Unit
+    onSeeAllAnnouncementClick: () -> Unit,
+    onAnnouncementOptionClick: (Announcement) -> Unit
 ) {
     Column(modifier = modifier) {
         Row(
@@ -83,7 +84,8 @@ fun RecentAnnouncementSection(
                             } else {
                                 onUncreatedAnnouncementClick(announcement)
                             }
-                        }
+                        },
+                        onOptionClick = { onAnnouncementOptionClick(announcement) }
                     )
                 }
             }
@@ -104,9 +106,10 @@ private fun RecentAnnouncementContentPreview() {
         Surface {
             RecentAnnouncementSection(
                 announcements = announcementsFixture,
-                onAnnouncementClick = { },
-                onUncreatedAnnouncementClick = { },
-                onSeeAllAnnouncementClick = { }
+                onAnnouncementClick = {},
+                onUncreatedAnnouncementClick = {},
+                onSeeAllAnnouncementClick = {},
+                onAnnouncementOptionClick = {}
             )
         }
     }
