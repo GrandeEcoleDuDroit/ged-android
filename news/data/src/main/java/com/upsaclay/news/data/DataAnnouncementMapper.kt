@@ -6,8 +6,10 @@ import com.upsaclay.common.domain.extensions.toEpochMilliUTC
 import com.upsaclay.common.domain.extensions.toLocalDateTimeUTC
 import com.upsaclay.news.data.local.model.LocalAnnouncement
 import com.upsaclay.news.data.remote.model.RemoteAnnouncement
+import com.upsaclay.news.data.remote.model.RemoteAnnouncementReport
 import com.upsaclay.news.data.remote.model.RemoteAnnouncementWithUser
 import com.upsaclay.news.domain.entity.Announcement
+import com.upsaclay.news.domain.entity.AnnouncementReport
 import com.upsaclay.news.domain.entity.AnnouncementState
 
 fun Announcement.toLocal() = LocalAnnouncement(
@@ -65,4 +67,16 @@ internal fun Announcement.toRemote() = RemoteAnnouncement(
     announcementContent = content,
     announcementDate = date.toEpochMilliUTC(),
     userId = author.id
+)
+
+internal fun AnnouncementReport.toRemote() = RemoteAnnouncementReport(
+    announcementId = announcementId,
+    authorInfo = authorInfo.toRemote(),
+    userInfo = userInfo.toRemote(),
+    reason = reason.toString()
+)
+
+internal fun AnnouncementReport.UserInfo.toRemote() = RemoteAnnouncementReport.RemoteUserInfo(
+    fullName = fullName,
+    email = email
 )

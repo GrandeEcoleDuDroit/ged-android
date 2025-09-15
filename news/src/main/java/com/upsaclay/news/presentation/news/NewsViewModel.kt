@@ -9,6 +9,7 @@ import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.utils.mapNetworkErrorMessage
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.entity.Announcement
+import com.upsaclay.news.domain.entity.AnnouncementReport
 import com.upsaclay.news.domain.repository.AnnouncementRepository
 import com.upsaclay.news.domain.usecase.DeleteAnnouncementUseCase
 import com.upsaclay.news.domain.usecase.RefreshAnnouncementUseCase
@@ -83,6 +84,21 @@ class NewsViewModel(
         }
     }
 
+    fun reportAnnouncement(report: AnnouncementReport) {
+        _uiState.update { it.copy(loading = true) }
+
+        viewModelScope.launch {
+            try {
+                announcementRepository.reportAnnouncement(report)
+                _event.emit(SingleUiEvent.Success(R.string.announcement_reported))
+            } catch (e: Exception) {
+                _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
+            } finally {
+                _uiState.update { it.copy(loading = false) }
+            }
+        }
+    }
+
     private fun listenAnnouncements() {
         viewModelScope.launch {
             announcementRepository.announcements.collect { announcements ->
@@ -120,6 +136,7 @@ class NewsViewModel(
     data class NewsUiState(
         val user: User? = null,
         val announcements: List<Announcement>? = null,
-        val refreshing: Boolean = false
+        val refreshing: Boolean = false,
+        val loading: Boolean = false
     )
 }

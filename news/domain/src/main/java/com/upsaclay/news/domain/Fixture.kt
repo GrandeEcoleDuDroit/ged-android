@@ -31,8 +31,7 @@ val announcementFixture = Announcement(
     id = "1",
     title = "New single of Seal",
     date = LocalDateTime.of(2024, 7, 20, 10, 0),
-    content = "Hello,\n\n" +
-            "This is a man's world. But it wouldn't be nothing, nothing without a woman or a girl.\n" +
+    content = "This is a man's world. But it wouldn't be nothing, nothing without a woman or a girl.\n" +
             "Patrick Dupont",
     author = userFixture,
     state = AnnouncementState.PUBLISHED

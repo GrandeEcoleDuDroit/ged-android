@@ -3,6 +3,7 @@ package com.upsaclay.news.data.repository
 import com.upsaclay.news.data.local.AnnouncementLocalDataSource
 import com.upsaclay.news.data.remote.AnnouncementRemoteDataSource
 import com.upsaclay.news.domain.entity.Announcement
+import com.upsaclay.news.domain.entity.AnnouncementReport
 import com.upsaclay.news.domain.entity.AnnouncementState
 import com.upsaclay.news.domain.repository.AnnouncementRepository
 import kotlinx.coroutines.CoroutineScope
@@ -66,5 +67,9 @@ internal class AnnouncementRepositoryImpl(
 
     override suspend fun deleteLocalAnnouncement(announcement: Announcement) {
         announcementLocalDataSource.deleteAnnouncement(announcement)
+    }
+
+    override suspend fun reportAnnouncement(report: AnnouncementReport) {
+        announcementRemoteDataSource.reportAnnouncement(report)
     }
 }

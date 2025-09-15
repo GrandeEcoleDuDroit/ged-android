@@ -35,6 +35,7 @@ import androidx.compose.ui.zIndex
 import com.upsaclay.common.R
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
+import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.extension.smallMediumSpacing
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
@@ -88,10 +89,10 @@ fun ClickableItem(
         modifier = modifier
             .clickable(onClick = onClick)
             .padding(dimensionResource(R.dimen.medium_padding)),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.smallMediumSpacing()
     ) {
         icon()
-        Spacer(modifier = Modifier.width(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)))
         text()
     }
 }

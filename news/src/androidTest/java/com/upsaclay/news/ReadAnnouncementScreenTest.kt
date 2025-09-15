@@ -47,7 +47,7 @@ class ReadAnnouncementScreenTest {
         }
 
         // Then
-        rule.onNodeWithTag(rule.activity.getString(R.string.read_screen_option_button_tag)).assertExists()
+        rule.onNodeWithTag(rule.activity.getString(R.string.announcement_option_button_tag)).assertExists()
     }
 
     @Test
@@ -99,10 +99,10 @@ class ReadAnnouncementScreenTest {
             )
         }
 
-        rule.onNodeWithTag(rule.activity.getString(R.string.read_screen_option_button_tag)).performClick()
+        rule.onNodeWithTag(rule.activity.getString(R.string.announcement_option_button_tag)).performClick()
 
         // Then
-        rule.onNodeWithTag(rule.activity.getString(R.string.read_screen_bottom_sheet_tag)).assertExists()
+        rule.onNodeWithTag(rule.activity.getString(R.string.announcement_bottom_sheet_tag)).assertExists()
     }
 
 
@@ -118,8 +118,8 @@ class ReadAnnouncementScreenTest {
             )
         }
 
-        rule.onNodeWithTag(rule.activity.getString(R.string.read_screen_option_button_tag)).performClick()
-        rule.onNodeWithTag(rule.activity.getString(R.string.read_screen_sheet_delete_field_tag)).performClick()
+        rule.onNodeWithTag(rule.activity.getString(R.string.announcement_option_button_tag)).performClick()
+        rule.onNodeWithTag(rule.activity.getString(R.string.announcement_bottom_sheet_delete_field_tag)).performClick()
 
         // Then
         rule.onNodeWithTag(rule.activity.getString(R.string.read_screen_delete_dialog_tag)).assertExists()
