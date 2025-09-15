@@ -66,4 +66,5 @@
     <string name="timeout_error">The service took too long to respond. Please try again.</string>
     <string name="no_user">No users.</string>
     <string name="no_internet_connection">No internet connection.</string>
+    <string name="report">Signaler</string>
 </resources>
