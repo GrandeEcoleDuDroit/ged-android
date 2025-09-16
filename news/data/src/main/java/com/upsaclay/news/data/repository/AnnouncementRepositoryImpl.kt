@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 internal class AnnouncementRepositoryImpl(
     private val announcementRemoteDataSource: AnnouncementRemoteDataSource,
@@ -24,6 +25,12 @@ internal class AnnouncementRepositoryImpl(
             initialValue = emptyList()
         )
     override val announcements: Flow<List<Announcement>> = _announcements
+
+    init {
+        scope.launch {
+            refreshAnnouncements()
+        }
+    }
 
     override fun getAnnouncementFlow(announcementId: String): Flow<Announcement?> =
         _announcements.map { announcements ->
