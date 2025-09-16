@@ -4,6 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.upsaclay.common.domain.entity.Route
+import com.upsaclay.common.domain.entity.User
 import com.upsaclay.news.domain.entity.Announcement
 import kotlinx.serialization.Serializable
 
@@ -16,13 +17,15 @@ fun NavController.navigateToAllAnnouncement() {
 fun NavGraphBuilder.allAnnouncementScreen(
     onBackClick: () -> Unit,
     onAnnouncementClick: (String) -> Unit,
-    onEditAnnouncementClick: (Announcement) -> Unit
+    onEditAnnouncementClick: (Announcement) -> Unit,
+    onAuthorClick: (User) -> Unit
 ) {
     composable<AllAnnouncementRoute> {
         AllAnnouncementsDestination(
             onBackClick = onBackClick,
             onEditAnnouncementClick = onEditAnnouncementClick,
-            onAnnouncementClick = onAnnouncementClick
+            onAnnouncementClick = onAnnouncementClick,
+            onAuthorClick = onAuthorClick
         )
     }
 }

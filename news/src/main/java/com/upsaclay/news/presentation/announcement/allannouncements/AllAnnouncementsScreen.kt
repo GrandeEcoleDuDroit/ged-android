@@ -52,6 +52,7 @@ fun AllAnnouncementsDestination(
     onBackClick: () -> Unit,
     onAnnouncementClick: (String) -> Unit,
     onEditAnnouncementClick: (Announcement) -> Unit,
+    onAuthorClick: (User) -> Unit,
     viewModel: AllAnnouncementsViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -84,6 +85,7 @@ fun AllAnnouncementsDestination(
             refreshing = uiState.refreshing,
             snackbarHostState = snackbarHostState,
             onBackClick = onBackClick,
+            onAuthorClick = onAuthorClick,
             onRefresh = viewModel::refreshAnnouncements,
             onAnnouncementClick = onAnnouncementClick,
             onResendAnnouncementClick = viewModel::resendAnnouncement,
@@ -103,6 +105,7 @@ private fun AllAnnouncementsScreen(
     refreshing: Boolean,
     snackbarHostState: SnackbarHostState = SnackbarHostState(),
     onBackClick: () -> Unit,
+    onAuthorClick: (User) -> Unit,
     onRefresh: () -> Unit,
     onAnnouncementClick: (String) -> Unit,
     onResendAnnouncementClick: (Announcement) -> Unit,
@@ -176,7 +179,10 @@ private fun AllAnnouncementsScreen(
                                     announcementClicked = announcement
                                     showBottomSheet = true
                                 },
-                                onResendAnnouncementClick = { onResendAnnouncementClick(announcement) }
+                                onResendAnnouncementClick = {
+                                    onResendAnnouncementClick(announcement)
+                                },
+                                onAuthorClick = { onAuthorClick(announcement.author) }
                             )
 
                             if (index == announcements.lastIndex) {
@@ -271,6 +277,7 @@ private fun AllAnnouncementsScreenPreview() {
             loading = false,
             refreshing = false,
             onBackClick = {},
+            onAuthorClick = {},
             onRefresh = {},
             onAnnouncementClick = {},
             onResendAnnouncementClick = {},

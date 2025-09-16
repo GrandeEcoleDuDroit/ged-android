@@ -31,7 +31,7 @@ class ReadAnnouncementScreenTest {
     @Before
     fun setUp() {
         every { readAnnouncementViewModel.uiState } returns MutableStateFlow(uiState)
-        every { readAnnouncementViewModel.singleUiEvent } returns MutableSharedFlow()
+        every { readAnnouncementViewModel.event } returns MutableSharedFlow()
     }
 
     @Test
@@ -41,6 +41,7 @@ class ReadAnnouncementScreenTest {
             ReadAnnouncementDestination(
                 announcementId = longAnnouncementFixture.id,
                 onBackClick = {},
+                onAuthorClick = {},
                 onEditClick = {},
                 viewModel = readAnnouncementViewModel
             )
@@ -57,6 +58,7 @@ class ReadAnnouncementScreenTest {
              ReadAnnouncementDestination(
                 announcementId = longAnnouncementFixture.id,
                 onBackClick = {},
+                 onAuthorClick = {},
                 onEditClick = {},
                 viewModel = readAnnouncementViewModel
             )
@@ -76,10 +78,11 @@ class ReadAnnouncementScreenTest {
         // When
         rule.setContent {
              ReadAnnouncementDestination(
-                announcementId = longAnnouncementFixture.id,
-                onBackClick = {},
-                onEditClick = {},
-                viewModel = readAnnouncementViewModel
+                 announcementId = longAnnouncementFixture.id,
+                 onBackClick = {},
+                 onAuthorClick = {},
+                 onEditClick = {},
+                 viewModel = readAnnouncementViewModel
             )
         }
 
@@ -94,6 +97,7 @@ class ReadAnnouncementScreenTest {
              ReadAnnouncementDestination(
                 announcementId = longAnnouncementFixture.id,
                 onBackClick = {},
+                onAuthorClick = {},
                 onEditClick = {},
                 viewModel = readAnnouncementViewModel
             )
@@ -113,6 +117,7 @@ class ReadAnnouncementScreenTest {
              ReadAnnouncementDestination(
                 announcementId = longAnnouncementFixture.id,
                 onBackClick = {},
+                onAuthorClick = {},
                 onEditClick = {},
                 viewModel = readAnnouncementViewModel
             )

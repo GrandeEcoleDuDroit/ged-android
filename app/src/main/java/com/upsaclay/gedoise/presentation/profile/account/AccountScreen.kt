@@ -5,10 +5,8 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
@@ -35,6 +33,7 @@ import com.upsaclay.common.extension.mediumPadding
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.SensibleActionDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.presentation.user.UserInformationItems
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.gedoise.R
 import com.upsaclay.gedoise.presentation.components.AccountModelBottomSheet
@@ -72,25 +71,27 @@ fun AccountDestination(
         }
     }
 
-    AccountScreen(
-        user = uiState.user,
-        loading = uiState.loading,
-        screenState = uiState.screenState,
-        profilePictureUri = uiState.profilePictureUri,
-        snackbarHostState = snackbarHostState,
-        onProfilePictureUriChange = viewModel::onProfilePictureUriChange,
-        onScreenStateChange = viewModel::onScreenStateChange,
-        onDeleteProfilePictureClick = viewModel::deleteProfilePicture,
-        onSaveProfilePictureClick = viewModel::updateProfilePicture,
-        onCancelUpdateProfilePictureClick = viewModel::cancelEdit,
-        onBackClick = onBackClick
-    )
+    if (uiState.user != null) {
+        AccountScreen(
+            user = uiState.user!!,
+            loading = uiState.loading,
+            screenState = uiState.screenState,
+            profilePictureUri = uiState.profilePictureUri,
+            snackbarHostState = snackbarHostState,
+            onProfilePictureUriChange = viewModel::onProfilePictureUriChange,
+            onScreenStateChange = viewModel::onScreenStateChange,
+            onDeleteProfilePictureClick = viewModel::deleteProfilePicture,
+            onSaveProfilePictureClick = viewModel::updateProfilePicture,
+            onCancelUpdateProfilePictureClick = viewModel::cancelEdit,
+            onBackClick = onBackClick
+        )
+    }
 }
 
 @Composable
 fun AccountScreen(
-    user: User?,
-    loading: Boolean = false,
+    user: User,
+    loading: Boolean,
     screenState: AccountScreenState,
     profilePictureUri: Uri?,
     snackbarHostState: SnackbarHostState = SnackbarHostState(),
@@ -150,57 +151,49 @@ fun AccountScreen(
                 )
             }
         }
-    ) { paddingValues ->
-        if (user != null) {
-            Surface {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .mediumPadding(paddingValues)
-                ) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        AccountImage(
-                            modifier = Modifier.testTag(stringResource(id = R.string.account_screen_profile_picture_tag)),
-                            isEdited = screenState == AccountScreenState.EDIT,
-                            profilePictureUri = profilePictureUri,
-                            profilePictureUrl = user.profilePictureUrl,
-                            onClick = {
-                                if (screenState == AccountScreenState.EDIT) {
-                                    singlePhotoPickerLauncher.launch(
-                                        PickVisualMediaRequest(
-                                            ActivityResultContracts.PickVisualMedia.ImageOnly
-                                        )
-                                    )
-                                } else {
-                                    showBottomSheet = true
-                                }
-                            }
-                        )
-
-                        SelectionContainer {
-                            AccountInfoItems(user = user)
-                        }
-
-                        if (showBottomSheet) {
-                            AccountModelBottomSheet(
-                                onDismiss = { showBottomSheet = false },
-                                onNewProfilePictureClick = {
-                                    singlePhotoPickerLauncher.launch(
-                                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                                    )
-                                },
-                                showDeleteProfilePicture = user.profilePictureUrl != null,
-                                onDeleteProfilePictureClick = {
-                                    showDeleteProfilePictureDialog = true
-                                }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .mediumPadding(innerPadding),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            AccountImage(
+                modifier = Modifier.testTag(stringResource(id = R.string.account_screen_profile_picture_tag)),
+                isEdited = screenState == AccountScreenState.EDIT,
+                profilePictureUri = profilePictureUri,
+                profilePictureUrl = user.profilePictureUrl,
+                onClick = {
+                    if (screenState == AccountScreenState.EDIT) {
+                        singlePhotoPickerLauncher.launch(
+                            PickVisualMediaRequest(
+                                ActivityResultContracts.PickVisualMedia.ImageOnly
                             )
-                        }
+                        )
+                    } else {
+                        showBottomSheet = true
                     }
                 }
+            )
+
+            SelectionContainer {
+                UserInformationItems(user = user)
             }
+        }
+
+        if (showBottomSheet) {
+            AccountModelBottomSheet(
+                onDismiss = { showBottomSheet = false },
+                onNewProfilePictureClick = {
+                    singlePhotoPickerLauncher.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    )
+                },
+                showDeleteProfilePicture = user.profilePictureUrl != null,
+                onDeleteProfilePictureClick = {
+                    showDeleteProfilePictureDialog = true
+                }
+            )
         }
     }
 }

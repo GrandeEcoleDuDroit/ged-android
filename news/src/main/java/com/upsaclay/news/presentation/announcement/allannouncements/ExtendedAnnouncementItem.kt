@@ -19,8 +19,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.upsaclay.common.domain.entity.User
-import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.theme.GedoiseTheme
@@ -37,7 +35,8 @@ internal fun ExtendedAnnouncementItem(
     announcement: Announcement,
     onClick: () -> Unit,
     onOptionClick: () -> Unit,
-    onResendAnnouncementClick: () -> Unit
+    onResendAnnouncementClick: () -> Unit,
+    onAuthorClick: () -> Unit
 ) {
     when (announcement.state) {
         AnnouncementState.PUBLISHED, AnnouncementState.DRAFT -> {
@@ -46,7 +45,8 @@ internal fun ExtendedAnnouncementItem(
                     .clickable(onClick = onClick)
                     .padding(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)),
                 announcement = announcement,
-                onOptionClick = onOptionClick
+                onOptionClick = onOptionClick,
+                onAuthorClick = onAuthorClick
             )
         }
 
@@ -54,7 +54,8 @@ internal fun ExtendedAnnouncementItem(
             PublishingItem(
                 modifier = modifier.clickable(onClick = onClick),
                 announcement = announcement,
-                onOptionClick = onOptionClick
+                onOptionClick = onOptionClick,
+                onAuthorClick = onAuthorClick
             )
         }
 
@@ -63,7 +64,8 @@ internal fun ExtendedAnnouncementItem(
                 modifier = modifier.clickable(onClick = onClick),
                 announcement = announcement,
                 onResendAnnouncementClick = onResendAnnouncementClick,
-                onOptionClick = onOptionClick
+                onOptionClick = onOptionClick,
+                onAuthorClick = onAuthorClick
             )
         }
     }
@@ -73,7 +75,8 @@ internal fun ExtendedAnnouncementItem(
 private fun DefaultItem(
     modifier: Modifier = Modifier,
     announcement: Announcement,
-    onOptionClick: () -> Unit
+    onOptionClick: () -> Unit,
+    onAuthorClick: () -> Unit
 ) {
     Column(
         modifier = modifier,
@@ -81,7 +84,8 @@ private fun DefaultItem(
     ) {
         AnnouncementHeader(
             announcement = announcement,
-            onOptionClick = onOptionClick
+            onOptionClick = onOptionClick,
+            onAuthorClick = onAuthorClick
         )
 
         announcement.title?.let {
@@ -104,14 +108,16 @@ private fun DefaultItem(
 private fun PublishingItem(
     modifier: Modifier = Modifier,
     announcement: Announcement,
-    onOptionClick: () -> Unit
+    onOptionClick: () -> Unit,
+    onAuthorClick: () -> Unit
 ) {
     DefaultItem(
         modifier = modifier
             .padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
             .alpha(0.5f),
         announcement = announcement,
-        onOptionClick = onOptionClick
+        onOptionClick = onOptionClick,
+        onAuthorClick = onAuthorClick
     )
 }
 
@@ -120,7 +126,8 @@ private fun ErrorItem(
     modifier: Modifier = Modifier,
     announcement: Announcement,
     onResendAnnouncementClick: () -> Unit,
-    onOptionClick: () -> Unit
+    onOptionClick: () -> Unit,
+    onAuthorClick: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -147,7 +154,8 @@ private fun ErrorItem(
         DefaultItem(
             modifier = Modifier.weight(1f),
             announcement = announcement,
-            onOptionClick = onOptionClick
+            onOptionClick = onOptionClick,
+            onAuthorClick = onAuthorClick
         )
     }
 }
@@ -167,7 +175,8 @@ private fun DefaultItemPreview() {
             DefaultItem(
                 modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)),
                 announcement = longAnnouncementFixture,
-                onOptionClick = {}
+                onOptionClick = {},
+                onAuthorClick = {}
             )
         }
     }
@@ -180,7 +189,8 @@ private fun PublishingItemPreview() {
         Surface {
             PublishingItem(
                 announcement = longAnnouncementFixture,
-                onOptionClick = {}
+                onOptionClick = {},
+                onAuthorClick = {}
             )
         }
     }
@@ -194,7 +204,8 @@ private fun ErrorItemPreview() {
             ErrorItem(
                 announcement = longAnnouncementFixture.copy(state = AnnouncementState.ERROR),
                 onResendAnnouncementClick = {},
-                onOptionClick = {}
+                onOptionClick = {},
+                onAuthorClick = {}
             )
         }
     }
