@@ -1,4 +1,4 @@
-package com.upsaclay.gedoise.presentation.profile.account
+package com.upsaclay.common.presentation.user
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,17 +20,16 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.upsaclay.common.R
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.gold
 import com.upsaclay.common.presentation.theme.previewText
 import com.upsaclay.common.utils.Phones
-import com.upsaclay.gedoise.R
-import com.upsaclay.gedoise.presentation.components.AccountInfoItem
 
 @Composable
-fun AccountInfoItems(user: User) {
+fun UserInformationItems(user: User) {
     val accountInfos: List<AccountInfo> = listOf(
         AccountInfo(
             stringResource(id = com.upsaclay.common.R.string.last_name),
@@ -56,22 +55,22 @@ fun AccountInfoItems(user: User) {
         verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
     ) {
         accountInfos.forEach { accountInfo ->
-            AccountInfoItem(
+            NonMemberUserInformationItem(
                 accountInfo = accountInfo
             )
         }
 
         if (user.isMember) {
-            MemberAccountInfoItem(
+            MemberUserInformationItem(
                 modifier = Modifier
-                    .testTag(stringResource(id = R.string.account_screen_member_tag))
+                    .testTag(stringResource(id = R.string.member_text_tag))
             )
         }
     }
 }
 
 @Composable
-private fun MemberAccountInfoItem(
+private fun MemberUserInformationItem(
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -95,6 +94,25 @@ private fun MemberAccountInfoItem(
     }
 }
 
+@Composable
+internal fun NonMemberUserInformationItem(
+    accountInfo: AccountInfo
+) {
+    Column {
+        Text(
+            text = accountInfo.label,
+            color = MaterialTheme.colorScheme.previewText,
+            fontWeight = FontWeight.SemiBold,
+            style = MaterialTheme.typography.labelLarge
+        )
+        Text(
+            text = accountInfo.value,
+            style = MaterialTheme.typography.bodyLarge
+        )
+    }
+}
+
+
 data class AccountInfo(
     val label: String,
     val value: String
@@ -111,7 +129,7 @@ data class AccountInfo(
 private fun AccountInfoItemsPreview() {
     GedoiseTheme {
         Surface {
-            AccountInfoItems(user = userFixture)
+            UserInformationItems(user = userFixture)
         }
     }
 }
