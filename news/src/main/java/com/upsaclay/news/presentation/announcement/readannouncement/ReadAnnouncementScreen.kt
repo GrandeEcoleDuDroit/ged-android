@@ -32,6 +32,7 @@ import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture2
 import com.upsaclay.common.presentation.components.BackTopBar
 import com.upsaclay.common.presentation.components.LoadingDialog
+import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.components.SensibleActionDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
@@ -40,7 +41,6 @@ import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.domain.entity.AnnouncementReport
 import com.upsaclay.news.domain.longAnnouncementFixture
 import com.upsaclay.news.presentation.announcement.components.AnnouncementBottomSheet
-import com.upsaclay.news.presentation.announcement.components.ReportAnnouncementBottomSheet
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -202,7 +202,9 @@ fun ReadAnnouncementScreen(
         }
 
         if (showReportBottomSheet) {
-            ReportAnnouncementBottomSheet(
+            ReportBottomSheet(
+                items = AnnouncementReport.Reason.entries,
+                onDismiss = { showReportBottomSheet = false },
                 onReportClick = { reason ->
                     showReportBottomSheet = false
                     onReportAnnouncementClick(
@@ -219,8 +221,7 @@ fun ReadAnnouncementScreen(
                             reason = reason,
                         )
                     )
-                },
-                onDismiss = { showReportBottomSheet = false }
+                }
             )
         }
     }

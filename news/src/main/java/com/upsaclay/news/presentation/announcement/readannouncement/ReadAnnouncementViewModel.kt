@@ -29,9 +29,9 @@ class ReadAnnouncementViewModel(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ReadAnnouncementUiState())
     val uiState: StateFlow<ReadAnnouncementUiState> = _uiState
-
     private val _event = MutableSharedFlow<SingleUiEvent>()
     val event: SharedFlow<SingleUiEvent> = _event
+
     init {
         listenAnnouncement()
         listenUser()

@@ -1,6 +1,6 @@
 package com.upsaclay.common.data.remote.api
 
-import com.upsaclay.common.data.remote.ServerResponse
+import com.upsaclay.common.data.remote.model.ServerResponse
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
