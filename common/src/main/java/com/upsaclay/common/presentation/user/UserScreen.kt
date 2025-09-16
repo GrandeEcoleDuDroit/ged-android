@@ -31,6 +31,7 @@ import com.upsaclay.common.domain.userFixture2
 import com.upsaclay.common.extension.mediumPadding
 import com.upsaclay.common.presentation.components.BackTopBar
 import com.upsaclay.common.presentation.components.ClickableItem
+import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.OptionButton
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.components.ReportBottomSheet
@@ -51,7 +52,8 @@ fun UserDestination(
             onBackClick = onBackClick,
             onReportClick = viewModel::reportUser,
             user = user,
-            currentUser = uiState.user!!
+            currentUser = uiState.user!!,
+            loading = uiState.loading
         )
     }
 }
@@ -62,10 +64,15 @@ private fun UserScreen(
     onBackClick: () -> Unit,
     onReportClick: (UserReport) -> Unit,
     user: User,
-    currentUser: User
+    currentUser: User,
+    loading: Boolean
 ) {
     var showUserBottomSheet by remember { mutableStateOf(false) }
     var showReportBottomSheet by remember { mutableStateOf(false) }
+
+    if (loading) {
+        LoadingDialog()
+    }
 
     Scaffold(
         topBar = {
@@ -181,7 +188,8 @@ private fun UserScreenPreview() {
                 onBackClick = {},
                 onReportClick = {},
                 user = userFixture,
-                currentUser = userFixture2
+                currentUser = userFixture2,
+                loading = false
             )
         }
     }

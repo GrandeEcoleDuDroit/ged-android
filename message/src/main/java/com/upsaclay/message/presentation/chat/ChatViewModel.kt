@@ -40,7 +40,8 @@ class ChatViewModel(
     private val _uiState = MutableStateFlow(
         ChatUiState(
             conversation = conversation,
-            text = ""
+            text = "",
+            loading = false
         )
     )
     internal val uiState: StateFlow<ChatUiState> = _uiState
@@ -113,12 +114,16 @@ class ChatViewModel(
     }
 
     fun reportMessage(report: MessageReport) {
+        _uiState.update { it.copy(loading = true) }
+
         viewModelScope.launch {
             try {
                 messageRepository.reportMessage(report)
                 _event.emit(MessageEvent.MessageReported)
             } catch (e: Exception) {
                 _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
+            } finally {
+                _uiState.update { it.copy(loading = false) }
             }
         }
     }
@@ -171,7 +176,8 @@ class ChatViewModel(
 
     internal data class ChatUiState(
         val conversation: Conversation,
-        val text: String
+        val text: String,
+        val loading: Boolean
     )
 
     internal sealed class MessageEvent: SingleUiEvent {
