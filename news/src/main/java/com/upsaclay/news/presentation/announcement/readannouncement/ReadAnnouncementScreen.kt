@@ -49,6 +49,7 @@ fun ReadAnnouncementDestination(
     announcementId: String,
     onBackClick: () -> Unit,
     onEditClick: (Announcement) -> Unit,
+    onAuthorClick: (User) -> Unit,
     viewModel: ReadAnnouncementViewModel = koinViewModel(
         parameters = { parametersOf(announcementId) }
     )
@@ -84,6 +85,7 @@ fun ReadAnnouncementDestination(
             loading = uiState.loading,
             snackbarHostState = snackbarHostState,
             onBackClick = onBackClick,
+            onAuthorClick = onAuthorClick,
             onEditAnnouncementClick = onEditClick,
             onReportAnnouncementClick = viewModel::reportAnnouncement,
             onDeleteAnnouncementClick = viewModel::deleteAnnouncement
@@ -99,6 +101,7 @@ fun ReadAnnouncementScreen(
     loading: Boolean = false,
     snackbarHostState: SnackbarHostState,
     onBackClick: () -> Unit,
+    onAuthorClick: (User) -> Unit,
     onEditAnnouncementClick: (Announcement) -> Unit,
     onReportAnnouncementClick: (AnnouncementReport) -> Unit,
     onDeleteAnnouncementClick: () -> Unit
@@ -159,7 +162,8 @@ fun ReadAnnouncementScreen(
             ) {
                 AnnouncementHeader(
                     announcement = announcement,
-                    onOptionClick = { showBottomSheet = true }
+                    onOptionClick = { showBottomSheet = true },
+                    onAuthorClick = { onAuthorClick(announcement.author) }
                 )
 
                 announcement.title?.let {
@@ -238,6 +242,7 @@ private fun NonEditableAnnouncementScreenPreview() {
                 announcement = longAnnouncementFixture,
                 snackbarHostState = SnackbarHostState(),
                 onBackClick = {},
+                onAuthorClick = {},
                 onEditAnnouncementClick = {},
                 onReportAnnouncementClick = {},
                 onDeleteAnnouncementClick = {}
@@ -256,6 +261,7 @@ private fun EditableAnnouncementScreenPreview() {
                 announcement = longAnnouncementFixture,
                 snackbarHostState = SnackbarHostState(),
                 onBackClick = {},
+                onAuthorClick = {},
                 onEditAnnouncementClick = {},
                 onReportAnnouncementClick = {},
                 onDeleteAnnouncementClick = {}
