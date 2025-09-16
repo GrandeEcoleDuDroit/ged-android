@@ -11,15 +11,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import com.upsaclay.common.presentation.components.ClickableItem
-import com.upsaclay.message.domain.entity.MessageReport
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -93,40 +90,6 @@ fun ReceivedMessageBottomSheet(
             },
             onClick = onReportClick
         )
-
-        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.large_padding)))
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ReportMessageBottomSheet(
-    onReasonClick: (MessageReport.Reason) -> Unit,
-    onDismiss: () -> Unit
-) {
-    val state = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
-    )
-    ModalBottomSheet(
-        sheetState = state,
-        onDismissRequest = onDismiss,
-    ) {
-        Text(
-            text = stringResource(com.upsaclay.common.R.string.report),
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center
-        )
-
-        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.small_padding)))
-
-        MessageReport.Reason.entries.forEach {
-            ClickableItem(
-                modifier = Modifier.fillMaxWidth(),
-                text = { Text(text = it.toString()) },
-                onClick = { onReasonClick(it) }
-            )
-        }
 
         Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.large_padding)))
     }

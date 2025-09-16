@@ -3,6 +3,7 @@ package com.upsaclay.common.data.repository
 import com.upsaclay.common.data.local.UserLocalDataSource
 import com.upsaclay.common.data.remote.UserRemoteDataSource
 import com.upsaclay.common.domain.entity.User
+import com.upsaclay.common.domain.entity.UserReport
 import com.upsaclay.common.domain.repository.UserRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -59,4 +60,8 @@ internal class UserRepositoryImpl(
     }
 
     override suspend fun isUserExist(email: String): Boolean = userRemoteDataSource.isUserExist(email)
+
+    override suspend fun reportUser(report: UserReport) {
+        userRemoteDataSource.reportUser(report)
+    }
 }

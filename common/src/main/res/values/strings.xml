@@ -74,4 +74,5 @@
     <string name="no_internet_connection">Aucune connexion Internet.</string>
 
     <string name="member_text_tag" translatable="false">Member text tag</string>
+    <string name="user_reported">Utilisateur signalé</string>
 </resources>

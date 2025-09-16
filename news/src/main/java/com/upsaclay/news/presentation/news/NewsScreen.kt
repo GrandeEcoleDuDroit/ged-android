@@ -3,6 +3,7 @@ package com.upsaclay.news.presentation.news
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -20,6 +21,7 @@ import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.presentation.components.PullToRefreshComponent
+import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.components.SensibleActionDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
@@ -31,7 +33,6 @@ import com.upsaclay.news.domain.entity.AnnouncementReport
 import com.upsaclay.news.domain.entity.AnnouncementState
 import com.upsaclay.news.presentation.announcement.components.AnnouncementBottomSheet
 import com.upsaclay.news.presentation.announcement.components.ErrorAnnouncementBottomSheet
-import com.upsaclay.news.presentation.announcement.components.ReportAnnouncementBottomSheet
 import com.upsaclay.news.presentation.news.components.NewsScaffold
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -85,6 +86,7 @@ fun NewsDestination(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun NewsScreen(
     user: User,
@@ -193,7 +195,9 @@ private fun NewsScreen(
             }
 
             if (showAnnouncementReportBottomSheet) {
-                ReportAnnouncementBottomSheet(
+                ReportBottomSheet(
+                    items = AnnouncementReport.Reason.entries,
+                    onDismiss = { showAnnouncementReportBottomSheet = false },
                     onReportClick = { reason ->
                         showAnnouncementReportBottomSheet = false
 
@@ -213,8 +217,7 @@ private fun NewsScreen(
                                 )
                             )
                         }
-                    },
-                    onDismiss = { showAnnouncementReportBottomSheet = false }
+                    }
                 )
             }
         }
