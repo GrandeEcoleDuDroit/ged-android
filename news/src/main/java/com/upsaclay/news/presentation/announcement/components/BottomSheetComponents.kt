@@ -4,9 +4,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Send
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.automirrored.outlined.Send
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -70,7 +70,7 @@ fun ErrorAnnouncementBottomSheet(
             },
             icon = {
                 Icon(
-                    imageVector = Icons.AutoMirrored.Filled.Send,
+                    imageVector = Icons.AutoMirrored.Outlined.Send,
                     contentDescription = null
                 )
             },
@@ -89,7 +89,7 @@ fun ErrorAnnouncementBottomSheet(
             },
             icon = {
                 Icon(
-                    imageVector = Icons.Default.Delete,
+                    imageVector = Icons.Outlined.Delete,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.error
                 )
@@ -113,7 +113,7 @@ private fun EditableAnnouncementBottomSheetContent(
         text = { Text(text = stringResource(id = com.upsaclay.common.R.string.edit)) },
         icon = {
             Icon(
-                imageVector = Icons.Default.Edit,
+                imageVector = Icons.Outlined.Edit,
                 contentDescription = null
             )
         },
@@ -132,7 +132,7 @@ private fun EditableAnnouncementBottomSheetContent(
         },
         icon = {
             Icon(
-                imageVector = Icons.Default.Delete,
+                imageVector = Icons.Outlined.Delete,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.error
             )
