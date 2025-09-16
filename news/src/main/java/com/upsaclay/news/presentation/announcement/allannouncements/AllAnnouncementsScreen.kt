@@ -81,8 +81,8 @@ fun AllAnnouncementsDestination(
         AllAnnouncementsScreen(
             user = uiState.user!!,
             announcements = uiState.announcements!!,
-            loading = uiState.loading,
             refreshing = uiState.refreshing,
+            loading = uiState.loading,
             snackbarHostState = snackbarHostState,
             onBackClick = onBackClick,
             onAuthorClick = onAuthorClick,
@@ -101,8 +101,8 @@ fun AllAnnouncementsDestination(
 private fun AllAnnouncementsScreen(
     user: User,
     announcements: List<Announcement>,
-    loading: Boolean,
     refreshing: Boolean,
+    loading: Boolean,
     snackbarHostState: SnackbarHostState = SnackbarHostState(),
     onBackClick: () -> Unit,
     onAuthorClick: (User) -> Unit,
@@ -275,8 +275,8 @@ private fun AllAnnouncementsScreenPreview() {
         AllAnnouncementsScreen (
             user = userFixture,
             announcements = announcementsFixture,
-            loading = false,
             refreshing = false,
+            loading = false,
             onBackClick = {},
             onAuthorClick = {},
             onRefresh = {},

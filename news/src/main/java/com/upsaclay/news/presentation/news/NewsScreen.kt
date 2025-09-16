@@ -20,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
+import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.PullToRefreshComponent
 import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.components.SensibleActionDialog
@@ -71,6 +72,7 @@ fun NewsDestination(
             user = uiState.user!!,
             announcements = uiState.announcements,
             refreshing = uiState.refreshing,
+            loading = uiState.loading,
             bottomBar = bottomBar,
             snackbarHostState = snackbarHostState,
             onProfilePictureClick = onProfilePictureClick,
@@ -92,6 +94,7 @@ private fun NewsScreen(
     user: User,
     announcements: List<Announcement>?,
     refreshing: Boolean,
+    loading: Boolean,
     bottomBar: @Composable () -> Unit,
     snackbarHostState: SnackbarHostState = SnackbarHostState(),
     onRefresh: () -> Unit,
@@ -121,6 +124,10 @@ private fun NewsScreen(
             },
             onCancel = { showDeleteAnnouncementDialog = false }
         )
+    }
+
+    if (loading) {
+        LoadingDialog()
     }
 
     NewsScaffold(
@@ -237,8 +244,9 @@ private fun NewsScreenPreview() {
     GedoiseTheme {
         NewsScreen(
             user = userFixture,
-            refreshing = false,
             announcements = announcementsFixture,
+            refreshing = false,
+            loading = false,
             bottomBar = {},
             onRefresh = {},
             onProfilePictureClick = {},

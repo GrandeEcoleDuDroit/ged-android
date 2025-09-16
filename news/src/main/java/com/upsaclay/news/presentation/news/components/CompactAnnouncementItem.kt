@@ -4,11 +4,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -22,8 +19,8 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import com.upsaclay.common.R
+import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.components.OptionButton
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
@@ -94,9 +91,13 @@ private fun DefaultItem(
         )
 
         Column(
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.very_extra_small_padding))
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                horizontalArrangement = Arrangement.smallSpacing(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(
                     text = announcement.author.fullName,
                     style = MaterialTheme.typography.titleSmall,
@@ -105,16 +106,12 @@ private fun DefaultItem(
                     modifier = Modifier.weight(fill = false, weight = 1f)
                 )
 
-                Spacer(modifier = Modifier.width(dimensionResource(com.upsaclay.common.R.dimen.small_padding)))
-
                 Text(
                     text = elapsedTimeValue,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.previewText
                 )
             }
-
-            Spacer(modifier = Modifier.height(2.dp))
 
             Text(
                 text = announcement.title ?: announcement.content,
@@ -169,7 +166,7 @@ private fun ErrorItem(
         horizontalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding))
     ) {
         Icon(
-            painter = painterResource(com.upsaclay.common.R.drawable.ic_error),
+            painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_error),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.error
         )

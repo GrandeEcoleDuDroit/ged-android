@@ -80,7 +80,7 @@ private fun MemberUserInformationItem(
     ) {
         Text(
             text = stringResource(R.string.member),
-            color = MaterialTheme.colorScheme.previewText,
+            color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.SemiBold,
             style = MaterialTheme.typography.labelLarge
         )
@@ -101,7 +101,7 @@ internal fun NonMemberUserInformationItem(
     Column {
         Text(
             text = accountInfo.label,
-            color = MaterialTheme.colorScheme.previewText,
+            color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.SemiBold,
             style = MaterialTheme.typography.labelLarge
         )

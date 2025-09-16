@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -53,7 +53,7 @@ internal fun AccountModelBottomSheet(
             text = { Text(text = stringResource(id = R.string.new_profile_picture)) },
             icon = {
                 Icon(
-                    painter = painterResource(id = com.upsaclay.common.R.drawable.ic_picture),
+                    painter = painterResource(id = com.upsaclay.common.R.drawable.ic_outline_image),
                     contentDescription = null
                 )
             },
@@ -76,7 +76,7 @@ internal fun AccountModelBottomSheet(
                 },
                 icon = {
                     Icon(
-                        imageVector = Icons.Default.Delete,
+                        imageVector = Icons.Outlined.Delete,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.error
                     )
