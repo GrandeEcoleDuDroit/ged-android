@@ -3,14 +3,15 @@ package com.upsaclay.common.data
 import com.upsaclay.common.data.local.UserDataStore
 import com.upsaclay.common.data.local.UserLocalDataSource
 import com.upsaclay.common.data.remote.ImageRemoteDataSource
-import com.upsaclay.common.data.remote.NotificationApiImpl
 import com.upsaclay.common.data.remote.UserRemoteDataSource
 import com.upsaclay.common.data.remote.api.FcmApi
 import com.upsaclay.common.data.remote.api.ImageApi
 import com.upsaclay.common.data.remote.api.ImageApiImpl
+import com.upsaclay.common.data.remote.api.NotificationApiImpl
+import com.upsaclay.common.data.remote.api.UserApi
+import com.upsaclay.common.data.remote.api.UserApiImpl
 import com.upsaclay.common.data.remote.api.UserFirestoreApi
-import com.upsaclay.common.data.remote.api.UserFirestoreApiImpl
-import com.upsaclay.common.data.remote.api.UserOracleApi
+import com.upsaclay.common.data.remote.api.UserServerApi
 import com.upsaclay.common.data.remote.api.WhiteListApi
 import com.upsaclay.common.data.repository.DrawableRepositoryImpl
 import com.upsaclay.common.data.repository.FcmTokenRepositoryImpl
@@ -77,7 +78,7 @@ val commonDataModule = module {
 
     single {
         get<Retrofit>(GED_SERVER_QUALIFIER)
-            .create(UserOracleApi::class.java)
+            .create(UserServerApi::class.java)
     }
 
     single {
@@ -90,19 +91,19 @@ val commonDataModule = module {
             .create(WhiteListApi::class.java)
     }
 
-    singleOf(::ImageApiImpl) { bind<ImageApi>() }
-    singleOf(::UserFirestoreApiImpl) { bind<UserFirestoreApi>() }
-
     singleOf(::NotificationApiImpl) { bind<NotificationApi>() }
+    singleOf(::ImageApiImpl) { bind<ImageApi>() }
     singleOf(::ImageRemoteDataSource)
-    singleOf(::UserRemoteDataSource)
-
-    singleOf(::UserLocalDataSource)
-    singleOf(::UserDataStore)
 
     singleOf(::DrawableRepositoryImpl) { bind<DrawableRepository>() }
     singleOf(::FileRepositoryImpl) { bind<FileRepository>() }
     singleOf(::ImageRepositoryImpl) { bind<ImageRepository>() }
+
+    singleOf(::UserFirestoreApi)
+    singleOf(::UserApiImpl) { bind<UserApi>() }
+    singleOf(::UserRemoteDataSource)
+    singleOf(::UserLocalDataSource)
+    singleOf(::UserDataStore)
     single<UserRepository> {
         UserRepositoryImpl(
             userRemoteDataSource = get(),
