@@ -4,11 +4,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -26,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
 import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
+import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.components.SensibleActionDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
@@ -91,6 +94,7 @@ fun ChatDestination(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ChatScreen(
     conversation: Conversation,
@@ -107,6 +111,9 @@ private fun ChatScreen(
     onReportClick: (MessageReport) -> Unit
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
+    val bottomSheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
     var messageClicked: Message? by remember { mutableStateOf(null) }
     var showDeleteMessageDialog by remember { mutableStateOf(false) }
     var showSentMessageBottomSheet by remember { mutableStateOf(false) }
@@ -206,9 +213,11 @@ private fun ChatScreen(
     }
 
     if (showReportMessageBottomSheet) {
-        ReportMessageBottomSheet(
+        ReportBottomSheet(
+            sheetState = bottomSheetState,
+            items = MessageReport.Reason.entries,
             onDismiss = { showReportMessageBottomSheet = false },
-            onReasonClick = { reason ->
+            onReportClick = { reason ->
                 showReportMessageBottomSheet = false
                 messageClicked?.let { message ->
                     onReportClick(

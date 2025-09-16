@@ -1,6 +1,6 @@
 package com.upsaclay.common.data.remote.api
 
-import com.upsaclay.common.data.remote.ServerResponse
+import com.upsaclay.common.data.remote.model.ServerResponse
 import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded

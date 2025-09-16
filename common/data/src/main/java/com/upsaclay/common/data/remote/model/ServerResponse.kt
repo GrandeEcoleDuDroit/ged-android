@@ -1,4 +1,4 @@
-package com.upsaclay.common.data.remote
+package com.upsaclay.common.data.remote.model
 
 data class ServerResponse(
     val message: String,

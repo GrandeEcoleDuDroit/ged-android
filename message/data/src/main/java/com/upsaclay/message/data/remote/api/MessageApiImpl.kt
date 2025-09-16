@@ -4,7 +4,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.MetadataChanges
 import com.google.firebase.firestore.firestore
-import com.upsaclay.common.data.remote.ServerResponse
+import com.upsaclay.common.data.remote.model.ServerResponse
 import com.upsaclay.message.data.model.CONVERSATIONS_TABLE_NAME
 import com.upsaclay.message.data.model.MESSAGES_TABLE_NAME
 import com.upsaclay.message.data.model.MessageField

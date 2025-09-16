@@ -19,12 +19,10 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.upsaclay.common.presentation.components.ClickableItem
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.news.R
-import com.upsaclay.news.domain.entity.AnnouncementReport
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,6 +47,8 @@ fun AnnouncementBottomSheet(
                 onReportClick = onReportClick
             )
         }
+
+        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.large_padding)))
     }
 }
 
@@ -96,34 +96,8 @@ fun ErrorAnnouncementBottomSheet(
             },
             onClick = onDeleteClick
         )
-    }
-}
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ReportAnnouncementBottomSheet(
-    onReportClick: (AnnouncementReport.Reason) -> Unit,
-    onDismiss: () -> Unit
-) {
-    ModalBottomSheet(
-        onDismissRequest = onDismiss
-    ) {
-        Text(
-            text = stringResource(com.upsaclay.common.R.string.report),
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center
-        )
-
-        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.small_padding)))
-
-        AnnouncementReport.Reason.entries.forEach {
-            ClickableItem(
-                modifier = Modifier.fillMaxWidth(),
-                text = { Text(text = it.toString()) },
-                onClick = { onReportClick(it) }
-            )
-        }
+        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.large_padding)))
     }
 }
 
@@ -236,19 +210,6 @@ fun ErrorAnnouncementBottomSheetPreview() {
             ErrorAnnouncementBottomSheet(
                 onResendClick = {},
                 onDeleteClick = {},
-                onDismiss = {}
-            )
-        }
-    }
-}
-
-@Preview(heightDp = 400)
-@Composable
-fun ReportAnnouncementBottomSheetPreview() {
-    GedoiseTheme {
-        Surface {
-            ReportAnnouncementBottomSheet(
-                onReportClick = {},
                 onDismiss = {}
             )
         }

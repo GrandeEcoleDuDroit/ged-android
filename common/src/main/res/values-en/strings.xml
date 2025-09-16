@@ -51,6 +51,7 @@
     <string name="week_ago_short">%d w</string>
 
     <string name="member">Member</string>
+    <string name="user_reported">User reported</string>
 
     <string name="minute_ago_medium">%d minutes</string>
     <string name="hour_ago_medium">%d hours</string>
