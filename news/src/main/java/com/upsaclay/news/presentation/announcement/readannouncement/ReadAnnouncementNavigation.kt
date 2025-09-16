@@ -5,6 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.upsaclay.common.domain.entity.Route
+import com.upsaclay.common.domain.entity.User
 import com.upsaclay.news.domain.entity.Announcement
 import kotlinx.serialization.Serializable
 
@@ -16,14 +17,16 @@ fun NavController.navigateToReadAnnouncement(announcementId: String) {
 
 fun NavGraphBuilder.readAnnouncementScreen(
     onBackClick: () -> Unit,
-    onEditClick: (Announcement) -> Unit
+    onEditClick: (Announcement) -> Unit,
+    onAuthorClick: (User) -> Unit
 ) {
     composable<ReadAnnouncementRoute> {
         val announcementId = it.toRoute<ReadAnnouncementRoute>().announcementId
         ReadAnnouncementDestination(
             announcementId = announcementId,
             onBackClick = onBackClick,
-            onEditClick = onEditClick
+            onEditClick = onEditClick,
+            onAuthorClick = onAuthorClick
         )
     }
 }

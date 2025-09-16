@@ -25,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
 import com.upsaclay.common.domain.entity.SingleUiEvent
+import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.presentation.components.SensibleActionDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
@@ -46,6 +47,7 @@ import org.koin.core.parameter.parametersOf
 fun ChatDestination(
     conversation: Conversation,
     onBackClick: () -> Unit,
+    onInterlocutorClick: (User) -> Unit,
     viewModel: ChatViewModel = koinViewModel {
         parametersOf(conversation)
     }
@@ -80,6 +82,7 @@ fun ChatDestination(
         snackbarHostState = snackbarHostState,
         newMessageEvent = newMessageEvent,
         onBackClick = onBackClick,
+        onInterlocutorClick = onInterlocutorClick,
         onTextChange = viewModel::onTextChange,
         onSendMessage = viewModel::sendMessage,
         onResendMessageClick = viewModel::resendMessage,
@@ -96,6 +99,7 @@ private fun ChatScreen(
     snackbarHostState: SnackbarHostState = SnackbarHostState(),
     newMessageEvent: MessageEvent.NewMessage?,
     onBackClick: () -> Unit,
+    onInterlocutorClick: (User) -> Unit,
     onTextChange: (String) -> Unit,
     onSendMessage: () -> Unit,
     onResendMessageClick: (Message) -> Unit,
@@ -129,7 +133,8 @@ private fun ChatScreen(
                 onBackClick = {
                     keyboardController?.hide()
                     onBackClick()
-                }
+                },
+                onInterlocutorClick = { onInterlocutorClick(conversation.interlocutor) }
             )
         },
         bottomBar = {
@@ -241,6 +246,7 @@ private fun ChatScreenPreview() {
             text = text,
             newMessageEvent = null,
             onBackClick = {},
+            onInterlocutorClick = {},
             onTextChange = { text = it },
             onSendMessage = {},
             onDeleteMessageClick = {},

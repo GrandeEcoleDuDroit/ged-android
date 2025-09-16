@@ -1,5 +1,6 @@
 package com.upsaclay.news.presentation.announcement.readannouncement
 
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -18,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -36,6 +38,7 @@ import com.upsaclay.news.domain.longAnnouncementFixture
 fun AnnouncementHeader(
     announcement: Announcement,
     onOptionClick: () -> Unit,
+    onAuthorClick: () -> Unit
 ) {
     val elapsedTimeValue = getElapsedTimeValue(announcement.date)
 
@@ -46,7 +49,11 @@ fun AnnouncementHeader(
             horizontalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding))
         ) {
             Row(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .weight(1f)
+                    .pointerInput(Unit) {
+                        detectTapGestures(onTap = { onAuthorClick() })
+                    },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding))
             ) {
@@ -100,7 +107,8 @@ private fun AnnouncementHeaderPreview() {
         Surface {
             AnnouncementHeader(
                 announcement = longAnnouncementFixture,
-                onOptionClick = {}
+                onOptionClick = {},
+                onAuthorClick = {}
             )
         }
     }

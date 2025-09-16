@@ -18,6 +18,8 @@ import com.upsaclay.authentication.presentation.registration.secondregistration.
 import com.upsaclay.authentication.presentation.registration.thirdregistration.navigateToThirdRegistration
 import com.upsaclay.authentication.presentation.registration.thirdregistration.thirdRegistrationScreen
 import com.upsaclay.common.domain.entity.Route
+import com.upsaclay.common.presentation.user.navigateToUser
+import com.upsaclay.common.presentation.user.userScreen
 import com.upsaclay.gedoise.presentation.components.MainBottomBar
 import com.upsaclay.gedoise.presentation.profile.account.accountScreen
 import com.upsaclay.gedoise.presentation.profile.account.navigateToAccount
@@ -140,7 +142,8 @@ fun GedNavHost(
 
             readAnnouncementScreen(
                 onBackClick = navController::popBackStack,
-                onEditClick = navController::navigateToEditAnnouncement
+                onEditClick = navController::navigateToEditAnnouncement,
+                onAuthorClick = navController::navigateToUser
             )
 
             editAnnouncementScreen(
@@ -150,7 +153,8 @@ fun GedNavHost(
             allAnnouncementScreen(
                 onBackClick = navController::popBackStack,
                 onAnnouncementClick = navController::navigateToReadAnnouncement,
-                onEditAnnouncementClick = navController::navigateToEditAnnouncement
+                onEditAnnouncementClick = navController::navigateToEditAnnouncement,
+                onAuthorClick = navController::navigateToUser
             )
 
             profileScreen(
@@ -182,8 +186,11 @@ fun GedNavHost(
                     navController.navigateToConversation {
                         popUpTo(ConversationBaseRoute)
                     }
-                }
+                },
+                onInterlocutorClick = navController::navigateToUser
             )
         }
+
+        userScreen(onBackClick = navController::popBackStack)
     }
 }

@@ -45,7 +45,7 @@ class AccountScreenTest {
         // When
         rule.setContent {
             AccountScreen(
-                user = uiStateFixture.user,
+                user = uiStateFixture.user!!,
                 loading = uiStateFixture.loading,
                 screenState = uiStateFixture.screenState,
                 profilePictureUri = uiStateFixture.profilePictureUri,
@@ -70,7 +70,7 @@ class AccountScreenTest {
         // When
         rule.setContent {
             AccountScreen(
-                user = uiStateFixture.user,
+                user = uiStateFixture.user!!,
                 loading = uiStateFixture.loading,
                 screenState = uiStateFixture.screenState,
                 profilePictureUri = uiStateFixture.profilePictureUri,
@@ -84,7 +84,7 @@ class AccountScreenTest {
         }
 
         // Then
-        rule.onNodeWithTag(rule.activity.getString(R.string.account_screen_member_tag)).assertExists()
+        rule.onNodeWithTag(rule.activity.getString(com.upsaclay.common.R.string.member_text_tag)).assertExists()
     }
 
     @Test
@@ -106,6 +106,6 @@ class AccountScreenTest {
         }
 
         // Then
-        rule.onNodeWithTag(rule.activity.getString(R.string.account_screen_member_tag)).assertDoesNotExist()
+        rule.onNodeWithTag(rule.activity.getString(com.upsaclay.common.R.string.member_text_tag)).assertDoesNotExist()
     }
 }
