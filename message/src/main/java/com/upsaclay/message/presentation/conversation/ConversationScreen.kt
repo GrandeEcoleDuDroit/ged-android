@@ -114,7 +114,7 @@ private fun ConversationScreen(
     }
 
     if (showBottomSheet) {
-        ConversationModalBottomSheet(
+        ConversationBottomSheet(
             onDismiss = { showBottomSheet = false },
             onDeleteClick = {
                 showBottomSheet = false

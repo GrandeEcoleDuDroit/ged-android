@@ -131,7 +131,7 @@ fun SentMessageItem(
             visible = message.state == MessageState.ERROR
         ) {
             Icon(
-                painter = painterResource(com.upsaclay.common.R.drawable.ic_error),
+                painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_error),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.error,
                 modifier = Modifier.size(22.dp)
