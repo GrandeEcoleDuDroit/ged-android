@@ -31,7 +31,7 @@ class ReadAnnouncementScreenTest {
     @Before
     fun setUp() {
         every { readAnnouncementViewModel.uiState } returns MutableStateFlow(uiState)
-        every { readAnnouncementViewModel.singleUiEvent } returns MutableSharedFlow()
+        every { readAnnouncementViewModel.event } returns MutableSharedFlow()
     }
 
     @Test
@@ -41,13 +41,14 @@ class ReadAnnouncementScreenTest {
             ReadAnnouncementDestination(
                 announcementId = longAnnouncementFixture.id,
                 onBackClick = {},
+                onAuthorClick = {},
                 onEditClick = {},
                 viewModel = readAnnouncementViewModel
             )
         }
 
         // Then
-        rule.onNodeWithTag(rule.activity.getString(R.string.read_screen_option_button_tag)).assertExists()
+        rule.onNodeWithTag(rule.activity.getString(R.string.announcement_option_button_tag)).assertExists()
     }
 
     @Test
@@ -57,6 +58,7 @@ class ReadAnnouncementScreenTest {
              ReadAnnouncementDestination(
                 announcementId = longAnnouncementFixture.id,
                 onBackClick = {},
+                 onAuthorClick = {},
                 onEditClick = {},
                 viewModel = readAnnouncementViewModel
             )
@@ -76,10 +78,11 @@ class ReadAnnouncementScreenTest {
         // When
         rule.setContent {
              ReadAnnouncementDestination(
-                announcementId = longAnnouncementFixture.id,
-                onBackClick = {},
-                onEditClick = {},
-                viewModel = readAnnouncementViewModel
+                 announcementId = longAnnouncementFixture.id,
+                 onBackClick = {},
+                 onAuthorClick = {},
+                 onEditClick = {},
+                 viewModel = readAnnouncementViewModel
             )
         }
 
@@ -94,15 +97,16 @@ class ReadAnnouncementScreenTest {
              ReadAnnouncementDestination(
                 announcementId = longAnnouncementFixture.id,
                 onBackClick = {},
+                onAuthorClick = {},
                 onEditClick = {},
                 viewModel = readAnnouncementViewModel
             )
         }
 
-        rule.onNodeWithTag(rule.activity.getString(R.string.read_screen_option_button_tag)).performClick()
+        rule.onNodeWithTag(rule.activity.getString(R.string.announcement_option_button_tag)).performClick()
 
         // Then
-        rule.onNodeWithTag(rule.activity.getString(R.string.read_screen_bottom_sheet_tag)).assertExists()
+        rule.onNodeWithTag(rule.activity.getString(R.string.announcement_bottom_sheet_tag)).assertExists()
     }
 
 
@@ -113,13 +117,14 @@ class ReadAnnouncementScreenTest {
              ReadAnnouncementDestination(
                 announcementId = longAnnouncementFixture.id,
                 onBackClick = {},
+                onAuthorClick = {},
                 onEditClick = {},
                 viewModel = readAnnouncementViewModel
             )
         }
 
-        rule.onNodeWithTag(rule.activity.getString(R.string.read_screen_option_button_tag)).performClick()
-        rule.onNodeWithTag(rule.activity.getString(R.string.read_screen_sheet_delete_field_tag)).performClick()
+        rule.onNodeWithTag(rule.activity.getString(R.string.announcement_option_button_tag)).performClick()
+        rule.onNodeWithTag(rule.activity.getString(R.string.announcement_bottom_sheet_delete_field_tag)).performClick()
 
         // Then
         rule.onNodeWithTag(rule.activity.getString(R.string.read_screen_delete_dialog_tag)).assertExists()

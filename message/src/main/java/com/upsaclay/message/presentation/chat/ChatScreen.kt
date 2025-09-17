@@ -1,14 +1,16 @@
 package com.upsaclay.message.presentation.chat
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -22,19 +24,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.compose.rememberNavController
+import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
 import com.upsaclay.common.domain.entity.SingleUiEvent
-import com.upsaclay.common.extension.mediumPadding
+import com.upsaclay.common.domain.entity.User
+import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.components.SensibleActionDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
-import com.upsaclay.common.utils.Tablets
 import com.upsaclay.message.R
 import com.upsaclay.message.domain.conversationFixture
 import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.Message
-import com.upsaclay.message.domain.entity.MessageState
+import com.upsaclay.message.domain.entity.MessageReport
 import com.upsaclay.message.domain.messagesFixture
 import com.upsaclay.message.presentation.chat.ChatViewModel.MessageEvent
 import kotlinx.coroutines.flow.Flow
@@ -48,6 +50,7 @@ import org.koin.core.parameter.parametersOf
 fun ChatDestination(
     conversation: Conversation,
     onBackClick: () -> Unit,
+    onInterlocutorClick: (User) -> Unit,
     viewModel: ChatViewModel = koinViewModel {
         parametersOf(conversation)
     }
@@ -68,6 +71,8 @@ fun ChatDestination(
             when (event) {
                 is MessageEvent.NewMessage -> newMessageEvent = event
 
+                is MessageEvent.MessageReported -> showSnackBar(context.getString(R.string.message_reported))
+
                 is SingleUiEvent.Error -> showSnackBar(context.getString(event.messageId))
             }
         }
@@ -77,33 +82,45 @@ fun ChatDestination(
         conversation = conversation,
         messages = viewModel.messages,
         text = uiState.text,
+        loading = uiState.loading,
         snackbarHostState = snackbarHostState,
         newMessageEvent = newMessageEvent,
+        onBackClick = onBackClick,
+        onInterlocutorClick = onInterlocutorClick,
         onTextChange = viewModel::onTextChange,
         onSendMessage = viewModel::sendMessage,
-        onResendMessageClick = viewModel::resendErrorMessage,
-        onDeleteMessageClick = viewModel::deleteErrorMessage,
-        onBackClick = onBackClick,
+        onResendMessageClick = viewModel::resendMessage,
+        onDeleteMessageClick = viewModel::deleteMessage,
+        onReportClick = viewModel::reportMessage
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ChatScreen(
     conversation: Conversation,
     messages: Flow<PagingData<Message>>,
     text: String,
+    loading: Boolean,
     snackbarHostState: SnackbarHostState = SnackbarHostState(),
     newMessageEvent: MessageEvent.NewMessage?,
+    onBackClick: () -> Unit,
+    onInterlocutorClick: (User) -> Unit,
     onTextChange: (String) -> Unit,
     onSendMessage: () -> Unit,
     onResendMessageClick: (Message) -> Unit,
     onDeleteMessageClick: (Message) -> Unit,
-    onBackClick: () -> Unit
+    onReportClick: (MessageReport) -> Unit
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
-    var showBottomSheet by remember { mutableStateOf(false) }
+    val bottomSheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
     var messageClicked: Message? by remember { mutableStateOf(null) }
     var showDeleteMessageDialog by remember { mutableStateOf(false) }
+    var showSentMessageBottomSheet by remember { mutableStateOf(false) }
+    var showReceivedMessageBottomSheet by remember { mutableStateOf(false) }
+    var showReportMessageBottomSheet by remember { mutableStateOf(false) }
 
     if (showDeleteMessageDialog) {
         SensibleActionDialog(
@@ -121,57 +138,104 @@ private fun ChatScreen(
     Scaffold(
         topBar = {
             ChatTopBar(
-                navController = rememberNavController(),
                 interlocutor = conversation.interlocutor,
-                onClickBack = {
+                onBackClick = {
                     keyboardController?.hide()
                     onBackClick()
-                }
+                },
+                onInterlocutorClick = { onInterlocutorClick(conversation.interlocutor) }
             )
+        },
+        bottomBar = {
+            BottomAppBar(
+                modifier = Modifier
+                    .height(64.dp),
+                containerColor = MaterialTheme.colorScheme.surface,
+                contentColor = MaterialTheme.colorScheme.surface,
+                tonalElevation = 0.dp
+            ) {
+                MessageInput(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = text,
+                    onValueChange = onTextChange,
+                    onSendClick = onSendMessage
+                )
+            }
         },
         snackbarHost = {
             SnackbarHost(
-                modifier = Modifier.padding(bottom = dimensionResource(com.upsaclay.common.R.dimen.extra_large_padding)),
                 hostState = snackbarHostState
             ) {
                 Snackbar(it)
             }
         },
     ) { paddingValues ->
-        Column(
+        MessageFeed(
             modifier = Modifier
-                .mediumPadding(paddingValues)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.small_padding))
-        ) {
-            MessageFeed(
-                modifier = Modifier.weight(1f),
-                messages = messages,
-                interlocutor = conversation.interlocutor,
-                newMessageEvent = newMessageEvent,
-                onErrorMessageClick = {
-                    if (it.state == MessageState.ERROR) {
-                        messageClicked = it
-                        showBottomSheet = true
-                    }
+                .padding(paddingValues)
+                .padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+            messages = messages,
+            interlocutor = conversation.interlocutor,
+            newMessageEvent = newMessageEvent,
+            onErrorSentMessageClick = {
+                messageClicked = it
+                showSentMessageBottomSheet = true
+            },
+            onReceivedMessageLongClick = {
+                messageClicked = it
+                showReceivedMessageBottomSheet = true
+            }
+        )
+    }
+
+    if (showSentMessageBottomSheet) {
+        SentMessageBottomSheet(
+            onDismiss = { showSentMessageBottomSheet = false },
+            onResendMessageClick = {
+                showSentMessageBottomSheet = false
+                messageClicked?.let(onResendMessageClick)
+            },
+            onDeleteMessageClick = {
+                showSentMessageBottomSheet = false
+                showDeleteMessageDialog = true
+            }
+        )
+    }
+
+    if (showReceivedMessageBottomSheet) {
+        ReceivedMessageBottomSheet(
+            onDismiss = { showReceivedMessageBottomSheet = false },
+            onReportClick = {
+                showReceivedMessageBottomSheet = false
+                messageClicked?.let {
+                    showReportMessageBottomSheet = true
                 }
-            )
+            }
+        )
+    }
 
-            MessageInput(
-                modifier = Modifier.fillMaxWidth(),
-                value = text,
-                onValueChange = onTextChange,
-                onSendClick = onSendMessage
-            )
-        }
-
-        if (showBottomSheet) {
-            ChatBottomSheet(
-                onDismiss = { showBottomSheet = false },
-                onResendMessageClick = { messageClicked?.let(onResendMessageClick) },
-                onDeleteMessageClick = { showDeleteMessageDialog = true }
-            )
-        }
+    if (showReportMessageBottomSheet) {
+        ReportBottomSheet(
+            sheetState = bottomSheetState,
+            items = MessageReport.Reason.entries,
+            onDismiss = { showReportMessageBottomSheet = false },
+            onReportClick = { reason ->
+                showReportMessageBottomSheet = false
+                messageClicked?.let { message ->
+                    onReportClick(
+                        MessageReport(
+                            conversationId = conversation.id,
+                            messageId = message.id,
+                            recipientInfo = MessageReport.UserInfo(
+                                fullName = conversation.interlocutor.fullName,
+                                email = conversation.interlocutor.email
+                            ),
+                            reason = reason
+                        )
+                    )
+                }
+            }
+        )
     }
 }
 
@@ -182,7 +246,6 @@ private fun ChatScreen(
  */
 
 @Phones
-@Tablets
 @Composable
 private fun ChatScreenPreview() {
     var text by remember { mutableStateOf("") }
@@ -192,12 +255,15 @@ private fun ChatScreenPreview() {
             conversation = conversationFixture,
             messages = flowOf(PagingData.from(messagesFixture)),
             text = text,
+            loading = false,
             newMessageEvent = null,
+            onBackClick = {},
+            onInterlocutorClick = {},
             onTextChange = { text = it },
             onSendMessage = {},
             onDeleteMessageClick = {},
             onResendMessageClick = {},
-            onBackClick = {}
+            onReportClick = {}
         )
     }
 }

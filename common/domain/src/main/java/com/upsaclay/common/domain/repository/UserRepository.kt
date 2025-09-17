@@ -1,6 +1,7 @@
 package com.upsaclay.common.domain.repository
 
 import com.upsaclay.common.domain.entity.User
+import com.upsaclay.common.domain.entity.UserReport
 import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
@@ -28,4 +29,6 @@ interface UserRepository {
     suspend fun deleteProfilePictureFileName(userId: String)
 
     suspend fun isUserExist(email: String): Boolean
+
+    suspend fun reportUser(report: UserReport)
 }

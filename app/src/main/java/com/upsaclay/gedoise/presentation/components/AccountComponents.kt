@@ -1,12 +1,10 @@
 package com.upsaclay.gedoise.presentation.components
 
-import android.content.res.Configuration
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -20,15 +18,10 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import com.upsaclay.common.presentation.components.BackTopBar
 import com.upsaclay.common.presentation.components.ClickableItem
 import com.upsaclay.common.presentation.components.EditTopBar
-import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.previewText
 import com.upsaclay.gedoise.R
-import com.upsaclay.gedoise.presentation.profile.account.AccountInfo
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -60,7 +53,7 @@ internal fun AccountModelBottomSheet(
             text = { Text(text = stringResource(id = R.string.new_profile_picture)) },
             icon = {
                 Icon(
-                    painter = painterResource(id = com.upsaclay.common.R.drawable.ic_picture),
+                    painter = painterResource(id = com.upsaclay.common.R.drawable.ic_outline_image),
                     contentDescription = null
                 )
             },
@@ -83,7 +76,7 @@ internal fun AccountModelBottomSheet(
                 },
                 icon = {
                     Icon(
-                        imageVector = Icons.Default.Delete,
+                        imageVector = Icons.Outlined.Delete,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.error
                     )
@@ -98,24 +91,7 @@ internal fun AccountModelBottomSheet(
     }
 }
 
-@Composable
-internal fun AccountInfoItem(
-    accountInfo: AccountInfo
-) {
-    Column {
-        Text(
-            text = accountInfo.label,
-            color = MaterialTheme.colorScheme.previewText,
-            fontWeight = FontWeight.SemiBold,
-            style = MaterialTheme.typography.labelLarge
-        )
-        Text(
-            text = accountInfo.value,
-            style = MaterialTheme.typography.bodyLarge
-        )
-    }
-}
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun AccountTopBar(
     isEdited: Boolean,
@@ -144,15 +120,3 @@ internal fun AccountTopBar(
  =====================================================================
  */
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun AccountItemPreview() {
-    GedoiseTheme {
-        AccountInfoItem(
-            accountInfo = AccountInfo(
-                label = "Label",
-                value = "Value"
-            )
-        )
-    }
-}

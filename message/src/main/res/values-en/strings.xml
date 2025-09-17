@@ -22,5 +22,5 @@
     <string name="error_fetch_messages">An error occurred while retrieving messages</string>
     <string name="error_fetch_conversations">An error occurred while retrieving conversations</string>
     <string name="no_conversation">No conversations</string>
-
+    <string name="message_reported">Message reported</string>
 </resources>

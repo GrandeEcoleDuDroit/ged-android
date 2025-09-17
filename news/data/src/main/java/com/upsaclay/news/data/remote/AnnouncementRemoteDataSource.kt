@@ -5,12 +5,14 @@ import com.upsaclay.news.data.remote.api.AnnouncementApi
 import com.upsaclay.news.data.toAnnouncement
 import com.upsaclay.news.data.toRemote
 import com.upsaclay.news.domain.entity.Announcement
+import com.upsaclay.news.domain.entity.AnnouncementReport
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 internal class AnnouncementRemoteDataSource(private val announcementApi: AnnouncementApi) {
     suspend fun getAnnouncement(): List<Announcement> = withContext(Dispatchers.IO) {
         mapServerResponseException(
+            message = "Failed to fetch announcements",
             block = { announcementApi.getAnnouncements() }
         )?.map { it.toAnnouncement() } ?: emptyList()
     }
@@ -18,6 +20,7 @@ internal class AnnouncementRemoteDataSource(private val announcementApi: Announc
     suspend fun createAnnouncement(announcement: Announcement) {
         withContext(Dispatchers.IO) {
             mapServerResponseException(
+                message = "Failed to create announcement",
                 block = { announcementApi.createAnnouncement(announcement.toRemote()) }
             )
         }
@@ -26,6 +29,7 @@ internal class AnnouncementRemoteDataSource(private val announcementApi: Announc
     suspend fun deleteAnnouncement(id: String) {
         withContext(Dispatchers.IO) {
             mapServerResponseException(
+                message = "Failed to delete announcement",
                 block = { announcementApi.deleteAnnouncement(id) }
             )
         }
@@ -34,7 +38,18 @@ internal class AnnouncementRemoteDataSource(private val announcementApi: Announc
     suspend fun updateAnnouncement(announcement: Announcement) {
         withContext(Dispatchers.IO) {
             mapServerResponseException(
+                message = "Failed to update announcement",
                 block = { announcementApi.updateAnnouncement(announcement.toRemote()) }
+            )
+        }
+    }
+
+    suspend fun reportAnnouncement(report: AnnouncementReport) {
+        withContext(Dispatchers.IO) {
+            mapServerResponseException(
+                block = {
+                    announcementApi.reportAnnouncement(report.toRemote())
+                }
             )
         }
     }

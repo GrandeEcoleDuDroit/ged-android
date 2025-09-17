@@ -18,6 +18,8 @@ import com.upsaclay.authentication.presentation.registration.secondregistration.
 import com.upsaclay.authentication.presentation.registration.thirdregistration.navigateToThirdRegistration
 import com.upsaclay.authentication.presentation.registration.thirdregistration.thirdRegistrationScreen
 import com.upsaclay.common.domain.entity.Route
+import com.upsaclay.common.presentation.user.navigateToUser
+import com.upsaclay.common.presentation.user.userScreen
 import com.upsaclay.gedoise.presentation.components.MainBottomBar
 import com.upsaclay.gedoise.presentation.profile.account.accountScreen
 import com.upsaclay.gedoise.presentation.profile.account.navigateToAccount
@@ -26,6 +28,7 @@ import com.upsaclay.gedoise.presentation.profile.profileScreen
 import com.upsaclay.message.presentation.chat.ChatRoute
 import com.upsaclay.message.presentation.chat.chatScreen
 import com.upsaclay.message.presentation.chat.navigateToChat
+import com.upsaclay.message.presentation.conversation.ConversationBaseRoute
 import com.upsaclay.message.presentation.conversation.ConversationRoute
 import com.upsaclay.message.presentation.conversation.conversationSection
 import com.upsaclay.message.presentation.conversation.create.CreateConversationRoute
@@ -33,6 +36,8 @@ import com.upsaclay.message.presentation.conversation.create.createConversationS
 import com.upsaclay.message.presentation.conversation.create.navigateToCreateConversation
 import com.upsaclay.message.presentation.conversation.navigateToConversation
 import com.upsaclay.news.presentation.NewsRoute
+import com.upsaclay.news.presentation.announcement.allannouncements.allAnnouncementScreen
+import com.upsaclay.news.presentation.announcement.allannouncements.navigateToAllAnnouncement
 import com.upsaclay.news.presentation.announcement.createannouncement.createAnnouncementScreen
 import com.upsaclay.news.presentation.announcement.createannouncement.navigateToCreateAnnouncement
 import com.upsaclay.news.presentation.announcement.editannouncement.editAnnouncementScreen
@@ -126,6 +131,8 @@ fun GedNavHost(
         newsSection(
             onAnnouncementClick = navController::navigateToReadAnnouncement,
             onCreateAnnouncementClick = navController::navigateToCreateAnnouncement,
+            onEditAnnouncementClick = navController::navigateToEditAnnouncement,
+            onSeeAllAnnouncementClick = navController::navigateToAllAnnouncement,
             onProfilePictureClick = navController::navigateToProfile,
             bottomBar = bottomBar
         ) {
@@ -135,11 +142,19 @@ fun GedNavHost(
 
             readAnnouncementScreen(
                 onBackClick = navController::popBackStack,
-                onEditClick = navController::navigateToEditAnnouncement
+                onEditClick = navController::navigateToEditAnnouncement,
+                onAuthorClick = navController::navigateToUser
             )
 
             editAnnouncementScreen(
                 onBackClick = navController::popBackStack
+            )
+
+            allAnnouncementScreen(
+                onBackClick = navController::popBackStack,
+                onAnnouncementClick = navController::navigateToReadAnnouncement,
+                onEditAnnouncementClick = navController::navigateToEditAnnouncement,
+                onAuthorClick = navController::navigateToUser
             )
 
             profileScreen(
@@ -167,8 +182,15 @@ fun GedNavHost(
             )
 
             chatScreen(
-                onBackClick = navController::popBackStack
+                onBackClick = {
+                    navController.navigateToConversation {
+                        popUpTo(ConversationBaseRoute)
+                    }
+                },
+                onInterlocutorClick = navController::navigateToUser
             )
         }
+
+        userScreen(onBackClick = navController::popBackStack)
     }
 }

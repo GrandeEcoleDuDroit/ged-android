@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -14,7 +15,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -41,6 +41,9 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -71,7 +74,8 @@ fun SentMessageItem(
     modifier: Modifier = Modifier,
     message: Message,
     showSeen: Boolean = false,
-    onClick: () -> Unit = {}
+    clickEnabled: Boolean,
+    onClick: () -> Unit
 ) {
     val dateTimeTextColor = if (isSystemInDarkTheme()) Color.LightGray else Color(0xFFC8C8C8)
 
@@ -86,13 +90,16 @@ fun SentMessageItem(
             modifier = Modifier.weight(0.8f, fill = false),
             horizontalAlignment = Alignment.End
         ) {
-            MessageText(
+            MessageBubble(
+                modifier = Modifier.clickable(
+                    enabled = clickEnabled,
+                    onClick = onClick
+                ),
                 text = message.content,
                 textColor = Color.White,
                 date = message.date,
                 backgroundColor = MaterialTheme.colorScheme.primary,
                 dateTimeTextColor = dateTimeTextColor,
-                onClick = onClick
             )
 
             if (showSeen) {
@@ -124,7 +131,7 @@ fun SentMessageItem(
             visible = message.state == MessageState.ERROR
         ) {
             Icon(
-                painter = painterResource(com.upsaclay.common.R.drawable.ic_error),
+                painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_error),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.error,
                 modifier = Modifier.size(22.dp)
@@ -134,12 +141,14 @@ fun SentMessageItem(
 }
 
 @Composable
-fun ReceiveMessageItem(
+fun ReceivedMessageItem(
     modifier: Modifier = Modifier,
     profilePictureUrl: String?,
     message: Message,
-    displayProfilePicture: Boolean
+    displayProfilePicture: Boolean,
+    onLongClick: () -> Unit
 ) {
+    val haptic = LocalHapticFeedback.current
     val foreground = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.white else MaterialTheme.colorScheme.black
 
     Row(
@@ -148,13 +157,29 @@ fun ReceiveMessageItem(
         verticalAlignment = Alignment.Bottom
     ) {
         if (displayProfilePicture) {
-            ProfilePicture(url = profilePictureUrl, scale = 0.3f)
+            ProfilePicture(
+                url = profilePictureUrl,
+                scale = 0.3f
+            )
         } else {
-            ProfilePicture(modifier = Modifier.alpha(0f), url = null, scale = 0.3f)
+            ProfilePicture(
+                modifier = Modifier.alpha(0f),
+                url = null,
+                scale = 0.3f
+            )
         }
 
-        MessageText(
-            modifier = Modifier.weight(0.8f, fill = false),
+        MessageBubble(
+            modifier = Modifier
+                .weight(0.8f, fill = false)
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onLongPress = {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            onLongClick()
+                        }
+                    )
+                },
             text = message.content,
             date = message.date,
             backgroundColor = MaterialTheme.colorScheme.inputBackground,
@@ -168,22 +193,17 @@ fun ReceiveMessageItem(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun MessageText(
+private fun MessageBubble(
     modifier: Modifier = Modifier,
     text: String,
     date: LocalDateTime,
     textColor: Color,
     dateTimeTextColor: Color,
-    backgroundColor: Color,
-    onClick: (() -> Unit)? = null
+    backgroundColor: Color
 ) {
     FlowRow(
         modifier = modifier
             .clip(RoundedCornerShape(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)))
-            .clickable(
-                enabled = onClick != null,
-                onClick = onClick ?: {}
-            )
             .background(backgroundColor)
             .padding(
                 vertical = dimensionResource(com.upsaclay.common.R.dimen.small_padding),
@@ -331,48 +351,57 @@ private val longtext = "Bonjour, j'espère que vous allez bien. " +
 
 @Preview
 @Composable
-private fun SentMessageItemPreview() {
+private fun SeenSentMessageItemPreview() {
     GedoiseTheme {
-        Column {
-            SentMessageItem(
-                message = messageFixture.copy(content = mediumText),
-                showSeen = true
-            )
-
-            Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.small_padding)))
-
-            SentMessageItem(message = messageFixture.copy(state = MessageState.ERROR))
-
-            Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.small_padding)))
-
-            SentMessageItem(message = messageFixture.copy(state = MessageState.SENDING))
-        }
+        SentMessageItem(
+            message = messageFixture.copy(content = mediumText),
+            showSeen = true,
+            clickEnabled = false,
+            onClick = {}
+        )
     }
 }
 
-@Preview(widthDp = 400)
+@Preview
+@Composable
+private fun SendingSentMessageItemPreview() {
+    GedoiseTheme {
+        SentMessageItem(
+            message = messageFixture.copy(state = MessageState.SENDING),
+            clickEnabled = false,
+            onClick = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun ErrorSentMessageItemPreview() {
+    GedoiseTheme {
+        SentMessageItem(
+            message = messageFixture.copy(state = MessageState.ERROR),
+            clickEnabled = true,
+            onClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = false)
+@Preview(showBackground = false, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun ReceiveMessageItemPreview() {
     GedoiseTheme {
-        Column {
-            ReceiveMessageItem(
-                message = messageFixture.copy(content = mediumText),
-                displayProfilePicture = true,
-                profilePictureUrl = ""
-            )
-
-            Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.small_padding)))
-
-            ReceiveMessageItem(
-                message = messageFixture,
-                displayProfilePicture = false,
-                profilePictureUrl = ""
-            )
-        }
+        ReceivedMessageItem(
+            message = messageFixture.copy(content = mediumText),
+            displayProfilePicture = true,
+            profilePictureUrl = "",
+            onLongClick = {}
+        )
     }
 }
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(showBackground = false)
+@Preview(showBackground = false, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun MessageTextFieldPreview() {
     var text by remember { mutableStateOf("") }
@@ -381,12 +410,12 @@ private fun MessageTextFieldPreview() {
             modifier = Modifier.fillMaxWidth(),
             value = text,
             onValueChange = { text = it },
-            onSendClick = { },
+            onSendClick = {},
         )
     }
 }
 
-@Preview(widthDp = 200, heightDp = 100)
+@Preview
 @Composable
 private fun NewMessageIndicatorPreview() {
     GedoiseTheme {

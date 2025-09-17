@@ -7,6 +7,7 @@ import com.google.firebase.firestore.MemoryCacheSettings
 import com.upsaclay.authentication.authenticationModule
 import com.upsaclay.authentication.data.authenticationDataModule
 import com.upsaclay.authentication.domain.authenticationDomainModule
+import com.upsaclay.common.commonModule
 import com.upsaclay.common.data.commonDataModule
 import com.upsaclay.common.domain.commonDomainModule
 import com.upsaclay.gedoise.domain.usecase.FcmTokenUseCase
@@ -38,6 +39,7 @@ class GedApplication : Application() {
                     authenticationModule,
                     authenticationDomainModule,
                     authenticationDataModule,
+                    commonModule,
                     commonDomainModule,
                     commonDataModule,
                     newsModule,

@@ -3,6 +3,7 @@ package com.upsaclay.news.data.repository
 import com.upsaclay.news.data.local.AnnouncementLocalDataSource
 import com.upsaclay.news.data.remote.AnnouncementRemoteDataSource
 import com.upsaclay.news.domain.entity.Announcement
+import com.upsaclay.news.domain.entity.AnnouncementReport
 import com.upsaclay.news.domain.entity.AnnouncementState
 import com.upsaclay.news.domain.repository.AnnouncementRepository
 import kotlinx.coroutines.CoroutineScope
@@ -10,6 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 internal class AnnouncementRepositoryImpl(
     private val announcementRemoteDataSource: AnnouncementRemoteDataSource,
@@ -23,6 +25,12 @@ internal class AnnouncementRepositoryImpl(
             initialValue = emptyList()
         )
     override val announcements: Flow<List<Announcement>> = _announcements
+
+    init {
+        scope.launch {
+            refreshAnnouncements()
+        }
+    }
 
     override fun getAnnouncementFlow(announcementId: String): Flow<Announcement?> =
         _announcements.map { announcements ->
@@ -66,5 +74,9 @@ internal class AnnouncementRepositoryImpl(
 
     override suspend fun deleteLocalAnnouncement(announcement: Announcement) {
         announcementLocalDataSource.deleteAnnouncement(announcement)
+    }
+
+    override suspend fun reportAnnouncement(report: AnnouncementReport) {
+        announcementRemoteDataSource.reportAnnouncement(report)
     }
 }

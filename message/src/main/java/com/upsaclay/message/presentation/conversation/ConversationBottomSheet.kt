@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -16,12 +16,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.upsaclay.common.presentation.components.ClickableItem
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ConversationModalBottomSheet(
+fun ConversationBottomSheet(
     onDismiss: () -> Unit,
     onDeleteClick: () -> Unit
 ) {
@@ -49,7 +50,7 @@ fun ConversationModalBottomSheet(
             },
             icon = {
                 Icon(
-                    imageVector = Icons.Default.Delete,
+                    imageVector = Icons.Outlined.Delete,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.error
                 )
@@ -62,4 +63,19 @@ fun ConversationModalBottomSheet(
 
         Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.large_padding)))
     }
+}
+
+/*
+ =====================================================================
+                                Preview
+ =====================================================================
+ */
+
+@Preview(heightDp = 400)
+@Composable
+private fun ConversationBottomSheetPreview() {
+    ConversationBottomSheet(
+        onDismiss = {},
+        onDeleteClick = {}
+    )
 }

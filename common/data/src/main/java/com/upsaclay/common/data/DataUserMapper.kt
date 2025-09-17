@@ -1,11 +1,13 @@
 package com.upsaclay.common.data
 
 import com.upsaclay.common.data.local.LocalUser
-import com.upsaclay.common.data.remote.FirestoreUser
-import com.upsaclay.common.data.remote.OracleUser
+import com.upsaclay.common.data.remote.model.FirestoreUser
+import com.upsaclay.common.data.remote.model.ServerUser
+import com.upsaclay.common.data.remote.model.RemoteUserReport
 import com.upsaclay.common.domain.UrlUtils.formatProfilePictureUrl
 import com.upsaclay.common.domain.UrlUtils.getFileNameFromUrl
 import com.upsaclay.common.domain.entity.User
+import com.upsaclay.common.domain.entity.UserReport
 
 internal fun User.toLocal() = LocalUser(
     userId = id,
@@ -17,7 +19,7 @@ internal fun User.toLocal() = LocalUser(
     userProfilePictureFileName = getFileNameFromUrl(profilePictureUrl)
 )
 
-internal fun User.toOracleUser() = OracleUser(
+internal fun User.toServerUser() = ServerUser(
     userId = id,
     userFirstName = firstName,
     userLastName = lastName,
@@ -56,4 +58,16 @@ internal fun FirestoreUser.toUser() = User(
     schoolLevel = schoolLevel,
     isMember = isMember,
     profilePictureUrl = formatProfilePictureUrl(profilePictureFileName)
+)
+
+internal fun UserReport.toRemote() = RemoteUserReport(
+    userId = userId,
+    userInfo = userInfo.toRemote(),
+    reporterInfo = reporterInfo.toRemote(),
+    reason = reason.toString()
+)
+
+internal fun UserReport.UserInfo.toRemote() = RemoteUserReport.RemoteUserInfo(
+    fullName = fullName,
+    email = email
 )

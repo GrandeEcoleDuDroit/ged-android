@@ -18,6 +18,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -29,6 +30,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import com.upsaclay.common.R
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.inputForeground
@@ -57,10 +59,17 @@ fun BackTopBar(
             contentDescription = stringResource(id = R.string.arrow_back_icon_description)
         )
     },
-    leadingIcon: @Composable (RowScope.() -> Unit) = {}
+    leadingIcon: @Composable (RowScope.() -> Unit) = {},
+    scrollBehavior: TopAppBarScrollBehavior? = null
 ) {
     TopAppBar(
-        title = { Text(text = title) },
+        title = {
+            Text(
+                text = title,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+        },
         navigationIcon = {
             IconButton(onClick = onBackClick) {
                 icon()
@@ -68,8 +77,10 @@ fun BackTopBar(
         },
         actions = leadingIcon,
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.background
-        )
+            containerColor = MaterialTheme.colorScheme.background,
+            scrolledContainerColor = MaterialTheme.colorScheme.background
+        ),
+        scrollBehavior = scrollBehavior
     )
 }
 
@@ -193,6 +204,7 @@ private fun TitleTopBarPreview() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Phones
 @Composable
 private fun BackTopBarPreview() {

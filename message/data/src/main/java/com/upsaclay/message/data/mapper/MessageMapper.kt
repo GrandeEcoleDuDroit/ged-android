@@ -6,7 +6,9 @@ import com.upsaclay.common.domain.extensions.toEpochMilliUTC
 import com.upsaclay.common.domain.extensions.toLocalDateTimeUTC
 import com.upsaclay.message.data.local.model.LocalMessage
 import com.upsaclay.message.data.remote.model.RemoteMessage
+import com.upsaclay.message.data.remote.model.RemoteMessageReport
 import com.upsaclay.message.domain.entity.Message
+import com.upsaclay.message.domain.entity.MessageReport
 import com.upsaclay.message.domain.entity.MessageState
 
 internal fun RemoteMessage.toMessageContent() = Message(
@@ -50,4 +52,16 @@ internal fun Message.toRemote() = RemoteMessage(
     content = content,
     timestamp = date.toTimestamp(),
     seen = seen
+)
+
+internal fun MessageReport.toRemote() = RemoteMessageReport(
+    conversationId = conversationId,
+    messageId = messageId,
+    recipientInfo = recipientInfo.toRemote(),
+    reason = reason.toString()
+)
+
+internal fun MessageReport.UserInfo.toRemote() = RemoteMessageReport.RemoteUserInfo(
+    fullName = fullName,
+    email = email
 )

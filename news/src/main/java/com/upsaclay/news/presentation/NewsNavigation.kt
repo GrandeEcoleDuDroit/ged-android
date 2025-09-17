@@ -7,6 +7,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.upsaclay.common.domain.entity.Route
+import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.presentation.news.NewsDestination
 import kotlinx.serialization.Serializable
 
@@ -20,6 +21,8 @@ fun NavController.navigateToNews(navOptions: NavOptions? = null) {
 fun NavGraphBuilder.newsSection(
     onAnnouncementClick: (String) -> Unit,
     onCreateAnnouncementClick: () -> Unit,
+    onEditAnnouncementClick: (Announcement) -> Unit,
+    onSeeAllAnnouncementClick: () -> Unit,
     onProfilePictureClick: () -> Unit,
     bottomBar: @Composable () -> Unit,
     newsDestinations: NavGraphBuilder.() -> Unit
@@ -29,6 +32,8 @@ fun NavGraphBuilder.newsSection(
             NewsDestination(
                 onAnnouncementClick = onAnnouncementClick,
                 onCreateAnnouncementClick = onCreateAnnouncementClick,
+                onEditAnnouncementClick = onEditAnnouncementClick,
+                onSeeAllAnnouncementClick = onSeeAllAnnouncementClick,
                 onProfilePictureClick = onProfilePictureClick,
                 bottomBar = bottomBar
             )

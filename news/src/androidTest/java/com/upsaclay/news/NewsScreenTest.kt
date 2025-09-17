@@ -48,6 +48,8 @@ class NewsScreenTest {
             NewsDestination(
                 onAnnouncementClick = {},
                 onCreateAnnouncementClick = {},
+                onEditAnnouncementClick = {},
+                onSeeAllAnnouncementClick = {},
                 onProfilePictureClick = {},
                 bottomBar = {},
                 viewModel = newsViewModel
@@ -66,6 +68,8 @@ class NewsScreenTest {
             NewsDestination(
                 onAnnouncementClick = {},
                 onCreateAnnouncementClick = {},
+                onEditAnnouncementClick = {},
+                onSeeAllAnnouncementClick = {},
                 onProfilePictureClick = {},
                 bottomBar = {},
                 viewModel = newsViewModel
@@ -88,6 +92,8 @@ class NewsScreenTest {
             NewsDestination(
                 onAnnouncementClick = {},
                 onCreateAnnouncementClick = {},
+                onEditAnnouncementClick = {},
+                onSeeAllAnnouncementClick = {},
                 onProfilePictureClick = {},
                 bottomBar = {},
                 viewModel = newsViewModel
@@ -115,6 +121,8 @@ class NewsScreenTest {
             NewsDestination(
                 onAnnouncementClick = {},
                 onCreateAnnouncementClick = {},
+                onEditAnnouncementClick = {},
+                onSeeAllAnnouncementClick = {},
                 onProfilePictureClick = {},
                 bottomBar = {},
                 viewModel = newsViewModel

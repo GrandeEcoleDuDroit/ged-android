@@ -44,6 +44,7 @@ class ChatScreenTest {
             ChatDestination(
                 conversation = conversationFixture,
                 onBackClick = {},
+                onInterlocutorClick = {},
                 viewModel = chatViewModel
             )
         }
@@ -64,6 +65,7 @@ class ChatScreenTest {
             ChatDestination(
                 conversation = conversationFixture,
                 onBackClick = {},
+                onInterlocutorClick = {},
                 viewModel = chatViewModel
             )
         }

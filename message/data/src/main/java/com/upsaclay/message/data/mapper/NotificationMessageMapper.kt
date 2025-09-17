@@ -7,8 +7,6 @@ import com.upsaclay.common.domain.extensions.toLocalDateTimeUTC
 import com.upsaclay.message.data.local.model.LocalNotificationMessage
 import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.ConversationState
-import com.upsaclay.message.domain.entity.Message
-import com.upsaclay.message.domain.entity.MessageState
 import com.upsaclay.message.domain.entity.NotificationMessage
 
 fun LocalNotificationMessage.toNotificationMessage() = NotificationMessage(

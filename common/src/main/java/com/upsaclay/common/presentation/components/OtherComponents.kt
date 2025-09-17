@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -88,10 +87,10 @@ fun ClickableItem(
         modifier = modifier
             .clickable(onClick = onClick)
             .padding(dimensionResource(R.dimen.medium_padding)),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.smallMediumSpacing()
     ) {
         icon()
-        Spacer(modifier = Modifier.width(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)))
         text()
     }
 }
