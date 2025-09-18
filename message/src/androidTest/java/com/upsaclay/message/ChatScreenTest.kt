@@ -25,6 +25,7 @@ class ChatScreenTest {
     private val uiState = ChatViewModel.ChatUiState(
         conversation = conversationFixture,
         text = "",
+        loading = false
     )
 
     @Before

@@ -37,6 +37,7 @@ import com.upsaclay.message.domain.conversationFixture
 import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.Message
 import com.upsaclay.message.domain.entity.MessageReport
+import com.upsaclay.message.domain.entity.MessageState
 import com.upsaclay.message.domain.messagesFixture
 import com.upsaclay.message.presentation.chat.ChatViewModel.MessageEvent
 import kotlinx.coroutines.flow.Flow
@@ -116,7 +117,7 @@ private fun ChatScreen(
     val bottomSheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
     )
-    var messageClicked: Message? by remember { mutableStateOf(null) }
+    var clickedMessage: Message? by remember { mutableStateOf(null) }
     var showDeleteMessageDialog by remember { mutableStateOf(false) }
     var showSentMessageBottomSheet by remember { mutableStateOf(false) }
     var showReceivedMessageBottomSheet by remember { mutableStateOf(false) }
@@ -129,7 +130,7 @@ private fun ChatScreen(
             confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
             onConfirm = {
                 showDeleteMessageDialog = false
-                messageClicked?.let(onDeleteMessageClick)
+                clickedMessage?.let(onDeleteMessageClick)
             },
             onCancel = { showDeleteMessageDialog  = false }
         )
@@ -178,11 +179,13 @@ private fun ChatScreen(
             interlocutor = conversation.interlocutor,
             newMessageEvent = newMessageEvent,
             onErrorSentMessageClick = {
-                messageClicked = it
-                showSentMessageBottomSheet = true
+                if (it.state == MessageState.ERROR) {
+                    clickedMessage = it
+                    showSentMessageBottomSheet = true
+                }
             },
             onReceivedMessageLongClick = {
-                messageClicked = it
+                clickedMessage = it
                 showReceivedMessageBottomSheet = true
             }
         )
@@ -193,7 +196,7 @@ private fun ChatScreen(
             onDismiss = { showSentMessageBottomSheet = false },
             onResendMessageClick = {
                 showSentMessageBottomSheet = false
-                messageClicked?.let(onResendMessageClick)
+                clickedMessage?.let(onResendMessageClick)
             },
             onDeleteMessageClick = {
                 showSentMessageBottomSheet = false
@@ -207,9 +210,7 @@ private fun ChatScreen(
             onDismiss = { showReceivedMessageBottomSheet = false },
             onReportClick = {
                 showReceivedMessageBottomSheet = false
-                messageClicked?.let {
-                    showReportMessageBottomSheet = true
-                }
+                showReportMessageBottomSheet = true
             }
         )
     }
@@ -221,7 +222,7 @@ private fun ChatScreen(
             onDismiss = { showReportMessageBottomSheet = false },
             onReportClick = { reason ->
                 showReportMessageBottomSheet = false
-                messageClicked?.let { message ->
+                clickedMessage?.let { message ->
                     onReportClick(
                         MessageReport(
                             conversationId = conversation.id,

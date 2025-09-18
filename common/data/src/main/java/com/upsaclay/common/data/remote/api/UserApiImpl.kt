@@ -110,7 +110,7 @@ internal class UserApiImpl(
 
         mapFirebaseException(
             message = "Failed to delete profile picture with Firestore",
-            block = { userFirestoreApi.updateProfilePictureFileName(userId, null) }
+            block = { userFirestoreApi.deleteProfilePictureFileName(userId) }
         )
     }
 
