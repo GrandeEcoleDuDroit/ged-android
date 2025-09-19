@@ -39,6 +39,9 @@ class NewsViewModel(
         listenUser()
     }
 
+    fun getAnnouncement(announcementId: String): Announcement? =
+        announcementRepository.getAnnouncement(announcementId)
+
     fun refreshAnnouncements() {
         viewModelScope.launch {
             _uiState.update {

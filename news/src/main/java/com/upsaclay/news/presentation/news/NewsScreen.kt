@@ -80,7 +80,9 @@ fun NewsDestination(
             onAnnouncementClick = onAnnouncementClick,
             onCreateAnnouncementClick = onCreateAnnouncementClick,
             onResendAnnouncementClick = viewModel::resendAnnouncement,
-            onEditAnnouncementClick = onEditAnnouncementClick,
+            onEditAnnouncementClick = {
+                viewModel.getAnnouncement(it)?.let(onEditAnnouncementClick)
+            },
             onDeleteAnnouncementClick = viewModel::deleteAnnouncement,
             onSeeAllAnnouncementClick = onSeeAllAnnouncementClick,
             onReportAnnouncementClick = viewModel::reportAnnouncement
@@ -102,7 +104,7 @@ private fun NewsScreen(
     onAnnouncementClick: (String) -> Unit,
     onCreateAnnouncementClick: () -> Unit,
     onResendAnnouncementClick: (Announcement) -> Unit,
-    onEditAnnouncementClick: (Announcement) -> Unit,
+    onEditAnnouncementClick: (String) -> Unit,
     onDeleteAnnouncementClick: (Announcement) -> Unit,
     onSeeAllAnnouncementClick: () -> Unit,
     onReportAnnouncementClick: (AnnouncementReport) -> Unit
@@ -184,7 +186,7 @@ private fun NewsScreen(
                                 isEditable = user.isMember && announcement.author.id == user.id,
                                 onEditClick = {
                                     showAnnouncementBottomSheet = false
-                                    announcementClicked?.let(onEditAnnouncementClick)
+                                    announcementClicked?.id?.let(onEditAnnouncementClick)
                                 },
                                 onReportClick = {
                                     showAnnouncementBottomSheet = false
