@@ -29,6 +29,9 @@ internal class AnnouncementRepositoryImpl(
             announcements.firstOrNull { it.id == announcementId }
         }
 
+    override fun getAnnouncement(announcementId: String): Announcement? =
+        _announcements.value.firstOrNull { it.id == announcementId }
+
     override suspend fun getRemoteAnnouncements(): List<Announcement> =
         announcementRemoteDataSource.getAnnouncement()
 

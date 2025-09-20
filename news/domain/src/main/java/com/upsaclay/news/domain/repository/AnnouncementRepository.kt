@@ -9,6 +9,8 @@ interface AnnouncementRepository {
 
     fun getAnnouncementFlow(announcementId: String): Flow<Announcement?>
 
+    fun getAnnouncement(announcementId: String): Announcement?
+
     suspend fun getRemoteAnnouncements(): List<Announcement>
 
     suspend fun createAnnouncement(announcement: Announcement)

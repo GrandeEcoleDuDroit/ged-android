@@ -1,5 +1,6 @@
 package com.upsaclay.message.domain
 
+import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.message.domain.repository.ConversationRepository
@@ -21,6 +22,7 @@ import org.junit.Test
 class ListenRemoteConversationUseCaseTest {
     private val userRepository: UserRepository = mockk()
     private val conversationRepository: ConversationRepository = mockk()
+    private val blockedUserRepository: BlockedUserRepository = mockk()
     private val listenRemoteMessagesUseCase: ListenRemoteMessagesUseCase = mockk()
 
     private lateinit var useCase: ListenRemoteConversationsUseCase
@@ -37,6 +39,7 @@ class ListenRemoteConversationUseCaseTest {
         useCase = ListenRemoteConversationsUseCase(
             userRepository = userRepository,
             conversationRepository = conversationRepository,
+            blockedUserRepository = blockedUserRepository,
             listenRemoteMessagesUseCase = listenRemoteMessagesUseCase,
             scope = testScope
         )

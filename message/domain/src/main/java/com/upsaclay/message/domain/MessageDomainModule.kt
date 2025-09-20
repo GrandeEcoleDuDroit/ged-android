@@ -47,6 +47,7 @@ val messageDomainModule = module {
         ListenRemoteConversationsUseCase(
             userRepository = get(),
             conversationRepository = get(),
+            blockedUserRepository = get(),
             listenRemoteMessagesUseCase = get(),
             scope = get(BACKGROUND_SCOPE)
         )
@@ -54,6 +55,7 @@ val messageDomainModule = module {
     single {
         ListenRemoteMessagesUseCase(
             messageRepository = get(),
+            blockedUserRepository = get(),
             scope = get(BACKGROUND_SCOPE)
         )
     }

@@ -1,5 +1,6 @@
 package com.upsaclay.message.domain
 
+import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
 import com.upsaclay.message.domain.usecase.ListenRemoteMessagesUseCase
@@ -20,6 +21,7 @@ import org.junit.Test
 class ListenRemoteMessagesUseCaseTest {
     private val messageRepository: MessageRepository = mockk()
     private val conversationRepository: ConversationRepository = mockk()
+    private val blockedUserRepository: BlockedUserRepository = mockk()
 
     private lateinit var useCase: ListenRemoteMessagesUseCase
 
@@ -35,6 +37,7 @@ class ListenRemoteMessagesUseCaseTest {
 
         useCase = ListenRemoteMessagesUseCase(
             messageRepository = messageRepository,
+            blockedUserRepository = blockedUserRepository,
             scope = testScope
         )
     }
@@ -44,7 +47,7 @@ class ListenRemoteMessagesUseCaseTest {
         // Given
         val conversations = listOf(conversationFixture)
         useCase.listeningJobs = mutableMapOf(
-            conversationFixture.id to ListenRemoteMessagesUseCase.MessageJob(conversations[0], Job())
+            conversationFixture.id to Job()
         )
 
         // When
