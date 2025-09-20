@@ -11,10 +11,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -25,6 +27,8 @@ import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.hintText
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.news.R
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 
 @Composable
 fun CreateAnnouncementInput(
@@ -60,9 +64,11 @@ fun EditAnnouncementInput(
     onTitleChange: (String) -> Unit,
     onContentChange: (String) -> Unit
 ) {
+    val scrollState = rememberScrollState()
+
     SelectionContainer(modifier = modifier) {
         Column(
-            modifier = Modifier.verticalScroll(rememberScrollState()),
+            modifier = Modifier.verticalScroll(scrollState),
             verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
         ) {
             AnnouncementTitleInput(
@@ -75,6 +81,13 @@ fun EditAnnouncementInput(
                 focused = true
             )
         }
+    }
+
+    LaunchedEffect(scrollState) {
+        snapshotFlow { scrollState.maxValue }
+            .filter { it > 0 }
+            .first()
+        scrollState.animateScrollTo(scrollState.maxValue)
     }
 }
 
