@@ -7,6 +7,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      GED_SERVER_URL: ${{ secrets.GED_SERVER_URL }}
+      LOCAL_SERVER_URL: ${{ secrets.LOCAL_SERVER_URL }}
 
     steps:
       - name: Checkout
@@ -30,7 +33,12 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Build with Gradle
+      - name: Set up server URLs
+        run: |
+          echo "GED_SERVER_URL=$GED_SERVER_URL" >> $GITHUB_WORKSPACE/gradle.properties
+          echo "LOCAL_SERVER_URL=$LOCAL_SERVER_URL" >> $GITHUB_WORKSPACE/gradle.properties
+
+      - name: Build
         run: ./gradlew build
 
       - name: Run unit tests
