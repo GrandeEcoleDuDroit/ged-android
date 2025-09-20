@@ -25,7 +25,6 @@ import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.gold
-import com.upsaclay.common.presentation.theme.previewText
 import com.upsaclay.common.utils.Phones
 
 @Composable

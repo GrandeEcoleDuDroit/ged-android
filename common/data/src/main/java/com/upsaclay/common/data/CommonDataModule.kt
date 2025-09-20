@@ -1,9 +1,14 @@
 package com.upsaclay.common.data
 
-import com.upsaclay.common.data.local.UserDataStore
+import com.upsaclay.common.data.local.BlockedUserLocalDataSource
 import com.upsaclay.common.data.local.UserLocalDataSource
+import com.upsaclay.common.data.local.datastore.BlockedUserDataStore
+import com.upsaclay.common.data.local.datastore.UserDataStore
+import com.upsaclay.common.data.remote.BlockedUserRemoteDataSource
 import com.upsaclay.common.data.remote.ImageRemoteDataSource
 import com.upsaclay.common.data.remote.UserRemoteDataSource
+import com.upsaclay.common.data.remote.api.BlockedUserApi
+import com.upsaclay.common.data.remote.api.BlockedUserApiImpl
 import com.upsaclay.common.data.remote.api.FcmApi
 import com.upsaclay.common.data.remote.api.ImageApi
 import com.upsaclay.common.data.remote.api.ImageApiImpl
@@ -13,6 +18,7 @@ import com.upsaclay.common.data.remote.api.UserApiImpl
 import com.upsaclay.common.data.remote.api.UserFirestoreApi
 import com.upsaclay.common.data.remote.api.UserServerApi
 import com.upsaclay.common.data.remote.api.WhiteListApi
+import com.upsaclay.common.data.repository.BlockedUserRepositoryImpl
 import com.upsaclay.common.data.repository.DrawableRepositoryImpl
 import com.upsaclay.common.data.repository.FcmTokenRepositoryImpl
 import com.upsaclay.common.data.repository.FileRepositoryImpl
@@ -21,6 +27,7 @@ import com.upsaclay.common.data.repository.UserRepositoryImpl
 import com.upsaclay.common.data.repository.WhiteListRepositoryImpl
 import com.upsaclay.common.domain.NotificationApi
 import com.upsaclay.common.domain.e
+import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.repository.DrawableRepository
 import com.upsaclay.common.domain.repository.FcmTokenRepository
 import com.upsaclay.common.domain.repository.FileRepository
@@ -102,8 +109,8 @@ val commonDataModule = module {
     singleOf(::UserFirestoreApi)
     singleOf(::UserApiImpl) { bind<UserApi>() }
     singleOf(::UserRemoteDataSource)
-    singleOf(::UserLocalDataSource)
     singleOf(::UserDataStore)
+    singleOf(::UserLocalDataSource)
     single<UserRepository> {
         UserRepositoryImpl(
             userRemoteDataSource = get(),
@@ -111,6 +118,14 @@ val commonDataModule = module {
             scope = get(BACKGROUND_SCOPE)
         )
     }
+
+    singleOf(::BlockedUserApiImpl) { bind<BlockedUserApi>() }
+    singleOf(::BlockedUserRemoteDataSource)
+    singleOf(::BlockedUserDataStore)
+    singleOf(::BlockedUserLocalDataSource)
+    singleOf(::BlockedUserRepositoryImpl) { bind<BlockedUserRepository>() }
+
+
     singleOf(::WhiteListRepositoryImpl) { bind<WhiteListRepository>() }
     singleOf(::FcmTokenRepositoryImpl) { bind<FcmTokenRepository>() }
 }

@@ -1,4 +1,4 @@
-package com.upsaclay.common.data.local
+package com.upsaclay.common.data.local.datastore
 
 import android.content.Context
 import androidx.datastore.core.DataStore
@@ -9,6 +9,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.upsaclay.common.data.extensions.getGsonFlowValue
 import com.upsaclay.common.data.extensions.getGsonValue
 import com.upsaclay.common.data.extensions.setGsonValue
+import com.upsaclay.common.data.local.LocalUser
 import kotlinx.coroutines.flow.Flow
 
 internal class UserDataStore(context: Context) {

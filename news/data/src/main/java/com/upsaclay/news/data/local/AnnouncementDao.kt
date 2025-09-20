@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Upsert
+import com.upsaclay.news.data.AnnouncementField
 import com.upsaclay.news.data.AnnouncementField.Local.DATE
 import com.upsaclay.news.data.local.model.ANNOUNCEMENTS_TABLE
 import com.upsaclay.news.data.local.model.LocalAnnouncement
@@ -19,4 +20,7 @@ interface AnnouncementDao {
 
     @Delete
     suspend fun deleteAnnouncement(localAnnouncement: LocalAnnouncement)
+
+    @Query("DELETE FROM $ANNOUNCEMENTS_TABLE WHERE ${AnnouncementField.Local.USER_ID} = :userId")
+    suspend fun deleteUserAnnouncements(userId: String)
 }

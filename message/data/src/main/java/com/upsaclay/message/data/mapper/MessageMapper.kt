@@ -11,7 +11,7 @@ import com.upsaclay.message.domain.entity.Message
 import com.upsaclay.message.domain.entity.MessageReport
 import com.upsaclay.message.domain.entity.MessageState
 
-internal fun RemoteMessage.toMessageContent() = Message(
+internal fun RemoteMessage.toMessage() = Message(
     id = messageId,
     senderId = senderId,
     recipientId = recipientId,
@@ -22,7 +22,7 @@ internal fun RemoteMessage.toMessageContent() = Message(
     state = MessageState.SENT
 )
 
-fun LocalMessage.toMessageContent() = Message(
+fun LocalMessage.toMessage() = Message(
     id = messageId,
     senderId = senderId,
     recipientId = recipientId,

@@ -35,7 +35,7 @@ class RefreshAnnouncementUseCaseTest {
         coEvery { announcementRepository.refreshAnnouncements() } returns Unit
 
         // When
-        useCase()
+        useCase.invoke()
 
         // Then
         coVerify { announcementRepository.refreshAnnouncements() }
@@ -47,7 +47,7 @@ class RefreshAnnouncementUseCaseTest {
         useCase.lastRequestTime = System.currentTimeMillis()
 
         // When
-        useCase()
+        useCase.invoke()
 
         // Then
         coVerify(exactly = 0) { announcementRepository.refreshAnnouncements() }
@@ -59,6 +59,6 @@ class RefreshAnnouncementUseCaseTest {
         every { connectivityObserver.isConnected } returns false
 
         // When
-        useCase()
+        useCase.invoke()
     }
 }

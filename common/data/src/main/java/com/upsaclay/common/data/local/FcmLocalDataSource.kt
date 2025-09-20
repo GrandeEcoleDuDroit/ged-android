@@ -1,5 +1,6 @@
 package com.upsaclay.common.data.local
 
+import com.upsaclay.common.data.local.datastore.FcmDataStore
 import com.upsaclay.common.domain.entity.FcmToken
 
 class FcmLocalDataSource(

@@ -43,7 +43,7 @@ class ListenRemoteMessagesUseCaseTest {
     fun listenRemoteMessages_should_not_listen_same_conversation_twice() = runTest {
         // Given
         val conversations = listOf(conversationFixture)
-        useCase.messageJobs = mutableMapOf(
+        useCase.listeningJobs = mutableMapOf(
             conversationFixture.id to ListenRemoteMessagesUseCase.MessageJob(conversations[0], Job())
         )
 
@@ -51,7 +51,7 @@ class ListenRemoteMessagesUseCaseTest {
         useCase.start(conversations[0])
 
         // Then
-        assert(useCase.messageJobs.count() == 1)
+        assert(useCase.listeningJobs.count() == 1)
     }
 
     @Test
@@ -88,6 +88,6 @@ class ListenRemoteMessagesUseCaseTest {
         useCase.stop()
 
         // Then
-        assert(useCase.messageJobs.isEmpty())
+        assert(useCase.listeningJobs.isEmpty())
     }
 }
