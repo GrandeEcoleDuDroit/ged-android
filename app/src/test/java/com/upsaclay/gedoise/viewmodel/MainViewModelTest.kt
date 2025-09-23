@@ -48,6 +48,7 @@ class MainViewModelTest {
         coEvery { listenRemoteDataUseCase.stop() } returns Unit
         coEvery { clearDataUseCase() } returns Unit
         coEvery { authenticationRepository.logout() } returns Unit
+        coEvery { synchronizeDataUseCase.synchronize() } returns Unit
 
         mainViewModel = MainViewModel(
             authenticationRepository = authenticationRepository,
