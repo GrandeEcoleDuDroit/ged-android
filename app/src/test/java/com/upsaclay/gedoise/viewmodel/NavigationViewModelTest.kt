@@ -40,16 +40,10 @@ class NavigationViewModelTest {
         every { routeRepository.currentRoute } returns null
         every { routeRepository.setCurrentRoute(any()) } returns Unit
         every { getUnreadConversationsCountUseCase() } returns flowOf(0)
-
-        navigationViewModel = NavigationViewModel(
-            getUnreadConversationsCountUseCase = getUnreadConversationsCountUseCase,
-            routeRepository = routeRepository,
-            authenticationRepository = authenticationRepository
-        )
     }
 
     @Test
-    fun startDestination_should_be_NewsRoute_when_authenticated() = runTest {
+    fun startDestination_should_be_NewsRoute_when_authenticated() = runTest(testDispatcher) {
         // When
         navigationViewModel = NavigationViewModel(
             getUnreadConversationsCountUseCase = getUnreadConversationsCountUseCase,
