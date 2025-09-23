@@ -1,14 +1,8 @@
 package com.upsaclay.message.presentation.chat
 
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Snackbar
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -24,10 +18,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
 import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
+import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.components.SensibleActionDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
@@ -74,6 +68,8 @@ fun ChatDestination(
 
                 is MessageEvent.MessageReported -> showSnackBar(context.getString(R.string.message_reported))
 
+                is MessageEvent.ChatDeleted -> onBackClick()
+
                 is SingleUiEvent.Error -> showSnackBar(context.getString(event.messageId))
             }
         }
@@ -82,17 +78,20 @@ fun ChatDestination(
     ChatScreen(
         conversation = conversation,
         messages = viewModel.messages,
-        text = uiState.text,
+        messageText = uiState.messageText,
         loading = uiState.loading,
+        userBlocked = uiState.isUserBlocked,
         snackbarHostState = snackbarHostState,
         newMessageEvent = newMessageEvent,
         onBackClick = onBackClick,
         onInterlocutorClick = onInterlocutorClick,
-        onTextChange = viewModel::onTextChange,
+        onMessageTextChange = viewModel::onMessageTextChange,
         onSendMessage = viewModel::sendMessage,
         onResendMessageClick = viewModel::resendMessage,
         onDeleteMessageClick = viewModel::deleteMessage,
-        onReportClick = viewModel::reportMessage
+        onReportClick = viewModel::reportMessage,
+        onUnblockUser = viewModel::unblockUser,
+        onDeleteChat = viewModel::deleteChat
     )
 }
 
@@ -101,17 +100,20 @@ fun ChatDestination(
 private fun ChatScreen(
     conversation: Conversation,
     messages: Flow<PagingData<Message>>,
-    text: String,
+    messageText: String,
     loading: Boolean,
+    userBlocked: Boolean,
     snackbarHostState: SnackbarHostState = SnackbarHostState(),
     newMessageEvent: MessageEvent.NewMessage?,
     onBackClick: () -> Unit,
     onInterlocutorClick: (User) -> Unit,
-    onTextChange: (String) -> Unit,
+    onMessageTextChange: (String) -> Unit,
     onSendMessage: () -> Unit,
     onResendMessageClick: (Message) -> Unit,
     onDeleteMessageClick: (Message) -> Unit,
-    onReportClick: (MessageReport) -> Unit
+    onReportClick: (MessageReport) -> Unit,
+    onUnblockUser: (String) -> Unit,
+    onDeleteChat: () -> Unit
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val bottomSheetState = rememberModalBottomSheetState(
@@ -122,6 +124,7 @@ private fun ChatScreen(
     var showSentMessageBottomSheet by remember { mutableStateOf(false) }
     var showReceivedMessageBottomSheet by remember { mutableStateOf(false) }
     var showReportMessageBottomSheet by remember { mutableStateOf(false) }
+    var showDeleteChatDialog by remember { mutableStateOf(false) }
 
     if (showDeleteMessageDialog) {
         SensibleActionDialog(
@@ -136,44 +139,42 @@ private fun ChatScreen(
         )
     }
 
-    Scaffold(
-        topBar = {
-            ChatTopBar(
-                interlocutor = conversation.interlocutor,
-                onBackClick = {
-                    keyboardController?.hide()
-                    onBackClick()
-                },
-                onInterlocutorClick = { onInterlocutorClick(conversation.interlocutor) }
-            )
+    if (showDeleteChatDialog) {
+        SensibleActionDialog(
+            title = stringResource(id = R.string.delete_chat_dialog_title),
+            text = stringResource(id = R.string.delete_chat_dialog_message),
+            confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
+            onConfirm = {
+                showDeleteChatDialog = false
+                onDeleteChat()
+            },
+            onCancel = { showDeleteChatDialog  = false }
+        )
+    }
+
+    if (loading) {
+        LoadingDialog()
+    }
+
+    ChatScaffold(
+        modifier = Modifier.imePadding(),
+        interlocutor = conversation.interlocutor,
+        userBlocked = userBlocked,
+        messageText = messageText,
+        snackbarHostState = snackbarHostState,
+        onTextChange = onMessageTextChange,
+        onSendMessage = onSendMessage,
+        onBackClick = {
+            keyboardController?.hide()
+            onBackClick()
         },
-        bottomBar = {
-            BottomAppBar(
-                modifier = Modifier
-                    .height(64.dp),
-                containerColor = MaterialTheme.colorScheme.surface,
-                contentColor = MaterialTheme.colorScheme.surface,
-                tonalElevation = 0.dp
-            ) {
-                MessageInput(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = text,
-                    onValueChange = onTextChange,
-                    onSendClick = onSendMessage
-                )
-            }
-        },
-        snackbarHost = {
-            SnackbarHost(
-                hostState = snackbarHostState
-            ) {
-                Snackbar(it)
-            }
-        },
-    ) { paddingValues ->
+        onInterlocutorClick = { onInterlocutorClick(conversation.interlocutor) },
+        onDeleteChatClick = { showDeleteChatDialog = true  },
+        onUnblockUserClick = { onUnblockUser(conversation.interlocutor.id) }
+    ) { innerPadding ->
         MessageFeed(
             modifier = Modifier
-                .padding(paddingValues)
+                .padding(innerPadding)
                 .padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
             messages = messages,
             interlocutor = conversation.interlocutor,
@@ -255,16 +256,19 @@ private fun ChatScreenPreview() {
         ChatScreen(
             conversation = conversationFixture,
             messages = flowOf(PagingData.from(messagesFixture)),
-            text = text,
+            messageText = text,
             loading = false,
+            userBlocked = true,
             newMessageEvent = null,
             onBackClick = {},
             onInterlocutorClick = {},
-            onTextChange = { text = it },
+            onMessageTextChange = { text = it },
             onSendMessage = {},
             onDeleteMessageClick = {},
             onResendMessageClick = {},
-            onReportClick = {}
+            onReportClick = {},
+            onUnblockUser = {},
+            onDeleteChat = {}
         )
     }
 }

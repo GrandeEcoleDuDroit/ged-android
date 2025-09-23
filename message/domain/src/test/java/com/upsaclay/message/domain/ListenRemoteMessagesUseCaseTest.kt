@@ -1,6 +1,7 @@
 package com.upsaclay.message.domain
 
 import com.upsaclay.common.domain.repository.BlockedUserRepository
+import com.upsaclay.common.domain.userFixture
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
 import com.upsaclay.message.domain.usecase.ListenRemoteMessagesUseCase
@@ -92,5 +93,19 @@ class ListenRemoteMessagesUseCaseTest {
 
         // Then
         assert(useCase.listeningJobs.isEmpty())
+    }
+
+    @Test
+    fun listenRemoteMessages_should_not_listen_blocked_users_messages() {
+        // Given
+        val blockedUserId = "blockedUserId"
+        val conversation = conversationFixture.copy(interlocutor = userFixture.copy(id = blockedUserId))
+        coEvery { blockedUserRepository.getLocalBlockedUserIds() } returns setOf(blockedUserId)
+
+        // When
+        useCase.start(conversation)
+
+        // Then
+        coVerify(exactly = 0) { useCase.listenRemoteMessages(conversation) }
     }
 }

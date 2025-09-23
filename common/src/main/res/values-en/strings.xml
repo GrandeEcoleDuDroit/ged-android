@@ -74,4 +74,6 @@
     <string name="user_reported">User reported</string>
     <string name="user_blocked">User blocked</string>
     <string name="user_unblocked">User unblocked</string>
+    <string name="block_user_dialog_title">Block user</string>
+    <string name="block_user_dialog_text">Do you want to block this user? You will no longer see any of their content.</string>
 </resources>

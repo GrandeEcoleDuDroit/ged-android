@@ -6,7 +6,7 @@ import com.upsaclay.news.domain.repository.AnnouncementRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-class ListenBlockUserEvents(
+class ListenBlockUserEventsUseCase(
     private val blockedUserRepository: BlockedUserRepository,
     private val announcementRepository: AnnouncementRepository,
     private val scope: CoroutineScope

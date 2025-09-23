@@ -3,7 +3,7 @@ package com.upsaclay.news.domain
 import com.upsaclay.common.domain.e
 import com.upsaclay.news.domain.usecase.CreateAnnouncementUseCase
 import com.upsaclay.news.domain.usecase.DeleteAnnouncementUseCase
-import com.upsaclay.news.domain.usecase.ListenBlockUserEvents
+import com.upsaclay.news.domain.usecase.ListenBlockUserEventsUseCase
 import com.upsaclay.news.domain.usecase.RefreshAnnouncementUseCase
 import com.upsaclay.news.domain.usecase.ResendAnnouncementUseCase
 import com.upsaclay.news.domain.usecase.UpdateAnnouncementUseCase
@@ -35,12 +35,12 @@ val newsDomainModule = module {
         )
     }
 
-    single {
-        ListenBlockUserEvents(
+    single(createdAtStart = true) {
+        ListenBlockUserEventsUseCase(
             blockedUserRepository = get(),
             announcementRepository = get(),
             scope = get(BACKGROUND_SCOPE)
-        ).start()
+        ).apply { start() }
     }
 
     single {
@@ -51,7 +51,15 @@ val newsDomainModule = module {
         )
     }
 
+    single {
+        RefreshAnnouncementUseCase(
+            announcementRepository = get(),
+            connectivityObserver = get(),
+            blockedUserRepository = get(),
+            scope = get(BACKGROUND_SCOPE)
+        )
+    }
+
     singleOf(::DeleteAnnouncementUseCase)
-    singleOf(::RefreshAnnouncementUseCase)
     singleOf(::UpdateAnnouncementUseCase)
 }

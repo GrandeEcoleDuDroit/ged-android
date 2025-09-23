@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
+import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.utils.mapNetworkErrorMessage
 import com.upsaclay.message.domain.entity.Conversation
@@ -17,6 +18,7 @@ import kotlinx.coroutines.launch
 
 class CreateConversationViewModel(
     private val userRepository: UserRepository,
+    private val blockedUserRepository: BlockedUserRepository,
     private val getConversationUseCase: GetConversationUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(CreateConversationUiState())
@@ -30,25 +32,26 @@ class CreateConversationViewModel(
     }
 
     private fun fetchUsers() {
-        _uiState.update {
-            it.copy(loading = true)
-        }
+        _uiState.update { it.copy(loading = true) }
 
         viewModelScope.launch {
+            val blockedUserIds = blockedUserRepository.getLocalBlockedUserIds()
             try {
                 userRepository.getUsers()
-                    .filter { it.id != userRepository.currentUser?.id }
+                    .filter { it.id != userRepository.currentUser?.id && it.id !in blockedUserIds }
                     .also { users ->
-                        _uiState.update {
-                            it.copy(users = users, loading = false)
-                        }
                         defaultUsers = users
+                        _uiState.update {
+                            it.copy(
+                                users = users,
+                                loading = false
+                            )
+                        }
                     }
             } catch (e: Exception) {
                 _event.emit(SingleUiEvent.Error(mapErrorMessage(e)))
-                _uiState.update {
-                    it.copy(loading = false)
-                }
+            } finally {
+                _uiState.update { it.copy(loading = false) }
             }
         }
     }

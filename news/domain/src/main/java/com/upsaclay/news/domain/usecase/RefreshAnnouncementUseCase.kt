@@ -45,18 +45,17 @@ class RefreshAnnouncementUseCase(
     private suspend fun refresh() {
         val announcements = announcementRepository.announcements.firstOrNull() ?: emptyList()
         val remoteAnnouncements = announcementRepository.getRemoteAnnouncements()
-        val blockedUserIds = blockedUserRepository.getBlockedUserIds()
+        val blockedUserIds = blockedUserRepository.getLocalBlockedUserIds()
 
-        val announcementsToDelete = announcements
-            .filter {
-                (it.state == AnnouncementState.PUBLISHED && it !in remoteAnnouncements) ||
-                it.author.id in blockedUserIds
-            }
+        val announcementsToDelete = announcements.filter {
+            (it.state == AnnouncementState.PUBLISHED && it !in remoteAnnouncements) ||
+            it.author.id in blockedUserIds
+        }
+        val announcementsToUpsert = remoteAnnouncements.filter {
+            it !in announcements && it.author.id !in blockedUserIds
+        }
 
         announcementsToDelete.forEach { announcementRepository.deleteLocalAnnouncement(it) }
-
-        val announcementsToUpsert = remoteAnnouncements
-            .filter { it !in announcements && it.author.id !in blockedUserIds }
-        announcementsToUpsert.forEach { announcementRepository.updateLocalAnnouncement(it) }
+        announcementsToUpsert.forEach { announcementRepository.upsertLocalAnnouncement(it) }
     }
 }

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
@@ -27,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.R
 import com.upsaclay.common.domain.entity.SingleUiEvent
@@ -42,16 +44,20 @@ import com.upsaclay.common.presentation.components.OptionButton
 import com.upsaclay.common.presentation.components.PrimaryButton
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.components.ReportBottomSheet
+import com.upsaclay.common.presentation.components.SensibleActionDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun UserDestination(
     onBackClick: () -> Unit,
     user: User,
-    viewModel: UserViewModel = koinViewModel()
+    viewModel: UserViewModel = koinViewModel(
+        parameters = { parametersOf(user.id) }
+    )
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val scope = rememberCoroutineScope()
@@ -72,14 +78,14 @@ fun UserDestination(
         }
     }
 
-    if (uiState.user != null) {
+    if (uiState.currentUser != null) {
         UserScreen(
             onBackClick = onBackClick,
             onReportUserClick = viewModel::reportUser,
             onBlockUserClick = viewModel::blockUser,
             onUnblockUserClick = viewModel::unblockUser,
             user = user,
-            currentUser = uiState.user!!,
+            currentUser = uiState.currentUser!!,
             loading = uiState.loading,
             isBlocked = uiState.isBlocked,
             snackbarHostState = snackbarHostState
@@ -102,9 +108,23 @@ private fun UserScreen(
 ) {
     var showUserBottomSheet by remember { mutableStateOf(false) }
     var showReportBottomSheet by remember { mutableStateOf(false) }
+    var showBlockUserDialog by remember { mutableStateOf(false) }
 
     if (loading) {
         LoadingDialog()
+    }
+
+    if (showBlockUserDialog) {
+        SensibleActionDialog(
+            title = stringResource(id = R.string.block_user_dialog_title),
+            text = stringResource(id = R.string.block_user_dialog_text),
+            confirmText = stringResource(id = com.upsaclay.common.R.string.block),
+            onConfirm = {
+                showBlockUserDialog = false
+                onBlockUserClick(user.id)
+            },
+            onCancel = { showBlockUserDialog = false }
+        )
     }
 
     Scaffold(
@@ -163,7 +183,7 @@ private fun UserScreen(
             },
             onBlockClick = {
                 showUserBottomSheet = false
-                onBlockUserClick(user.id)
+                showBlockUserDialog = true
             },
             onUnblockClick = {
                 showUserBottomSheet = false
@@ -219,7 +239,7 @@ private fun UserBottomSheet(
                         color = MaterialTheme.colorScheme.error
                     )
                 },
-                onClick = onBlockClick
+                onClick = onUnblockClick
             )
         } else {
             ClickableItem(
@@ -228,6 +248,13 @@ private fun UserBottomSheet(
                     Text(
                         text = stringResource(id = com.upsaclay.common.R.string.block),
                         color = MaterialTheme.colorScheme.error
+                    )
+                },
+                icon = {
+                    Icon(
+                        painter = painterResource(id = com.upsaclay.common.R.drawable.ic_outline_block),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.error
                     )
                 },
                 onClick = onBlockClick
@@ -240,6 +267,13 @@ private fun UserBottomSheet(
                 Text(
                     text = stringResource(id = com.upsaclay.common.R.string.report),
                     color = MaterialTheme.colorScheme.error
+                )
+            },
+            icon = {
+                Icon(
+                    painter = painterResource(id = com.upsaclay.common.R.drawable.ic_outline_report),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.error
                 )
             },
             onClick = onReportClick
@@ -268,7 +302,7 @@ private fun UserScreenPreview() {
                 user = userFixture,
                 currentUser = userFixture2,
                 loading = false,
-                isBlocked = true
+                isBlocked = false
             )
         }
     }

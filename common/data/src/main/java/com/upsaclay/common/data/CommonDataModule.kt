@@ -9,6 +9,7 @@ import com.upsaclay.common.data.remote.ImageRemoteDataSource
 import com.upsaclay.common.data.remote.UserRemoteDataSource
 import com.upsaclay.common.data.remote.api.BlockedUserApi
 import com.upsaclay.common.data.remote.api.BlockedUserApiImpl
+import com.upsaclay.common.data.remote.api.BlockedUserFirestoreApi
 import com.upsaclay.common.data.remote.api.FcmApi
 import com.upsaclay.common.data.remote.api.ImageApi
 import com.upsaclay.common.data.remote.api.ImageApiImpl
@@ -119,6 +120,7 @@ val commonDataModule = module {
         )
     }
 
+    singleOf(::BlockedUserFirestoreApi)
     singleOf(::BlockedUserApiImpl) { bind<BlockedUserApi>() }
     singleOf(::BlockedUserRemoteDataSource)
     singleOf(::BlockedUserDataStore)

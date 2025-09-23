@@ -9,28 +9,26 @@ import com.upsaclay.common.domain.entity.UserReport
 import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.utils.mapNetworkErrorMessage
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class UserViewModel(
+    userId: String,
     private val userRepository: UserRepository,
     private val blockedUserRepository: BlockedUserRepository
 ): ViewModel() {
     private val _uiState = MutableStateFlow(UserUiState())
     val uiState: StateFlow<UserUiState> = _uiState
-    private val _event = MutableStateFlow<SingleUiEvent?>(null)
-    val event: StateFlow<SingleUiEvent?> = _event
+    private val _event = MutableSharedFlow<SingleUiEvent?>()
+    val event: SharedFlow<SingleUiEvent?> = _event
 
     init {
-        viewModelScope.launch {
-            userRepository.user.collect { user ->
-                _uiState.update {
-                    it.copy(user = user)
-                }
-            }
-        }
+        listenCurrentUser()
+        listenBlockedUserIds(userId)
     }
 
     fun reportUser(report: UserReport) {
@@ -50,7 +48,7 @@ class UserViewModel(
 
     fun blockUser(userId: String) {
         _uiState.update { it.copy(loading = true) }
-        val currentUserId = uiState.value.user?.id ?: return
+        val currentUserId = uiState.value.currentUser?.id ?: return
 
         viewModelScope.launch {
             try {
@@ -66,7 +64,7 @@ class UserViewModel(
 
     fun unblockUser(userId: String) {
         _uiState.update { it.copy(loading = true) }
-        val currentUserId = uiState.value.user?.id ?: return
+        val currentUserId = uiState.value.currentUser?.id ?: return
 
         viewModelScope.launch {
             try {
@@ -80,8 +78,28 @@ class UserViewModel(
         }
     }
 
+    private fun listenCurrentUser() {
+        viewModelScope.launch {
+            userRepository.user.collect { user ->
+                _uiState.update {
+                    it.copy(currentUser = user)
+                }
+            }
+        }
+    }
+
+    private fun listenBlockedUserIds(userId: String) {
+        viewModelScope.launch {
+            blockedUserRepository.blockedUserIds.collect { blockedUserIds ->
+                _uiState.update {
+                    it.copy(isBlocked = userId in blockedUserIds)
+                }
+            }
+        }
+    }
+
     data class UserUiState(
-        val user: User? = null,
+        val currentUser: User? = null,
         val loading: Boolean = false,
         val isBlocked: Boolean = false
     )

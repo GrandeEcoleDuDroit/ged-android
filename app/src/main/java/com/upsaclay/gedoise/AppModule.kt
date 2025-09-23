@@ -17,7 +17,7 @@ import com.upsaclay.gedoise.data.repository.RouteRepositoryImpl
 import com.upsaclay.gedoise.data.repository.TokenProviderImpl
 import com.upsaclay.gedoise.domain.usecase.ClearDataUseCase
 import com.upsaclay.gedoise.domain.usecase.FcmTokenUseCase
-import com.upsaclay.gedoise.domain.usecase.ListenDataUseCase
+import com.upsaclay.gedoise.domain.usecase.ListenRemoteDataUseCase
 import com.upsaclay.gedoise.domain.usecase.ListenRemoteUserUseCase
 import com.upsaclay.gedoise.presentation.navigation.NavigationViewModel
 import com.upsaclay.gedoise.presentation.profile.ProfileViewModel
@@ -84,7 +84,7 @@ val appModule = module {
     viewModelOf(::MainViewModel)
 
     singleOf(::ClearDataUseCase)
-    singleOf(::ListenDataUseCase)
+    singleOf(::ListenRemoteDataUseCase)
     single {
         FcmTokenUseCase(
             userRepository = get(),

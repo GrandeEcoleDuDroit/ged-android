@@ -36,7 +36,7 @@ class ListenRemoteMessagesUseCase(
 
     private fun updateListeningJobs(conversation: Conversation) {
         scope.launch {
-            val blockedUserIds = blockedUserRepository.getBlockedUserIds()
+            val blockedUserIds = blockedUserRepository.getLocalBlockedUserIds()
 
             if (conversation.interlocutor.id !in blockedUserIds) {
                 listeningJobs[conversation.interlocutor.id] = scope.launch {

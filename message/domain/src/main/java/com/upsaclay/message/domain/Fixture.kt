@@ -45,6 +45,13 @@ val messagesFixture = listOf(
     messageFixture2.copy(id = 7, date = LocalDateTime.now(ZoneOffset.UTC)),
     messageFixture2.copy(id = 8, date = LocalDateTime.now(ZoneOffset.UTC)),
     messageFixture2.copy(id = 9, date = LocalDateTime.now(ZoneOffset.UTC)),
+    messageFixture2.copy(id = 10, date = LocalDateTime.now(ZoneOffset.UTC)),
+    messageFixture2.copy(id = 11, date = LocalDateTime.now(ZoneOffset.UTC)),
+    messageFixture2.copy(id = 12, date = LocalDateTime.now(ZoneOffset.UTC)),
+    messageFixture2.copy(id = 13, date = LocalDateTime.now(ZoneOffset.UTC)),
+    messageFixture2.copy(id = 14, date = LocalDateTime.now(ZoneOffset.UTC)),
+    messageFixture2.copy(id = 15, date = LocalDateTime.now(ZoneOffset.UTC)),
+    messageFixture2.copy(id = 16, date = LocalDateTime.now(ZoneOffset.UTC)),
 )
 
 val conversationUiFixture = ConversationUi(

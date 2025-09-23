@@ -79,4 +79,6 @@
     <string name="user_blocked">Utilisateur bloqué</string>
     <string name="unblock">Débloquer</string>
     <string name="user_unblocked">Utilisateur débloqué</string>
+    <string name="block_user_dialog_title">Bloquer utilisateur</string>
+    <string name="block_user_dialog_text">Voulez-vous bloquer cet utilisateur ? Vous ne verrez plus aucun de ses contenus.</string>
 </resources>

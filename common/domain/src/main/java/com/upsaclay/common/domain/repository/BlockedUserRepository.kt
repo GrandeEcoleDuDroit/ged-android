@@ -6,9 +6,17 @@ import kotlinx.coroutines.flow.Flow
 interface BlockedUserRepository {
     val blockUserEvent: Flow<BlockUserEvent>
 
-    suspend fun getBlockedUserIds(): Set<String>
+    val blockedUserIds: Flow<Set<String>>
+
+    suspend fun getLocalBlockedUserIds(): Set<String>
+
+    suspend fun getRemoteBlockedUserIds(currentUserId: String): Set<String>
 
     suspend fun blockUser(currentUserId: String, blockedUserId: String)
 
+    suspend fun blockLocalUser(blockedUserId: String)
+
     suspend fun unblockUser(currentUserId: String, blockedUserId: String)
+
+    suspend fun unblockLocalUser(blockedUserId: String)
 }

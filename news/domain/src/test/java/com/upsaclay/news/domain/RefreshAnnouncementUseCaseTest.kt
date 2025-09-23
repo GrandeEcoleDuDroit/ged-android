@@ -3,12 +3,15 @@ package com.upsaclay.news.domain
 import com.upsaclay.common.domain.ConnectivityObserver
 import com.upsaclay.common.domain.entity.NoInternetConnectionException
 import com.upsaclay.common.domain.repository.BlockedUserRepository
+import com.upsaclay.common.domain.userFixture
 import com.upsaclay.news.domain.repository.AnnouncementRepository
 import com.upsaclay.news.domain.usecase.RefreshAnnouncementUseCase
+import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -56,6 +59,22 @@ class RefreshAnnouncementUseCaseTest {
 
         // Then
         coVerify { useCase.lastRequestTime == currentTime }
+    }
+
+    @Test
+    fun refreshAnnouncement_should_not_upsert_announcement_from_blocked_user() = runTest {
+        // Given
+        val userid = "blockedUserId"
+        val announcement = announcementFixture.copy(author = userFixture.copy(id = userid))
+        coEvery { blockedUserRepository.getLocalBlockedUserIds() } returns setOf(userid)
+        coEvery { announcementRepository.getRemoteAnnouncements() } returns listOf(announcement)
+        every { announcementRepository.announcements } returns flowOf(emptyList())
+
+        // When
+        useCase()
+
+        // Then
+        coVerify(exactly = 0) { announcementRepository.updateLocalAnnouncement(any()) }
     }
 
     @Test(expected = NoInternetConnectionException::class)
