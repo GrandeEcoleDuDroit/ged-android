@@ -21,7 +21,7 @@ import org.junit.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class ConversationViewModelTest {
     private val userRepository: UserRepository = mockk()
-    private val getConversationUseCase: GetConversationsUiUseCase = mockk()
+    private val getConversationUiUseCase: GetConversationsUiUseCase = mockk()
     private val deleteConversationUseCase: DeleteConversationUseCase = mockk()
 
     private lateinit var conversationViewModel: ConversationViewModel
@@ -32,11 +32,12 @@ class ConversationViewModelTest {
         Dispatchers.setMain(testDispatcher)
 
         every { userRepository.currentUser } returns userFixture
+        every { getConversationUiUseCase() } returns mockk()
         coEvery { deleteConversationUseCase(any(), any()) } returns Unit
 
         conversationViewModel = ConversationViewModel(
             userRepository = userRepository,
-            getConversationsUiUseCase = getConversationUseCase,
+            getConversationsUiUseCase = getConversationUiUseCase,
             deleteConversationUseCase = deleteConversationUseCase
         )
     }

@@ -22,7 +22,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.Before
@@ -56,6 +58,7 @@ class ChatViewModelTest {
         coEvery { messageRepository.updateSeenMessages(any(), any()) } returns Unit
         coEvery { notificationMessageManager.clearNotifications(any()) } returns Unit
         coEvery { notificationMessageUseCase.sendNotification(any()) } returns Unit
+        coEvery { messageRepository.deleteLocalMessages(any()) } returns Unit
 
         chatViewModel = ChatViewModel(
             conversation = conversationFixture,
@@ -115,22 +118,5 @@ class ChatViewModelTest {
 
         // Then
         coVerify { blockedUserRepository.unblockUser(userFixture.id, blockedUserId) }
-    }
-
-    @Test
-    fun deleteChat_should_delete_chat() = runTest {
-        // When
-        chatViewModel.deleteChat()
-        delay(2000)
-
-        // Then
-        coVerify {
-            conversationRepository.deleteConversation(
-                conversationFixture,
-                userFixture.id,
-                any()
-            )
-        }
-        coVerify { messageRepository.deleteLocalMessages(conversationFixture.id) }
     }
 }

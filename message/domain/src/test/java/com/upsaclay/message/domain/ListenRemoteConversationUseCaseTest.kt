@@ -8,6 +8,7 @@ import com.upsaclay.message.domain.usecase.ListenRemoteConversationsUseCase
 import com.upsaclay.message.domain.usecase.ListenRemoteMessagesUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
@@ -31,10 +32,12 @@ class ListenRemoteConversationUseCaseTest {
 
     @Before
     fun setUp() {
+        every { blockedUserRepository.blockUserEvent } returns flowOf()
         coEvery { userRepository.user } returns flowOf(userFixture)
         coEvery { conversationRepository.fetchRemoteConversations(any()) } returns flowOf(conversationFixture)
         coEvery { conversationRepository.upsertLocalConversation(any()) } returns Unit
         coEvery { listenRemoteMessagesUseCase.start(any()) } returns Unit
+        coEvery { conversationRepository.upsertLocalConversation(any()) } returns Unit
 
         useCase = ListenRemoteConversationsUseCase(
             userRepository = userRepository,
@@ -47,6 +50,9 @@ class ListenRemoteConversationUseCaseTest {
 
     @Test
     fun listenRemoteConversationsUseCase_should_start_listenRemoteMessage() = runTest(testScope.testScheduler) {
+        // Given
+        coEvery { conversationRepository.getConversation(any()) } returns null
+
         // When
         useCase.start()
         advanceUntilIdle()
@@ -57,6 +63,9 @@ class ListenRemoteConversationUseCaseTest {
 
     @Test
     fun listenRemoteConversationsUseCase_should_upsert_local_conversation() = runTest(testScope.testScheduler) {
+        // Given
+        coEvery { conversationRepository.getConversation(any()) } returns null
+
         // When
         useCase.start()
         advanceUntilIdle()
