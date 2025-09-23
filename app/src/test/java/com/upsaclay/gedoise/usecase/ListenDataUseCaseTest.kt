@@ -1,6 +1,6 @@
 package com.upsaclay.gedoise.usecase
 
-import com.upsaclay.gedoise.domain.usecase.ListenDataUseCase
+import com.upsaclay.gedoise.domain.usecase.ListenRemoteDataUseCase
 import com.upsaclay.gedoise.domain.usecase.ListenRemoteUserUseCase
 import com.upsaclay.message.domain.usecase.ListenRemoteConversationsUseCase
 import com.upsaclay.message.domain.usecase.ListenRemoteMessagesUseCase
@@ -16,7 +16,7 @@ class ListenDataUseCaseTest {
     private val listenRemoteMessagesUseCase: ListenRemoteMessagesUseCase = mockk()
     private val listenRemoteUserUseCase: ListenRemoteUserUseCase = mockk()
 
-    private lateinit var useCase: ListenDataUseCase
+    private lateinit var useCase: ListenRemoteDataUseCase
 
     @Before
     fun setUp() {
@@ -26,7 +26,7 @@ class ListenDataUseCaseTest {
         every { listenRemoteUserUseCase.start() } returns Unit
         every { listenRemoteUserUseCase.stop() } returns Unit
 
-        useCase = ListenDataUseCase(
+        useCase = ListenRemoteDataUseCase(
             listenRemoteConversationsUseCase = listenRemoteConversationsUseCase,
             listenRemoteMessagesUseCase = listenRemoteMessagesUseCase,
             listenRemoteUserUseCase = listenRemoteUserUseCase

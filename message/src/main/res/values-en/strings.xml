@@ -23,4 +23,7 @@
     <string name="error_fetch_conversations">An error occurred while retrieving conversations</string>
     <string name="no_conversation">No conversations</string>
     <string name="message_reported">Message reported</string>
+    <string name="chat_blocked_user_indicator_text">You cannot send messages to this user unless you unblock them.</string>
+    <string name="delete_chat_dialog_title">Delete chat</string>
+    <string name="delete_chat_dialog_message">Do you want to delete definitively the chat ?</string>
 </resources>

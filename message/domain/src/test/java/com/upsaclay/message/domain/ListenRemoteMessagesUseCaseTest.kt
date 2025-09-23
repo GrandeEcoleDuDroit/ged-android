@@ -1,5 +1,7 @@
 package com.upsaclay.message.domain
 
+import com.upsaclay.common.domain.repository.BlockedUserRepository
+import com.upsaclay.common.domain.userFixture
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
 import com.upsaclay.message.domain.usecase.ListenRemoteMessagesUseCase
@@ -20,6 +22,7 @@ import org.junit.Test
 class ListenRemoteMessagesUseCaseTest {
     private val messageRepository: MessageRepository = mockk()
     private val conversationRepository: ConversationRepository = mockk()
+    private val blockedUserRepository: BlockedUserRepository = mockk()
 
     private lateinit var useCase: ListenRemoteMessagesUseCase
 
@@ -35,6 +38,7 @@ class ListenRemoteMessagesUseCaseTest {
 
         useCase = ListenRemoteMessagesUseCase(
             messageRepository = messageRepository,
+            blockedUserRepository = blockedUserRepository,
             scope = testScope
         )
     }
@@ -43,15 +47,15 @@ class ListenRemoteMessagesUseCaseTest {
     fun listenRemoteMessages_should_not_listen_same_conversation_twice() = runTest {
         // Given
         val conversations = listOf(conversationFixture)
-        useCase.messageJobs = mutableMapOf(
-            conversationFixture.id to ListenRemoteMessagesUseCase.MessageJob(conversations[0], Job())
+        useCase.listeningJobs = mutableMapOf(
+            conversationFixture.id to Job()
         )
 
         // When
         useCase.start(conversations[0])
 
         // Then
-        assert(useCase.messageJobs.count() == 1)
+        assert(useCase.listeningJobs.count() == 1)
     }
 
     @Test
@@ -88,6 +92,20 @@ class ListenRemoteMessagesUseCaseTest {
         useCase.stop()
 
         // Then
-        assert(useCase.messageJobs.isEmpty())
+        assert(useCase.listeningJobs.isEmpty())
+    }
+
+    @Test
+    fun listenRemoteMessages_should_not_listen_blocked_users_messages() {
+        // Given
+        val blockedUserId = "blockedUserId"
+        val conversation = conversationFixture.copy(interlocutor = userFixture.copy(id = blockedUserId))
+        coEvery { blockedUserRepository.getLocalBlockedUserIds() } returns setOf(blockedUserId)
+
+        // When
+        useCase.start(conversation)
+
+        // Then
+        coVerify(exactly = 0) { useCase.listenRemoteMessages(conversation) }
     }
 }

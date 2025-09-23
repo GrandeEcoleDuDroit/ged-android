@@ -1,27 +1,21 @@
 package com.upsaclay.common.data.local
 
 import com.google.gson.annotations.SerializedName
-import com.upsaclay.common.data.UserField.Local.EMAIL
-import com.upsaclay.common.data.UserField.Local.FIRST_NAME
-import com.upsaclay.common.data.UserField.Local.IS_MEMBER
-import com.upsaclay.common.data.UserField.Local.LAST_NAME
-import com.upsaclay.common.data.UserField.Local.PROFILE_PICTURE_FILE_NAME
-import com.upsaclay.common.data.UserField.Local.SCHOOL_LEVEL
-import com.upsaclay.common.data.UserField.Local.USER_ID
+import com.upsaclay.common.data.UserField
 
 internal data class LocalUser(
-    @SerializedName(USER_ID)
+    @SerializedName(UserField.Local.USER_ID)
     val userId: String,
-    @SerializedName(FIRST_NAME)
+    @SerializedName(UserField.Local.FIRST_NAME)
     val userFirstName: String,
-    @SerializedName(LAST_NAME)
+    @SerializedName(UserField.Local.LAST_NAME)
     val userLastName: String,
-    @SerializedName(EMAIL)
+    @SerializedName(UserField.Local.EMAIL)
     val userEmail: String,
-    @SerializedName(SCHOOL_LEVEL)
+    @SerializedName(UserField.Local.SCHOOL_LEVEL)
     val userSchoolLevel: String,
-    @SerializedName(IS_MEMBER)
+    @SerializedName(UserField.Local.IS_MEMBER)
     val userIsMember: Int = 0,
-    @SerializedName(PROFILE_PICTURE_FILE_NAME)
+    @SerializedName(UserField.Local.PROFILE_PICTURE_FILE_NAME)
     val userProfilePictureFileName: String? = null
 )

@@ -92,13 +92,17 @@ val ColorScheme.previewText: Color
     @Composable
     get() = if (isSystemInDarkTheme()) Color(0xFFA1A4B0) else Color(0xFF6F7181)
 
-val ColorScheme.backgroundLoadingImage: Color
-    @Composable
-    get() = if (isSystemInDarkTheme()) Color(0xFF323232) else Color(0xFFEEEEEE)
-
 val ColorScheme.hintText: Color
     @Composable
     get() = if (isSystemInDarkTheme()) Color(0xFF929298) else Color(0xFF8C8C8C)
+
+val ColorScheme.informationText: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color(0xFFA1A4B0) else Color(0xFF6F7181)
+
+val ColorScheme.backgroundLoadingImage: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color(0xFF323232) else Color(0xFFEEEEEE)
 
 val ColorScheme.outlinedTextFieldColor: TextFieldColors
     @Composable

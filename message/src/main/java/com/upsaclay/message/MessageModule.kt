@@ -20,6 +20,7 @@ val messageModule = module {
             userRepository = get(),
             conversationRepository = get(),
             messageRepository = get(),
+            blockedUserRepository = get(),
             sendMessageUseCase = get(),
             notificationMessageManager = get()
         )

@@ -1,4 +1,4 @@
-package com.upsaclay.common.data.local
+package com.upsaclay.common.data.local.datastore
 
 import android.content.Context
 import androidx.datastore.core.DataStore

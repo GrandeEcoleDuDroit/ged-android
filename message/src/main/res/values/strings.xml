@@ -37,5 +37,10 @@
     <string name="chat_screen_message_text_tag" translatable="false">Chat Screen Receive Message Text Tag</string>
     <string name="chat_screen_message_input_tag" translatable="false">Chat Screen Message Input Tag</string>
     <string name="chat_screen_send_button_tag" translatable="false">Chat Screen Send Button Tag</string>
+    <string name="chat_screen_blocked_user_indicator_tag" translatable="false">Mesage blocked user indicator test tag</string>
+
     <string name="message_reported">Message signalé</string>
+    <string name="chat_blocked_user_indicator_text">Vous ne pouvez pas envoyer de messages à cet utilisateur à moins que vous ne le débloquiez.</string>
+    <string name="delete_chat_dialog_title">Supprimer le chat</string>
+    <string name="delete_chat_dialog_message">Voulez-vous supprimer définitivement le chat ?</string>
 </resources>

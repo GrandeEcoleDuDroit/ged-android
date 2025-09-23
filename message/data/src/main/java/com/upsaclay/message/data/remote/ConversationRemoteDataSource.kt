@@ -25,11 +25,11 @@ internal class ConversationRemoteDataSource(private val conversationApi: Convers
         )
     }
 
-    suspend fun updateConversationDeleteTime(conversationId: String, userId: String, deleteTIme: LocalDateTime) {
+    suspend fun updateConversationDeleteTime(conversationId: String, currentUserId: String, deleteTIme: LocalDateTime) {
         mapFirebaseException(
             message = "Failed to delete conversation",
             block = {
-                val data = mapOf("${ConversationField.DELETE_TIME}.$userId" to deleteTIme.toTimestamp())
+                val data = mapOf("${ConversationField.DELETE_TIME}.$currentUserId" to deleteTIme.toTimestamp())
                 conversationApi.updateConversation(conversationId, data)
             }
         )

@@ -17,11 +17,13 @@ interface ConversationRepository {
 
     suspend fun createRemoteConversation(conversation: Conversation, userId: String)
 
+    suspend fun updateConversationDeleteTime(conversation: Conversation, currentUserId: String, deleteTime: LocalDateTime)
+
     suspend fun updateLocalConversation(conversation: Conversation)
 
     suspend fun upsertLocalConversation(conversation: Conversation)
 
-    suspend fun deleteConversation(conversation: Conversation, userId: String, deleteTime: LocalDateTime)
+    suspend fun deleteConversation(conversation: Conversation, currentUserId: String, deleteTime: LocalDateTime)
 
     suspend fun deleteLocalConversations()
 }

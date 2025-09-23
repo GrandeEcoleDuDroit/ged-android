@@ -5,8 +5,8 @@ import androidx.room.Room
 import com.upsaclay.common.ConnectivityObserverImpl
 import com.upsaclay.common.data.GED_SERVER_QUALIFIER
 import com.upsaclay.common.data.TokenProvider
-import com.upsaclay.common.data.local.FcmDataStore
 import com.upsaclay.common.data.local.FcmLocalDataSource
+import com.upsaclay.common.data.local.datastore.FcmDataStore
 import com.upsaclay.common.data.remote.api.FcmApi
 import com.upsaclay.common.domain.ConnectivityObserver
 import com.upsaclay.common.domain.IntentHelper
@@ -17,7 +17,7 @@ import com.upsaclay.gedoise.data.repository.RouteRepositoryImpl
 import com.upsaclay.gedoise.data.repository.TokenProviderImpl
 import com.upsaclay.gedoise.domain.usecase.ClearDataUseCase
 import com.upsaclay.gedoise.domain.usecase.FcmTokenUseCase
-import com.upsaclay.gedoise.domain.usecase.ListenDataUseCase
+import com.upsaclay.gedoise.domain.usecase.ListenRemoteDataUseCase
 import com.upsaclay.gedoise.domain.usecase.ListenRemoteUserUseCase
 import com.upsaclay.gedoise.presentation.navigation.NavigationViewModel
 import com.upsaclay.gedoise.presentation.profile.ProfileViewModel
@@ -84,7 +84,7 @@ val appModule = module {
     viewModelOf(::MainViewModel)
 
     singleOf(::ClearDataUseCase)
-    singleOf(::ListenDataUseCase)
+    singleOf(::ListenRemoteDataUseCase)
     single {
         FcmTokenUseCase(
             userRepository = get(),

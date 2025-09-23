@@ -11,19 +11,27 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import com.upsaclay.common.R
+import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.entity.UserReport
 import com.upsaclay.common.domain.userFixture
@@ -33,27 +41,54 @@ import com.upsaclay.common.presentation.components.BackTopBar
 import com.upsaclay.common.presentation.components.ClickableItem
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.OptionButton
+import com.upsaclay.common.presentation.components.PrimaryButton
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.components.ReportBottomSheet
+import com.upsaclay.common.presentation.components.SensibleActionDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun UserDestination(
     onBackClick: () -> Unit,
     user: User,
-    viewModel: UserViewModel = koinViewModel()
+    viewModel: UserViewModel = koinViewModel(
+        parameters = { parametersOf(user.id) }
+    )
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
+    val showSnackBar = { message: String ->
+        scope.launch {
+            snackbarHostState.showSnackbar(message = message)
+        }
+    }
 
-    if (uiState.user != null) {
+    LaunchedEffect(Unit) {
+        viewModel.event.collect { event ->
+            when (event) {
+                is SingleUiEvent.Error -> showSnackBar(context.getString(event.messageId))
+                is SingleUiEvent.Success -> showSnackBar(context.getString(event.messageId))
+            }
+        }
+    }
+
+    if (uiState.currentUser != null) {
         UserScreen(
             onBackClick = onBackClick,
-            onReportClick = viewModel::reportUser,
+            onReportUserClick = viewModel::reportUser,
+            onBlockUserClick = viewModel::blockUser,
+            onUnblockUserClick = viewModel::unblockUser,
             user = user,
-            currentUser = uiState.user!!,
-            loading = uiState.loading
+            currentUser = uiState.currentUser!!,
+            loading = uiState.loading,
+            isBlocked = uiState.isBlocked,
+            snackbarHostState = snackbarHostState
         )
     }
 }
@@ -62,16 +97,34 @@ fun UserDestination(
 @Composable
 private fun UserScreen(
     onBackClick: () -> Unit,
-    onReportClick: (UserReport) -> Unit,
+    onReportUserClick: (UserReport) -> Unit,
+    onBlockUserClick: (String) -> Unit,
+    onUnblockUserClick: (String) -> Unit,
     user: User,
     currentUser: User,
-    loading: Boolean
+    loading: Boolean,
+    isBlocked: Boolean,
+    snackbarHostState: SnackbarHostState = SnackbarHostState()
 ) {
     var showUserBottomSheet by remember { mutableStateOf(false) }
     var showReportBottomSheet by remember { mutableStateOf(false) }
+    var showBlockUserDialog by remember { mutableStateOf(false) }
 
     if (loading) {
         LoadingDialog()
+    }
+
+    if (showBlockUserDialog) {
+        SensibleActionDialog(
+            title = stringResource(id = R.string.block_user_dialog_title),
+            text = stringResource(id = R.string.block_user_dialog_text),
+            confirmText = stringResource(id = com.upsaclay.common.R.string.block),
+            onConfirm = {
+                showBlockUserDialog = false
+                onBlockUserClick(user.id)
+            },
+            onCancel = { showBlockUserDialog = false }
+        )
     }
 
     Scaffold(
@@ -88,6 +141,11 @@ private fun UserScreen(
                     }
                 }
             )
+        },
+        snackbarHost = {
+            SnackbarHost(snackbarHostState) {
+                Snackbar(it)
+            }
         }
     ) { innerPadding ->
         Column(
@@ -101,8 +159,17 @@ private fun UserScreen(
                 scale = 1.8f
             )
 
-            SelectionContainer {
-                UserInformationItems(user = user)
+            if (isBlocked) {
+                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.medium_padding)))
+                PrimaryButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = { onUnblockUserClick(user.id) },
+                    text = stringResource(id = R.string.unblock)
+                )
+            } else {
+                SelectionContainer {
+                    UserInformationItems(user = user)
+                }
             }
         }
     }
@@ -113,7 +180,16 @@ private fun UserScreen(
             onReportClick = {
                 showUserBottomSheet = false
                 showReportBottomSheet = true
-            }
+            },
+            onBlockClick = {
+                showUserBottomSheet = false
+                showBlockUserDialog = true
+            },
+            onUnblockClick = {
+                showUserBottomSheet = false
+                onUnblockUserClick(user.id)
+            },
+            isBlocked = isBlocked
         )
     }
 
@@ -123,7 +199,7 @@ private fun UserScreen(
             onDismiss = { showReportBottomSheet = false },
             onReportClick = { reason ->
                 showReportBottomSheet = false
-                onReportClick(
+                onReportUserClick(
                     UserReport(
                         userId = user.id,
                         userInfo = UserReport.UserInfo(
@@ -146,11 +222,45 @@ private fun UserScreen(
 @Composable
 private fun UserBottomSheet(
     onDismiss: () -> Unit,
-    onReportClick: () -> Unit
+    onReportClick: () -> Unit,
+    onBlockClick: () -> Unit,
+    onUnblockClick: () -> Unit,
+    isBlocked: Boolean
 ) {
     ModalBottomSheet(
         onDismissRequest = onDismiss
     ) {
+        if (isBlocked) {
+            ClickableItem(
+                modifier = Modifier.fillMaxWidth(),
+                text = {
+                    Text(
+                        text = stringResource(id = com.upsaclay.common.R.string.unblock),
+                        color = MaterialTheme.colorScheme.error
+                    )
+                },
+                onClick = onUnblockClick
+            )
+        } else {
+            ClickableItem(
+                modifier = Modifier.fillMaxWidth(),
+                text = {
+                    Text(
+                        text = stringResource(id = com.upsaclay.common.R.string.block),
+                        color = MaterialTheme.colorScheme.error
+                    )
+                },
+                icon = {
+                    Icon(
+                        painter = painterResource(id = com.upsaclay.common.R.drawable.ic_outline_block),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                },
+                onClick = onBlockClick
+            )
+        }
+
         ClickableItem(
             modifier = Modifier.fillMaxWidth(),
             text = {
@@ -161,7 +271,7 @@ private fun UserBottomSheet(
             },
             icon = {
                 Icon(
-                    painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_report),
+                    painter = painterResource(id = com.upsaclay.common.R.drawable.ic_outline_report),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.error
                 )
@@ -186,10 +296,13 @@ private fun UserScreenPreview() {
         Surface {
             UserScreen(
                 onBackClick = {},
-                onReportClick = {},
+                onReportUserClick = {},
+                onBlockUserClick = {},
+                onUnblockUserClick = {},
                 user = userFixture,
                 currentUser = userFixture2,
-                loading = false
+                loading = false,
+                isBlocked = false
             )
         }
     }

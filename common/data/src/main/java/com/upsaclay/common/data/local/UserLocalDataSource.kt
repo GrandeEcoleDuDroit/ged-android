@@ -1,5 +1,6 @@
 package com.upsaclay.common.data.local
 
+import com.upsaclay.common.data.local.datastore.UserDataStore
 import com.upsaclay.common.data.toLocal
 import com.upsaclay.common.data.toUser
 import com.upsaclay.common.domain.entity.User

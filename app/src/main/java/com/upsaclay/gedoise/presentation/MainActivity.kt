@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mainViewModel.startListening()
+        mainViewModel.updateDataOnAuthChange()
         startNotification()
 
         val splashscreen = installSplashScreen()

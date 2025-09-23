@@ -12,9 +12,9 @@ import com.upsaclay.common.data.exceptions.mapServerResponseException
 import com.upsaclay.common.data.exceptions.parseOracleException
 import com.upsaclay.common.data.formatHttpError
 import com.upsaclay.common.data.remote.model.FirestoreUser
-import com.upsaclay.common.data.remote.model.ServerUser
 import com.upsaclay.common.data.remote.model.RemoteUserReport
 import com.upsaclay.common.data.remote.model.ServerResponse
+import com.upsaclay.common.data.remote.model.ServerUser
 import com.upsaclay.common.data.toFirestoreUser
 import com.upsaclay.common.data.toRemote
 import com.upsaclay.common.data.toServerUser

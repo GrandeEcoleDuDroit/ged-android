@@ -56,6 +56,15 @@ internal class ConversationRepositoryImpl(
         conversationRemoteDataSource.createConversation(conversation, userId)
     }
 
+    override suspend fun updateConversationDeleteTime(conversation: Conversation, currentUserId: String, deleteTime: LocalDateTime) {
+        conversationRemoteDataSource.updateConversationDeleteTime(
+            conversation.id,
+            currentUserId,
+            deleteTime
+        )
+        conversationLocalDataSource.updateConversation(conversation)
+    }
+
     override suspend fun updateLocalConversation(conversation: Conversation) {
         conversationLocalDataSource.updateConversation(conversation)
     }
@@ -64,8 +73,12 @@ internal class ConversationRepositoryImpl(
         conversationLocalDataSource.upsertConversation(conversation)
     }
 
-    override suspend fun deleteConversation(conversation: Conversation, userId: String, deleteTime: LocalDateTime) {
-        conversationRemoteDataSource.updateConversationDeleteTime(conversation.id, userId, deleteTime)
+    override suspend fun deleteConversation(conversation: Conversation, currentUserId: String, deleteTime: LocalDateTime) {
+        conversationRemoteDataSource.updateConversationDeleteTime(
+            conversation.id,
+            currentUserId,
+            deleteTime
+        )
         conversationLocalDataSource.deleteConversation(conversation)
     }
 

@@ -29,7 +29,6 @@ class ResendAnnouncementUseCaseTest {
     fun setUp() {
         every { connectivityObserver.isConnected } returns true
         coEvery { announcementRepository.createAnnouncement(any()) } returns Unit
-        coEvery { announcementRepository.refreshAnnouncements() } returns Unit
 
         useCase = ResendAnnouncementUseCase(
             announcementRepository = announcementRepository,

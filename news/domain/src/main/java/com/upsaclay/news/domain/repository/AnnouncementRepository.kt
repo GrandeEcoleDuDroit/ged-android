@@ -11,7 +11,7 @@ interface AnnouncementRepository {
 
     fun getAnnouncement(announcementId: String): Announcement?
 
-    suspend fun refreshAnnouncements()
+    suspend fun getRemoteAnnouncements(): List<Announcement>
 
     suspend fun createAnnouncement(announcement: Announcement)
 
@@ -19,9 +19,13 @@ interface AnnouncementRepository {
 
     suspend fun updateLocalAnnouncement(announcement: Announcement)
 
+    suspend fun upsertLocalAnnouncement(announcement: Announcement)
+
     suspend fun deleteAnnouncement(announcement: Announcement)
 
     suspend fun deleteLocalAnnouncement(announcement: Announcement)
+
+    suspend fun deleteLocalUserAnnouncements(userId: String)
 
     suspend fun reportAnnouncement(report: AnnouncementReport)
 }

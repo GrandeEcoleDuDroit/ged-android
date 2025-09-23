@@ -23,12 +23,14 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -53,12 +55,15 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.black
 import com.upsaclay.common.presentation.theme.cursor
+import com.upsaclay.common.presentation.theme.informationText
 import com.upsaclay.common.presentation.theme.inputBackground
 import com.upsaclay.common.presentation.theme.inputForeground
 import com.upsaclay.common.presentation.theme.white
@@ -247,14 +252,13 @@ fun MessageInput(
         verticalAlignment = Alignment.CenterVertically
     ) {
         BasicTextField(
-            modifier = modifier
-                .weight(1f)
-                .testTag(stringResource(R.string.chat_screen_message_input_tag)),
+            modifier = modifier.weight(1f),
             value = value,
             onValueChange = onValueChange,
             keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
             cursorBrush = SolidColor(MaterialTheme.colorScheme.cursor),
-            textStyle = TextStyle(color = MaterialTheme.colorScheme.cursor)
+            textStyle = TextStyle(color = MaterialTheme.colorScheme.cursor),
+            maxLines = 6
         ) { innerTextField ->
             TextFieldDefaults.DecorationBox(
                 value = value,
@@ -328,6 +332,60 @@ fun NewMessageIndicator(
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.black
             )
+        }
+    }
+}
+
+@Composable
+fun MessageBlockedUserIndicator(
+    modifier: Modifier = Modifier,
+    onDeleteChatClick: () -> Unit,
+    onUnblockUserClick: () -> Unit
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.smallSpacing()
+    ) {
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = stringResource(com.upsaclay.common.R.string.user_blocked),
+            style = MaterialTheme.typography.titleMedium,
+            textAlign = TextAlign.Center
+        )
+
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = stringResource(R.string.chat_blocked_user_indicator_text),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.informationText,
+            textAlign = TextAlign.Center
+        )
+
+        Row(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            TextButton (
+                onClick = onDeleteChatClick,
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.textButtonColors(
+                    containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0f),
+                    contentColor = MaterialTheme.colorScheme.error
+                )
+            ) {
+                Text(
+                    text = stringResource(com.upsaclay.common.R.string.delete),
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+
+            TextButton(
+                onClick = onUnblockUserClick,
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = stringResource(com.upsaclay.common.R.string.unblock)
+                )
+            }
         }
     }
 }
@@ -420,5 +478,20 @@ private fun MessageTextFieldPreview() {
 private fun NewMessageIndicatorPreview() {
     GedoiseTheme {
         NewMessageIndicator {}
+    }
+}
+
+@Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun MessageBlockedUserIndicatorPreview() {
+    GedoiseTheme {
+        Surface {
+            MessageBlockedUserIndicator(
+                modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                onDeleteChatClick = {},
+                onUnblockUserClick = {}
+            )
+        }
     }
 }

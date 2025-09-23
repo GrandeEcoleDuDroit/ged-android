@@ -3,7 +3,7 @@ package com.upsaclay.message.data.remote
 import com.upsaclay.common.data.exceptions.mapFirebaseException
 import com.upsaclay.common.data.exceptions.mapServerResponseException
 import com.upsaclay.common.data.extensions.toTimestamp
-import com.upsaclay.message.data.mapper.toMessageContent
+import com.upsaclay.message.data.mapper.toMessage
 import com.upsaclay.message.data.mapper.toRemote
 import com.upsaclay.message.data.remote.api.MessageApi
 import com.upsaclay.message.domain.entity.Message
@@ -26,7 +26,7 @@ internal class MessageRemoteDataSource(
             conversationId,
             interlocutorId,
             offsetTime?.toTimestamp()
-        ).map { it.toMessageContent() }
+        ).map { it.toMessage() }
     }
 
     suspend fun createMessage(message: Message) {

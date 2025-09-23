@@ -36,6 +36,7 @@
     <string name="see">Voir</string>
     <string name="see_all">Voir tout</string>
     <string name="report">Signaler</string>
+    <string name="block">Bloquer</string>
 
     <string name="arrow_back_icon_description">Retour en arrière</string>
     <string name="ged_logo_description">Logo de l\'université de La Grande École du Droit</string>
@@ -75,4 +76,9 @@
 
     <string name="member_text_tag" translatable="false">Member text tag</string>
     <string name="user_reported">Utilisateur signalé</string>
+    <string name="user_blocked">Utilisateur bloqué</string>
+    <string name="unblock">Débloquer</string>
+    <string name="user_unblocked">Utilisateur débloqué</string>
+    <string name="block_user_dialog_title">Bloquer utilisateur</string>
+    <string name="block_user_dialog_text">Voulez-vous bloquer cet utilisateur ? Vous ne verrez plus aucun de ses contenus.</string>
 </resources>

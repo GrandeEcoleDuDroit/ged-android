@@ -11,7 +11,7 @@ import com.upsaclay.message.domain.entity.NotificationMessage
 
 fun LocalNotificationMessage.toNotificationMessage() = NotificationMessage(
     conversation = toConversation(),
-    messageContent = toMessageContent()
+    messageContent = toMessage()
 )
 
 fun NotificationMessage.toLocal() = LocalNotificationMessage(
@@ -46,7 +46,7 @@ private fun LocalNotificationMessage.toConversation() = Conversation(
     deleteTime = conversationDeleteTime?.toLocalDateTimeUTC()
 )
 
-private fun LocalNotificationMessage.toMessageContent() = NotificationMessage.MessageContent(
+private fun LocalNotificationMessage.toMessage() = NotificationMessage.MessageContent(
     content = content,
     date = messageTimestamp,
 )

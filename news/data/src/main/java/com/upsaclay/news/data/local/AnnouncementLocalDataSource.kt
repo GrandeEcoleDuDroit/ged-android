@@ -25,4 +25,10 @@ internal class AnnouncementLocalDataSource(private val announcementDao: Announce
             announcementDao.deleteAnnouncement(announcement.toLocal())
         }
     }
+
+    suspend fun deleteUserAnnouncements(userId: String) {
+        withContext(Dispatchers.IO) {
+            announcementDao.deleteUserAnnouncements(userId)
+        }
+    }
 }
