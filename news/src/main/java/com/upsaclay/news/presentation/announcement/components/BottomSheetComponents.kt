@@ -20,7 +20,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.upsaclay.common.presentation.components.ClickableItem
+import com.upsaclay.common.presentation.components.TextItem
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.news.R
 
@@ -63,7 +63,7 @@ fun ErrorAnnouncementBottomSheet(
         modifier = Modifier.testTag(stringResource(id = R.string.announcement_bottom_sheet_tag)),
         onDismissRequest = onDismiss
     ) {
-        ClickableItem(
+        TextItem(
             modifier = Modifier.fillMaxWidth(),
             text = {
                 Text(text = stringResource(id = com.upsaclay.common.R.string.resend))
@@ -77,7 +77,7 @@ fun ErrorAnnouncementBottomSheet(
             onClick = onResendClick
         )
 
-        ClickableItem(
+        TextItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .testTag(stringResource(id = R.string.announcement_bottom_sheet_delete_field_tag)),
@@ -106,7 +106,7 @@ private fun EditableAnnouncementBottomSheetContent(
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit
 ) {
-    ClickableItem(
+    TextItem(
         modifier = Modifier
             .fillMaxWidth()
             .testTag(stringResource(id = R.string.read_screen_sheet_edit_field_tag)),
@@ -120,7 +120,7 @@ private fun EditableAnnouncementBottomSheetContent(
         onClick = onEditClick
     )
 
-    ClickableItem(
+    TextItem(
         modifier = Modifier
             .fillMaxWidth()
             .testTag(stringResource(id = R.string.announcement_bottom_sheet_delete_field_tag)),
@@ -145,7 +145,7 @@ private fun EditableAnnouncementBottomSheetContent(
 private fun NonEditableAnnouncementBottomSheetContent(
     onReportClick: () -> Unit
 ) {
-    ClickableItem(
+    TextItem(
         modifier = Modifier.fillMaxWidth(),
         text = {
             Text(

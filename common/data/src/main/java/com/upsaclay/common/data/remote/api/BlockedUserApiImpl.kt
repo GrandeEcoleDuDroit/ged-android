@@ -41,9 +41,11 @@ internal class BlockedUserFirestoreApi {
         val userIds = blockedUsersCollection.document(currentUserId)
             .get()
             .await()
-            .get(documentName, ArrayList::class.java)
+            .get(documentName) as? List<*>
 
-        return userIds?.mapNotNull { it as? String }?.toSet() ?: emptySet()
+        return userIds?.mapNotNull { it as? String }
+            ?.toSet()
+            ?: emptySet()
     }
 
     suspend fun blockUser(currentUserId: String, blockedUserId: String) {

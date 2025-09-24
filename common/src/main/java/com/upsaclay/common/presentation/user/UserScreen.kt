@@ -1,5 +1,6 @@
 package com.upsaclay.common.presentation.user
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -37,11 +38,11 @@ import com.upsaclay.common.domain.entity.UserReport
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.domain.userFixture2
 import com.upsaclay.common.extension.mediumPadding
+import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.presentation.components.BackTopBar
-import com.upsaclay.common.presentation.components.ClickableItem
+import com.upsaclay.common.presentation.components.TextItem
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.OptionButton
-import com.upsaclay.common.presentation.components.PrimaryButton
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.components.SensibleActionDialog
@@ -87,7 +88,7 @@ fun UserDestination(
             user = user,
             currentUser = uiState.currentUser!!,
             loading = uiState.loading,
-            isBlocked = uiState.isBlocked,
+            userBlocked = uiState.userBlocked,
             snackbarHostState = snackbarHostState
         )
     }
@@ -103,7 +104,7 @@ private fun UserScreen(
     user: User,
     currentUser: User,
     loading: Boolean,
-    isBlocked: Boolean,
+    userBlocked: Boolean,
     snackbarHostState: SnackbarHostState = SnackbarHostState()
 ) {
     var showUserBottomSheet by remember { mutableStateOf(false) }
@@ -117,7 +118,7 @@ private fun UserScreen(
     if (showBlockUserDialog) {
         SensibleActionDialog(
             title = stringResource(id = R.string.block_user_dialog_title),
-            text = stringResource(id = R.string.block_user_dialog_text),
+            text = stringResource(id = R.string.block_user_dialog_message),
             confirmText = stringResource(id = com.upsaclay.common.R.string.block),
             onConfirm = {
                 showBlockUserDialog = false
@@ -152,24 +153,16 @@ private fun UserScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .mediumPadding(innerPadding),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.mediumSpacing()
         ) {
             ProfilePicture(
                 url = user.profilePictureUrl,
                 scale = 1.8f
             )
 
-            if (isBlocked) {
-                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.medium_padding)))
-                PrimaryButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = { onUnblockUserClick(user.id) },
-                    text = stringResource(id = R.string.unblock)
-                )
-            } else {
-                SelectionContainer {
-                    UserInformationItems(user = user)
-                }
+            SelectionContainer {
+                UserInformationItems(user = user)
             }
         }
     }
@@ -189,7 +182,7 @@ private fun UserScreen(
                 showUserBottomSheet = false
                 onUnblockUserClick(user.id)
             },
-            isBlocked = isBlocked
+            isBlocked = userBlocked
         )
     }
 
@@ -231,37 +224,40 @@ private fun UserBottomSheet(
         onDismissRequest = onDismiss
     ) {
         if (isBlocked) {
-            ClickableItem(
+            TextItem(
                 modifier = Modifier.fillMaxWidth(),
                 text = {
                     Text(
-                        text = stringResource(id = com.upsaclay.common.R.string.unblock),
-                        color = MaterialTheme.colorScheme.error
-                    )
-                },
-                onClick = onUnblockClick
-            )
-        } else {
-            ClickableItem(
-                modifier = Modifier.fillMaxWidth(),
-                text = {
-                    Text(
-                        text = stringResource(id = com.upsaclay.common.R.string.block),
-                        color = MaterialTheme.colorScheme.error
+                        text = stringResource(id = com.upsaclay.common.R.string.unblock)
                     )
                 },
                 icon = {
                     Icon(
                         painter = painterResource(id = com.upsaclay.common.R.drawable.ic_outline_block),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.error
+                        contentDescription = null
+                    )
+                },
+                onClick = onUnblockClick
+            )
+        } else {
+            TextItem(
+                modifier = Modifier.fillMaxWidth(),
+                text = {
+                    Text(
+                        text = stringResource(id = com.upsaclay.common.R.string.block)
+                    )
+                },
+                icon = {
+                    Icon(
+                        painter = painterResource(id = com.upsaclay.common.R.drawable.ic_outline_block),
+                        contentDescription = null
                     )
                 },
                 onClick = onBlockClick
             )
         }
 
-        ClickableItem(
+        TextItem(
             modifier = Modifier.fillMaxWidth(),
             text = {
                 Text(
@@ -302,7 +298,7 @@ private fun UserScreenPreview() {
                 user = userFixture,
                 currentUser = userFixture2,
                 loading = false,
-                isBlocked = false
+                userBlocked = false
             )
         }
     }

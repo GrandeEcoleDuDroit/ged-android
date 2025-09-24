@@ -1,6 +1,7 @@
 package com.upsaclay.message.presentation.conversation.create
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,6 +35,7 @@ import com.upsaclay.common.presentation.components.CircularProgressBar
 import com.upsaclay.common.presentation.components.UserItem
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.previewText
+import com.upsaclay.common.utils.Phones
 import com.upsaclay.message.domain.entity.Conversation
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -146,8 +148,8 @@ private fun UsersFeed(
         if (users.isNotEmpty()) {
             items(users) { user ->
                 UserItem(
-                    user = user,
-                    onClick = { onUserClick(user) }
+                    modifier = Modifier.clickable(onClick = { onUserClick(user) }),
+                    user = user
                 )
             }
         } else {
@@ -171,7 +173,7 @@ private fun UsersFeed(
  =====================================================================
  */
 
-@Preview(showBackground = true)
+@Phones
 @Composable
 private fun CreateConversationScreenPreview() {
     val users: List<User> = usersFixture + usersFixture

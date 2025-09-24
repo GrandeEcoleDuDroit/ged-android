@@ -9,10 +9,12 @@
     <string name="edit_profile">Edit profile</string>
 
     <string name="account_informations">Account informations</string>
+    <string name="privacy">Privacy</string>
     <string name="support">Support</string>
     <string name="settings">Settings</string>
     <string name="logout">Log out</string>
     <string name="disconnection">Logging out...</string>
+    <string name="blocked_users">Blocked users</string>
 
     <string name="account_icon_description">Icon to access home page</string>
     <string name="support_icon_description">Icon to access calendar page</string>

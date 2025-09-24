@@ -24,6 +24,10 @@ import com.upsaclay.gedoise.presentation.components.MainBottomBar
 import com.upsaclay.gedoise.presentation.profile.account.accountScreen
 import com.upsaclay.gedoise.presentation.profile.account.navigateToAccount
 import com.upsaclay.gedoise.presentation.profile.navigateToProfile
+import com.upsaclay.gedoise.presentation.profile.privacy.blockedusers.blockedUsersScreen
+import com.upsaclay.gedoise.presentation.profile.privacy.blockedusers.navigateToBlockedUsers
+import com.upsaclay.gedoise.presentation.profile.privacy.navigateToPrivacy
+import com.upsaclay.gedoise.presentation.profile.privacy.privacyScreen
 import com.upsaclay.gedoise.presentation.profile.profileScreen
 import com.upsaclay.message.presentation.chat.ChatRoute
 import com.upsaclay.message.presentation.chat.chatScreen
@@ -158,11 +162,22 @@ fun GedNavHost(
             )
 
             profileScreen(
+                onBackClick = navController::popBackStack,
                 onAccountClick = navController::navigateToAccount,
-                onBackClick = navController::popBackStack
+                onPrivacyClick = navController::navigateToPrivacy
             )
 
             accountScreen(onBackClick = navController::popBackStack)
+
+            privacyScreen(
+                onBackClick = navController::popBackStack,
+                onBlockedUsersClick = navController::navigateToBlockedUsers
+            )
+
+            blockedUsersScreen(
+                onBackClick = navController::popBackStack,
+                onAccountClick = navController::navigateToUser
+            )
         }
 
         conversationSection(
