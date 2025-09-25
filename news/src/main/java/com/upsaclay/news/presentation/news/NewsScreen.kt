@@ -240,7 +240,6 @@ private fun NewsScreen(
  */
 
 @Phones
-@Tablets
 @Composable
 private fun NewsScreenPreview() {
     GedoiseTheme {

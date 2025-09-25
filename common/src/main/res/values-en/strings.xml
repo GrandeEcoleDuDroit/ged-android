@@ -71,9 +71,11 @@
 
     <string name="member">Member</string>
     <string name="unblock">Unblock</string>
-    <string name="user_reported">User reported</string>
-    <string name="user_blocked">User blocked</string>
-    <string name="user_unblocked">User unblocked</string>
+    <string name="reported_user">User reported</string>
+    <string name="blocked_user">User blocked</string>
+    <string name="unblocked_user">User unblocked</string>
     <string name="block_user_dialog_title">Block user</string>
-    <string name="block_user_dialog_text">Do you want to block this user? You will no longer see any of their content.</string>
+    <string name="block_user_dialog_message">Do you want to block this user? You will no longer see any of their content.</string>
+    <string name="unblock_user_dialog_title">Unblock user</string>
+    <string name="unblock_user_dialog_message">Do you want unblock this user ?</string>
 </resources>

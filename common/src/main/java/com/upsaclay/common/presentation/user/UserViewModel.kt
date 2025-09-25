@@ -37,7 +37,7 @@ class UserViewModel(
         viewModelScope.launch {
             try {
                 userRepository.reportUser(report)
-                _event.emit(SingleUiEvent.Success(R.string.user_reported))
+                _event.emit(SingleUiEvent.Success(R.string.reported_user))
             } catch (e: Exception) {
                 _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
             } finally {
@@ -53,7 +53,7 @@ class UserViewModel(
         viewModelScope.launch {
             try {
                 blockedUserRepository.blockUser(currentUserId,userId)
-                _event.emit(SingleUiEvent.Success(R.string.user_blocked))
+                _event.emit(SingleUiEvent.Success(R.string.blocked_user))
             } catch (e: Exception) {
                 _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
             } finally {
@@ -69,7 +69,7 @@ class UserViewModel(
         viewModelScope.launch {
             try {
                 blockedUserRepository.unblockUser(currentUserId, userId)
-                _event.emit(SingleUiEvent.Success(R.string.user_unblocked))
+                _event.emit(SingleUiEvent.Success(R.string.unblocked_user))
             } catch (e: Exception) {
                 _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
             } finally {
@@ -92,7 +92,7 @@ class UserViewModel(
         viewModelScope.launch {
             blockedUserRepository.blockedUserIds.collect { blockedUserIds ->
                 _uiState.update {
-                    it.copy(isBlocked = userId in blockedUserIds)
+                    it.copy(userBlocked = userId in blockedUserIds)
                 }
             }
         }
@@ -101,6 +101,6 @@ class UserViewModel(
     data class UserUiState(
         val currentUser: User? = null,
         val loading: Boolean = false,
-        val isBlocked: Boolean = false
+        val userBlocked: Boolean = false
     )
 }

@@ -39,6 +39,7 @@ class CreateConversationViewModel(
             try {
                 userRepository.getUsers()
                     .filter { it.id != userRepository.currentUser?.id && it.id !in blockedUserIds }
+                    .sortedBy { it.fullName }
                     .also { users ->
                         defaultUsers = users
                         _uiState.update {

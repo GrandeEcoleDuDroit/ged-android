@@ -8,10 +8,13 @@
     <string name="edit_profile">Editer profil</string>
 
     <string name="account_informations">Informations compte</string>
+    <string name="privacy">Confidentialité</string>
     <string name="support">Support</string>
     <string name="settings">Paramètres</string>
     <string name="logout">Se déconnecter</string>
     <string name="disconnection">Déconnexion...</string>
+    <string name="blocked_users">Utilisateurs bloqués</string>
+    <string name="no_blocked_users">Aucun utilisateur bloqué</string>
 
     <string name="account_icon_description">Icône pour accéder à la page de compte</string>
     <string name="support_icon_description">Icône pour accéder à la page de support</string>
@@ -35,4 +38,7 @@
     <string name="account_screen_delete_profile_picture_dialog_tag" translatable="false">Account screen delete profile picture button tag</string>
     <string name="account_screen_profile_picture_tag" translatable="false">Account screen profile picture tag</string>
     <string name="account_screen_snackbar_tag" translatable="false">Account screen snackbar tag</string>
+
+    <string name="empty_blocked_users_list_tag" translatable="false">Empty blocked users list tag</string>
+    <string name="blocked_user_item_tag" translatable="false">Blocked user item tag</string>
 </resources>

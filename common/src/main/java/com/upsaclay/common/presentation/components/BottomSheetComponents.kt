@@ -41,7 +41,7 @@ fun <T>ReportBottomSheet(
         Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.small_padding)))
 
         items.forEach {
-            ClickableItem(
+            TextItem(
                 modifier = Modifier.fillMaxWidth(),
                 text = { Text(text = it.toString()) },
                 onClick = { onReportClick(it) }

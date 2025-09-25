@@ -13,13 +13,15 @@ fun NavController.navigateToProfile() {
 }
 
 fun NavGraphBuilder.profileScreen(
+    onBackClick: () -> Unit,
     onAccountClick: () -> Unit,
-    onBackClick: () -> Unit
+    onPrivacyClick: () -> Unit
 ) {
     composable<ProfileRoute> {
         ProfileDestination(
+            onBackClick = onBackClick,
             onAccountClick = onAccountClick,
-            onBackClick = onBackClick
+            onPrivacyClick = onPrivacyClick
         )
     }
 }

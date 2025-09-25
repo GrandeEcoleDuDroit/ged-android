@@ -348,7 +348,7 @@ fun MessageBlockedUserIndicator(
     ) {
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = stringResource(com.upsaclay.common.R.string.user_blocked),
+            text = stringResource(com.upsaclay.common.R.string.blocked_user),
             style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Center
         )

@@ -35,15 +35,15 @@ class ProfileScreenTest {
         // When
         rule.setContent {
             ProfileScreen(
-                user = uiState.user,
+                user = userFixture,
+                onBackClick = {},
                 onLogoutClick = profileViewModel::logout,
-                onAccountClick = { },
-                onBackClick = { }
+                onAccountClick = {},
+                onPrivacyClick = {}
             )
         }
 
         rule.onNodeWithTag(rule.activity.getString(R.string.profile_screen_logout_button_tag)).performClick()
-
 
         // Then
         rule.onNodeWithTag(rule.activity.getString(R.string.profile_screen_logout_button_tag)).assertExists()

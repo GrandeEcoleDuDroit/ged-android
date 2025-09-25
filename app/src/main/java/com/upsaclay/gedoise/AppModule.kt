@@ -19,9 +19,11 @@ import com.upsaclay.gedoise.domain.usecase.ClearDataUseCase
 import com.upsaclay.gedoise.domain.usecase.FcmTokenUseCase
 import com.upsaclay.gedoise.domain.usecase.ListenRemoteDataUseCase
 import com.upsaclay.gedoise.domain.usecase.ListenRemoteUserUseCase
+import com.upsaclay.gedoise.domain.usecase.SynchronizeDataUseCase
 import com.upsaclay.gedoise.presentation.navigation.NavigationViewModel
 import com.upsaclay.gedoise.presentation.profile.ProfileViewModel
 import com.upsaclay.gedoise.presentation.profile.account.AccountViewModel
+import com.upsaclay.gedoise.presentation.profile.privacy.blockedusers.BlockedUsersViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -82,9 +84,11 @@ val appModule = module {
     viewModelOf(::ProfileViewModel)
     viewModelOf(::AccountViewModel)
     viewModelOf(::MainViewModel)
+    viewModelOf(::BlockedUsersViewModel)
 
     singleOf(::ClearDataUseCase)
     singleOf(::ListenRemoteDataUseCase)
+    singleOf(::SynchronizeDataUseCase)
     single {
         FcmTokenUseCase(
             userRepository = get(),

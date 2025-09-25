@@ -17,7 +17,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.upsaclay.common.presentation.components.ClickableItem
+import com.upsaclay.common.presentation.components.TextItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,7 +29,7 @@ fun SentMessageBottomSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss
     ) {
-        ClickableItem(
+        TextItem(
             modifier = Modifier.fillMaxWidth(),
             text = {
                 Text(text = stringResource(id = com.upsaclay.common.R.string.resend))
@@ -43,7 +43,7 @@ fun SentMessageBottomSheet(
             onClick = onResendMessageClick
         )
 
-        ClickableItem(
+        TextItem(
             modifier = Modifier.fillMaxWidth(),
             text = {
                 Text(
@@ -74,7 +74,7 @@ fun ReceivedMessageBottomSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss
     ) {
-        ClickableItem(
+        TextItem(
             modifier = Modifier.fillMaxWidth(),
             text = {
                 Text(

@@ -1,10 +1,8 @@
 package com.upsaclay.common.presentation.components
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -12,6 +10,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -34,7 +33,6 @@ import androidx.compose.ui.zIndex
 import com.upsaclay.common.R
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
-import com.upsaclay.common.extension.smallMediumSpacing
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
 import kotlinx.coroutines.delay
@@ -77,51 +75,38 @@ fun PullToRefreshComponent(
 }
 
 @Composable
-fun ClickableItem(
+fun TextItem(
     modifier: Modifier = Modifier,
     text: @Composable () -> Unit,
-    icon: @Composable () -> Unit = {},
+    icon: @Composable (() -> Unit)? = null,
     onClick: () -> Unit
 ) {
-    Row(
+    ListItem(
         modifier = modifier
-            .clickable(onClick = onClick)
-            .padding(dimensionResource(R.dimen.medium_padding)),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.smallMediumSpacing()
-    ) {
-        icon()
-        text()
-    }
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        headlineContent = text,
+        leadingContent = icon
+    )
 }
 
 @Composable
 fun UserItem(
     modifier: Modifier = Modifier,
     user: User,
-    onClick: () -> Unit
+    trailingContent: @Composable (() -> Unit)? = null
 ) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(
-                horizontal = dimensionResource(R.dimen.medium_padding),
-                vertical = dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)
-            ),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.smallMediumSpacing()
-    ) {
-        ProfilePicture(
-            url = user.profilePictureUrl,
-            scale = 0.5f
-        )
-
-        Text(
-            text = user.fullName,
-            style = MaterialTheme.typography.titleMedium
-        )
-    }
+    ListItem(
+        modifier = modifier.fillMaxWidth(),
+        headlineContent = { Text(text = user.fullName) },
+        leadingContent = {
+            ProfilePicture(
+                url = user.profilePictureUrl,
+                scale = 0.5f
+            )
+        },
+        trailingContent = trailingContent
+    )
 }
 
 /*
@@ -136,7 +121,7 @@ private fun ClickableMenuItemPreview() {
     GedoiseTheme {
         Surface {
             Column {
-                ClickableItem(
+                TextItem(
                     modifier = Modifier.width(300.dp),
                     text = { Text(text = "Item") },
                     icon = {
@@ -181,10 +166,7 @@ private fun PullRefreshComponentPreview() {
 private fun UserItemPreview() {
     GedoiseTheme {
         Surface {
-            UserItem(
-                user = userFixture,
-                onClick = { }
-            )
+            UserItem(user = userFixture)
         }
     }
 }

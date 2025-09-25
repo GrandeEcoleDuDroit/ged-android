@@ -7,12 +7,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -28,11 +28,12 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
+import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.presentation.components.BackTopBar
-import com.upsaclay.common.presentation.components.ClickableItem
+import com.upsaclay.common.presentation.components.CircularProgressBar
+import com.upsaclay.common.presentation.components.TextItem
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.components.SensibleActionDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
@@ -42,27 +43,34 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ProfileDestination(
-    onAccountClick: () -> Unit,
     onBackClick: () -> Unit,
+    onAccountClick: () -> Unit,
+    onPrivacyClick: () -> Unit,
     viewModel: ProfileViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    ProfileScreen(
-        user = uiState.user,
-        onLogoutClick = viewModel::logout,
-        onAccountClick = onAccountClick,
-        onBackClick = onBackClick
-    )
+    if (uiState.user != null) {
+        ProfileScreen(
+            user = uiState.user!!,
+            onBackClick = onBackClick,
+            onLogoutClick = viewModel::logout,
+            onAccountClick = onAccountClick,
+            onPrivacyClick = onPrivacyClick
+        )
+    } else {
+        CircularProgressBar()
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    user: User?,
+    user: User,
+    onBackClick: () -> Unit,
     onLogoutClick: () -> Unit,
     onAccountClick: () -> Unit,
-    onBackClick: () -> Unit,
+    onPrivacyClick: () -> Unit
 ) {
     var showLogoutDialog by remember { mutableStateOf(false) }
 
@@ -92,57 +100,65 @@ fun ProfileScreen(
                 title = stringResource(id = com.upsaclay.common.R.string.profile)
             )
         }
-    ) {
+    ) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            Column {
+                TopSection(
+                    profilePictureUrl = user.profilePictureUrl,
+                    userFullName = user.fullName
+                )
 
-        if (user != null) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = it.calculateTopPadding())
-            ) {
-                Column {
-                    TopSection(
-                        profilePictureUrl = user.profilePictureUrl,
-                        userFullName = user.fullName
-                    )
+                HorizontalDivider()
 
-                    HorizontalDivider()
+                TextItem(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag(stringResource(id = R.string.profile_screen_account_info_button_tag)),
+                    text = { Text(text = stringResource(id = R.string.account_informations)) },
+                    icon = {
+                        Icon(
+                            painter = painterResource(id = com.upsaclay.common.R.drawable.ic_fill_person),
+                            contentDescription = stringResource(id = R.string.account_icon_description)
+                        )
+                    },
+                    onClick = onAccountClick
+                )
 
-                    ClickableItem(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .testTag(stringResource(id = R.string.profile_screen_account_info_button_tag)),
-                        text = { Text(text = stringResource(id = R.string.account_informations)) },
-                        icon = {
-                            Icon(
-                                modifier = Modifier.size(28.dp),
-                                painter = painterResource(id = com.upsaclay.common.R.drawable.ic_fill_person),
-                                contentDescription = stringResource(id = R.string.account_icon_description)
-                            )
-                        },
-                        onClick = onAccountClick
-                    )
+                TextItem(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = { Text(text = stringResource(id = R.string.privacy)) },
+                    icon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_outline_lock),
+                            contentDescription = null
+                        )
+                    },
+                    onClick = onPrivacyClick
+                )
 
-                    ClickableItem(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .testTag(stringResource(id = R.string.profile_screen_logout_button_tag)),
-                        text = {
-                            Text(
-                                text = stringResource(id = R.string.logout),
-                                color = MaterialTheme.colorScheme.error
-                            )
-                        },
-                        icon = {
-                            Icon(
-                                painter = painterResource(id = com.upsaclay.common.R.drawable.ic_logout),
-                                contentDescription = stringResource(id = R.string.logout_icon_description),
-                                tint = MaterialTheme.colorScheme.error
-                            )
-                        },
-                        onClick = { showLogoutDialog = true }
-                    )
-                }
+                TextItem(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag(stringResource(id = R.string.profile_screen_logout_button_tag)),
+                    text = {
+                        Text(
+                            text = stringResource(id = R.string.logout),
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    },
+                    icon = {
+                        Icon(
+                            painter = painterResource(id = com.upsaclay.common.R.drawable.ic_logout),
+                            contentDescription = stringResource(id = R.string.logout_icon_description),
+                            tint = MaterialTheme.colorScheme.error
+                        )
+                    },
+                    onClick = { showLogoutDialog = true }
+                )
             }
         }
     }
@@ -184,11 +200,14 @@ private fun TopSection(profilePictureUrl: String?, userFullName: String) {
 @Composable
 fun ProfileScreenPreview() {
     GedoiseTheme {
-        ProfileScreen(
-            user = userFixture,
-            onLogoutClick = {},
-            onAccountClick = {},
-            onBackClick = {}
-        )
+        Surface {
+            ProfileScreen(
+                user = userFixture,
+                onBackClick = {},
+                onLogoutClick = {},
+                onAccountClick = {},
+                onPrivacyClick = {}
+            )
+        }
     }
 }

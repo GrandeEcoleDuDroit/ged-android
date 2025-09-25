@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.upsaclay.common.presentation.components.ClickableItem
+import com.upsaclay.common.presentation.components.TextItem
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,7 +40,7 @@ fun ConversationBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
     ) {
-        ClickableItem(
+        TextItem(
             modifier = Modifier.fillMaxWidth(),
             text = {
                 Text(
