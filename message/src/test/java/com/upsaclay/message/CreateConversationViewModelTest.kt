@@ -58,7 +58,9 @@ class CreateConversationViewModelTest {
     @Test
     fun all_users_should_be_fetched_except_current() = runTest {
         // Given
-        val users = usersFixture.filterNot { it.id == userFixture.id }
+        val users = usersFixture
+            .filterNot { it.id == userFixture.id }
+            .sortedBy { it.fullName }
         coEvery { userRepository.getUsers() } returns users
 
         // When
@@ -130,7 +132,9 @@ class CreateConversationViewModelTest {
     @Test
     fun resetQuery_should_reset_users_to_default() = runTest {
         // Given
-        val defaultUsers = usersFixture.filterNot { it.id == userFixture.id }
+        val defaultUsers = usersFixture
+            .filterNot { it.id == userFixture.id }
+            .sortedBy { it.fullName }
         createConversationViewModel.onQueryChange("test")
 
         // When
