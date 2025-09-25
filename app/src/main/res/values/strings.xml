@@ -40,5 +40,5 @@
     <string name="account_screen_snackbar_tag" translatable="false">Account screen snackbar tag</string>
 
     <string name="empty_blocked_users_list_tag" translatable="false">Empty blocked users list tag</string>
-    <string name="blocked_user_item_tag">Blocked user item tag</string>
+    <string name="blocked_user_item_tag" translatable="false">Blocked user item tag</string>
 </resources>
