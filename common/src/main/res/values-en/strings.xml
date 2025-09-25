@@ -78,5 +78,4 @@
     <string name="block_user_dialog_message">Do you want to block this user? You will no longer see any of their content.</string>
     <string name="unblock_user_dialog_title">Unblock user</string>
     <string name="unblock_user_dialog_message">Do you want unblock this user ?</string>
-    <string name="no_blocked_users">No blocked users</string>
 </resources>

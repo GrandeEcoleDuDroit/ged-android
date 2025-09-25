@@ -10,20 +10,27 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import com.upsaclay.common.R
+import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.presentation.components.BackTopBar
 import com.upsaclay.common.presentation.components.SimpleDialog
@@ -31,6 +38,9 @@ import com.upsaclay.common.presentation.components.UserItem
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.informationText
 import com.upsaclay.common.utils.Phones
+import com.upsaclay.gedoise.R
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -40,10 +50,28 @@ fun BlockedUsersDestination(
     viewModel: BlockedUsersViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val showSnackBar = { message: String ->
+        scope.launch {
+            snackbarHostState.showSnackbar(message = message)
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.event.collectLatest { event ->
+            when (event) {
+                is SingleUiEvent.Success -> showSnackBar(context.getString(event.messageId))
+                is SingleUiEvent.Error -> showSnackBar(context.getString(event.messageId))
+            }
+        }
+    }
 
     BlockedUsersScreen(
         onBackClick = onBackClick,
         blockedUsers = uiState.blockedUsers,
+        snackbarHostState = snackbarHostState,
         onUnblockClick = viewModel::unblockUser,
         onAccountClick = onAccountClick
     )
@@ -54,6 +82,7 @@ fun BlockedUsersDestination(
 private fun BlockedUsersScreen(
     onBackClick: () -> Unit,
     blockedUsers: List<User>,
+    snackbarHostState: SnackbarHostState,
     onUnblockClick: (String) -> Unit,
     onAccountClick: (User) -> Unit
 ) {
@@ -62,9 +91,9 @@ private fun BlockedUsersScreen(
 
     if (showUnblockUserDialog) {
         SimpleDialog(
-            title = stringResource(R.string.unblock_user_dialog_title),
-            text = stringResource(R.string.unblock_user_dialog_message),
-            confirmText = stringResource(R.string.unblock),
+            title = stringResource(com.upsaclay.common.R.string.unblock_user_dialog_title),
+            text = stringResource(com.upsaclay.common.R.string.unblock_user_dialog_message),
+            confirmText = stringResource(com.upsaclay.common.R.string.unblock),
             onConfirm = {
                 showUnblockUserDialog = false
                 clickedUserId?.let(onUnblockClick)
@@ -78,8 +107,13 @@ private fun BlockedUsersScreen(
         topBar = {
             BackTopBar(
                 onBackClick = onBackClick,
-                title = stringResource(com.upsaclay.gedoise.R.string.blocked_users)
+                title = stringResource(R.string.blocked_users)
             )
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState) {
+                Snackbar(it)
+            }
         }
     ) { innerPadding ->
         LazyColumn(
@@ -88,7 +122,9 @@ private fun BlockedUsersScreen(
             if (blockedUsers.isEmpty()) {
                 item {
                     Spacer(
-                        modifier = Modifier.height(dimensionResource(R.dimen.small_padding))
+                        modifier = Modifier
+                            .height(dimensionResource(com.upsaclay.common.R.dimen.small_padding))
+                            .testTag(stringResource(R.string.empty_blocked_users_list_tag))
                     )
                     Text(
                         modifier = Modifier.fillMaxWidth(),
@@ -100,7 +136,9 @@ private fun BlockedUsersScreen(
             } else {
                 items(blockedUsers) { user ->
                     UserItem(
-                        modifier = Modifier.clickable(onClick = { onAccountClick(user) }),
+                        modifier = Modifier
+                            .clickable(onClick = { onAccountClick(user) })
+                            .testTag(stringResource(R.string.blocked_user_item_tag) + user.id),
                         user = user,
                         trailingContent = {
                             TextButton(
@@ -109,7 +147,7 @@ private fun BlockedUsersScreen(
                                     showUnblockUserDialog = true
                                 }
                             ) {
-                                Text(text = stringResource(R.string.unblock))
+                                Text(text = stringResource(com.upsaclay.common.R.string.unblock))
                             }
                         }
                     )
@@ -133,6 +171,7 @@ private fun BlockedUserScreenPreview() {
             BlockedUsersScreen(
                 onBackClick = {},
                 blockedUsers = emptyList(),
+                snackbarHostState = SnackbarHostState(),
                 onUnblockClick = {},
                 onAccountClick = {}
             )
