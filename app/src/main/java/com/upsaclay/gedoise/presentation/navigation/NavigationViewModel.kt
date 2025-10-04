@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavDestination
 import com.upsaclay.authentication.AuthenticationBaseRoute
 import com.upsaclay.authentication.AuthenticationRoute
-import com.upsaclay.authentication.domain.repository.AuthenticationRepository
+import com.upsaclay.authentication.domain.usecase.ListenAuthenticationStateUseCase
 import com.upsaclay.common.domain.entity.Route
 import com.upsaclay.common.domain.repository.RouteRepository
 import com.upsaclay.message.domain.usecase.GetUnreadConversationsCountUseCase
@@ -23,8 +23,8 @@ import kotlinx.coroutines.launch
 
 class NavigationViewModel(
     private val getUnreadConversationsCountUseCase: GetUnreadConversationsCountUseCase,
+    private val listenAuthenticationStateUseCase: ListenAuthenticationStateUseCase,
     private val routeRepository: RouteRepository,
-    private val authenticationRepository: AuthenticationRepository
 ): ViewModel() {
     private val _uiState = MutableStateFlow(NavigationState())
     val uiState: StateFlow<NavigationState> = _uiState
@@ -37,7 +37,7 @@ class NavigationViewModel(
     }
 
     fun intentToNavigate(route: Route) {
-        if (authenticationRepository.isAuthenticated) {
+        if (listenAuthenticationStateUseCase.isAuthenticated) {
             navigate(route)
         }
     }
@@ -74,7 +74,7 @@ class NavigationViewModel(
 
     private fun updateStartDestination() {
         viewModelScope.launch {
-            authenticationRepository.authenticated.map {
+            listenAuthenticationStateUseCase.authenticated.map {
                 if (it) NewsBaseRoute else AuthenticationBaseRoute
             }.collect { route ->
                 _uiState.update {
@@ -103,6 +103,6 @@ class NavigationViewModel(
             TopLevelDestination.Home,
             TopLevelDestination.Message()
         ),
-        val startDestination: Route = SplashRoute,
+        val startDestination: Route = SplashRoute
     )
 }

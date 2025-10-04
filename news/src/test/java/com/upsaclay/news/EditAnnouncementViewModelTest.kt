@@ -1,10 +1,11 @@
 package com.upsaclay.news
 
+import com.upsaclay.common.domain.ConnectivityObserver
 import com.upsaclay.news.domain.longAnnouncementFixture
-import com.upsaclay.news.domain.usecase.UpdateAnnouncementUseCase
+import com.upsaclay.news.domain.repository.AnnouncementRepository
 import com.upsaclay.news.presentation.announcement.editannouncement.EditAnnouncementViewModel
-import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -16,9 +17,10 @@ import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class EditAnnouncementViewModelTest {
-    private val updateAnnouncementUseCase: UpdateAnnouncementUseCase = mockk()
+    private val announcementRepository: AnnouncementRepository = mockk()
+    private val connectivityObserver: ConnectivityObserver = mockk()
 
-    private lateinit var editAnnouncementViewModel: EditAnnouncementViewModel
+    private lateinit var viewModel: EditAnnouncementViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
     private val title = "Title"
     private val content = "Content"
@@ -27,69 +29,70 @@ class EditAnnouncementViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
 
-        coEvery { updateAnnouncementUseCase(any()) } returns Unit
+        every { connectivityObserver.isConnected } returns true
 
-        editAnnouncementViewModel = EditAnnouncementViewModel(
+        viewModel = EditAnnouncementViewModel(
             announcement = longAnnouncementFixture,
-            updateAnnouncementUseCase = updateAnnouncementUseCase
+            announcementRepository = announcementRepository,
+            connectivityObserver = connectivityObserver
         )
     }
 
     @Test
     fun updateTitle_should_on_titleChange() {
         // When
-        editAnnouncementViewModel.onTitleChange(title)
+        viewModel.onTitleChange(title)
 
         // Then
-        assertEquals(title, editAnnouncementViewModel.uiState.value.title)
+        assertEquals(title, viewModel.uiState.value.title)
     }
 
     @Test
     fun updateContent_should_on_contentChange() {
         // When
-        editAnnouncementViewModel.onContentChange(content)
+        viewModel.onContentChange(content)
 
         // Then
-        assertEquals(content, editAnnouncementViewModel.uiState.value.content)
+        assertEquals(content, viewModel.uiState.value.content)
     }
 
     @Test
     fun updateAnnouncement_should_updateAnnouncement() {
         // Given
-        editAnnouncementViewModel.onTitleChange(title)
-        editAnnouncementViewModel.onContentChange(content)
+        viewModel.onTitleChange(title)
+        viewModel.onContentChange(content)
 
         // When
-        editAnnouncementViewModel.updateAnnouncement()
+        viewModel.updateAnnouncement()
 
         // Then
-        coVerify { updateAnnouncementUseCase(any()) }
+        coVerify { announcementRepository.updateAnnouncement(any()) }
     }
 
     @Test
     fun updateAnnouncement_should_not_update_when_content_is_empty() {
         // Given
-        editAnnouncementViewModel.onTitleChange("title")
-        editAnnouncementViewModel.onContentChange("")
+        viewModel.onTitleChange("title")
+        viewModel.onContentChange("")
 
         // When
-        editAnnouncementViewModel.updateAnnouncement()
+        viewModel.updateAnnouncement()
 
         // Then
-        coVerify(exactly = 0) { updateAnnouncementUseCase(any()) }
+        coVerify(exactly = 0) { announcementRepository.updateAnnouncement(any()) }
     }
 
     @Test
     fun updateAnnouncement_should_not_update_when_title_and_content_are_same() {
         // Given
-        editAnnouncementViewModel.onTitleChange(longAnnouncementFixture.title!!)
-        editAnnouncementViewModel.onContentChange(longAnnouncementFixture.content)
+        viewModel.onTitleChange(longAnnouncementFixture.title!!)
+        viewModel.onContentChange(longAnnouncementFixture.content)
 
         // When
-        editAnnouncementViewModel.updateAnnouncement()
+        viewModel.updateAnnouncement()
 
         // Then
-        coVerify(exactly = 0) { updateAnnouncementUseCase(any()) }
+        coVerify(exactly = 0) { announcementRepository.updateAnnouncement(any()) }
     }
 
     @Test
@@ -97,18 +100,19 @@ class EditAnnouncementViewModelTest {
         // Given
         val titleWithSpaces = "  ${longAnnouncementFixture.title}  "
         val contentWithSpaces = "  ${longAnnouncementFixture.content}  "
-        editAnnouncementViewModel.onTitleChange(titleWithSpaces)
-        editAnnouncementViewModel.onContentChange(contentWithSpaces)
+        viewModel.onTitleChange(titleWithSpaces)
+        viewModel.onContentChange(contentWithSpaces)
 
         // When
-        editAnnouncementViewModel.updateAnnouncement()
+        viewModel.updateAnnouncement()
 
         // Then
         coVerify {
-            updateAnnouncementUseCase(
+            announcementRepository.updateAnnouncement(
                 longAnnouncementFixture.copy(
                     title = titleWithSpaces.trim(),
-                    content = contentWithSpaces.trim())
+                    content = contentWithSpaces.trim()
+                )
             )
         }
     }

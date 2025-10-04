@@ -3,32 +3,22 @@ package com.upsaclay.authentication.data.repository
 import com.upsaclay.authentication.data.local.AuthenticationLocalDataSource
 import com.upsaclay.authentication.data.repository.firebase.FirebaseAuthenticationRepository
 import com.upsaclay.authentication.domain.repository.AuthenticationRepository
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.stateIn
 
 internal class AuthenticationRepositoryImpl(
     private val firebaseAuthenticationRepository: FirebaseAuthenticationRepository,
-    private val authenticationLocalDataSource: AuthenticationLocalDataSource,
-    scope: CoroutineScope
+    private val authenticationLocalDataSource: AuthenticationLocalDataSource
 ) : AuthenticationRepository {
-    private val _authenticated = combine(
+    override suspend fun isAuthenticated(): Boolean =
+        authenticationLocalDataSource.isAuthenticated() && firebaseAuthenticationRepository.isAuthenticated()
+
+    override fun getAuthenticationState(): Flow<Boolean> = combine(
         authenticationLocalDataSource.listenAuthenticationState(),
         firebaseAuthenticationRepository.listenAuthenticationState(),
     ) { localAuthState, firebaseAuthState ->
         localAuthState && firebaseAuthState
     }
-        .stateIn(
-            scope = scope,
-            started = SharingStarted.Eagerly,
-            initialValue = null
-        )
-    override val authenticated: Flow<Boolean> = _authenticated.filterNotNull()
-    override val isAuthenticated: Boolean
-        get() = _authenticated.value ?: false
 
     override suspend fun loginWithEmailAndPassword(email: String, password: String) {
         firebaseAuthenticationRepository.loginWithEmailAndPassword(email, password)

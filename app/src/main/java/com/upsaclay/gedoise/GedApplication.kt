@@ -12,7 +12,7 @@ import com.upsaclay.common.data.commonDataModule
 import com.upsaclay.common.domain.commonDomainModule
 import com.upsaclay.gedoise.domain.usecase.FcmTokenUseCase
 import com.upsaclay.message.data.messageDataModule
-import com.upsaclay.message.data.worker.MessageWorkerLauncher
+import com.upsaclay.message.data.worker.StartupMessageWorker
 import com.upsaclay.message.domain.messageDomainModule
 import com.upsaclay.message.messageModule
 import com.upsaclay.news.data.newsDataModule
@@ -53,7 +53,7 @@ class GedApplication : Application() {
         }
 
         get<FcmTokenUseCase>().listenEvents()
-        get<MessageWorkerLauncher>().launch()
+        get<StartupMessageWorker>().run()
         plant(Timber.DebugTree())
     }
 

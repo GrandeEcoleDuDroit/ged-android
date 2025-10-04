@@ -11,6 +11,7 @@ import com.upsaclay.message.domain.usecase.ListenRemoteConversationsUseCase
 import com.upsaclay.message.domain.usecase.ListenRemoteMessagesUseCase
 import com.upsaclay.message.domain.usecase.NotificationMessageUseCase
 import com.upsaclay.message.domain.usecase.SendMessageUseCase
+import com.upsaclay.message.domain.usecase.UpdateConversationDeleteTimeUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -47,7 +48,6 @@ val messageDomainModule = module {
         ListenRemoteConversationsUseCase(
             userRepository = get(),
             conversationRepository = get(),
-            blockedUserRepository = get(),
             listenRemoteMessagesUseCase = get(),
             scope = get(BACKGROUND_SCOPE)
         )
@@ -68,4 +68,5 @@ val messageDomainModule = module {
             scope = get(BACKGROUND_SCOPE)
         )
     }
+    singleOf(::UpdateConversationDeleteTimeUseCase)
 }

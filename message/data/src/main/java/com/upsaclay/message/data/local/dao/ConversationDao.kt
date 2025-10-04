@@ -2,7 +2,6 @@ package com.upsaclay.message.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
-import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import androidx.room.Upsert
@@ -21,9 +20,6 @@ interface ConversationDao {
 
     @Query("SELECT * FROM $CONVERSATIONS_TABLE_NAME WHERE $INTERLOCUTOR_ID = :interlocutorId")
     suspend fun getConversation(interlocutorId: String): LocalConversation?
-
-    @Insert
-    suspend fun insertConversation(localConversation: LocalConversation)
 
     @Update
     suspend fun updateConversation(localConversation: LocalConversation)

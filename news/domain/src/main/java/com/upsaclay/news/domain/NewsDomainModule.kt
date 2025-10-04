@@ -3,10 +3,9 @@ package com.upsaclay.news.domain
 import com.upsaclay.common.domain.e
 import com.upsaclay.news.domain.usecase.CreateAnnouncementUseCase
 import com.upsaclay.news.domain.usecase.DeleteAnnouncementUseCase
-import com.upsaclay.news.domain.usecase.ListenBlockUserEventsUseCase
 import com.upsaclay.news.domain.usecase.RefreshAnnouncementUseCase
 import com.upsaclay.news.domain.usecase.ResendAnnouncementUseCase
-import com.upsaclay.news.domain.usecase.UpdateAnnouncementUseCase
+import com.upsaclay.news.domain.usecase.SynchronizeAnnouncementsUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -35,31 +34,14 @@ val newsDomainModule = module {
         )
     }
 
-    single(createdAtStart = true) {
-        ListenBlockUserEventsUseCase(
-            blockedUserRepository = get(),
-            announcementRepository = get(),
-            scope = get(BACKGROUND_SCOPE)
-        ).apply { start() }
-    }
-
     single {
         ResendAnnouncementUseCase(
             announcementRepository = get(),
-            connectivityObserver = get(),
             scope = get(BACKGROUND_SCOPE)
         )
     }
 
-    single {
-        RefreshAnnouncementUseCase(
-            announcementRepository = get(),
-            connectivityObserver = get(),
-            blockedUserRepository = get(),
-            scope = get(BACKGROUND_SCOPE)
-        )
-    }
-
+    singleOf(::RefreshAnnouncementUseCase)
     singleOf(::DeleteAnnouncementUseCase)
-    singleOf(::UpdateAnnouncementUseCase)
+    singleOf(::SynchronizeAnnouncementsUseCase)
 }

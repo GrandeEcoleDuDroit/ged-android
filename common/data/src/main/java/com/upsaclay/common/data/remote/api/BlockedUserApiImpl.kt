@@ -17,31 +17,30 @@ internal class BlockedUserApiImpl(
         )
     }
 
-    override suspend fun blockUser(currentUserId: String, blockedUserId: String) {
+    override suspend fun blockUser(currentUserId: String, userId: String) {
         mapFirebaseException(
-            block = { blockedUserFirestoreApi.blockUser(currentUserId, blockedUserId) },
+            block = { blockedUserFirestoreApi.blockUser(currentUserId, userId) },
             message = "Failed to block user with Firestore"
         )
     }
 
-    override suspend fun unblockUser(currentUserId: String, blockedUserId: String) {
+    override suspend fun unblockUser(currentUserId: String, userId: String) {
         mapFirebaseException(
-            block = { blockedUserFirestoreApi.unblockUser(currentUserId, blockedUserId) },
+            block = { blockedUserFirestoreApi.unblockUser(currentUserId, userId) },
             message = "Failed to unblock user with Firestore"
         )
     }
 }
 
 internal class BlockedUserFirestoreApi {
-    private val tableName = "blockedUsers"
-    private val documentName = "userIds"
-    private val blockedUsersCollection = Firebase.firestore.collection(tableName)
+    private val blockedUsersCollection = Firebase.firestore.collection("blockedUsers")
+    private val dataKey = "userIds"
 
     suspend fun getBlockedUserIds(currentUserId: String): Set<String> {
         val userIds = blockedUsersCollection.document(currentUserId)
             .get()
             .await()
-            .get(documentName) as? List<*>
+            .get(dataKey) as? List<*>
 
         return userIds?.mapNotNull { it as? String }
             ?.toSet()
@@ -49,7 +48,7 @@ internal class BlockedUserFirestoreApi {
     }
 
     suspend fun blockUser(currentUserId: String, blockedUserId: String) {
-        val data = hashMapOf(documentName to FieldValue.arrayUnion(blockedUserId))
+        val data = hashMapOf(dataKey to FieldValue.arrayUnion(blockedUserId))
 
         blockedUsersCollection.document(currentUserId)
             .set(data, SetOptions.merge())
@@ -57,7 +56,7 @@ internal class BlockedUserFirestoreApi {
     }
 
     suspend fun unblockUser(currentUserId: String, blockedUserId: String) {
-        val data = hashMapOf(documentName to FieldValue.arrayRemove(blockedUserId))
+        val data = hashMapOf(dataKey to FieldValue.arrayRemove(blockedUserId))
 
         blockedUsersCollection.document(currentUserId)
             .set(data, SetOptions.merge())

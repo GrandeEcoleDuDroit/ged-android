@@ -23,9 +23,9 @@ import com.upsaclay.common.presentation.user.userScreen
 import com.upsaclay.gedoise.presentation.components.MainBottomBar
 import com.upsaclay.gedoise.presentation.profile.account.accountScreen
 import com.upsaclay.gedoise.presentation.profile.account.navigateToAccount
+import com.upsaclay.gedoise.presentation.profile.blockedusers.blockedUsersScreen
+import com.upsaclay.gedoise.presentation.profile.blockedusers.navigateToBlockedUsers
 import com.upsaclay.gedoise.presentation.profile.navigateToProfile
-import com.upsaclay.gedoise.presentation.profile.privacy.blockedusers.blockedUsersScreen
-import com.upsaclay.gedoise.presentation.profile.privacy.blockedusers.navigateToBlockedUsers
 import com.upsaclay.gedoise.presentation.profile.privacy.navigateToPrivacy
 import com.upsaclay.gedoise.presentation.profile.privacy.privacyScreen
 import com.upsaclay.gedoise.presentation.profile.profileScreen

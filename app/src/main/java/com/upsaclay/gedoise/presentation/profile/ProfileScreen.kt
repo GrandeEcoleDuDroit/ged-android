@@ -30,7 +30,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
-import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.presentation.components.BackTopBar
 import com.upsaclay.common.presentation.components.CircularProgressBar
 import com.upsaclay.common.presentation.components.TextItem

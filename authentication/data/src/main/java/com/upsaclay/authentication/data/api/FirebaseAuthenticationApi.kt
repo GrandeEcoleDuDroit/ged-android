@@ -3,6 +3,8 @@ package com.upsaclay.authentication.data.api
 import kotlinx.coroutines.flow.Flow
 
 interface FirebaseAuthenticationApi {
+    fun isAuthenticated(): Boolean
+
     fun listenAuthenticationState(): Flow<Boolean>
 
     fun getIdToken(): String?

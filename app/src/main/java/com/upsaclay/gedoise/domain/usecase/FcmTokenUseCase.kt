@@ -1,7 +1,7 @@
 package com.upsaclay.gedoise.domain.usecase
 
 import com.google.firebase.messaging.FirebaseMessaging
-import com.upsaclay.authentication.domain.repository.AuthenticationRepository
+import com.upsaclay.authentication.domain.usecase.ListenAuthenticationStateUseCase
 import com.upsaclay.common.domain.ConnectivityObserver
 import com.upsaclay.common.domain.d
 import com.upsaclay.common.domain.entity.FcmToken
@@ -15,15 +15,15 @@ import kotlinx.coroutines.tasks.await
 
 class FcmTokenUseCase(
     private val userRepository: UserRepository,
-    private val authenticationRepository: AuthenticationRepository,
     private val fcmTokenRepository: FcmTokenRepository,
     private val connectivityObserver: ConnectivityObserver,
+    private val listenAuthenticationStateUseCase: ListenAuthenticationStateUseCase,
     private val scope: CoroutineScope
 ) {
     fun listenEvents() {
         scope.launch {
            combine(
-               authenticationRepository.authenticated,
+               listenAuthenticationStateUseCase.authenticated,
                connectivityObserver.connected.filter { it }
            ) { isAuthenticated, _ ->
                 isAuthenticated

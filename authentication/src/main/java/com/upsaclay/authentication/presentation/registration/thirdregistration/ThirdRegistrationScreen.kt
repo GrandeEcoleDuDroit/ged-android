@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -167,6 +168,11 @@ private fun ThirdRegistrationScreenPreview() {
                 onPasswordChange = { password = it },
                 onRegistrationClick = {},
                 onBackClick = {},
+            )
+
+            Checkbox(
+                checked = true,
+                onCheckedChange = null,
             )
         }
     }

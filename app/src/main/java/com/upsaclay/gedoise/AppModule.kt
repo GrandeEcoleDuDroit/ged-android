@@ -17,13 +17,14 @@ import com.upsaclay.gedoise.data.repository.RouteRepositoryImpl
 import com.upsaclay.gedoise.data.repository.TokenProviderImpl
 import com.upsaclay.gedoise.domain.usecase.ClearDataUseCase
 import com.upsaclay.gedoise.domain.usecase.FcmTokenUseCase
-import com.upsaclay.gedoise.domain.usecase.ListenRemoteDataUseCase
+import com.upsaclay.gedoise.domain.usecase.ListenBlockedUserEvents
+import com.upsaclay.gedoise.domain.usecase.ListenDataUseCase
 import com.upsaclay.gedoise.domain.usecase.ListenRemoteUserUseCase
 import com.upsaclay.gedoise.domain.usecase.SynchronizeDataUseCase
 import com.upsaclay.gedoise.presentation.navigation.NavigationViewModel
 import com.upsaclay.gedoise.presentation.profile.ProfileViewModel
 import com.upsaclay.gedoise.presentation.profile.account.AccountViewModel
-import com.upsaclay.gedoise.presentation.profile.privacy.blockedusers.BlockedUsersViewModel
+import com.upsaclay.gedoise.presentation.profile.blockedusers.BlockedUsersViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -87,20 +88,33 @@ val appModule = module {
     viewModelOf(::BlockedUsersViewModel)
 
     singleOf(::ClearDataUseCase)
-    singleOf(::ListenRemoteDataUseCase)
+    singleOf(::ListenDataUseCase)
     singleOf(::SynchronizeDataUseCase)
+
     single {
         FcmTokenUseCase(
             userRepository = get(),
             fcmTokenRepository = get(),
-            authenticationRepository = get(),
             connectivityObserver = get(),
+            listenAuthenticationStateUseCase = get(),
             scope = get(BACKGROUND_SCOPE)
         )
     }
+
     single {
         ListenRemoteUserUseCase(
             userRepository = get(),
+            authenticationRepository = get(),
+            scope = get(BACKGROUND_SCOPE)
+        )
+    }
+
+    single {
+        ListenBlockedUserEvents(
+            blockedUserRepository = get(),
+            announcementRepository = get(),
+            listenRemoteMessagesUseCase = get(),
+            updateConversationDeleteTimeUseCase = get(),
             scope = get(BACKGROUND_SCOPE)
         )
     }

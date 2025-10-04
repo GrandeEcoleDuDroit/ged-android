@@ -1,13 +1,10 @@
 package com.upsaclay.news.domain
 
-import com.upsaclay.common.domain.ConnectivityObserver
-import com.upsaclay.common.domain.entity.NoInternetConnectionException
 import com.upsaclay.news.domain.entity.AnnouncementState
 import com.upsaclay.news.domain.repository.AnnouncementRepository
 import com.upsaclay.news.domain.usecase.ResendAnnouncementUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
@@ -20,19 +17,16 @@ import org.junit.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class ResendAnnouncementUseCaseTest {
     private val announcementRepository: AnnouncementRepository = mockk()
-    private val connectivityObserver: ConnectivityObserver = mockk()
 
     private lateinit var useCase: ResendAnnouncementUseCase
     private val testScope = TestScope(UnconfinedTestDispatcher())
 
     @Before
     fun setUp() {
-        every { connectivityObserver.isConnected } returns true
         coEvery { announcementRepository.createAnnouncement(any()) } returns Unit
 
         useCase = ResendAnnouncementUseCase(
             announcementRepository = announcementRepository,
-            connectivityObserver = connectivityObserver,
             scope = testScope
         )
     }
@@ -79,15 +73,5 @@ class ResendAnnouncementUseCaseTest {
         coVerify {
             announcementRepository.updateLocalAnnouncement(announcement.copy(state = AnnouncementState.ERROR))
         }
-    }
-
-    @Test(expected = NoInternetConnectionException::class)
-    fun resendAnnouncement_should_throw_NoInternetConnectionException_when_not_connected() {
-        // Given
-        every { connectivityObserver.isConnected } returns false
-        val announcement = longAnnouncementFixture.copy(state = AnnouncementState.DRAFT)
-
-        // When
-        useCase(announcement)
     }
 }

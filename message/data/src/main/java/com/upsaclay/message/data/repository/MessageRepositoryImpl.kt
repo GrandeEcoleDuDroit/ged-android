@@ -24,11 +24,8 @@ internal class MessageRepositoryImpl(
 
     override suspend fun getUnsentMessages(): List<Message> = messageLocalDataSource.getUnsentMessages()
 
-    override fun fetchRemoteMessages(
-        conversationId: String,
-        interlocutorId: String,
-        offsetTime: LocalDateTime?
-    ): Flow<Message> = messageRemoteDataSource.listenMessages(conversationId, interlocutorId, offsetTime)
+    override fun fetchRemoteMessages(conversationId: String, interlocutorId: String, offsetTime: LocalDateTime?): Flow<Message> =
+        messageRemoteDataSource.listenMessages(conversationId, interlocutorId, offsetTime)
 
     override suspend fun createLocalMessage(message: Message) {
         messageLocalDataSource.upsertMessage(message)

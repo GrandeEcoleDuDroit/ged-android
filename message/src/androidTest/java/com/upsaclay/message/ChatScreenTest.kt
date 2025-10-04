@@ -30,7 +30,7 @@ class ChatScreenTest {
         conversation = conversationFixture,
         messageText = "",
         loading = false,
-        isUserBlocked = false,
+        userBlocked = false,
         currentUser = userFixture
     )
 
@@ -86,7 +86,7 @@ class ChatScreenTest {
     @Test
     fun messageBlockedUserIndicator_should_be_displayed_when_user_is_blocked() {
         // Given
-        every { chatViewModel.uiState } returns MutableStateFlow(uiState.copy(isUserBlocked = true))
+        every { chatViewModel.uiState } returns MutableStateFlow(uiState.copy(userBlocked = true))
 
         // When
         rule.setContent {

@@ -18,6 +18,8 @@ import kotlinx.coroutines.withContext
 class FirebaseAuthenticationRepositoryImpl(
     private val firebaseAuthenticationApi: FirebaseAuthenticationApi
 ): FirebaseAuthenticationRepository {
+    override fun isAuthenticated(): Boolean = firebaseAuthenticationApi.isAuthenticated()
+
     override fun listenAuthenticationState(): Flow<Boolean> = firebaseAuthenticationApi.listenAuthenticationState()
 
     override fun getIdToken(): String? = firebaseAuthenticationApi.getIdToken()

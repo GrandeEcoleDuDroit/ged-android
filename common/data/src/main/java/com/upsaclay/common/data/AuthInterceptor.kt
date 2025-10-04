@@ -5,10 +5,9 @@ import okhttp3.Response
 
 class AuthInterceptor(private val tokenProvider: TokenProvider): Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-        val authIdToken = tokenProvider.getAuthIdToken()
-        val requestBuilder = chain.request().newBuilder()
-
-        authIdToken?.let {
+        val request = chain.request()
+        val requestBuilder = request.newBuilder()
+        tokenProvider.getAuthIdToken()?.let {
             requestBuilder.addHeader("Authorization", "Bearer $it")
         }
 

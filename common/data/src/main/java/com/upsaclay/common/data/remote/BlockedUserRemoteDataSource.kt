@@ -13,15 +13,15 @@ internal class BlockedUserRemoteDataSource(
         }
     }
 
-    suspend fun blockUser(currentUserId: String, blockedUserId: String) {
+    suspend fun blockUser(currentUserId: String, userId: String) {
         withContext(Dispatchers.IO) {
-            blockedUserApi.blockUser(currentUserId, blockedUserId)
+            blockedUserApi.blockUser(currentUserId, userId)
         }
     }
 
-    suspend fun unblockUser(currentUserId: String, blockedUserId: String) {
+    suspend fun unblockUser(currentUserId: String, userId: String) {
         withContext(Dispatchers.IO) {
-            blockedUserApi.unblockUser(currentUserId, blockedUserId)
+            blockedUserApi.unblockUser(currentUserId, userId)
         }
     }
 }

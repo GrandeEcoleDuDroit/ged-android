@@ -1,12 +1,12 @@
 package com.upsaclay.gedoise.viewmodel
 
 import MainViewModel
-import com.upsaclay.authentication.domain.repository.AuthenticationRepository
+import com.upsaclay.authentication.domain.usecase.ListenAuthenticationStateUseCase
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.domain.usersFixture
 import com.upsaclay.gedoise.domain.usecase.ClearDataUseCase
-import com.upsaclay.gedoise.domain.usecase.ListenRemoteDataUseCase
+import com.upsaclay.gedoise.domain.usecase.ListenDataUseCase
 import com.upsaclay.gedoise.domain.usecase.SynchronizeDataUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -26,10 +26,10 @@ import org.junit.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class MainViewModelTest {
     private val userRepository: UserRepository = mockk()
-    private val listenRemoteDataUseCase: ListenRemoteDataUseCase = mockk()
+    private val listenDataUseCase: ListenDataUseCase = mockk()
     private val clearDataUseCase: ClearDataUseCase = mockk()
     private val synchronizeDataUseCase: SynchronizeDataUseCase = mockk()
-    private val authenticationRepository: AuthenticationRepository = mockk()
+    private val listenAuthenticationStateUseCase: ListenAuthenticationStateUseCase = mockk()
 
     private lateinit var mainViewModel: MainViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
@@ -39,20 +39,19 @@ class MainViewModelTest {
         Dispatchers.setMain(testDispatcher)
 
         every { userRepository.user } returns MutableStateFlow(userFixture)
-        every { authenticationRepository.authenticated } returns flowOf(true)
+        every { listenAuthenticationStateUseCase.authenticated } returns flowOf(true)
         coEvery { userRepository.getUsers() } returns usersFixture
         coEvery { userRepository.getUser(any()) } returns userFixture
         coEvery { userRepository.storeUser(any()) } returns Unit
         coEvery { userRepository.deleteCurrentUser() } returns Unit
-        coEvery { listenRemoteDataUseCase.start() } returns Unit
-        coEvery { listenRemoteDataUseCase.stop() } returns Unit
+        coEvery { listenDataUseCase.start() } returns Unit
+        coEvery { listenDataUseCase.stop() } returns Unit
         coEvery { clearDataUseCase() } returns Unit
-        coEvery { authenticationRepository.logout() } returns Unit
-        coEvery { synchronizeDataUseCase.synchronize() } returns Unit
+        coEvery { synchronizeDataUseCase() } returns Unit
 
         mainViewModel = MainViewModel(
-            authenticationRepository = authenticationRepository,
-            listenRemoteDataUseCase = listenRemoteDataUseCase,
+            listenAuthenticationStateUseCase = listenAuthenticationStateUseCase,
+            listenDataUseCase = listenDataUseCase,
             clearDataUseCase = clearDataUseCase,
             synchronizeDataUseCase = synchronizeDataUseCase,
         )
@@ -64,7 +63,7 @@ class MainViewModelTest {
         mainViewModel.updateDataOnAuthChange()
 
         // Then
-        coVerify { listenRemoteDataUseCase.start() }
+        coVerify { listenDataUseCase.start() }
     }
 
     @Test
@@ -73,25 +72,25 @@ class MainViewModelTest {
         mainViewModel.updateDataOnAuthChange()
 
         // Then
-        coVerify { synchronizeDataUseCase.synchronize() }
+        coVerify { synchronizeDataUseCase() }
     }
 
     @Test
     fun data_should_stop_be_listened_when_user_is_unauthenticated() {
         // Given
-        every { authenticationRepository.authenticated } returns flowOf(false)
+        every { listenAuthenticationStateUseCase.authenticated } returns flowOf(false)
 
         // When
         mainViewModel.updateDataOnAuthChange()
 
         // Then
-        coVerify { listenRemoteDataUseCase.stop() }
+        coVerify { listenDataUseCase.stop() }
     }
 
     @Test
     fun data_should_be_deleted_when_user_is_unauthenticated() = runTest {
         // Given
-        every { authenticationRepository.authenticated } returns flowOf(false)
+        every { listenAuthenticationStateUseCase.authenticated } returns flowOf(false)
 
         // When
         mainViewModel.updateDataOnAuthChange()

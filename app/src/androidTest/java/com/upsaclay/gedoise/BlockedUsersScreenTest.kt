@@ -4,8 +4,8 @@ import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import com.upsaclay.common.domain.userFixture
-import com.upsaclay.gedoise.presentation.profile.privacy.blockedusers.BlockedUsersDestination
-import com.upsaclay.gedoise.presentation.profile.privacy.blockedusers.BlockedUsersViewModel
+import com.upsaclay.gedoise.presentation.profile.blockedusers.BlockedUsersDestination
+import com.upsaclay.gedoise.presentation.profile.blockedusers.BlockedUsersViewModel
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableSharedFlow

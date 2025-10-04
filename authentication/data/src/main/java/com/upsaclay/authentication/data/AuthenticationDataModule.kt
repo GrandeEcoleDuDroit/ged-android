@@ -32,12 +32,6 @@ val authenticationDataModule = module {
 
     singleOf(::FirebaseAuthenticationRepositoryImpl) { bind<FirebaseAuthenticationRepository>() }
     singleOf(::FirebaseAuthenticationApiImpl) { bind<FirebaseAuthenticationApi>() }
-    single<AuthenticationRepository> {
-        AuthenticationRepositoryImpl(
-            firebaseAuthenticationRepository = get<FirebaseAuthenticationRepository>(),
-            authenticationLocalDataSource = get<AuthenticationLocalDataSource>(),
-            scope = get(BACKGROUND_SCOPE)
-        )
-    }
+    singleOf(::AuthenticationRepositoryImpl) { bind<AuthenticationRepository>() }
     singleOf(::AuthenticationLocalDataSource)
 }

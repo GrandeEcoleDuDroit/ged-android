@@ -1,4 +1,4 @@
-package com.upsaclay.gedoise.presentation.profile.privacy.blockedusers
+package com.upsaclay.gedoise.presentation.profile.blockedusers
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Spacer
@@ -32,6 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
+import com.upsaclay.common.domain.usersFixture
 import com.upsaclay.common.presentation.components.BackTopBar
 import com.upsaclay.common.presentation.components.SimpleDialog
 import com.upsaclay.common.presentation.components.UserItem
@@ -128,7 +129,7 @@ private fun BlockedUsersScreen(
                     )
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(R.string.no_blocked_users),
+                        text = stringResource(R.string.no_blocked_user),
                         color = MaterialTheme.colorScheme.informationText,
                         textAlign = TextAlign.Center
                     )
@@ -170,7 +171,7 @@ private fun BlockedUserScreenPreview() {
         Surface {
             BlockedUsersScreen(
                 onBackClick = {},
-                blockedUsers = emptyList(),
+                blockedUsers = usersFixture,
                 snackbarHostState = SnackbarHostState(),
                 onUnblockClick = {},
                 onAccountClick = {}

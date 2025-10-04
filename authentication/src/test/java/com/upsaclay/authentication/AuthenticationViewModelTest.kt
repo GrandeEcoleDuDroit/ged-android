@@ -2,7 +2,9 @@ package com.upsaclay.authentication
 
 import com.upsaclay.authentication.domain.usecase.LoginUseCase
 import com.upsaclay.authentication.presentation.authentication.AuthenticationViewModel
+import com.upsaclay.common.domain.ConnectivityObserver
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import junit.framework.TestCase.assertNull
 import kotlinx.coroutines.Dispatchers
@@ -18,6 +20,7 @@ import kotlin.test.assertNotNull
 @OptIn(ExperimentalCoroutinesApi::class)
 class AuthenticationViewModelTest {
     private val loginUseCase: LoginUseCase = mockk()
+    private val connectivityObserver: ConnectivityObserver = mockk()
 
     private lateinit var authenticationViewModel: AuthenticationViewModel
     private val email = "email@example.com"
@@ -28,11 +31,13 @@ class AuthenticationViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
 
-        authenticationViewModel = AuthenticationViewModel(
-            loginUseCase = loginUseCase
-        )
-
+        every { connectivityObserver.isConnected } returns true
         coEvery { loginUseCase(any(), any()) } returns Unit
+
+        authenticationViewModel = AuthenticationViewModel(
+            loginUseCase = loginUseCase,
+            connectivityObserver = connectivityObserver
+        )
     }
 
     @Test

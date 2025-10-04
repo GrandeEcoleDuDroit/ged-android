@@ -6,7 +6,7 @@ import androidx.work.WorkerParameters
 import com.upsaclay.message.domain.repository.MessageRepository
 import org.koin.java.KoinJavaComponent.inject
 
-internal class SynchronizeMessageWorker(
+internal class SendUnsentMessageWorker(
     context: Context,
     params: WorkerParameters
 ): CoroutineWorker(context, params) {
