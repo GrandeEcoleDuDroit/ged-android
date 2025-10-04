@@ -24,11 +24,7 @@ internal class MessageApiImpl(
 ) : MessageApi {
     private val conversationsCollection = Firebase.firestore.collection(CONVERSATIONS_TABLE_NAME)
 
-    override fun listenMessages(
-        conversationId: String,
-        interlocutorId: String,
-        offsetTime: Timestamp?
-    ): Flow<RemoteMessage> = callbackFlow {
+    override fun listenMessages(conversationId: String, interlocutorId: String, offsetTime: Timestamp?): Flow<RemoteMessage> = callbackFlow {
         val listener = conversationsCollection
             .document(conversationId)
             .collection(MESSAGES_TABLE_NAME)

@@ -12,11 +12,11 @@ interface BlockedUserRepository {
 
     suspend fun getRemoteBlockedUserIds(currentUserId: String): Set<String>
 
-    suspend fun blockUser(currentUserId: String, blockedUserId: String)
+    suspend fun blockUser(currentUserId: String, userId: String)
 
-    suspend fun blockLocalUser(blockedUserId: String)
+    suspend fun blockLocalUser(userId: String)
 
-    suspend fun unblockUser(currentUserId: String, blockedUserId: String)
+    suspend fun unblockUser(currentUserId: String, userId: String)
 
-    suspend fun unblockLocalUser(blockedUserId: String)
+    suspend fun unblockLocalUser(userId: String)
 }

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upsaclay.authentication.R
 import com.upsaclay.authentication.domain.usecase.RegisterUseCase
+import com.upsaclay.common.domain.ConnectivityObserver
 import com.upsaclay.common.domain.entity.DuplicateDataException
 import com.upsaclay.common.domain.entity.ForbiddenException
 import com.upsaclay.common.domain.entity.NoInternetConnectionException
@@ -21,7 +22,8 @@ import kotlinx.coroutines.launch
 private const val MIN_PASSWORD_LENGTH = 8
 
 class ThirdRegistrationViewModel(
-    private val registerUseCase: RegisterUseCase
+    private val registerUseCase: RegisterUseCase,
+    private val connectivityObserver: ConnectivityObserver
 ): ViewModel() {
     private val _uiState = MutableStateFlow(ThirdRegistrationUiState())
     internal val uiState: StateFlow<ThirdRegistrationUiState> = _uiState
@@ -53,6 +55,9 @@ class ThirdRegistrationViewModel(
 
         viewModelScope.launch {
             try {
+                if (!connectivityObserver.isConnected) {
+                    throw NoInternetConnectionException()
+                }
                 registerUseCase(email, password, firstName, lastName, schoolLevel)
                 _event.emit(SingleUiEvent.Success())
             } catch (e: NoInternetConnectionException) {

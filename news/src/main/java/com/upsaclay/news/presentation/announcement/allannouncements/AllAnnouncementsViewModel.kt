@@ -2,6 +2,7 @@ package com.upsaclay.news.presentation.announcement.allannouncements
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.upsaclay.common.domain.ConnectivityObserver
 import com.upsaclay.common.domain.entity.NoInternetConnectionException
 import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
@@ -14,7 +15,6 @@ import com.upsaclay.news.domain.repository.AnnouncementRepository
 import com.upsaclay.news.domain.usecase.DeleteAnnouncementUseCase
 import com.upsaclay.news.domain.usecase.RefreshAnnouncementUseCase
 import com.upsaclay.news.domain.usecase.ResendAnnouncementUseCase
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -27,7 +27,8 @@ class AllAnnouncementsViewModel(
     private val announcementRepository: AnnouncementRepository,
     private val refreshAnnouncementUseCase: RefreshAnnouncementUseCase,
     private val resendAnnouncementUseCase: ResendAnnouncementUseCase,
-    private val deleteAnnouncementUseCase: DeleteAnnouncementUseCase
+    private val deleteAnnouncementUseCase: DeleteAnnouncementUseCase,
+    private val connectivityObserver: ConnectivityObserver
 ): ViewModel() {
     private val _uiState = MutableStateFlow(AllAnnouncementsUiState())
     val uiState: StateFlow<AllAnnouncementsUiState> = _uiState
@@ -40,23 +41,16 @@ class AllAnnouncementsViewModel(
     }
 
     fun refreshAnnouncements() {
+        _uiState.update {
+            it.copy(refreshing = true)
+        }
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(refreshing = true)
-            }
-
             try {
                 refreshAnnouncementUseCase()
-                delay(500)
-                _uiState.update {
-                    it.copy(refreshing = false)
-                }
             } catch (e: Exception) {
-                delay(500)
-                _uiState.update {
-                    it.copy(refreshing = false)
-                }
                 _event.emit(SingleUiEvent.Error(mapErrorMessage(e)))
+            } finally {
+                _uiState.update { it.copy(refreshing = false) }
             }
         }
     }
@@ -66,25 +60,33 @@ class AllAnnouncementsViewModel(
     }
 
     fun deleteAnnouncement(announcement: Announcement) {
-        _uiState.update { it.copy(loading = true) }
-
         viewModelScope.launch {
             try {
+                if (!connectivityObserver.isConnected) {
+                    throw NoInternetConnectionException()
+                }
+                _uiState.update {
+                    it.copy(loading = true)
+                }
                 deleteAnnouncementUseCase(announcement)
                 _event.emit(SingleUiEvent.Success(R.string.announcement_deleted))
             } catch (e: Exception) {
                 _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
             } finally {
-                _uiState.update { it.copy(loading = false) }
+                _uiState.update {
+                    it.copy(loading = false)
+                }
             }
         }
     }
 
     fun reportAnnouncement(report: AnnouncementReport) {
-        _uiState.update { it.copy(loading = true) }
-
         viewModelScope.launch {
             try {
+                if (!connectivityObserver.isConnected) {
+                    throw NoInternetConnectionException()
+                }
+                _uiState.update { it.copy(loading = true) }
                 announcementRepository.reportAnnouncement(report)
                 _event.emit(SingleUiEvent.Success(R.string.announcement_reported))
             } catch (e: Exception) {
@@ -99,9 +101,7 @@ class AllAnnouncementsViewModel(
         viewModelScope.launch {
             announcementRepository.announcements.collect { announcements ->
                 _uiState.update {
-                    it.copy(
-                        announcements = announcements,
-                    )
+                    it.copy(announcements = announcements)
                 }
             }
         }

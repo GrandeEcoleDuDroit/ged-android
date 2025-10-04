@@ -9,7 +9,7 @@ import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
 import org.koin.java.KoinJavaComponent.inject
 
-internal class SynchronizeConversationWorker (
+internal class SendUnsentConversationWorker (
     context: Context,
     params: WorkerParameters
 ): CoroutineWorker(context, params) {

@@ -14,7 +14,7 @@
     <string name="logout">Se déconnecter</string>
     <string name="disconnection">Déconnexion...</string>
     <string name="blocked_users">Utilisateurs bloqués</string>
-    <string name="no_blocked_users">Aucun utilisateur bloqué</string>
+    <string name="no_blocked_user">Aucun utilisateur bloqué</string>
 
     <string name="account_icon_description">Icône pour accéder à la page de compte</string>
     <string name="support_icon_description">Icône pour accéder à la page de support</string>

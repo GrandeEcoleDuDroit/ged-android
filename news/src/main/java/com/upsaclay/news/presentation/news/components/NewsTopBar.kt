@@ -1,7 +1,6 @@
 package com.upsaclay.news.presentation.news.components
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -11,8 +10,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -38,19 +36,19 @@ fun NewsTopBar(
         navigationIcon = {
             IconButton(
                 onClick = {},
-                enabled = false
+                enabled = false,
+                modifier = Modifier.scale(1.2f)
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.ged_logo),
                     contentDescription = stringResource(id = R.string.ged_logo_description),
-                    contentScale = ContentScale.Fit
+                    modifier = Modifier.scale(0.85f)
                 )
             }
         },
         actions = {
             IconButton(
-                onClick = onProfilePictureClick,
-                modifier = Modifier.clip(shape = CircleShape)
+                onClick = onProfilePictureClick
             ) {
                 ProfilePicture(url = userProfilePictureUrl)
             }

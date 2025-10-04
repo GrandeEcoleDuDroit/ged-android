@@ -1,7 +1,10 @@
-package com.upsaclay.gedoise.presentation.profile.privacy.blockedusers
+package com.upsaclay.gedoise.presentation.profile.blockedusers
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.upsaclay.common.R
+import com.upsaclay.common.domain.ConnectivityObserver
+import com.upsaclay.common.domain.entity.NoInternetConnectionException
 import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.BlockedUserRepository
@@ -16,7 +19,8 @@ import kotlinx.coroutines.launch
 
 class BlockedUsersViewModel(
     private val blockedUserRepository: BlockedUserRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val connectivityObserver: ConnectivityObserver
 ): ViewModel() {
     private val _uiState = MutableStateFlow(BlockedUserUiState())
     val uiState: StateFlow<BlockedUserUiState> = _uiState
@@ -30,19 +34,22 @@ class BlockedUsersViewModel(
     fun unblockUser(userId: String) {
         val currentUserId = userRepository.currentUser?.id ?: return
 
-        _uiState.update {
-            it.copy(loading = true)
-        }
-
         viewModelScope.launch {
             try {
+                if (!connectivityObserver.isConnected) {
+                    throw NoInternetConnectionException()
+                }
+
+                _uiState.update {
+                    it.copy(loading = true)
+                }
                 blockedUserRepository.unblockUser(currentUserId, userId)
                 _uiState.update { state ->
                     state.copy(
                         blockedUsers = state.blockedUsers.filterNot { it.id == userId }
                     )
                 }
-                _event.emit(SingleUiEvent.Success(com.upsaclay.common.R.string.unblocked_user))
+                _event.emit(SingleUiEvent.Success(R.string.unblocked_user))
             } catch (e: Exception) {
                 _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
             } finally {

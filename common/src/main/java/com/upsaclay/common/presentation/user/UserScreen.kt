@@ -110,6 +110,7 @@ private fun UserScreen(
     var showUserBottomSheet by remember { mutableStateOf(false) }
     var showReportBottomSheet by remember { mutableStateOf(false) }
     var showBlockUserDialog by remember { mutableStateOf(false) }
+    var showUnblockUserDialog by remember { mutableStateOf(false) }
 
     if (loading) {
         LoadingDialog()
@@ -125,6 +126,19 @@ private fun UserScreen(
                 onBlockUserClick(user.id)
             },
             onCancel = { showBlockUserDialog = false }
+        )
+    }
+
+    if (showUnblockUserDialog) {
+        SensibleActionDialog(
+            title = stringResource(id = R.string.unblock_user_dialog_title),
+            text = stringResource(id = R.string.unblock_user_dialog_message),
+            confirmText = stringResource(id = R.string.unblock),
+            onConfirm = {
+                showUnblockUserDialog = false
+                onUnblockUserClick(user.id)
+            },
+            onCancel = { showUnblockUserDialog = false }
         )
     }
 
@@ -180,7 +194,7 @@ private fun UserScreen(
             },
             onUnblockClick = {
                 showUserBottomSheet = false
-                onUnblockUserClick(user.id)
+                showUnblockUserDialog = true
             },
             isBlocked = userBlocked
         )

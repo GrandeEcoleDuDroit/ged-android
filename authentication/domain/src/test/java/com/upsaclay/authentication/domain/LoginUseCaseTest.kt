@@ -3,13 +3,10 @@ package com.upsaclay.authentication.domain
 import com.upsaclay.authentication.domain.entity.exception.InvalidCredentialsException
 import com.upsaclay.authentication.domain.repository.AuthenticationRepository
 import com.upsaclay.authentication.domain.usecase.LoginUseCase
-import com.upsaclay.common.domain.ConnectivityObserver
-import com.upsaclay.common.domain.entity.NoInternetConnectionException
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.userFixture
 import io.mockk.awaits
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.TimeoutCancellationException
@@ -20,7 +17,6 @@ import org.junit.Test
 class LoginUseCaseTest {
     private val authenticationRepository: AuthenticationRepository = mockk()
     private val userRepository: UserRepository = mockk()
-    private val connectivityObserver: ConnectivityObserver = mockk()
 
     private lateinit var useCase: LoginUseCase
     private val email = "email@example.com"
@@ -28,7 +24,6 @@ class LoginUseCaseTest {
 
     @Before
     fun setUp() {
-        every { connectivityObserver.isConnected } returns true
         coEvery { authenticationRepository.loginWithEmailAndPassword(any(), any()) } returns Unit
         coEvery { userRepository.getUserWithEmail(any()) } returns userFixture
         coEvery { userRepository.storeUser(any()) } returns Unit
@@ -36,18 +31,8 @@ class LoginUseCaseTest {
 
         useCase = LoginUseCase(
             authenticationRepository = authenticationRepository,
-            userRepository = userRepository,
-            connectivityObserver = connectivityObserver
+            userRepository = userRepository
         )
-    }
-
-    @Test(expected = NoInternetConnectionException::class)
-    fun login_should_throw_NoInternetConnectionException_when_not_connected() = runTest {
-        // Given
-        every { connectivityObserver.isConnected } returns false
-
-        // When
-        useCase(email, password)
     }
 
     @Test

@@ -1,4 +1,4 @@
-package com.upsaclay.gedoise.presentation.profile.privacy.blockedusers
+package com.upsaclay.gedoise.presentation.profile.blockedusers
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder

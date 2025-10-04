@@ -3,24 +3,24 @@ package com.upsaclay.common.domain.usecase
 import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.repository.UserRepository
 
-class SynchronizeBlockedUserUseCase(
+class SynchronizeBlockedUsersUseCase(
     private val blockedUserRepository: BlockedUserRepository,
     private val userRepository: UserRepository
 ) {
-    suspend fun synchronize() {
+    suspend operator fun invoke() {
         val currentUserId = userRepository.currentUser?.id ?: return
         val remoteBlockedUserIds = blockedUserRepository.getRemoteBlockedUserIds(currentUserId)
         val localBlockedUserIds = blockedUserRepository.getLocalBlockedUserIds()
 
-        val toBlock = remoteBlockedUserIds - localBlockedUserIds
-        val toUnblock = localBlockedUserIds - remoteBlockedUserIds
+        val usersToBlock = remoteBlockedUserIds - localBlockedUserIds
+        val usersToUnblock = localBlockedUserIds - remoteBlockedUserIds
 
-        toBlock.forEach { blockedUserId ->
-            blockedUserRepository.blockLocalUser(blockedUserId)
+        usersToBlock.forEach { userId ->
+            blockedUserRepository.blockLocalUser(userId)
         }
 
-        toUnblock.forEach { blockedUserId ->
-            blockedUserRepository.unblockLocalUser(blockedUserId)
+        usersToUnblock.forEach { userId ->
+            blockedUserRepository.unblockLocalUser(userId)
         }
     }
 }

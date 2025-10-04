@@ -24,6 +24,9 @@ internal class AnnouncementRepositoryImpl(
         )
     override val announcements: Flow<List<Announcement>> = _announcements
 
+    override val currentAnnouncements: List<Announcement>
+        get() = _announcements.value
+
     override fun getAnnouncementFlow(announcementId: String): Flow<Announcement?> =
         _announcements.map { announcements ->
             announcements.firstOrNull { it.id == announcementId }

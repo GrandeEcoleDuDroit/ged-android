@@ -21,10 +21,9 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.previewText
+import com.upsaclay.common.presentation.theme.informationText
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.news.R
-import com.upsaclay.news.domain.announcementsFixture
 import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.domain.entity.AnnouncementState
 import com.upsaclay.news.presentation.news.components.CompactAnnouncementItem
@@ -74,7 +73,7 @@ fun RecentAnnouncementSection(
                         modifier = Modifier.fillMaxWidth(),
                         text = stringResource(id = R.string.no_announcement),
                         style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.previewText,
+                        color = MaterialTheme.colorScheme.informationText,
                         textAlign = TextAlign.Center
                     )
                 }
@@ -110,7 +109,7 @@ private fun RecentAnnouncementContentPreview() {
     GedoiseTheme {
         Surface {
             RecentAnnouncementSection(
-                announcements = announcementsFixture,
+                announcements = listOf(),
                 onAnnouncementClick = {},
                 onUncreatedAnnouncementClick = {},
                 onSeeAllAnnouncementClick = {},

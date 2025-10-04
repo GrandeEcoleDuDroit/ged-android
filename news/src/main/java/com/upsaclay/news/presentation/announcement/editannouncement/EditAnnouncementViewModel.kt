@@ -2,10 +2,12 @@ package com.upsaclay.news.presentation.announcement.editannouncement
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.upsaclay.common.domain.ConnectivityObserver
+import com.upsaclay.common.domain.entity.NoInternetConnectionException
 import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.utils.mapNetworkErrorMessage
 import com.upsaclay.news.domain.entity.Announcement
-import com.upsaclay.news.domain.usecase.UpdateAnnouncementUseCase
+import com.upsaclay.news.domain.repository.AnnouncementRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -15,7 +17,8 @@ import kotlinx.coroutines.launch
 
 class EditAnnouncementViewModel(
     private val announcement: Announcement,
-    private val updateAnnouncementUseCase: UpdateAnnouncementUseCase
+    private val announcementRepository: AnnouncementRepository,
+    private val connectivityObserver: ConnectivityObserver
 ): ViewModel() {
     private val _uiState = MutableStateFlow(
         EditAnnouncementUiState(
@@ -49,19 +52,19 @@ class EditAnnouncementViewModel(
         if (!validateUpdate(_uiState.value.title, _uiState.value.content)) {
             return
         }
-
         val updatedAnnouncement = announcement.copy(
             title = _uiState.value.title.trim(),
             content = _uiState.value.content.trim()
         )
-
-        _uiState.update {
-            it.copy(loading = true)
-        }
-
         viewModelScope.launch {
             try {
-                updateAnnouncementUseCase(updatedAnnouncement)
+                if (!connectivityObserver.isConnected) {
+                    throw NoInternetConnectionException()
+                }
+                _uiState.update {
+                    it.copy(loading = true)
+                }
+                announcementRepository.updateAnnouncement(updatedAnnouncement)
                 _event.emit(SingleUiEvent.Success())
             } catch (e: Exception) {
                 _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))

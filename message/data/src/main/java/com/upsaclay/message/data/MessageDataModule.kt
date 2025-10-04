@@ -17,8 +17,7 @@ import com.upsaclay.message.data.repository.ConversationMessageRepositoryImpl
 import com.upsaclay.message.data.repository.ConversationRepositoryImpl
 import com.upsaclay.message.data.repository.MessageRepositoryImpl
 import com.upsaclay.message.data.repository.NotificationMessageRepositoryImpl
-import com.upsaclay.message.data.worker.MessageWorkerBuilder
-import com.upsaclay.message.data.worker.MessageWorkerLauncher
+import com.upsaclay.message.data.worker.StartupMessageWorker
 import com.upsaclay.message.domain.repository.ConversationMessageRepository
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
@@ -67,12 +66,8 @@ val messageDataModule = module {
     singleOf(::MessageRemoteDataSource)
     singleOf(::MessageLocalDataSource)
     singleOf(::MessageRepositoryImpl) { bind<MessageRepository>() }
-    singleOf(::MessageWorkerBuilder)
     single {
-        MessageWorkerLauncher(
-            context = androidContext(),
-            messageWorkerBuilder = get()
-        )
+        StartupMessageWorker(context = androidContext())
     }
 
     singleOf(::NotificationMessageLocalDataSource)

@@ -7,6 +7,7 @@ import com.upsaclay.authentication.R
 import com.upsaclay.authentication.domain.entity.exception.InvalidCredentialsException
 import com.upsaclay.authentication.domain.entity.exception.UserDisabledException
 import com.upsaclay.authentication.domain.usecase.LoginUseCase
+import com.upsaclay.common.domain.ConnectivityObserver
 import com.upsaclay.common.domain.entity.NoInternetConnectionException
 import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.domain.usecase.VerifyEmailFormatUseCase
@@ -19,7 +20,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class AuthenticationViewModel(
-    private val loginUseCase: LoginUseCase
+    private val loginUseCase: LoginUseCase,
+    private val connectivityObserver: ConnectivityObserver
 ): ViewModel() {
     private val _uiState = MutableStateFlow(AuthenticationUiState())
     internal val uiState: StateFlow<AuthenticationUiState> = _uiState
@@ -42,12 +44,15 @@ class AuthenticationViewModel(
     fun login() {
         val (email, password) = _uiState.value
         if (!validateInputs(email, password)) return
-        _uiState.update {
-            it.copy(loading = true)
-        }
 
         viewModelScope.launch {
             try {
+                if (!connectivityObserver.isConnected) {
+                    throw NoInternetConnectionException()
+                }
+                _uiState.update {
+                    it.copy(loading = true)
+                }
                 loginUseCase(email, password)
             } catch (e: NoInternetConnectionException) {
                 _event.emit(SingleUiEvent.Error(mapErrorMessage(e)))

@@ -21,25 +21,25 @@ internal class BlockedUserRepositoryImpl(
     override suspend fun getRemoteBlockedUserIds(currentUserId: String): Set<String> =
         blockedUserRemoteDataSource.getBlockedUserIds(currentUserId)
 
-    override suspend fun blockUser(currentUserId: String, blockedUserId: String) {
-        blockedUserRemoteDataSource.blockUser(currentUserId, blockedUserId)
-        blockedUserLocalDataSource.blockUser(blockedUserId)
-        _blockUserEvent.emit(BlockUserEvent.Block(blockedUserId))
+    override suspend fun blockUser(currentUserId: String, userId: String) {
+        blockedUserRemoteDataSource.blockUser(currentUserId, userId)
+        blockedUserLocalDataSource.blockUser(userId)
+        _blockUserEvent.emit(BlockUserEvent.Block(userId))
     }
 
-    override suspend fun blockLocalUser(blockedUserId: String) {
-        blockedUserLocalDataSource.blockUser(blockedUserId)
-        _blockUserEvent.emit(BlockUserEvent.Block(blockedUserId))
+    override suspend fun blockLocalUser(userId: String) {
+        blockedUserLocalDataSource.blockUser(userId)
+        _blockUserEvent.emit(BlockUserEvent.Block(userId))
     }
 
-    override suspend fun unblockUser(currentUserId: String, blockedUserId: String) {
-        blockedUserRemoteDataSource.unblockUser(currentUserId, blockedUserId)
-        blockedUserLocalDataSource.unblockUser(blockedUserId)
-        _blockUserEvent.emit(BlockUserEvent.Unblock(blockedUserId))
+    override suspend fun unblockUser(currentUserId: String, userId: String) {
+        blockedUserRemoteDataSource.unblockUser(currentUserId, userId)
+        blockedUserLocalDataSource.unblockUser(userId)
+        _blockUserEvent.emit(BlockUserEvent.Unblock(userId))
     }
 
-    override suspend fun unblockLocalUser(blockedUserId: String) {
-        blockedUserLocalDataSource.unblockUser(blockedUserId)
-        _blockUserEvent.emit(BlockUserEvent.Unblock(blockedUserId))
+    override suspend fun unblockLocalUser(userId: String) {
+        blockedUserLocalDataSource.unblockUser(userId)
+        _blockUserEvent.emit(BlockUserEvent.Unblock(userId))
     }
 }

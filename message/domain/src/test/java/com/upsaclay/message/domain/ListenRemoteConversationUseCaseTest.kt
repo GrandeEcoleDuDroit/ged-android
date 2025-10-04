@@ -1,6 +1,5 @@
 package com.upsaclay.message.domain
 
-import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.message.domain.repository.ConversationRepository
@@ -8,7 +7,6 @@ import com.upsaclay.message.domain.usecase.ListenRemoteConversationsUseCase
 import com.upsaclay.message.domain.usecase.ListenRemoteMessagesUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
@@ -23,7 +21,6 @@ import org.junit.Test
 class ListenRemoteConversationUseCaseTest {
     private val userRepository: UserRepository = mockk()
     private val conversationRepository: ConversationRepository = mockk()
-    private val blockedUserRepository: BlockedUserRepository = mockk()
     private val listenRemoteMessagesUseCase: ListenRemoteMessagesUseCase = mockk()
 
     private lateinit var useCase: ListenRemoteConversationsUseCase
@@ -32,9 +29,8 @@ class ListenRemoteConversationUseCaseTest {
 
     @Before
     fun setUp() {
-        every { blockedUserRepository.blockUserEvent } returns flowOf()
         coEvery { userRepository.user } returns flowOf(userFixture)
-        coEvery { conversationRepository.fetchRemoteConversations(any()) } returns flowOf(conversationFixture)
+        coEvery { conversationRepository.fetchRemoteConversation(any()) } returns flowOf(conversationFixture)
         coEvery { conversationRepository.upsertLocalConversation(any()) } returns Unit
         coEvery { listenRemoteMessagesUseCase.start(any()) } returns Unit
         coEvery { conversationRepository.upsertLocalConversation(any()) } returns Unit
@@ -42,7 +38,6 @@ class ListenRemoteConversationUseCaseTest {
         useCase = ListenRemoteConversationsUseCase(
             userRepository = userRepository,
             conversationRepository = conversationRepository,
-            blockedUserRepository = blockedUserRepository,
             listenRemoteMessagesUseCase = listenRemoteMessagesUseCase,
             scope = testScope
         )

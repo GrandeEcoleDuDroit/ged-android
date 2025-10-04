@@ -1,7 +1,7 @@
 package com.upsaclay.gedoise.viewmodel
 
 import com.upsaclay.authentication.AuthenticationBaseRoute
-import com.upsaclay.authentication.domain.repository.AuthenticationRepository
+import com.upsaclay.authentication.domain.usecase.ListenAuthenticationStateUseCase
 import com.upsaclay.common.domain.repository.RouteRepository
 import com.upsaclay.gedoise.presentation.navigation.NavigationViewModel
 import com.upsaclay.gedoise.presentation.navigation.TopLevelDestination
@@ -25,7 +25,7 @@ import kotlin.test.assertEquals
 @OptIn(ExperimentalCoroutinesApi::class)
 class NavigationViewModelTest {
     private val routeRepository: RouteRepository = mockk()
-    private val authenticationRepository: AuthenticationRepository = mockk()
+    private val listenAuthenticationStateUseCase: ListenAuthenticationStateUseCase = mockk()
     private val getUnreadConversationsCountUseCase: GetUnreadConversationsCountUseCase = mockk()
 
     private lateinit var navigationViewModel: NavigationViewModel
@@ -35,8 +35,8 @@ class NavigationViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
 
-        every { authenticationRepository.authenticated } returns flowOf(true)
-        every { authenticationRepository.isAuthenticated } returns true
+        every { listenAuthenticationStateUseCase.authenticated } returns flowOf(true)
+        every { listenAuthenticationStateUseCase.isAuthenticated } returns true
         every { routeRepository.currentRoute } returns null
         every { routeRepository.setCurrentRoute(any()) } returns Unit
         every { getUnreadConversationsCountUseCase() } returns flowOf(0)
@@ -48,7 +48,7 @@ class NavigationViewModelTest {
         navigationViewModel = NavigationViewModel(
             getUnreadConversationsCountUseCase = getUnreadConversationsCountUseCase,
             routeRepository = routeRepository,
-            authenticationRepository = authenticationRepository
+            listenAuthenticationStateUseCase = listenAuthenticationStateUseCase
         )
 
         // Then
@@ -60,13 +60,13 @@ class NavigationViewModelTest {
     @Test
     fun startDestination_should_be_AuthenticationRoute_when_unauthenticated() = runTest {
         // Given
-        every { authenticationRepository.authenticated } returns flowOf(false)
+        every { listenAuthenticationStateUseCase.authenticated } returns flowOf(false)
 
         // When
         navigationViewModel = NavigationViewModel(
             getUnreadConversationsCountUseCase = getUnreadConversationsCountUseCase,
             routeRepository = routeRepository,
-            authenticationRepository = authenticationRepository
+            listenAuthenticationStateUseCase = listenAuthenticationStateUseCase
         )
 
         // Then
@@ -78,14 +78,14 @@ class NavigationViewModelTest {
     @Test
     fun intentToNavigate_should_navigate_to_screen_when_authenticated() = runTest {
         // Given
-        every { authenticationRepository.isAuthenticated } returns true
+        every { listenAuthenticationStateUseCase.isAuthenticated } returns true
         val route = ChatRoute(ConversationJsonConverter.toConversationJson(conversationFixture))
 
         // When
         navigationViewModel = NavigationViewModel(
             getUnreadConversationsCountUseCase = getUnreadConversationsCountUseCase,
             routeRepository = routeRepository,
-            authenticationRepository = authenticationRepository
+            listenAuthenticationStateUseCase = listenAuthenticationStateUseCase
         )
         navigationViewModel.intentToNavigate(route)
 
@@ -98,14 +98,14 @@ class NavigationViewModelTest {
     @Test
     fun intentToNavigate_should_not_navigate_when_unauthenticated() = runTest {
         // Given
-        every { authenticationRepository.isAuthenticated } returns false
+        every { listenAuthenticationStateUseCase.isAuthenticated } returns false
         val route = ChatRoute(ConversationJsonConverter.toConversationJson(conversationFixture))
 
         // When
         navigationViewModel = NavigationViewModel(
             getUnreadConversationsCountUseCase = getUnreadConversationsCountUseCase,
             routeRepository = routeRepository,
-            authenticationRepository = authenticationRepository
+            listenAuthenticationStateUseCase = listenAuthenticationStateUseCase
         )
         navigationViewModel.intentToNavigate(route)
 
@@ -124,7 +124,7 @@ class NavigationViewModelTest {
         navigationViewModel = NavigationViewModel(
             getUnreadConversationsCountUseCase = getUnreadConversationsCountUseCase,
             routeRepository = routeRepository,
-            authenticationRepository = authenticationRepository
+            listenAuthenticationStateUseCase = listenAuthenticationStateUseCase
         )
 
         // Then

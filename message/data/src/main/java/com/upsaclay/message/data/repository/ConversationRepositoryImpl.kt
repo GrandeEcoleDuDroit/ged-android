@@ -14,6 +14,9 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.time.LocalDateTime
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -22,7 +25,8 @@ internal class ConversationRepositoryImpl(
     private val conversationLocalDataSource: ConversationLocalDataSource,
     private val conversationRemoteDataSource: ConversationRemoteDataSource,
 ) : ConversationRepository {
-    private val interlocutors = mutableMapOf<String, User>()
+    private val fetchedInterlocutors = mutableMapOf<String, User>()
+    private val mutex = Mutex()
 
     override suspend fun getConversations(): List<Conversation> = conversationLocalDataSource.getConversations()
 
@@ -32,18 +36,27 @@ internal class ConversationRepositoryImpl(
     override suspend fun getConversation(interlocutorId: String): Conversation? =
         conversationLocalDataSource.getConversation(interlocutorId)
 
-    override suspend fun fetchRemoteConversations(userId: String): Flow<Conversation> {
+    override suspend fun fetchRemoteConversation(userId: String): Flow<Conversation> {
         return conversationRemoteDataSource.listenConversations(userId)
             .flatMapMerge { remoteConversation ->
                 val interlocutorId = remoteConversation.participants.firstOrNull { it != userId }
                     ?: return@flatMapMerge emptyFlow()
 
-                interlocutors[interlocutorId]?.let {
+                val interlocutor = mutex.withLock {
+                    fetchedInterlocutors[interlocutorId]
+                }
+
+                interlocutor?.let {
                     flowOf(remoteConversation.toConversation(userId, it))
                 } ?: run {
-                    userRepository.getUserFlow(interlocutorId).filterNotNull().map {
-                        remoteConversation.toConversation(userId, it)
-                    }
+                    userRepository.getUserFlow(interlocutorId)
+                        .filterNotNull()
+                        .map { remoteConversation.toConversation(userId, it) }
+                        .onEach {
+                            mutex.withLock {
+                                fetchedInterlocutors[interlocutorId] = it.interlocutor
+                            }
+                        }
                 }
             }
     }

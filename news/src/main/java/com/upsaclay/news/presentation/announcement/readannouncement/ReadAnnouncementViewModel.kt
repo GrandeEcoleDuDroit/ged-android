@@ -3,6 +3,8 @@ package com.upsaclay.news.presentation.announcement.readannouncement
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.upsaclay.common.domain.ConnectivityObserver
+import com.upsaclay.common.domain.entity.NoInternetConnectionException
 import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.UserRepository
@@ -25,7 +27,8 @@ class ReadAnnouncementViewModel(
     private val announcementId: String,
     private val userRepository: UserRepository,
     private val announcementRepository: AnnouncementRepository,
-    private val deleteAnnouncementUseCase: DeleteAnnouncementUseCase
+    private val deleteAnnouncementUseCase: DeleteAnnouncementUseCase,
+    private val connectivityObserver: ConnectivityObserver
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ReadAnnouncementUiState())
     val uiState: StateFlow<ReadAnnouncementUiState> = _uiState
@@ -38,32 +41,44 @@ class ReadAnnouncementViewModel(
     }
 
     fun reportAnnouncement(report: AnnouncementReport) {
-        _uiState.update { it.copy(loading = true) }
-
         viewModelScope.launch {
             try {
+                if (!connectivityObserver.isConnected) {
+                    throw NoInternetConnectionException()
+                }
+                _uiState.update {
+                    it.copy(loading = true)
+                }
                 announcementRepository.reportAnnouncement(report)
                 _event.emit(ReadAnnouncementUiEvent.AnnouncementReported(R.string.announcement_reported))
             } catch (e: Exception) {
                 _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
             } finally {
-                _uiState.update { it.copy(loading = false) }
+                _uiState.update {
+                    it.copy(loading = false)
+                }
             }
         }
     }
 
     fun deleteAnnouncement() {
         val announcement = uiState.value.announcement ?: return
-        _uiState.update { it.copy(loading = true) }
-
         viewModelScope.launch {
             try {
+                if (!connectivityObserver.isConnected) {
+                    throw NoInternetConnectionException()
+                }
+                _uiState.update {
+                    it.copy(loading = true)
+                }
                 deleteAnnouncementUseCase(announcement)
                 _event.emit(ReadAnnouncementUiEvent.AnnouncementDeleted)
             } catch (e: Exception) {
                 _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
             } finally {
-                _uiState.update { it.copy(loading = false) }
+                _uiState.update {
+                    it.copy(loading = false)
+                }
             }
         }
     }
@@ -72,12 +87,14 @@ class ReadAnnouncementViewModel(
         viewModelScope.launch {
             announcementRepository.getAnnouncementFlow(announcementId)
                 .filterNotNull()
-                .map {
-                    it.copy(
-                        title = it.title?.takeIf { it.isNotBlank() }
+                .map { announcement ->
+                    announcement.copy(
+                        title = announcement.title?.takeIf { it.isNotBlank() }
                     )
                 }.collect {
-                    _uiState.update { state -> state.copy(announcement = it) }
+                    _uiState.update { state ->
+                        state.copy(announcement = it)
+                    }
                 }
         }
     }

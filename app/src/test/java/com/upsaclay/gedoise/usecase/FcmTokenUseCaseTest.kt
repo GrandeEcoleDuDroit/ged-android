@@ -1,6 +1,6 @@
 package com.upsaclay.gedoise.usecase
 
-import com.upsaclay.authentication.domain.repository.AuthenticationRepository
+import com.upsaclay.authentication.domain.usecase.ListenAuthenticationStateUseCase
 import com.upsaclay.common.domain.ConnectivityObserver
 import com.upsaclay.common.domain.fcmTokenFixture
 import com.upsaclay.common.domain.repository.FcmTokenRepository
@@ -22,7 +22,7 @@ import org.junit.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class FcmTokenUseCaseTest {
     private val userRepository: UserRepository = mockk()
-    private val authenticationRepository: AuthenticationRepository = mockk()
+    private val listenAuthenticationStateUseCase: ListenAuthenticationStateUseCase = mockk()
     private val fcmTokenRepository: FcmTokenRepository = mockk()
     private val connectivityObserver: ConnectivityObserver = mockk()
 
@@ -31,7 +31,7 @@ class FcmTokenUseCaseTest {
 
     @Before
     fun setUp() {
-        every { authenticationRepository.authenticated } returns flowOf(true)
+        every { listenAuthenticationStateUseCase.authenticated } returns flowOf(true)
         every { connectivityObserver.connected } returns flowOf(true)
         coEvery { fcmTokenRepository.getUnsentFcmToken() } returns fcmTokenFixture
         coEvery { fcmTokenRepository.removeUnsentFcmToken() } returns Unit
@@ -40,7 +40,7 @@ class FcmTokenUseCaseTest {
 
         useCase = FcmTokenUseCase(
             userRepository = userRepository,
-            authenticationRepository = authenticationRepository,
+            listenAuthenticationStateUseCase = listenAuthenticationStateUseCase,
             fcmTokenRepository = fcmTokenRepository,
             connectivityObserver = connectivityObserver,
             scope = testScope
@@ -59,7 +59,7 @@ class FcmTokenUseCaseTest {
     @Test
     fun fcmTokenUseCase_should_delete_token_when_unauthenticated() {
         // Given
-        coEvery { authenticationRepository.authenticated } returns MutableStateFlow(false)
+        coEvery { listenAuthenticationStateUseCase.authenticated } returns MutableStateFlow(false)
 
         // When
         useCase.listenEvents()

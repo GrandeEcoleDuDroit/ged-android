@@ -8,11 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 
 internal interface MessageApi {
-    fun listenMessages(
-        conversationId: String,
-        interlocutorId: String,
-        offsetTime: Timestamp?
-    ): Flow<RemoteMessage>
+    fun listenMessages(conversationId: String, interlocutorId: String, offsetTime: Timestamp?): Flow<RemoteMessage>
 
     suspend fun createMessage(remoteMessage: RemoteMessage)
 

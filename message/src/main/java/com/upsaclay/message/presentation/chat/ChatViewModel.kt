@@ -44,7 +44,7 @@ class ChatViewModel(
             conversation = conversation,
             messageText = "",
             loading = false,
-            isUserBlocked = false,
+            userBlocked = false,
             currentUser = userRepository.currentUser
         )
     )
@@ -55,8 +55,8 @@ class ChatViewModel(
 
     init {
         listenConversation()
-        listenBlockUserIds()
         listenCurrentUser()
+        listenBlockUserIds()
 
         emitNewMessageReceived()
         seeMessages()
@@ -220,17 +220,6 @@ class ChatViewModel(
         }
     }
 
-    private fun listenBlockUserIds() {
-        viewModelScope.launch {
-            val interlocutorId = conversation.interlocutor.id
-            blockedUserRepository.blockedUserIds.collect { blockedUserIds ->
-                _uiState.update {
-                    it.copy(isUserBlocked = blockedUserIds.contains(interlocutorId))
-                }
-            }
-        }
-    }
-
     private fun listenCurrentUser() {
         viewModelScope.launch {
             userRepository.user.collect { currentUser ->
@@ -239,11 +228,22 @@ class ChatViewModel(
         }
     }
 
+    private fun listenBlockUserIds() {
+        viewModelScope.launch {
+            val interlocutorId = conversation.interlocutor.id
+            blockedUserRepository.blockedUserIds.collect { blockedUserIds ->
+                _uiState.update {
+                    it.copy(userBlocked = blockedUserIds.contains(interlocutorId))
+                }
+            }
+        }
+    }
+
     internal data class ChatUiState(
         val conversation: Conversation,
         val messageText: String,
         val loading: Boolean,
-        val isUserBlocked: Boolean,
+        val userBlocked: Boolean,
         val currentUser: User?
     )
 

@@ -24,8 +24,8 @@ import kotlinx.coroutines.launch
 class AccountViewModel(
     private val updateProfilePictureUseCase: UpdateProfilePictureUseCase,
     private val deleteProfilePictureUseCase: DeleteProfilePictureUseCase,
-    private val connectivityObserver: ConnectivityObserver,
-    userRepository: UserRepository
+    userRepository: UserRepository,
+    private val connectivityObserver: ConnectivityObserver
 ): ViewModel() {
     private val _uiState = MutableStateFlow(AccountUiState())
     val uiState: StateFlow<AccountUiState> = _uiState
@@ -56,6 +56,10 @@ class AccountViewModel(
             } catch (e: Exception) {
                 cancelEdit()
                 _event.emit(SingleUiEvent.Error(mapErrorMessage(e)))
+            } finally {
+                _uiState.update {
+                    it.copy(loading = false)
+                }
             }
         }
     }
