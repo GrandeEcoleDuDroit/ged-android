@@ -32,6 +32,7 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
@@ -134,7 +135,7 @@ internal interface UserServerApi {
     suspend fun createUser(@Body user: ServerUser): Response<ServerResponse>
 
     @FormUrlEncoded
-    @PUT("users/profile-picture-file-name")
+    @PATCH("users/profile-picture-file-name")
     suspend fun updateProfilePictureFileName(
         @Field(USER_ID) userId: String,
         @Field(USER_PROFILE_PICTURE_FILE_NAME) userProfilePictureFileName: String
