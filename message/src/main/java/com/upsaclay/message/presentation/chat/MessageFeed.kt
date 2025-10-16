@@ -1,6 +1,6 @@
 package com.upsaclay.message.presentation.chat
 
-import androidx.compose.foundation.layout.Arrangement
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,6 +25,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
@@ -37,12 +37,11 @@ import com.upsaclay.common.extension.mediumPadding
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.previewText
 import com.upsaclay.common.utils.FormatLocalDateTimeHelper
-import com.upsaclay.common.utils.Phones
 import com.upsaclay.message.R
 import com.upsaclay.message.domain.conversationFixture
 import com.upsaclay.message.domain.entity.Message
 import com.upsaclay.message.domain.entity.MessageState
-import com.upsaclay.message.domain.messagesFixture
+import com.upsaclay.message.domain.messageFixture
 import com.upsaclay.message.presentation.chat.ChatViewModel.MessageEvent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -56,7 +55,8 @@ internal fun MessageFeed(
     interlocutor: User,
     newMessageEvent: MessageEvent.NewMessage?,
     onErrorSentMessageClick: (Message) -> Unit,
-    onReceivedMessageLongClick: (Message) -> Unit
+    onReceivedMessageLongClick: (Message) -> Unit,
+    onInterlocutorClick: () -> Unit
 ) {
     val listState = rememberLazyListState()
     val scope = rememberCoroutineScope()
@@ -83,7 +83,9 @@ internal fun MessageFeed(
 
     Box(modifier = modifier.fillMaxSize()) {
         LazyColumn(
-            modifier = Modifier.testTag(stringResource(R.string.chat_screen_lazy_column_item_tag)),
+            modifier = Modifier
+                .fillMaxSize()
+                .testTag(stringResource(R.string.chat_screen_lazy_column_item_tag)),
             reverseLayout = true,
             state = listState
         ) {
@@ -120,7 +122,8 @@ internal fun MessageFeed(
                         message = message,
                         displayProfilePicture = condition.displayProfilePicture,
                         profilePictureUrl = interlocutor.profilePictureUrl,
-                        onLongClick = { onReceivedMessageLongClick(message) }
+                        onLongClick = { onReceivedMessageLongClick(message) },
+                        onInterlocutorClick = onInterlocutorClick
                     )
                 }
 
@@ -197,15 +200,14 @@ private fun messagePadding(sameSender: Boolean, sameTime: Boolean): Dp =
 @Composable
 private fun MessageFeedPreview() {
     GedoiseTheme {
-        Surface {
-            MessageFeed(
-                modifier = Modifier.mediumPadding(),
-                messages = flowOf(PagingData.from(messagesFixture)),
-                interlocutor = conversationFixture.interlocutor,
-                newMessageEvent = null,
-                onErrorSentMessageClick = {},
-                onReceivedMessageLongClick = {}
-            )
-        }
+        MessageFeed(
+            modifier = Modifier.mediumPadding(),
+            messages = flowOf(PagingData.from(listOf(messageFixture))),
+            interlocutor = conversationFixture.interlocutor,
+            newMessageEvent = null,
+            onErrorSentMessageClick = {},
+            onReceivedMessageLongClick = {},
+            onInterlocutorClick = {}
+        )
     }
 }

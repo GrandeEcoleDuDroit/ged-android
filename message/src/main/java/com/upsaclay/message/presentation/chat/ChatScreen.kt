@@ -207,7 +207,8 @@ private fun ChatScreen(
                 onReceivedMessageLongClick = {
                     clickedMessage = it
                     showReceivedMessageBottomSheet = true
-                }
+                },
+                onInterlocutorClick = { onInterlocutorClick(conversation.interlocutor) }
             )
 
             MessageBottomSection(
@@ -318,7 +319,7 @@ private fun ChatScreenPreview() {
             messages = flowOf(PagingData.from(messagesFixture)),
             messageText = text,
             loading = false,
-            userBlocked = true,
+            userBlocked = false,
             newMessageEvent = null,
             onBackClick = {},
             onInterlocutorClick = {},
