@@ -116,7 +116,7 @@ fun SentMessageItem(
                         end = dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)
                     ),
                     text = stringResource(id = R.string.message_seen),
-                    style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Light),
+                    style = MaterialTheme.typography.bodySmall,
                     color = seenColor
                 )
             }
@@ -151,7 +151,8 @@ fun ReceivedMessageItem(
     profilePictureUrl: String?,
     message: Message,
     displayProfilePicture: Boolean,
-    onLongClick: () -> Unit
+    onLongClick: () -> Unit,
+    onInterlocutorClick: () -> Unit
 ) {
     val haptic = LocalHapticFeedback.current
     val foreground = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.white else MaterialTheme.colorScheme.black
@@ -164,7 +165,8 @@ fun ReceivedMessageItem(
         if (displayProfilePicture) {
             ProfilePicture(
                 url = profilePictureUrl,
-                scale = 0.3f
+                scale = 0.3f,
+                onClick = onInterlocutorClick
             )
         } else {
             ProfilePicture(
@@ -453,7 +455,8 @@ private fun ReceiveMessageItemPreview() {
             message = messageFixture.copy(content = mediumText),
             displayProfilePicture = true,
             profilePictureUrl = "",
-            onLongClick = {}
+            onLongClick = {},
+            onInterlocutorClick = {}
         )
     }
 }
