@@ -2,6 +2,7 @@ package com.upsaclay.news.presentation.news
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SnackbarHostState
@@ -13,6 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
@@ -20,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
+import com.upsaclay.common.presentation.components.CircularProgressBar
 import com.upsaclay.common.presentation.components.CriticalDialog
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.PullToRefreshComponent
@@ -41,7 +44,6 @@ fun NewsDestination(
     onCreateAnnouncementClick: () -> Unit,
     onEditAnnouncementClick: (Announcement) -> Unit,
     onSeeAllAnnouncementsClick: () -> Unit,
-    onProfilePictureClick: () -> Unit,
     bottomBar: @Composable () -> Unit,
     viewModel: NewsViewModel = koinViewModel()
 ) {
@@ -72,14 +74,11 @@ fun NewsDestination(
             loading = uiState.loading,
             bottomBar = bottomBar,
             snackbarHostState = snackbarHostState,
-            onProfilePictureClick = onProfilePictureClick,
             onRefresh = viewModel::refreshAnnouncements,
             onAnnouncementClick = onAnnouncementClick,
             onCreateAnnouncementClick = onCreateAnnouncementClick,
             onResendAnnouncementClick = viewModel::resendAnnouncement,
-            onEditAnnouncementClick = {
-                viewModel.getAnnouncement(it)?.let(onEditAnnouncementClick)
-            },
+            onEditAnnouncementClick = { viewModel.getAnnouncement(it)?.let(onEditAnnouncementClick) },
             onDeleteAnnouncementClick = viewModel::deleteAnnouncement,
             onSeeAllAnnouncementsClick = onSeeAllAnnouncementsClick,
             onReportAnnouncementClick = viewModel::reportAnnouncement
@@ -97,7 +96,6 @@ private fun NewsScreen(
     bottomBar: @Composable () -> Unit,
     snackbarHostState: SnackbarHostState = SnackbarHostState(),
     onRefresh: () -> Unit,
-    onProfilePictureClick: () -> Unit,
     onAnnouncementClick: (String) -> Unit,
     onCreateAnnouncementClick: () -> Unit,
     onResendAnnouncementClick: (Announcement) -> Unit,
@@ -131,7 +129,6 @@ private fun NewsScreen(
     NewsScaffold(
         user = user,
         onCreateAnnouncementClick = onCreateAnnouncementClick,
-        onProfilePictureClick = onProfilePictureClick,
         snackbarHostState = snackbarHostState,
         bottomBar = bottomBar
     ) { paddingValues ->
@@ -156,6 +153,13 @@ private fun NewsScreen(
                             showAnnouncementBottomSheet = true
                         }
                     )
+                } ?: run {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressBar()
+                    }
                 }
             }
         }
@@ -232,7 +236,6 @@ private fun NewsScreenPreview() {
             loading = false,
             bottomBar = {},
             onRefresh = {},
-            onProfilePictureClick = {},
             onAnnouncementClick = {},
             onResendAnnouncementClick = {},
             onEditAnnouncementClick = {},

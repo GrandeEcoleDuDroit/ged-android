@@ -18,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.upsaclay.common.R
 import com.upsaclay.common.domain.entity.User
@@ -80,7 +79,6 @@ private fun MemberUserInformationItem(
         Text(
             text = stringResource(R.string.member),
             color = MaterialTheme.colorScheme.primary,
-            fontWeight = FontWeight.SemiBold,
             style = MaterialTheme.typography.labelLarge
         )
 
@@ -101,13 +99,10 @@ internal fun NonMemberUserInformationItem(
         Text(
             text = accountInfo.label,
             color = MaterialTheme.colorScheme.primary,
-            fontWeight = FontWeight.SemiBold,
             style = MaterialTheme.typography.labelLarge
         )
-        Text(
-            text = accountInfo.value,
-            style = MaterialTheme.typography.bodyLarge
-        )
+
+        Text(text = accountInfo.value)
     }
 }
 

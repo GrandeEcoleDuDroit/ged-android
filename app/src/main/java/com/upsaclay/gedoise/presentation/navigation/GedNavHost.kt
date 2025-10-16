@@ -32,7 +32,7 @@ import com.upsaclay.gedoise.presentation.profile.blockedusers.navigateToBlockedU
 import com.upsaclay.gedoise.presentation.profile.navigateToProfile
 import com.upsaclay.gedoise.presentation.profile.privacy.navigateToPrivacy
 import com.upsaclay.gedoise.presentation.profile.privacy.privacyScreen
-import com.upsaclay.gedoise.presentation.profile.profileScreen
+import com.upsaclay.gedoise.presentation.profile.profileSection
 import com.upsaclay.message.presentation.chat.ChatRoute
 import com.upsaclay.message.presentation.chat.chatScreen
 import com.upsaclay.message.presentation.chat.navigateToChat
@@ -82,7 +82,10 @@ fun GedNavHost(
                 popBackStack()
                 navigateToNews(navOptions = navOptions)
             }
+
             TopLevelDestinationRoute.MESSAGE -> navigateToConversation(navOptions = navOptions)
+
+            TopLevelDestinationRoute.PROFILE -> navigateToProfile(navOptions = navOptions)
         }
     }
 
@@ -141,7 +144,6 @@ fun GedNavHost(
             onCreateAnnouncementClick = navController::navigateToCreateAnnouncement,
             onEditAnnouncementClick = navController::navigateToEditAnnouncement,
             onSeeAllAnnouncementsClick = navController::navigateToAllAnnouncements,
-            onProfilePictureClick = navController::navigateToProfile,
             bottomBar = bottomBar
         ) {
             createAnnouncementScreen(
@@ -163,32 +165,6 @@ fun GedNavHost(
                 onAnnouncementClick = navController::navigateToReadAnnouncement,
                 onEditAnnouncementClick = navController::navigateToEditAnnouncement,
                 onAuthorClick = navController::navigateToUser
-            )
-
-            profileScreen(
-                onBackClick = navController::popBackStack,
-                onAccountInformationClick = navController::navigateToAccountInformation,
-                onAccountClick = navController::navigateToAccount,
-                onPrivacyClick = navController::navigateToPrivacy
-            )
-
-            accountInformationScreen(onBackClick = navController::popBackStack)
-
-            accountScreen(
-                onBackClick = navController::popBackStack,
-                onDeleteAccountClick = navController::navigateToDeleteAccount
-            )
-
-            deleteAccountScreen(onBackClick = navController::popBackStack)
-
-            privacyScreen(
-                onBackClick = navController::popBackStack,
-                onBlockedUsersClick = navController::navigateToBlockedUsers
-            )
-
-            blockedUsersScreen(
-                onBackClick = navController::popBackStack,
-                onAccountClick = navController::navigateToUser
             )
         }
 
@@ -215,6 +191,32 @@ fun GedNavHost(
                     }
                 },
                 onInterlocutorClick = navController::navigateToUser
+            )
+        }
+
+        profileSection(
+            onAccountInformationClick = navController::navigateToAccountInformation,
+            onAccountClick = navController::navigateToAccount,
+            onPrivacyClick = navController::navigateToPrivacy,
+            bottomBar = bottomBar
+        ) {
+            accountInformationScreen(onBackClick = navController::popBackStack)
+
+            accountScreen(
+                onBackClick = navController::popBackStack,
+                onDeleteAccountClick = navController::navigateToDeleteAccount
+            )
+
+            deleteAccountScreen(onBackClick = navController::popBackStack)
+
+            privacyScreen(
+                onBackClick = navController::popBackStack,
+                onBlockedUsersClick = navController::navigateToBlockedUsers
+            )
+
+            blockedUsersScreen(
+                onBackClick = navController::popBackStack,
+                onAccountClick = navController::navigateToUser
             )
         }
 
