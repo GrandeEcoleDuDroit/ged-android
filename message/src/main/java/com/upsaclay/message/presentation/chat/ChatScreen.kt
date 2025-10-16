@@ -26,10 +26,11 @@ import androidx.paging.PagingData
 import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.extension.mediumPadding
-import com.upsaclay.common.extension.smallSpacing
+import com.upsaclay.common.extension.smallMediumSpacing
+import com.upsaclay.common.presentation.components.CriticalDialog
+import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.ReportBottomSheet
-import com.upsaclay.common.presentation.components.SensibleActionDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.message.R
@@ -40,7 +41,6 @@ import com.upsaclay.message.domain.entity.MessageReport
 import com.upsaclay.message.domain.entity.MessageState
 import com.upsaclay.message.domain.messagesFixture
 import com.upsaclay.message.presentation.chat.ChatViewModel.MessageEvent
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flowOf
@@ -75,7 +75,7 @@ fun ChatDestination(
 
                 is MessageEvent.MessageReported -> showSnackBar(context.getString(R.string.message_reported))
 
-                is MessageEvent.ChatDeleted -> onBackClick()
+                is MessageEvent.ConversationDeleted -> onBackClick()
 
                 is SingleUiEvent.Error -> showSnackBar(context.getString(event.messageId))
             }
@@ -98,7 +98,7 @@ fun ChatDestination(
         onDeleteMessageClick = viewModel::deleteMessage,
         onReportClick = viewModel::reportMessage,
         onUnblockUserClick = viewModel::unblockUser,
-        onDeleteChat = viewModel::deleteChat
+        onDeleteConversationClick = viewModel::deleteConversation
     )
 }
 
@@ -120,7 +120,7 @@ private fun ChatScreen(
     onDeleteMessageClick: (Message) -> Unit,
     onReportClick: (MessageReport) -> Unit,
     onUnblockUserClick: (String) -> Unit,
-    onDeleteChat: () -> Unit
+    onDeleteConversationClick: () -> Unit
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val bottomSheetState = rememberModalBottomSheetState(
@@ -131,17 +131,16 @@ private fun ChatScreen(
     var showSentMessageBottomSheet by remember { mutableStateOf(false) }
     var showReceivedMessageBottomSheet by remember { mutableStateOf(false) }
     var showReportMessageBottomSheet by remember { mutableStateOf(false) }
-    var showDeleteChatDialog by remember { mutableStateOf(false) }
+    var showDeleteConversationDialog by remember { mutableStateOf(false) }
     var showUnblockUserDialog by remember { mutableStateOf(false) }
-    val scope = rememberCoroutineScope()
 
     if (loading) {
         LoadingDialog()
     }
 
     if (showDeleteMessageDialog) {
-        SensibleActionDialog(
-            title = stringResource(id = R.string.delete_message_dialog_title),
+        CriticalDialog(
+            title = stringResource(id = R.string.delete_message_dialog_message),
             text = stringResource(id = R.string.delete_message_dialog_message),
             confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
             onConfirm = {
@@ -152,22 +151,22 @@ private fun ChatScreen(
         )
     }
 
-    if (showDeleteChatDialog) {
-        SensibleActionDialog(
-            title = stringResource(id = R.string.delete_chat_dialog_title),
-            text = stringResource(id = R.string.delete_chat_dialog_message),
+    if (showDeleteConversationDialog) {
+        CriticalDialog(
+            title = stringResource(id = R.string.delete_conversation_dialog_title),
+            text = stringResource(id = R.string.delete_conversation_dialog_message),
             confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
             onConfirm = {
-                showDeleteChatDialog = false
-                onDeleteChat()
+                showDeleteConversationDialog = false
+                onDeleteConversationClick()
             },
-            onCancel = { showDeleteChatDialog  = false }
+            onCancel = { showDeleteConversationDialog  = false }
         )
     }
 
     if (showUnblockUserDialog) {
-        SensibleActionDialog(
-            title = stringResource(id = com.upsaclay.common.R.string.unblock_user_dialog_title),
+        DefaultDialog(
+            title = stringResource(id = com.upsaclay.common.R.string.unblock_user_dialog_message),
             text = stringResource(id = com.upsaclay.common.R.string.unblock_user_dialog_message),
             confirmText = stringResource(id = com.upsaclay.common.R.string.unblock),
             onConfirm = {
@@ -192,7 +191,7 @@ private fun ChatScreen(
             modifier = Modifier
                 .mediumPadding(innerPadding)
                 .fillMaxSize(),
-            verticalArrangement = Arrangement.smallSpacing()
+            verticalArrangement = Arrangement.smallMediumSpacing()
         ) {
             MessageFeed(
                 modifier = Modifier.weight(1f),
@@ -215,9 +214,9 @@ private fun ChatScreen(
                 modifier = Modifier.fillMaxWidth(),
                 userBlocked = userBlocked,
                 messageText = messageText,
-                onTextChange = onMessageTextChange,
-                onSendMessage = onSendMessageClick,
-                onDeleteChatClick = { showDeleteChatDialog = true },
+                onMessageTextChange = onMessageTextChange,
+                onSendMessageClick = onSendMessageClick,
+                onDeleteConversationClick = { showDeleteConversationDialog = true },
                 onUnblockUserClick = { onUnblockUserClick(conversation.interlocutor.id) }
             )
         }
@@ -277,16 +276,16 @@ private fun MessageBottomSection(
     modifier: Modifier = Modifier,
     userBlocked: Boolean,
     messageText: String,
-    onTextChange: (String) -> Unit,
-    onSendMessage: () -> Unit,
-    onDeleteChatClick: () -> Unit,
+    onMessageTextChange: (String) -> Unit,
+    onSendMessageClick: () -> Unit,
+    onDeleteConversationClick: () -> Unit,
     onUnblockUserClick: () -> Unit
 ) {
     if (userBlocked) {
         MessageBlockedUserIndicator(
             modifier = modifier
                 .testTag(stringResource(R.string.chat_screen_blocked_user_indicator_tag)),
-            onDeleteChatClick = onDeleteChatClick,
+            onDeleteChatClick = onDeleteConversationClick,
             onUnblockUserClick = onUnblockUserClick
         )
     } else {
@@ -295,8 +294,8 @@ private fun MessageBottomSection(
                 modifier = Modifier
                     .testTag(stringResource(R.string.chat_screen_message_input_tag)),
                 value = messageText,
-                onValueChange = onTextChange,
-                onSendClick = onSendMessage
+                onValueChange = onMessageTextChange,
+                onSendClick = onSendMessageClick
             )
         }
     }
@@ -319,7 +318,7 @@ private fun ChatScreenPreview() {
             messages = flowOf(PagingData.from(messagesFixture)),
             messageText = text,
             loading = false,
-            userBlocked = false,
+            userBlocked = true,
             newMessageEvent = null,
             onBackClick = {},
             onInterlocutorClick = {},
@@ -329,7 +328,7 @@ private fun ChatScreenPreview() {
             onResendMessageClick = {},
             onReportClick = {},
             onUnblockUserClick = {},
-            onDeleteChat = {}
+            onDeleteConversationClick = {}
         )
     }
 }

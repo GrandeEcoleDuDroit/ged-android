@@ -1,6 +1,7 @@
 package com.upsaclay.news.data.remote.model
 
 import com.google.gson.annotations.SerializedName
+import com.upsaclay.news.data.AnnouncementField.Local.USER_IS_DELETED
 import com.upsaclay.news.data.AnnouncementField.Remote.ANNOUNCEMENT_CONTENT
 import com.upsaclay.news.data.AnnouncementField.Remote.ANNOUNCEMENT_DATE
 import com.upsaclay.news.data.AnnouncementField.Remote.ANNOUNCEMENT_ID
@@ -48,5 +49,7 @@ internal data class RemoteAnnouncementWithUser(
     @SerializedName(USER_IS_MEMBER)
     val userIsMember: Int,
     @SerializedName(USER_PROFILE_PICTURE_FILE_NAME)
-    val profilePictureFileName: String?
+    val userProfilePictureFileName: String?,
+    @SerializedName(USER_IS_DELETED)
+    val userIsDeleted: Int
 )

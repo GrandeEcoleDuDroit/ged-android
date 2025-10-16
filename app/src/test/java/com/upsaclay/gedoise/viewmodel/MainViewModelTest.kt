@@ -43,7 +43,7 @@ class MainViewModelTest {
         coEvery { userRepository.getUsers() } returns usersFixture
         coEvery { userRepository.getUser(any()) } returns userFixture
         coEvery { userRepository.storeUser(any()) } returns Unit
-        coEvery { userRepository.deleteCurrentUser() } returns Unit
+        coEvery { userRepository.deleteLocalUser() } returns Unit
         coEvery { listenDataUseCase.start() } returns Unit
         coEvery { listenDataUseCase.stop() } returns Unit
         coEvery { clearDataUseCase() } returns Unit

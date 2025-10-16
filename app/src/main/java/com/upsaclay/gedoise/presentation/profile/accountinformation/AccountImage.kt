@@ -1,4 +1,4 @@
-package com.upsaclay.gedoise.presentation.profile.account
+package com.upsaclay.gedoise.presentation.profile.accountinformation
 
 import android.net.Uri
 import androidx.compose.animation.AnimatedContent

@@ -56,6 +56,6 @@ class ListenBlockUserEventsUseCaseTest {
         useCase.start()
 
         // Then
-        coVerify { announcementRepository.deleteLocalUserAnnouncements(blockedUser.id) }
+        coVerify { announcementRepository.deleteLocalAnnouncements(blockedUser.id) }
     }
 }

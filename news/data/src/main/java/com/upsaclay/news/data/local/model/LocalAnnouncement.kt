@@ -15,6 +15,7 @@ import com.upsaclay.news.data.AnnouncementField.Local.USER_IS_MEMBER
 import com.upsaclay.news.data.AnnouncementField.Local.USER_LAST_NAME
 import com.upsaclay.news.data.AnnouncementField.Local.USER_PROFILE_PICTURE_FILE_NAME
 import com.upsaclay.news.data.AnnouncementField.Local.USER_SCHOOL_LEVEL
+import com.upsaclay.news.data.AnnouncementField.Local.USER_IS_DELETED
 import com.upsaclay.news.domain.entity.AnnouncementState
 
 const val ANNOUNCEMENTS_TABLE = "announcements_table"
@@ -45,5 +46,7 @@ data class LocalAnnouncement(
     @ColumnInfo(name = USER_IS_MEMBER)
     val userIsMember: Boolean,
     @ColumnInfo(name = USER_PROFILE_PICTURE_FILE_NAME)
-    val userProfilePictureFileName: String?
+    val userProfilePictureFileName: String?,
+    @ColumnInfo(name = USER_IS_DELETED)
+    val userIsDeleted: Boolean
 )

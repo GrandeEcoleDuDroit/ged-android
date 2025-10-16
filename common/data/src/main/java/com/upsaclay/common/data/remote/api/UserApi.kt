@@ -15,11 +15,11 @@ internal interface UserApi {
 
     suspend fun createUser(user: User)
 
+    suspend fun updateUser(user: User)
+
     suspend fun updateProfilePictureFileName(userId: String, fileName: String)
 
     suspend fun deleteProfilePictureFileName(userId: String)
-
-    suspend fun isUserExist(email: String): Boolean
 
     suspend fun reportUser(report: UserReport)
 }

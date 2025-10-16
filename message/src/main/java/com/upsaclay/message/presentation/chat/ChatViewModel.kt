@@ -15,6 +15,7 @@ import com.upsaclay.message.domain.entity.MessageReport
 import com.upsaclay.message.domain.entity.MessageState
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
+import com.upsaclay.message.domain.usecase.DeleteConversationUseCase
 import com.upsaclay.message.domain.usecase.SendMessageUseCase
 import com.upsaclay.message.notification.NotificationMessageManager
 import kotlinx.coroutines.flow.Flow
@@ -30,18 +31,18 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 
 class ChatViewModel(
-    private val conversation: Conversation,
+    private var conversation: Conversation,
     private val userRepository: UserRepository,
     private val conversationRepository: ConversationRepository,
     private val messageRepository: MessageRepository,
-    private val sendMessageUseCase: SendMessageUseCase,
     private val notificationMessageManager: NotificationMessageManager,
-    private val blockedUserRepository: BlockedUserRepository
+    private val blockedUserRepository: BlockedUserRepository,
+    private val sendMessageUseCase: SendMessageUseCase,
+    private val deleteConversationUseCase: DeleteConversationUseCase
 ): ViewModel() {
     private val user: User? = userRepository.currentUser
     private val _uiState = MutableStateFlow(
         ChatUiState(
-            conversation = conversation,
             messageText = "",
             loading = false,
             userBlocked = false,
@@ -73,7 +74,6 @@ class ChatViewModel(
     fun sendMessage() {
         try {
             val text = uiState.value.messageText.takeUnless { it.isEmpty() } ?: return
-            val conversation = uiState.value.conversation
             val user = requireNotNull(user)
             val message = Message(
                 id = GenerateIdUseCase.longId,
@@ -84,6 +84,7 @@ class ChatViewModel(
                 date = LocalDateTime.now(ZoneOffset.UTC),
                 state = MessageState.DRAFT
             )
+
             sendMessageUseCase(
                 conversation = conversation,
                 message = message,
@@ -102,7 +103,7 @@ class ChatViewModel(
             val user = requireNotNull(user)
             viewModelScope.launch {
                 sendMessageUseCase(
-                    conversation = uiState.value.conversation,
+                    conversation = conversation,
                     message = message.copy(date = LocalDateTime.now(ZoneOffset.UTC)),
                     userId = user.id
                 )
@@ -137,7 +138,6 @@ class ChatViewModel(
 
     fun unblockUser(userId: String) {
         val currentUserId = uiState.value.currentUser?.id ?: return
-
         _uiState.update { it.copy(loading = true) }
 
         viewModelScope.launch {
@@ -151,21 +151,14 @@ class ChatViewModel(
         }
     }
 
-    fun deleteChat() {
+    fun deleteConversation() {
         val currentUserId = uiState.value.currentUser?.id ?: return
-        val conversation = uiState.value.conversation
-
         _uiState.update { it.copy(loading = true) }
 
         viewModelScope.launch {
             try {
-                conversationRepository.deleteConversation(
-                    conversation = conversation,
-                    currentUserId = currentUserId,
-                    deleteTime = LocalDateTime.now()
-                )
-                messageRepository.deleteLocalMessages(conversation.id)
-                _event.emit(MessageEvent.ChatDeleted)
+                deleteConversationUseCase(conversation, currentUserId)
+                _event.emit(MessageEvent.ConversationDeleted)
             } catch (e: Exception) {
                 _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
             } finally {
@@ -208,15 +201,15 @@ class ChatViewModel(
     private fun listenConversation() {
         viewModelScope.launch {
             conversationRepository.getConversationFlow(conversation.interlocutor.id)
-                .collect { conversation ->
-                    _uiState.update { it.copy(conversation = conversation) }
+                .collect {
+                    conversation = it
                 }
         }
     }
 
     private fun clearChatNotifications() {
         viewModelScope.launch {
-            notificationMessageManager.clearNotifications(_uiState.value.conversation.id)
+            notificationMessageManager.clearNotifications(conversation.id)
         }
     }
 
@@ -240,7 +233,6 @@ class ChatViewModel(
     }
 
     internal data class ChatUiState(
-        val conversation: Conversation,
         val messageText: String,
         val loading: Boolean,
         val userBlocked: Boolean,
@@ -250,6 +242,6 @@ class ChatViewModel(
     internal sealed class MessageEvent: SingleUiEvent {
         data class NewMessage(val message: Message): MessageEvent()
         data object MessageReported: MessageEvent()
-        data object ChatDeleted: MessageEvent()
+        data object ConversationDeleted: MessageEvent()
     }
 }

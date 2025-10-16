@@ -29,3 +29,8 @@ class ConnectionClosedException(
     override val message: String? = null,
     override val cause: Throwable? = null
 ): Exception()
+
+class CurrentUserNotFoundException(
+    override val message: String? = null,
+    override val cause: Throwable? = null
+): Exception()

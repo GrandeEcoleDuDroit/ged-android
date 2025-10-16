@@ -45,7 +45,7 @@ import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.OptionButton
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.components.ReportBottomSheet
-import com.upsaclay.common.presentation.components.SensibleActionDialog
+import com.upsaclay.common.presentation.components.CriticalDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
 import kotlinx.coroutines.launch
@@ -111,13 +111,14 @@ private fun UserScreen(
     var showReportBottomSheet by remember { mutableStateOf(false) }
     var showBlockUserDialog by remember { mutableStateOf(false) }
     var showUnblockUserDialog by remember { mutableStateOf(false) }
+    val userName = if (!user.isDeleted) user.fullName else stringResource(id = R.string.deleted_user)
 
     if (loading) {
         LoadingDialog()
     }
 
     if (showBlockUserDialog) {
-        SensibleActionDialog(
+        CriticalDialog(
             title = stringResource(id = R.string.block_user_dialog_title),
             text = stringResource(id = R.string.block_user_dialog_message),
             confirmText = stringResource(id = com.upsaclay.common.R.string.block),
@@ -130,8 +131,7 @@ private fun UserScreen(
     }
 
     if (showUnblockUserDialog) {
-        SensibleActionDialog(
-            title = stringResource(id = R.string.unblock_user_dialog_title),
+        CriticalDialog(
             text = stringResource(id = R.string.unblock_user_dialog_message),
             confirmText = stringResource(id = R.string.unblock),
             onConfirm = {
@@ -146,7 +146,7 @@ private fun UserScreen(
         topBar = {
             BackTopBar(
                 onBackClick = onBackClick,
-                title = user.fullName,
+                title = userName,
                 leadingIcon = {
                     if (user != currentUser) {
                         OptionButton(
@@ -175,8 +175,10 @@ private fun UserScreen(
                 scale = 1.8f
             )
 
-            SelectionContainer {
-                UserInformationItems(user = user)
+            if (!user.isDeleted) {
+                SelectionContainer {
+                    UserInformationItems(user = user)
+                }
             }
         }
     }

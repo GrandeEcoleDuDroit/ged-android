@@ -22,7 +22,8 @@ val messageModule = module {
             messageRepository = get(),
             blockedUserRepository = get(),
             sendMessageUseCase = get(),
-            notificationMessageManager = get()
+            notificationMessageManager = get(),
+            deleteConversationUseCase = get()
         )
     }
     singleOf(::NotificationMessagePresenter)

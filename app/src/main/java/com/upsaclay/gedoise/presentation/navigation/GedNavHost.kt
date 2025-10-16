@@ -22,7 +22,11 @@ import com.upsaclay.common.presentation.user.navigateToUser
 import com.upsaclay.common.presentation.user.userScreen
 import com.upsaclay.gedoise.presentation.components.MainBottomBar
 import com.upsaclay.gedoise.presentation.profile.account.accountScreen
+import com.upsaclay.gedoise.presentation.profile.account.deleteaccount.deleteAccountScreen
+import com.upsaclay.gedoise.presentation.profile.account.deleteaccount.navigateToDeleteAccount
 import com.upsaclay.gedoise.presentation.profile.account.navigateToAccount
+import com.upsaclay.gedoise.presentation.profile.accountinformation.accountInformationScreen
+import com.upsaclay.gedoise.presentation.profile.accountinformation.navigateToAccountInformation
 import com.upsaclay.gedoise.presentation.profile.blockedusers.blockedUsersScreen
 import com.upsaclay.gedoise.presentation.profile.blockedusers.navigateToBlockedUsers
 import com.upsaclay.gedoise.presentation.profile.navigateToProfile
@@ -40,8 +44,8 @@ import com.upsaclay.message.presentation.conversation.create.createConversationS
 import com.upsaclay.message.presentation.conversation.create.navigateToCreateConversation
 import com.upsaclay.message.presentation.conversation.navigateToConversation
 import com.upsaclay.news.presentation.NewsRoute
-import com.upsaclay.news.presentation.announcement.allannouncements.allAnnouncementScreen
-import com.upsaclay.news.presentation.announcement.allannouncements.navigateToAllAnnouncement
+import com.upsaclay.news.presentation.announcement.allannouncements.allAnnouncementsScreen
+import com.upsaclay.news.presentation.announcement.allannouncements.navigateToAllAnnouncements
 import com.upsaclay.news.presentation.announcement.createannouncement.createAnnouncementScreen
 import com.upsaclay.news.presentation.announcement.createannouncement.navigateToCreateAnnouncement
 import com.upsaclay.news.presentation.announcement.editannouncement.editAnnouncementScreen
@@ -136,7 +140,7 @@ fun GedNavHost(
             onAnnouncementClick = navController::navigateToReadAnnouncement,
             onCreateAnnouncementClick = navController::navigateToCreateAnnouncement,
             onEditAnnouncementClick = navController::navigateToEditAnnouncement,
-            onSeeAllAnnouncementClick = navController::navigateToAllAnnouncement,
+            onSeeAllAnnouncementsClick = navController::navigateToAllAnnouncements,
             onProfilePictureClick = navController::navigateToProfile,
             bottomBar = bottomBar
         ) {
@@ -154,7 +158,7 @@ fun GedNavHost(
                 onBackClick = navController::popBackStack
             )
 
-            allAnnouncementScreen(
+            allAnnouncementsScreen(
                 onBackClick = navController::popBackStack,
                 onAnnouncementClick = navController::navigateToReadAnnouncement,
                 onEditAnnouncementClick = navController::navigateToEditAnnouncement,
@@ -163,11 +167,19 @@ fun GedNavHost(
 
             profileScreen(
                 onBackClick = navController::popBackStack,
+                onAccountInformationClick = navController::navigateToAccountInformation,
                 onAccountClick = navController::navigateToAccount,
                 onPrivacyClick = navController::navigateToPrivacy
             )
 
-            accountScreen(onBackClick = navController::popBackStack)
+            accountInformationScreen(onBackClick = navController::popBackStack)
+
+            accountScreen(
+                onBackClick = navController::popBackStack,
+                onDeleteAccountClick = navController::navigateToDeleteAccount
+            )
+
+            deleteAccountScreen(onBackClick = navController::popBackStack)
 
             privacyScreen(
                 onBackClick = navController::popBackStack,

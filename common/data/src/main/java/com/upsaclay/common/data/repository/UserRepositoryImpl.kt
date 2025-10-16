@@ -45,8 +45,12 @@ internal class UserRepositoryImpl(
         userLocalDataSource.storeUser(user)
     }
 
-    override suspend fun deleteCurrentUser() {
+    override suspend fun deleteLocalUser() {
         userLocalDataSource.removeUser()
+    }
+
+    override suspend fun updateRemoteUser(user: User) {
+        userRemoteDataSource.updateUser(user)
     }
 
     override suspend fun updateProfilePictureFileName(userId: String, fileName: String) {
@@ -58,8 +62,6 @@ internal class UserRepositoryImpl(
         userRemoteDataSource.deleteProfilePictureFileName(userId)
         userLocalDataSource.updateProfilePictureFileName(null)
     }
-
-    override suspend fun isUserExist(email: String): Boolean = userRemoteDataSource.isUserExist(email)
 
     override suspend fun reportUser(report: UserReport) {
         userRemoteDataSource.reportUser(report)

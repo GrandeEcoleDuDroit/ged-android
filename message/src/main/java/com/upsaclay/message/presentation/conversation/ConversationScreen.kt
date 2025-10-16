@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.domain.entity.SingleUiEvent
-import com.upsaclay.common.presentation.components.SensibleActionDialog
+import com.upsaclay.common.presentation.components.CriticalDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.message.R
@@ -74,18 +74,18 @@ private fun ConversationScreen(
     snackbarHostState: SnackbarHostState = SnackbarHostState(),
     bottomBar: @Composable () -> Unit
 ) {
-    var conversationClicked by remember { mutableStateOf<ConversationUi?>(null) }
+    var clickedConversation by remember { mutableStateOf<ConversationUi?>(null) }
     var showBottomSheet by remember { mutableStateOf(false) }
     var showDeleteConversationDialog by remember { mutableStateOf(false) }
 
     if (showDeleteConversationDialog) {
-        SensibleActionDialog(
+        CriticalDialog(
             title = stringResource(id = R.string.delete_conversation_dialog_title),
             text = stringResource(id = R.string.delete_conversation_dialog_message),
             confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
             onConfirm = {
                 showDeleteConversationDialog = false
-                conversationClicked?.let { onDeleteConversation(it.toConversation()) }
+                clickedConversation?.let { onDeleteConversation(it.toConversation()) }
             },
             onCancel = { showDeleteConversationDialog  = false }
         )
@@ -104,7 +104,7 @@ private fun ConversationScreen(
                     conversations = conversations,
                     onClick = { onConversationClick(it.toConversation()) },
                     onLongClick = {
-                        conversationClicked = it
+                        clickedConversation = it
                         showBottomSheet = true
                     },
                     onCreateClick = onCreateConversation

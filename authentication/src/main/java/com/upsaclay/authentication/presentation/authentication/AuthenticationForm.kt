@@ -4,9 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
@@ -29,6 +27,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import com.upsaclay.authentication.R
 import com.upsaclay.authentication.presentation.components.LoginButton
 import com.upsaclay.authentication.presentation.components.OutlinePasswordTextField
+import com.upsaclay.common.extension.extraSmallSpacing
 import com.upsaclay.common.presentation.components.SimpleOutlinedTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
@@ -137,22 +136,21 @@ private fun CredentialsInputs(
 private fun RegistrationText(
     onRegistrationClick: () -> Unit
 ) {
-    Row {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.extraSmallSpacing()
+    ) {
         Text(
             text = stringResource(id = R.string.not_register_yet),
             color = MaterialTheme.colorScheme.onSurface
         )
 
-        Spacer(modifier = Modifier.width(dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding)))
-
         Text(
             text = AnnotatedString(stringResource(id = R.string.sign_up)),
-            style = MaterialTheme.typography.bodyLarge.copy(
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.primary
-            ),
+            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier
-                .clickable { onRegistrationClick() }
+                .clickable(onClick = onRegistrationClick)
                 .testTag(stringResource(id = R.string.authentication_screen_registration_button_tag))
         )
     }

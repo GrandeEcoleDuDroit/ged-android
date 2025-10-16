@@ -1,6 +1,6 @@
 package com.upsaclay.news.data
 
-import com.upsaclay.common.domain.UrlUtils.formatProfilePictureUrl
+import com.upsaclay.common.domain.UrlUtils.formatOracleBucketUrl
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.extensions.toEpochMilliUTC
 import com.upsaclay.common.domain.extensions.toLocalDateTimeUTC
@@ -24,7 +24,8 @@ fun Announcement.toLocal() = LocalAnnouncement(
     userEmail = author.email,
     userSchoolLevel = author.schoolLevel,
     userIsMember = author.isMember,
-    userProfilePictureFileName = author.profilePictureUrl
+    userProfilePictureFileName = author.profilePictureUrl,
+    userIsDeleted = author.isDeleted
 )
 
 fun LocalAnnouncement.toAnnouncement() = Announcement(
@@ -39,7 +40,8 @@ fun LocalAnnouncement.toAnnouncement() = Announcement(
         email = userEmail,
         schoolLevel = userSchoolLevel,
         isMember = userIsMember,
-        profilePictureUrl = userProfilePictureFileName
+        profilePictureUrl = userProfilePictureFileName,
+        isDeleted = userIsDeleted
     ),
     state = announcementState
 )
@@ -56,7 +58,8 @@ internal fun RemoteAnnouncementWithUser.toAnnouncement() = Announcement(
         email = userEmail,
         schoolLevel = userSchoolLevel,
         isMember = userIsMember == 1,
-        profilePictureUrl = formatProfilePictureUrl(profilePictureFileName)
+        profilePictureUrl = formatOracleBucketUrl(userProfilePictureFileName),
+        isDeleted = userIsDeleted == 1
     ),
     state = AnnouncementState.PUBLISHED
 )

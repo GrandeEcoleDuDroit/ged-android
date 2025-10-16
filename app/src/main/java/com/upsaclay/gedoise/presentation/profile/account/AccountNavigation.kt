@@ -13,11 +13,13 @@ fun NavController.navigateToAccount() {
 }
 
 fun NavGraphBuilder.accountScreen(
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onDeleteAccountClick: () -> Unit
 ) {
     composable<AccountRoute> {
         AccountDestination(
-            onBackClick = onBackClick
+            onBackClick = onBackClick,
+            onDeleteAccountClick = onDeleteAccountClick
         )
     }
 }

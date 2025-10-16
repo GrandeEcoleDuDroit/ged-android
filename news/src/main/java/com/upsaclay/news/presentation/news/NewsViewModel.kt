@@ -15,7 +15,6 @@ import com.upsaclay.news.domain.repository.AnnouncementRepository
 import com.upsaclay.news.domain.usecase.DeleteAnnouncementUseCase
 import com.upsaclay.news.domain.usecase.RefreshAnnouncementUseCase
 import com.upsaclay.news.domain.usecase.ResendAnnouncementUseCase
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow

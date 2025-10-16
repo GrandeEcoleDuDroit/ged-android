@@ -80,9 +80,10 @@ private fun SwitchConversationItem(
     onLongClick: () -> Unit
 ) {
     val loading = conversationState == ConversationState.CREATING || conversationState == ConversationState.DELETING
+    val interlocutorName = if (!interlocutor.isDeleted) interlocutor.fullName else stringResource(id = com.upsaclay.common.R.string.deleted_user)
+
     ConversationItemStructure(
-        modifier = modifier
-            .alpha(if (loading) 0.5f else 1f),
+        modifier = modifier,
         interlocutor = interlocutor,
         onClick = onClick,
         onLongClick = onLongClick
@@ -92,7 +93,7 @@ private fun SwitchConversationItem(
                 modifier = innerModifier
                     .alpha(0.5f)
                     .testTag(stringResource(id = R.string.conversation_screen_read_conversation_item_tag)),
-                interlocutorName = interlocutor.fullName,
+                interlocutorName = interlocutorName,
                 text = text,
                 elapsedTime = elapsedTime
             )
@@ -101,7 +102,7 @@ private fun SwitchConversationItem(
                 UnreadConversationItemContent(
                     modifier = innerModifier
                         .testTag(stringResource(id = R.string.conversation_screen_unread_conversation_item_tag)),
-                    interlocutorName = interlocutor.fullName,
+                    interlocutorName = interlocutorName,
                     text = text,
                     elapsedTime = elapsedTime
                 )
@@ -109,7 +110,7 @@ private fun SwitchConversationItem(
                 ReadConversationItemContent(
                     modifier = innerModifier
                         .testTag(stringResource(id = R.string.conversation_screen_read_conversation_item_tag)),
-                    interlocutorName = interlocutor.fullName,
+                    interlocutorName = interlocutorName,
                     text = text,
                     elapsedTime = elapsedTime
                 )

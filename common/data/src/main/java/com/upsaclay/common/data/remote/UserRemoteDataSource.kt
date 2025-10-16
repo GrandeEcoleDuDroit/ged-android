@@ -30,6 +30,12 @@ internal class UserRemoteDataSource(
         }
     }
 
+    suspend fun updateUser(user: User) {
+        withContext(Dispatchers.IO) {
+            userApi.updateUser(user)
+        }
+    }
+
     suspend fun updateProfilePictureFileName(userId: String, fileName: String) {
         withContext(Dispatchers.IO) {
             userApi.updateProfilePictureFileName(userId, fileName)
@@ -40,10 +46,6 @@ internal class UserRemoteDataSource(
         withContext(Dispatchers.IO) {
             userApi.deleteProfilePictureFileName(userId)
         }
-    }
-
-    suspend fun isUserExist(email: String): Boolean = withContext(Dispatchers.IO) {
-        userApi.isUserExist(email)
     }
 
     suspend fun reportUser(report: UserReport) {

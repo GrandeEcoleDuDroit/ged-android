@@ -4,12 +4,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,9 +18,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import com.upsaclay.common.extension.mediumSpacing
-import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.news.R
@@ -35,7 +33,6 @@ internal fun ExtendedAnnouncementItem(
     announcement: Announcement,
     onClick: () -> Unit,
     onOptionClick: () -> Unit,
-    onResendAnnouncementClick: () -> Unit,
     onAuthorClick: () -> Unit
 ) {
     when (announcement.state) {
@@ -43,7 +40,7 @@ internal fun ExtendedAnnouncementItem(
             DefaultItem(
                 modifier = modifier
                     .clickable(onClick = onClick)
-                    .padding(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)),
+                    .padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
                 announcement = announcement,
                 onOptionClick = onOptionClick,
                 onAuthorClick = onAuthorClick
@@ -63,7 +60,6 @@ internal fun ExtendedAnnouncementItem(
             ErrorItem(
                 modifier = modifier.clickable(onClick = onClick),
                 announcement = announcement,
-                onResendAnnouncementClick = onResendAnnouncementClick,
                 onOptionClick = onOptionClick,
                 onAuthorClick = onAuthorClick
             )
@@ -113,7 +109,10 @@ private fun PublishingItem(
 ) {
     DefaultItem(
         modifier = modifier
-            .padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+            .padding(
+                horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding),
+                vertical = dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)
+            )
             .alpha(0.5f),
         announcement = announcement,
         onOptionClick = onOptionClick,
@@ -125,37 +124,47 @@ private fun PublishingItem(
 private fun ErrorItem(
     modifier: Modifier = Modifier,
     announcement: Announcement,
-    onResendAnnouncementClick: () -> Unit,
     onOptionClick: () -> Unit,
     onAuthorClick: () -> Unit
 ) {
     Column(
         modifier = modifier
-            .padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+            .padding(
+                horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding),
+                vertical = dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)
+            ),
+        verticalArrangement = Arrangement.mediumSpacing()
     ) {
-        TextButton(
-            modifier = Modifier.align(Alignment.End),
-            onClick = onResendAnnouncementClick
+        Row(
+            modifier = modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.small_padding))
         ) {
-            Row(
-                horizontalArrangement = Arrangement.smallSpacing()
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_outline_sync),
-                    contentDescription = null
-                )
+            Icon(
+                painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_error),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.error
+            )
 
-                Text(
-                    text = stringResource(com.upsaclay.common.R.string.resend)
-                )
-            }
+            AnnouncementHeader(
+                announcement = announcement,
+                onOptionClick = onOptionClick,
+                onAuthorClick = onAuthorClick
+            )
         }
 
-        DefaultItem(
-            modifier = Modifier.weight(1f),
-            announcement = announcement,
-            onOptionClick = onOptionClick,
-            onAuthorClick = onAuthorClick
+        announcement.title?.let {
+            Text(
+                modifier = Modifier.testTag(stringResource(id = R.string.read_screen_announcement_title_tag)),
+                text = it,
+                style = MaterialTheme.typography.titleMedium
+            )
+        }
+
+        Text(
+            modifier = Modifier.testTag(stringResource(id = R.string.read_screen_announcement_content_tag)),
+            text = announcement.content,
+            style = MaterialTheme.typography.bodyMedium
         )
     }
 }
@@ -167,7 +176,7 @@ private fun ErrorItem(
  =====================================================================
  */
 
-@Preview
+@Phones
 @Composable
 private fun DefaultItemPreview() {
     GedoiseTheme {
@@ -203,7 +212,6 @@ private fun ErrorItemPreview() {
         Surface {
             ErrorItem(
                 announcement = longAnnouncementFixture.copy(state = AnnouncementState.ERROR),
-                onResendAnnouncementClick = {},
                 onOptionClick = {},
                 onAuthorClick = {}
             )

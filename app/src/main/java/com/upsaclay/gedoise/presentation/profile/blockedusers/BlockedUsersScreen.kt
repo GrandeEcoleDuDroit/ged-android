@@ -34,7 +34,7 @@ import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.usersFixture
 import com.upsaclay.common.presentation.components.BackTopBar
-import com.upsaclay.common.presentation.components.SimpleDialog
+import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.UserItem
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.informationText
@@ -91,8 +91,7 @@ private fun BlockedUsersScreen(
     var clickedUserId by remember { mutableStateOf<String?>(null) }
 
     if (showUnblockUserDialog) {
-        SimpleDialog(
-            title = stringResource(com.upsaclay.common.R.string.unblock_user_dialog_title),
+        DefaultDialog(
             text = stringResource(com.upsaclay.common.R.string.unblock_user_dialog_message),
             confirmText = stringResource(com.upsaclay.common.R.string.unblock),
             onConfirm = {

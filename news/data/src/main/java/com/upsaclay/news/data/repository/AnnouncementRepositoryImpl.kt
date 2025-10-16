@@ -56,6 +56,11 @@ internal class AnnouncementRepositoryImpl(
         announcementLocalDataSource.upsertAnnouncement(announcement)
     }
 
+    override suspend fun deleteAnnouncements(userId: String) {
+        announcementRemoteDataSource.deleteAnnouncements(userId)
+        announcementLocalDataSource.deleteAnnouncements(userId)
+    }
+
     override suspend fun deleteAnnouncement(announcement: Announcement) {
         announcementRemoteDataSource.deleteAnnouncement(announcement.id)
         announcementLocalDataSource.deleteAnnouncement(announcement)
@@ -65,8 +70,8 @@ internal class AnnouncementRepositoryImpl(
         announcementLocalDataSource.deleteAnnouncement(announcement)
     }
 
-    override suspend fun deleteLocalUserAnnouncements(userId: String) {
-        announcementLocalDataSource.deleteUserAnnouncements(userId)
+    override suspend fun deleteLocalAnnouncements(userId: String) {
+        announcementLocalDataSource.deleteAnnouncements(userId)
     }
 
     override suspend fun reportAnnouncement(report: AnnouncementReport) {

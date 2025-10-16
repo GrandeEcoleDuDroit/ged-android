@@ -19,8 +19,8 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.presentation.components.BackTopBar
-import com.upsaclay.common.presentation.components.TextItem
 import com.upsaclay.common.presentation.components.EditTopBar
+import com.upsaclay.common.presentation.components.TextItem
 import com.upsaclay.gedoise.R
 import kotlinx.coroutines.launch
 

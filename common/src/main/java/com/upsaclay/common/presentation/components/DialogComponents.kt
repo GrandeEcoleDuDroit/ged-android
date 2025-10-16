@@ -26,7 +26,7 @@ import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
 
 @Composable
-fun SimpleDialog(
+fun DefaultDialog(
     modifier: Modifier = Modifier,
     title: String? = null,
     text: String? = null,
@@ -55,7 +55,7 @@ fun SimpleDialog(
 }
 
 @Composable
-fun SensibleActionDialog(
+fun CriticalDialog(
     modifier: Modifier = Modifier,
     title: String? = null,
     text: String? = null,
@@ -129,7 +129,7 @@ fun LoadingDialog(message: String = stringResource(id = R.string.loading)) {
 @Composable
 private fun SimpleDialogPreview() {
     GedoiseTheme {
-        SimpleDialog(
+        DefaultDialog(
             title = "Simple dialog",
             text = "There is the text area",
             confirmText = "Confirm",
@@ -142,9 +142,9 @@ private fun SimpleDialogPreview() {
 
 @Phones
 @Composable
-private fun SensibleActionDialogPreview() {
+private fun CriticalActionDialogPreview() {
     GedoiseTheme {
-        SensibleActionDialog(
+        CriticalDialog(
             title = "Sensible action",
             text = "Do you want to do this sensible action ?",
             confirmText = "Delete",

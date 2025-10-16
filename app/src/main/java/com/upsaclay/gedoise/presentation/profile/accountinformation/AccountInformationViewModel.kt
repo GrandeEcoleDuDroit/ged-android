@@ -1,4 +1,4 @@
-package com.upsaclay.gedoise.presentation.profile.account
+package com.upsaclay.gedoise.presentation.profile.accountinformation
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel
@@ -21,14 +21,14 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class AccountViewModel(
+class AccountInformationViewModel(
     private val updateProfilePictureUseCase: UpdateProfilePictureUseCase,
     private val deleteProfilePictureUseCase: DeleteProfilePictureUseCase,
     userRepository: UserRepository,
     private val connectivityObserver: ConnectivityObserver
 ): ViewModel() {
-    private val _uiState = MutableStateFlow(AccountUiState())
-    val uiState: StateFlow<AccountUiState> = _uiState
+    private val _uiState = MutableStateFlow(AccountInformationUiState())
+    val uiState: StateFlow<AccountInformationUiState> = _uiState
 
     private val _event = MutableSharedFlow<SingleUiEvent>()
     val event: SharedFlow<SingleUiEvent> = _event
@@ -85,13 +85,13 @@ class AccountViewModel(
         }
     }
 
-    fun onScreenStateChange(screenState: AccountScreenState) {
+    fun onScreenStateChange(screenState: AccountInformationScreenState) {
         updateState(screenState = screenState)
     }
 
     fun cancelEdit() {
         updateState(
-            screenState = AccountScreenState.READ,
+            screenState = AccountInformationScreenState.READ,
             profilePictureUri = null,
             loading = false
         )
@@ -106,7 +106,7 @@ class AccountViewModel(
         user: User? = _uiState.value.user,
         profilePictureUri: Uri? = _uiState.value.profilePictureUri,
         loading: Boolean = _uiState.value.loading,
-        screenState: AccountScreenState = _uiState.value.screenState
+        screenState: AccountInformationScreenState = _uiState.value.screenState
     ) {
         _uiState.update {
             it.copy(
@@ -127,15 +127,15 @@ class AccountViewModel(
         }
     }
 
-    data class AccountUiState(
+    data class AccountInformationUiState(
         val user: User? = null,
         val profilePictureUri: Uri? = null,
         val loading: Boolean = false,
-        val screenState: AccountScreenState = AccountScreenState.READ,
+        val screenState: AccountInformationScreenState = AccountInformationScreenState.READ,
     )
 }
 
-enum class AccountScreenState {
+enum class AccountInformationScreenState {
     READ,
     EDIT
 }

@@ -14,4 +14,6 @@ interface FirebaseAuthenticationRepository {
     suspend fun registerWithEmailAndPassword(email: String, password: String): String
 
     fun logout()
+
+    suspend fun deleteAuthUser()
 }

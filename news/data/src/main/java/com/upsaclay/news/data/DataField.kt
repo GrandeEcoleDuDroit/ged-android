@@ -14,6 +14,7 @@ internal object AnnouncementField {
         const val USER_SCHOOL_LEVEL = "userSchoolLevel"
         const val USER_IS_MEMBER = "userIsMember"
         const val USER_PROFILE_PICTURE_FILE_NAME = "userProfilePictureFileName"
+        const val USER_IS_DELETED = "userIsDeleted"
     }
 
     internal object Remote {

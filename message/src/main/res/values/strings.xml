@@ -3,17 +3,14 @@
     <string name="ic_message_add_description">Nouvelle conversation</string>
     <string name="ic_group_add_description">Nouveau groupe</string>
     <string name="ic_fab_button_add_description">Ouvrir le pannel des boutons flottants</string>
-
     <string name="new_conversation">Nouvelle conversation</string>
     <string name="new_group">Nouveau groupe</string>
     <string name="start_conversation">Démarrer une conversation avec vos amis.</string>
-    <string name="delete_conversation_dialog_title">Supprimer la conversation</string>
-    <string name="delete_conversation_dialog_message">Votre interlocuteur pourra toujours voir la conversation et vous envoyer des messages.</string>
+    <string name="delete_conversation_dialog_title">Supprimer conversation ?</string>
+    <string name="delete_conversation_dialog_message">Cela supprimera l\'historique des messages de votre côté uniquement.</string>
     <string name="conversation_deleted">Conversation supprimé</string>
-
     <string name="message_placeholder">Envoyer un message</string>
-    <string name="delete_message_dialog_title">Supprimer le message</string>
-    <string name="delete_message_dialog_message">Êtes-vous sûr de vouloir supprimer ce message ?</string>
+    <string name="delete_message_dialog_message">Voulez-vous supprimer ce message ?</string>
     <string name="send_message_icon_description">Bouton d\'envoi de message</string>
     <string name="tap_to_chat">Appuyer pour discuter</string>
     <string name="message_seen">Vu</string>
@@ -22,6 +19,8 @@
     <string name="error_fetch_messages">Une erreur est survenue durant la récupération des messages</string>
     <string name="error_fetch_conversations">Une erreur est survenue durant la récupération des conversations</string>
     <string name="no_conversation">Aucune conversation</string>
+    <string name="message_reported">Message signalé</string>
+    <string name="chat_blocked_user_indicator_text">Vous ne pouvez pas envoyer de messages à cet utilisateur à moins que vous ne le débloquiez.</string>
 
     <string name="conversation_screen_conversation_item_tag" translatable="false">Conversation Screen Conversation Item Tag</string>
     <string name="conversation_screen_empty_conversation_item_tag" translatable="false">Conversation Screen Empty Conversation Item Tag</string>
@@ -29,7 +28,6 @@
     <string name="conversation_screen_read_conversation_item_tag" translatable="false">Conversation Screen Read Conversation Item Tag</string>
     <string name="conversation_screen_unread_conversation_item_tag" translatable="false">Conversation Screen Unread Conversation Item Tag</string>
     <string name="conversation_screen_create_conversation_button_tag" translatable="false">Conversation Screen Create Conversation Button Tag</string>
-
     <string name="chat_screen_lazy_column_item_tag" translatable="false">Chat Screen Lazy Column Item Tag</string>
     <string name="chat_screen_send_message_item_tag" translatable="false">Chat Screen Send Message Item Tag</string>
     <string name="chat_screen_receive_message_item_tag" translatable="false">Chat Screen Receive Message Item Tag</string>
@@ -38,9 +36,4 @@
     <string name="chat_screen_message_input_tag" translatable="false">Chat Screen Message Input Tag</string>
     <string name="chat_screen_send_button_tag" translatable="false">Chat Screen Send Button Tag</string>
     <string name="chat_screen_blocked_user_indicator_tag" translatable="false">Mesage blocked user indicator test tag</string>
-
-    <string name="message_reported">Message signalé</string>
-    <string name="chat_blocked_user_indicator_text">Vous ne pouvez pas envoyer de messages à cet utilisateur à moins que vous ne le débloquiez.</string>
-    <string name="delete_chat_dialog_title">Supprimer le chat</string>
-    <string name="delete_chat_dialog_message">Voulez-vous supprimer définitivement le chat ?</string>
 </resources>

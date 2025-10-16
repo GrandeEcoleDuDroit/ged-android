@@ -10,7 +10,8 @@ data class User(
     val email: String,
     val schoolLevel: String,
     val isMember: Boolean = false,
-    val profilePictureUrl: String? = null
+    val profilePictureUrl: String? = null,
+    val isDeleted: Boolean = false
 ) {
     val fullName: String = "$firstName $lastName"
 }

@@ -28,7 +28,11 @@ internal class SendUnsentConversationWorker (
 
                     ConversationState.DELETING -> {
                         conversation.deleteTime?.let {
-                            conversationRepository.deleteConversation(conversation, userId, it)
+                            conversationRepository.deleteConversation(
+                                conversation.id,
+                                userId,
+                                it
+                            )
                             messageRepository.deleteLocalMessages(conversation.id)
                         }
                     }

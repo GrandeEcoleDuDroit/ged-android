@@ -10,7 +10,8 @@ val userFixture = User(
     "pierre.dupont@universite-paris-saclay.fr",
     "GED 1",
     true,
-    "https://i-mom.unimedias.fr/2020/09/16/dragon-ball-songoku.jpg"
+    "https://i-mom.unimedias.fr/2020/09/16/dragon-ball-songoku.jpg",
+    false
 )
 
 val userFixture2 = User(
@@ -20,7 +21,8 @@ val userFixture2 = User(
     "alain.robert@universite-paris-saclay.fr",
     "GED 3",
     false,
-    "https://avatarfiles.alphacoders.com/330/330775.png"
+    "https://avatarfiles.alphacoders.com/330/330775.png",
+    false
 )
 
 val usersFixture = listOf(
@@ -61,6 +63,6 @@ val usersFixture = listOf(
         firstName = "Charles",
         lastName = "Darwin",
         email = "charles@email.com"
-    ),
+    )
 )
 val fcmTokenFixture = FcmToken(userFixture.id, "token")

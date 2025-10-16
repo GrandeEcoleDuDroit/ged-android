@@ -21,7 +21,7 @@ class ListenBlockedUserEvents(
                 when (event) {
                     is BlockUserEvent.Block -> {
                         listenRemoteMessagesUseCase.stop(event.userId)
-                        announcementRepository.deleteLocalUserAnnouncements(event.userId)
+                        announcementRepository.deleteLocalAnnouncements(event.userId)
                     }
 
                     is BlockUserEvent.Unblock -> {

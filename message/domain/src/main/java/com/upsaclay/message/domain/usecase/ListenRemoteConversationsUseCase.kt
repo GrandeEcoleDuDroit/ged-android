@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class ListenRemoteConversationsUseCase(
     private val userRepository: UserRepository,

@@ -20,20 +20,17 @@ import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
+import com.upsaclay.common.presentation.components.CriticalDialog
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.PullToRefreshComponent
 import com.upsaclay.common.presentation.components.ReportBottomSheet
-import com.upsaclay.common.presentation.components.SensibleActionDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
-import com.upsaclay.common.utils.Tablets
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.announcementsFixture
 import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.domain.entity.AnnouncementReport
-import com.upsaclay.news.domain.entity.AnnouncementState
 import com.upsaclay.news.presentation.announcement.components.AnnouncementBottomSheet
-import com.upsaclay.news.presentation.announcement.components.ErrorAnnouncementBottomSheet
 import com.upsaclay.news.presentation.news.components.NewsScaffold
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -43,7 +40,7 @@ fun NewsDestination(
     onAnnouncementClick: (String) -> Unit,
     onCreateAnnouncementClick: () -> Unit,
     onEditAnnouncementClick: (Announcement) -> Unit,
-    onSeeAllAnnouncementClick: () -> Unit,
+    onSeeAllAnnouncementsClick: () -> Unit,
     onProfilePictureClick: () -> Unit,
     bottomBar: @Composable () -> Unit,
     viewModel: NewsViewModel = koinViewModel()
@@ -84,7 +81,7 @@ fun NewsDestination(
                 viewModel.getAnnouncement(it)?.let(onEditAnnouncementClick)
             },
             onDeleteAnnouncementClick = viewModel::deleteAnnouncement,
-            onSeeAllAnnouncementClick = onSeeAllAnnouncementClick,
+            onSeeAllAnnouncementsClick = onSeeAllAnnouncementsClick,
             onReportAnnouncementClick = viewModel::reportAnnouncement
         )
     }
@@ -106,23 +103,22 @@ private fun NewsScreen(
     onResendAnnouncementClick: (Announcement) -> Unit,
     onEditAnnouncementClick: (String) -> Unit,
     onDeleteAnnouncementClick: (Announcement) -> Unit,
-    onSeeAllAnnouncementClick: () -> Unit,
+    onSeeAllAnnouncementsClick: () -> Unit,
     onReportAnnouncementClick: (AnnouncementReport) -> Unit
 ) {
     var showAnnouncementBottomSheet by remember { mutableStateOf(false) }
     var showDeleteAnnouncementDialog by remember { mutableStateOf(false) }
-    var announcementClicked by remember { mutableStateOf<Announcement?>(null) }
+    var clickedAnnouncement by remember { mutableStateOf<Announcement?>(null) }
     var showAnnouncementReportBottomSheet by remember { mutableStateOf(false) }
 
     if (showDeleteAnnouncementDialog) {
-        SensibleActionDialog(
+        CriticalDialog(
             modifier = Modifier.testTag(stringResource(id = R.string.read_screen_delete_dialog_tag)),
-            title = stringResource(id = R.string.delete_announcement_dialog_title),
-            text = stringResource(id = R.string.delete_announcement_dialog_text),
+            text = stringResource(id = R.string.delete_announcement_dialog_message),
             confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
             onConfirm = {
                 showDeleteAnnouncementDialog = false
-                announcementClicked?.let(onDeleteAnnouncementClick)
+                clickedAnnouncement?.let(onDeleteAnnouncementClick)
             },
             onCancel = { showDeleteAnnouncementDialog = false }
         )
@@ -151,12 +147,12 @@ private fun NewsScreen(
                             announcements = it,
                             onAnnouncementClick = onAnnouncementClick,
                             onUncreatedAnnouncementClick = { announcement ->
-                                announcementClicked = announcement
+                                clickedAnnouncement = announcement
                                 showAnnouncementBottomSheet = true
                             },
-                            onSeeAllAnnouncementClick = onSeeAllAnnouncementClick,
+                            onSeeAllAnnouncementsClick = onSeeAllAnnouncementsClick,
                             onAnnouncementOptionClick = { announcement ->
-                                announcementClicked = announcement
+                                clickedAnnouncement = announcement
                                 showAnnouncementBottomSheet = true
                             }
                         )
@@ -165,41 +161,28 @@ private fun NewsScreen(
             }
 
             if (showAnnouncementBottomSheet) {
-                announcementClicked?.let { announcement ->
-                    when (announcement.state) {
-                        AnnouncementState.ERROR -> {
-                            ErrorAnnouncementBottomSheet(
-                                onResendClick = {
-                                    showAnnouncementBottomSheet = false
-                                    onResendAnnouncementClick(announcement)
-                                },
-                                onDeleteClick = {
-                                    showAnnouncementBottomSheet = false
-                                    onDeleteAnnouncementClick(announcement)
-                                },
-                                onDismiss = { showAnnouncementBottomSheet = false }
-                            )
-                        }
-
-                        else -> {
-                            AnnouncementBottomSheet(
-                                isEditable = user.isMember && announcement.author.id == user.id,
-                                onEditClick = {
-                                    showAnnouncementBottomSheet = false
-                                    announcementClicked?.id?.let(onEditAnnouncementClick)
-                                },
-                                onReportClick = {
-                                    showAnnouncementBottomSheet = false
-                                    showAnnouncementReportBottomSheet = true
-                                },
-                                onDeleteClick = {
-                                    showAnnouncementBottomSheet = false
-                                    showDeleteAnnouncementDialog = true
-                                },
-                                onDismiss = { showAnnouncementBottomSheet = false }
-                            )
-                        }
-                    }
+                clickedAnnouncement?.let { announcement ->
+                    AnnouncementBottomSheet(
+                        announcement = announcement,
+                        isEditable = user.isMember && announcement.author.id == user.id,
+                        onEditClick = {
+                            showAnnouncementBottomSheet = false
+                            clickedAnnouncement?.id?.let(onEditAnnouncementClick)
+                        },
+                        onResendClick = {
+                            showAnnouncementBottomSheet = false
+                            onResendAnnouncementClick(announcement)
+                        },
+                        onReportClick = {
+                            showAnnouncementBottomSheet = false
+                            showAnnouncementReportBottomSheet = true
+                        },
+                        onDeleteClick = {
+                            showAnnouncementBottomSheet = false
+                            showDeleteAnnouncementDialog = true
+                        },
+                        onDismiss = { showAnnouncementBottomSheet = false }
+                    )
                 }
             }
 
@@ -210,7 +193,7 @@ private fun NewsScreen(
                     onReportClick = { reason ->
                         showAnnouncementReportBottomSheet = false
 
-                        announcementClicked?.let { announcement ->
+                        clickedAnnouncement?.let { announcement ->
                             onReportAnnouncementClick(
                                 AnnouncementReport(
                                     announcementId = announcement.id,
@@ -256,7 +239,7 @@ private fun NewsScreenPreview() {
             onEditAnnouncementClick = {},
             onDeleteAnnouncementClick = {},
             onCreateAnnouncementClick = {},
-            onSeeAllAnnouncementClick = {},
+            onSeeAllAnnouncementsClick = {},
             onReportAnnouncementClick = {}
         )
     }

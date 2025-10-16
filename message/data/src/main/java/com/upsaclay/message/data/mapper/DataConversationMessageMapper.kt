@@ -10,7 +10,6 @@ import com.upsaclay.message.domain.entity.ConversationState
 import com.upsaclay.message.domain.entity.Message
 import com.upsaclay.message.domain.entity.MessageState
 
-
 fun LocalConversationMessage.toConversationMessage() = ConversationMessage(
     conversation = this.toConversation(),
     lastMessage = this.toMessage()
@@ -25,7 +24,8 @@ private fun LocalConversationMessage.toConversation() = Conversation(
         email = interlocutorEmail,
         schoolLevel = interlocutorSchoolLevel,
         isMember = interlocutorIsMember,
-        profilePictureUrl = UrlUtils.formatProfilePictureUrl(interlocutorProfilePictureFileName)
+        profilePictureUrl = UrlUtils.formatOracleBucketUrl(interlocutorProfilePictureFileName),
+        isDeleted = interlocutorIsDeleted
     ),
     createdAt = createdAt.toLocalDateTimeUTC(),
     state = ConversationState.valueOf(conversationState),

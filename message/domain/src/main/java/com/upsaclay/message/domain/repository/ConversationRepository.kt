@@ -23,7 +23,7 @@ interface ConversationRepository {
 
     suspend fun upsertLocalConversation(conversation: Conversation)
 
-    suspend fun deleteConversation(conversation: Conversation, currentUserId: String, deleteTime: LocalDateTime)
+    suspend fun deleteConversation(conversationId: String, currentUserId: String, deleteTime: LocalDateTime)
 
     suspend fun deleteLocalConversations()
 }

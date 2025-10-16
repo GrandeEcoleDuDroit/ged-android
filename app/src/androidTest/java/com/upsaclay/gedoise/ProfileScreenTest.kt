@@ -39,7 +39,8 @@ class ProfileScreenTest {
                 onBackClick = {},
                 onLogoutClick = profileViewModel::logout,
                 onAccountClick = {},
-                onPrivacyClick = {}
+                onPrivacyClick = {},
+                onAccountInformationClick = {}
             )
         }
 

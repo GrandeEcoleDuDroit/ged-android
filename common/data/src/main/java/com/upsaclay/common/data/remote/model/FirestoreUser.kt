@@ -34,5 +34,9 @@ internal data class FirestoreUser(
 
     @get:PropertyName(UserField.Firestore.PROFILE_PICTURE_FILE_NAME)
     @set:PropertyName(UserField.Firestore.PROFILE_PICTURE_FILE_NAME)
-    var profilePictureFileName: String? = null
+    var profilePictureFileName: String? = null,
+
+    @get:PropertyName(UserField.Firestore.IS_DELETED)
+    @set:PropertyName(UserField.Firestore.IS_DELETED)
+    var isDeleted: Boolean = false
 )

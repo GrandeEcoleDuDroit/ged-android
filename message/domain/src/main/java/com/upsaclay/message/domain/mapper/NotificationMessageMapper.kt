@@ -90,7 +90,8 @@ private fun User.toInterlocutor() = RemoteNotificationMessage.Conversation.Inter
     email = email,
     schoolLevel = schoolLevel,
     isMember = isMember,
-    profilePictureFileName = UrlUtils.getFileNameFromUrl(profilePictureUrl)
+    profilePictureFileName = UrlUtils.extractFileName(profilePictureUrl),
+    isDeleted = isDeleted
 )
 
 private fun RemoteNotificationMessage.Conversation.Interlocutor.toUser() = User(
@@ -100,5 +101,6 @@ private fun RemoteNotificationMessage.Conversation.Interlocutor.toUser() = User(
     email = email,
     schoolLevel = schoolLevel,
     isMember = isMember,
-    profilePictureUrl = UrlUtils.formatProfilePictureUrl(profilePictureFileName)
+    profilePictureUrl = UrlUtils.formatOracleBucketUrl(profilePictureFileName),
+    isDeleted = isDeleted
 )

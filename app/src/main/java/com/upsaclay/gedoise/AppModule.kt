@@ -16,6 +16,7 @@ import com.upsaclay.gedoise.data.GedoiseDatabase
 import com.upsaclay.gedoise.data.repository.RouteRepositoryImpl
 import com.upsaclay.gedoise.data.repository.TokenProviderImpl
 import com.upsaclay.gedoise.domain.usecase.ClearDataUseCase
+import com.upsaclay.gedoise.domain.usecase.DeleteAccountUseCase
 import com.upsaclay.gedoise.domain.usecase.FcmTokenUseCase
 import com.upsaclay.gedoise.domain.usecase.ListenBlockedUserEvents
 import com.upsaclay.gedoise.domain.usecase.ListenDataUseCase
@@ -23,7 +24,8 @@ import com.upsaclay.gedoise.domain.usecase.ListenRemoteUserUseCase
 import com.upsaclay.gedoise.domain.usecase.SynchronizeDataUseCase
 import com.upsaclay.gedoise.presentation.navigation.NavigationViewModel
 import com.upsaclay.gedoise.presentation.profile.ProfileViewModel
-import com.upsaclay.gedoise.presentation.profile.account.AccountViewModel
+import com.upsaclay.gedoise.presentation.profile.account.deleteaccount.DeleteAccountViewModel
+import com.upsaclay.gedoise.presentation.profile.accountinformation.AccountInformationViewModel
 import com.upsaclay.gedoise.presentation.profile.blockedusers.BlockedUsersViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -83,13 +85,16 @@ val appModule = module {
 
     viewModelOf(::NavigationViewModel)
     viewModelOf(::ProfileViewModel)
-    viewModelOf(::AccountViewModel)
+    viewModelOf(::AccountInformationViewModel)
     viewModelOf(::MainViewModel)
     viewModelOf(::BlockedUsersViewModel)
+    viewModelOf(::DeleteAccountViewModel)
 
     singleOf(::ClearDataUseCase)
+    singleOf(::DeleteAccountUseCase)
     singleOf(::ListenDataUseCase)
     singleOf(::SynchronizeDataUseCase)
+    singleOf(::DeleteAccountUseCase)
 
     single {
         FcmTokenUseCase(

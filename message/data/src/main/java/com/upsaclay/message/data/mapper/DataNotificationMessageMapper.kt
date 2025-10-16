@@ -22,12 +22,13 @@ fun NotificationMessage.toLocal() = LocalNotificationMessage(
     interlocutorEmail = conversation.interlocutor.email,
     interlocutorSchoolLevel = conversation.interlocutor.schoolLevel,
     interlocutorIsMember = conversation.interlocutor.isMember,
-    interlocutorProfilePictureFileName = UrlUtils.getFileNameFromUrl(conversation.interlocutor.profilePictureUrl),
+    interlocutorProfilePictureFileName = UrlUtils.extractFileName(conversation.interlocutor.profilePictureUrl),
+    interlocutorIsDeleted = conversation.interlocutor.isDeleted,
     createdAt = conversation.createdAt.toEpochMilliUTC(),
     conversationState = conversation.state.name,
     conversationDeleteTime = conversation.deleteTime?.toEpochMilliUTC(),
     content = messageContent.content,
-    messageTimestamp = messageContent.date,
+    messageTimestamp = messageContent.date
 )
 
 private fun LocalNotificationMessage.toConversation() = Conversation(
@@ -39,7 +40,8 @@ private fun LocalNotificationMessage.toConversation() = Conversation(
         email = interlocutorEmail,
         schoolLevel = interlocutorSchoolLevel,
         isMember = interlocutorIsMember,
-        profilePictureUrl = UrlUtils.formatProfilePictureUrl(interlocutorProfilePictureFileName)
+        profilePictureUrl = UrlUtils.formatOracleBucketUrl(interlocutorProfilePictureFileName),
+        isDeleted = interlocutorIsDeleted
     ),
     createdAt = createdAt.toLocalDateTimeUTC(),
     state = ConversationState.valueOf(conversationState),

@@ -2,6 +2,7 @@ package com.upsaclay.message.presentation.conversation.create
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.upsaclay.common.domain.entity.CurrentUserNotFoundException
 import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.BlockedUserRepository
@@ -38,7 +39,11 @@ class CreateConversationViewModel(
             val blockedUserIds = blockedUserRepository.getLocalBlockedUserIds()
             try {
                 userRepository.getUsers()
-                    .filter { it.id != userRepository.currentUser?.id && it.id !in blockedUserIds }
+                    .filter {
+                        it.id != userRepository.currentUser?.id
+                                && !it.isDeleted
+                                && it.id !in blockedUserIds
+                    }
                     .sortedBy { it.fullName }
                     .also { users ->
                         defaultUsers = users
@@ -70,12 +75,7 @@ class CreateConversationViewModel(
         _uiState.update {
             it.copy(query = userName)
         }
-
-        getFilteredUsers(userName).also { users ->
-            _uiState.update {
-                it.copy(users = users)
-            }
-        }
+        filterUserByName(userName)
     }
 
     fun resetQuery() {
@@ -87,19 +87,24 @@ class CreateConversationViewModel(
         }
     }
 
-    private fun getFilteredUsers(query: String): List<User> {
-        return query.takeIf { it.isNotBlank() }?.let {
+    private fun filterUserByName(query: String) {
+        val users = if (query.isNotBlank()) {
             defaultUsers.filter { user ->
                 user.firstName.contains(query, ignoreCase = true) ||
                         user.lastName.contains(query, ignoreCase = true)
             }
-        } ?: defaultUsers
+        } else {
+            defaultUsers
+        }
+        _uiState.update {
+            it.copy(users = users)
+        }
     }
 
     private fun mapErrorMessage(e: Throwable): Int {
         return mapNetworkErrorMessage(e) {
             when (e) {
-                is IllegalArgumentException -> com.upsaclay.common.R.string.current_user_not_found_error
+                is CurrentUserNotFoundException -> com.upsaclay.common.R.string.current_user_not_found_error
                 else -> com.upsaclay.common.R.string.unknown_error
             }
         }

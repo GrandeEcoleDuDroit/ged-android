@@ -11,6 +11,7 @@ import com.upsaclay.message.data.model.ConversationField.Local.CONVERSATION_STAT
 import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_EMAIL
 import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_FIRST_NAME
 import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_ID
+import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_IS_DELETED
 import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_IS_MEMBER
 import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_LAST_NAME
 import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_PROFILE_PICTURE_FILE_NAME
@@ -32,23 +33,24 @@ interface ConversationMessageDao {
     @Transaction
     @Query("""
         SELECT C.$CONVERSATION_CONVERSATION_ID,
-           C.$INTERLOCUTOR_ID, 
-           C.$INTERLOCUTOR_FIRST_NAME,
-           C.$INTERLOCUTOR_LAST_NAME, 
-           C.$INTERLOCUTOR_EMAIL, 
-           C.$INTERLOCUTOR_SCHOOL_LEVEL,
-           C.$INTERLOCUTOR_IS_MEMBER,
-           C.$INTERLOCUTOR_PROFILE_PICTURE_FILE_NAME,
-           C.$CREATED_AT,
-           C.$CONVERSATION_STATE, 
-           C.$CONVERSATION_DELETE_TIME,
-           M.$MESSAGE_ID, 
-           M.$SENDER_ID,
-           M.$RECIPIENT_ID,
-           M.$CONTENT,
-           M.$TIMESTAMP,
-           M.$SEEN, 
-           M.$MESSAGE_STATE
+            C.$INTERLOCUTOR_ID, 
+            C.$INTERLOCUTOR_FIRST_NAME,
+            C.$INTERLOCUTOR_LAST_NAME, 
+            C.$INTERLOCUTOR_EMAIL, 
+            C.$INTERLOCUTOR_SCHOOL_LEVEL,
+            C.$INTERLOCUTOR_IS_MEMBER,
+            C.$INTERLOCUTOR_PROFILE_PICTURE_FILE_NAME,
+            C.$INTERLOCUTOR_IS_DELETED,
+            C.$CREATED_AT,
+            C.$CONVERSATION_STATE, 
+            C.$CONVERSATION_DELETE_TIME,
+            M.$MESSAGE_ID, 
+            M.$SENDER_ID,
+            M.$RECIPIENT_ID,
+            M.$CONTENT,
+            M.$TIMESTAMP,
+            M.$SEEN, 
+            M.$MESSAGE_STATE
         FROM $CONVERSATIONS_TABLE_NAME C
         JOIN $MESSAGES_TABLE_NAME M ON C.$CONVERSATION_CONVERSATION_ID = M.$MESSAGE_CONVERSATION_ID
         JOIN (

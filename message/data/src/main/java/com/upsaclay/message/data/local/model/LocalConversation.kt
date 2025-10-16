@@ -11,6 +11,7 @@ import com.upsaclay.message.data.model.ConversationField.Local.CONVERSATION_STAT
 import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_EMAIL
 import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_FIRST_NAME
 import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_ID
+import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_IS_DELETED
 import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_IS_MEMBER
 import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_LAST_NAME
 import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_PROFILE_PICTURE_FILE_NAME
@@ -35,6 +36,8 @@ data class LocalConversation(
     val interlocutorIsMember: Boolean,
     @ColumnInfo(name = INTERLOCUTOR_PROFILE_PICTURE_FILE_NAME)
     val interlocutorProfilePictureFileName: String?,
+    @ColumnInfo(name = INTERLOCUTOR_IS_DELETED)
+    val interlocutorIsDeleted: Boolean,
     @ColumnInfo(name = CREATED_AT)
     val createdAt: Long,
     @ColumnInfo(name = CONVERSATION_STATE)

@@ -31,6 +31,8 @@ fun ChatTopBar(
     onBackClick: () -> Unit,
     onInterlocutorClick: () -> Unit
 ) {
+    val interlocutorName = if (!interlocutor.isDeleted) interlocutor.fullName else stringResource(id = com.upsaclay.common.R.string.deleted_user)
+
     TopAppBar(
         title = {
             Row(
@@ -45,7 +47,10 @@ fun ChatTopBar(
                     scale = 0.4f
                 )
 
-                Text(text = interlocutor.fullName, style = MaterialTheme.typography.titleMedium)
+                Text(
+                    text = interlocutorName,
+                    style = MaterialTheme.typography.titleMedium
+                )
             }
         },
         navigationIcon = {
