@@ -135,83 +135,82 @@ private fun NewsScreen(
         snackbarHostState = snackbarHostState,
         bottomBar = bottomBar
     ) { paddingValues ->
-        Box(modifier = Modifier.padding(paddingValues)) {
-            PullToRefreshComponent(
-                onRefresh = onRefresh,
-                isRefreshing = refreshing
-            ) {
-                Column {
-                    announcements?.let {
-                        RecentAnnouncementSection(
-                            modifier = Modifier.weight(1f),
-                            announcements = it,
-                            onAnnouncementClick = onAnnouncementClick,
-                            onUncreatedAnnouncementClick = { announcement ->
-                                clickedAnnouncement = announcement
-                                showAnnouncementBottomSheet = true
-                            },
-                            onSeeAllAnnouncementsClick = onSeeAllAnnouncementsClick,
-                            onAnnouncementOptionClick = { announcement ->
-                                clickedAnnouncement = announcement
-                                showAnnouncementBottomSheet = true
-                            }
-                        )
-                    }
-                }
-            }
-
-            if (showAnnouncementBottomSheet) {
-                clickedAnnouncement?.let { announcement ->
-                    AnnouncementBottomSheet(
-                        announcement = announcement,
-                        isEditable = user.isMember && announcement.author.id == user.id,
-                        onEditClick = {
-                            showAnnouncementBottomSheet = false
-                            clickedAnnouncement?.id?.let(onEditAnnouncementClick)
+        PullToRefreshComponent(
+            modifier = Modifier.padding(paddingValues),
+            onRefresh = onRefresh,
+            isRefreshing = refreshing
+        ) {
+            Column {
+                announcements?.let {
+                    RecentAnnouncementSection(
+                        modifier = Modifier.weight(1f),
+                        announcements = it,
+                        onAnnouncementClick = onAnnouncementClick,
+                        onUncreatedAnnouncementClick = { announcement ->
+                            clickedAnnouncement = announcement
+                            showAnnouncementBottomSheet = true
                         },
-                        onResendClick = {
-                            showAnnouncementBottomSheet = false
-                            onResendAnnouncementClick(announcement)
-                        },
-                        onReportClick = {
-                            showAnnouncementBottomSheet = false
-                            showAnnouncementReportBottomSheet = true
-                        },
-                        onDeleteClick = {
-                            showAnnouncementBottomSheet = false
-                            showDeleteAnnouncementDialog = true
-                        },
-                        onDismiss = { showAnnouncementBottomSheet = false }
+                        onSeeAllAnnouncementsClick = onSeeAllAnnouncementsClick,
+                        onAnnouncementOptionClick = { announcement ->
+                            clickedAnnouncement = announcement
+                            showAnnouncementBottomSheet = true
+                        }
                     )
                 }
             }
+        }
 
-            if (showAnnouncementReportBottomSheet) {
-                ReportBottomSheet(
-                    items = AnnouncementReport.Reason.entries,
-                    onDismiss = { showAnnouncementReportBottomSheet = false },
-                    onReportClick = { reason ->
-                        showAnnouncementReportBottomSheet = false
-
-                        clickedAnnouncement?.let { announcement ->
-                            onReportAnnouncementClick(
-                                AnnouncementReport(
-                                    announcementId = announcement.id,
-                                    userInfo = AnnouncementReport.UserInfo(
-                                        fullName = user.fullName,
-                                        email = user.email
-                                    ),
-                                    authorInfo = AnnouncementReport.UserInfo(
-                                        fullName = announcement.author.fullName,
-                                        email = announcement.author.email
-                                    ),
-                                    reason = reason,
-                                )
-                            )
-                        }
-                    }
+        if (showAnnouncementBottomSheet) {
+            clickedAnnouncement?.let { announcement ->
+                AnnouncementBottomSheet(
+                    announcement = announcement,
+                    isEditable = user.isMember && announcement.author.id == user.id,
+                    onEditClick = {
+                        showAnnouncementBottomSheet = false
+                        clickedAnnouncement?.id?.let(onEditAnnouncementClick)
+                    },
+                    onResendClick = {
+                        showAnnouncementBottomSheet = false
+                        onResendAnnouncementClick(announcement)
+                    },
+                    onReportClick = {
+                        showAnnouncementBottomSheet = false
+                        showAnnouncementReportBottomSheet = true
+                    },
+                    onDeleteClick = {
+                        showAnnouncementBottomSheet = false
+                        showDeleteAnnouncementDialog = true
+                    },
+                    onDismiss = { showAnnouncementBottomSheet = false }
                 )
             }
+        }
+
+        if (showAnnouncementReportBottomSheet) {
+            ReportBottomSheet(
+                items = AnnouncementReport.Reason.entries,
+                onDismiss = { showAnnouncementReportBottomSheet = false },
+                onReportClick = { reason ->
+                    showAnnouncementReportBottomSheet = false
+
+                    clickedAnnouncement?.let { announcement ->
+                        onReportAnnouncementClick(
+                            AnnouncementReport(
+                                announcementId = announcement.id,
+                                userInfo = AnnouncementReport.UserInfo(
+                                    fullName = user.fullName,
+                                    email = user.email
+                                ),
+                                authorInfo = AnnouncementReport.UserInfo(
+                                    fullName = announcement.author.fullName,
+                                    email = announcement.author.email
+                                ),
+                                reason = reason,
+                            )
+                        )
+                    }
+                }
+            )
         }
     }
 }

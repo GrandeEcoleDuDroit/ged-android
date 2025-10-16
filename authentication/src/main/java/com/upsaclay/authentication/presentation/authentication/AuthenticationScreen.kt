@@ -188,7 +188,6 @@ private fun HeaderSection() {
 
         Text(
             text = stringResource(id = R.string.presentation_text),
-            style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onBackground
         )
