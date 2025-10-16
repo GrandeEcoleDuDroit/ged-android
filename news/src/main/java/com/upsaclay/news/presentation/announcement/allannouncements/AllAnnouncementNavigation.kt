@@ -8,19 +8,19 @@ import com.upsaclay.common.domain.entity.User
 import com.upsaclay.news.domain.entity.Announcement
 import kotlinx.serialization.Serializable
 
-@Serializable data object AllAnnouncementRoute: Route
+@Serializable data object AllAnnouncementsRoute: Route
 
-fun NavController.navigateToAllAnnouncement() {
-    navigate(route = AllAnnouncementRoute)
+fun NavController.navigateToAllAnnouncements() {
+    navigate(route = AllAnnouncementsRoute)
 }
 
-fun NavGraphBuilder.allAnnouncementScreen(
+fun NavGraphBuilder.allAnnouncementsScreen(
     onBackClick: () -> Unit,
     onAnnouncementClick: (String) -> Unit,
     onEditAnnouncementClick: (Announcement) -> Unit,
     onAuthorClick: (User) -> Unit
 ) {
-    composable<AllAnnouncementRoute> {
+    composable<AllAnnouncementsRoute> {
         AllAnnouncementsDestination(
             onBackClick = onBackClick,
             onEditAnnouncementClick = onEditAnnouncementClick,

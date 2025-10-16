@@ -35,4 +35,9 @@ internal class AuthenticationRepositoryImpl(
     override suspend fun setAuthenticated(isAuthenticated: Boolean) {
         authenticationLocalDataSource.setAuthenticationState(isAuthenticated)
     }
+
+    override suspend fun deleteAuthUser() {
+        firebaseAuthenticationRepository.deleteAuthUser()
+        setAuthenticated(false)
+    }
 }

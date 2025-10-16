@@ -9,6 +9,7 @@ import com.upsaclay.message.domain.messageFixture
 import com.upsaclay.message.domain.messagesFixture
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
+import com.upsaclay.message.domain.usecase.DeleteConversationUseCase
 import com.upsaclay.message.domain.usecase.NotificationMessageUseCase
 import com.upsaclay.message.domain.usecase.SendMessageUseCase
 import com.upsaclay.message.notification.NotificationMessageManager
@@ -19,13 +20,9 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.advanceUntilIdle
-import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.Before
 import org.junit.Test
@@ -40,9 +37,11 @@ class ChatViewModelTest {
     private val sendMessageUseCase: SendMessageUseCase = mockk()
     private val notificationMessageUseCase: NotificationMessageUseCase = mockk()
     private val notificationMessageManager: NotificationMessageManager = mockk()
+    private val deleteConversationUseCase: DeleteConversationUseCase = mockk()
 
     private lateinit var chatViewModel: ChatViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
+    private val blockedUserId = "blockedUserId"
 
     @Before
     fun setUp() {
@@ -55,6 +54,7 @@ class ChatViewModelTest {
         every { messageRepository.getLastMessageFlow(any()) } returns flowOf(messageFixture)
         every { sendMessageUseCase(any(), any(), any()) } returns Unit
         every { blockedUserRepository.blockedUserIds } returns flowOf(emptySet())
+        every { deleteConversationUseCase(any(), any()) } returns Unit
         coEvery { messageRepository.updateSeenMessages(any(), any()) } returns Unit
         coEvery { notificationMessageManager.clearNotifications(any()) } returns Unit
         coEvery { notificationMessageUseCase.sendNotification(any()) } returns Unit
@@ -67,7 +67,8 @@ class ChatViewModelTest {
             messageRepository = messageRepository,
             sendMessageUseCase = sendMessageUseCase,
             notificationMessageManager = notificationMessageManager,
-            blockedUserRepository = blockedUserRepository
+            blockedUserRepository = blockedUserRepository,
+            deleteConversationUseCase = deleteConversationUseCase
         )
     }
 
@@ -110,7 +111,6 @@ class ChatViewModelTest {
     @Test
     fun unblockUser_should_unblock_user() {
         // Given
-        val blockedUserId = "user123"
         coEvery { blockedUserRepository.unblockUser(userFixture.id, blockedUserId) } returns Unit
 
         // When

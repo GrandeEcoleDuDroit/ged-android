@@ -1,7 +1,7 @@
 package com.upsaclay.common.domain.usecase
 
 import android.net.Uri
-import com.upsaclay.common.domain.UrlUtils.getFileNameFromUrl
+import com.upsaclay.common.domain.UrlUtils.extractFileName
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.FileRepository
 import com.upsaclay.common.domain.repository.ImageRepository
@@ -25,7 +25,7 @@ class UpdateProfilePictureUseCase(
     }
 
     private suspend fun deletePreviousProfilePicture(userProfilePictureUrl: String) {
-        getFileNameFromUrl(userProfilePictureUrl)
+        extractFileName(userProfilePictureUrl)
             ?.let { imageRepository.deleteImage(it) }
     }
 

@@ -31,9 +31,9 @@ import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture2
 import com.upsaclay.common.presentation.components.BackTopBar
+import com.upsaclay.common.presentation.components.CriticalDialog
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.ReportBottomSheet
-import com.upsaclay.common.presentation.components.SensibleActionDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.news.R
@@ -111,10 +111,9 @@ fun ReadAnnouncementScreen(
     var showReportBottomSheet by remember { mutableStateOf(false) }
 
     if (showDeleteAnnouncementDialog) {
-        SensibleActionDialog(
+        CriticalDialog(
             modifier = Modifier.testTag(stringResource(id = R.string.read_screen_delete_dialog_tag)),
-            title = stringResource(id = R.string.delete_announcement_dialog_title),
-            text = stringResource(id = R.string.delete_announcement_dialog_text),
+            text = stringResource(id = R.string.delete_announcement_dialog_message),
             confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
             onConfirm = {
                 showDeleteAnnouncementDialog = false
@@ -184,11 +183,13 @@ fun ReadAnnouncementScreen(
 
         if (showBottomSheet) {
             AnnouncementBottomSheet(
+                announcement = announcement,
                 isEditable = user.isMember && user.id == announcement.author.id,
                 onEditClick = {
                     showBottomSheet = false
                     onEditAnnouncementClick(announcement)
                 },
+                onResendClick = {},
                 onReportClick = {
                     showBottomSheet = false
                     showReportBottomSheet = true

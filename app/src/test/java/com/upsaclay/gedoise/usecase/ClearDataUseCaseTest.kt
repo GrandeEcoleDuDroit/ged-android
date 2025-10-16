@@ -20,7 +20,7 @@ class ClearDataUseCaseTest {
 
     @Before
     fun setUp() {
-        coEvery { userRepository.deleteCurrentUser() } returns Unit
+        coEvery { userRepository.deleteLocalUser() } returns Unit
         coEvery { conversationRepository.deleteLocalConversations() } returns Unit
         coEvery { messageRepository.deleteLocalMessages() } returns Unit
 
@@ -37,7 +37,7 @@ class ClearDataUseCaseTest {
         useCase()
 
         // Then
-        coVerify { userRepository.deleteCurrentUser() }
+        coVerify { userRepository.deleteLocalUser() }
         coVerify { conversationRepository.deleteLocalConversations() }
         coVerify { messageRepository.deleteLocalMessages() }
     }

@@ -2,6 +2,7 @@ package com.upsaclay.common.data.remote.api
 
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.firestore
 import com.upsaclay.common.data.UserField.Firestore.EMAIL
 import com.upsaclay.common.data.UserField.Firestore.PROFILE_PICTURE_FILE_NAME
@@ -88,6 +89,17 @@ internal class UserApiImpl(
         )
     }
 
+    override suspend fun updateUser(user: User) {
+        mapServerResponseException(
+            message = "Failed to update user with Server",
+            block = { userServerApi.updateUser(user.toServerUser()) }
+        )
+        mapFirebaseException(
+            message = "Failed to update user with Firestore",
+            block = { userFirestoreApi.updateUser(user.toFirestoreUser()) }
+        )
+    }
+
     override suspend fun updateProfilePictureFileName(
         userId: String,
         fileName: String
@@ -115,13 +127,6 @@ internal class UserApiImpl(
         )
     }
 
-    override suspend fun isUserExist(email: String): Boolean {
-        return mapFirebaseException(
-            message = "Failed to check if user exists",
-            block = { userFirestoreApi.isUserExist(email) }
-        )
-    }
-
     override suspend fun reportUser(report: UserReport) {
         mapServerResponseException(
             message = "Failed to report user",
@@ -140,6 +145,9 @@ internal interface UserServerApi {
         @Field(USER_ID) userId: String,
         @Field(USER_PROFILE_PICTURE_FILE_NAME) userProfilePictureFileName: String
     ): Response<ServerResponse>
+
+    @PUT("users/{userId}")
+    suspend fun updateUser(@Body serverUser: ServerUser): Response<ServerResponse>
 
     @DELETE("users/profile-picture-file-name/{userId}")
     suspend fun deleteProfilePictureFileName(@Path("userId") userId: String): Response<ServerResponse>
@@ -206,6 +214,12 @@ internal class UserFirestoreApi {
             .await()
     }
 
+    suspend fun updateUser(firestoreUser: FirestoreUser) {
+        usersCollection.document(firestoreUser.userId)
+            .set(firestoreUser, SetOptions.merge())
+            .await()
+    }
+
     suspend fun updateProfilePictureFileName(userId: String, fileName: String?) {
         usersCollection.document(userId)
             .update(PROFILE_PICTURE_FILE_NAME, fileName)
@@ -217,10 +231,4 @@ internal class UserFirestoreApi {
             .update(PROFILE_PICTURE_FILE_NAME, FieldValue.delete())
             .await()
     }
-
-    suspend fun isUserExist(email: String): Boolean =
-        usersCollection.whereEqualTo(EMAIL, email)
-            .get()
-            .await()
-            .isEmpty.not()
 }

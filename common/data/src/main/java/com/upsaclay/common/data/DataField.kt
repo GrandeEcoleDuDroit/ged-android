@@ -9,6 +9,7 @@ internal object UserField {
         const val SCHOOL_LEVEL = "schoolLevel"
         const val IS_MEMBER = "isMember"
         const val PROFILE_PICTURE_FILE_NAME = "profilePictureFileName"
+        const val IS_DELETED = "isDeleted"
     }
 
     internal object Oracle {
@@ -19,6 +20,7 @@ internal object UserField {
         const val USER_SCHOOL_LEVEL = "USER_SCHOOL_LEVEL"
         const val USER_IS_MEMBER = "USER_IS_MEMBER"
         const val USER_PROFILE_PICTURE_FILE_NAME = "USER_PROFILE_PICTURE_FILE_NAME"
+        const val USER_IS_DELETED = "USER_IS_DELETED"
     }
 
     internal object Firestore {
@@ -30,5 +32,6 @@ internal object UserField {
         const val IS_MEMBER = "isMember"
         const val PROFILE_PICTURE_FILE_NAME = "profilePictureFileName"
         const val FULL_NAME = "fullName"
+        const val IS_DELETED = "isDeleted"
     }
 }

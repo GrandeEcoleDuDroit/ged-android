@@ -4,13 +4,11 @@
     <string name="messages">Messages</string>
     <string name="calendar">Calendar</string>
     <string name="profile">Profile</string>
-
     <string name="home_icon_description">Icon to access the home page</string>
     <string name="calendar_icon_description">Icon to access the calendar</string>
     <string name="forum_icon_description">Icon to access the forum</string>
     <string name="message_icon_description">Icon to access messaging</string>
     <string name="profile_icon_description">Icon to access the profile</string>
-
     <string name="close">Close</string>
     <string name="show">View</string>
     <string name="next">Next</string>
@@ -34,7 +32,6 @@
     <string name="see_all">See all</string>
     <string name="report">Report</string>
     <string name="block">Block</string>
-
     <string name="arrow_back_icon_description">Go back</string>
     <string name="ged_logo_description">Logo of the university La Grande École du Droit</string>
     <string name="profile_picture_description">User\'s profile picture</string>
@@ -43,14 +40,13 @@
     <string name="first_name">First name</string>
     <string name="last_name">Last name</string>
     <string name="email">Email</string>
-    <string name="discard_modification_dialog_text">Discard changes ?</string>
+    <string name="discard_modification_dialog_text">Discard changes?</string>
     <string name="now">Now</string>
     <string name="second_ago_short">%d sec</string>
     <string name="minute_ago_short">%d min</string>
     <string name="hour_ago_short">%d h</string>
     <string name="day_ago_short">%d d</string>
     <string name="week_ago_short">%d w</string>
-
     <string name="minute_ago_medium">%d minutes</string>
     <string name="hour_ago_medium">%d hours</string>
     <string name="day_ago_medium">%d days</string>
@@ -68,14 +64,13 @@
     <string name="timeout_error">The service took too long to respond. Please try again.</string>
     <string name="no_user">No users.</string>
     <string name="no_internet_connection">No internet connection.</string>
-
     <string name="member">Member</string>
     <string name="unblock">Unblock</string>
     <string name="reported_user">User reported</string>
     <string name="blocked_user">User blocked</string>
     <string name="unblocked_user">User unblocked</string>
-    <string name="block_user_dialog_title">Block user</string>
-    <string name="block_user_dialog_message">Do you want to block this user? You will no longer see any of their content.</string>
-    <string name="unblock_user_dialog_title">Unblock user</string>
-    <string name="unblock_user_dialog_message">Do you want unblock this user ?</string>
+    <string name="block_user_dialog_title">Block user?</string>
+    <string name="block_user_dialog_message">You will no longer see any of their content.</string>
+    <string name="unblock_user_dialog_message">Do you want to unblock this user?</string>
+    <string name="deleted_user">Deleted user</string>
 </resources>

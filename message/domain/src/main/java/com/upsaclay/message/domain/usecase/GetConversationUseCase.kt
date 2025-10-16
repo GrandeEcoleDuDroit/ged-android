@@ -1,5 +1,6 @@
 package com.upsaclay.message.domain.usecase
 
+import com.upsaclay.common.domain.entity.CurrentUserNotFoundException
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.message.domain.entity.Conversation
@@ -14,7 +15,7 @@ class GetConversationUseCase(
 ) {
     suspend operator fun invoke(interlocutor: User): Conversation {
         return conversationRepository.getConversation(interlocutor.id) ?: run {
-            val user = requireNotNull(userRepository.currentUser)
+            val user = userRepository.currentUser ?: throw CurrentUserNotFoundException()
             generateNewConversation(user.id, interlocutor)
         }
     }

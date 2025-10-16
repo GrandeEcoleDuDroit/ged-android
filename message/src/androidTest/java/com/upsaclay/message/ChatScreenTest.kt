@@ -27,7 +27,6 @@ class ChatScreenTest {
 
     private val chatViewModel: ChatViewModel = mockk()
     private val uiState = ChatViewModel.ChatUiState(
-        conversation = conversationFixture,
         messageText = "",
         loading = false,
         userBlocked = false,

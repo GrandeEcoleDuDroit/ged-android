@@ -44,7 +44,10 @@ internal fun CompactAnnouncementItem(
             DefaultItem(
                 modifier = modifier
                     .clickable(onClick = onClick)
-                    .padding(dimensionResource(R.dimen.small_medium_padding)),
+                    .padding(
+                        horizontal = dimensionResource(R.dimen.medium_padding),
+                        vertical = dimensionResource(R.dimen.small_medium_padding)
+                    ),
                 announcement = announcement,
                 elapsedTimeValue = elapsedTimeValue,
                 onOptionClick = onOptionClick
@@ -141,7 +144,10 @@ private fun PublishingItem(
     DefaultItem(
         modifier = modifier
             .clickable(onClick = onClick)
-            .padding(dimensionResource(R.dimen.small_medium_padding))
+            .padding(
+                horizontal = dimensionResource(R.dimen.medium_padding),
+                vertical = dimensionResource(R.dimen.small_medium_padding)
+            )
             .alpha(0.5f),
         announcement = announcement,
         elapsedTimeValue = elapsedTimeValue,
@@ -161,9 +167,12 @@ private fun ErrorItem(
         modifier = modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)),
+            .padding(
+                horizontal = dimensionResource(R.dimen.medium_padding),
+                vertical = dimensionResource(R.dimen.small_medium_padding)
+            ),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding))
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.small_padding))
     ) {
         Icon(
             painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_error),

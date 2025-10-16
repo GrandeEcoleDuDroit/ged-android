@@ -1,12 +1,12 @@
 package com.upsaclay.message.data.local.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Update
 import androidx.room.Upsert
 import com.upsaclay.message.data.local.model.LocalConversation
 import com.upsaclay.message.data.model.CONVERSATIONS_TABLE_NAME
+import com.upsaclay.message.data.model.ConversationField.CONVERSATION_ID
 import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_ID
 import kotlinx.coroutines.flow.Flow
 
@@ -30,6 +30,6 @@ interface ConversationDao {
     @Query("DELETE FROM $CONVERSATIONS_TABLE_NAME")
     suspend fun deleteConversations()
 
-    @Delete
-    suspend fun deleteConversation(localConversation: LocalConversation)
+    @Query("DELETE FROM $CONVERSATIONS_TABLE_NAME WHERE $CONVERSATION_ID = :conversationId")
+    suspend fun deleteConversation(conversationId: String)
 }

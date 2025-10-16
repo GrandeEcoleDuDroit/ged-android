@@ -20,7 +20,8 @@ fun Conversation.toLocal() = LocalConversation(
     interlocutorEmail = interlocutor.email,
     interlocutorIsMember = interlocutor.isMember,
     interlocutorSchoolLevel = interlocutor.schoolLevel,
-    interlocutorProfilePictureFileName = UrlUtils.getFileNameFromUrl(interlocutor.profilePictureUrl),
+    interlocutorProfilePictureFileName = UrlUtils.extractFileName(interlocutor.profilePictureUrl),
+    interlocutorIsDeleted = interlocutor.isDeleted,
     createdAt = createdAt.toEpochMilliUTC(),
     conversationState = state.name,
     conversationDeleteTime = deleteTime?.toEpochMilliUTC()
@@ -41,7 +42,8 @@ fun LocalConversation.toConversation(): Conversation {
         email = interlocutorEmail,
         schoolLevel = interlocutorSchoolLevel,
         isMember = interlocutorIsMember,
-        profilePictureUrl = UrlUtils.formatProfilePictureUrl(interlocutorProfilePictureFileName)
+        profilePictureUrl = UrlUtils.formatOracleBucketUrl(interlocutorProfilePictureFileName),
+        isDeleted = interlocutorIsDeleted
     )
 
     return Conversation(
@@ -53,14 +55,13 @@ fun LocalConversation.toConversation(): Conversation {
     )
 }
 
-internal fun RemoteConversation.toConversation(userId: String, interlocutor: User) =
-    Conversation(
-        id = conversationId,
-        interlocutor = interlocutor,
-        state = ConversationState.CREATED,
-        createdAt = createdAt.toLocalDateTime(),
-        deleteTime = deleteTime?.get(userId)?.toLocalDateTime()
-    )
+internal fun RemoteConversation.toConversation(userId: String, interlocutor: User) = Conversation(
+    id = conversationId,
+    interlocutor = interlocutor,
+    state = ConversationState.CREATED,
+    createdAt = createdAt.toLocalDateTime(),
+    deleteTime = deleteTime?.get(userId)?.toLocalDateTime()
+)
 
 internal fun RemoteConversation.toMap(): Map<String, Any> {
     val data = mutableMapOf<String, Any>()

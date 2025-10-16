@@ -4,8 +4,8 @@ import com.upsaclay.common.data.local.LocalUser
 import com.upsaclay.common.data.remote.model.FirestoreUser
 import com.upsaclay.common.data.remote.model.RemoteUserReport
 import com.upsaclay.common.data.remote.model.ServerUser
-import com.upsaclay.common.domain.UrlUtils.formatProfilePictureUrl
-import com.upsaclay.common.domain.UrlUtils.getFileNameFromUrl
+import com.upsaclay.common.domain.UrlUtils.formatOracleBucketUrl
+import com.upsaclay.common.domain.UrlUtils.extractFileName
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.entity.UserReport
 
@@ -16,7 +16,8 @@ internal fun User.toLocal() = LocalUser(
     userEmail = email,
     userSchoolLevel = schoolLevel,
     userIsMember = if (isMember) 1 else 0,
-    userProfilePictureFileName = getFileNameFromUrl(profilePictureUrl)
+    userProfilePictureFileName = extractFileName(profilePictureUrl),
+    userIsDeleted = if (isDeleted) 1 else 0
 )
 
 internal fun User.toServerUser() = ServerUser(
@@ -26,7 +27,8 @@ internal fun User.toServerUser() = ServerUser(
     userEmail = email,
     userSchoolLevel = schoolLevel,
     userIsMember = if (isMember) 1 else 0,
-    userProfilePictureFileName = getFileNameFromUrl(profilePictureUrl)
+    userProfilePictureFileName = extractFileName(profilePictureUrl),
+    userIsDeleted = if (isDeleted) 1 else 0
 )
 
 internal fun User.toFirestoreUser() = FirestoreUser(
@@ -37,7 +39,8 @@ internal fun User.toFirestoreUser() = FirestoreUser(
     email = email,
     schoolLevel = schoolLevel,
     isMember = isMember,
-    profilePictureFileName = getFileNameFromUrl(profilePictureUrl)
+    profilePictureFileName = extractFileName(profilePictureUrl),
+    isDeleted = isDeleted
 )
 
 internal fun LocalUser.toUser() = User(
@@ -47,7 +50,8 @@ internal fun LocalUser.toUser() = User(
     email = userEmail,
     schoolLevel = userSchoolLevel,
     isMember = userIsMember == 1,
-    profilePictureUrl = formatProfilePictureUrl(userProfilePictureFileName)
+    profilePictureUrl = formatOracleBucketUrl(userProfilePictureFileName),
+    isDeleted = userIsDeleted == 1
 )
 
 internal fun FirestoreUser.toUser() = User(
@@ -57,7 +61,8 @@ internal fun FirestoreUser.toUser() = User(
     email = email,
     schoolLevel = schoolLevel,
     isMember = isMember,
-    profilePictureUrl = formatProfilePictureUrl(profilePictureFileName)
+    profilePictureUrl = formatOracleBucketUrl(profilePictureFileName),
+    isDeleted = isDeleted
 )
 
 internal fun UserReport.toRemote() = RemoteUserReport(

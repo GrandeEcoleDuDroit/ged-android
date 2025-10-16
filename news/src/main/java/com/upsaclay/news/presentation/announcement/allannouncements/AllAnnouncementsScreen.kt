@@ -1,6 +1,5 @@
 package com.upsaclay.news.presentation.announcement.allannouncements
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -30,11 +29,11 @@ import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.presentation.components.BackTopBar
+import com.upsaclay.common.presentation.components.CriticalDialog
 import com.upsaclay.common.presentation.components.ListDivider
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.PullToRefreshComponent
 import com.upsaclay.common.presentation.components.ReportBottomSheet
-import com.upsaclay.common.presentation.components.SensibleActionDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.previewText
 import com.upsaclay.common.utils.Phones
@@ -44,7 +43,6 @@ import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.domain.entity.AnnouncementReport
 import com.upsaclay.news.domain.entity.AnnouncementState
 import com.upsaclay.news.presentation.announcement.components.AnnouncementBottomSheet
-import com.upsaclay.news.presentation.announcement.components.ErrorAnnouncementBottomSheet
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -85,8 +83,8 @@ fun AllAnnouncementsDestination(
             loading = uiState.loading,
             snackbarHostState = snackbarHostState,
             onBackClick = onBackClick,
-            onAuthorClick = onAuthorClick,
             onRefresh = viewModel::refreshAnnouncements,
+            onAuthorClick = onAuthorClick,
             onAnnouncementClick = onAnnouncementClick,
             onResendAnnouncementClick = viewModel::resendAnnouncement,
             onEditAnnouncementClick = onEditAnnouncementClick,
@@ -105,8 +103,8 @@ private fun AllAnnouncementsScreen(
     loading: Boolean,
     snackbarHostState: SnackbarHostState = SnackbarHostState(),
     onBackClick: () -> Unit,
-    onAuthorClick: (User) -> Unit,
     onRefresh: () -> Unit,
+    onAuthorClick: (User) -> Unit,
     onAnnouncementClick: (String) -> Unit,
     onResendAnnouncementClick: (Announcement) -> Unit,
     onEditAnnouncementClick: (Announcement) -> Unit,
@@ -114,20 +112,19 @@ private fun AllAnnouncementsScreen(
     onDeleteAnnouncementClick: (Announcement) -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-    var showBottomSheet by remember { mutableStateOf(false) }
+    var showAnnouncementBottomSheet by remember { mutableStateOf(false) }
+    var showAnnouncementReportBottomSheet by remember { mutableStateOf(false) }
     var showDeleteAnnouncementDialog by remember { mutableStateOf(false) }
-    var announcementClicked by remember { mutableStateOf<Announcement?>(null) }
-    var showReportBottomSheet by remember { mutableStateOf(false) }
+    var clickedAnnouncement by remember { mutableStateOf<Announcement?>(null) }
 
     if (showDeleteAnnouncementDialog) {
-        SensibleActionDialog(
+        CriticalDialog(
             modifier = Modifier.testTag(stringResource(id = R.string.read_screen_delete_dialog_tag)),
-            title = stringResource(id = R.string.delete_announcement_dialog_title),
-            text = stringResource(id = R.string.delete_announcement_dialog_text),
+            text = stringResource(id = R.string.delete_announcement_dialog_message),
             confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
             onConfirm = {
                 showDeleteAnnouncementDialog = false
-                announcementClicked?.let(onDeleteAnnouncementClick)
+                clickedAnnouncement?.let(onDeleteAnnouncementClick)
             },
             onCancel = { showDeleteAnnouncementDialog = false }
         )
@@ -151,43 +148,46 @@ private fun AllAnnouncementsScreen(
                 Snackbar(it)
             }
         }
-    ) { paddingValues ->
-        Box(modifier = Modifier.padding(paddingValues)) {
-            PullToRefreshComponent(
-                onRefresh = onRefresh,
-                isRefreshing = refreshing
-            ) {
-                LazyColumn {
-                    if (announcements.isEmpty()) {
-                        item {
-                            Text(
-                                modifier = Modifier.fillMaxWidth(),
-                                text = stringResource(id = R.string.no_announcement),
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = MaterialTheme.colorScheme.previewText,
-                                textAlign = TextAlign.Center
-                            )
-                        }
-                    } else {
-                        itemsIndexed(announcements) { index, announcement ->
+    ) { innerPadding ->
+        PullToRefreshComponent(
+            modifier = Modifier.padding(innerPadding),
+            onRefresh = onRefresh,
+            isRefreshing = refreshing
+        ) {
+            LazyColumn {
+                if (announcements.isEmpty()) {
+                    item {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(id = R.string.no_announcement),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.previewText,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                } else {
+                    itemsIndexed(announcements) { index, announcement ->
+                        ListDivider()
+
+                        ExtendedAnnouncementItem(
+                            announcement = announcement,
+                            onClick = {
+                                if (announcement.state == AnnouncementState.PUBLISHED) {
+                                    onAnnouncementClick(announcement.id)
+                                } else {
+                                    clickedAnnouncement = announcement
+                                    showAnnouncementBottomSheet = true
+                                }
+                            },
+                            onOptionClick = {
+                                clickedAnnouncement = announcement
+                                showAnnouncementBottomSheet = true
+                            },
+                            onAuthorClick = { onAuthorClick(announcement.author) }
+                        )
+
+                        if (index == announcements.lastIndex) {
                             ListDivider()
-
-                            ExtendedAnnouncementItem(
-                                announcement = announcement,
-                                onClick = { onAnnouncementClick(announcement.id) },
-                                onOptionClick = {
-                                    announcementClicked = announcement
-                                    showBottomSheet = true
-                                },
-                                onResendAnnouncementClick = {
-                                    onResendAnnouncementClick(announcement)
-                                },
-                                onAuthorClick = { onAuthorClick(announcement.author) }
-                            )
-
-                            if (index == announcements.lastIndex) {
-                                ListDivider()
-                            }
                         }
                     }
                 }
@@ -195,53 +195,40 @@ private fun AllAnnouncementsScreen(
         }
     }
 
-    if (showBottomSheet) {
-        announcementClicked?.let { announcement ->
-            when (announcement.state) {
-                AnnouncementState.ERROR -> {
-                    ErrorAnnouncementBottomSheet(
-                        onResendClick = {
-                            showBottomSheet = false
-                            onResendAnnouncementClick(announcement)
-                        },
-                        onDeleteClick = {
-                            showBottomSheet = false
-                            onDeleteAnnouncementClick(announcement)
-                        },
-                        onDismiss = { showBottomSheet = false }
-                    )
-                }
-
-                else -> {
-                    AnnouncementBottomSheet(
-                        isEditable = user.isMember && announcement.author.id == user.id,
-                        onEditClick = {
-                            showBottomSheet = false
-                            announcementClicked?.let(onEditAnnouncementClick)
-                        },
-                        onReportClick = {
-                            showBottomSheet = false
-                            showReportBottomSheet = true
-                        },
-                        onDeleteClick = {
-                            showBottomSheet = false
-                            showDeleteAnnouncementDialog = true
-                        },
-                        onDismiss = { showBottomSheet = false }
-                    )
-                }
-            }
+    if (showAnnouncementBottomSheet) {
+        clickedAnnouncement?.let { announcement ->
+            AnnouncementBottomSheet(
+                announcement = announcement,
+                isEditable = user.isMember && announcement.author.id == user.id,
+                onEditClick = {
+                    showAnnouncementBottomSheet = false
+                    clickedAnnouncement?.let(onEditAnnouncementClick)
+                },
+                onResendClick = {
+                    showAnnouncementBottomSheet = false
+                    onResendAnnouncementClick(announcement)
+                },
+                onReportClick = {
+                    showAnnouncementBottomSheet = false
+                    showAnnouncementReportBottomSheet = true
+                },
+                onDeleteClick = {
+                    showAnnouncementBottomSheet = false
+                    showDeleteAnnouncementDialog = true
+                },
+                onDismiss = { showAnnouncementBottomSheet = false }
+            )
         }
     }
 
-    if (showReportBottomSheet) {
+    if (showAnnouncementReportBottomSheet) {
         ReportBottomSheet(
             items = AnnouncementReport.Reason.entries,
-            onDismiss = { showReportBottomSheet = false },
+            onDismiss = { showAnnouncementReportBottomSheet = false },
             onReportClick = { reason ->
-                showReportBottomSheet = false
+                showAnnouncementReportBottomSheet = false
 
-                announcementClicked?.let { announcement ->
+                clickedAnnouncement?.let { announcement ->
                     onReportAnnouncementClick(
                         AnnouncementReport(
                             announcementId = announcement.id,
@@ -272,7 +259,7 @@ private fun AllAnnouncementsScreen(
 @Composable
 private fun AllAnnouncementsScreenPreview() {
     GedoiseTheme {
-        AllAnnouncementsScreen (
+        AllAnnouncementsScreen(
             user = userFixture,
             announcements = announcementsFixture,
             refreshing = false,

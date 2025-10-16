@@ -23,12 +23,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.upsaclay.common.presentation.components.TextItem
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.news.R
+import com.upsaclay.news.domain.announcementFixture
+import com.upsaclay.news.domain.entity.Announcement
+import com.upsaclay.news.domain.entity.AnnouncementState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AnnouncementBottomSheet(
+    announcement: Announcement,
     isEditable: Boolean,
     onEditClick: () -> Unit,
+    onResendClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onReportClick: () -> Unit,
     onDismiss: () -> Unit
@@ -37,15 +42,27 @@ fun AnnouncementBottomSheet(
         modifier = Modifier.testTag(stringResource(id = R.string.announcement_bottom_sheet_tag)),
         onDismissRequest = onDismiss
     ) {
-        if (isEditable) {
-            EditableAnnouncementBottomSheetContent(
-                onEditClick = onEditClick,
-                onDeleteClick = onDeleteClick
-            )
-        } else {
-            NonEditableAnnouncementBottomSheetContent(
-                onReportClick = onReportClick
-            )
+        when (announcement.state) {
+            AnnouncementState.ERROR -> {
+                ErrorAnnouncementBottomSheet(
+                    onResendClick = onResendClick,
+                    onDeleteClick = onDeleteClick,
+                    onDismiss = onDismiss
+                )
+            }
+
+            else -> {
+                if (isEditable) {
+                    EditableAnnouncementBottomSheetContent(
+                        onEditClick = onEditClick,
+                        onDeleteClick = onDeleteClick
+                    )
+                } else {
+                    NonEditableAnnouncementBottomSheetContent(
+                        onReportClick = onReportClick
+                    )
+                }
+            }
         }
 
         Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.large_padding)))
@@ -54,7 +71,7 @@ fun AnnouncementBottomSheet(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ErrorAnnouncementBottomSheet(
+private fun ErrorAnnouncementBottomSheet(
     onResendClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onDismiss: () -> Unit
@@ -176,8 +193,10 @@ fun EditableAnnouncementBottomSheetPreview() {
     GedoiseTheme {
         Surface {
             AnnouncementBottomSheet(
+                announcement = announcementFixture,
                 isEditable = true,
                 onEditClick = {},
+                onResendClick = {},
                 onReportClick = {},
                 onDeleteClick = {},
                 onDismiss = {}
@@ -192,8 +211,10 @@ fun NonEditableAnnouncementBottomSheetPreview() {
     GedoiseTheme {
         Surface {
             AnnouncementBottomSheet(
+                announcement = announcementFixture,
                 isEditable = false,
                 onEditClick = {},
+                onResendClick = {},
                 onReportClick = {},
                 onDeleteClick = {},
                 onDismiss = {}

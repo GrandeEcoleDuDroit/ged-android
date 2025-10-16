@@ -14,6 +14,7 @@
     <string name="partial_arrow_left_icon_description">Icône de retour à l\'écran précédent</string>
     <string name="enter_name">Saisissez votre nom</string>
     <string name="enter_email_password">Saisissez votre adresse e-mail et votre mot de passe</string>
+    <string name="enter_password">Saisissez votre mot de passe</string>
     <string name="select_level_school">Sélectionnez votre niveau d\'étude</string>
 
     <string name="invalid_credentials_error">Adresse e-mail ou mot de passe incorrect.</string>

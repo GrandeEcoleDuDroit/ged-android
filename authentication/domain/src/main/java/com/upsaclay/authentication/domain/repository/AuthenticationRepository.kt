@@ -14,4 +14,6 @@ interface AuthenticationRepository {
     suspend fun logout()
 
     suspend fun setAuthenticated(isAuthenticated: Boolean)
+
+    suspend fun deleteAuthUser()
 }

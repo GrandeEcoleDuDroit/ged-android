@@ -17,6 +17,7 @@ internal object ConversationField {
         const val INTERLOCUTOR_SCHOOL_LEVEL = "interlocutorSchoolLevel"
         const val INTERLOCUTOR_IS_MEMBER = "interlocutorIsMember"
         const val INTERLOCUTOR_PROFILE_PICTURE_FILE_NAME = "interlocutorProfilePictureFileName"
+        const val INTERLOCUTOR_IS_DELETED = "interlocutorIsDeleted"
         const val CONVERSATION_STATE = "conversationState"
         const val CONVERSATION_DELETE_TIME = "conversationDeleteTime"
     }

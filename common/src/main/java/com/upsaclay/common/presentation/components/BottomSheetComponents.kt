@@ -65,7 +65,7 @@ private fun PreviewReportBottomSheet() {
     GedoiseTheme {
         ReportBottomSheet(
             onDismiss = {},
-            items = listOf("It's spam", "It's inappropriate", "It's misleading"),
+            items = listOf("Spam", "Inappropriate", "Misleading"),
             onReportClick = {}
         )
     }

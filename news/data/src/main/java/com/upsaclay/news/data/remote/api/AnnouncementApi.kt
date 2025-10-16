@@ -18,8 +18,11 @@ internal interface AnnouncementApi {
     @POST("announcements/create")
     suspend fun createAnnouncement(@Body remoteAnnouncement: RemoteAnnouncement): Response<ServerResponse>
 
-    @DELETE("announcements/{id}")
-    suspend fun deleteAnnouncement(@Path("id") id: String): Response<ServerResponse>
+    @DELETE("announcements/user/{userId}")
+    suspend fun deleteAnnouncements(@Path("userId") userId: String): Response<ServerResponse>
+
+    @DELETE("announcements/{announcementId}")
+    suspend fun deleteAnnouncement(@Path("announcementId") announcementId: String): Response<ServerResponse>
 
     @POST("announcements/update")
     suspend fun updateAnnouncement(@Body remoteAnnouncement: RemoteAnnouncement): Response<ServerResponse>

@@ -22,13 +22,13 @@ interface UserRepository {
 
     suspend fun storeUser(user: User)
 
-    suspend fun deleteCurrentUser()
+    suspend fun updateRemoteUser(user: User)
 
     suspend fun updateProfilePictureFileName(userId: String, fileName: String)
 
-    suspend fun deleteProfilePictureFileName(userId: String)
+    suspend fun deleteLocalUser()
 
-    suspend fun isUserExist(email: String): Boolean
+    suspend fun deleteProfilePictureFileName(userId: String)
 
     suspend fun reportUser(report: UserReport)
 }

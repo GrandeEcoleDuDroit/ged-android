@@ -48,6 +48,16 @@ class FirebaseAuthenticationRepositoryImpl(
         firebaseAuthenticationApi.signOut()
     }
 
+    override suspend fun deleteAuthUser() {
+        withContext(Dispatchers.IO) {
+            mapFirebaseException(
+                message = "Failed to delete auth user",
+                block = { firebaseAuthenticationApi.deleteAuthUser() },
+                specificMap = ::mapAuthException
+            )
+        }
+    }
+
     private fun mapAuthException(e: Exception): Exception {
         return when(e) {
             is FirebaseAuthEmailException -> DuplicateDataException()

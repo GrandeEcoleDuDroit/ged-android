@@ -8,7 +8,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-internal val white = Color(0xDEFFFFFF)
+internal val white = Color(0xFFFFFFFF)
 internal val black = Color(0xFF121212)
 internal val lightGray = Color(0xFFCCCCCC)
 internal val darkGray = Color(0xFF3C3C3C)
@@ -122,4 +122,4 @@ val ColorScheme.transparentTextFieldColor: TextFieldColors
 
 val ColorScheme.listDivider: Color
     @Composable
-    get() = if (isSystemInDarkTheme()) Color(0xFF3C3C3C) else Color(0xFFDCDCDC)
+    get() = if (isSystemInDarkTheme()) Color(0xFF323232) else Color(0xFFDCDCDC)

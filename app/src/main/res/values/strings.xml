@@ -4,41 +4,37 @@
     <string name="forum_icon_description">Icône pour accéder au forum</string>
     <string name="message_icon_description">Icône pour accéder à la messagerie</string>
     <string name="profile_icon_description">Icône pour accéder au profil</string>
-
     <string name="edit_profile">Editer profil</string>
-
+    <string name="account">Compte</string>
     <string name="account_informations">Informations compte</string>
     <string name="privacy">Confidentialité</string>
     <string name="support">Support</string>
     <string name="settings">Paramètres</string>
     <string name="logout">Se déconnecter</string>
-    <string name="disconnection">Déconnexion...</string>
     <string name="blocked_users">Utilisateurs bloqués</string>
     <string name="no_blocked_user">Aucun utilisateur bloqué</string>
-
+    <string name="delete_account">Supprimer compte</string>
     <string name="account_icon_description">Icône pour accéder à la page de compte</string>
     <string name="support_icon_description">Icône pour accéder à la page de support</string>
     <string name="settings_icon_description">Icône pour accéder à la page de paramètres</string>
     <string name="logout_icon_description">Icône pour se déconnecter</string>
     <string name="check_icon_description">Accepter les changements</string>
-
     <string name="new_profile_picture">Nouvelle photo de profil</string>
     <string name="profile_picture_updated">Photo de profil mise à jour</string>
     <string name="profile_picture_deleted">Photo de profil supprimé</string>
     <string name="error_updating_profile_picture">Une erreur est survenue lors de la mise à jour de la photo de profil</string>
-    <string name="delete_profile_picture_dialog_title">Supprimer photo de profil</string>
-    <string name="delete_profile_picture_dialog_text">Voulez-vous supprimer la photo de profil ?</string>
+    <string name="delete_profile_picture_dialog_message">Voulez-vous supprimer votre photo de profil ?</string>
     <string name="logout_dialog_message">Êtes-vous sûr de vouloir vous déconnecter ?</string>
 
     <string name="profile_screen_logout_dialog_tag" translatable="false">Profile screen logout dialog tag</string>
     <string name="profile_screen_logout_button_tag" translatable="false">Profile screen Logout Button tag</string>
+    <string name="profile_screen_account_button_tag" translatable="false">Profile screen account button tag</string>
     <string name="profile_screen_account_info_button_tag" translatable="false">Profile screen account info button tag</string>
-
     <string name="account_screen_delete_profile_picture_button_tag" translatable="false">Account screen delete profile picture button tag</string>
     <string name="account_screen_delete_profile_picture_dialog_tag" translatable="false">Account screen delete profile picture button tag</string>
     <string name="account_screen_profile_picture_tag" translatable="false">Account screen profile picture tag</string>
     <string name="account_screen_snackbar_tag" translatable="false">Account screen snackbar tag</string>
-
     <string name="empty_blocked_users_list_tag" translatable="false">Empty blocked users list tag</string>
     <string name="blocked_user_item_tag" translatable="false">Blocked user item tag</string>
+    <string name="delete_account_warning">Supprimer votre compte entraînera la suppression définitive de toutes vos données. Cette action est irréversible.</string>
 </resources>

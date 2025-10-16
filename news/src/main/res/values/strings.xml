@@ -10,11 +10,9 @@
     <string name="new_announcement">Nouvelle annonce</string>
     <string name="edit_announcement">Editer annonce</string>
     <string name="announcement_sent">Annonce envoyée</string>
-    <string name="delete_announcement_dialog_title">Supprimer annonce</string>
-    <string name="delete_announcement_dialog_text">Êtes-vous sûr de vouloir supprimer cette annonce ?</string>
+    <string name="delete_announcement_dialog_message">Voulez-vous vraiment supprimer cette annonce ?</string>
     <string name="title_field_entry">Titre</string>
     <string name="content_field_entry">Contenu</string>
-
     <string name="announcement_refresh_error">Impossible de rafraîchir les annonces</string>
     <string name="announcement_deleted">Annonce supprimé</string>
     <string name="announcement_reported">Annonce signalé</string>
@@ -22,7 +20,6 @@
     <string name="news_screen_empty_announcement_text_tag" translatable="false">News Screen Empty Announcement Text Tag</string>
     <string name="news_screen_recent_announcements_tag" translatable="false">News Screen Recent Announcement Tag</string>
     <string name="news_screen_create_announcement_button_tag" translatable="false">News Screen Create Announcement Button Tag</string>
-
     <string name="read_screen_announcement_header_tag" translatable="false">Read screen announcement header tag</string>
     <string name="read_screen_announcement_title_tag" translatable="false">Read screen announcement title tag</string>
     <string name="read_screen_announcement_content_tag" translatable="false">Read screen announcement content tag</string>
@@ -34,8 +31,6 @@
     <string name="read_screen_delete_dialog_tag" translatable="false">Read screen delete dialog tag</string>
     <string name="read_screen_delete_dialog_title_tag" translatable="false">Read screen delete dialog title tag</string>
     <string name="read_screen_snackbar_tag" translatable="false">Read screen snackbar tag</string>
-
     <string name="create_screen_post_button_tag" translatable="false">Create screen post button tag</string>
-
     <string name="edit_screen_snackbar_tag" translatable="false">Edit screen snackbar tag</string>
 </resources>

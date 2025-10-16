@@ -16,10 +16,9 @@ class DeleteConversationUseCase(
 ) {
     operator fun invoke(conversation: Conversation, currentUserId: String) {
         val deleteTime = LocalDateTime.now(ZoneOffset.UTC)
-        val updatedConversation = conversation.copy(deleteTime = deleteTime)
         scope.launch {
-            conversationRepository.updateLocalConversation(updatedConversation.copy(state = ConversationState.DELETING))
-            conversationRepository.deleteConversation(updatedConversation, currentUserId, deleteTime)
+            conversationRepository.updateLocalConversation(conversation.copy(state = ConversationState.DELETING))
+            conversationRepository.deleteConversation(conversation.id, currentUserId, deleteTime)
             messageRepository.deleteLocalMessages(conversation.id)
         }
     }

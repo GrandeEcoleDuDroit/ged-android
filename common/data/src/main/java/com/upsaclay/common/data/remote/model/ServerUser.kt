@@ -17,5 +17,7 @@ internal data class ServerUser(
     @SerializedName(UserField.Oracle.USER_IS_MEMBER)
     val userIsMember: Int = 0,
     @SerializedName(UserField.Oracle.USER_PROFILE_PICTURE_FILE_NAME)
-    val userProfilePictureFileName: String? = null
+    val userProfilePictureFileName: String? = null,
+    @SerializedName(UserField.Oracle.USER_IS_DELETED)
+    val userIsDeleted: Int = 0
 )

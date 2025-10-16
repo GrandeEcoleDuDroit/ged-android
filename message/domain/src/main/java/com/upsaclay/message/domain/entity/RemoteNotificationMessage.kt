@@ -18,7 +18,8 @@ data class RemoteNotificationMessage(
             val email: String,
             val schoolLevel: String,
             val isMember: Boolean = false,
-            val profilePictureFileName: String? = null
+            val profilePictureFileName: String? = null,
+            val isDeleted: Boolean = false
         )
     }
 }

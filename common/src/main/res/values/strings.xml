@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">Grande Ecole du Droit</string>
-
     <string name="home">Accueil</string>
     <string name="messages">Messages</string>
     <string name="calendar">Calendrier</string>
     <string name="forum" translatable="false">Forum</string>
     <string name="profile">Profil</string>
-
     <string name="home_icon_description">Icône pour accéder à la page d\'accueil</string>
     <string name="calendar_icon_description">Icône pour accéder au calendrier</string>
     <string name="forum_icon_description">Icône pour accéder au forum</string>
     <string name="message_icon_description">Icône pour accéder à la messagerie</string>
     <string name="profile_icon_description">Icône pour accéder au profil</string>
-
     <string name="close">Fermer</string>
     <string name="show">Voir</string>
     <string name="next">Suivant</string>
@@ -37,7 +34,6 @@
     <string name="see_all">Voir tout</string>
     <string name="report">Signaler</string>
     <string name="block">Bloquer</string>
-
     <string name="arrow_back_icon_description">Retour en arrière</string>
     <string name="ged_logo_description">Logo de l\'université de La Grande École du Droit</string>
     <string name="profile_picture_description">Photo de profil de l\'utilisateur</string>
@@ -53,9 +49,7 @@
     <string name="hour_ago_short">%d h</string>
     <string name="day_ago_short">%d j</string>
     <string name="week_ago_short">%d sem</string>
-
     <string name="member">Membre</string>
-
     <string name="minute_ago_medium">%d minutes</string>
     <string name="hour_ago_medium">%d heures</string>
     <string name="day_ago_medium">%d jours</string>
@@ -73,14 +67,14 @@
     <string name="timeout_error">Le service a mis trop de temps à répondre. Veuillez réessayer.</string>
     <string name="no_user">Aucun utilisateur.</string>
     <string name="no_internet_connection">Aucune connexion Internet.</string>
-
-    <string name="member_text_tag" translatable="false">Member text tag</string>
     <string name="reported_user">Utilisateur signalé</string>
     <string name="blocked_user">Utilisateur bloqué</string>
     <string name="unblock">Débloquer</string>
     <string name="unblocked_user">Utilisateur débloqué</string>
-    <string name="block_user_dialog_title">Bloquer utilisateur</string>
-    <string name="block_user_dialog_message">Voulez-vous bloquer cet utilisateur ? Vous ne verrez plus aucun de ses contenus.</string>
-    <string name="unblock_user_dialog_title">Débloquer utilisateur</string>
+    <string name="block_user_dialog_title">Bloquer utilisateur ?</string>
+    <string name="block_user_dialog_message">Vous ne verrez plus aucun de ses contenus.</string>
     <string name="unblock_user_dialog_message">Voulez-vous débloquer cet utilisateur ?</string>
+    <string name="deleted_user">Utilisateur supprimé</string>
+
+    <string name="member_text_tag" translatable="false">Member text tag</string>
 </resources>

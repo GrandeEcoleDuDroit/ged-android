@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -96,9 +97,11 @@ fun UserItem(
     user: User,
     trailingContent: @Composable (() -> Unit)? = null
 ) {
+    val userName = if (!user.isDeleted) user.fullName else stringResource(R.string.deleted_user)
+
     ListItem(
         modifier = modifier.fillMaxWidth(),
-        headlineContent = { Text(text = user.fullName) },
+        headlineContent = { Text(text = userName) },
         leadingContent = {
             ProfilePicture(
                 url = user.profilePictureUrl,

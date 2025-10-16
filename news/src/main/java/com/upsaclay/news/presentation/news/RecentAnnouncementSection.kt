@@ -24,6 +24,7 @@ import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.informationText
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.news.R
+import com.upsaclay.news.domain.announcementsFixture
 import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.domain.entity.AnnouncementState
 import com.upsaclay.news.presentation.news.components.CompactAnnouncementItem
@@ -34,7 +35,7 @@ fun RecentAnnouncementSection(
     announcements: List<Announcement>,
     onAnnouncementClick: (String) -> Unit,
     onUncreatedAnnouncementClick: (Announcement) -> Unit,
-    onSeeAllAnnouncementClick: () -> Unit,
+    onSeeAllAnnouncementsClick: () -> Unit,
     onAnnouncementOptionClick: (Announcement) -> Unit
 ) {
     Column(modifier = modifier) {
@@ -51,7 +52,7 @@ fun RecentAnnouncementSection(
             )
 
             TextButton(
-                onClick = onSeeAllAnnouncementClick
+                onClick = onSeeAllAnnouncementsClick
             ) {
                 Text(
                     text = stringResource(com.upsaclay.common.R.string.see_all)
@@ -109,10 +110,10 @@ private fun RecentAnnouncementContentPreview() {
     GedoiseTheme {
         Surface {
             RecentAnnouncementSection(
-                announcements = listOf(),
+                announcements = announcementsFixture,
                 onAnnouncementClick = {},
                 onUncreatedAnnouncementClick = {},
-                onSeeAllAnnouncementClick = {},
+                onSeeAllAnnouncementsClick = {},
                 onAnnouncementOptionClick = {}
             )
         }

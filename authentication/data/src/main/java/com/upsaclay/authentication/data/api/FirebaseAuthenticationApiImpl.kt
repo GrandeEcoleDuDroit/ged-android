@@ -3,6 +3,7 @@ package com.upsaclay.authentication.data.api
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.upsaclay.common.domain.entity.CurrentUserNotFoundException
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -49,6 +50,10 @@ class FirebaseAuthenticationApiImpl: FirebaseAuthenticationApi {
 
     override fun signOut() {
         firebaseAuth.signOut()
+    }
+
+    override suspend fun deleteAuthUser() {
+        firebaseAuth.currentUser?.delete() ?: throw CurrentUserNotFoundException()
     }
 
     private fun refreshAndCacheToken() {

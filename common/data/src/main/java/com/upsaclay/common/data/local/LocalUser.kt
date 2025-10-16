@@ -17,5 +17,7 @@ internal data class LocalUser(
     @SerializedName(UserField.Local.IS_MEMBER)
     val userIsMember: Int = 0,
     @SerializedName(UserField.Local.PROFILE_PICTURE_FILE_NAME)
-    val userProfilePictureFileName: String? = null
+    val userProfilePictureFileName: String? = null,
+    @SerializedName(UserField.Local.IS_DELETED)
+    val userIsDeleted: Int = 0
 )
