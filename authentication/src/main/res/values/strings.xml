@@ -9,24 +9,24 @@
     <string name="sign_up">S\'inscrire</string>
     <string name="not_register_yet">Pas encore inscrit ?</string>
     <string name="mandatory_field">Champ obligatoire</string>
-
     <string name="registration">Inscription</string>
     <string name="partial_arrow_left_icon_description">Icône de retour à l\'écran précédent</string>
     <string name="enter_name">Saisissez votre nom</string>
     <string name="enter_email_password">Saisissez votre adresse e-mail et votre mot de passe</string>
     <string name="enter_password">Saisissez votre mot de passe</string>
     <string name="select_level_school">Sélectionnez votre niveau d\'étude</string>
-
     <string name="invalid_credentials_error">Adresse e-mail ou mot de passe incorrect.</string>
     <string name="user_disabled_error">Votre compte a été désactivé. Veuillez contacter le support</string>
     <string name="incorrect_email_format_error">Veuillez entrer une adresse e-mail valide.</string>
     <string name="password_length_error">Le mot de passe doit comporter au moins 8 caractères.</string>
     <string name="email_already_associated">Cette adresse e-mail est déjà utilisée.</string>
     <string name="user_not_white_listed">L\'inscription est actuellement limitée aux utilisateurs autorisés.</string>
+    <string name="agree_terms_privacy_beginning_text">J’ai lu et j’accepte les</string>
+    <string name="terms_and_privacy">Conditions d\'utilisation et la Politique de Confidentialité.</string>
+    <string name="legal_notice_error">Veuillez accepter les Conditions d’utilisation et la Politique de Confidentialité pour continuer.</string>
 
     <string name="authentication_screen_login_button_tag" translatable="false">Authentication Screen Login Button Tag</string>
     <string name="authentication_screen_registration_button_tag" translatable="false">Authentication Screen Registration Button Tag</string>
-
     <string name="registration_screen_next_button_tag" translatable="false">Registration Screen Next Button Tag</string>
     <string name="registration_screen_email_input_tag" translatable="false">Registration Screen Email Input Tag</string>
     <string name="registration_screen_password_input_tag" translatable="false">Registration Screen Password Input Tag</string>

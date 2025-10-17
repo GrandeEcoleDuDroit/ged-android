@@ -43,11 +43,25 @@ class ThirdRegistrationViewModel(
         }
     }
 
+    fun onLegalNoticeCheckedChange(checked: Boolean) {
+        _uiState.update {
+            it.copy(legalNoticeChecked = checked)
+        }
+    }
+
     fun register(firstName: String, lastName: String, schoolLevel: String) {
-        val email = _uiState.value.email.trim()
-        val password = _uiState.value.password
+        val email = uiState.value.email.trim()
+        val password = uiState.value.password
+        val legalNoticeChecked = uiState.value.legalNoticeChecked
 
         if (!validateInputs(email, password)) return
+
+        if (!legalNoticeChecked) {
+            _uiState.update {
+                it.copy(errorMessage = R.string.legal_notice_error)
+            }
+            return
+        }
 
         _uiState.update {
             it.copy(loading = true)
@@ -117,6 +131,7 @@ class ThirdRegistrationViewModel(
         val email: String = "",
         val password: String = "",
         val loading: Boolean = false,
+        val legalNoticeChecked: Boolean = false,
         @StringRes val emailError: Int? = null,
         @StringRes val passwordError: Int? = null,
         @StringRes val errorMessage: Int? = null

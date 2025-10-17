@@ -75,6 +75,7 @@ class ThirdRegistrationViewModelTest {
         // Given
         thirdRegistrationViewModel.onEmailChange(email)
         thirdRegistrationViewModel.onPasswordChange(password)
+        thirdRegistrationViewModel.onLegalNoticeCheckedChange(true)
 
         // When
         thirdRegistrationViewModel.register(firstName, lastName, schoolLevel)
@@ -120,6 +121,20 @@ class ThirdRegistrationViewModelTest {
 
         // Then
         assertNotNull(thirdRegistrationViewModel.uiState.value.password)
+    }
+
+    @Test
+    fun register_should_set_error_message_when_legal_notice_is_not_checked() {
+        // Given
+        thirdRegistrationViewModel.onEmailChange(email)
+        thirdRegistrationViewModel.onPasswordChange(password)
+        thirdRegistrationViewModel.onLegalNoticeCheckedChange(false)
+
+        // When
+        thirdRegistrationViewModel.register(firstName, lastName, schoolLevel)
+
+        // Then
+        assertNotNull(thirdRegistrationViewModel.uiState.value.errorMessage)
     }
 
     @Test

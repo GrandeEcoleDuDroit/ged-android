@@ -8,9 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -72,6 +70,7 @@ fun ThirdRegistrationDestination(
         email = uiState.email,
         password = uiState.password,
         loading = uiState.loading,
+        legalNoticeChecked = uiState.legalNoticeChecked,
         emailError = uiState.emailError,
         passwordError = uiState.passwordError,
         errorMessage = uiState.errorMessage,
@@ -79,6 +78,7 @@ fun ThirdRegistrationDestination(
         onEmailChange = viewModel::onEmailChange,
         onPasswordChange = viewModel::onPasswordChange,
         onRegistrationClick = { viewModel.register(firstName, lastName, schoolLevel) },
+        onLegalNoticeCheckedChange = viewModel::onLegalNoticeCheckedChange,
         onBackClick = onBackClick
     )
 }
@@ -88,14 +88,16 @@ private fun ThirdRegistrationScreen(
     email: String,
     password: String,
     loading: Boolean,
+    legalNoticeChecked: Boolean,
     @StringRes emailError: Int? = null,
     @StringRes passwordError: Int? = null,
     @StringRes errorMessage: Int? = null,
-    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
+    snackbarHostState: SnackbarHostState,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onRegistrationClick: () -> Unit,
-    onBackClick: () -> Unit
+    onLegalNoticeCheckedChange: (Boolean) -> Unit,
+    onBackClick: () -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -106,7 +108,7 @@ private fun ThirdRegistrationScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = paddingValues.calculateTopPadding()),
+                .padding(paddingValues),
             verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding))
         ) {
             if (loading) {
@@ -116,7 +118,6 @@ private fun ThirdRegistrationScreen(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .mediumPadding()
                     .pointerInput(Unit) {
                         detectTapGestures(onPress = { focusManager.clearFocus() })
                     }
@@ -125,16 +126,19 @@ private fun ThirdRegistrationScreen(
                     email = email,
                     password = password,
                     loading = loading,
+                    legalNoticeChecked = legalNoticeChecked,
                     emailError = emailError,
                     passwordError = passwordError,
                     errorMessage = errorMessage,
                     onEmailChange = onEmailChange,
-                    onPasswordChange = onPasswordChange
+                    onPasswordChange = onPasswordChange,
+                    onLegalNoticeCheckedChange = onLegalNoticeCheckedChange
                 )
 
                 PrimaryButton(
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
+                        .mediumPadding()
                         .testTag(stringResource(R.string.registration_screen_next_button_tag)),
                     enable = !loading,
                     text = stringResource(id = com.upsaclay.common.R.string.next),
@@ -159,21 +163,17 @@ private fun ThirdRegistrationScreenPreview() {
     val isLoading by remember { mutableStateOf(false) }
 
     GedoiseTheme {
-        Surface {
-            ThirdRegistrationScreen(
-                email = email,
-                password = password,
-                loading = isLoading,
-                onEmailChange = { email = it },
-                onPasswordChange = { password = it },
-                onRegistrationClick = {},
-                onBackClick = {},
-            )
-
-            Checkbox(
-                checked = true,
-                onCheckedChange = null,
-            )
-        }
+        ThirdRegistrationScreen(
+            email = email,
+            password = password,
+            loading = isLoading,
+            legalNoticeChecked = false,
+            snackbarHostState = SnackbarHostState(),
+            onEmailChange = { email = it },
+            onPasswordChange = { password = it },
+            onRegistrationClick = {},
+            onLegalNoticeCheckedChange = {},
+            onBackClick = {},
+        )
     }
 }
