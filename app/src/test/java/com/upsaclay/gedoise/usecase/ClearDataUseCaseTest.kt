@@ -25,6 +25,7 @@ class ClearDataUseCaseTest {
         coEvery { userRepository.deleteLocalUser() } returns Unit
         coEvery { conversationRepository.deleteLocalConversations() } returns Unit
         coEvery { messageRepository.deleteLocalMessages() } returns Unit
+        coEvery { announcementRepository.deleteLocalAnnouncements() } returns Unit
 
         useCase = ClearDataUseCase(
             userRepository = userRepository,
