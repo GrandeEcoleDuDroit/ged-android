@@ -56,6 +56,7 @@ internal class AnnouncementRemoteDataSource(private val announcementApi: Announc
     suspend fun reportAnnouncement(report: AnnouncementReport) {
         withContext(Dispatchers.IO) {
             mapServerResponseException(
+                message = "Failed to report announcement",
                 block = {
                     announcementApi.reportAnnouncement(report.toRemote())
                 }

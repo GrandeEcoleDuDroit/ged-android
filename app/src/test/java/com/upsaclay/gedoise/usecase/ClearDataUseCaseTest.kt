@@ -4,6 +4,7 @@ import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.gedoise.domain.usecase.ClearDataUseCase
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
+import com.upsaclay.news.domain.repository.AnnouncementRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -15,6 +16,7 @@ class ClearDataUseCaseTest {
     private val userRepository: UserRepository = mockk()
     private val conversationRepository: ConversationRepository = mockk()
     private val messageRepository: MessageRepository = mockk()
+    private val announcementRepository: AnnouncementRepository = mockk()
 
     private lateinit var useCase: ClearDataUseCase
 
@@ -27,7 +29,8 @@ class ClearDataUseCaseTest {
         useCase = ClearDataUseCase(
             userRepository = userRepository,
             conversationRepository = conversationRepository,
-            messageRepository = messageRepository
+            messageRepository = messageRepository,
+            announcementRepository = announcementRepository
         )
     }
 
@@ -40,5 +43,6 @@ class ClearDataUseCaseTest {
         coVerify { userRepository.deleteLocalUser() }
         coVerify { conversationRepository.deleteLocalConversations() }
         coVerify { messageRepository.deleteLocalMessages() }
+        coVerify { announcementRepository.deleteLocalAnnouncements() }
     }
 }
