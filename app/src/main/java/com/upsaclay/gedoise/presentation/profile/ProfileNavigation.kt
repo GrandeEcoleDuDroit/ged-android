@@ -1,29 +1,37 @@
 package com.upsaclay.gedoise.presentation.profile
 
+import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
 import com.upsaclay.common.domain.entity.Route
 import kotlinx.serialization.Serializable
 
+@Serializable data object ProfileBaseRoute: Route
 @Serializable data object ProfileRoute: Route
 
-fun NavController.navigateToProfile() {
-    navigate(route = ProfileRoute)
+fun NavController.navigateToProfile(navOptions: NavOptions? = null) {
+    navigate(route = ProfileBaseRoute, navOptions = navOptions)
 }
 
-fun NavGraphBuilder.profileScreen(
-    onBackClick: () -> Unit,
+fun NavGraphBuilder.profileSection(
     onAccountInformationClick: () -> Unit,
     onAccountClick: () -> Unit,
-    onPrivacyClick: () -> Unit
+    onPrivacyClick: () -> Unit,
+    bottomBar: @Composable () -> Unit,
+    profileDestinations: NavGraphBuilder.() -> Unit
 ) {
-    composable<ProfileRoute> {
-        ProfileDestination(
-            onBackClick = onBackClick,
-            onAccountInformationClick = onAccountInformationClick,
-            onAccountClick = onAccountClick,
-            onPrivacyClick = onPrivacyClick
-        )
+    navigation<ProfileBaseRoute>(startDestination = ProfileRoute) {
+        composable<ProfileRoute> {
+            ProfileDestination(
+                onAccountInformationClick = onAccountInformationClick,
+                onAccountClick = onAccountClick,
+                onPrivacyClick = onPrivacyClick,
+                bottomBar = bottomBar
+            )
+        }
+        profileDestinations()
     }
 }

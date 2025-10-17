@@ -7,12 +7,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -29,11 +27,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
-import com.upsaclay.common.presentation.components.BackTopBar
 import com.upsaclay.common.presentation.components.CircularProgressBar
 import com.upsaclay.common.presentation.components.CriticalDialog
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.components.TextItem
+import com.upsaclay.common.presentation.components.TitleTopBar
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.informationText
 import com.upsaclay.common.utils.Phones
@@ -42,10 +40,10 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ProfileDestination(
-    onBackClick: () -> Unit,
     onAccountInformationClick: () -> Unit,
     onAccountClick: () -> Unit,
     onPrivacyClick: () -> Unit,
+    bottomBar: @Composable () -> Unit,
     viewModel: ProfileViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -53,26 +51,25 @@ fun ProfileDestination(
     if (uiState.user != null) {
         ProfileScreen(
             user = uiState.user!!,
-            onBackClick = onBackClick,
             onAccountInformationClick = onAccountInformationClick,
             onAccountClick = onAccountClick,
             onPrivacyClick = onPrivacyClick,
-            onLogoutClick = viewModel::logout
+            onLogoutClick = viewModel::logout,
+            bottomBar = bottomBar
         )
     } else {
         CircularProgressBar()
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
     user: User,
-    onBackClick: () -> Unit,
     onAccountInformationClick: () -> Unit,
     onAccountClick: () -> Unit,
     onPrivacyClick: () -> Unit,
-    onLogoutClick: () -> Unit
+    onLogoutClick: () -> Unit,
+    bottomBar: @Composable () -> Unit
 ) {
     var showLogoutDialog by remember { mutableStateOf(false) }
 
@@ -93,11 +90,9 @@ fun ProfileScreen(
 
     Scaffold(
         topBar = {
-            BackTopBar(
-                onBackClick = onBackClick,
-                title = stringResource(id = com.upsaclay.common.R.string.profile)
-            )
-        }
+            TitleTopBar(title = stringResource(com.upsaclay.common.R.string.profile))
+        },
+        bottomBar = bottomBar
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -114,13 +109,13 @@ fun ProfileScreen(
             ) {
                 ProfilePicture(
                     url = user.profilePictureUrl,
-                    scale = 0.5f
+                    scale = 0.6f
                 )
 
                 Column {
                     Text(
                         text = user.fullName,
-                        style = MaterialTheme.typography.titleLarge,
+                        style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Medium
                     )
 
@@ -193,15 +188,13 @@ fun ProfileScreen(
 @Composable
 fun ProfileScreenPreview() {
     GedoiseTheme {
-        Surface {
-            ProfileScreen(
-                user = userFixture,
-                onBackClick = {},
-                onAccountInformationClick = {},
-                onAccountClick = {},
-                onPrivacyClick = {},
-                onLogoutClick = {},
-            )
-        }
+        ProfileScreen(
+            user = userFixture,
+            onAccountInformationClick = {},
+            onAccountClick = {},
+            onPrivacyClick = {},
+            onLogoutClick = {},
+            bottomBar = {}
+        )
     }
 }

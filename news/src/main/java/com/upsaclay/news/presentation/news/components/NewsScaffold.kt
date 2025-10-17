@@ -11,20 +11,14 @@ import com.upsaclay.news.presentation.announcement.components.CreateAnnouncement
 
 @Composable
 fun NewsScaffold(
-    user: User?,
+    user: User,
     onCreateAnnouncementClick: () -> Unit,
-    onProfilePictureClick: () -> Unit,
     snackbarHostState: SnackbarHostState,
     bottomBar: @Composable () -> Unit,
     content: @Composable (PaddingValues) -> Unit
 ) {
     Scaffold(
-        topBar = {
-            NewsTopBar(
-                userProfilePictureUrl = user?.profilePictureUrl,
-                onProfilePictureClick = onProfilePictureClick
-            )
-        },
+        topBar = { NewsTopBar() },
         bottomBar = bottomBar,
         snackbarHost = {
             SnackbarHost(snackbarHostState) {
@@ -32,7 +26,7 @@ fun NewsScaffold(
             }
         },
         floatingActionButton = {
-            if (user?.isMember == true) {
+            if (user.isMember) {
                 CreateAnnouncementFAB(
                     onClick = onCreateAnnouncementClick
                 )

@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -15,16 +14,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.upsaclay.common.R
-import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewsTopBar(
-    userProfilePictureUrl: String? = null,
-    onProfilePictureClick: () -> Unit
-) {
+fun NewsTopBar() {
     TopAppBar(
         title = {
             Text(
@@ -46,13 +41,6 @@ fun NewsTopBar(
                 )
             }
         },
-        actions = {
-            IconButton(
-                onClick = onProfilePictureClick
-            ) {
-                ProfilePicture(url = userProfilePictureUrl)
-            }
-        },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.background
         )
@@ -69,11 +57,6 @@ fun NewsTopBar(
 @Composable
 private fun NewsTopBarPreview() {
     GedoiseTheme {
-        Surface {
-            NewsTopBar(
-                userProfilePictureUrl = null,
-                onProfilePictureClick = {}
-            )
-        }
+        NewsTopBar()
     }
 }
