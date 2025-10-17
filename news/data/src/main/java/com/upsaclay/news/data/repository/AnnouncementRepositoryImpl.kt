@@ -70,6 +70,10 @@ internal class AnnouncementRepositoryImpl(
         announcementLocalDataSource.deleteAnnouncement(announcement)
     }
 
+    override suspend fun deleteLocalAnnouncements() {
+        announcementLocalDataSource.deleteAnnouncements()
+    }
+
     override suspend fun deleteLocalAnnouncements(userId: String) {
         announcementLocalDataSource.deleteAnnouncements(userId)
     }

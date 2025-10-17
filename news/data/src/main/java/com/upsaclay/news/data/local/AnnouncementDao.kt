@@ -21,6 +21,9 @@ interface AnnouncementDao {
     @Delete
     suspend fun deleteAnnouncement(localAnnouncement: LocalAnnouncement)
 
+    @Query("DELETE FROM $ANNOUNCEMENTS_TABLE")
+    suspend fun deleteAnnouncements()
+
     @Query("DELETE FROM $ANNOUNCEMENTS_TABLE WHERE ${AnnouncementField.Local.USER_ID} = :userId")
-    suspend fun deleteUserAnnouncements(userId: String)
+    suspend fun deleteAnnouncements(userId: String)
 }

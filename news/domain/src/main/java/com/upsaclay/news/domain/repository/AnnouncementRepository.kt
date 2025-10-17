@@ -29,6 +29,8 @@ interface AnnouncementRepository {
 
     suspend fun deleteLocalAnnouncement(announcement: Announcement)
 
+    suspend fun deleteLocalAnnouncements()
+
     suspend fun deleteLocalAnnouncements(userId: String)
 
     suspend fun reportAnnouncement(report: AnnouncementReport)
