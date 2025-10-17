@@ -1,7 +1,10 @@
 package com.upsaclay.common.presentation.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.CheckboxColors
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
@@ -123,3 +126,20 @@ val ColorScheme.transparentTextFieldColor: TextFieldColors
 val ColorScheme.listDivider: Color
     @Composable
     get() = if (isSystemInDarkTheme()) Color(0xFF323232) else Color(0xFFDCDCDC)
+
+val ColorScheme.checkBoxColor: CheckboxColors
+    @Composable
+    get() = CheckboxColors(
+        checkedCheckmarkColor = CheckboxDefaults.colors().checkedCheckmarkColor,
+        uncheckedCheckmarkColor = CheckboxDefaults.colors().uncheckedCheckmarkColor,
+        checkedBoxColor = CheckboxDefaults.colors().checkedBoxColor,
+        uncheckedBoxColor = CheckboxDefaults.colors().uncheckedBoxColor,
+        disabledCheckedBoxColor = CheckboxDefaults.colors().disabledCheckedBoxColor,
+        disabledUncheckedBoxColor = CheckboxDefaults.colors().disabledUncheckedBoxColor,
+        disabledIndeterminateBoxColor = CheckboxDefaults.colors().disabledIndeterminateBoxColor,
+        checkedBorderColor = CheckboxDefaults.colors().checkedBorderColor,
+        uncheckedBorderColor = MaterialTheme.colorScheme.outline,
+        disabledBorderColor = CheckboxDefaults.colors().disabledBorderColor,
+        disabledUncheckedBorderColor = CheckboxDefaults.colors().disabledUncheckedBorderColor,
+        disabledIndeterminateBorderColor = CheckboxDefaults.colors().disabledIndeterminateBorderColor
+    )
