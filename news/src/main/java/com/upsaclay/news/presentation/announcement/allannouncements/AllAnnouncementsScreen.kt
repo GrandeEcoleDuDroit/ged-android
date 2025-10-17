@@ -23,13 +23,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.presentation.components.BackTopBar
-import com.upsaclay.common.presentation.components.CriticalDialog
+import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.ListDivider
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.PullToRefreshComponent
@@ -118,10 +119,11 @@ private fun AllAnnouncementsScreen(
     var clickedAnnouncement by remember { mutableStateOf<Announcement?>(null) }
 
     if (showDeleteAnnouncementDialog) {
-        CriticalDialog(
+        DefaultDialog(
             modifier = Modifier.testTag(stringResource(id = R.string.read_screen_delete_dialog_tag)),
             text = stringResource(id = R.string.delete_announcement_dialog_message),
             confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
+            critical = true,
             onConfirm = {
                 showDeleteAnnouncementDialog = false
                 clickedAnnouncement?.let(onDeleteAnnouncementClick)
@@ -167,8 +169,6 @@ private fun AllAnnouncementsScreen(
                     }
                 } else {
                     itemsIndexed(announcements) { index, announcement ->
-                        ListDivider()
-
                         ExtendedAnnouncementItem(
                             announcement = announcement,
                             onClick = {
@@ -186,8 +186,12 @@ private fun AllAnnouncementsScreen(
                             onAuthorClick = { onAuthorClick(announcement.author) }
                         )
 
-                        if (index == announcements.lastIndex) {
-                            ListDivider()
+                        if (index != announcements.lastIndex) {
+                            ListDivider(
+                                modifier = Modifier.padding(
+                                    start = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)
+                                )
+                            )
                         }
                     }
                 }

@@ -99,7 +99,6 @@ private fun BlockedUsersScreen(
                 clickedUserId?.let(onUnblockClick)
             },
             onCancel = { showUnblockUserDialog = false },
-            onDismiss = { showUnblockUserDialog = false }
         )
     }
 

@@ -27,7 +27,6 @@ import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.extension.mediumPadding
 import com.upsaclay.common.extension.smallMediumSpacing
-import com.upsaclay.common.presentation.components.CriticalDialog
 import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.ReportBottomSheet
@@ -139,10 +138,10 @@ private fun ChatScreen(
     }
 
     if (showDeleteMessageDialog) {
-        CriticalDialog(
-            title = stringResource(id = R.string.delete_message_dialog_message),
+        DefaultDialog(
             text = stringResource(id = R.string.delete_message_dialog_message),
             confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
+            critical = true,
             onConfirm = {
                 showDeleteMessageDialog = false
                 clickedMessage?.let(onDeleteMessageClick)
@@ -152,10 +151,11 @@ private fun ChatScreen(
     }
 
     if (showDeleteConversationDialog) {
-        CriticalDialog(
+        DefaultDialog(
             title = stringResource(id = R.string.delete_conversation_dialog_title),
             text = stringResource(id = R.string.delete_conversation_dialog_message),
             confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
+            critical = true,
             onConfirm = {
                 showDeleteConversationDialog = false
                 onDeleteConversationClick()
@@ -166,7 +166,6 @@ private fun ChatScreen(
 
     if (showUnblockUserDialog) {
         DefaultDialog(
-            title = stringResource(id = com.upsaclay.common.R.string.unblock_user_dialog_message),
             text = stringResource(id = com.upsaclay.common.R.string.unblock_user_dialog_message),
             confirmText = stringResource(id = com.upsaclay.common.R.string.unblock),
             onConfirm = {
@@ -218,7 +217,7 @@ private fun ChatScreen(
                 onMessageTextChange = onMessageTextChange,
                 onSendMessageClick = onSendMessageClick,
                 onDeleteConversationClick = { showDeleteConversationDialog = true },
-                onUnblockUserClick = { onUnblockUserClick(conversation.interlocutor.id) }
+                onUnblockUserClick = { showUnblockUserDialog = true }
             )
         }
     }

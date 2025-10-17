@@ -125,7 +125,7 @@ val ColorScheme.transparentTextFieldColor: TextFieldColors
 
 val ColorScheme.listDivider: Color
     @Composable
-    get() = if (isSystemInDarkTheme()) Color(0xFF323232) else Color(0xFFDCDCDC)
+    get() = if (isSystemInDarkTheme()) Color(0xFF464646) else Color(0xFFBEBEBE)
 
 val ColorScheme.checkBoxColor: CheckboxColors
     @Composable

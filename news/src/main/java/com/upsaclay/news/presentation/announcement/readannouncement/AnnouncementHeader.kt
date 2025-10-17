@@ -4,6 +4,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -42,7 +43,6 @@ fun AnnouncementHeader(
         ) {
             Row(
                 modifier = Modifier
-                    .weight(1f)
                     .pointerInput(Unit) {
                         detectTapGestures(onTap = { onAuthorClick() })
                     },
@@ -68,6 +68,8 @@ fun AnnouncementHeader(
                     color = MaterialTheme.colorScheme.previewText
                 )
             }
+
+            Spacer(modifier = Modifier.weight(1f))
 
             OptionButton(
                 modifier = Modifier.testTag(stringResource(id = R.string.announcement_option_button_tag)),

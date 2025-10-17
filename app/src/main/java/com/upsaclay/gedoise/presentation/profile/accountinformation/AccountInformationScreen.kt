@@ -32,7 +32,7 @@ import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.extension.mediumPadding
 import com.upsaclay.common.extension.mediumSpacing
-import com.upsaclay.common.presentation.components.CriticalDialog
+import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.user.UserInformationItems
@@ -118,11 +118,12 @@ fun AccountInformationScreen(
     )
 
     if (showDeleteProfilePictureDialog) {
-        CriticalDialog(
+        DefaultDialog(
             modifier = Modifier
                 .testTag(stringResource(id = R.string.account_screen_delete_profile_picture_dialog_tag)),
             text = stringResource(id = R.string.delete_profile_picture_dialog_message),
             confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
+            critical = true,
             onConfirm = {
                 showDeleteProfilePictureDialog = false
                 onDeleteProfilePictureClick()

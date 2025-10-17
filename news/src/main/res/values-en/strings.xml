@@ -10,7 +10,7 @@
     <string name="new_announcement">New announcement</string>
     <string name="edit_announcement">Edit announcement</string>
     <string name="announcement_sent">Announcement sent</string>
-    <string name="delete_announcement_dialog_message">Do you really want delete this announcement?</string>
+    <string name="delete_announcement_dialog_message">Do you want to delete this announcement?</string>
     <string name="title_field_entry">Title</string>
     <string name="content_field_entry">Content</string>
     <string name="announcement_refresh_error">Unable to refresh announcements</string>

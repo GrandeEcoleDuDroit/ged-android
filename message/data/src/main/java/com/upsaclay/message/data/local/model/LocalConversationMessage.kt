@@ -20,8 +20,8 @@ import com.upsaclay.message.data.model.MessageField.CONTENT
 import com.upsaclay.message.data.model.MessageField.Local.STATE
 import com.upsaclay.message.data.model.MessageField.MESSAGE_ID
 import com.upsaclay.message.data.model.MessageField.RECIPIENT_ID
-import com.upsaclay.message.data.model.MessageField.SENDER_ID
 import com.upsaclay.message.data.model.MessageField.SEEN
+import com.upsaclay.message.data.model.MessageField.SENDER_ID
 import com.upsaclay.message.data.model.MessageField.TIMESTAMP
 
 @Entity(tableName = CONVERSATION_MESSAGES_TABLE_NAME)

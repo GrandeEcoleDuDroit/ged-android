@@ -31,7 +31,7 @@ import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture2
 import com.upsaclay.common.presentation.components.BackTopBar
-import com.upsaclay.common.presentation.components.CriticalDialog
+import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.theme.GedoiseTheme
@@ -111,10 +111,11 @@ fun ReadAnnouncementScreen(
     var showReportBottomSheet by remember { mutableStateOf(false) }
 
     if (showDeleteAnnouncementDialog) {
-        CriticalDialog(
+        DefaultDialog(
             modifier = Modifier.testTag(stringResource(id = R.string.read_screen_delete_dialog_tag)),
             text = stringResource(id = R.string.delete_announcement_dialog_message),
             confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
+            critical = true,
             onConfirm = {
                 showDeleteAnnouncementDialog = false
                 onDeleteAnnouncementClick()

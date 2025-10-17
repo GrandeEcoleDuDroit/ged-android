@@ -16,6 +16,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -29,52 +30,23 @@ import com.upsaclay.common.utils.Phones
 fun DefaultDialog(
     modifier: Modifier = Modifier,
     title: String? = null,
-    text: String? = null,
+    text: String,
     confirmText: String = stringResource(id = R.string.accept),
     cancelText: String = stringResource(id = R.string.cancel),
+    critical: Boolean = false,
     onConfirm: () -> Unit,
     onCancel: () -> Unit,
-    onDismiss: () -> Unit = onCancel
 ) {
     AlertDialog(
         modifier = modifier,
-        title = { title?.let { Text(text = title) } },
-        text = { text?.let { Text(text = text) } },
-        onDismissRequest = onDismiss,
-        confirmButton = {
-            TextButton(onClick = onConfirm) {
-                Text(text = confirmText)
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onCancel) {
-                Text(text = cancelText)
-            }
-        }
-    )
-}
-
-@Composable
-fun CriticalDialog(
-    modifier: Modifier = Modifier,
-    title: String? = null,
-    text: String? = null,
-    confirmText: String,
-    cancelText: String = stringResource(id = R.string.cancel),
-    onConfirm: () -> Unit,
-    onCancel: () -> Unit,
-    onDismiss: () -> Unit = onCancel
-) {
-    AlertDialog(
-        modifier = modifier,
-        title = { title?.let { Text(text = title) } },
-        text = { text?.let { Text(text = text) } },
-        onDismissRequest = onDismiss,
+        title = title?.let { { Text(text = title) } },
+        text = { Text(text = text) },
+        onDismissRequest = onCancel,
         confirmButton = {
             TextButton(onClick = onConfirm) {
                 Text(
                     text = confirmText,
-                    color = MaterialTheme.colorScheme.error
+                    color = if (critical) MaterialTheme.colorScheme.error else Color.Unspecified
                 )
             }
         },
@@ -142,16 +114,16 @@ private fun SimpleDialogPreview() {
 
 @Phones
 @Composable
-private fun CriticalActionDialogPreview() {
+private fun CriticalDialogPreview() {
     GedoiseTheme {
-        CriticalDialog(
+        DefaultDialog(
             title = "Sensible action",
             text = "Do you want to do this sensible action ?",
             confirmText = "Delete",
             cancelText = "Cancel",
+            critical = true,
             onConfirm = {},
-            onCancel = {},
-            onDismiss = {}
+            onCancel = {}
         )
     }
 }

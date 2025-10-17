@@ -40,12 +40,12 @@ import com.upsaclay.common.domain.userFixture2
 import com.upsaclay.common.extension.mediumPadding
 import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.presentation.components.BackTopBar
-import com.upsaclay.common.presentation.components.TextItem
+import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.OptionButton
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.components.ReportBottomSheet
-import com.upsaclay.common.presentation.components.CriticalDialog
+import com.upsaclay.common.presentation.components.TextItem
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
 import kotlinx.coroutines.launch
@@ -118,10 +118,11 @@ private fun UserScreen(
     }
 
     if (showBlockUserDialog) {
-        CriticalDialog(
+        DefaultDialog(
             title = stringResource(id = R.string.block_user_dialog_title),
             text = stringResource(id = R.string.block_user_dialog_message),
             confirmText = stringResource(id = com.upsaclay.common.R.string.block),
+            critical = true,
             onConfirm = {
                 showBlockUserDialog = false
                 onBlockUserClick(user.id)
@@ -131,7 +132,7 @@ private fun UserScreen(
     }
 
     if (showUnblockUserDialog) {
-        CriticalDialog(
+        DefaultDialog(
             text = stringResource(id = R.string.unblock_user_dialog_message),
             confirmText = stringResource(id = R.string.unblock),
             onConfirm = {

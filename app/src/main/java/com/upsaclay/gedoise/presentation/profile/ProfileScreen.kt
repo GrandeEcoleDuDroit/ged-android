@@ -28,7 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.presentation.components.CircularProgressBar
-import com.upsaclay.common.presentation.components.CriticalDialog
+import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.components.TextItem
 import com.upsaclay.common.presentation.components.TitleTopBar
@@ -74,12 +74,12 @@ fun ProfileScreen(
     var showLogoutDialog by remember { mutableStateOf(false) }
 
     if (showLogoutDialog) {
-        CriticalDialog(
+        DefaultDialog(
             modifier = Modifier.testTag(stringResource(id = R.string.profile_screen_logout_dialog_tag)),
             title = stringResource(id = R.string.logout),
             text = stringResource(id = R.string.logout_dialog_message),
-            cancelText = stringResource(id = com.upsaclay.common.R.string.cancel),
             confirmText = stringResource(id = R.string.logout),
+            critical = true,
             onConfirm = {
                 showLogoutDialog = false
                 onLogoutClick()

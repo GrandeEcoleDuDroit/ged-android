@@ -36,11 +36,11 @@ class ProfileScreenTest {
         rule.setContent {
             ProfileScreen(
                 user = userFixture,
-                onBackClick = {},
                 onLogoutClick = profileViewModel::logout,
                 onAccountClick = {},
                 onPrivacyClick = {},
-                onAccountInformationClick = {}
+                onAccountInformationClick = {},
+                bottomBar = {}
             )
         }
 

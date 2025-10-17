@@ -10,7 +10,7 @@
     <string name="new_announcement">Nouvelle annonce</string>
     <string name="edit_announcement">Editer annonce</string>
     <string name="announcement_sent">Annonce envoyée</string>
-    <string name="delete_announcement_dialog_message">Voulez-vous vraiment supprimer cette annonce ?</string>
+    <string name="delete_announcement_dialog_message">Voulez-vous supprimer cette annonce ?</string>
     <string name="title_field_entry">Titre</string>
     <string name="content_field_entry">Contenu</string>
     <string name="announcement_refresh_error">Impossible de rafraîchir les annonces</string>

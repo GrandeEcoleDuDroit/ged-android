@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.domain.entity.SingleUiEvent
-import com.upsaclay.common.presentation.components.CriticalDialog
+import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.message.R
@@ -79,10 +79,11 @@ private fun ConversationScreen(
     var showDeleteConversationDialog by remember { mutableStateOf(false) }
 
     if (showDeleteConversationDialog) {
-        CriticalDialog(
+        DefaultDialog(
             title = stringResource(id = R.string.delete_conversation_dialog_title),
             text = stringResource(id = R.string.delete_conversation_dialog_message),
             confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
+            critical = true,
             onConfirm = {
                 showDeleteConversationDialog = false
                 clickedConversation?.let { onDeleteConversation(it.toConversation()) }
