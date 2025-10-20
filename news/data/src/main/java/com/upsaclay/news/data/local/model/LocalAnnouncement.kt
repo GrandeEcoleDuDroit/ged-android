@@ -16,7 +16,6 @@ import com.upsaclay.news.data.AnnouncementField.Local.USER_IS_MEMBER
 import com.upsaclay.news.data.AnnouncementField.Local.USER_LAST_NAME
 import com.upsaclay.news.data.AnnouncementField.Local.USER_PROFILE_PICTURE_FILE_NAME
 import com.upsaclay.news.data.AnnouncementField.Local.USER_SCHOOL_LEVEL
-import com.upsaclay.news.domain.entity.AnnouncementState
 
 const val ANNOUNCEMENTS_TABLE = "announcements_table"
 
@@ -32,7 +31,7 @@ data class LocalAnnouncement(
     @ColumnInfo(name = DATE)
     val announcementDate: Long,
     @ColumnInfo(name = STATE)
-    val announcementState: AnnouncementState,
+    val announcementState: String,
     @ColumnInfo(name = USER_ID)
     val userId: String,
     @ColumnInfo(name = USER_FIRST_NAME)

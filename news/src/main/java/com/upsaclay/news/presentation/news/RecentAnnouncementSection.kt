@@ -1,6 +1,7 @@
 package com.upsaclay.news.presentation.news
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,6 +21,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import com.upsaclay.common.presentation.components.CircularProgressBar
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.informationText
 import com.upsaclay.common.utils.Phones
@@ -32,7 +34,7 @@ import com.upsaclay.news.presentation.news.components.CompactAnnouncementItem
 @Composable
 fun RecentAnnouncementSection(
     modifier: Modifier = Modifier,
-    announcements: List<Announcement>,
+    announcements: List<Announcement>?,
     onAnnouncementClick: (String) -> Unit,
     onUncreatedAnnouncementClick: (Announcement) -> Unit,
     onSeeAllAnnouncementsClick: () -> Unit,
@@ -60,39 +62,48 @@ fun RecentAnnouncementSection(
             }
         }
 
-        LazyColumn(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            if (announcements.isEmpty()) {
-                item {
-                    Spacer(
-                        modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.small_padding))
-                    )
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(id = R.string.no_announcement),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.informationText,
-                        textAlign = TextAlign.Center
-                    )
+        announcements?.let {
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                if (announcements.isEmpty()) {
+                    item {
+                        Spacer(
+                            modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.small_padding))
+                        )
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(id = R.string.no_announcement),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.informationText,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                } else {
+                    items(announcements) { announcement ->
+                        CompactAnnouncementItem(
+                            modifier = Modifier.testTag(stringResource(R.string.news_screen_recent_announcements_tag)),
+                            announcement = announcement,
+                            onClick = {
+                                if (announcement.state == AnnouncementState.PUBLISHED) {
+                                    onAnnouncementClick(announcement.id)
+                                } else {
+                                    onUncreatedAnnouncementClick(announcement)
+                                }
+                            },
+                            onOptionClick = { onAnnouncementOptionClick(announcement) }
+                        )
+                    }
                 }
-            } else {
-                items(announcements) { announcement ->
-                    CompactAnnouncementItem(
-                        modifier = Modifier.testTag(stringResource(R.string.news_screen_recent_announcements_tag)),
-                        announcement = announcement,
-                        onClick = {
-                            if (announcement.state == AnnouncementState.PUBLISHED) {
-                                onAnnouncementClick(announcement.id)
-                            } else {
-                                onUncreatedAnnouncementClick(announcement)
-                            }
-                        },
-                        onOptionClick = { onAnnouncementOptionClick(announcement) }
-                    )
-                }
+            }
+        } ?: run {
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressBar()
             }
         }
     }

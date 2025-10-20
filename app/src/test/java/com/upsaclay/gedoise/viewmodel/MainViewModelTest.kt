@@ -5,9 +5,10 @@ import com.upsaclay.authentication.domain.usecase.ListenAuthenticationStateUseCa
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.domain.usersFixture
-import com.upsaclay.gedoise.domain.usecase.ClearDataUseCase
-import com.upsaclay.gedoise.domain.usecase.ListenDataUseCase
-import com.upsaclay.gedoise.domain.usecase.SynchronizeDataUseCase
+import com.upsaclay.app.domain.ClearDataUseCase
+import com.upsaclay.app.domain.FcmTokenUseCase
+import com.upsaclay.app.domain.ListenDataUseCase
+import com.upsaclay.app.domain.SynchronizeDataUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -30,6 +31,7 @@ class MainViewModelTest {
     private val clearDataUseCase: ClearDataUseCase = mockk()
     private val synchronizeDataUseCase: SynchronizeDataUseCase = mockk()
     private val listenAuthenticationStateUseCase: ListenAuthenticationStateUseCase = mockk()
+    private val fcmTokenUseCase: FcmTokenUseCase = mockk()
 
     private lateinit var mainViewModel: MainViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
@@ -54,6 +56,7 @@ class MainViewModelTest {
             listenDataUseCase = listenDataUseCase,
             clearDataUseCase = clearDataUseCase,
             synchronizeDataUseCase = synchronizeDataUseCase,
+            fcmTokenUseCase = fcmTokenUseCase
         )
     }
 

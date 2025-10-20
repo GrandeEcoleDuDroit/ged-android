@@ -1,6 +1,5 @@
 package com.upsaclay.common.domain
 
-import com.upsaclay.common.domain.entity.FcmToken
 import com.upsaclay.common.domain.entity.User
 
 val userFixture = User(
@@ -65,4 +64,3 @@ val usersFixture = listOf(
         email = "charles@email.com"
     )
 )
-val fcmTokenFixture = FcmToken(userFixture.id, "token")

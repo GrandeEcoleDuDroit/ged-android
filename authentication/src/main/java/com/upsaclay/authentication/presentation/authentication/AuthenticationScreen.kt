@@ -41,7 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.upsaclay.authentication.R
-import com.upsaclay.common.domain.entity.SingleUiEvent
+import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.extension.mediumPadding
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones

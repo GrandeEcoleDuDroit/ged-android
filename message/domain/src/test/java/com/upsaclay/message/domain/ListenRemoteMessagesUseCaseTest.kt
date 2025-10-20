@@ -11,57 +11,51 @@ import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class ListenRemoteMessagesUseCaseTest {
+class ListenMessagesRemoteMessagesUseCaseTest {
     private val messageRepository: MessageRepository = mockk()
     private val conversationRepository: ConversationRepository = mockk()
     private val blockedUserRepository: BlockedUserRepository = mockk()
 
     private lateinit var useCase: ListenRemoteMessagesUseCase
 
-    private val testScope = TestScope(StandardTestDispatcher())
-
     @Before
     fun setUp() {
         coEvery { conversationRepository.upsertLocalConversation(any()) } returns Unit
-        coEvery { conversationRepository.fetchRemoteConversation(any()) } returns flowOf(conversationFixture)
+        coEvery { conversationRepository.fetchRemoteConversations(any()) } returns flowOf(conversationFixture)
         coEvery { messageRepository.getLastMessage(any()) } returns messageFixture
         coEvery { messageRepository.fetchRemoteMessages(any(), any(), any()) } returns flowOf(messageFixture)
         coEvery { messageRepository.upsertLocalMessage(any()) } returns Unit
+        coEvery { blockedUserRepository.getLocalBlockedUserIds() } returns emptySet()
 
         useCase = ListenRemoteMessagesUseCase(
             messageRepository = messageRepository,
-            blockedUserRepository = blockedUserRepository,
-            scope = testScope
+            blockedUserRepository = blockedUserRepository
         )
     }
 
     @Test
-    fun listenRemoteMessages_should_not_storeRemoteMessages_same_conversation_twice() = runTest {
+    fun listenRemoteMessages_should_not_listen_messages_same_conversation_twice() = runTest {
         // Given
-        val conversations = listOf(conversationFixture)
-        useCase.jobs = mutableMapOf(
-            conversationFixture.id to Job()
-        )
+        val conversation = conversationFixture
+        useCase.jobs = mutableMapOf(conversation.interlocutor.id to Job())
 
         // When
-        useCase.start(conversations[0])
+        useCase.start(conversation)
 
         // Then
         assert(useCase.jobs.count() == 1)
     }
 
     @Test
-    fun listenRemoteMessages_should_storeRemoteMessages_message_with_last_message_date_offset() = runTest {
+    fun listenRemoteMessages_should_listen_messages_message_with_last_message_date_offset() = runTest {
         // When
-        useCase.storeRemoteMessages(conversationFixture)
+        useCase.listenMessages(conversationFixture)
 
         // Then
         coVerify {
@@ -74,16 +68,16 @@ class ListenRemoteMessagesUseCaseTest {
     }
 
     @Test
-    fun storeRemoteMessages_should_upsert_local_message() = runTest {
+    fun listenMessages_should_upsert_local_message() = runTest {
         // When
-        useCase.storeRemoteMessages(conversationFixture)
+        useCase.listenMessages(conversationFixture)
 
         // Then
         coVerify { messageRepository.upsertLocalMessage(messageFixture) }
     }
 
     @Test
-    fun stop_should_stop_Listening_All_listening() = runTest(testScope.testScheduler) {
+    fun stopAll_should_stop_all_listening() = runTest {
         // Given
         useCase.start(conversationFixture)
         advanceUntilIdle()
@@ -96,7 +90,20 @@ class ListenRemoteMessagesUseCaseTest {
     }
 
     @Test
-    fun listenRemoteMessages_should_not_storeRemoteMessages_blocked_users_messages() {
+    fun stop_should_stop_listening_message_of_conversation() = runTest {
+        // Given
+        val conversation = conversationFixture
+        useCase.jobs = mutableMapOf(conversation.interlocutor.id to Job())
+
+        // When
+        useCase.stop(conversation.interlocutor.id)
+
+        // Then
+        assert(useCase.jobs.isEmpty())
+    }
+
+    @Test
+    fun listenRemoteMessages_should_not_listen_messages_of_blocked_users() = runTest {
         // Given
         val blockedUserId = "blockedUserId"
         val conversation = conversationFixture.copy(interlocutor = userFixture.copy(id = blockedUserId))
@@ -106,6 +113,6 @@ class ListenRemoteMessagesUseCaseTest {
         useCase.start(conversation)
 
         // Then
-        coVerify(exactly = 0) { useCase.storeRemoteMessages(conversation) }
+        coVerify(exactly = 0) { useCase.listenMessages(conversation) }
     }
 }

@@ -8,6 +8,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.PorterDuff
@@ -19,7 +20,7 @@ import androidx.core.app.Person
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.drawable.IconCompat
 import com.upsaclay.common.R
-import com.upsaclay.common.domain.IntentHelper
+import com.upsaclay.common.IntentHelper
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.message.domain.NotificationMessageUtils
@@ -27,6 +28,7 @@ import com.upsaclay.message.domain.converter.ConversationJsonConverter
 import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.NotificationMessage
 import com.upsaclay.message.domain.entity.NotificationMessages
+import java.io.InputStream
 
 const val CONVERSATION_ID_EXTRA = "conversation_id_extra"
 
@@ -101,16 +103,15 @@ class NotificationMessagePresenter (
     }
 
     private suspend fun createUserIcon(profilePictureUrl: String?): IconCompat {
-        val profilePicture = runCatching {
+        return runCatching {
             profilePictureUrl?.let { imageRepository.getImage(it) }
-        }.getOrNull()
-
-        return profilePicture?.let {
+        }.getOrNull()?.use {
             IconCompat.createWithBitmap(getCircledBitmap(it))
         } ?: IconCompat.createWithResource(context, R.drawable.default_profile_picture)
     }
 
-    private fun getCircledBitmap(bitmap: Bitmap): Bitmap {
+    private fun getCircledBitmap(inputStream: InputStream): Bitmap {
+        val bitmap = BitmapFactory.decodeStream(inputStream)
         val output = createBitmap(bitmap.width, bitmap.height)
         val canvas = Canvas(output)
         val paint = Paint()

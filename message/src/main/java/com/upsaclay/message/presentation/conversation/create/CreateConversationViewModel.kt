@@ -3,7 +3,7 @@ package com.upsaclay.message.presentation.conversation.create
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upsaclay.common.domain.entity.CurrentUserNotFoundException
-import com.upsaclay.common.domain.entity.SingleUiEvent
+import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.repository.UserRepository

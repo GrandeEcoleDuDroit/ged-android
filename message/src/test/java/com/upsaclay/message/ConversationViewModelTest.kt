@@ -1,5 +1,6 @@
 package com.upsaclay.message
 
+import com.upsaclay.common.domain.ConnectivityObserver
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.message.domain.conversationFixture
@@ -23,6 +24,7 @@ class ConversationViewModelTest {
     private val userRepository: UserRepository = mockk()
     private val getConversationUiUseCase: GetConversationsUiUseCase = mockk()
     private val deleteConversationUseCase: DeleteConversationUseCase = mockk()
+    private val connectivityObserver: ConnectivityObserver = mockk()
 
     private lateinit var conversationViewModel: ConversationViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
@@ -33,12 +35,14 @@ class ConversationViewModelTest {
 
         every { userRepository.currentUser } returns userFixture
         every { getConversationUiUseCase() } returns mockk()
+        every { connectivityObserver.isConnected } returns true
         coEvery { deleteConversationUseCase(any(), any()) } returns Unit
 
         conversationViewModel = ConversationViewModel(
             userRepository = userRepository,
             getConversationsUiUseCase = getConversationUiUseCase,
-            deleteConversationUseCase = deleteConversationUseCase
+            deleteConversationUseCase = deleteConversationUseCase,
+            connectivityObserver = connectivityObserver
         )
     }
 

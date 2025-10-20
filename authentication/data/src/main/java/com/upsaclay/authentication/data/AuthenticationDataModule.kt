@@ -7,7 +7,8 @@ import com.upsaclay.authentication.data.repository.AuthenticationRepositoryImpl
 import com.upsaclay.authentication.data.repository.firebase.FirebaseAuthenticationRepository
 import com.upsaclay.authentication.data.repository.firebase.FirebaseAuthenticationRepositoryImpl
 import com.upsaclay.authentication.domain.repository.AuthenticationRepository
-import com.upsaclay.common.domain.e
+import com.upsaclay.common.data.TokenProvider
+import com.upsaclay.common.data.e
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,4 +35,5 @@ val authenticationDataModule = module {
     singleOf(::FirebaseAuthenticationApiImpl) { bind<FirebaseAuthenticationApi>() }
     singleOf(::AuthenticationRepositoryImpl) { bind<AuthenticationRepository>() }
     singleOf(::AuthenticationLocalDataSource)
+    singleOf(::TokenProviderImpl) { bind<TokenProvider>() }
 }

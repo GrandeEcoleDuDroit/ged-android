@@ -1,8 +1,8 @@
 package com.upsaclay.common.data.remote.api
 
 import com.google.gson.Gson
+import com.upsaclay.common.data.e
 import com.upsaclay.common.domain.NotificationApi
-import com.upsaclay.common.domain.e
 import com.upsaclay.common.domain.entity.fcm.FcmMessage
 
 internal class NotificationApiImpl(private val fcmApi: FcmApi): NotificationApi {

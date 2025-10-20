@@ -25,10 +25,10 @@ class SynchronizeAnnouncementsUseCaseTest {
     fun setUp() {
         every { announcementRepository.announcements } returns flowOf(announcementsFixture)
         every { announcementRepository.currentAnnouncements } returns announcementsFixture
-        coEvery { blockedUserRepository.getLocalBlockedUserIds() } returns setOf(blockedUserId)
-        coEvery { announcementRepository.getRemoteAnnouncements() } returns announcementsFixture
-        coEvery { announcementRepository.deleteLocalAnnouncement(any()) } returns Unit
         coEvery { announcementRepository.upsertLocalAnnouncement(any()) } returns Unit
+        coEvery { announcementRepository.deleteLocalAnnouncement(any()) } returns Unit
+        coEvery { announcementRepository.getRemoteAnnouncements() } returns announcementsFixture
+        coEvery { blockedUserRepository.getLocalBlockedUserIds() } returns setOf(blockedUserId)
 
         useCase = SynchronizeAnnouncementsUseCase(
             announcementRepository = announcementRepository,
@@ -85,7 +85,6 @@ class SynchronizeAnnouncementsUseCaseTest {
 
         // When
         useCase()
-        advanceUntilIdle()
 
         // Then
         coVerify { announcementRepository.deleteLocalAnnouncement(announcement) }

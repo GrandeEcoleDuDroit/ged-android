@@ -20,17 +20,12 @@ import com.upsaclay.common.data.remote.api.UserFirestoreApi
 import com.upsaclay.common.data.remote.api.UserServerApi
 import com.upsaclay.common.data.remote.api.WhiteListApi
 import com.upsaclay.common.data.repository.BlockedUserRepositoryImpl
-import com.upsaclay.common.data.repository.DrawableRepositoryImpl
-import com.upsaclay.common.data.repository.FcmTokenRepositoryImpl
 import com.upsaclay.common.data.repository.FileRepositoryImpl
 import com.upsaclay.common.data.repository.ImageRepositoryImpl
 import com.upsaclay.common.data.repository.UserRepositoryImpl
 import com.upsaclay.common.data.repository.WhiteListRepositoryImpl
 import com.upsaclay.common.domain.NotificationApi
-import com.upsaclay.common.domain.e
 import com.upsaclay.common.domain.repository.BlockedUserRepository
-import com.upsaclay.common.domain.repository.DrawableRepository
-import com.upsaclay.common.domain.repository.FcmTokenRepository
 import com.upsaclay.common.domain.repository.FileRepository
 import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.common.domain.repository.UserRepository
@@ -81,7 +76,7 @@ val commonDataModule = module {
 
     single {
         get<Retrofit>(GED_SERVER_QUALIFIER)
-            .create(ImageApiImpl.RetrofitImageApi::class.java)
+            .create(ImageApiImpl.ServerImageApi::class.java)
     }
 
     single {
@@ -103,7 +98,6 @@ val commonDataModule = module {
     singleOf(::ImageApiImpl) { bind<ImageApi>() }
     singleOf(::ImageRemoteDataSource)
 
-    singleOf(::DrawableRepositoryImpl) { bind<DrawableRepository>() }
     singleOf(::FileRepositoryImpl) { bind<FileRepository>() }
     singleOf(::ImageRepositoryImpl) { bind<ImageRepository>() }
 
@@ -127,7 +121,5 @@ val commonDataModule = module {
     singleOf(::BlockedUserLocalDataSource)
     singleOf(::BlockedUserRepositoryImpl) { bind<BlockedUserRepository>() }
 
-
     singleOf(::WhiteListRepositoryImpl) { bind<WhiteListRepository>() }
-    singleOf(::FcmTokenRepositoryImpl) { bind<FcmTokenRepository>() }
 }

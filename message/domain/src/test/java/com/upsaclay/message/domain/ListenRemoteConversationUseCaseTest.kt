@@ -10,8 +10,6 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -25,12 +23,10 @@ class ListenRemoteConversationUseCaseTest {
 
     private lateinit var useCase: ListenRemoteConversationsUseCase
 
-    private val testScope = TestScope(StandardTestDispatcher())
-
     @Before
     fun setUp() {
         coEvery { userRepository.user } returns flowOf(userFixture)
-        coEvery { conversationRepository.fetchRemoteConversation(any()) } returns flowOf(conversationFixture)
+        coEvery { conversationRepository.fetchRemoteConversations(any()) } returns flowOf(conversationFixture)
         coEvery { conversationRepository.upsertLocalConversation(any()) } returns Unit
         coEvery { listenRemoteMessagesUseCase.start(any()) } returns Unit
         coEvery { conversationRepository.upsertLocalConversation(any()) } returns Unit
@@ -38,13 +34,12 @@ class ListenRemoteConversationUseCaseTest {
         useCase = ListenRemoteConversationsUseCase(
             userRepository = userRepository,
             conversationRepository = conversationRepository,
-            listenRemoteMessagesUseCase = listenRemoteMessagesUseCase,
-            scope = testScope
+            listenRemoteMessagesUseCase = listenRemoteMessagesUseCase
         )
     }
 
     @Test
-    fun listenRemoteConversationsUseCase_should_start_listenRemoteMessage() = runTest(testScope.testScheduler) {
+    fun listenRemoteConversationsUseCase_should_start_listenRemoteMessage() = runTest {
         // Given
         coEvery { conversationRepository.getConversation(any()) } returns null
 
@@ -57,7 +52,7 @@ class ListenRemoteConversationUseCaseTest {
     }
 
     @Test
-    fun listenRemoteConversationsUseCase_should_upsert_local_conversation() = runTest(testScope.testScheduler) {
+    fun listenRemoteConversationsUseCase_should_upsert_local_conversation() = runTest {
         // Given
         coEvery { conversationRepository.getConversation(any()) } returns null
 

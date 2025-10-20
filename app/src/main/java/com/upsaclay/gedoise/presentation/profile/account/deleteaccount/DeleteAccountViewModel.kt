@@ -9,10 +9,9 @@ import com.upsaclay.authentication.domain.entity.exception.UserDisabledException
 import com.upsaclay.common.domain.ConnectivityObserver
 import com.upsaclay.common.domain.entity.CurrentUserNotFoundException
 import com.upsaclay.common.domain.entity.NoInternetConnectionException
-import com.upsaclay.common.domain.entity.SingleUiEvent
+import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.utils.mapNetworkErrorMessage
-import com.upsaclay.gedoise.domain.usecase.DeleteAccountUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -22,7 +21,7 @@ import kotlinx.coroutines.launch
 
 class DeleteAccountViewModel(
     private val userRepository: UserRepository,
-    private val deleteAccountUseCase: DeleteAccountUseCase,
+    private val deleteAccountUseCase: com.upsaclay.app.domain.DeleteAccountUseCase,
     private val connectivityObserver: ConnectivityObserver
 ): ViewModel() {
     private val _uiState = MutableStateFlow(DeleteAccountUiState())

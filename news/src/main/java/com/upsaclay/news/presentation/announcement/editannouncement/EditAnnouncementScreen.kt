@@ -18,7 +18,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import com.upsaclay.common.domain.entity.SingleUiEvent
+import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.extension.mediumPadding
 import com.upsaclay.common.presentation.components.EditTopBar
 import com.upsaclay.common.presentation.components.LoadingDialog

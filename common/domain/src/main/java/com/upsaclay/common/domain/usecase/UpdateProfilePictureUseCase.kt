@@ -1,6 +1,5 @@
 package com.upsaclay.common.domain.usecase
 
-import android.net.Uri
 import com.upsaclay.common.domain.UrlUtils.extractFileName
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.FileRepository
@@ -13,9 +12,9 @@ class UpdateProfilePictureUseCase(
     private val imageRepository: ImageRepository,
     private val userRepository: UserRepository
 ) {
-    suspend operator fun invoke(user: User, profilePictureUri: Uri) {
+    suspend operator fun invoke(user: User, profilePictureUri: String) {
         val fileName = getFileName(user.id)
-        val file = fileRepository.createFileFromUri(fileName, profilePictureUri)
+        val file = fileRepository.createFile(fileName, profilePictureUri)
 
         withTimeout(15000) {
             imageRepository.uploadImage(file)

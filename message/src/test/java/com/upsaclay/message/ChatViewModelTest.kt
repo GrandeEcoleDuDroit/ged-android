@@ -54,7 +54,7 @@ class ChatViewModelTest {
         every { messageRepository.getLastMessageFlow(any()) } returns flowOf(messageFixture)
         every { sendMessageUseCase(any(), any(), any()) } returns Unit
         every { blockedUserRepository.blockedUserIds } returns flowOf(emptySet())
-        every { deleteConversationUseCase(any(), any()) } returns Unit
+        coEvery { deleteConversationUseCase(any(), any()) } returns Unit
         coEvery { messageRepository.updateSeenMessages(any(), any()) } returns Unit
         coEvery { notificationMessageManager.clearNotifications(any()) } returns Unit
         coEvery { notificationMessageUseCase.sendNotification(any()) } returns Unit
