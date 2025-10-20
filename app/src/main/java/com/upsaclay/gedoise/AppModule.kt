@@ -2,26 +2,11 @@ package com.upsaclay.gedoise
 
 import MainViewModel
 import androidx.room.Room
+import com.upsaclay.app.data.GedoiseDatabase
 import com.upsaclay.common.ConnectivityObserverImpl
-import com.upsaclay.common.data.GED_SERVER_QUALIFIER
-import com.upsaclay.common.data.TokenProvider
-import com.upsaclay.common.data.local.FcmLocalDataSource
-import com.upsaclay.common.data.local.datastore.FcmDataStore
-import com.upsaclay.common.data.remote.api.FcmApi
+import com.upsaclay.common.IntentHelper
+import com.upsaclay.common.data.e
 import com.upsaclay.common.domain.ConnectivityObserver
-import com.upsaclay.common.domain.IntentHelper
-import com.upsaclay.common.domain.e
-import com.upsaclay.common.domain.repository.RouteRepository
-import com.upsaclay.gedoise.data.GedoiseDatabase
-import com.upsaclay.gedoise.data.repository.RouteRepositoryImpl
-import com.upsaclay.gedoise.data.repository.TokenProviderImpl
-import com.upsaclay.gedoise.domain.usecase.ClearDataUseCase
-import com.upsaclay.gedoise.domain.usecase.DeleteAccountUseCase
-import com.upsaclay.gedoise.domain.usecase.FcmTokenUseCase
-import com.upsaclay.gedoise.domain.usecase.ListenBlockedUserEvents
-import com.upsaclay.gedoise.domain.usecase.ListenDataUseCase
-import com.upsaclay.gedoise.domain.usecase.ListenRemoteUserUseCase
-import com.upsaclay.gedoise.domain.usecase.SynchronizeDataUseCase
 import com.upsaclay.gedoise.presentation.navigation.NavigationViewModel
 import com.upsaclay.gedoise.presentation.profile.ProfileViewModel
 import com.upsaclay.gedoise.presentation.profile.account.deleteaccount.DeleteAccountViewModel
@@ -37,7 +22,6 @@ import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import retrofit2.Retrofit
 
 private const val DATABASE_NAME = "GedoiseDatabase"
 private val BACKGROUND_SCOPE = named("BackgroundScope")
@@ -53,35 +37,12 @@ val appModule = module {
         )
     }
 
-    single {
-        Room.databaseBuilder(
-            androidContext(),
-            GedoiseDatabase::class.java,
-            DATABASE_NAME
-        ).fallbackToDestructiveMigration().build()
-    }
-
-    single {
-        get<Retrofit>(GED_SERVER_QUALIFIER)
-            .create(FcmApi::class.java)
-    }
-
-    single { get<GedoiseDatabase>().announcementDao() }
-    single { get<GedoiseDatabase>().conversationDao() }
-    single { get<GedoiseDatabase>().messageDao() }
-    single { get<GedoiseDatabase>().conversationMessageDao() }
-    single { get<GedoiseDatabase>().notificationMessageDao() }
-
     single<ConnectivityObserver> {
         ConnectivityObserverImpl(
             context = androidContext(),
             scope = get(BACKGROUND_SCOPE)
         )
     }
-    singleOf(::RouteRepositoryImpl) { bind<RouteRepository>() }
-    singleOf(::FcmLocalDataSource)
-    singleOf(::FcmDataStore)
-    singleOf(::TokenProviderImpl) { bind<TokenProvider>() }
 
     viewModelOf(::NavigationViewModel)
     viewModelOf(::ProfileViewModel)
@@ -89,40 +50,6 @@ val appModule = module {
     viewModelOf(::MainViewModel)
     viewModelOf(::BlockedUsersViewModel)
     viewModelOf(::DeleteAccountViewModel)
-
-    singleOf(::ClearDataUseCase)
-    singleOf(::DeleteAccountUseCase)
-    singleOf(::ListenDataUseCase)
-    singleOf(::SynchronizeDataUseCase)
-    singleOf(::DeleteAccountUseCase)
-
-    single {
-        FcmTokenUseCase(
-            userRepository = get(),
-            fcmTokenRepository = get(),
-            connectivityObserver = get(),
-            listenAuthenticationStateUseCase = get(),
-            scope = get(BACKGROUND_SCOPE)
-        )
-    }
-
-    single {
-        ListenRemoteUserUseCase(
-            userRepository = get(),
-            authenticationRepository = get(),
-            scope = get(BACKGROUND_SCOPE)
-        )
-    }
-
-    single {
-        ListenBlockedUserEvents(
-            blockedUserRepository = get(),
-            announcementRepository = get(),
-            listenRemoteMessagesUseCase = get(),
-            updateConversationDeleteTimeUseCase = get(),
-            scope = get(BACKGROUND_SCOPE)
-        )
-    }
 
     singleOf(::IntentHelperImpl) { bind<IntentHelper>() }
 }

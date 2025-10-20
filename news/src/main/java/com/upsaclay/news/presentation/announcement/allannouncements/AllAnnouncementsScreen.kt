@@ -1,5 +1,6 @@
 package com.upsaclay.news.presentation.announcement.allannouncements
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
@@ -26,10 +28,11 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import com.upsaclay.common.domain.entity.SingleUiEvent
+import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.presentation.components.BackTopBar
+import com.upsaclay.common.presentation.components.CircularProgressBar
 import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.ListDivider
 import com.upsaclay.common.presentation.components.LoadingDialog
@@ -76,10 +79,10 @@ fun AllAnnouncementsDestination(
         }
     }
 
-    if (uiState.announcements != null && uiState.user != null) {
+    if (uiState.user != null) {
         AllAnnouncementsScreen(
             user = uiState.user!!,
-            announcements = uiState.announcements!!,
+            announcements = uiState.announcements,
             refreshing = uiState.refreshing,
             loading = uiState.loading,
             snackbarHostState = snackbarHostState,
@@ -99,7 +102,7 @@ fun AllAnnouncementsDestination(
 @Composable
 private fun AllAnnouncementsScreen(
     user: User,
-    announcements: List<Announcement>,
+    announcements: List<Announcement>?,
     refreshing: Boolean,
     loading: Boolean,
     snackbarHostState: SnackbarHostState = SnackbarHostState(),
@@ -156,44 +159,55 @@ private fun AllAnnouncementsScreen(
             onRefresh = onRefresh,
             isRefreshing = refreshing
         ) {
-            LazyColumn {
-                if (announcements.isEmpty()) {
-                    item {
-                        Text(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = stringResource(id = R.string.no_announcement),
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.previewText,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                } else {
-                    itemsIndexed(announcements) { index, announcement ->
-                        ExtendedAnnouncementItem(
-                            announcement = announcement,
-                            onClick = {
-                                if (announcement.state == AnnouncementState.PUBLISHED) {
-                                    onAnnouncementClick(announcement.id)
-                                } else {
-                                    clickedAnnouncement = announcement
-                                    showAnnouncementBottomSheet = true
-                                }
-                            },
-                            onOptionClick = {
-                                clickedAnnouncement = announcement
-                                showAnnouncementBottomSheet = true
-                            },
-                            onAuthorClick = { onAuthorClick(announcement.author) }
-                        )
-
-                        if (index != announcements.lastIndex) {
-                            ListDivider(
-                                modifier = Modifier.padding(
-                                    start = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)
-                                )
+            announcements?.let {
+                LazyColumn {
+                    if (announcements.isEmpty()) {
+                        item {
+                            Text(
+                                modifier = Modifier.fillMaxWidth(),
+                                text = stringResource(id = R.string.no_announcement),
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.previewText,
+                                textAlign = TextAlign.Center
                             )
                         }
+                    } else {
+                        itemsIndexed(announcements) { index, announcement ->
+                            ExtendedAnnouncementItem(
+                                announcement = announcement,
+                                onClick = {
+                                    if (announcement.state == AnnouncementState.PUBLISHED) {
+                                        onAnnouncementClick(announcement.id)
+                                    } else {
+                                        clickedAnnouncement = announcement
+                                        showAnnouncementBottomSheet = true
+                                    }
+                                },
+                                onOptionClick = {
+                                    clickedAnnouncement = announcement
+                                    showAnnouncementBottomSheet = true
+                                },
+                                onAuthorClick = { onAuthorClick(announcement.author) }
+                            )
+
+                            if (index != announcements.lastIndex) {
+                                ListDivider(
+                                    modifier = Modifier.padding(
+                                        start = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)
+                                    )
+                                )
+                            }
+                        }
                     }
+                }
+            } ?: run {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressBar(
+                        modifier = Modifier.padding(top = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+                    )
                 }
             }
         }

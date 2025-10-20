@@ -2,7 +2,7 @@ package com.upsaclay.gedoise
 
 import android.content.Context
 import android.content.Intent
-import com.upsaclay.common.domain.IntentHelper
+import com.upsaclay.common.IntentHelper
 import com.upsaclay.gedoise.presentation.MainActivity
 
 class IntentHelperImpl: IntentHelper {

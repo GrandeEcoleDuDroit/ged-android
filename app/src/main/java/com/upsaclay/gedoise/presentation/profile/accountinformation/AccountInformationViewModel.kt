@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upsaclay.common.domain.ConnectivityObserver
 import com.upsaclay.common.domain.entity.NoInternetConnectionException
-import com.upsaclay.common.domain.entity.SingleUiEvent
+import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.DeleteProfilePictureUseCase
@@ -49,7 +49,7 @@ class AccountInformationViewModel(
                 val user = requireNotNull(_uiState.value.user)
                 _uiState.value.profilePictureUri?.let { uri ->
                     updateState(loading = true)
-                    updateProfilePictureUseCase(user, uri)
+                    updateProfilePictureUseCase(user, uri.toString())
                     cancelEdit()
                     _event.emit(SingleUiEvent.Success(R.string.profile_picture_updated))
                 }

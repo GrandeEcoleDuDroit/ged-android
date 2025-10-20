@@ -61,7 +61,7 @@ dependencies {
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.okhttp)
     implementation(platform(libs.okhttp.bom))
-    implementation(libs.koin)
+    implementation(libs.koin.android)
     implementation(libs.koin.core)
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.gson)

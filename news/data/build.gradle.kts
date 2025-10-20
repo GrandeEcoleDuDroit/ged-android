@@ -32,11 +32,10 @@ android {
 
 dependencies {
     implementation(libs.androidx.core.ktx)
-    implementation(libs.jakewharton.timber)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.runtime)
-    implementation(libs.koin)
+    implementation(libs.koin.android)
     implementation(libs.koin.core)
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.gson)

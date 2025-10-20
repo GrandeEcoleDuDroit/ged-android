@@ -36,7 +36,7 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.gson)
-    implementation(libs.koin)
+    implementation(libs.koin.android)
     implementation(libs.koin.core)
     implementation(libs.firebase.auth)
 

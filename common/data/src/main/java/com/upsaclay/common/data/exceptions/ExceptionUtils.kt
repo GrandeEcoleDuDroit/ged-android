@@ -2,8 +2,8 @@ package com.upsaclay.common.data.exceptions
 
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.FirebaseTooManyRequestsException
+import com.upsaclay.common.data.e
 import com.upsaclay.common.data.formatHttpError
-import com.upsaclay.common.domain.e
 import com.upsaclay.common.domain.entity.InternalServerException
 import com.upsaclay.common.domain.entity.TooManyRequestException
 import retrofit2.Response

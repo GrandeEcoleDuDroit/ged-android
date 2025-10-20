@@ -6,20 +6,13 @@ import com.upsaclay.news.domain.usecase.ResendAnnouncementUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.advanceUntilIdle
-import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class ResendAnnouncementUseCaseTest {
     private val announcementRepository: AnnouncementRepository = mockk()
 
     private lateinit var useCase: ResendAnnouncementUseCase
-    private val testScope = TestScope(UnconfinedTestDispatcher())
 
     @Before
     fun setUp() {
@@ -27,7 +20,6 @@ class ResendAnnouncementUseCaseTest {
 
         useCase = ResendAnnouncementUseCase(
             announcementRepository = announcementRepository,
-            scope = testScope
         )
     }
 
@@ -46,13 +38,12 @@ class ResendAnnouncementUseCaseTest {
     }
 
     @Test
-    fun resendAnnouncement_should_update_local_announcement_to_published_state_when_succeeds() = runTest(testScope.testScheduler) {
+    fun resendAnnouncement_should_update_local_announcement_to_published_state_when_succeeds() {
         // Given
         val announcement = announcementFixture.copy(state = AnnouncementState.DRAFT)
 
         // When
         useCase(announcement)
-        testScope.advanceUntilIdle()
 
         // Then
         coVerify {

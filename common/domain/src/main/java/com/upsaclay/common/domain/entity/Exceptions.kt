@@ -34,3 +34,8 @@ class CurrentUserNotFoundException(
     override val message: String? = null,
     override val cause: Throwable? = null
 ): Exception()
+
+class InvalidFormatFileException(
+    override val message: String? = null,
+    override val cause: Throwable? = null
+): Exception()

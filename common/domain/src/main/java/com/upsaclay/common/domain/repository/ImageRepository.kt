@@ -1,10 +1,10 @@
 package com.upsaclay.common.domain.repository
 
-import android.graphics.Bitmap
 import java.io.File
+import java.io.InputStream
 
 interface ImageRepository {
-    suspend fun getImage(fileName: String): Bitmap?
+    suspend fun getImage(fileName: String): InputStream?
 
     suspend fun uploadImage(file: File)
 

@@ -17,7 +17,7 @@ fun Announcement.toLocal() = LocalAnnouncement(
     announcementTitle = title,
     announcementContent = content,
     announcementDate = date.toEpochMilliUTC(),
-    announcementState = state,
+    announcementState = state.name,
     userId = author.id,
     userFirstName = author.firstName,
     userLastName = author.lastName,
@@ -43,7 +43,7 @@ fun LocalAnnouncement.toAnnouncement() = Announcement(
         profilePictureUrl = userProfilePictureFileName,
         isDeleted = userIsDeleted
     ),
-    state = announcementState
+    state = AnnouncementState.valueOf(announcementState)
 )
 
 internal fun RemoteAnnouncementWithUser.toAnnouncement() = Announcement(

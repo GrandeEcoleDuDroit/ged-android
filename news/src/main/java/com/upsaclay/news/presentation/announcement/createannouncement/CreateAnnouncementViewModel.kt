@@ -1,6 +1,7 @@
 package com.upsaclay.news.presentation.announcement.createannouncement
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.GenerateIdUseCase
@@ -10,6 +11,7 @@ import com.upsaclay.news.domain.usecase.CreateAnnouncementUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
@@ -52,7 +54,9 @@ class CreateAnnouncementViewModel(
             author = user,
             state = AnnouncementState.DRAFT
         )
-        createAnnouncementUseCase(announcement)
+        viewModelScope.launch {
+            createAnnouncementUseCase(announcement)
+        }
     }
 
     private fun validateCreate(content: String): Boolean = content.isNotBlank()

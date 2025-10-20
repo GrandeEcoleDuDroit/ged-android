@@ -26,12 +26,13 @@ import com.upsaclay.message.domain.entity.ConversationUi
 
 @Composable
 fun ConversationFeed(
+    modifier: Modifier = Modifier,
     conversations: List<ConversationUi>,
     onClick: (ConversationUi) -> Unit,
     onLongClick: (ConversationUi) -> Unit,
     onCreateClick: () -> Unit
 ) {
-    LazyColumn {
+    LazyColumn(modifier = modifier) {
         if (conversations.isEmpty()) {
             item { EmptyConversationText(onCreateClick) }
         } else {

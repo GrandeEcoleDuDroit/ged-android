@@ -27,7 +27,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.authentication.presentation.components.OutlinePasswordTextField
-import com.upsaclay.common.domain.entity.SingleUiEvent
+import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.extension.mediumPadding
 import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.presentation.components.BackTopBar

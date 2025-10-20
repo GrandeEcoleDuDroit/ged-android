@@ -2,6 +2,8 @@ package com.upsaclay.common.data.repository
 
 import android.content.Context
 import android.net.Uri
+import androidx.core.net.toUri
+import com.upsaclay.common.domain.entity.InvalidFormatFileException
 import com.upsaclay.common.domain.repository.FileRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -9,21 +11,22 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 
 internal class FileRepositoryImpl(private val context: Context) : FileRepository {
-    override suspend fun createFileFromUri(fileName: String, uri: Uri): File = withContext(Dispatchers.IO) {
-        val extension = getFileType(uri) ?: "jpeg"
-        val fileByteArray = getFileByteArray(uri)
-        return@withContext createFileFromByteArray("$fileName.$extension", fileByteArray)
+    override suspend fun createFile(fileName: String, uri: String): File = withContext(Dispatchers.IO) {
+        val parsedUri = uri.toUri()
+        val extension = getType(parsedUri) ?: throw InvalidFormatFileException()
+        val bytes = readBytes(parsedUri)
+        return@withContext writeNewFile("$fileName.$extension", bytes)
     }
 
-    override suspend fun createFileFromByteArray(fileName: String, byteArray: ByteArray): File = withContext(Dispatchers.IO) {
+    private suspend fun writeNewFile(fileName: String, bytes: ByteArray): File = withContext(Dispatchers.IO) {
         val file = File(context.cacheDir, fileName)
         val outPutStream = file.outputStream()
-        outPutStream.write(byteArray)
+        outPutStream.write(bytes)
         outPutStream.close()
         file
     }
 
-    private fun getFileByteArray(uri: Uri): ByteArray {
+    private fun readBytes(uri: Uri): ByteArray {
         val inputStream = context.contentResolver.openInputStream(uri)
         val byteArrayOutputStream = ByteArrayOutputStream()
         val buffer = ByteArray(1024)
@@ -39,6 +42,6 @@ internal class FileRepositoryImpl(private val context: Context) : FileRepository
         return byteArrayOutputStream.toByteArray()
     }
 
-    override fun getFileType(uri: Uri): String? =
+    private fun getType(uri: Uri): String? =
         context.contentResolver.getType(uri)?.split("/")?.last()
 }

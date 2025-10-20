@@ -4,13 +4,14 @@ import android.app.Application
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.MemoryCacheSettings
+import com.upsaclay.app.data.appDataModule
+import com.upsaclay.app.domain.appDomainModule
 import com.upsaclay.authentication.authenticationModule
 import com.upsaclay.authentication.data.authenticationDataModule
 import com.upsaclay.authentication.domain.authenticationDomainModule
 import com.upsaclay.common.commonModule
 import com.upsaclay.common.data.commonDataModule
 import com.upsaclay.common.domain.commonDomainModule
-import com.upsaclay.gedoise.domain.usecase.FcmTokenUseCase
 import com.upsaclay.message.data.messageDataModule
 import com.upsaclay.message.data.worker.StartupMessageWorker
 import com.upsaclay.message.domain.messageDomainModule
@@ -36,6 +37,8 @@ class GedApplication : Application() {
             modules(
                 listOf(
                     appModule,
+                    appDomainModule,
+                    appDataModule,
                     authenticationModule,
                     authenticationDomainModule,
                     authenticationDataModule,
@@ -52,7 +55,6 @@ class GedApplication : Application() {
             )
         }
 
-        get<FcmTokenUseCase>().listenEvents()
         get<StartupMessageWorker>().run()
         plant(Timber.DebugTree())
     }

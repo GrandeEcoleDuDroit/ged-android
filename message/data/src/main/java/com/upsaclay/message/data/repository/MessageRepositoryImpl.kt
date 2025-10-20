@@ -1,12 +1,14 @@
 package com.upsaclay.message.data.repository
 
 import androidx.paging.PagingData
+import com.upsaclay.common.data.e
 import com.upsaclay.message.data.local.MessageLocalDataSource
 import com.upsaclay.message.data.remote.MessageRemoteDataSource
 import com.upsaclay.message.domain.entity.Message
 import com.upsaclay.message.domain.entity.MessageReport
 import com.upsaclay.message.domain.repository.MessageRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import java.time.LocalDateTime
 
 internal class MessageRepositoryImpl(
@@ -26,6 +28,9 @@ internal class MessageRepositoryImpl(
 
     override fun fetchRemoteMessages(conversationId: String, interlocutorId: String, offsetTime: LocalDateTime?): Flow<Message> =
         messageRemoteDataSource.listenMessages(conversationId, interlocutorId, offsetTime)
+            .catch {
+                e("Failed to fetch remote messages: ${it.message}", it)
+            }
 
     override suspend fun createLocalMessage(message: Message) {
         messageLocalDataSource.upsertMessage(message)

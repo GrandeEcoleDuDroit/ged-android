@@ -8,17 +8,18 @@ import com.upsaclay.message.domain.entity.MessageState
 import com.upsaclay.message.domain.entity.NotificationMessage
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class SendMessageUseCase(
     private val conversationRepository: ConversationRepository,
     private val messageRepository: MessageRepository,
-    private val notificationMessageUseCase: NotificationMessageUseCase,
-    private val scope: CoroutineScope
+    private val notificationMessageUseCase: NotificationMessageUseCase
 ) {
+    @OptIn(DelicateCoroutinesApi::class)
     operator fun invoke(conversation: Conversation, message: Message, userId: String) {
-        scope.launch {
+        GlobalScope.launch {
             try {
                 createDataLocally(conversation, message)
                 createDataRemotely(conversation, message, userId)

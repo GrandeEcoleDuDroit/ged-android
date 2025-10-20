@@ -1,6 +1,7 @@
 package com.upsaclay.message.presentation.conversation
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
@@ -12,11 +13,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import com.upsaclay.common.domain.entity.SingleUiEvent
+import com.upsaclay.common.presentation.SingleUiEvent
+import com.upsaclay.common.presentation.components.CircularProgressBar
 import com.upsaclay.common.presentation.components.DefaultDialog
+import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.message.R
@@ -57,6 +62,7 @@ fun ConversationDestination(
 
     ConversationScreen(
         conversations = uiState.conversations,
+        loading = uiState.loading,
         onConversationClick = onConversationClick,
         onDeleteConversation = viewModel::deleteConversation,
         onCreateConversation = onCreateConversation,
@@ -68,6 +74,7 @@ fun ConversationDestination(
 @Composable
 private fun ConversationScreen(
     conversations: List<ConversationUi>?,
+    loading: Boolean,
     onConversationClick: (Conversation) -> Unit,
     onDeleteConversation: (Conversation) -> Unit,
     onCreateConversation: () -> Unit,
@@ -92,23 +99,35 @@ private fun ConversationScreen(
         )
     }
 
+    if (loading) {
+        LoadingDialog()
+    }
+
     ConversationScaffold(
         onCreateConversation = onCreateConversation,
         snackbarHostState = snackbarHostState,
         bottomBar = bottomBar
     ) { paddingValues ->
-        Column(
-            modifier = Modifier.padding(paddingValues)
-        ) {
-            conversations?.let { conversations ->
-                ConversationFeed(
-                    conversations = conversations,
-                    onClick = { onConversationClick(it.toConversation()) },
-                    onLongClick = {
-                        clickedConversation = it
-                        showBottomSheet = true
-                    },
-                    onCreateClick = onCreateConversation
+        conversations?.let { conversations ->
+            ConversationFeed(
+                modifier = Modifier.padding(paddingValues),
+                conversations = conversations,
+                onClick = { onConversationClick(it.toConversation()) },
+                onLongClick = {
+                    clickedConversation = it
+                    showBottomSheet = true
+                },
+                onCreateClick = onCreateConversation
+            )
+        } ?: run {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(paddingValues),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressBar(
+                    modifier = Modifier.padding(top = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
                 )
             }
         }
@@ -140,6 +159,7 @@ private fun ConversationsScreenPreview() {
         Surface {
             ConversationScreen(
                 conversations = conversations,
+                loading = false,
                 onConversationClick = {},
                 onDeleteConversation = {},
                 onCreateConversation = {},
