@@ -8,6 +8,7 @@ import com.upsaclay.common.domain.entity.NoInternetConnectionException
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.utils.mapNetworkErrorMessage
+import com.upsaclay.message.R
 import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.ConversationUi
 import com.upsaclay.message.domain.usecase.DeleteConversationUseCase
@@ -48,6 +49,7 @@ class ConversationViewModel(
 
                 val user = userRepository.currentUser ?: throw CurrentUserNotFoundException()
                 deleteConversationUseCase(conversation, user.id)
+                _event.emit(SingleUiEvent.Success(R.string.conversation_deleted))
             } catch (e: Exception) {
                 _event.emit(SingleUiEvent.Error(mapToErrorMessage(e)))
             } finally {

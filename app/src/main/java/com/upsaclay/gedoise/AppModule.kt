@@ -1,8 +1,6 @@
 package com.upsaclay.gedoise
 
 import MainViewModel
-import androidx.room.Room
-import com.upsaclay.app.data.GedoiseDatabase
 import com.upsaclay.common.ConnectivityObserverImpl
 import com.upsaclay.common.IntentHelper
 import com.upsaclay.common.data.e
@@ -23,7 +21,6 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-private const val DATABASE_NAME = "GedoiseDatabase"
 private val BACKGROUND_SCOPE = named("BackgroundScope")
 
 val appModule = module {
@@ -39,8 +36,7 @@ val appModule = module {
 
     single<ConnectivityObserver> {
         ConnectivityObserverImpl(
-            context = androidContext(),
-            scope = get(BACKGROUND_SCOPE)
+            context = androidContext()
         )
     }
 
