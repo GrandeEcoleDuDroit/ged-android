@@ -35,6 +35,7 @@ class ConversationViewModelTest {
 
         every { userRepository.currentUser } returns userFixture
         every { getConversationUiUseCase() } returns mockk()
+        every { connectivityObserver.isConnected } returns true
         coEvery { deleteConversationUseCase(any(), any()) } returns Unit
 
         conversationViewModel = ConversationViewModel(
