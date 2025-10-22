@@ -2,7 +2,7 @@ package com.upsaclay.message.data.mapper
 
 import com.upsaclay.common.data.extensions.toLocalDateTime
 import com.upsaclay.common.data.extensions.toTimestamp
-import com.upsaclay.common.domain.UrlUtils
+import com.upsaclay.common.data.UrlUtils
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.extensions.toEpochMilliUTC
 import com.upsaclay.common.domain.extensions.toLocalDateTimeUTC

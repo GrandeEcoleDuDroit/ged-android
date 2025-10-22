@@ -3,8 +3,20 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
 }
 
-val GED_SERVER_URL: String by project
-val LOCAL_SERVER_URL: String by project
+val GED_SERVER_URL: String =
+    project.findProperty("GED_SERVER_URL") as String?
+        ?: System.getenv("GED_SERVER_URL")
+        ?: error("GED_SERVER_URL is not set in gradle.properties or as environment variable")
+
+val LOCAL_SERVER_URL: String =
+    project.findProperty("LOCAL_SERVER_URL") as String?
+        ?: System.getenv("LOCAL_SERVER_URL")
+        ?: error("LOCAL_SERVER_URL is not set in gradle.properties or as environment variable")
+
+val ORACLE_BUCKET_URL: String =
+    project.findProperty("ORACLE_BUCKET_URL") as String?
+        ?: System.getenv("ORACLE_BUCKET_URL")
+        ?: error("ORACLE_BUCKET_URL is not set in gradle.properties or as environment variable")
 
 android {
     namespace = "com.upsaclay.common.data"
@@ -14,6 +26,11 @@ android {
         minSdk = 29
 
         consumerProguardFiles("consumer-rules.pro")
+        buildConfigField(
+            "String",
+            "ORACLE_BUCKET_URL",
+            "\"$ORACLE_BUCKET_URL\"",
+        )
     }
 
     buildTypes {
@@ -39,6 +56,7 @@ android {
             )
         }
     }
+
     buildFeatures {
         buildConfig = true
     }

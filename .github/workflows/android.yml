@@ -2,14 +2,49 @@ name: Android CI
 
 on:
   pull_request:
-    branches: [ "development" ]
+    branches:
+    - 'development'
+    - 'release/*'
+
+env:
+  GED_SERVER_URL: ${{ secrets.GED_SERVER_URL }}
+  LOCAL_SERVER_URL: ${{ secrets.LOCAL_SERVER_URL }}
+  ORACLE_BUCKET_URL: ${{ secrets.ORACLE_BUCKET_URL }}
+  KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+  KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+  KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+  KEYSTORE_PATH: ${{ secrets.KEYSTORE_PATH }}
 
 jobs:
-  build:
+  assemble_debug:
     runs-on: ubuntu-latest
-    env:
-      GED_SERVER_URL: ${{ secrets.GED_SERVER_URL }}
-      LOCAL_SERVER_URL: ${{ secrets.LOCAL_SERVER_URL }}
+    if: github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'development'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Download configuration files
+        run: curl "$ORACLE_BUCKET_URL"google-services.json -o app/google-services.json
+
+      - name: Build debug APK
+        run: ./gradlew assembleDebug
+
+      - name: Run unit tests
+        run: ./gradlew testDebugUnitTest
+
+  assemble_release:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && startsWith(github.event.pull_request.base.ref, 'release/')
 
     steps:
       - name: Checkout
@@ -22,31 +57,25 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
 
-      - name: Cache Gradle build cache
-        uses: actions/cache@v3
-        with:
-          path: ~/.gradle/build-cache
-          key: gradle-buildcache-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            gradle-buildcache-${{ runner.os }}-
-
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Set up server URLs
+      - name: Download configuration files
         run: |
-          echo "GED_SERVER_URL=$GED_SERVER_URL" >> $GITHUB_WORKSPACE/gradle.properties
-          echo "LOCAL_SERVER_URL=$LOCAL_SERVER_URL" >> $GITHUB_WORKSPACE/gradle.properties
+          rm -f app/google-services.json
+          curl "$ORACLE_BUCKET_URL"google-services.json -o app/google-services.json
 
-      - name: Build
-        run: ./gradlew build
+      - name: Decode keystore
+        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > app/$KEYSTORE_PATH
+
+      - name: Build release App Bundle
+        run: ./gradlew bundleRelease
 
       - name: Run unit tests
-        run: ./gradlew testDebugUnitTest
+        run: ./gradlew testReleaseUnitTest
 
-      - name: Save Gradle build cache
-        if: success()
-        uses: actions/cache/save@v3
+      - name: Upload App Bundle artifact
+        uses: actions/upload-artifact@v4
         with:
-          path: ~/.gradle/build-cache
-          key: gradle-buildcache-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          name: app-release.aab
+          path: app/build/outputs/bundle/release/app-release.aab

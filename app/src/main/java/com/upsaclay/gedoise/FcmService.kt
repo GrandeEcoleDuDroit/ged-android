@@ -8,8 +8,8 @@ import com.upsaclay.common.domain.entity.fcm.FcmDataType
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.app.domain.FcmTokenUseCase
 import com.upsaclay.app.domain.entity.FcmToken
-import com.upsaclay.message.domain.entity.RemoteNotificationMessage
-import com.upsaclay.message.domain.mapper.toNotificationMessage
+import com.upsaclay.message.data.remote.RemoteNotificationMessage
+import com.upsaclay.message.data.mapper.toNotificationMessage
 import com.upsaclay.message.notification.NotificationMessageManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

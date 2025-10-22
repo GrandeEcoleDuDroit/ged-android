@@ -1,14 +1,16 @@
 package com.upsaclay.message.domain
 
+import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.message.domain.entity.ConversationState
 import com.upsaclay.message.domain.entity.MessageState
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
-import com.upsaclay.message.domain.usecase.NotificationMessageUseCase
+import com.upsaclay.message.domain.repository.NotificationMessageRepository
 import com.upsaclay.message.domain.usecase.SendMessageUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
@@ -21,25 +23,29 @@ import org.junit.Test
 class SendMessageUseCaseTest {
     private val conversationRepository: ConversationRepository = mockk()
     private val messageRepository: MessageRepository = mockk()
-    private val notificationMessageUseCase: NotificationMessageUseCase = mockk()
+    private val notificationMessageRepository: NotificationMessageRepository = mockk()
+    private val userRepository: UserRepository = mockk()
 
     private lateinit var useCase: SendMessageUseCase
     private val testScope = TestScope(UnconfinedTestDispatcher())
 
     @Before
     fun setUp() {
+        every { userRepository.currentUser } returns userFixture
         coEvery { conversationRepository.updateLocalConversation(any()) } returns Unit
         coEvery { conversationRepository.createLocalConversation(any()) } returns Unit
         coEvery { conversationRepository.createRemoteConversation(any(), any()) } returns Unit
         coEvery { messageRepository.updateLocalMessage(any()) } returns Unit
         coEvery { messageRepository.createLocalMessage(any()) } returns Unit
         coEvery { messageRepository.createRemoteMessage(any()) } returns Unit
-        coEvery { notificationMessageUseCase.sendNotification(any()) } returns Unit
+        coEvery { notificationMessageRepository.sendNotification(any(), any()) } returns Unit
+
 
         useCase = SendMessageUseCase(
             conversationRepository = conversationRepository,
             messageRepository = messageRepository,
-            notificationMessageUseCase = notificationMessageUseCase,
+            notificationMessageRepository = notificationMessageRepository,
+            userRepository = userRepository,
             scope = testScope
         )
     }
@@ -102,6 +108,6 @@ class SendMessageUseCaseTest {
         useCase(conversationFixture, messageFixture, userFixture.id)
 
         // Then
-        coEvery { notificationMessageUseCase.sendNotification(any()) }
+        coVerify { notificationMessageRepository.sendNotification(any(), any()) }
     }
 }

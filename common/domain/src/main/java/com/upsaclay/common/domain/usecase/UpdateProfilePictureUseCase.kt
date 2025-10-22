@@ -1,6 +1,5 @@
 package com.upsaclay.common.domain.usecase
 
-import com.upsaclay.common.domain.UrlUtils.extractFileName
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.FileRepository
 import com.upsaclay.common.domain.repository.ImageRepository
@@ -19,13 +18,8 @@ class UpdateProfilePictureUseCase(
         withTimeout(15000) {
             imageRepository.uploadImage(file)
             userRepository.updateProfilePictureFileName(user.id, file.name)
-            user.profilePictureUrl?.let { deletePreviousProfilePicture(it) }
+            user.profilePictureUrl?.let { imageRepository.deleteImage(it) }
         }
-    }
-
-    private suspend fun deletePreviousProfilePicture(userProfilePictureUrl: String) {
-        extractFileName(userProfilePictureUrl)
-            ?.let { imageRepository.deleteImage(it) }
     }
 
     private fun getFileName(userId: String) = "${userId}-profile-picture-${System.currentTimeMillis()}"

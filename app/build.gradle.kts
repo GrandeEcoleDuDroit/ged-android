@@ -8,6 +8,26 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.serialization)
 }
 
+val KEYSTORE_PATH: String =
+    project.findProperty("KEYSTORE_PATH") as String?
+        ?: System.getenv("KEYSTORE_PATH")
+        ?: error("KEYSTORE_PATH is not set in gradle.properties or as environment variable")
+
+val KEYSTORE_PASSWORD: String =
+    project.findProperty("KEYSTORE_PASSWORD") as String?
+        ?: System.getenv("KEYSTORE_PASSWORD")
+        ?: error("KEYSTORE_PASSWORD is not set in gradle.properties or as environment variable")
+
+val KEY_ALIAS: String =
+    project.findProperty("KEY_ALIAS") as String?
+        ?: System.getenv("KEY_ALIAS")
+        ?: error("KEY_ALIAS is not set in gradle.properties or as environment variable")
+
+val KEY_PASSWORD: String =
+    project.findProperty("KEY_PASSWORD") as String?
+        ?: System.getenv("KEY_PASSWORD")
+        ?: error("KEY_PASSWORD is not set in gradle.properties or as environment variable")
+
 android {
     namespace = "com.upsaclay.gedoise"
     compileSdk = 35
@@ -26,6 +46,15 @@ android {
         signingConfig = signingConfigs.getByName("debug")
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile = file(KEYSTORE_PATH)
+            storePassword = KEYSTORE_PASSWORD
+            keyAlias = KEY_ALIAS
+            keyPassword = KEY_PASSWORD
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -33,6 +62,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 

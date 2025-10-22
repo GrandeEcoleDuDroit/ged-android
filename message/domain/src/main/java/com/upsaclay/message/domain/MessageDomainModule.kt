@@ -1,6 +1,5 @@
 package com.upsaclay.message.domain
 
-import com.upsaclay.common.domain.usecase.NotificationUseCase
 import com.upsaclay.message.domain.entity.NotificationMessage
 import com.upsaclay.message.domain.usecase.DeleteConversationUseCase
 import com.upsaclay.message.domain.usecase.GetConversationUseCase
@@ -8,7 +7,6 @@ import com.upsaclay.message.domain.usecase.GetConversationsUiUseCase
 import com.upsaclay.message.domain.usecase.GetUnreadConversationsCountUseCase
 import com.upsaclay.message.domain.usecase.ListenRemoteConversationsUseCase
 import com.upsaclay.message.domain.usecase.ListenRemoteMessagesUseCase
-import com.upsaclay.message.domain.usecase.NotificationMessageUseCase
 import com.upsaclay.message.domain.usecase.SendMessageUseCase
 import com.upsaclay.message.domain.usecase.UpdateConversationDeleteTimeUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -39,12 +37,12 @@ val messageDomainModule = module {
     singleOf(::GetUnreadConversationsCountUseCase)
     singleOf(::ListenRemoteConversationsUseCase)
     singleOf(::ListenRemoteMessagesUseCase)
-    singleOf(::NotificationMessageUseCase) { bind<NotificationUseCase<NotificationMessage>>() }
     single {
         SendMessageUseCase(
             conversationRepository = get(),
             messageRepository = get(),
-            notificationMessageUseCase = get(),
+            notificationMessageRepository = get(),
+            userRepository = get(),
             scope = get(BACKGROUND_SCOPE)
         )
     }
