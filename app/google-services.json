@@ -1,44 +1,26 @@
 {
   "project_info": {
-    "project_number": "954607401960",
-    "project_id": "gedoise-application",
-    "storage_bucket": "gedoise-application.appspot.com"
+    "project_number": "199812080711",
+    "project_id": "grande-ecole-du-droit-staging",
+    "storage_bucket": "grande-ecole-du-droit-staging.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:954607401960:android:03df67f146e0a6094a425d",
+        "mobilesdk_app_id": "1:199812080711:android:04da548c992def22ba3d62",
         "android_client_info": {
           "package_name": "com.upsaclay.gedoise"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "954607401960-qtbhjc6lb6kp34gc4vr5pn97h308darr.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.upsaclay.gedoise",
-            "certificate_hash": "3be9c8d459a9657e3d77c8f8e854f1bedda64980"
-          }
-        },
-        {
-          "client_id": "954607401960-cpqdush7169cccuc9f1rtakt39i008bg.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDMy_RYCp3i9QY80_72tUAfVgYvFhmzHfc"
+          "current_key": "AIzaSyDDIUZy9G9BQ62bfSf3Fe9pN6CCT2f9j64"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "954607401960-cpqdush7169cccuc9f1rtakt39i008bg.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

@@ -36,7 +36,8 @@ val appModule = module {
 
     single<ConnectivityObserver> {
         ConnectivityObserverImpl(
-            context = androidContext()
+            context = androidContext(),
+            scope = get(BACKGROUND_SCOPE)
         )
     }
 

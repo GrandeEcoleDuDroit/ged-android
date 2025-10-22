@@ -3,14 +3,15 @@ package com.upsaclay.news.domain.usecase
 import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.domain.entity.AnnouncementState
 import com.upsaclay.news.domain.repository.AnnouncementRepository
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-class CreateAnnouncementUseCase(private val announcementRepository: AnnouncementRepository) {
-    @OptIn(DelicateCoroutinesApi::class)
+class CreateAnnouncementUseCase(
+    private val announcementRepository: AnnouncementRepository,
+    private val scope: CoroutineScope
+) {
     operator fun invoke(announcement: Announcement) {
-        GlobalScope.launch {
+        scope.launch {
             try {
                 announcementRepository.createAnnouncement(announcement.copy(state = AnnouncementState.PUBLISHING))
                 announcementRepository.updateLocalAnnouncement(announcement.copy(state = AnnouncementState.PUBLISHED))

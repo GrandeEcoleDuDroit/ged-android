@@ -43,3 +43,10 @@ jobs:
 
       - name: Run unit tests
         run: ./gradlew testDebugUnitTest
+
+      - name: Save Gradle build cache
+        if: success()
+        uses: actions/cache/save@v3
+        with:
+          path: ~/.gradle/build-cache
+          key: gradle-buildcache-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
