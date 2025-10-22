@@ -17,6 +17,7 @@ class ResendAnnouncementUseCaseTest {
     @Before
     fun setUp() {
         coEvery { announcementRepository.createAnnouncement(any()) } returns Unit
+        coEvery { announcementRepository.updateLocalAnnouncement(any()) } returns Unit
 
         useCase = ResendAnnouncementUseCase(
             announcementRepository = announcementRepository,
