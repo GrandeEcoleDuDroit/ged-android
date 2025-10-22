@@ -102,6 +102,7 @@ class NavigationViewModel(
         val topLevelDestinations: List<TopLevelDestination> = listOf(
             TopLevelDestination.Home,
             TopLevelDestination.Message(),
+            TopLevelDestination.Mission,
             TopLevelDestination.Profile
         ),
         val startDestination: Route = SplashRoute

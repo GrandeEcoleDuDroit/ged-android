@@ -9,6 +9,7 @@
     <string name="forum_icon_description">Icon to access the forum</string>
     <string name="message_icon_description">Icon to access messaging</string>
     <string name="profile_icon_description">Icon to access the profile</string>
+    <string name="mission_icon_description">Icon to access the mission</string>
     <string name="close">Close</string>
     <string name="show">View</string>
     <string name="next">Next</string>

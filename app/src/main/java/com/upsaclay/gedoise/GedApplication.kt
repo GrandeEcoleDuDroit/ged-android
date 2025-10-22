@@ -16,6 +16,9 @@ import com.upsaclay.message.data.messageDataModule
 import com.upsaclay.message.data.worker.StartupMessageWorker
 import com.upsaclay.message.domain.messageDomainModule
 import com.upsaclay.message.messageModule
+import com.upsaclay.mission.data.missionDataModule
+import com.upsaclay.mission.domain.missionDomainModule
+import com.upsaclay.mission.missionModule
 import com.upsaclay.news.data.newsDataModule
 import com.upsaclay.news.domain.newsDomainModule
 import com.upsaclay.news.newsModule
@@ -51,6 +54,9 @@ class GedApplication : Application() {
                     messageModule,
                     messageDomainModule,
                     messageDataModule,
+                    missionModule,
+                    missionDomainModule,
+                    missionDataModule
                 )
             )
         }

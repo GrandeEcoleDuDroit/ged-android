@@ -33,7 +33,7 @@ class UpdateProfilePictureUseCaseTest {
         coEvery { imageRepository.uploadImage(any()) } returns Unit
         coEvery { imageRepository.deleteImage(any()) } returns Unit
         coEvery { userRepository.updateProfilePictureFileName(any(), any()) } returns Unit
-        coEvery { fileRepository.createFile(any(), any()) } returns file
+        coEvery { fileRepository.createCacheFile(any(), any()) } returns file
 
         updateProfilePictureUseCase = UpdateProfilePictureUseCase(
             fileRepository = fileRepository,
