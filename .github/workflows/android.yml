@@ -16,7 +16,7 @@ env:
   KEYSTORE_PATH: ${{ secrets.KEYSTORE_PATH }}
 
 jobs:
-  build:
+  assemble_debug:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'development'
     steps:
@@ -30,12 +30,12 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
 
-      - name: Cache Gradle build cache
+      - name: Cache gradle build cache
         uses: actions/cache@v3
         with:
-          path: ~/.gradle/build-cache
-          key: gradle-buildcache-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: gradle-buildcache-${{ runner.os }}-
+          path: ~/.gradle/debug/build-cache
+          key: gradle-debug-buildcache-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: gradle-debug-buildcache-${{ runner.os }}-
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -43,8 +43,8 @@ jobs:
       - name: Download configuration files
         run: curl "$ORACLE_BUCKET_URL"google-services.json -o app/google-services.json
 
-      - name: Build
-        run: ./gradlew build
+      - name: Build debug
+        run: ./gradlew assembleDebug
 
       - name: Run unit tests
         run: ./gradlew testDebugUnitTest
@@ -56,7 +56,7 @@ jobs:
           path: ~/.gradle/build-cache
           key: gradle-buildcache-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
 
-  generate_app_bundle:
+  assemble_release:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request' && startsWith(github.event.pull_request.base.ref, 'release/')
 
@@ -71,6 +71,13 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
 
+      - name: Cache gradle build cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/release/build-cache
+          key: gradle-release-buildcache-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: gradle-release-buildcache-${{ runner.os }}-
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
@@ -78,6 +85,12 @@ jobs:
         run: |
           rm -f app/google-services.json
           curl "$ORACLE_BUCKET_URL"google-services.json -o app/google-services.json
+
+      - name: Build release
+        run: ./gradlew assembleRelease
+
+      - name: Run unit tests
+        run: ./gradlew testReleaseUnitTest
 
       - name: Decode keystore
         run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > app/$KEYSTORE_PATH
