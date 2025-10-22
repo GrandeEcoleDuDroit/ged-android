@@ -2,7 +2,7 @@ package com.upsaclay.mission.data
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.upsaclay.common.domain.UrlUtils
+import com.upsaclay.common.data.UrlUtils
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.extensions.toEpochMilliUTC

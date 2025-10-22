@@ -1,6 +1,5 @@
 package com.upsaclay.mission.domain.usecase
 
-import com.upsaclay.common.domain.UrlUtils
 import com.upsaclay.common.domain.repository.FileRepository
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.MissionState
@@ -35,7 +34,7 @@ class CreateMissionUseCase(
                     imageFile
                 )
                 missionRepository.upsertLocalMission(
-                    mission.copy(state = MissionState.Published(UrlUtils.formatOracleBucketUrl(imageFile?.name)))
+                    mission.copy(state = MissionState.Published(imageFile?.name))
                 )
             } catch (e: Exception) {
                 missionRepository.upsertLocalMission(
