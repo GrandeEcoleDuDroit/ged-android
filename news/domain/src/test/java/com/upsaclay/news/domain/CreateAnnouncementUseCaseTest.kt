@@ -6,6 +6,8 @@ import com.upsaclay.news.domain.usecase.CreateAnnouncementUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import org.junit.Before
 import org.junit.Test
 
@@ -13,6 +15,7 @@ class CreateAnnouncementUseCaseTest {
     private val announcementRepository: AnnouncementRepository = mockk()
 
     private lateinit var useCase: CreateAnnouncementUseCase
+    private val testScope = TestScope(UnconfinedTestDispatcher())
 
     @Before
     fun setUp() {
@@ -21,7 +24,8 @@ class CreateAnnouncementUseCaseTest {
         coEvery { announcementRepository.updateLocalAnnouncement(any()) } returns Unit
 
         useCase = CreateAnnouncementUseCase(
-            announcementRepository = announcementRepository
+            announcementRepository = announcementRepository,
+            scope = testScope
         )
     }
 

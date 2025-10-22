@@ -11,6 +11,7 @@ import com.upsaclay.common.utils.mapNetworkErrorMessage
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.domain.entity.AnnouncementReport
+import com.upsaclay.news.domain.entity.AnnouncementState
 import com.upsaclay.news.domain.repository.AnnouncementRepository
 import com.upsaclay.news.domain.usecase.DeleteAnnouncementUseCase
 import com.upsaclay.news.domain.usecase.RefreshAnnouncementUseCase
@@ -69,9 +70,13 @@ class NewsViewModel(
     fun deleteAnnouncement(announcement: Announcement) {
         viewModelScope.launch {
             try {
-                if (!connectivityObserver.isConnected) {
+                if (
+                    !connectivityObserver.isConnected &&
+                    announcement.state == AnnouncementState.PUBLISHED
+                ) {
                     throw NoInternetConnectionException()
                 }
+
                 _uiState.update { 
                     it.copy(loading = true) 
                 }

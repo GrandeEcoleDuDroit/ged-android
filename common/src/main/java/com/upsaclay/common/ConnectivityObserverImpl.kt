@@ -7,6 +7,7 @@ import android.net.ConnectivityManager.NetworkCallback
 import android.net.Network
 import androidx.core.content.getSystemService
 import com.upsaclay.common.domain.ConnectivityObserver
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -15,7 +16,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.stateIn
 
 @SuppressLint("MissingPermission")
-class ConnectivityObserverImpl(context: Context): ConnectivityObserver {
+class ConnectivityObserverImpl(context: Context, scope: CoroutineScope): ConnectivityObserver {
     private val connectivityManager = context.getSystemService<ConnectivityManager>()
 
     private val _connected = callbackFlow {
@@ -28,7 +29,7 @@ class ConnectivityObserverImpl(context: Context): ConnectivityObserver {
         connectivityManager?.registerDefaultNetworkCallback(callback)
         awaitClose { connectivityManager?.unregisterNetworkCallback(callback) }
     }.stateIn(
-        scope = GlobalScope,
+        scope = scope,
         started = SharingStarted.Eagerly,
         initialValue = false
     )

@@ -17,12 +17,14 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class SendMessageUseCaseTest {
     private val conversationRepository: ConversationRepository = mockk()
     private val messageRepository: MessageRepository = mockk()
     private val notificationMessageUseCase: NotificationMessageUseCase = mockk()
 
     private lateinit var useCase: SendMessageUseCase
+    private val testScope = TestScope(UnconfinedTestDispatcher())
 
     @Before
     fun setUp() {
@@ -37,7 +39,8 @@ class SendMessageUseCaseTest {
         useCase = SendMessageUseCase(
             conversationRepository = conversationRepository,
             messageRepository = messageRepository,
-            notificationMessageUseCase = notificationMessageUseCase
+            notificationMessageUseCase = notificationMessageUseCase,
+            scope = testScope
         )
     }
 
