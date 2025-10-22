@@ -30,31 +30,17 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
 
-      - name: Cache gradle build cache
-        uses: actions/cache@v3
-        with:
-          path: ~/.gradle/build-cache
-          key: gradle-buildcache-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: gradle-buildcache-${{ runner.os }}-
-
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
       - name: Download configuration files
         run: curl "$ORACLE_BUCKET_URL"google-services.json -o app/google-services.json
 
-      - name: Build debug
+      - name: Build debug APK
         run: ./gradlew assembleDebug
 
       - name: Run unit tests
         run: ./gradlew testDebugUnitTest
-
-      - name: Save Gradle build cache
-        if: success()
-        uses: actions/cache/save@v3
-        with:
-          path: ~/.gradle/build-cache
-          key: gradle-buildcache-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
 
   assemble_release:
     runs-on: ubuntu-latest
@@ -82,14 +68,11 @@ jobs:
       - name: Decode keystore
         run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > app/$KEYSTORE_PATH
 
-      - name: Build release
-        run: ./gradlew assembleRelease
+      - name: Build release App Bundle
+        run: ./gradlew bundleRelease
 
       - name: Run unit tests
         run: ./gradlew testReleaseUnitTest
-
-      - name: Build signed App Bundle
-        run: ./gradlew bundleRelease
 
       - name: Upload App Bundle artifact
         uses: actions/upload-artifact@v4
