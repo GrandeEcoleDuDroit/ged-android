@@ -41,8 +41,8 @@ sealed class TopLevelDestination(
     data object Mission: TopLevelDestination(0, false) {
         override val route = MissionRoute
         @StringRes override val label: Int = R.string.mission
-        @DrawableRes override val filledIcon: Int = R.drawable.ic_fill_stars
-        @DrawableRes override val outlinedIcon: Int = R.drawable.ic_outline_stars
+        @DrawableRes override val filledIcon: Int = R.drawable.ic_outline_target
+        @DrawableRes override val outlinedIcon: Int = R.drawable.ic_outline_target
         @StringRes override val iconDescription: Int = R.string.mission_icon_description
     }
 

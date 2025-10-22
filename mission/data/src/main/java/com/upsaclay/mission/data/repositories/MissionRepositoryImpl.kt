@@ -5,7 +5,6 @@ import com.upsaclay.mission.data.remote.MissionRemoteDataSource
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.repository.MissionRepository
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
