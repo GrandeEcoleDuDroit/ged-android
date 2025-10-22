@@ -40,18 +40,10 @@ jobs:
         run: curl "$ORACLE_BUCKET_URL"google-services.json -o app/google-services.json
 
       - name: Build
-        run: |
-          ./gradlew build \
-            -PGED_SERVER_URL=$GED_SERVER_URL \
-            -PLOCAL_SERVER_URL=$LOCAL_SERVER_URL \
-            -PORACLE_BUCKET_URL=$ORACLE_BUCKET_URL
+        run: ./gradlew build
 
       - name: Run unit tests
-        run: |
-          ./gradlew testDebugUnitTest \
-            -PGED_SERVER_URL=$GED_SERVER_URL \
-            -PLOCAL_SERVER_URL=$LOCAL_SERVER_URL \
-            -PORACLE_BUCKET_URL=$ORACLE_BUCKET_URL
+        run: ./gradlew testDebugUnitTest
 
       - name: Save Gradle build cache
         if: success()
@@ -67,6 +59,7 @@ jobs:
       KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
       KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
       KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+      KEYSTORE_PATH: ${{ secrets.KEYSTORE_PATH }}
 
     steps:
       - name: Checkout
@@ -85,18 +78,10 @@ jobs:
         run: curl "$ORACLE_BUCKET_URL"google-services.json -o app/google-services.json
 
       - name: Decode keystore
-        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > ged_key.jks
+        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > ged_keystore.jks
 
       - name: Build signed App Bundle
-        run: |
-          ./gradlew bundleRelease \
-            -PGED_SERVER_URL=$GED_SERVER_URL \
-            -PLOCAL_SERVER_URL=$LOCAL_SERVER_URL \
-            -PORACLE_BUCKET_URL=$ORACLE_BUCKET_URL \
-            -Pandroid.injected.signing.store.file=ged_key.jks \
-            -Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD \
-            -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
-            -Pandroid.injected.signing.key.password=$KEY_PASSWORD
+        run: ./gradlew bundleRelease
 
       - name: Upload App Bundle artifact
         uses: actions/upload-artifact@v4
