@@ -56,7 +56,8 @@ jobs:
           path: ~/.gradle/build-cache
           key: gradle-buildcache-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
 
-  build_and_generate_app_bundle:
+  generate_app_bundle:
+    needs: build
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request' && startsWith(github.event.pull_request.base.ref, 'release/')
 
@@ -69,12 +70,15 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+          cache: 'gradle'
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
       - name: Download configuration files
-        run: curl "$ORACLE_BUCKET_URL"google-services.json -o app/google-services.json
+        run: |
+          rm -f app/google-services.json
+          curl "$ORACLE_BUCKET_URL"google-services.json -o app/google-services.json
 
       - name: Decode keystore
         run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > app/$KEYSTORE_PATH

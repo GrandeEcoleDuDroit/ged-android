@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "199812080711",
+    "project_id": "grande-ecole-du-droit-staging",
+    "storage_bucket": "grande-ecole-du-droit-staging.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:199812080711:android:04da548c992def22ba3d62",
+        "android_client_info": {
+          "package_name": "com.upsaclay.gedoise"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDIUZy9G9BQ62bfSf3Fe9pN6CCT2f9j64"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
