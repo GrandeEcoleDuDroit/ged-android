@@ -10,7 +10,6 @@ import com.upsaclay.message.domain.messagesFixture
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
 import com.upsaclay.message.domain.usecase.DeleteConversationUseCase
-import com.upsaclay.message.domain.usecase.NotificationMessageUseCase
 import com.upsaclay.message.domain.usecase.SendMessageUseCase
 import com.upsaclay.message.notification.NotificationMessageManager
 import com.upsaclay.message.presentation.chat.ChatViewModel
@@ -35,7 +34,6 @@ class ChatViewModelTest {
     private val messageRepository: MessageRepository = mockk()
     private val blockedUserRepository: BlockedUserRepository = mockk()
     private val sendMessageUseCase: SendMessageUseCase = mockk()
-    private val notificationMessageUseCase: NotificationMessageUseCase = mockk()
     private val notificationMessageManager: NotificationMessageManager = mockk()
     private val deleteConversationUseCase: DeleteConversationUseCase = mockk()
 
@@ -57,7 +55,6 @@ class ChatViewModelTest {
         coEvery { deleteConversationUseCase(any(), any()) } returns Unit
         coEvery { messageRepository.updateSeenMessages(any(), any()) } returns Unit
         coEvery { notificationMessageManager.clearNotifications(any()) } returns Unit
-        coEvery { notificationMessageUseCase.sendNotification(any()) } returns Unit
         coEvery { messageRepository.deleteLocalMessages(any()) } returns Unit
 
         chatViewModel = ChatViewModel(

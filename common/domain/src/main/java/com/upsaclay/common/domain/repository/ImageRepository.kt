@@ -8,5 +8,5 @@ interface ImageRepository {
 
     suspend fun uploadImage(file: File)
 
-    suspend fun deleteImage(fileName: String)
+    suspend fun deleteImage(url: String)
 }

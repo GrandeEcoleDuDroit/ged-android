@@ -5,6 +5,7 @@ plugins {
 
 val GED_SERVER_URL: String by project
 val LOCAL_SERVER_URL: String by project
+val ORACLE_BUCKET_URL: String by project
 
 android {
     namespace = "com.upsaclay.common.data"
@@ -14,6 +15,11 @@ android {
         minSdk = 29
 
         consumerProguardFiles("consumer-rules.pro")
+        buildConfigField(
+            "String",
+            "ORACLE_BUCKET_URL",
+            "\"$ORACLE_BUCKET_URL\"",
+        )
     }
 
     buildTypes {
@@ -39,6 +45,7 @@ android {
             )
         }
     }
+
     buildFeatures {
         buildConfig = true
     }

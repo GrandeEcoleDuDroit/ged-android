@@ -4,8 +4,8 @@ import com.upsaclay.common.data.local.LocalUser
 import com.upsaclay.common.data.remote.model.FirestoreUser
 import com.upsaclay.common.data.remote.model.RemoteUserReport
 import com.upsaclay.common.data.remote.model.ServerUser
-import com.upsaclay.common.domain.UrlUtils.formatOracleBucketUrl
-import com.upsaclay.common.domain.UrlUtils.extractFileName
+import com.upsaclay.common.data.UrlUtils.formatOracleBucketUrl
+import com.upsaclay.common.data.UrlUtils.extractFileName
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.entity.UserReport
 

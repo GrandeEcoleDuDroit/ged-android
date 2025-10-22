@@ -13,7 +13,6 @@ import com.upsaclay.common.data.remote.api.BlockedUserFirestoreApi
 import com.upsaclay.common.data.remote.api.FcmApi
 import com.upsaclay.common.data.remote.api.ImageApi
 import com.upsaclay.common.data.remote.api.ImageApiImpl
-import com.upsaclay.common.data.remote.api.NotificationApiImpl
 import com.upsaclay.common.data.remote.api.UserApi
 import com.upsaclay.common.data.remote.api.UserApiImpl
 import com.upsaclay.common.data.remote.api.UserFirestoreApi
@@ -24,7 +23,6 @@ import com.upsaclay.common.data.repository.FileRepositoryImpl
 import com.upsaclay.common.data.repository.ImageRepositoryImpl
 import com.upsaclay.common.data.repository.UserRepositoryImpl
 import com.upsaclay.common.data.repository.WhiteListRepositoryImpl
-import com.upsaclay.common.domain.NotificationApi
 import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.repository.FileRepository
 import com.upsaclay.common.domain.repository.ImageRepository
@@ -94,7 +92,6 @@ val commonDataModule = module {
             .create(WhiteListApi::class.java)
     }
 
-    singleOf(::NotificationApiImpl) { bind<NotificationApi>() }
     singleOf(::ImageApiImpl) { bind<ImageApi>() }
     singleOf(::ImageRemoteDataSource)
 

@@ -10,6 +10,7 @@ jobs:
     env:
       GED_SERVER_URL: ${{ secrets.GED_SERVER_URL }}
       LOCAL_SERVER_URL: ${{ secrets.LOCAL_SERVER_URL }}
+      ORACLE_BUCKET_URL: ${{ secrets.ORACLE_BUCKET_URL }}
 
     steps:
       - name: Checkout
@@ -37,6 +38,9 @@ jobs:
         run: |
           echo "GED_SERVER_URL=$GED_SERVER_URL" >> $GITHUB_WORKSPACE/gradle.properties
           echo "LOCAL_SERVER_URL=$LOCAL_SERVER_URL" >> $GITHUB_WORKSPACE/gradle.properties
+
+      - name: Download configuration files
+        run: curl ORACLE_BUCKET_URL/google-services.json -o app/google-services.json
 
       - name: Build
         run: ./gradlew build

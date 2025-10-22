@@ -1,6 +1,6 @@
 package com.upsaclay.message.data.mapper
 
-import com.upsaclay.common.domain.UrlUtils
+import com.upsaclay.common.data.UrlUtils
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.extensions.toLocalDateTimeUTC
 import com.upsaclay.message.data.local.model.LocalConversationMessage

@@ -1,5 +1,6 @@
 package com.upsaclay.common.data.repository
 
+import com.upsaclay.common.data.UrlUtils
 import com.upsaclay.common.data.remote.ImageRemoteDataSource
 import com.upsaclay.common.domain.repository.ImageRepository
 import java.io.File
@@ -15,7 +16,9 @@ internal class ImageRepositoryImpl(
         imageRemoteDataSource.uploadImage(file)
     }
 
-    override suspend fun deleteImage(fileName: String) {
-        imageRemoteDataSource.deleteImage(fileName)
+    override suspend fun deleteImage(url: String) {
+        UrlUtils.extractFileName(url)?.let {
+            imageRemoteDataSource.deleteImage(it)
+        }
     }
 }

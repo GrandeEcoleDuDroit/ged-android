@@ -8,11 +8,14 @@ import com.upsaclay.message.data.local.MessageLocalDataSource
 import com.upsaclay.message.data.local.NotificationMessageLocalDataSource
 import com.upsaclay.message.data.remote.ConversationRemoteDataSource
 import com.upsaclay.message.data.remote.MessageRemoteDataSource
+import com.upsaclay.message.data.remote.NotificationMessageRemoteDataSource
 import com.upsaclay.message.data.remote.api.ConversationApi
 import com.upsaclay.message.data.remote.api.ConversationApiImpl
 import com.upsaclay.message.data.remote.api.MessageApi
 import com.upsaclay.message.data.remote.api.MessageApiImpl
 import com.upsaclay.message.data.remote.api.MessageServerApi
+import com.upsaclay.message.data.remote.api.NotificationMessageApi
+import com.upsaclay.message.data.remote.api.NotificationMessageApiImpl
 import com.upsaclay.message.data.repository.ConversationMessageRepositoryImpl
 import com.upsaclay.message.data.repository.ConversationRepositoryImpl
 import com.upsaclay.message.data.repository.MessageRepositoryImpl
@@ -70,6 +73,8 @@ val messageDataModule = module {
         StartupMessageWorker(context = androidContext())
     }
 
+    singleOf(::NotificationMessageApiImpl) { bind<NotificationMessageApi>() }
+    singleOf(::NotificationMessageRemoteDataSource)
     singleOf(::NotificationMessageLocalDataSource)
     singleOf(::NotificationMessageRepositoryImpl) { bind<NotificationMessageRepository>() }
 }

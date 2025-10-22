@@ -19,8 +19,8 @@ import com.upsaclay.gedoise.presentation.navigation.GedNavHost
 import com.upsaclay.gedoise.presentation.navigation.NavigationViewModel
 import com.upsaclay.gedoise.presentation.navigation.SplashRoute
 import com.upsaclay.message.domain.converter.ConversationJsonConverter
-import com.upsaclay.message.domain.entity.RemoteNotificationMessage
-import com.upsaclay.message.domain.mapper.toNotificationMessage
+import com.upsaclay.message.data.remote.RemoteNotificationMessage
+import com.upsaclay.message.data.mapper.toNotificationMessage
 import com.upsaclay.message.notification.CONVERSATION_ID_EXTRA
 import com.upsaclay.message.notification.NotificationMessageManager
 import com.upsaclay.message.presentation.chat.ChatRoute

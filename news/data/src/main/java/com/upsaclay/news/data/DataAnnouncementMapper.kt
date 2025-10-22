@@ -1,6 +1,6 @@
 package com.upsaclay.news.data
 
-import com.upsaclay.common.domain.UrlUtils.formatOracleBucketUrl
+import com.upsaclay.common.data.UrlUtils.formatOracleBucketUrl
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.extensions.toEpochMilliUTC
 import com.upsaclay.common.domain.extensions.toLocalDateTimeUTC
