@@ -145,4 +145,8 @@ dependencies {
     implementation(project(":news"))
     implementation(project(":news:domain"))
     implementation(project(":news:data"))
+
+    implementation(project(":mission"))
+    implementation(project(":mission:domain"))
+    implementation(project(":mission:data"))
 }

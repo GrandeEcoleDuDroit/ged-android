@@ -4,6 +4,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.firestore
+import com.upsaclay.common.data.UserField
 import com.upsaclay.common.data.UserField.Firestore.EMAIL
 import com.upsaclay.common.data.UserField.Firestore.PROFILE_PICTURE_FILE_NAME
 import com.upsaclay.common.data.UserField.Oracle.USER_ID
@@ -67,6 +68,13 @@ internal class UserApiImpl(
         return mapFirebaseException(
             message = "Failed to get users",
             block = { userFirestoreApi.getUsers().map { it.toUser() } }
+        )
+    }
+
+    override suspend fun getMemberUsers(): List<User> {
+        return mapFirebaseException(
+            message = "Failed to get member users",
+            block = { userFirestoreApi.getMemberUsers().map { it.toUser() } }
         )
     }
 
@@ -201,7 +209,15 @@ internal class UserFirestoreApi {
 
     suspend fun getUsers(): List<FirestoreUser> =
         usersCollection
-            .limit(20)
+            .get()
+            .await()
+            .mapNotNull {
+                it.toObject(FirestoreUser::class.java)
+            }
+
+    suspend fun getMemberUsers(): List<FirestoreUser> =
+        usersCollection
+            .whereEqualTo(UserField.Firestore.IS_MEMBER, true)
             .get()
             .await()
             .mapNotNull {

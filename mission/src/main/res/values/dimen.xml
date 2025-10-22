@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="max_height_nested_list">300dp</dimen>
+    <dimen name="remove_button_size">36dp</dimen>
+    <dimen name="remove_button_icon_size">26dp</dimen>
+</resources>

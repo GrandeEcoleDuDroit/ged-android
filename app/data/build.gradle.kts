@@ -52,11 +52,9 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation(project(":app:domain"))
-
     implementation(project(":common:data"))
     implementation(project(":common:domain"))
-
     implementation(project(":message:data"))
-
     implementation(project(":news:data"))
+    implementation(project(":mission:data"))
 }

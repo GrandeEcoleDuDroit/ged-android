@@ -28,6 +28,8 @@ internal class UserRepositoryImpl(
 
     override suspend fun getUsers(): List<User> = userRemoteDataSource.getUsers()
 
+    override suspend fun getMemberUsers(): List<User> = userRemoteDataSource.getMemberUsers()
+
     override suspend fun getUser(userId: String): User? = userRemoteDataSource.getUser(userId)
 
     override suspend fun getCurrentUser(): User? = userLocalDataSource.getUser()

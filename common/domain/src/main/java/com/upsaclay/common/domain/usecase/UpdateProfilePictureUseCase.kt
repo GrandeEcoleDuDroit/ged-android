@@ -13,7 +13,7 @@ class UpdateProfilePictureUseCase(
 ) {
     suspend operator fun invoke(user: User, profilePictureUri: String) {
         val fileName = getFileName(user.id)
-        val file = fileRepository.createFile(fileName, profilePictureUri)
+        val file = fileRepository.createCacheFile(fileName, profilePictureUri) ?: return
 
         withTimeout(15000) {
             imageRepository.uploadImage(file)

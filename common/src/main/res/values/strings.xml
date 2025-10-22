@@ -6,11 +6,13 @@
     <string name="calendar">Calendrier</string>
     <string name="forum" translatable="false">Forum</string>
     <string name="profile">Profil</string>
+    <string name="mission" translatable="false">Mission</string>
     <string name="home_icon_description">Icône pour accéder à la page d\'accueil</string>
     <string name="calendar_icon_description">Icône pour accéder au calendrier</string>
     <string name="forum_icon_description">Icône pour accéder au forum</string>
     <string name="message_icon_description">Icône pour accéder à la messagerie</string>
     <string name="profile_icon_description">Icône pour accéder au profil</string>
+    <string name="mission_icon_description">Icône pour accéder au mission</string>
     <string name="close">Fermer</string>
     <string name="show">Voir</string>
     <string name="next">Suivant</string>

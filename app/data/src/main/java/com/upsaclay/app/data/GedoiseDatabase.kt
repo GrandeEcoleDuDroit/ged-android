@@ -10,6 +10,8 @@ import com.upsaclay.message.data.local.model.LocalConversation
 import com.upsaclay.message.data.local.model.LocalConversationMessage
 import com.upsaclay.message.data.local.model.LocalMessage
 import com.upsaclay.message.data.local.model.LocalNotificationMessage
+import com.upsaclay.mission.data.local.LocalMission
+import com.upsaclay.mission.data.local.MissionDao
 import com.upsaclay.news.data.local.AnnouncementDao
 import com.upsaclay.news.data.local.model.LocalAnnouncement
 
@@ -19,7 +21,8 @@ import com.upsaclay.news.data.local.model.LocalAnnouncement
         LocalConversation::class,
         LocalMessage::class,
         LocalConversationMessage::class,
-        LocalNotificationMessage::class
+        LocalNotificationMessage::class,
+        LocalMission::class
     ],
     version = 3,
     exportSchema = false
@@ -30,4 +33,5 @@ abstract class GedoiseDatabase : RoomDatabase() {
     abstract fun messageDao(): MessageDao
     abstract fun conversationMessageDao(): ConversationMessageDao
     abstract fun notificationMessageDao(): NotificationMessageDao
+    abstract fun missionDao(): MissionDao
 }
