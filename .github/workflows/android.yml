@@ -10,6 +10,10 @@ env:
   GED_SERVER_URL: ${{ secrets.GED_SERVER_URL }}
   LOCAL_SERVER_URL: ${{ secrets.LOCAL_SERVER_URL }}
   ORACLE_BUCKET_URL: ${{ secrets.ORACLE_BUCKET_URL }}
+  KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+  KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+  KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+  KEYSTORE_PATH: ${{ secrets.KEYSTORE_PATH }}
 
 jobs:
   assemble_debug:
@@ -55,11 +59,6 @@ jobs:
   assemble_release:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request' && startsWith(github.event.pull_request.base.ref, 'release/')
-    env:
-      KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-      KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-      KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-      KEYSTORE_PATH: ${{ secrets.KEYSTORE_PATH }}
 
     steps:
       - name: Checkout
