@@ -1,21 +1,20 @@
 package com.upsaclay.gedoise.viewmodel
 
 import MainViewModel
-import com.upsaclay.authentication.domain.usecase.ListenAuthenticationStateUseCase
-import com.upsaclay.common.domain.repository.UserRepository
-import com.upsaclay.common.domain.userFixture
-import com.upsaclay.common.domain.usersFixture
 import com.upsaclay.app.domain.ClearDataUseCase
 import com.upsaclay.app.domain.FcmTokenUseCase
-import com.upsaclay.app.domain.ListenDataUseCase
+import com.upsaclay.app.domain.ListenBlockedUserEvents
+import com.upsaclay.app.domain.ListenRemoteUserUseCase
 import com.upsaclay.app.domain.SynchronizeDataUseCase
+import com.upsaclay.authentication.domain.usecase.ListenAuthenticationStateUseCase
+import com.upsaclay.message.domain.usecase.ListenRemoteConversationsUseCase
+import com.upsaclay.message.domain.usecase.ListenRemoteMessagesUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -26,11 +25,13 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MainViewModelTest {
-    private val userRepository: UserRepository = mockk()
-    private val listenDataUseCase: ListenDataUseCase = mockk()
+    private val listenAuthenticationStateUseCase: ListenAuthenticationStateUseCase = mockk()
+    private val listenRemoteConversationsUseCase: ListenRemoteConversationsUseCase = mockk()
+    private val listenRemoteMessagesUseCase: ListenRemoteMessagesUseCase = mockk()
+    private val listenRemoteUserUseCase: ListenRemoteUserUseCase = mockk()
+    private val listenBlockedUserEvents: ListenBlockedUserEvents = mockk()
     private val clearDataUseCase: ClearDataUseCase = mockk()
     private val synchronizeDataUseCase: SynchronizeDataUseCase = mockk()
-    private val listenAuthenticationStateUseCase: ListenAuthenticationStateUseCase = mockk()
     private val fcmTokenUseCase: FcmTokenUseCase = mockk()
 
     private lateinit var mainViewModel: MainViewModel
@@ -40,20 +41,20 @@ class MainViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
 
-        every { userRepository.user } returns MutableStateFlow(userFixture)
         every { listenAuthenticationStateUseCase.authenticated } returns flowOf(true)
-        coEvery { userRepository.getUsers() } returns usersFixture
-        coEvery { userRepository.getUser(any()) } returns userFixture
-        coEvery { userRepository.storeUser(any()) } returns Unit
-        coEvery { userRepository.deleteLocalUser() } returns Unit
-        coEvery { listenDataUseCase.start() } returns Unit
-        coEvery { listenDataUseCase.stop() } returns Unit
         coEvery { clearDataUseCase() } returns Unit
         coEvery { synchronizeDataUseCase() } returns Unit
+        coEvery { listenRemoteMessagesUseCase.stopAll() } returns Unit
+        coEvery { listenRemoteConversationsUseCase.start() } returns Unit
+        coEvery { listenRemoteUserUseCase.start() } returns Unit
+        coEvery { listenBlockedUserEvents.start() } returns Unit
 
         mainViewModel = MainViewModel(
             listenAuthenticationStateUseCase = listenAuthenticationStateUseCase,
-            listenDataUseCase = listenDataUseCase,
+            listenRemoteConversationsUseCase = listenRemoteConversationsUseCase,
+            listenRemoteMessagesUseCase = listenRemoteMessagesUseCase,
+            listenRemoteUserUseCase = listenRemoteUserUseCase,
+            listenBlockedUserEvents = listenBlockedUserEvents,
             clearDataUseCase = clearDataUseCase,
             synchronizeDataUseCase = synchronizeDataUseCase,
             fcmTokenUseCase = fcmTokenUseCase
@@ -66,7 +67,9 @@ class MainViewModelTest {
         mainViewModel.updateDataOnAuthChange()
 
         // Then
-        coVerify { listenDataUseCase.start() }
+        coVerify { listenRemoteConversationsUseCase.start() }
+        coVerify { listenRemoteUserUseCase.start() }
+        coVerify { listenBlockedUserEvents.start() }
     }
 
     @Test
@@ -87,7 +90,7 @@ class MainViewModelTest {
         mainViewModel.updateDataOnAuthChange()
 
         // Then
-        coVerify { listenDataUseCase.stop() }
+        coVerify { listenRemoteMessagesUseCase.stopAll() }
     }
 
     @Test

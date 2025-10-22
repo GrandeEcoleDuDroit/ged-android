@@ -4,8 +4,11 @@ import androidx.lifecycle.viewModelScope
 import com.upsaclay.authentication.domain.usecase.ListenAuthenticationStateUseCase
 import com.upsaclay.app.domain.ClearDataUseCase
 import com.upsaclay.app.domain.FcmTokenUseCase
-import com.upsaclay.app.domain.ListenDataUseCase
+import com.upsaclay.app.domain.ListenBlockedUserEvents
+import com.upsaclay.app.domain.ListenRemoteUserUseCase
 import com.upsaclay.app.domain.SynchronizeDataUseCase
+import com.upsaclay.message.domain.usecase.ListenRemoteConversationsUseCase
+import com.upsaclay.message.domain.usecase.ListenRemoteMessagesUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -14,10 +17,13 @@ import timber.log.Timber
 
 class MainViewModel(
     private val listenAuthenticationStateUseCase: ListenAuthenticationStateUseCase,
-    private val listenDataUseCase: ListenDataUseCase,
+    private val listenRemoteConversationsUseCase: ListenRemoteConversationsUseCase,
+    private val listenRemoteMessagesUseCase: ListenRemoteMessagesUseCase,
+    private val listenRemoteUserUseCase: ListenRemoteUserUseCase,
+    private val listenBlockedUserEvents: ListenBlockedUserEvents,
     private val synchronizeDataUseCase: SynchronizeDataUseCase,
     private val clearDataUseCase: ClearDataUseCase,
-    private val fcmTokenUseCase: FcmTokenUseCase
+    private val fcmTokenUseCase: FcmTokenUseCase,
 ): ViewModel() {
     private var listeningJob: Job? = null
 
@@ -45,12 +51,14 @@ class MainViewModel(
     private fun listenData() {
         listeningJob?.cancel()
         listeningJob = viewModelScope.launch {
-            listenDataUseCase.start()
+            launch { listenRemoteConversationsUseCase.start() }
+            launch { listenRemoteUserUseCase.start() }
+            launch { listenBlockedUserEvents.start() }
         }
     }
 
     private suspend fun stopListenData() {
-        listenDataUseCase.stop()
+        listenRemoteMessagesUseCase.stopAll()
         listeningJob?.cancel()
     }
 }

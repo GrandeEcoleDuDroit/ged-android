@@ -65,7 +65,7 @@
     <string name="user_not_found_title_dialog">Utilisateur non trouvé.</string>
     <string name="current_user_not_found_error">L\'utilisateur n\'a pas été trouvé. Veuillez vous reconnecter.</string>
     <string name="timeout_error">Le service a mis trop de temps à répondre. Veuillez réessayer.</string>
-    <string name="no_user">Aucun utilisateur.</string>
+    <string name="no_user">Aucun utilisateur</string>
     <string name="no_internet_connection">Aucune connexion Internet.</string>
     <string name="reported_user">Utilisateur signalé</string>
     <string name="blocked_user">Utilisateur bloqué</string>

@@ -6,7 +6,6 @@ import org.koin.dsl.module
 val appDomainModule = module {
     singleOf(::ClearDataUseCase)
     singleOf(::DeleteAccountUseCase)
-    singleOf(::ListenDataUseCase)
     singleOf(::SynchronizeDataUseCase)
     singleOf(::DeleteAccountUseCase)
     singleOf(::FcmTokenUseCase)
