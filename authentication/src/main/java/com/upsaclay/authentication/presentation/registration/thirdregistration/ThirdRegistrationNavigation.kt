@@ -4,13 +4,22 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.upsaclay.common.domain.entity.SchoolLevel
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ThirdRegistrationRoute(val firstName: String, val lastName: String, val schoolLevel: String)
+data class ThirdRegistrationRoute(
+    val firstName: String,
+    val lastName: String,
+    val schoolLevel: SchoolLevel
+)
 
 
-fun NavController.navigateToThirdRegistration(firstName: String, lastName: String, schoolLevel: String) {
+fun NavController.navigateToThirdRegistration(
+    firstName: String,
+    lastName: String,
+    schoolLevel: SchoolLevel
+) {
     navigate(route = ThirdRegistrationRoute(firstName, lastName, schoolLevel))
 }
 

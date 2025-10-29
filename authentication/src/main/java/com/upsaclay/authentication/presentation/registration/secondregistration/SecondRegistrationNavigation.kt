@@ -5,6 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.upsaclay.common.domain.entity.Route
+import com.upsaclay.common.domain.entity.SchoolLevel
 import kotlinx.serialization.Serializable
 
 @Serializable data class SecondRegistrationRoute(val firstName: String, val lastName: String): Route
@@ -15,7 +16,7 @@ fun NavController.navigateToSecondRegistration(firstName: String, lastName: Stri
 
 fun NavGraphBuilder.secondRegistrationScreen(
     onBackClick: () -> Unit,
-    onNextClick: (String, String, String) -> Unit
+    onNextClick: (String, String, SchoolLevel) -> Unit
 ) {
     composable<SecondRegistrationRoute> { entry ->
         val firstName = entry.toRoute<SecondRegistrationRoute>().firstName

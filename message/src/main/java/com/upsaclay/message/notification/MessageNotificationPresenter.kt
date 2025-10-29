@@ -19,21 +19,21 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.Person
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.drawable.IconCompat
-import com.upsaclay.common.R
 import com.upsaclay.common.IntentHelper
+import com.upsaclay.common.R
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.ImageRepository
-import com.upsaclay.message.domain.NotificationMessageUtils
+import com.upsaclay.message.domain.MessageNotificationUtils
 import com.upsaclay.message.domain.converter.ConversationJsonConverter
 import com.upsaclay.message.domain.entity.Conversation
-import com.upsaclay.message.domain.entity.NotificationMessage
-import com.upsaclay.message.domain.entity.NotificationMessages
+import com.upsaclay.message.domain.entity.MessageNotification
+import com.upsaclay.message.domain.entity.MessagesNotification
 import java.io.InputStream
 
 const val CONVERSATION_ID_EXTRA = "conversation_id_extra"
 
 @SuppressLint("MissingPermission")
-class NotificationMessagePresenter (
+class MessageNotificationPresenter (
     private val context: Context,
     private val imageRepository: ImageRepository,
     private val intentHelper: IntentHelper
@@ -44,14 +44,14 @@ class NotificationMessagePresenter (
         createNotificationChannel()
     }
 
-    suspend fun showNotification(notificationMessages: NotificationMessages) {
+    suspend fun showNotification(messagesNotification: MessagesNotification) {
         if (!notificationManager.areNotificationsEnabled()) {
             return
         }
 
-        val messages = notificationMessages.messages
-        val interlocutor = notificationMessages.conversation.interlocutor
-        val intent = buildConversationIntent(notificationMessages.conversation)
+        val messages = messagesNotification.messages
+        val interlocutor = messagesNotification.conversation.interlocutor
+        val intent = buildConversationIntent(messagesNotification.conversation)
         val userIcon = createUserIcon(interlocutor.profilePictureUrl)
         val user = buildPerson(interlocutor, userIcon)
 
@@ -62,7 +62,7 @@ class NotificationMessagePresenter (
             intent = intent
         )
 
-        notificationManager.notify(notificationMessages.conversation.id.hashCode(), notification)
+        notificationManager.notify(messagesNotification.conversation.id.hashCode(), notification)
     }
 
     fun clearNotification(conversationId: String) {
@@ -71,7 +71,7 @@ class NotificationMessagePresenter (
 
     private fun createNotificationChannel() {
         val channel = NotificationChannel(
-            NotificationMessageUtils.CHANNEL_ID,
+            MessageNotificationUtils.CHANNEL_ID,
             "Message",
             NotificationManager.IMPORTANCE_HIGH
         ).apply {
@@ -133,7 +133,7 @@ class NotificationMessagePresenter (
 
     private fun buildNotification(
         interlocutor: User,
-        messages: List<NotificationMessage.MessageContent>,
+        messages: List<MessageNotification.MessageContent>,
         person: Person,
         intent: PendingIntent
     ): Notification {
@@ -151,7 +151,7 @@ class NotificationMessagePresenter (
             }
 
 
-        val notificationBuilder = NotificationCompat.Builder(context, NotificationMessageUtils.CHANNEL_ID)
+        val notificationBuilder = NotificationCompat.Builder(context, MessageNotificationUtils.CHANNEL_ID)
             .setContentTitle(interlocutor.fullName)
             .setSmallIcon(R.drawable.ic_notification)
             .setColor(context.getColor(R.color.icon_background_color))

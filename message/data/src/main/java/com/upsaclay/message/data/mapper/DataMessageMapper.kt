@@ -8,8 +8,8 @@ import com.upsaclay.message.data.local.model.LocalMessage
 import com.upsaclay.message.data.remote.model.RemoteMessage
 import com.upsaclay.message.data.remote.model.RemoteMessageReport
 import com.upsaclay.message.domain.entity.Message
+import com.upsaclay.message.domain.entity.Message.MessageState
 import com.upsaclay.message.domain.entity.MessageReport
-import com.upsaclay.message.domain.entity.MessageState
 
 internal fun RemoteMessage.toMessage() = Message(
     id = messageId,

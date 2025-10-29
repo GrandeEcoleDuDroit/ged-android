@@ -1,3 +1,4 @@
+package com.upsaclay.gedoise.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -42,7 +43,7 @@ class MainViewModel(
                         fcmTokenUseCase.generateNewToken()
                     }
                 } catch (e: Exception) {
-                    Timber.e("Failed to update data on auth change", e)
+                    Timber.e("Failed to update data on auth change: ${e.message}", e)
                 }
             }
         }

@@ -35,9 +35,9 @@ import com.upsaclay.common.presentation.theme.previewText
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.common.utils.getElapsedTimeValue
 import com.upsaclay.message.R
-import com.upsaclay.message.domain.entity.ConversationState
+import com.upsaclay.message.domain.entity.Conversation.ConversationState
 import com.upsaclay.message.domain.entity.ConversationUi
-import com.upsaclay.message.domain.entity.MessageState
+import com.upsaclay.message.domain.entity.Message.MessageState
 import com.upsaclay.message.domain.messageFixture
 
 @Composable
@@ -59,7 +59,7 @@ fun ConversationItem(
     SwitchConversationItem(
         modifier = modifier,
         interlocutor = conversationUi.interlocutor,
-        conversationState = conversationUi.state,
+        conversationState = conversationUi.conversationState,
         text = text,
         isUnread = isNotSender && !lastMessage.seen,
         elapsedTime = elapsedTimeValue,
@@ -79,8 +79,13 @@ private fun SwitchConversationItem(
     onClick: () -> Unit,
     onLongClick: () -> Unit
 ) {
-    val loading = conversationState == ConversationState.CREATING || conversationState == ConversationState.DELETING
-    val interlocutorName = if (!interlocutor.isDeleted) interlocutor.fullName else stringResource(id = com.upsaclay.common.R.string.deleted_user)
+    val loading = conversationState == ConversationState.CREATING ||
+            conversationState == ConversationState.DELETING
+    val interlocutorName = if (interlocutor.state != User.UserState.DELETED) {
+        interlocutor.fullName
+    } else {
+        stringResource(id = com.upsaclay.common.R.string.deleted_user)
+    }
 
     ConversationItemStructure(
         modifier = modifier,

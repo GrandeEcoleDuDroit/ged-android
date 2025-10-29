@@ -27,6 +27,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.authentication.R
 import com.upsaclay.authentication.presentation.components.RegistrationScaffold
+import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.extension.mediumPadding
 import com.upsaclay.common.presentation.components.LinearProgressBar
@@ -41,7 +42,7 @@ import org.koin.androidx.compose.koinViewModel
 fun ThirdRegistrationDestination(
     firstName: String,
     lastName: String,
-    schoolLevel: String,
+    schoolLevel: SchoolLevel,
     onBackClick: () -> Unit,
     onRegistrationClick: () -> Unit,
     viewModel: ThirdRegistrationViewModel = koinViewModel()

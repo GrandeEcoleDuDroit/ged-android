@@ -152,7 +152,7 @@ private fun NewsScreen(
             clickedAnnouncement?.let { announcement ->
                 AnnouncementBottomSheet(
                     announcement = announcement,
-                    isEditable = user.isMember && announcement.author.id == user.id,
+                    isEditable = user.admin && announcement.author.id == user.id,
                     onEditClick = {
                         showAnnouncementBottomSheet = false
                         clickedAnnouncement?.id?.let(onEditAnnouncementClick)

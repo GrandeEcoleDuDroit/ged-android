@@ -6,16 +6,16 @@ import com.upsaclay.common.data.remote.api.FcmApi
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.message.data.mapper.toFcm
 import com.upsaclay.message.data.mapper.toRemote
-import com.upsaclay.message.domain.entity.NotificationMessage
+import com.upsaclay.message.domain.entity.MessageNotification
 
-class NotificationMessageApiImpl(private val fcmApi: FcmApi): NotificationMessageApi {
+class MessageNotificationApiImpl(private val fcmApi: FcmApi): MessageNotificationApi {
     private val gson = Gson()
 
-    override suspend fun sendNotification(currentUser: User, notificationMessage: NotificationMessage) {
+    override suspend fun sendNotification(currentUser: User, messageNotification: MessageNotification) {
         mapServerResponseException(
             block = {
-                val fcmMessage = notificationMessage.toRemote(currentUser).toFcm()
-                fcmApi.sendNotification(notificationMessage.conversation.interlocutor.id, gson.toJson(fcmMessage))
+                val fcmMessage = messageNotification.toRemote(currentUser).toFcm()
+                fcmApi.sendNotification(messageNotification.conversation.interlocutor.id, gson.toJson(fcmMessage))
             },
             message = "Failed to send fcm notification"
         )

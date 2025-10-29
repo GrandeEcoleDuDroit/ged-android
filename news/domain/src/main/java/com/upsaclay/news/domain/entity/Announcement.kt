@@ -14,11 +14,11 @@ data class Announcement(
     val date: LocalDateTime,
     val author: User,
     val state: AnnouncementState
-)
-
-enum class AnnouncementState {
-    DRAFT,
-    PUBLISHING,
-    PUBLISHED,
-    ERROR
+) {
+    enum class AnnouncementState {
+        DRAFT,
+        PUBLISHING,
+        PUBLISHED,
+        ERROR
+    }
 }

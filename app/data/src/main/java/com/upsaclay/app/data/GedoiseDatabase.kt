@@ -5,11 +5,11 @@ import androidx.room.RoomDatabase
 import com.upsaclay.message.data.local.dao.ConversationDao
 import com.upsaclay.message.data.local.dao.ConversationMessageDao
 import com.upsaclay.message.data.local.dao.MessageDao
-import com.upsaclay.message.data.local.dao.NotificationMessageDao
+import com.upsaclay.message.data.local.dao.MessageNotificationDao
 import com.upsaclay.message.data.local.model.LocalConversation
 import com.upsaclay.message.data.local.model.LocalConversationMessage
 import com.upsaclay.message.data.local.model.LocalMessage
-import com.upsaclay.message.data.local.model.LocalNotificationMessage
+import com.upsaclay.message.data.local.model.LocalMessageNotification
 import com.upsaclay.news.data.local.AnnouncementDao
 import com.upsaclay.news.data.local.model.LocalAnnouncement
 
@@ -19,9 +19,9 @@ import com.upsaclay.news.data.local.model.LocalAnnouncement
         LocalConversation::class,
         LocalMessage::class,
         LocalConversationMessage::class,
-        LocalNotificationMessage::class
+        LocalMessageNotification::class
     ],
-    version = 3,
+    version = 2,
     exportSchema = false
 )
 abstract class GedoiseDatabase : RoomDatabase() {
@@ -29,5 +29,5 @@ abstract class GedoiseDatabase : RoomDatabase() {
     abstract fun conversationDao(): ConversationDao
     abstract fun messageDao(): MessageDao
     abstract fun conversationMessageDao(): ConversationMessageDao
-    abstract fun notificationMessageDao(): NotificationMessageDao
+    abstract fun messageNotificationDao(): MessageNotificationDao
 }

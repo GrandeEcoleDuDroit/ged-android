@@ -97,7 +97,11 @@ fun UserItem(
     user: User,
     trailingContent: @Composable (() -> Unit)? = null
 ) {
-    val userName = if (!user.isDeleted) user.fullName else stringResource(R.string.deleted_user)
+    val userName = if (user.state != User.UserState.DELETED) {
+        user.fullName
+    } else {
+        stringResource(R.string.deleted_user)
+    }
 
     ListItem(
         modifier = modifier.fillMaxWidth(),

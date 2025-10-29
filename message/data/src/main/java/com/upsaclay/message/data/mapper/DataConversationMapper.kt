@@ -1,27 +1,31 @@
 package com.upsaclay.message.data.mapper
 
+import com.upsaclay.common.data.UrlUtils
 import com.upsaclay.common.data.extensions.toLocalDateTime
 import com.upsaclay.common.data.extensions.toTimestamp
-import com.upsaclay.common.data.UrlUtils
+import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.entity.User
+import com.upsaclay.common.domain.entity.User.UserState
 import com.upsaclay.common.domain.extensions.toEpochMilliUTC
 import com.upsaclay.common.domain.extensions.toLocalDateTimeUTC
+import com.upsaclay.common.domain.extensions.uppercaseFirstLetter
 import com.upsaclay.message.data.local.model.LocalConversation
 import com.upsaclay.message.data.model.ConversationField
 import com.upsaclay.message.data.remote.model.RemoteConversation
 import com.upsaclay.message.domain.entity.Conversation
-import com.upsaclay.message.domain.entity.ConversationState
+import com.upsaclay.message.domain.entity.Conversation.ConversationState
 
 fun Conversation.toLocal() = LocalConversation(
     conversationId = id,
     interlocutorId = interlocutor.id,
-    interlocutorFirstName = interlocutor.firstName,
-    interlocutorLastName = interlocutor.lastName,
+    interlocutorFirstName = interlocutor.firstName.lowercase(),
+    interlocutorLastName = interlocutor.lastName.lowercase(),
     interlocutorEmail = interlocutor.email,
-    interlocutorIsMember = interlocutor.isMember,
-    interlocutorSchoolLevel = interlocutor.schoolLevel,
+    interlocutorAdmin = interlocutor.admin,
+    interlocutorSchoolLevel = interlocutor.schoolLevel.number,
     interlocutorProfilePictureFileName = UrlUtils.extractFileName(interlocutor.profilePictureUrl),
-    interlocutorIsDeleted = interlocutor.isDeleted,
+    interlocutorState = interlocutor.state.toString(),
+    interlocutorTester = interlocutor.tester,
     createdAt = createdAt.toEpochMilliUTC(),
     conversationState = state.name,
     conversationDeleteTime = deleteTime?.toEpochMilliUTC()
@@ -37,13 +41,14 @@ internal fun Conversation.toRemote(userId: String) = RemoteConversation(
 fun LocalConversation.toConversation(): Conversation {
     val interlocutor = User(
         id = interlocutorId,
-        firstName = interlocutorFirstName,
-        lastName = interlocutorLastName,
+        firstName = interlocutorFirstName.uppercaseFirstLetter(),
+        lastName = interlocutorLastName.uppercaseFirstLetter(),
         email = interlocutorEmail,
-        schoolLevel = interlocutorSchoolLevel,
-        isMember = interlocutorIsMember,
+        schoolLevel = SchoolLevel.fromNumber(interlocutorSchoolLevel),
+        admin = interlocutorAdmin,
         profilePictureUrl = UrlUtils.formatOracleBucketUrl(interlocutorProfilePictureFileName),
-        isDeleted = interlocutorIsDeleted
+        state = UserState.fromString(interlocutorState),
+        tester = interlocutorTester
     )
 
     return Conversation(

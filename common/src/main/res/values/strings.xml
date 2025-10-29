@@ -49,7 +49,7 @@
     <string name="hour_ago_short">%d h</string>
     <string name="day_ago_short">%d j</string>
     <string name="week_ago_short">%d sem</string>
-    <string name="member">Membre</string>
+    <string name="admin">Administrateur</string>
     <string name="minute_ago_medium">%d minutes</string>
     <string name="hour_ago_medium">%d heures</string>
     <string name="day_ago_medium">%d jours</string>

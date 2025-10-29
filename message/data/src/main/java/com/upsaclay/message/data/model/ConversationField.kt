@@ -1,6 +1,7 @@
 package com.upsaclay.message.data.model
 
 internal object ConversationField {
+    const val TABLE_NAME = "conversations"
     const val CONVERSATION_ID = "conversationId"
     const val CREATED_AT = "createdAt"
     const val DELETE_TIME = "deleteTime"
@@ -15,24 +16,11 @@ internal object ConversationField {
         const val INTERLOCUTOR_LAST_NAME = "interlocutorLastName"
         const val INTERLOCUTOR_EMAIL = "interlocutorEmail"
         const val INTERLOCUTOR_SCHOOL_LEVEL = "interlocutorSchoolLevel"
-        const val INTERLOCUTOR_IS_MEMBER = "interlocutorIsMember"
+        const val INTERLOCUTOR_ADMIN = "interlocutorAdmin"
         const val INTERLOCUTOR_PROFILE_PICTURE_FILE_NAME = "interlocutorProfilePictureFileName"
-        const val INTERLOCUTOR_IS_DELETED = "interlocutorIsDeleted"
+        const val INTERLOCUTOR_STATE = "interlocutorState"
+        const val INTERLOCUTOR_TESTER = "interlocutorTester"
         const val CONVERSATION_STATE = "conversationState"
         const val CONVERSATION_DELETE_TIME = "conversationDeleteTime"
-    }
-}
-
-internal object MessageField {
-    const val MESSAGE_ID = "messageId"
-    const val CONVERSATION_ID = "conversationId"
-    const val SENDER_ID = "senderId"
-    const val RECIPIENT_ID = "recipientId"
-    const val CONTENT = "content"
-    const val TIMESTAMP = "timestamp"
-    const val SEEN = "seen"
-
-    object Local {
-        const val STATE = "messageState"
     }
 }

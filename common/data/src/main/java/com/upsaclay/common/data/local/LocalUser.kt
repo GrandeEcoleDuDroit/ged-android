@@ -7,17 +7,19 @@ internal data class LocalUser(
     @SerializedName(UserField.Local.USER_ID)
     val userId: String,
     @SerializedName(UserField.Local.FIRST_NAME)
-    val userFirstName: String,
+    val firstName: String,
     @SerializedName(UserField.Local.LAST_NAME)
-    val userLastName: String,
+    val lastName: String,
     @SerializedName(UserField.Local.EMAIL)
-    val userEmail: String,
+    val email: String,
     @SerializedName(UserField.Local.SCHOOL_LEVEL)
-    val userSchoolLevel: String,
-    @SerializedName(UserField.Local.IS_MEMBER)
-    val userIsMember: Int = 0,
+    val schoolLevel: Int,
+    @SerializedName(UserField.Local.ADMIN)
+    val admin: Int = 0,
     @SerializedName(UserField.Local.PROFILE_PICTURE_FILE_NAME)
-    val userProfilePictureFileName: String? = null,
-    @SerializedName(UserField.Local.IS_DELETED)
-    val userIsDeleted: Int = 0
+    val profilePictureFileName: String? = null,
+    @SerializedName(UserField.Local.STATE)
+    val state: String,
+    @SerializedName(UserField.Local.TESTER)
+    val tester: Int = 0
 )

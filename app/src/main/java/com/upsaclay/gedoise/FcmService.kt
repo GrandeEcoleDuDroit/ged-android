@@ -8,9 +8,9 @@ import com.upsaclay.common.domain.entity.fcm.FcmDataType
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.app.domain.FcmTokenUseCase
 import com.upsaclay.app.domain.entity.FcmToken
-import com.upsaclay.message.data.remote.RemoteNotificationMessage
-import com.upsaclay.message.data.mapper.toNotificationMessage
-import com.upsaclay.message.notification.NotificationMessageManager
+import com.upsaclay.message.data.remote.RemoteMessageNotification
+import com.upsaclay.message.data.mapper.toMessageNotification
+import com.upsaclay.message.notification.MessageNotificationManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -21,7 +21,7 @@ import org.koin.android.ext.android.inject
 
 class FcmService: FirebaseMessagingService() {
     private var job: Job? = null
-    private val notificationMessageManager: NotificationMessageManager by inject<NotificationMessageManager>()
+    private val messageNotificationManager: MessageNotificationManager by inject<MessageNotificationManager>()
     private val fcmTokenUseCase: FcmTokenUseCase by inject<FcmTokenUseCase>()
     private val userRepository: UserRepository by inject<UserRepository>()
     private val scope = CoroutineScope(SupervisorJob())
@@ -55,8 +55,8 @@ class FcmService: FirebaseMessagingService() {
 
     private suspend fun showMessageNotification(extra: Bundle?) {
         extra?.getString("value")?.let { value ->
-            val notificationMessage = gson.fromJson(value, RemoteNotificationMessage::class.java).toNotificationMessage()
-            notificationMessageManager.showNotification(notificationMessage)
+            val messageNotification = gson.fromJson(value, RemoteMessageNotification::class.java).toMessageNotification()
+            messageNotificationManager.showNotification(messageNotification)
         }
     }
 }

@@ -9,6 +9,7 @@ import com.upsaclay.common.domain.ConnectivityObserver
 import com.upsaclay.common.domain.entity.DuplicateDataException
 import com.upsaclay.common.domain.entity.ForbiddenException
 import com.upsaclay.common.domain.entity.NoInternetConnectionException
+import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.domain.usecase.VerifyEmailFormatUseCase
 import com.upsaclay.common.utils.mapNetworkErrorMessage
@@ -49,7 +50,7 @@ class ThirdRegistrationViewModel(
         }
     }
 
-    fun register(firstName: String, lastName: String, schoolLevel: String) {
+    fun register(firstName: String, lastName: String, schoolLevel: SchoolLevel) {
         val email = uiState.value.email.trim()
         val password = uiState.value.password
         val legalNoticeChecked = uiState.value.legalNoticeChecked

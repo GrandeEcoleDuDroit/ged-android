@@ -19,12 +19,12 @@ data class Conversation(
         get() = state == ConversationState.DRAFT ||
                 state == ConversationState.ERROR ||
                 state == ConversationState.DELETING
-}
 
-enum class ConversationState {
-    DRAFT,
-    CREATING,
-    CREATED,
-    DELETING,
-    ERROR
+    enum class ConversationState {
+        DRAFT,
+        CREATING,
+        CREATED,
+        DELETING,
+        ERROR
+    }
 }

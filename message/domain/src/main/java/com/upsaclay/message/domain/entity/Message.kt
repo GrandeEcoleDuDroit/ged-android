@@ -10,12 +10,12 @@ data class Message(
     val content: String,
     val date: LocalDateTime,
     val seen: Boolean = false,
-    val state: MessageState,
-)
-
-enum class MessageState {
-    DRAFT,
-    SENDING,
-    SENT,
-    ERROR
+    val state: MessageState
+) {
+    enum class MessageState {
+        DRAFT,
+        SENDING,
+        SENT,
+        ERROR
+    }
 }

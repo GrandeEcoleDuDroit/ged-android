@@ -1,7 +1,6 @@
 package com.upsaclay.message.domain.usecase
 
 import com.upsaclay.message.domain.entity.Conversation
-import com.upsaclay.message.domain.entity.ConversationState
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
 import java.time.LocalDateTime
@@ -13,7 +12,7 @@ class DeleteConversationUseCase(
 ) {
     suspend operator fun invoke(conversation: Conversation, currentUserId: String) {
         val deleteTime = LocalDateTime.now(ZoneOffset.UTC)
-        conversationRepository.updateLocalConversation(conversation.copy(state = ConversationState.DELETING))
+        conversationRepository.updateLocalConversation(conversation.copy(state = Conversation.ConversationState.DELETING))
         conversationRepository.deleteConversation(conversation.id, currentUserId, deleteTime)
         messageRepository.deleteLocalMessages(conversation.id)
     }

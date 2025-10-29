@@ -2,6 +2,7 @@ package com.upsaclay.news.data
 
 internal object AnnouncementField {
     internal object Local {
+        const val TABLE_NAME = "announcements"
         const val ANNOUNCEMENT_ID = "announcementId"
         const val TITLE = "title"
         const val CONTENT = "content"
@@ -12,9 +13,10 @@ internal object AnnouncementField {
         const val USER_LAST_NAME = "userLastName"
         const val USER_EMAIL = "userEmail"
         const val USER_SCHOOL_LEVEL = "userSchoolLevel"
-        const val USER_IS_MEMBER = "userIsMember"
+        const val USER_ADMIN = "userAdmin"
         const val USER_PROFILE_PICTURE_FILE_NAME = "userProfilePictureFileName"
-        const val USER_IS_DELETED = "userIsDeleted"
+        const val USER_STATE = "userState"
+        const val USER_TESTER = "userTester"
     }
 
     internal object Remote {
@@ -27,7 +29,9 @@ internal object AnnouncementField {
         const val USER_LAST_NAME = "USER_LAST_NAME"
         const val USER_EMAIL = "USER_EMAIL"
         const val USER_SCHOOL_LEVEL = "USER_SCHOOL_LEVEL"
-        const val USER_IS_MEMBER = "USER_IS_MEMBER"
+        const val USER_ADMIN = "USER_ADMIN"
         const val USER_PROFILE_PICTURE_FILE_NAME = "USER_PROFILE_PICTURE_FILE_NAME"
+        const val USER_STATE = "USER_STATE"
+        const val USER_TESTER = "USER_TESTER"
     }
 }

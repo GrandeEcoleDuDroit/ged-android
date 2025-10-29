@@ -39,7 +39,7 @@ import com.upsaclay.common.utils.Phones
 import com.upsaclay.message.R
 import com.upsaclay.message.domain.conversationFixture
 import com.upsaclay.message.domain.entity.Message
-import com.upsaclay.message.domain.entity.MessageState
+import com.upsaclay.message.domain.entity.Message.MessageState
 import com.upsaclay.message.domain.messageFixture
 import com.upsaclay.message.presentation.chat.ChatViewModel.MessageEvent
 import kotlinx.coroutines.flow.Flow

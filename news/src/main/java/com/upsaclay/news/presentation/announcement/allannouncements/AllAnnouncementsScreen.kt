@@ -45,7 +45,7 @@ import com.upsaclay.news.R
 import com.upsaclay.news.domain.announcementsFixture
 import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.domain.entity.AnnouncementReport
-import com.upsaclay.news.domain.entity.AnnouncementState
+import com.upsaclay.news.domain.entity.Announcement.AnnouncementState
 import com.upsaclay.news.presentation.announcement.components.AnnouncementBottomSheet
 import org.koin.androidx.compose.koinViewModel
 
@@ -217,7 +217,7 @@ private fun AllAnnouncementsScreen(
         clickedAnnouncement?.let { announcement ->
             AnnouncementBottomSheet(
                 announcement = announcement,
-                isEditable = user.isMember && announcement.author.id == user.id,
+                isEditable = user.admin && announcement.author.id == user.id,
                 onEditClick = {
                     showAnnouncementBottomSheet = false
                     clickedAnnouncement?.let(onEditAnnouncementClick)

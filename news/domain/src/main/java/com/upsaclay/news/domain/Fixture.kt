@@ -2,7 +2,7 @@ package com.upsaclay.news.domain
 
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.news.domain.entity.Announcement
-import com.upsaclay.news.domain.entity.AnnouncementState
+import com.upsaclay.news.domain.entity.Announcement.AnnouncementState
 import java.time.LocalDateTime
 
 val longAnnouncementFixture = Announcement(

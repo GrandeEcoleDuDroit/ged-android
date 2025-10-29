@@ -2,7 +2,7 @@ package com.upsaclay.message.domain
 
 import java.util.UUID
 
-object NotificationMessageUtils {
+object MessageNotificationUtils {
     const val CHANNEL_ID = "message_channel_notification_id"
 
     fun formatNotificationId(conversationId: String): String {

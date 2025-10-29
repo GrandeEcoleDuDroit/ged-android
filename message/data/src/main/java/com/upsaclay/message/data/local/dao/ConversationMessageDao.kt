@@ -4,19 +4,20 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import com.upsaclay.message.data.local.model.LocalConversationMessage
-import com.upsaclay.message.data.model.CONVERSATIONS_TABLE_NAME
+import com.upsaclay.message.data.model.ConversationField
 import com.upsaclay.message.data.model.ConversationField.CREATED_AT
 import com.upsaclay.message.data.model.ConversationField.Local.CONVERSATION_DELETE_TIME
 import com.upsaclay.message.data.model.ConversationField.Local.CONVERSATION_STATE
 import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_EMAIL
 import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_FIRST_NAME
 import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_ID
-import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_IS_DELETED
-import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_IS_MEMBER
+import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_STATE
+import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_ADMIN
 import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_LAST_NAME
 import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_PROFILE_PICTURE_FILE_NAME
 import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_SCHOOL_LEVEL
-import com.upsaclay.message.data.model.MESSAGES_TABLE_NAME
+import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_TESTER
+import com.upsaclay.message.data.model.MessageField
 import com.upsaclay.message.data.model.MessageField.CONTENT
 import com.upsaclay.message.data.model.MessageField.MESSAGE_ID
 import com.upsaclay.message.data.model.MessageField.RECIPIENT_ID
@@ -38,9 +39,10 @@ interface ConversationMessageDao {
             C.$INTERLOCUTOR_LAST_NAME, 
             C.$INTERLOCUTOR_EMAIL, 
             C.$INTERLOCUTOR_SCHOOL_LEVEL,
-            C.$INTERLOCUTOR_IS_MEMBER,
+            C.$INTERLOCUTOR_ADMIN,
             C.$INTERLOCUTOR_PROFILE_PICTURE_FILE_NAME,
-            C.$INTERLOCUTOR_IS_DELETED,
+            C.$INTERLOCUTOR_STATE,
+            C.$INTERLOCUTOR_TESTER,
             C.$CREATED_AT,
             C.$CONVERSATION_STATE, 
             C.$CONVERSATION_DELETE_TIME,
@@ -51,11 +53,11 @@ interface ConversationMessageDao {
             M.$TIMESTAMP,
             M.$SEEN, 
             M.$MESSAGE_STATE
-        FROM $CONVERSATIONS_TABLE_NAME C
-        JOIN $MESSAGES_TABLE_NAME M ON C.$CONVERSATION_CONVERSATION_ID = M.$MESSAGE_CONVERSATION_ID
+        FROM ${ConversationField.TABLE_NAME} C
+        JOIN ${MessageField.TABLE_NAME} M ON C.$CONVERSATION_CONVERSATION_ID = M.$MESSAGE_CONVERSATION_ID
         JOIN (
             SELECT $MESSAGE_CONVERSATION_ID, MAX($TIMESTAMP) AS MAX_TIMESTAMP
-            FROM $MESSAGES_TABLE_NAME
+            FROM ${MessageField.TABLE_NAME}
             GROUP BY $MESSAGE_CONVERSATION_ID
         ) M_MAX
           ON M.$MESSAGE_CONVERSATION_ID = M_MAX.$MESSAGE_CONVERSATION_ID

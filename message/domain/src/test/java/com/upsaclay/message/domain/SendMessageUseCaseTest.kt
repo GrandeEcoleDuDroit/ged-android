@@ -2,11 +2,11 @@ package com.upsaclay.message.domain
 
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.userFixture
-import com.upsaclay.message.domain.entity.ConversationState
-import com.upsaclay.message.domain.entity.MessageState
+import com.upsaclay.message.domain.entity.Message.MessageState
+import com.upsaclay.message.domain.entity.Conversation.ConversationState
 import com.upsaclay.message.domain.repository.ConversationRepository
+import com.upsaclay.message.domain.repository.MessageNotificationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
-import com.upsaclay.message.domain.repository.NotificationMessageRepository
 import com.upsaclay.message.domain.usecase.SendMessageUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -23,7 +23,7 @@ import org.junit.Test
 class SendMessageUseCaseTest {
     private val conversationRepository: ConversationRepository = mockk()
     private val messageRepository: MessageRepository = mockk()
-    private val notificationMessageRepository: NotificationMessageRepository = mockk()
+    private val messageNotificationRepository: MessageNotificationRepository = mockk()
     private val userRepository: UserRepository = mockk()
 
     private lateinit var useCase: SendMessageUseCase
@@ -38,13 +38,13 @@ class SendMessageUseCaseTest {
         coEvery { messageRepository.updateLocalMessage(any()) } returns Unit
         coEvery { messageRepository.createLocalMessage(any()) } returns Unit
         coEvery { messageRepository.createRemoteMessage(any()) } returns Unit
-        coEvery { notificationMessageRepository.sendNotification(any(), any()) } returns Unit
+        coEvery { messageNotificationRepository.sendNotification(any(), any()) } returns Unit
 
 
         useCase = SendMessageUseCase(
             conversationRepository = conversationRepository,
             messageRepository = messageRepository,
-            notificationMessageRepository = notificationMessageRepository,
+            messageNotificationRepository = messageNotificationRepository,
             userRepository = userRepository,
             scope = testScope
         )
@@ -108,6 +108,6 @@ class SendMessageUseCaseTest {
         useCase(conversationFixture, messageFixture, userFixture.id)
 
         // Then
-        coVerify { notificationMessageRepository.sendNotification(any(), any()) }
+        coVerify { messageNotificationRepository.sendNotification(any(), any()) }
     }
 }

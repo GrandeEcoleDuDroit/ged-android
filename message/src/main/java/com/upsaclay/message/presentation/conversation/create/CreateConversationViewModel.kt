@@ -3,10 +3,10 @@ package com.upsaclay.message.presentation.conversation.create
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upsaclay.common.domain.entity.CurrentUserNotFoundException
-import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.repository.UserRepository
+import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapNetworkErrorMessage
 import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.usecase.GetConversationUseCase
@@ -41,7 +41,7 @@ class CreateConversationViewModel(
                 userRepository.getUsers()
                     .filter {
                         it.id != userRepository.currentUser?.id
-                                && !it.isDeleted
+                                && it.state != User.UserState.DELETED
                                 && it.id !in blockedUserIds
                     }
                     .sortedBy { it.fullName }
