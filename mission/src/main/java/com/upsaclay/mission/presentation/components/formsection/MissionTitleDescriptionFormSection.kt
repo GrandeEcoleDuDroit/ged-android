@@ -24,17 +24,18 @@ import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.extension.bringIntoView
-import com.upsaclay.common.extension.mediumSpacing
+import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.components.TransparentTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.titleMediumLarge
+import com.upsaclay.common.presentation.theme.missionContent
+import com.upsaclay.common.presentation.theme.missionTitle
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.mission.R
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MissionFormTitleDescriptionSection(
+fun MissionTitleDescriptionFormSection(
     title: String,
     description: String,
     onTitleChange: (String) -> Unit,
@@ -47,7 +48,7 @@ fun MissionFormTitleDescriptionSection(
     SelectionContainer {
         Column(
             modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
-            verticalArrangement = Arrangement.mediumSpacing()
+            verticalArrangement = Arrangement.smallSpacing()
         ) {
             TransparentTextField(
                 modifier = Modifier
@@ -66,11 +67,11 @@ fun MissionFormTitleDescriptionSection(
                 placeholder = {
                     Text(
                         text = stringResource(R.string.title),
-                        style = MaterialTheme.typography.titleMediumLarge,
+                        style = MaterialTheme.typography.missionTitle,
                         color = TextFieldDefaults.colors().unfocusedPlaceholderColor
                     )
                 },
-                textStyle = MaterialTheme.typography.titleMediumLarge
+                textStyle = MaterialTheme.typography.missionTitle
             )
 
             TransparentTextField(
@@ -93,7 +94,7 @@ fun MissionFormTitleDescriptionSection(
                     )
                 },
                 minLines = 4,
-                textStyle = MaterialTheme.typography.bodyLarge
+                textStyle = MaterialTheme.typography.missionContent
             )
         }
     }
@@ -113,7 +114,7 @@ private fun CreateMissionTitleDescriptionSectionPreview() {
 
     GedoiseTheme {
         Surface {
-            MissionFormTitleDescriptionSection(
+            MissionTitleDescriptionFormSection(
                 title = title,
                 description = description,
                 onTitleChange = { title = it },

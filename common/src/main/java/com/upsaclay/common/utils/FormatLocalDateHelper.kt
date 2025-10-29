@@ -19,13 +19,4 @@ object LocalDateFormatter {
         }
         return toZonedDate(localDate).format(formatter)
     }
-
-    fun formatDayMonth(localDate: LocalDate): String {
-        val formatter = if (Locale.getDefault().language == "fr") {
-            DateTimeFormatter.ofPattern("dd MMM", Locale.FRENCH)
-        } else {
-            DateTimeFormatter.ofPattern("MMM dd", Locale.ENGLISH)
-        }
-        return toZonedDate(localDate).format(formatter)
-    }
 }

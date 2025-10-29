@@ -26,9 +26,9 @@ import com.upsaclay.common.presentation.components.EditTopBar
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.mission.R
-import com.upsaclay.mission.presentation.MissionBottomSheetType
 import com.upsaclay.mission.domain.entity.MissionTask
 import com.upsaclay.mission.domain.missionFixture
+import com.upsaclay.mission.presentation.MissionBottomSheetType
 import com.upsaclay.mission.presentation.components.bottomsheet.AddTaskModalBottomSheet
 import com.upsaclay.mission.presentation.components.bottomsheet.EditTaskModalBottomSheet
 import com.upsaclay.mission.presentation.components.bottomsheet.SelectManagerModalBottomSheet
@@ -274,7 +274,7 @@ private fun CreateMissionScreenPreview() {
             frequency = mission.frequency,
             participantNumber = mission.maxParticipants.toString(),
             selectedManagers = listOf(userFixture),
-            missionTasks = mission.missionTasks,
+            missionTasks = mission.tasks,
             imageUri = null,
             memberUsers = usersFixture,
             userQuery = "",

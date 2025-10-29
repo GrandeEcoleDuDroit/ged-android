@@ -1,10 +1,13 @@
 package com.upsaclay.mission.domain
 
 import com.upsaclay.mission.domain.usecase.CreateMissionUseCase
+import com.upsaclay.mission.domain.usecase.DeleteMissionUseCase
+import com.upsaclay.mission.domain.usecase.ResendMissionUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -28,4 +31,14 @@ val missionDomainModule = module {
             scope = get(BACKGROUND_SCOPE)
         )
     }
+
+    single {
+        ResendMissionUseCase(
+            missionRepository = get(),
+            fileRepository = get(),
+            scope = get(BACKGROUND_SCOPE)
+        )
+    }
+
+    singleOf(::DeleteMissionUseCase)
 }

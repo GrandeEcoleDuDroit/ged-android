@@ -1,6 +1,5 @@
 package com.upsaclay.mission.presentation.components.formsection
 
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,11 +13,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -32,35 +26,21 @@ import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.MissionTask
 import com.upsaclay.mission.domain.tasksFixture
 import com.upsaclay.mission.presentation.components.item.MissionTaskItem
-import kotlinx.coroutines.android.awaitFrame
-import kotlinx.coroutines.delay
+import com.upsaclay.mission.presentation.components.item.SectionTitle
 
 @Composable
-fun MissionFormTaskSection(
+fun MissionTaskFormSection(
     missionTasks: List<MissionTask>,
-    scrollState: ScrollState,
     onTaskClick: (MissionTask) -> Unit,
     onAddTaskClick: () -> Unit,
     onRemoveTaskClick: (MissionTask) -> Unit
 ) {
-    var currentSize by remember { mutableIntStateOf(missionTasks.size) }
-
-    LaunchedEffect(missionTasks) {
-        if (missionTasks.size > currentSize) {
-            awaitFrame()
-            delay(200)
-            scrollState.animateScrollTo(scrollState.maxValue)
-            currentSize = missionTasks.size
-        }
-    }
-
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        Text(
+        SectionTitle(
             modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
-            text = stringResource(R.string.tasks),
-            style = MaterialTheme.typography.titleMedium,
+            title = stringResource(R.string.tasks)
         )
 
         Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.small_padding)))
@@ -108,9 +88,8 @@ fun MissionFormTaskSection(
 private fun CreateMissionTaskSectionPreview() {
     GedoiseTheme {
         Surface {
-            MissionFormTaskSection(
+            MissionTaskFormSection(
                 missionTasks = tasksFixture,
-                scrollState = ScrollState(0),
                 onAddTaskClick = {},
                 onTaskClick = {},
                 onRemoveTaskClick = {}

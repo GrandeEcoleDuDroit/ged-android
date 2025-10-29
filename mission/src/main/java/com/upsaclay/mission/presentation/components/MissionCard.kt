@@ -1,13 +1,15 @@
 package com.upsaclay.mission.presentation.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
@@ -16,18 +18,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.upsaclay.common.domain.entity.SchoolLevel
+import com.upsaclay.common.extension.extraSmallSpacing
 import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.extension.smallSpacing
-import com.upsaclay.common.presentation.components.PrimaryButton
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.presentation.theme.missionContent
+import com.upsaclay.common.presentation.theme.missionTitle
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
@@ -80,32 +84,27 @@ private fun DefaultMissionCard(
     imageModel: Any?,
     onClick: () -> Unit
 ) {
-    OutlinedCard(modifier = modifier) {
+    OutlinedCard(
+        modifier = modifier.clickable(onClick = onClick)
+    ) {
+        MissionCardImage(model = imageModel)
+
         Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
             verticalArrangement = Arrangement.mediumSpacing()
         ) {
-            MissionImage(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp)
-                    .clip(
-                        RoundedCornerShape(
-                            bottomStart = 16.dp,
-                            bottomEnd = 16.dp
-                        )
-                    ),
-                model = imageModel
+            CardTitle(
+                modifier = Modifier.fillMaxWidth(),
+                mission = mission
             )
 
-            CardBody(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding),
-                        vertical = dimensionResource(com.upsaclay.common.R.dimen.small_padding)
-                    ),
-                mission = mission,
-                onClick = onClick
+            CardContent(mission = mission)
+
+            CardFooter(
+                modifier = Modifier.fillMaxWidth(),
+                schoolLevels = mission.schoolLevels.takeIf { mission.schoolLevelRestricted() }
             )
         }
     }
@@ -121,122 +120,25 @@ private fun PublishingMissionCard(
    DefaultMissionCard(
        modifier = modifier.alpha(0.5f),
        mission = mission,
-         imageModel = imageModel,
+       imageModel = imageModel,
        onClick = onClick
    )
 }
 
 @Composable
-private fun ErrorMissionCard(
-    modifier: Modifier = Modifier,
-    mission: Mission,
-    imageModel: Any?,
-    onClick: () -> Unit
-) {
-    OutlinedCard(
-        modifier = modifier.clickable(onClick = onClick)
-    ) {
-        Column(
-            verticalArrangement = Arrangement.mediumSpacing()
-        ) {
-            MissionImage(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .clip(
-                        RoundedCornerShape(
-                            bottomStart = 16.dp,
-                            bottomEnd = 16.dp
-                        )
-                    ),
-                model = imageModel
-            )
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding),
-                        vertical = dimensionResource(com.upsaclay.common.R.dimen.small_padding)
-                    ),
-                verticalArrangement = Arrangement.mediumSpacing()
-            ) {
-                CardBodyHeader(
-                    modifier = Modifier.fillMaxWidth(),
-                    mission = mission
-                )
-
-                CardBodyContent(mission = mission)
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Row(
-                        horizontalArrangement = Arrangement.smallSpacing()
-                    ) {
-                        Icon(
-                            painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_error),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.error
-                        )
-
-                        Text(
-                            text = stringResource(R.string.sending_error),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.error
-                        )
-                    }
-
-                    CardBodyFooter(
-                        schoolLevels = mission.schoolLevels,
-                        onClick = onClick
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun CardBody(
-    modifier: Modifier = Modifier,
-    mission: Mission,
-    onClick: () -> Unit
-) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.mediumSpacing()
-    ) {
-        CardBodyHeader(
-            modifier = Modifier.fillMaxWidth(),
-            mission = mission
-        )
-
-        CardBodyContent(mission = mission)
-
-        CardBodyFooter(
-            modifier = Modifier.fillMaxWidth(),
-            schoolLevels = mission.schoolLevels,
-            onClick = onClick
-        )
-    }
-}
-
-@Composable
-private fun CardBodyHeader(
+private fun CardTitle(
     modifier: Modifier = Modifier,
     mission: Mission
 ) {
     Row(
         modifier = modifier,
-        verticalAlignment = Alignment.Top,
-        horizontalArrangement = Arrangement.SpaceBetween
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.smallSpacing()
     ) {
         Text(
+            modifier = Modifier.weight(1f),
             text = mission.title,
-            style = MaterialTheme.typography.titleLarge,
+            style = MaterialTheme.typography.missionTitle,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
         )
@@ -246,7 +148,7 @@ private fun CardBodyHeader(
             horizontalArrangement = Arrangement.smallSpacing(),
         ) {
             Icon(
-                modifier = Modifier.scale(0.9f),
+                modifier = Modifier.size(20.dp),
                 painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_group),
                 contentDescription = null
             )
@@ -264,40 +166,121 @@ private fun CardBodyHeader(
 }
 
 @Composable
-private fun CardBodyContent(
+private fun CardContent(
     modifier: Modifier = Modifier,
     mission: Mission
 ) {
     Text(
         modifier = modifier,
         text = mission.description,
-        style = MaterialTheme.typography.bodyMedium,
+        style = MaterialTheme.typography.missionContent,
         maxLines = 3,
         overflow = TextOverflow.Ellipsis
     )
 }
 
 @Composable
-private fun CardBodyFooter(
+private fun CardFooter(
     modifier: Modifier = Modifier,
-    schoolLevels: List<SchoolLevel>,
-    onClick: () -> Unit
+    schoolLevels: List<SchoolLevel>?
 ) {
     Row(
         modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            text = MissionFormatter.formatSchoolLevels(schoolLevels, ""),
-            style = MaterialTheme.typography.bodySmall
+        schoolLevels?.let {
+            Text(
+                text = MissionFormatter.formatSchoolLevels(it),
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
+    }
+}
+
+@Composable
+private fun ErrorMissionCard(
+    modifier: Modifier = Modifier,
+    mission: Mission,
+    imageModel: Any?,
+    onClick: () -> Unit
+) {
+    OutlinedCard(
+        modifier = modifier.clickable(onClick = onClick)
+    ) {
+        Box {
+            MissionCardImage(model = imageModel)
+
+            ErrorBanner(modifier = Modifier.align(Alignment.TopCenter))
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+            verticalArrangement = Arrangement.mediumSpacing()
+        ) {
+            CardTitle(
+                modifier = Modifier.fillMaxWidth(),
+                mission = mission
+            )
+
+            CardContent(mission = mission)
+
+            if (mission.schoolLevelRestricted()) {
+                CardFooter(
+                    modifier = Modifier.fillMaxWidth(),
+                    schoolLevels = mission.schoolLevels
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ErrorBanner(modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.background.copy(alpha = 0.8f))
+            .padding(
+                vertical = dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding),
+                horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)
+            ),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.extraSmallSpacing()
+    ) {
+        Icon(
+            painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_error),
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.error,
+            modifier = Modifier.size(18.dp)
         )
 
-        PrimaryButton(
-            text = stringResource(com.upsaclay.common.R.string.see),
-            onClick = onClick,
+        Text(
+            modifier = Modifier
+                .padding(
+                    top = dimensionResource(com.upsaclay.common.R.dimen.small_padding),
+                    bottom = dimensionResource(com.upsaclay.common.R.dimen.small_padding),
+                    end = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)
+                ),
+            text = stringResource(R.string.sending_error),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.error
         )
     }
+}
+
+@Composable
+private fun MissionCardImage(
+    modifier: Modifier = Modifier,
+    model: Any?
+) {
+    MissionImage(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(dimensionResource(R.dimen.mission_card_image_height)),
+        model = model
+    )
 }
 
 /*

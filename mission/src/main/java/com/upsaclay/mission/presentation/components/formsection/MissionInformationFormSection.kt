@@ -8,9 +8,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -20,21 +19,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.extension.bringIntoView
-import com.upsaclay.common.extension.mediumSpacing
+import com.upsaclay.common.extension.smallMediumSpacing
 import com.upsaclay.common.presentation.components.SimpleOutlinedTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.mission.R
 import com.upsaclay.mission.presentation.components.OutlinedDatePicker
 import com.upsaclay.mission.presentation.components.OutlinedSchoolLevelDropDownMenu
+import com.upsaclay.mission.presentation.components.item.SectionTitle
 import java.time.LocalDate
 
 @Composable
-fun MissionFormInformationSection(
+fun MissionInformationFormSection(
     modifier: Modifier = Modifier,
     schoolLevels: List<SchoolLevel>,
     selectedSchoolLevels: List<SchoolLevel>,
@@ -47,16 +48,13 @@ fun MissionFormInformationSection(
     onEndDateClick: () -> Unit,
     onFrequencyChange: (String) -> Unit,
     onParticipantNumberChange: (String) -> Unit,
-    scrollState: ScrollState
+    scrollState: ScrollState,
 ) {
     Column(
         modifier = modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
-        verticalArrangement = Arrangement.mediumSpacing()
+        verticalArrangement = Arrangement.smallMediumSpacing()
     ) {
-        Text(
-            text = stringResource(R.string.informations),
-            style = MaterialTheme.typography.titleMedium
-        )
+        SectionTitle(title = stringResource(R.string.information))
 
         OutlinedSchoolLevelDropDownMenu(
             modifier = Modifier
@@ -73,7 +71,7 @@ fun MissionFormInformationSection(
                 .bringIntoView(scrollState),
             date = startDate,
             onClick = onStartDateClick,
-            label = stringResource(R.string.start_date)
+            label = stringResource(R.string.start_date),
         )
 
         OutlinedDatePicker(
@@ -82,7 +80,7 @@ fun MissionFormInformationSection(
                 .bringIntoView(scrollState),
             date = endDate,
             onClick = onEndDateClick,
-            label = stringResource(R.string.end_date)
+            label = stringResource(R.string.end_date),
         )
 
         SelectionContainer {
@@ -139,7 +137,7 @@ private fun CreateMissionInformationSectionPreview() {
 
     GedoiseTheme {
         Surface {
-            MissionFormInformationSection(
+            MissionInformationFormSection(
                 schoolLevels = SchoolLevel.entries.toList(),
                 selectedSchoolLevels = selectedSchoolLevels,
                 startDate = LocalDate.now(),

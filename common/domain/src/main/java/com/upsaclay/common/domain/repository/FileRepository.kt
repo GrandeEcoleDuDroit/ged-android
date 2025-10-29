@@ -6,4 +6,6 @@ interface FileRepository {
     suspend fun createCacheFile(fileName: String, uri: String): File?
 
     suspend fun createLocalFile(fileName: String, uri: String): File?
+
+    suspend fun getFile(path: String): File?
 }

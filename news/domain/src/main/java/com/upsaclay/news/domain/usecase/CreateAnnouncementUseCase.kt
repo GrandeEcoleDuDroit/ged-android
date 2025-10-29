@@ -14,9 +14,9 @@ class CreateAnnouncementUseCase(
         scope.launch {
             try {
                 announcementRepository.createAnnouncement(announcement.copy(state = AnnouncementState.PUBLISHING))
-                announcementRepository.updateLocalAnnouncement(announcement.copy(state = AnnouncementState.PUBLISHED))
+                announcementRepository.upsertLocalAnnouncement(announcement.copy(state = AnnouncementState.PUBLISHED))
             } catch (_: Exception) {
-                announcementRepository.updateLocalAnnouncement(announcement.copy(state = AnnouncementState.ERROR))
+                announcementRepository.upsertLocalAnnouncement(announcement.copy(state = AnnouncementState.ERROR))
             }
         }
     }

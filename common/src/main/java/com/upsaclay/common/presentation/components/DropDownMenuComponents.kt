@@ -117,6 +117,7 @@ fun MultiSelectionDropDownMenu(
                                 checked = selectedItems.contains(item),
                                 onCheckedChange = null
                             )
+
                             Text(text = item)
                         }
                     },

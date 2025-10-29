@@ -1,6 +1,5 @@
 package com.upsaclay.common.presentation.components
 
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -102,7 +101,6 @@ fun SimpleFloatingActionButton(
 private fun PrimaryButtonPreview() {
     GedoiseTheme {
         PrimaryButton(
-            modifier = Modifier.fillMaxWidth(),
             text = "Primary Button",
             onClick = {}
         )

@@ -49,12 +49,14 @@ fun TitleTopBar(title: String) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BackTopBar(
+    modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     title: String,
     leadingIcon: @Composable (RowScope.() -> Unit) = {},
     scrollBehavior: TopAppBarScrollBehavior? = null
 ) {
     TopAppBar(
+        modifier = modifier,
         title = {
             Text(
                 text = title,

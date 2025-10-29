@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -37,7 +35,7 @@ import com.upsaclay.common.utils.Phones
 import com.upsaclay.mission.R
 
 @Composable
-fun MissionFormImage(
+fun MissionImageFormSection(
     modifier: Modifier = Modifier,
     imageUri: String?,
     onImageClick: () -> Unit,
@@ -45,7 +43,7 @@ fun MissionFormImage(
 ) {
     Box(
         modifier = modifier
-            .height(200.dp)
+            .height(dimensionResource(R.dimen.mission_image_height))
             .clickable(onClick = onImageClick),
         contentAlignment = Alignment.Center
     ) {
@@ -104,11 +102,11 @@ private fun NonEmptyImage(
                 .align(Alignment.TopEnd)
                 .clip(ShapeDefaults.ExtraLarge)
                 .background(Color.Black.copy(alpha = 0.5f))
-                .size(dimensionResource(R.dimen.remove_button_size)),
+                .size(dimensionResource(R.dimen.mission_image_remove_button_size)),
             onClick = onRemoveImageClick
         ) {
             Icon(
-                modifier = Modifier.size(dimensionResource(R.dimen.remove_button_icon_size)),
+                modifier = Modifier.size(dimensionResource(R.dimen.mission_image_remove_button_icon_size)),
                 imageVector = Icons.Default.Clear,
                 contentDescription = "Delete Image",
                 tint = Color.White
@@ -128,7 +126,7 @@ private fun NonEmptyImage(
 private fun CreateMissionImageSectionPreview() {
     GedoiseTheme {
         Surface {
-            MissionFormImage(
+            MissionImageFormSection(
                 imageUri = null,
                 onImageClick = {},
                 onRemoveImageClick = {}

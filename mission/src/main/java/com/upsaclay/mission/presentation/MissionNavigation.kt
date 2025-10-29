@@ -17,6 +17,7 @@ fun NavController.navigateToMission(navOptions: NavOptions? = null) {
 }
 
 fun NavGraphBuilder.missionSection(
+    onMissionClick: (Int) -> Unit,
     onCreateMissionClick: () -> Unit,
     bottomBar: @Composable () -> Unit,
     missionDestinations: NavGraphBuilder.() -> Unit
@@ -24,6 +25,7 @@ fun NavGraphBuilder.missionSection(
     navigation<MissionBaseRoute>(startDestination = MissionRoute) {
         composable<MissionRoute> {
             MissionDestination(
+                onMissionClick = onMissionClick,
                 onCreateMissionClick = onCreateMissionClick,
                 bottomBar = bottomBar
             )

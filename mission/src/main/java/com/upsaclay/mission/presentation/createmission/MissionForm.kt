@@ -10,7 +10,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -25,11 +27,13 @@ import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.mission.domain.entity.MissionTask
 import com.upsaclay.mission.domain.missionTaskFixture
-import com.upsaclay.mission.presentation.components.formsection.MissionFormImage
-import com.upsaclay.mission.presentation.components.formsection.MissionFormInformationSection
-import com.upsaclay.mission.presentation.components.formsection.MissionFormManagerSection
-import com.upsaclay.mission.presentation.components.formsection.MissionFormTaskSection
-import com.upsaclay.mission.presentation.components.formsection.MissionFormTitleDescriptionSection
+import com.upsaclay.mission.presentation.components.formsection.MissionImageFormSection
+import com.upsaclay.mission.presentation.components.formsection.MissionInformationFormSection
+import com.upsaclay.mission.presentation.components.formsection.MissionManagerFormSection
+import com.upsaclay.mission.presentation.components.formsection.MissionTaskFormSection
+import com.upsaclay.mission.presentation.components.formsection.MissionTitleDescriptionFormSection
+import kotlinx.coroutines.android.awaitFrame
+import kotlinx.coroutines.delay
 import java.time.LocalDate
 
 @Composable
@@ -52,18 +56,28 @@ fun MissionForm(
     onRemoveImageClick: () -> Unit
 ) {
     val scrollState = rememberScrollState()
+    var currentSize by remember { mutableIntStateOf(value.missionTasks.size) }
+
+    LaunchedEffect(value.missionTasks) {
+        if (value.missionTasks.size > currentSize) {
+            awaitFrame()
+            delay(200)
+            scrollState.animateScrollTo(scrollState.maxValue)
+            currentSize = value.missionTasks.size
+        }
+    }
 
     Column(
         modifier = modifier.verticalScroll(scrollState),
         verticalArrangement = Arrangement.mediumSpacing()
     ) {
-        MissionFormImage(
+        MissionImageFormSection(
             imageUri = value.imageUri,
             onImageClick = onImageClick,
             onRemoveImageClick = onRemoveImageClick
         )
 
-        MissionFormTitleDescriptionSection(
+        MissionTitleDescriptionFormSection(
             title = value.title,
             description = value.description,
             onTitleChange = onTitleChange,
@@ -73,7 +87,7 @@ fun MissionForm(
 
         HorizontalDivider(modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)))
 
-        MissionFormInformationSection(
+        MissionInformationFormSection(
             schoolLevels = value.schoolLevels,
             selectedSchoolLevels = value.selectedSchoolLevels,
             startDate = value.startDate,
@@ -85,12 +99,12 @@ fun MissionForm(
             onEndDateClick = onEndDateClick,
             onFrequencyChange = onFrequencyChange,
             onParticipantNumberChange = onParticipantNumberChange,
-            scrollState = scrollState
+            scrollState = scrollState,
         )
 
         HorizontalDivider(modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)))
 
-        MissionFormManagerSection(
+        MissionManagerFormSection(
             managers = value.selectedManagers,
             onShowManagerListClick = onShowManagerListClick,
             onRemoveManagerClick = onRemoveManagerClick
@@ -98,9 +112,8 @@ fun MissionForm(
 
         HorizontalDivider(modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)))
 
-        MissionFormTaskSection(
+        MissionTaskFormSection(
             missionTasks = value.missionTasks,
-            scrollState = scrollState,
             onAddTaskClick = onAddTaskClick,
             onTaskClick = onEditTaskClick,
             onRemoveTaskClick = onRemoveTaskClick

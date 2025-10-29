@@ -7,6 +7,8 @@ import java.io.File
 interface MissionRepository {
     val missions: Flow<List<Mission>>
 
+    fun getMissionFlow(missionId: Int): Flow<Mission>
+
     suspend fun createMission(mission: Mission, file: File?)
 
     suspend fun upsertLocalMission(mission: Mission)

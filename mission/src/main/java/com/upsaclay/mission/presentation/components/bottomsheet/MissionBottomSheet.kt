@@ -22,8 +22,8 @@ import com.upsaclay.common.presentation.components.TextItem
 @Composable
 fun MissionBottomSheet(
     onDismiss: () -> Unit,
-    onDeleteMissionClick: () -> Unit,
-    onRecreateMissionClick: () -> Unit
+    onDeleteClick: () -> Unit,
+    onResendClick: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState()
 
@@ -40,10 +40,7 @@ fun MissionBottomSheet(
                     contentDescription = null
                 )
             },
-            onClick = {
-                onDismiss()
-                onRecreateMissionClick()
-            }
+            onClick = onResendClick
         )
 
         TextItem(
@@ -61,10 +58,7 @@ fun MissionBottomSheet(
                     contentDescription = null
                 )
             },
-            onClick = {
-                onDismiss()
-                onDeleteMissionClick()
-            }
+            onClick = onDeleteClick
         )
 
         Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.large_padding)))

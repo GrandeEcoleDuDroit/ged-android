@@ -18,7 +18,7 @@ import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
 
 @Composable
-fun HorizontalManagerItem(
+fun ParticipantItem(
     modifier: Modifier = Modifier,
     user: User,
     imageScale: Float,
@@ -50,10 +50,10 @@ fun HorizontalManagerItem(
 
 @Phones
 @Composable
-private fun HorizontalManagerItemPreview() {
+private fun ParticipantItemPreview() {
     GedoiseTheme {
         Surface {
-            HorizontalManagerItem(
+            ParticipantItem(
                 user = userFixture,
                 imageScale = 0.5f
             )

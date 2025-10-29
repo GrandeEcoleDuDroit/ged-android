@@ -46,7 +46,7 @@ class CreateMissionViewModel(
             managers = uiState.value.selectedManagers,
             participants = emptyList(),
             maxParticipants = uiState.value.participantNumber.toInt(),
-            missionTasks = uiState.value.tasks.values.toList(),
+            tasks = uiState.value.tasks.values.toList(),
             state = MissionState.Draft(imageUri = uiState.value.imageUri?.toString()),
         )
 
@@ -54,7 +54,7 @@ class CreateMissionViewModel(
     }
 
     fun onTitleChange(title: String) {
-        if (title.length > 100) return
+        if (title.length > 50) return
         _uiState.update {
             it.copy(
                 title = title,

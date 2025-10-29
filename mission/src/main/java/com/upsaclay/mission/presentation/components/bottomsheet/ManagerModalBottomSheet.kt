@@ -14,7 +14,6 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -26,7 +25,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -40,7 +38,7 @@ import com.upsaclay.common.presentation.components.StaticSearchBar
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.previewText
 import com.upsaclay.common.utils.Phones
-import com.upsaclay.mission.presentation.components.item.ManagerItem
+import com.upsaclay.mission.presentation.components.item.HorizontalManagerItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -153,7 +151,7 @@ private fun SelectableManagerItem(
             onCheckedChange = null
         )
 
-        ManagerItem(
+        HorizontalManagerItem(
             user = user,
             imageScale = 0.5f
         )

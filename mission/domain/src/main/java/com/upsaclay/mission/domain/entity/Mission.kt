@@ -17,9 +17,13 @@ data class Mission(
     val managers: List<User>,
     val participants: List<User>,
     val maxParticipants: Int,
-    val missionTasks: List<MissionTask>,
+    val tasks: List<MissionTask>,
     val state: MissionState
-)
+) {
+    fun schoolLevelRestricted(): Boolean = schoolLevels.isNotEmpty() && schoolLevels.size < SchoolLevel.entries.size
+
+    fun full(): Boolean = participants.size >= maxParticipants
+}
 
 sealed class MissionState {
     data class Draft(val imageUri: String? = null): MissionState()
@@ -37,7 +41,7 @@ sealed class MissionState {
     }
 
     companion object {
-        fun fromString(value: String, imagePathOrUri: String? = null): MissionState {
+        fun fromString(value: String, imagePathOrUri: String?): MissionState {
             return when (value) {
                 "DRAFT" -> Draft(imageUri = imagePathOrUri)
                 "PUBLISHING" -> Publishing(imagePath = imagePathOrUri)

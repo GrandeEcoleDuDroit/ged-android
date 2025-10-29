@@ -23,7 +23,7 @@ data class RemoteMission(
     @SerializedName(MISSION_DESCRIPTION)
     val missionDescription: String,
     @SerializedName(MISSION_SCHOOL_LEVEL)
-    val missionSchoolLevelNumbers: String,
+    val missionSchoolLevels: String,
     @SerializedName(MISSION_DATE)
     val missionDate: Long,
     @SerializedName(MISSION_START_DATE)

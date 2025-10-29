@@ -40,7 +40,7 @@ fun OutlinedSchoolLevelDropDownMenu(
         label = stringResource(R.string.school_level),
         leadingIcon = {
             Icon(
-                painter = painterResource(R.drawable.ic_fill_school),
+                painter = painterResource(R.drawable.ic_outline_school),
                 contentDescription = null,
             )
         },

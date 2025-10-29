@@ -35,8 +35,8 @@ fun LocalMission.toMission(): Mission {
         managers = gson.fromJson(missionManagers, usersType),
         participants = gson.fromJson(missionParticipants, usersType),
         maxParticipants = missionMaxParticipants,
-        missionTasks = missionTasks?.let { gson.fromJson(it, missionTasksType) } ?: emptyList(),
-        state = MissionState.fromString(missionState)
+        tasks = missionTasks?.let { gson.fromJson(it, missionTasksType) } ?: emptyList(),
+        state = MissionState.fromString(missionState, missionImageReference)
     )
 }
 
@@ -66,7 +66,7 @@ fun Mission.toLocal(): LocalMission {
         missionManagers = gson.toJson(managers, usersType),
         missionParticipants = gson.toJson(participants, usersType),
         missionMaxParticipants = maxParticipants,
-        missionTasks = gson.toJson(missionTasks, missionTasksType),
+        missionTasks = gson.toJson(tasks, missionTasksType),
         missionImageReference = imageReference,
         missionState = state.toString()
     )
@@ -78,7 +78,7 @@ fun Mission.toRemote(imageFileName: String?): RemoteMission {
     val userIdsType = object : TypeToken<List<String>>() {}.type
 
     val schoolLevelNumbers = schoolLevels.map { it.number }
-    val remoteMissionTasks = missionTasks.map { it.toRemote(id) }
+    val remoteMissionTasks = tasks.map { it.toRemote(id) }
     val managerIds = managers.map { it.id }
     val participantIds = participants.map { it.id }
 
@@ -86,7 +86,7 @@ fun Mission.toRemote(imageFileName: String?): RemoteMission {
         missionId = id,
         missionTitle = title,
         missionDescription = description,
-        missionSchoolLevelNumbers = gson.toJson(schoolLevelNumbers, schoolLevelNumbersType),
+        missionSchoolLevels = gson.toJson(schoolLevelNumbers, schoolLevelNumbersType),
         missionDate = date.toEpochMilliUTC(),
         missionStartDate = startDate.toEpochMilliUTC(),
         missionEndDate = endDate.toEpochMilliUTC(),

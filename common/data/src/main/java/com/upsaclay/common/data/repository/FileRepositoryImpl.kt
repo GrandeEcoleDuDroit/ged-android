@@ -24,6 +24,13 @@ internal class FileRepositoryImpl(private val context: Context): FileRepository 
         return@withContext writeFile(file, uri.toUri())
     }
 
+    override suspend fun getFile(path: String): File? {
+        return withContext(Dispatchers.IO) {
+            val file = File(path)
+            if (file.exists()) file else null
+        }
+    }
+
     private fun getFileName(uri: String): String {
         return contentResolver.getType(uri.toUri())?.split("/")?.last()
             ?: throw InvalidFormatFileException()

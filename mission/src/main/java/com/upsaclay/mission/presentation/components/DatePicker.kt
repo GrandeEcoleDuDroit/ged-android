@@ -25,7 +25,7 @@ fun OutlinedDatePicker(
     modifier: Modifier = Modifier,
     date: LocalDate,
     onClick: () -> Unit,
-    label: String
+    label: String,
 ) {
     SimpleOutlinedTextField(
         modifier = modifier

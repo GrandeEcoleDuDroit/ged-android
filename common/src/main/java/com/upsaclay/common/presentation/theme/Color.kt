@@ -136,6 +136,11 @@ val ColorScheme.iconBackground: Color
     @Composable
     get() = if (isSystemInDarkTheme()) Color(0xFF323232) else Color(0xFFE6E6E6)
 
+val ColorScheme.backButtonBackground: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color(0xFF323232) else Color(0xFFF5F5F5)
+
+
 val ColorScheme.leadingIcon: Color
     @Composable
     get() = TextFieldDefaults.colors().unfocusedLeadingIconColor
