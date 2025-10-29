@@ -4,8 +4,8 @@ import com.google.firebase.Firebase
 import com.google.firebase.firestore.MetadataChanges
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.firestore
-import com.upsaclay.message.data.model.CONVERSATIONS_TABLE_NAME
 import com.upsaclay.message.data.model.ConversationField
+import com.upsaclay.message.data.model.ConversationField.TABLE_NAME
 import com.upsaclay.message.data.remote.model.RemoteConversation
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 
 internal class ConversationApiImpl: ConversationApi {
-    private val conversationsCollection = Firebase.firestore.collection(CONVERSATIONS_TABLE_NAME)
+    private val conversationsCollection = Firebase.firestore.collection(TABLE_NAME)
 
     override fun listenConversations(userId: String): Flow<RemoteConversation> = callbackFlow {
         val listener = conversationsCollection

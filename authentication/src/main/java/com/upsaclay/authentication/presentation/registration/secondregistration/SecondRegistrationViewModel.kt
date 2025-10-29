@@ -1,16 +1,16 @@
 package com.upsaclay.authentication.presentation.registration.secondregistration
 
 import androidx.lifecycle.ViewModel
+import com.upsaclay.common.domain.entity.SchoolLevel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import okhttp3.internal.immutableListOf
 
 class SecondRegistrationViewModel: ViewModel() {
-    val schoolLevels = immutableListOf("GED 1", "GED 2", "GED 3", "GED 4")
-    private val _schoolLevel = MutableStateFlow(schoolLevels[0])
-    val schoolLevel: StateFlow<String> = _schoolLevel
+    val schoolLevels = SchoolLevel.getSchoolLevels()
+    private val _schoolLevel = MutableStateFlow(SchoolLevel.GED_1)
+    val schoolLevel: StateFlow<SchoolLevel> = _schoolLevel
 
-    fun onSchoolLevelChange(schoolLevel: String) {
+    fun onSchoolLevelChange(schoolLevel: SchoolLevel) {
         _schoolLevel.value = schoolLevel
     }
 }

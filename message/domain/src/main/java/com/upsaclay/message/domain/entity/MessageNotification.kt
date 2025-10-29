@@ -1,8 +1,8 @@
 package com.upsaclay.message.domain.entity
 
-data class NotificationMessage(
+data class MessageNotification(
     val conversation: Conversation,
-    val messageContent: NotificationMessage.MessageContent
+    val messageContent: MessageNotification.MessageContent
 ) {
     data class MessageContent(
         val content: String,
@@ -10,7 +10,7 @@ data class NotificationMessage(
     )
 }
 
-data class NotificationMessages(
+data class MessagesNotification(
     val conversation: Conversation,
-    val messages: List<NotificationMessage.MessageContent>
+    val messages: List<MessageNotification.MessageContent>
 )

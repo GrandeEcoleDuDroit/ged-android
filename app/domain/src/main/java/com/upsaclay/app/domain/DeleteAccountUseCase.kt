@@ -23,7 +23,7 @@ class DeleteAccountUseCase(
         val deletedUser = user.copy(
             email = user.id + "@deleted.com",
             profilePictureUrl = null,
-            isDeleted = true
+            state = User.UserState.DELETED
         )
 
         userRepository.updateRemoteUser(deletedUser)

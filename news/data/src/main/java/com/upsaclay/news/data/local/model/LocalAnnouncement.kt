@@ -7,19 +7,19 @@ import com.upsaclay.news.data.AnnouncementField.Local.ANNOUNCEMENT_ID
 import com.upsaclay.news.data.AnnouncementField.Local.CONTENT
 import com.upsaclay.news.data.AnnouncementField.Local.DATE
 import com.upsaclay.news.data.AnnouncementField.Local.STATE
+import com.upsaclay.news.data.AnnouncementField.Local.TABLE_NAME
 import com.upsaclay.news.data.AnnouncementField.Local.TITLE
 import com.upsaclay.news.data.AnnouncementField.Local.USER_EMAIL
 import com.upsaclay.news.data.AnnouncementField.Local.USER_FIRST_NAME
 import com.upsaclay.news.data.AnnouncementField.Local.USER_ID
-import com.upsaclay.news.data.AnnouncementField.Local.USER_IS_DELETED
-import com.upsaclay.news.data.AnnouncementField.Local.USER_IS_MEMBER
+import com.upsaclay.news.data.AnnouncementField.Local.USER_STATE
+import com.upsaclay.news.data.AnnouncementField.Local.USER_ADMIN
 import com.upsaclay.news.data.AnnouncementField.Local.USER_LAST_NAME
 import com.upsaclay.news.data.AnnouncementField.Local.USER_PROFILE_PICTURE_FILE_NAME
 import com.upsaclay.news.data.AnnouncementField.Local.USER_SCHOOL_LEVEL
+import com.upsaclay.news.data.AnnouncementField.Local.USER_TESTER
 
-const val ANNOUNCEMENTS_TABLE = "announcements_table"
-
-@Entity(tableName = ANNOUNCEMENTS_TABLE)
+@Entity(tableName = TABLE_NAME)
 data class LocalAnnouncement(
     @PrimaryKey
     @ColumnInfo(name = ANNOUNCEMENT_ID)
@@ -41,11 +41,13 @@ data class LocalAnnouncement(
     @ColumnInfo(name = USER_EMAIL)
     val userEmail: String,
     @ColumnInfo(name = USER_SCHOOL_LEVEL)
-    val userSchoolLevel: String,
-    @ColumnInfo(name = USER_IS_MEMBER)
-    val userIsMember: Boolean,
+    val userSchoolLevel: Int,
+    @ColumnInfo(name = USER_ADMIN)
+    val userAdmin: Boolean,
     @ColumnInfo(name = USER_PROFILE_PICTURE_FILE_NAME)
     val userProfilePictureFileName: String?,
-    @ColumnInfo(name = USER_IS_DELETED)
-    val userIsDeleted: Boolean
+    @ColumnInfo(name = USER_STATE)
+    val userState: String,
+    @ColumnInfo(name = USER_TESTER)
+    val userTester: Boolean
 )

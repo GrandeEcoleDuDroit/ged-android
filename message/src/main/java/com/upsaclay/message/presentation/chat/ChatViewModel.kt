@@ -3,21 +3,21 @@ package com.upsaclay.message.presentation.chat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
-import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.GenerateIdUseCase
+import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapNetworkErrorMessage
 import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.Message
 import com.upsaclay.message.domain.entity.MessageReport
-import com.upsaclay.message.domain.entity.MessageState
+import com.upsaclay.message.domain.entity.Message.MessageState
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
 import com.upsaclay.message.domain.usecase.DeleteConversationUseCase
 import com.upsaclay.message.domain.usecase.SendMessageUseCase
-import com.upsaclay.message.notification.NotificationMessageManager
+import com.upsaclay.message.notification.MessageNotificationManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,7 +35,7 @@ class ChatViewModel(
     private val userRepository: UserRepository,
     private val conversationRepository: ConversationRepository,
     private val messageRepository: MessageRepository,
-    private val notificationMessageManager: NotificationMessageManager,
+    private val messageNotificationManager: MessageNotificationManager,
     private val blockedUserRepository: BlockedUserRepository,
     private val sendMessageUseCase: SendMessageUseCase,
     private val deleteConversationUseCase: DeleteConversationUseCase
@@ -209,7 +209,7 @@ class ChatViewModel(
 
     private fun clearChatNotifications() {
         viewModelScope.launch {
-            notificationMessageManager.clearNotifications(conversation.id)
+            messageNotificationManager.clearNotifications(conversation.id)
         }
     }
 

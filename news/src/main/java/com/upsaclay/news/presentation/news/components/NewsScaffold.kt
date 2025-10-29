@@ -26,7 +26,7 @@ fun NewsScaffold(
             }
         },
         floatingActionButton = {
-            if (user.isMember) {
+            if (user.admin) {
                 CreateAnnouncementFAB(
                     onClick = onCreateAnnouncementClick
                 )

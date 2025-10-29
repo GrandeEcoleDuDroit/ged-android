@@ -1,16 +1,19 @@
 package com.upsaclay.news.data
 
 import com.upsaclay.common.data.UrlUtils.formatOracleBucketUrl
+import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.entity.User
+import com.upsaclay.common.domain.entity.User.UserState
 import com.upsaclay.common.domain.extensions.toEpochMilliUTC
 import com.upsaclay.common.domain.extensions.toLocalDateTimeUTC
+import com.upsaclay.common.domain.extensions.uppercaseFirstLetter
 import com.upsaclay.news.data.local.model.LocalAnnouncement
 import com.upsaclay.news.data.remote.model.RemoteAnnouncement
 import com.upsaclay.news.data.remote.model.RemoteAnnouncementReport
 import com.upsaclay.news.data.remote.model.RemoteAnnouncementWithUser
 import com.upsaclay.news.domain.entity.Announcement
+import com.upsaclay.news.domain.entity.Announcement.AnnouncementState
 import com.upsaclay.news.domain.entity.AnnouncementReport
-import com.upsaclay.news.domain.entity.AnnouncementState
 
 fun Announcement.toLocal() = LocalAnnouncement(
     announcementId = id,
@@ -19,13 +22,14 @@ fun Announcement.toLocal() = LocalAnnouncement(
     announcementDate = date.toEpochMilliUTC(),
     announcementState = state.name,
     userId = author.id,
-    userFirstName = author.firstName,
-    userLastName = author.lastName,
+    userFirstName = author.firstName.lowercase(),
+    userLastName = author.lastName.lowercase(),
     userEmail = author.email,
-    userSchoolLevel = author.schoolLevel,
-    userIsMember = author.isMember,
+    userSchoolLevel = author.schoolLevel.number,
+    userAdmin = author.admin,
     userProfilePictureFileName = author.profilePictureUrl,
-    userIsDeleted = author.isDeleted
+    userState = author.state.toString(),
+    userTester = author.tester
 )
 
 fun LocalAnnouncement.toAnnouncement() = Announcement(
@@ -35,13 +39,14 @@ fun LocalAnnouncement.toAnnouncement() = Announcement(
     date = announcementDate.toLocalDateTimeUTC(),
     author = User(
         id = userId,
-        firstName = userFirstName,
-        lastName = userLastName,
+        firstName = userFirstName.uppercaseFirstLetter(),
+        lastName = userLastName.uppercaseFirstLetter(),
         email = userEmail,
-        schoolLevel = userSchoolLevel,
-        isMember = userIsMember,
+        schoolLevel = SchoolLevel.fromNumber(userSchoolLevel),
+        admin = userAdmin,
         profilePictureUrl = userProfilePictureFileName,
-        isDeleted = userIsDeleted
+        state = UserState.fromString(userState),
+        tester = userTester
     ),
     state = AnnouncementState.valueOf(announcementState)
 )
@@ -53,13 +58,14 @@ internal fun RemoteAnnouncementWithUser.toAnnouncement() = Announcement(
     date = announcementDate.toLocalDateTimeUTC(),
     author = User(
         id = userId,
-        firstName = userFirstName,
-        lastName = userLastName,
+        firstName = userFirstName.uppercaseFirstLetter(),
+        lastName = userLastName.uppercaseFirstLetter(),
         email = userEmail,
-        schoolLevel = userSchoolLevel,
-        isMember = userIsMember == 1,
+        schoolLevel = SchoolLevel.fromNumber(userSchoolLevel),
+        admin = userAdmin == 1,
         profilePictureUrl = formatOracleBucketUrl(userProfilePictureFileName),
-        isDeleted = userIsDeleted == 1
+        state = UserState.fromString(userState),
+        tester = userTester == 1
     ),
     state = AnnouncementState.PUBLISHED
 )

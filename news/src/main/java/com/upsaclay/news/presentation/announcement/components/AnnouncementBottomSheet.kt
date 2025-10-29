@@ -25,7 +25,7 @@ import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.announcementFixture
 import com.upsaclay.news.domain.entity.Announcement
-import com.upsaclay.news.domain.entity.AnnouncementState
+import com.upsaclay.news.domain.entity.Announcement.AnnouncementState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

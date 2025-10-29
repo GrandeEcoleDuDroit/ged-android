@@ -8,7 +8,7 @@ fun ConversationUi.toConversation() = Conversation(
     id = id,
     interlocutor = interlocutor,
     createdAt = createdAt,
-    state = state
+    state = conversationState
 )
 
 fun ConversationMessage.toConversationUI() = ConversationUi(
@@ -16,5 +16,5 @@ fun ConversationMessage.toConversationUI() = ConversationUi(
     interlocutor = conversation.interlocutor,
     lastMessage = lastMessage,
     createdAt = conversation.createdAt,
-    state = conversation.state
+    conversationState = conversation.state
 )

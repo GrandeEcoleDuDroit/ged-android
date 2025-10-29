@@ -6,8 +6,9 @@ import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.firestore
 import com.upsaclay.common.data.UserField.Firestore.EMAIL
 import com.upsaclay.common.data.UserField.Firestore.PROFILE_PICTURE_FILE_NAME
-import com.upsaclay.common.data.UserField.Oracle.USER_ID
-import com.upsaclay.common.data.UserField.Oracle.USER_PROFILE_PICTURE_FILE_NAME
+import com.upsaclay.common.data.UserField.Firestore.TABLE_NAME
+import com.upsaclay.common.data.UserField.Server.USER_ID
+import com.upsaclay.common.data.UserField.Server.USER_PROFILE_PICTURE_FILE_NAME
 import com.upsaclay.common.data.exceptions.mapFirebaseException
 import com.upsaclay.common.data.exceptions.mapServerResponseException
 import com.upsaclay.common.data.exceptions.parseOracleException
@@ -158,10 +159,6 @@ internal interface UserServerApi {
 
 
 internal class UserFirestoreApi {
-    companion object {
-        private const val TABLE_NAME = "users"
-    }
-
     private val usersCollection = Firebase.firestore.collection(TABLE_NAME)
 
     suspend fun getUser(userId: String): FirestoreUser? = suspendCoroutine { continuation ->

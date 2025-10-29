@@ -3,7 +3,6 @@ package com.upsaclay.message.data.local.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.upsaclay.message.data.model.CONVERSATIONS_TABLE_NAME
 import com.upsaclay.message.data.model.ConversationField.CONVERSATION_ID
 import com.upsaclay.message.data.model.ConversationField.CREATED_AT
 import com.upsaclay.message.data.model.ConversationField.Local.CONVERSATION_DELETE_TIME
@@ -11,13 +10,15 @@ import com.upsaclay.message.data.model.ConversationField.Local.CONVERSATION_STAT
 import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_EMAIL
 import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_FIRST_NAME
 import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_ID
-import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_IS_DELETED
-import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_IS_MEMBER
+import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_STATE
+import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_ADMIN
 import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_LAST_NAME
 import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_PROFILE_PICTURE_FILE_NAME
 import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_SCHOOL_LEVEL
+import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_TESTER
+import com.upsaclay.message.data.model.ConversationField.TABLE_NAME
 
-@Entity(tableName = CONVERSATIONS_TABLE_NAME)
+@Entity(tableName = TABLE_NAME)
 data class LocalConversation(
     @PrimaryKey
     @ColumnInfo(name = CONVERSATION_ID)
@@ -31,13 +32,15 @@ data class LocalConversation(
     @ColumnInfo(name = INTERLOCUTOR_EMAIL)
     val interlocutorEmail: String,
     @ColumnInfo(name = INTERLOCUTOR_SCHOOL_LEVEL)
-    val interlocutorSchoolLevel: String,
-    @ColumnInfo(name = INTERLOCUTOR_IS_MEMBER)
-    val interlocutorIsMember: Boolean,
+    val interlocutorSchoolLevel: Int,
+    @ColumnInfo(name = INTERLOCUTOR_ADMIN)
+    val interlocutorAdmin: Boolean,
     @ColumnInfo(name = INTERLOCUTOR_PROFILE_PICTURE_FILE_NAME)
     val interlocutorProfilePictureFileName: String?,
-    @ColumnInfo(name = INTERLOCUTOR_IS_DELETED)
-    val interlocutorIsDeleted: Boolean,
+    @ColumnInfo(name = INTERLOCUTOR_STATE)
+    val interlocutorState: String,
+    @ColumnInfo(name = INTERLOCUTOR_TESTER)
+    val interlocutorTester: Boolean,
     @ColumnInfo(name = CREATED_AT)
     val createdAt: Long,
     @ColumnInfo(name = CONVERSATION_STATE)

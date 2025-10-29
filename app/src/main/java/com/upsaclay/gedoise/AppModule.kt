@@ -1,6 +1,6 @@
 package com.upsaclay.gedoise
 
-import MainViewModel
+import com.upsaclay.gedoise.presentation.MainViewModel
 import com.upsaclay.common.ConnectivityObserverImpl
 import com.upsaclay.common.IntentHelper
 import com.upsaclay.common.data.e

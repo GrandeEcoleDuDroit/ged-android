@@ -28,7 +28,7 @@ import com.upsaclay.common.utils.Phones
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.announcementsFixture
 import com.upsaclay.news.domain.entity.Announcement
-import com.upsaclay.news.domain.entity.AnnouncementState
+import com.upsaclay.news.domain.entity.Announcement.AnnouncementState
 import com.upsaclay.news.presentation.news.components.CompactAnnouncementItem
 
 @Composable

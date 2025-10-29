@@ -2,6 +2,7 @@ package com.upsaclay.authentication.domain.usecase
 
 import com.upsaclay.authentication.domain.repository.AuthenticationRepository
 import com.upsaclay.common.domain.entity.ForbiddenException
+import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.repository.WhiteListRepository
@@ -16,7 +17,7 @@ class RegisterUseCase(
         password: String,
         firstName: String,
         lastName: String,
-        schoolLevel: String
+        schoolLevel: SchoolLevel
     ) {
         if (!whiteListRepository.isUserWhiteListed(email)) {
             throw ForbiddenException()
@@ -28,7 +29,10 @@ class RegisterUseCase(
             firstName = firstName,
             lastName = lastName,
             email = email,
-            schoolLevel = schoolLevel
+            schoolLevel = schoolLevel,
+            admin = false,
+            profilePictureUrl = null,
+            tester = false
         )
         userRepository.createUser(user)
         authenticationRepository.setAuthenticated(true)

@@ -1,10 +1,10 @@
 package com.upsaclay.message.data.remote
 
-import com.upsaclay.message.domain.entity.NotificationMessage
+import com.upsaclay.message.domain.entity.MessageNotification
 
-data class RemoteNotificationMessage(
+data class RemoteMessageNotification(
     val conversation: Conversation,
-    val message: NotificationMessage.MessageContent
+    val message: MessageNotification.MessageContent
 ) {
     data class Conversation(
         val id: String,
@@ -18,10 +18,11 @@ data class RemoteNotificationMessage(
             val lastName: String,
             val fullName: String,
             val email: String,
-            val schoolLevel: String,
-            val isMember: Boolean = false,
+            val schoolLevel: Int,
+            val admin: Boolean = false,
             val profilePictureFileName: String? = null,
-            val isDeleted: Boolean = false
+            val state: String,
+            val tester: Boolean = false
         )
     }
 }

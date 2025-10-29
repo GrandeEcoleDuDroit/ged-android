@@ -11,7 +11,7 @@ import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
 import com.upsaclay.message.domain.usecase.DeleteConversationUseCase
 import com.upsaclay.message.domain.usecase.SendMessageUseCase
-import com.upsaclay.message.notification.NotificationMessageManager
+import com.upsaclay.message.notification.MessageNotificationManager
 import com.upsaclay.message.presentation.chat.ChatViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -34,7 +34,7 @@ class ChatViewModelTest {
     private val messageRepository: MessageRepository = mockk()
     private val blockedUserRepository: BlockedUserRepository = mockk()
     private val sendMessageUseCase: SendMessageUseCase = mockk()
-    private val notificationMessageManager: NotificationMessageManager = mockk()
+    private val messageNotificationManager: MessageNotificationManager = mockk()
     private val deleteConversationUseCase: DeleteConversationUseCase = mockk()
 
     private lateinit var chatViewModel: ChatViewModel
@@ -54,7 +54,7 @@ class ChatViewModelTest {
         every { blockedUserRepository.blockedUserIds } returns flowOf(emptySet())
         coEvery { deleteConversationUseCase(any(), any()) } returns Unit
         coEvery { messageRepository.updateSeenMessages(any(), any()) } returns Unit
-        coEvery { notificationMessageManager.clearNotifications(any()) } returns Unit
+        coEvery { messageNotificationManager.clearNotifications(any()) } returns Unit
         coEvery { messageRepository.deleteLocalMessages(any()) } returns Unit
 
         chatViewModel = ChatViewModel(
@@ -63,7 +63,7 @@ class ChatViewModelTest {
             conversationRepository = conversationRepository,
             messageRepository = messageRepository,
             sendMessageUseCase = sendMessageUseCase,
-            notificationMessageManager = notificationMessageManager,
+            messageNotificationManager = messageNotificationManager,
             blockedUserRepository = blockedUserRepository,
             deleteConversationUseCase = deleteConversationUseCase
         )

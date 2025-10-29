@@ -11,7 +11,7 @@ import com.upsaclay.common.utils.mapNetworkErrorMessage
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.domain.entity.AnnouncementReport
-import com.upsaclay.news.domain.entity.AnnouncementState
+import com.upsaclay.news.domain.entity.Announcement.AnnouncementState
 import com.upsaclay.news.domain.repository.AnnouncementRepository
 import com.upsaclay.news.domain.usecase.DeleteAnnouncementUseCase
 import com.upsaclay.news.domain.usecase.RefreshAnnouncementUseCase

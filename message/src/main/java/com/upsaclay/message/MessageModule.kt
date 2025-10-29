@@ -1,8 +1,8 @@
 package com.upsaclay.message
 
 import com.upsaclay.message.domain.entity.Conversation
-import com.upsaclay.message.notification.NotificationMessageManager
-import com.upsaclay.message.notification.NotificationMessagePresenter
+import com.upsaclay.message.notification.MessageNotificationManager
+import com.upsaclay.message.notification.MessageNotificationPresenter
 import com.upsaclay.message.presentation.chat.ChatViewModel
 import com.upsaclay.message.presentation.conversation.ConversationViewModel
 import com.upsaclay.message.presentation.conversation.create.CreateConversationViewModel
@@ -22,10 +22,10 @@ val messageModule = module {
             messageRepository = get(),
             blockedUserRepository = get(),
             sendMessageUseCase = get(),
-            notificationMessageManager = get(),
+            messageNotificationManager = get(),
             deleteConversationUseCase = get()
         )
     }
-    singleOf(::NotificationMessagePresenter)
-    singleOf(::NotificationMessageManager)
+    singleOf(::MessageNotificationPresenter)
+    singleOf(::MessageNotificationManager)
 }

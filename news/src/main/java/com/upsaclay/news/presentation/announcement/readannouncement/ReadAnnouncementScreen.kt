@@ -185,7 +185,7 @@ fun ReadAnnouncementScreen(
         if (showBottomSheet) {
             AnnouncementBottomSheet(
                 announcement = announcement,
-                isEditable = user.isMember && user.id == announcement.author.id,
+                isEditable = user.admin && user.id == announcement.author.id,
                 onEditClick = {
                     showBottomSheet = false
                     onEditAnnouncementClick(announcement)

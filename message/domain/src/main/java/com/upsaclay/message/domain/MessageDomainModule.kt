@@ -1,6 +1,5 @@
 package com.upsaclay.message.domain
 
-import com.upsaclay.message.domain.entity.NotificationMessage
 import com.upsaclay.message.domain.usecase.DeleteConversationUseCase
 import com.upsaclay.message.domain.usecase.GetConversationUseCase
 import com.upsaclay.message.domain.usecase.GetConversationsUiUseCase
@@ -13,7 +12,6 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -41,7 +39,7 @@ val messageDomainModule = module {
         SendMessageUseCase(
             conversationRepository = get(),
             messageRepository = get(),
-            notificationMessageRepository = get(),
+            messageNotificationRepository = get(),
             userRepository = get(),
             scope = get(BACKGROUND_SCOPE)
         )

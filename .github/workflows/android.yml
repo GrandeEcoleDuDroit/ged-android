@@ -34,7 +34,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Download configuration files
-        run: curl "$ORACLE_BUCKET_URL"google-services.json -o app/google-services.json
+        run: curl "$ORACLE_BUCKET_URL"/google-services.json -o app/google-services.json
 
       - name: Build debug APK
         run: ./gradlew assembleDebug
@@ -63,7 +63,7 @@ jobs:
       - name: Download configuration files
         run: |
           rm -f app/google-services.json
-          curl "$ORACLE_BUCKET_URL"google-services.json -o app/google-services.json
+          curl "$ORACLE_BUCKET_URL"/google-services.json -o app/google-services.json
 
       - name: Decode keystore
         run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > app/$KEYSTORE_PATH

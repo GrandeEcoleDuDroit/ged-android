@@ -31,7 +31,11 @@ fun ChatTopBar(
     onBackClick: () -> Unit,
     onInterlocutorClick: () -> Unit
 ) {
-    val interlocutorName = if (!interlocutor.isDeleted) interlocutor.fullName else stringResource(id = com.upsaclay.common.R.string.deleted_user)
+    val interlocutorName = if (interlocutor.state != User.UserState.DELETED) {
+        interlocutor.fullName
+    } else {
+        stringResource(id = com.upsaclay.common.R.string.deleted_user)
+    }
 
     TopAppBar(
         title = {

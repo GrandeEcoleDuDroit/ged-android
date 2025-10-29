@@ -43,7 +43,7 @@ fun UserInformationItems(user: User) {
         ),
         AccountInfo(
             stringResource(id = com.upsaclay.common.R.string.school_level),
-            user.schoolLevel
+            user.schoolLevel.value
         )
     )
 
@@ -53,46 +53,36 @@ fun UserInformationItems(user: User) {
         verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
     ) {
         accountInfos.forEach { accountInfo ->
-            NonMemberUserInformationItem(
+            UserInformationItem(
                 accountInfo = accountInfo
             )
         }
 
-        if (user.isMember) {
-            MemberUserInformationItem(
-                modifier = Modifier
-                    .testTag(stringResource(id = R.string.member_text_tag))
-            )
+        if (user.admin) {
+            Row(
+                modifier = Modifier.testTag(stringResource(id = R.string.member_text_tag)),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding))
+            ) {
+                Text(
+                    text = stringResource(R.string.admin),
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.labelLarge
+                )
+
+                Icon(
+                    imageVector = Icons.Default.Star,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.gold,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
         }
     }
 }
 
 @Composable
-private fun MemberUserInformationItem(
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding))
-    ) {
-        Text(
-            text = stringResource(R.string.member),
-            color = MaterialTheme.colorScheme.primary,
-            style = MaterialTheme.typography.labelLarge
-        )
-
-        Icon(
-            imageVector = Icons.Default.Star,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.gold,
-            modifier = Modifier.size(20.dp)
-        )
-    }
-}
-
-@Composable
-internal fun NonMemberUserInformationItem(
+internal fun UserInformationItem(
     accountInfo: AccountInfo
 ) {
     Column {

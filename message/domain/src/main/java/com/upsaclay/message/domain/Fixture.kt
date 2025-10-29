@@ -5,11 +5,10 @@ import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.domain.userFixture2
 import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.ConversationMessage
-import com.upsaclay.message.domain.entity.ConversationState
 import com.upsaclay.message.domain.entity.ConversationUi
 import com.upsaclay.message.domain.entity.Message
-import com.upsaclay.message.domain.entity.MessageState
-import com.upsaclay.message.domain.entity.NotificationMessage
+import com.upsaclay.message.domain.entity.Message.MessageState
+import com.upsaclay.message.domain.entity.MessageNotification
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
@@ -59,14 +58,14 @@ val conversationUiFixture = ConversationUi(
     interlocutor = userFixture2,
     lastMessage = messageFixture,
     createdAt = LocalDateTime.of(2024, 7, 20, 10, 0),
-    state = ConversationState.CREATED,
+    conversationState = Conversation.ConversationState.CREATED,
 )
 
 val conversationFixture = Conversation(
     id = "1",
     interlocutor = userFixture2,
     createdAt = LocalDateTime.of(2024, 7, 20, 10, 0),
-    state = ConversationState.CREATED
+    state = Conversation.ConversationState.CREATED
 )
 
 val conversationMessageFixture = ConversationMessage(
@@ -114,30 +113,26 @@ val conversationsFixture = listOf(
     )
 )
 
-val conversationsMessageFixture = listOf(
-    conversationMessageFixture
-)
-
-val messageContentFixture = NotificationMessage.MessageContent(
+val messageContentFixture = MessageNotification.MessageContent(
     content = messageFixture.content,
     date = messageFixture.date.toEpochMilliUTC()
 )
 
-val notificationMessageFixture = NotificationMessage(
+val messageNotificationFixture = MessageNotification(
     conversation = conversationFixture,
     messageContent = messageContentFixture
 )
 
-val notificationMessageListFixture = listOf(
-    notificationMessageFixture,
-    notificationMessageFixture.copy(
+val messageNotificationsFixture = listOf(
+    messageNotificationFixture,
+    messageNotificationFixture.copy(
         conversation = conversationFixture.copy(id = "2"),
         messageContent = messageContentFixture.copy(
             content = messageFixture2.content,
             date = messageFixture2.date.toEpochMilliUTC()
         )
     ),
-    notificationMessageFixture.copy(
+    messageNotificationFixture.copy(
         conversation = conversationFixture.copy(id = "3"),
         messageContent = messageContentFixture
     )

@@ -1,7 +1,7 @@
 package com.upsaclay.news.domain.usecase
 
 import com.upsaclay.common.domain.repository.BlockedUserRepository
-import com.upsaclay.news.domain.entity.AnnouncementState
+import com.upsaclay.news.domain.entity.Announcement.AnnouncementState
 import com.upsaclay.news.domain.repository.AnnouncementRepository
 
 class SynchronizeAnnouncementsUseCase(

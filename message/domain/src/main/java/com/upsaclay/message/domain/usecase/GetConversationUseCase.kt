@@ -4,7 +4,6 @@ import com.upsaclay.common.domain.entity.CurrentUserNotFoundException
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.message.domain.entity.Conversation
-import com.upsaclay.message.domain.entity.ConversationState
 import com.upsaclay.message.domain.repository.ConversationRepository
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -31,7 +30,7 @@ class GetConversationUseCase(
             id = conversationId,
             interlocutor = interlocutor,
             createdAt = LocalDateTime.now(ZoneOffset.UTC),
-            state = ConversationState.DRAFT
+            state = Conversation.ConversationState.DRAFT
         )
     }
 }

@@ -111,7 +111,11 @@ private fun UserScreen(
     var showReportBottomSheet by remember { mutableStateOf(false) }
     var showBlockUserDialog by remember { mutableStateOf(false) }
     var showUnblockUserDialog by remember { mutableStateOf(false) }
-    val userName = if (!user.isDeleted) user.fullName else stringResource(id = R.string.deleted_user)
+    val userName = if (user.state != User.UserState.DELETED) {
+        user.fullName
+    } else {
+        stringResource(id = R.string.deleted_user)
+    }
 
     if (loading) {
         LoadingDialog()
@@ -176,7 +180,7 @@ private fun UserScreen(
                 scale = 1.8f
             )
 
-            if (!user.isDeleted) {
+            if (user.state != User.UserState.DELETED) {
                 SelectionContainer {
                     UserInformationItems(user = user)
                 }

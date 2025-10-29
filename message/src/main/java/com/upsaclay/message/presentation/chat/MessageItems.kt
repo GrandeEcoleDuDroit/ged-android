@@ -69,7 +69,7 @@ import com.upsaclay.common.presentation.theme.white
 import com.upsaclay.common.utils.FormatLocalDateTimeHelper
 import com.upsaclay.message.R
 import com.upsaclay.message.domain.entity.Message
-import com.upsaclay.message.domain.entity.MessageState
+import com.upsaclay.message.domain.entity.Message.MessageState
 import com.upsaclay.message.domain.messageFixture
 import java.time.LocalDateTime
 

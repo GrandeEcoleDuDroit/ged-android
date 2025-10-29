@@ -1,6 +1,6 @@
 package com.upsaclay.gedoise.viewmodel
 
-import MainViewModel
+import com.upsaclay.gedoise.presentation.MainViewModel
 import com.upsaclay.app.domain.ClearDataUseCase
 import com.upsaclay.app.domain.FcmTokenUseCase
 import com.upsaclay.app.domain.ListenBlockedUserEvents

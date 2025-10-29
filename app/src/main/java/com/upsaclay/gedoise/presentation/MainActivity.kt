@@ -1,6 +1,5 @@
 package com.upsaclay.gedoise.presentation
 
-import MainViewModel
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -19,10 +18,10 @@ import com.upsaclay.gedoise.presentation.navigation.GedNavHost
 import com.upsaclay.gedoise.presentation.navigation.NavigationViewModel
 import com.upsaclay.gedoise.presentation.navigation.SplashRoute
 import com.upsaclay.message.domain.converter.ConversationJsonConverter
-import com.upsaclay.message.data.remote.RemoteNotificationMessage
-import com.upsaclay.message.data.mapper.toNotificationMessage
+import com.upsaclay.message.data.remote.RemoteMessageNotification
+import com.upsaclay.message.data.mapper.toMessageNotification
 import com.upsaclay.message.notification.CONVERSATION_ID_EXTRA
-import com.upsaclay.message.notification.NotificationMessageManager
+import com.upsaclay.message.notification.MessageNotificationManager
 import com.upsaclay.message.presentation.chat.ChatRoute
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -31,11 +30,11 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class MainActivity : ComponentActivity() {
     private val mainViewModel: MainViewModel by viewModel()
     private val navigationViewModel: NavigationViewModel by viewModel()
-    private val notificationMessageManager: NotificationMessageManager by inject<NotificationMessageManager>()
+    private val messageNotificationManager: MessageNotificationManager by inject<MessageNotificationManager>()
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
-                notificationMessageManager.start()
+                messageNotificationManager.start()
             }
         }
     private val gson = Gson()
@@ -66,12 +65,12 @@ class MainActivity : ComponentActivity() {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                 == PackageManager.PERMISSION_GRANTED
             ) {
-                notificationMessageManager.start()
+                messageNotificationManager.start()
             } else {
                 requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         } else {
-            notificationMessageManager.start()
+            messageNotificationManager.start()
         }
     }
 
@@ -97,8 +96,8 @@ class MainActivity : ComponentActivity() {
         when (type) {
             FcmDataType.MESSAGE.toString() -> {
                 extras?.getString("value")?.let { value ->
-                    val notificationMessage = gson.fromJson(value, RemoteNotificationMessage::class.java).toNotificationMessage()
-                    val conversationJson = ConversationJsonConverter.toConversationJson(notificationMessage.conversation)
+                    val messageNotification = gson.fromJson(value, RemoteMessageNotification::class.java).toMessageNotification()
+                    val conversationJson = ConversationJsonConverter.toConversationJson(messageNotification.conversation)
                     navigationViewModel.intentToNavigate(ChatRoute(conversationJson))
                 }
             }
