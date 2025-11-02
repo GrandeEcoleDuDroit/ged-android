@@ -1,6 +1,6 @@
 package com.upsaclay.news.presentation.announcement.editannouncement
 
-import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
@@ -10,24 +10,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
+import com.upsaclay.common.extension.rootMediumPadding
 import com.upsaclay.common.presentation.SingleUiEvent
-import com.upsaclay.common.extension.mediumPadding
 import com.upsaclay.common.presentation.components.EditTopBar
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.news.R
+import com.upsaclay.news.domain.announcementFixture
 import com.upsaclay.news.domain.entity.Announcement
-import com.upsaclay.news.domain.longAnnouncementFixture
-import com.upsaclay.news.presentation.announcement.components.EditAnnouncementInput
+import com.upsaclay.news.presentation.announcement.components.EditAnnouncementInputs
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -51,6 +53,7 @@ fun EditAnnouncementDestination(
                 is SingleUiEvent.Error -> scope.launch {
                     snackbarHostState.showSnackbar(context.getString(event.messageId))
                 }
+
                 is SingleUiEvent.Success -> onBackClick()
             }
         }
@@ -72,37 +75,35 @@ fun EditAnnouncementDestination(
 @Composable
 private fun EditAnnouncementScreen(
     title: String,
-    content: String,
+    content: TextFieldValue,
     loading: Boolean,
     updateEnabled: Boolean,
     snackbarHostState: SnackbarHostState,
-    onTitleChange: (String) -> Unit = {},
-    onContentChange: (String) -> Unit = {},
+    onTitleChange: (String) -> Unit,
+    onContentChange: (TextFieldValue) -> Unit,
     onBackClick: () -> Unit,
     onUpdateAnnouncementClick: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
-    val keyboardController = LocalSoftwareKeyboardController.current
 
     if (loading) {
         LoadingDialog()
     }
 
     Scaffold(
+        modifier = Modifier.imePadding(),
         topBar = {
             EditTopBar(
                 title = stringResource(id = R.string.edit_announcement),
                 onCancelClick = {
                     focusManager.clearFocus()
-                    keyboardController?.hide()
                     onBackClick()
                 },
                 onActionClick = {
-                    keyboardController?.hide()
                     focusManager.clearFocus()
                     onUpdateAnnouncementClick()
                 },
-                isButtonEnable = updateEnabled && !loading,
+                buttonEnable = updateEnabled && !loading,
                 actionLabel = stringResource(id = com.upsaclay.common.R.string.save)
             )
         },
@@ -113,11 +114,10 @@ private fun EditAnnouncementScreen(
                     snackbarData = it
                 )
             }
-        },
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        }
     ) { innerPadding ->
-        EditAnnouncementInput(
-            modifier = Modifier.mediumPadding(innerPadding),
+        EditAnnouncementInputs(
+            modifier = Modifier.rootMediumPadding(innerPadding),
             title = title,
             content = content,
             onTitleChange = onTitleChange,
@@ -135,16 +135,24 @@ private fun EditAnnouncementScreen(
 @Phones
 @Composable
 private fun EditAnnouncementScreenPreview() {
+    var title by remember { mutableStateOf(announcementFixture.title ?: "") }
+    var content by remember {
+        mutableStateOf(
+            TextFieldValue(
+                text = announcementFixture.content
+            )
+        )
+    }
     GedoiseTheme {
         Surface {
             EditAnnouncementScreen(
-                title = longAnnouncementFixture.title ?: "",
-                content = longAnnouncementFixture.content,
+                title = title,
+                content = content,
                 loading = false,
                 updateEnabled = false,
                 snackbarHostState = SnackbarHostState(),
-                onTitleChange = {},
-                onContentChange = {},
+                onTitleChange = { title = it },
+                onContentChange = { content = it },
                 onBackClick = {},
                 onUpdateAnnouncementClick = {}
             )

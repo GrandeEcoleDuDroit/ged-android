@@ -4,12 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.gson.Gson
-import com.upsaclay.common.domain.entity.fcm.FcmDataType
-import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.app.domain.FcmTokenUseCase
 import com.upsaclay.app.domain.entity.FcmToken
-import com.upsaclay.message.data.remote.RemoteMessageNotification
+import com.upsaclay.common.domain.entity.fcm.FcmDataType
+import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.message.data.mapper.toMessageNotification
+import com.upsaclay.message.data.remote.RemoteMessageNotification
 import com.upsaclay.message.notification.MessageNotificationManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

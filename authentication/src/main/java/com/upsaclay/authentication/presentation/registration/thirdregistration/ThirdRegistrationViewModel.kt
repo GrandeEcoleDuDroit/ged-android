@@ -10,8 +10,8 @@ import com.upsaclay.common.domain.entity.DuplicateDataException
 import com.upsaclay.common.domain.entity.ForbiddenException
 import com.upsaclay.common.domain.entity.NoInternetConnectionException
 import com.upsaclay.common.domain.entity.SchoolLevel
-import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.domain.usecase.VerifyEmailFormatUseCase
+import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapNetworkErrorMessage
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

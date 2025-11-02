@@ -1,9 +1,9 @@
 package com.upsaclay.gedoise.usecase
 
+import com.upsaclay.app.domain.ListenBlockedUserEvents
 import com.upsaclay.common.domain.entity.BlockUserEvent
 import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.userFixture
-import com.upsaclay.app.domain.ListenBlockedUserEvents
 import com.upsaclay.message.domain.usecase.ListenRemoteMessagesUseCase
 import com.upsaclay.message.domain.usecase.UpdateConversationDeleteTimeUseCase
 import com.upsaclay.news.domain.repository.AnnouncementRepository

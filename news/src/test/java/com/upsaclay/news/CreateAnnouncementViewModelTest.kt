@@ -71,7 +71,7 @@ class CreateAnnouncementViewModelTest {
         createAnnouncementViewModel.createAnnouncement()
 
         // Then
-        coVerify { createAnnouncementUseCase(any())}
+        coVerify { createAnnouncementUseCase(any()) }
     }
 
     @Test
@@ -87,7 +87,7 @@ class CreateAnnouncementViewModelTest {
         createAnnouncementViewModel.createAnnouncement()
 
         // Then
-        coVerify(exactly = 0) { createAnnouncementUseCase(any())}
+        coVerify(exactly = 0) { createAnnouncementUseCase(any()) }
     }
 
     @Test

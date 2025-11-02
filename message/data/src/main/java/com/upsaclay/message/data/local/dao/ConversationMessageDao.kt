@@ -8,14 +8,14 @@ import com.upsaclay.message.data.model.ConversationField
 import com.upsaclay.message.data.model.ConversationField.CREATED_AT
 import com.upsaclay.message.data.model.ConversationField.Local.CONVERSATION_DELETE_TIME
 import com.upsaclay.message.data.model.ConversationField.Local.CONVERSATION_STATE
+import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_ADMIN
 import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_EMAIL
 import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_FIRST_NAME
 import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_ID
-import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_STATE
-import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_ADMIN
 import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_LAST_NAME
 import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_PROFILE_PICTURE_FILE_NAME
 import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_SCHOOL_LEVEL
+import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_STATE
 import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_TESTER
 import com.upsaclay.message.data.model.MessageField
 import com.upsaclay.message.data.model.MessageField.CONTENT

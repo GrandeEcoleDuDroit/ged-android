@@ -2,8 +2,8 @@ package com.upsaclay.message.domain
 
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.userFixture
-import com.upsaclay.message.domain.entity.Message.MessageState
 import com.upsaclay.message.domain.entity.Conversation.ConversationState
+import com.upsaclay.message.domain.entity.Message.MessageState
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageNotificationRepository
 import com.upsaclay.message.domain.repository.MessageRepository

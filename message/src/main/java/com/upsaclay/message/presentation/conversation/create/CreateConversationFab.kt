@@ -21,7 +21,7 @@ fun CreateConversationFAB(
     ) {
         Icon(
             painter = painterResource(id = R.drawable.ic_message_add),
-            contentDescription = stringResource(id = R.string.ic_fab_button_add_description)
+            contentDescription = stringResource(id = R.string.fab_button_panel_icon_description)
         )
     }
 }

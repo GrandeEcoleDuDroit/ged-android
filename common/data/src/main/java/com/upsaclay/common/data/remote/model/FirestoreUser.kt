@@ -1,15 +1,15 @@
 package com.upsaclay.common.data.remote.model
 
 import com.google.firebase.firestore.PropertyName
-import com.upsaclay.common.data.UserField.Firestore.USER_ID
+import com.upsaclay.common.data.UserField.Firestore.ADMIN
+import com.upsaclay.common.data.UserField.Firestore.EMAIL
 import com.upsaclay.common.data.UserField.Firestore.FIRST_NAME
 import com.upsaclay.common.data.UserField.Firestore.LAST_NAME
-import com.upsaclay.common.data.UserField.Firestore.EMAIL
-import com.upsaclay.common.data.UserField.Firestore.SCHOOL_LEVEL
-import com.upsaclay.common.data.UserField.Firestore.ADMIN
 import com.upsaclay.common.data.UserField.Firestore.PROFILE_PICTURE_FILE_NAME
+import com.upsaclay.common.data.UserField.Firestore.SCHOOL_LEVEL
 import com.upsaclay.common.data.UserField.Firestore.STATE
 import com.upsaclay.common.data.UserField.Firestore.TESTER
+import com.upsaclay.common.data.UserField.Firestore.USER_ID
 
 internal data class FirestoreUser(
     @get:PropertyName(USER_ID)

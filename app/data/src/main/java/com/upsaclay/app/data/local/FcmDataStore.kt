@@ -6,9 +6,9 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.upsaclay.app.domain.entity.FcmToken
 import com.upsaclay.common.data.extensions.getGsonValue
 import com.upsaclay.common.data.extensions.setGsonValue
-import com.upsaclay.app.domain.entity.FcmToken
 
 class FcmDataStore(context: Context) {
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "credentials")

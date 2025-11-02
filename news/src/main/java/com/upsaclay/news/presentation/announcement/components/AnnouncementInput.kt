@@ -16,22 +16,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import com.upsaclay.common.presentation.components.TransparentFocusedTextField
+import androidx.compose.ui.text.input.TextFieldValue
+import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.presentation.components.TransparentTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.hintText
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.news.R
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
 
 @Composable
-fun CreateAnnouncementInput(
+fun CreateAnnouncementInputs(
     modifier: Modifier = Modifier,
     title: String,
     content: String,
@@ -41,13 +40,14 @@ fun CreateAnnouncementInput(
     SelectionContainer(modifier = modifier) {
         Column(
             modifier = Modifier.verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+            verticalArrangement = Arrangement.mediumSpacing()
         ) {
             AnnouncementTitleInput(
                 title = title,
                 onTitleChange = onTitleChange,
                 focused = true
             )
+
             AnnouncementContentInput(
                 content = content,
                 onContentChange = onContentChange
@@ -57,37 +57,28 @@ fun CreateAnnouncementInput(
 }
 
 @Composable
-fun EditAnnouncementInput(
+fun EditAnnouncementInputs(
     modifier: Modifier = Modifier,
     title: String,
-    content: String,
+    content: TextFieldValue,
     onTitleChange: (String) -> Unit,
-    onContentChange: (String) -> Unit
+    onContentChange: (TextFieldValue) -> Unit
 ) {
-    val scrollState = rememberScrollState()
-
     SelectionContainer(modifier = modifier) {
         Column(
-            modifier = Modifier.verticalScroll(scrollState),
-            verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+            modifier = Modifier.verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.mediumSpacing()
         ) {
             AnnouncementTitleInput(
                 title = title,
                 onTitleChange = onTitleChange
             )
+
             AnnouncementContentInput(
                 content = content,
-                onContentChange = onContentChange,
-                focused = true
+                onContentChange = onContentChange
             )
         }
-    }
-
-    LaunchedEffect(scrollState) {
-        snapshotFlow { scrollState.maxValue }
-            .filter { it > 0 }
-            .first()
-        scrollState.animateScrollTo(scrollState.maxValue)
     }
 }
 
@@ -97,10 +88,8 @@ private fun AnnouncementTitleInput(
     onTitleChange: (String) -> Unit,
     focused: Boolean = false
 ) {
-    val textStyle = MaterialTheme.typography.titleLarge.copy(
-        fontWeight = FontWeight.SemiBold,
-        fontSize = MaterialTheme.typography.titleMedium.fontSize * 1.3f
-    )
+    val textStyle = MaterialTheme.typography.titleLarge
+    val focusRequester = remember { FocusRequester() }
     val placeholder: @Composable () -> Unit = {
         Text(
             text = stringResource(id = R.string.title_field_entry),
@@ -109,33 +98,29 @@ private fun AnnouncementTitleInput(
         )
     }
 
-    if (focused) {
-        TransparentFocusedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = title,
-            placeholder = placeholder,
-            onValueChange = onTitleChange,
-            textStyle = textStyle
-        )
-    } else {
-        TransparentTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = title,
-            placeholder = placeholder,
-            onValueChange = onTitleChange,
-            textStyle = textStyle
-        )
+    LaunchedEffect(Unit) {
+        if (focused) {
+            focusRequester.requestFocus()
+        }
     }
+
+    TransparentTextField(
+        modifier = Modifier
+            .fillMaxWidth()
+            .focusRequester(focusRequester),
+        value = title,
+        placeholder = placeholder,
+        onValueChange = onTitleChange,
+        textStyle = textStyle
+    )
 }
 
 @Composable
 private fun AnnouncementContentInput(
     content: String,
-    onContentChange: (String) -> Unit,
-    focused: Boolean = false
+    onContentChange: (String) -> Unit
 ) {
     val textStyle = MaterialTheme.typography.bodyLarge
-
     val placeholder: @Composable () -> Unit = {
         Text(
             text = stringResource(id = R.string.content_field_entry),
@@ -144,23 +129,43 @@ private fun AnnouncementContentInput(
         )
     }
 
-    if (focused) {
-        TransparentFocusedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = content,
-            placeholder = placeholder,
-            onValueChange = onContentChange,
-            textStyle = textStyle,
-        )
-    } else {
-        TransparentTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = content,
-            placeholder = placeholder,
-            onValueChange = onContentChange,
-            textStyle = textStyle
+    TransparentTextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = content,
+        placeholder = placeholder,
+        onValueChange = onContentChange,
+        textStyle = textStyle
+    )
+}
+
+@Composable
+private fun AnnouncementContentInput(
+    content: TextFieldValue,
+    onContentChange: (TextFieldValue) -> Unit
+) {
+    val textStyle = MaterialTheme.typography.bodyLarge
+    val focusRequester = remember { FocusRequester() }
+    val placeholder: @Composable () -> Unit = {
+        Text(
+            text = stringResource(id = R.string.content_field_entry),
+            style = textStyle,
+            color = MaterialTheme.colorScheme.hintText
         )
     }
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
+
+    TransparentTextField(
+        modifier = Modifier
+            .fillMaxWidth()
+            .focusRequester(focusRequester),
+        value = content,
+        placeholder = placeholder,
+        onValueChange = onContentChange,
+        textStyle = textStyle
+    )
 }
 
 /*
@@ -177,7 +182,7 @@ private fun AnnouncementInputPreview() {
 
     GedoiseTheme {
         Surface {
-            CreateAnnouncementInput(
+            CreateAnnouncementInputs(
                 modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
                 title = title,
                 content = content,

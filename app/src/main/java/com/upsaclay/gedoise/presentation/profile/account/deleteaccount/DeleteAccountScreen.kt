@@ -27,9 +27,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.authentication.presentation.components.OutlinePasswordTextField
-import com.upsaclay.common.presentation.SingleUiEvent
-import com.upsaclay.common.extension.mediumPadding
 import com.upsaclay.common.extension.mediumSpacing
+import com.upsaclay.common.extension.rootMediumPadding
+import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.BackTopBar
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
@@ -101,7 +101,10 @@ private fun DeleteAccountScreen(
             },
         topBar = {
             BackTopBar(
-                onBackClick = onBackClick,
+                onBackClick = {
+                    focusManager.clearFocus()
+                    onBackClick()
+                },
                 title = stringResource(R.string.delete_account)
             )
         },
@@ -112,7 +115,7 @@ private fun DeleteAccountScreen(
         }
     ) { innerPadding ->
         Column(
-            modifier = Modifier.mediumPadding(innerPadding),
+            modifier = Modifier.rootMediumPadding(innerPadding),
             verticalArrangement = Arrangement.mediumSpacing()
         ) {
             Text(text = stringResource(R.string.delete_account_warning))

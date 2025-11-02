@@ -1,6 +1,5 @@
-package com.upsaclay.news.presentation.announcement.allannouncements
+package com.upsaclay.news.presentation.announcement.components
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,9 +17,19 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.sp
 import com.upsaclay.common.extension.mediumSpacing
+import com.upsaclay.common.extension.noRippleClickable
+import com.upsaclay.common.extension.smallMediumSpacing
+import com.upsaclay.common.extension.smallSpacing
+import com.upsaclay.common.presentation.components.OptionButton
+import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.presentation.theme.previewText
 import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.getElapsedTimeValue
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.domain.entity.Announcement.AnnouncementState
@@ -31,16 +40,13 @@ import com.upsaclay.news.presentation.announcement.readannouncement.Announcement
 internal fun ExtendedAnnouncementItem(
     modifier: Modifier = Modifier,
     announcement: Announcement,
-    onClick: () -> Unit,
     onOptionClick: () -> Unit,
     onAuthorClick: () -> Unit
 ) {
     when (announcement.state) {
         AnnouncementState.PUBLISHED, AnnouncementState.DRAFT -> {
             DefaultItem(
-                modifier = modifier
-                    .clickable(onClick = onClick)
-                    .padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                modifier = modifier,
                 announcement = announcement,
                 onOptionClick = onOptionClick,
                 onAuthorClick = onAuthorClick
@@ -49,7 +55,7 @@ internal fun ExtendedAnnouncementItem(
 
         AnnouncementState.PUBLISHING -> {
             PublishingItem(
-                modifier = modifier.clickable(onClick = onClick),
+                modifier = modifier,
                 announcement = announcement,
                 onOptionClick = onOptionClick,
                 onAuthorClick = onAuthorClick
@@ -58,7 +64,7 @@ internal fun ExtendedAnnouncementItem(
 
         AnnouncementState.ERROR -> {
             ErrorItem(
-                modifier = modifier.clickable(onClick = onClick),
+                modifier = modifier,
                 announcement = announcement,
                 onOptionClick = onOptionClick,
                 onAuthorClick = onAuthorClick
@@ -76,9 +82,9 @@ private fun DefaultItem(
 ) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.mediumSpacing()
+        verticalArrangement = Arrangement.smallMediumSpacing()
     ) {
-        AnnouncementHeader(
+        Header(
             announcement = announcement,
             onOptionClick = onOptionClick,
             onAuthorClick = onAuthorClick
@@ -88,14 +94,14 @@ private fun DefaultItem(
             Text(
                 modifier = Modifier.testTag(stringResource(id = R.string.read_screen_announcement_title_tag)),
                 text = it,
-                style = MaterialTheme.typography.titleMedium
+                style = titleStyle
             )
         }
 
         Text(
             modifier = Modifier.testTag(stringResource(id = R.string.read_screen_announcement_content_tag)),
             text = announcement.content,
-            style = MaterialTheme.typography.bodyMedium
+            style = contentStyle
         )
     }
 }
@@ -108,12 +114,7 @@ private fun PublishingItem(
     onAuthorClick: () -> Unit
 ) {
     DefaultItem(
-        modifier = modifier
-            .padding(
-                horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding),
-                vertical = dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)
-            )
-            .alpha(0.5f),
+        modifier = modifier.alpha(0.5f),
         announcement = announcement,
         onOptionClick = onOptionClick,
         onAuthorClick = onAuthorClick
@@ -128,15 +129,11 @@ private fun ErrorItem(
     onAuthorClick: () -> Unit
 ) {
     Column(
-        modifier = modifier
-            .padding(
-                horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding),
-                vertical = dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)
-            ),
+        modifier = modifier,
         verticalArrangement = Arrangement.mediumSpacing()
     ) {
         Row(
-            modifier = modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.small_padding))
         ) {
@@ -146,7 +143,7 @@ private fun ErrorItem(
                 tint = MaterialTheme.colorScheme.error
             )
 
-            AnnouncementHeader(
+            Header(
                 announcement = announcement,
                 onOptionClick = onOptionClick,
                 onAuthorClick = onAuthorClick
@@ -157,18 +154,83 @@ private fun ErrorItem(
             Text(
                 modifier = Modifier.testTag(stringResource(id = R.string.read_screen_announcement_title_tag)),
                 text = it,
-                style = MaterialTheme.typography.titleMedium
+                style = titleStyle
             )
         }
 
         Text(
             modifier = Modifier.testTag(stringResource(id = R.string.read_screen_announcement_content_tag)),
             text = announcement.content,
-            style = MaterialTheme.typography.bodyMedium
+            style = contentStyle
         )
     }
 }
 
+@Composable
+private fun Header(
+    announcement: Announcement,
+    onOptionClick: () -> Unit,
+    onAuthorClick: () -> Unit
+) {
+    val elapsedTimeValue = getElapsedTimeValue(announcement.date)
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.smallSpacing()
+    ) {
+        Row(
+            modifier = Modifier.weight(1f),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.smallMediumSpacing()
+        ) {
+            Row(
+                modifier = Modifier.noRippleClickable(onClick = onAuthorClick),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.smallMediumSpacing()
+            ) {
+                ProfilePicture(
+                    url = announcement.author.profilePictureUrl,
+                    scale = 0.3f
+                )
+
+                Row(
+                    horizontalArrangement = Arrangement.smallSpacing(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        modifier = Modifier.weight(fill = false, weight = 1f),
+                        text = announcement.author.fullName,
+                        style = MaterialTheme.typography.titleSmall,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+
+                    Text(
+                        text = elapsedTimeValue,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.previewText
+                    )
+                }
+            }
+        }
+
+        OptionButton(
+            modifier = Modifier
+                .testTag(stringResource(id = R.string.announcement_option_button_tag)),
+            contentDescription = stringResource(id = R.string.announcement_option_icon_description),
+            onClick = onOptionClick
+        )
+    }
+}
+
+private val titleStyle: TextStyle
+    @Composable
+    get() = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp)
+
+private val contentStyle: TextStyle
+    @Composable
+    get() = MaterialTheme.typography.bodyMedium
 
 /*
  =====================================================================
@@ -182,7 +244,7 @@ private fun DefaultItemPreview() {
     GedoiseTheme {
         Surface {
             DefaultItem(
-                modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)),
+                modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
                 announcement = longAnnouncementFixture,
                 onOptionClick = {},
                 onAuthorClick = {}
@@ -197,6 +259,7 @@ private fun PublishingItemPreview() {
     GedoiseTheme {
         Surface {
             PublishingItem(
+                modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
                 announcement = longAnnouncementFixture,
                 onOptionClick = {},
                 onAuthorClick = {}
@@ -211,7 +274,22 @@ private fun ErrorItemPreview() {
     GedoiseTheme {
         Surface {
             ErrorItem(
+                modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
                 announcement = longAnnouncementFixture.copy(state = AnnouncementState.ERROR),
+                onOptionClick = {},
+                onAuthorClick = {}
+            )
+        }
+    }
+}
+
+@Phones
+@Composable
+private fun AnnouncementHeaderPreview() {
+    GedoiseTheme {
+        Surface {
+            AnnouncementHeader(
+                announcement = longAnnouncementFixture,
                 onOptionClick = {},
                 onAuthorClick = {}
             )

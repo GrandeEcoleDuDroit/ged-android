@@ -61,7 +61,6 @@ import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.black
-import com.upsaclay.common.presentation.theme.cursor
 import com.upsaclay.common.presentation.theme.informationText
 import com.upsaclay.common.presentation.theme.inputBackground
 import com.upsaclay.common.presentation.theme.inputForeground
@@ -256,9 +255,9 @@ fun MessageInput(
             modifier = modifier.weight(1f),
             value = value,
             onValueChange = onValueChange,
+            textStyle = TextStyle.Default.copy(color = MaterialTheme.colorScheme.onSurface),
             keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
-            cursorBrush = SolidColor(MaterialTheme.colorScheme.cursor),
-            textStyle = TextStyle(color = MaterialTheme.colorScheme.cursor),
+            cursorBrush = SolidColor(TextFieldDefaults.colors().cursorColor),
             maxLines = 6
         ) { innerTextField ->
             TextFieldDefaults.DecorationBox(
@@ -278,7 +277,7 @@ fun MessageInput(
                     unfocusedContainerColor = MaterialTheme.colorScheme.inputBackground,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
-                    cursorColor = MaterialTheme.colorScheme.cursor
+                    cursorColor = TextFieldDefaults.colors().cursorColor
                 ),
                 visualTransformation = VisualTransformation.None,
                 interactionSource = interactionSource,
@@ -357,7 +356,7 @@ fun MessageBlockedUserIndicator(
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(R.string.chat_blocked_user_indicator_text),
-            style = MaterialTheme.typography.bodySmall,
+            style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.informationText,
             textAlign = TextAlign.Center
         )
@@ -397,23 +396,12 @@ fun MessageBlockedUserIndicator(
  =====================================================================
  */
 
-private val smallText = "Bonsoir, pas de soucis."
-private val mediumText = "Cela pourrait également aider à résoudre tout problème éventuel."
-private val longtext = "Bonjour, j'espère que vous allez bien. " +
-        "Je voulais prendre un moment pour vous parler de quelque chose d'important. " +
-        "En fait, je pense qu'il est essentiel que nous discutions de la direction que prend notre projet, " +
-        "car il y a plusieurs points que nous devrions clarifier. " +
-        "Tout d'abord, j'ai remarqué que certains aspects de notre stratégie actuelle pourraient être améliorés. " +
-        "Je crois que nous pourrions gagner en efficacité si nous ajustions certaines étapes du processus. " +
-        "Par exemple, en ce qui concerne la gestion des priorités, il serait peut-être utile de revoir nos méthodes " +
-        "afin d'être sûrs que nous concentrons nos efforts sur les éléments les plus importants."
-
 @Preview
 @Composable
 private fun SeenSentMessageItemPreview() {
     GedoiseTheme {
         SentMessageItem(
-            message = messageFixture.copy(content = mediumText),
+            message = messageFixture,
             showSeen = true,
             clickEnabled = false,
             onClick = {}
@@ -451,7 +439,7 @@ private fun ErrorSentMessageItemPreview() {
 private fun ReceiveMessageItemPreview() {
     GedoiseTheme {
         ReceivedMessageItem(
-            message = messageFixture.copy(content = mediumText),
+            message = messageFixture,
             displayProfilePicture = true,
             profilePictureUrl = "",
             onLongClick = {},

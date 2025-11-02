@@ -1,5 +1,6 @@
 package com.upsaclay.message.presentation.conversation.create
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
@@ -25,33 +26,37 @@ fun CreateConversationScaffold(
     search: Boolean,
     query: String,
     onQueryChange: (String) -> Unit,
-    onSearchBackClick: () -> Unit,
     onBackClick: () -> Unit,
     onSearchClick: () -> Unit,
+    onSearchBackClick: () -> Unit,
+    onClearClick: () -> Unit,
     snackbarHostState: SnackbarHostState,
     content: @Composable (PaddingValues) -> Unit
 ) {
     Scaffold(
         topBar = {
-            if (!search) {
-                BackTopBar(
-                    onBackClick = onBackClick,
-                    title = stringResource(id = R.string.new_conversation),
-                    leadingIcon = {
-                        IconButton(onClick = onSearchClick) {
-                            Icon(
-                                imageVector = Icons.Default.Search,
-                                contentDescription = null
-                            )
+            Crossfade(targetState = search) {
+                if (it) {
+                    SearchTopBar(
+                        query = query,
+                        onQueryChange = onQueryChange,
+                        onSearchBackClick = onSearchBackClick,
+                        onClearClick = onClearClick
+                    )
+                } else {
+                    BackTopBar(
+                        onBackClick = onBackClick,
+                        title = stringResource(id = R.string.new_conversation),
+                        leadingIcon = {
+                            IconButton(onClick = onSearchClick) {
+                                Icon(
+                                    imageVector = Icons.Default.Search,
+                                    contentDescription = stringResource(R.string.search_icon_description)
+                                )
+                            }
                         }
-                    }
-                )
-            } else {
-                SearchTopBar(
-                    query = query,
-                    onQueryChange = onQueryChange,
-                    onBackClick = onSearchBackClick
-                )
+                    )
+                }
             }
         },
         snackbarHost = {
@@ -81,6 +86,7 @@ private fun CreateConversationScaffoldPreview() {
                 onSearchBackClick = {},
                 onBackClick = {},
                 onSearchClick = {},
+                onClearClick = {},
                 snackbarHostState = SnackbarHostState(),
                 content = {}
             )

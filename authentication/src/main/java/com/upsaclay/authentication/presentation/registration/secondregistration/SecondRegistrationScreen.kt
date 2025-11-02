@@ -23,7 +23,7 @@ import androidx.compose.ui.res.stringResource
 import com.upsaclay.authentication.R
 import com.upsaclay.authentication.presentation.components.RegistrationScaffold
 import com.upsaclay.common.domain.entity.SchoolLevel
-import com.upsaclay.common.extension.mediumPadding
+import com.upsaclay.common.extension.rootMediumPadding
 import com.upsaclay.common.presentation.components.PrimaryButton
 import com.upsaclay.common.presentation.components.SingleSelectionDropDownMenu
 import com.upsaclay.common.presentation.theme.GedoiseTheme
@@ -63,7 +63,7 @@ private fun SecondRegistrationScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .mediumPadding(paddingValues)
+                .rootMediumPadding(paddingValues)
                 .pointerInput(Unit) {
                     detectTapGestures(onPress = { expanded = false })
                 }

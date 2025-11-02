@@ -110,6 +110,7 @@ fun CreateConversationScreen(
             onBackClick()
         },
         onSearchClick = { search = true },
+        onClearClick = { onQueryChange("") },
         snackbarHostState = snackbarHostState
     ) { innerPadding ->
         Column(
@@ -176,7 +177,7 @@ private fun UsersFeed(
 @Composable
 private fun CreateConversationScreenPreview() {
     val users: List<User> = usersFixture + usersFixture
-    var loading by remember { mutableStateOf(true) }
+    val loading by remember { mutableStateOf(true) }
     var query by remember { mutableStateOf("") }
 
     GedoiseTheme {

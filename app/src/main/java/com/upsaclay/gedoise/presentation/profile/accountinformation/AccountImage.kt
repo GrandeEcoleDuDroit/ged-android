@@ -20,7 +20,7 @@ fun AccountImage(
     profilePictureUrl: String?,
     onClick: () -> Unit
 ) {
-    val scaleImage = 1.8f
+    val scaleImage = 1.6f
 
     AnimatedContent(
         targetState = profilePictureUri,

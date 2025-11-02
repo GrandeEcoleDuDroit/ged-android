@@ -21,4 +21,9 @@ data class Announcement(
         PUBLISHED,
         ERROR
     }
+
+    companion object {
+        const val TITLE_MAX_LENGTH = 200
+        const val CONTENT_MAX_LENGTH = 2000
+    }
 }

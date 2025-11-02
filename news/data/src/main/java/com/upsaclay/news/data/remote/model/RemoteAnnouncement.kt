@@ -5,14 +5,14 @@ import com.upsaclay.news.data.AnnouncementField.Remote.ANNOUNCEMENT_CONTENT
 import com.upsaclay.news.data.AnnouncementField.Remote.ANNOUNCEMENT_DATE
 import com.upsaclay.news.data.AnnouncementField.Remote.ANNOUNCEMENT_ID
 import com.upsaclay.news.data.AnnouncementField.Remote.ANNOUNCEMENT_TITLE
+import com.upsaclay.news.data.AnnouncementField.Remote.USER_ADMIN
 import com.upsaclay.news.data.AnnouncementField.Remote.USER_EMAIL
 import com.upsaclay.news.data.AnnouncementField.Remote.USER_FIRST_NAME
 import com.upsaclay.news.data.AnnouncementField.Remote.USER_ID
-import com.upsaclay.news.data.AnnouncementField.Remote.USER_STATE
-import com.upsaclay.news.data.AnnouncementField.Remote.USER_ADMIN
 import com.upsaclay.news.data.AnnouncementField.Remote.USER_LAST_NAME
 import com.upsaclay.news.data.AnnouncementField.Remote.USER_PROFILE_PICTURE_FILE_NAME
 import com.upsaclay.news.data.AnnouncementField.Remote.USER_SCHOOL_LEVEL
+import com.upsaclay.news.data.AnnouncementField.Remote.USER_STATE
 import com.upsaclay.news.data.AnnouncementField.Remote.USER_TESTER
 
 internal data class RemoteAnnouncement(

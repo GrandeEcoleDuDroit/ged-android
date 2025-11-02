@@ -8,7 +8,6 @@ import android.net.Network
 import androidx.core.content.getSystemService
 import com.upsaclay.common.domain.ConnectivityObserver
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted

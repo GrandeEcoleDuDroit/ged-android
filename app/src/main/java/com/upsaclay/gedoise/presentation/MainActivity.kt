@@ -17,9 +17,9 @@ import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.gedoise.presentation.navigation.GedNavHost
 import com.upsaclay.gedoise.presentation.navigation.NavigationViewModel
 import com.upsaclay.gedoise.presentation.navigation.SplashRoute
-import com.upsaclay.message.domain.converter.ConversationJsonConverter
-import com.upsaclay.message.data.remote.RemoteMessageNotification
 import com.upsaclay.message.data.mapper.toMessageNotification
+import com.upsaclay.message.data.remote.RemoteMessageNotification
+import com.upsaclay.message.domain.converter.ConversationJsonConverter
 import com.upsaclay.message.notification.CONVERSATION_ID_EXTRA
 import com.upsaclay.message.notification.MessageNotificationManager
 import com.upsaclay.message.presentation.chat.ChatRoute

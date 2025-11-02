@@ -11,8 +11,8 @@ import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapNetworkErrorMessage
 import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.Message
-import com.upsaclay.message.domain.entity.MessageReport
 import com.upsaclay.message.domain.entity.Message.MessageState
+import com.upsaclay.message.domain.entity.MessageReport
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
 import com.upsaclay.message.domain.usecase.DeleteConversationUseCase

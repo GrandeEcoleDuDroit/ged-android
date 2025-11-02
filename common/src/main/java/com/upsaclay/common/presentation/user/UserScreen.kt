@@ -32,13 +32,13 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.R
-import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.entity.UserReport
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.domain.userFixture2
-import com.upsaclay.common.extension.mediumPadding
 import com.upsaclay.common.extension.mediumSpacing
+import com.upsaclay.common.extension.rootMediumPadding
+import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.BackTopBar
 import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.LoadingDialog
@@ -125,7 +125,7 @@ private fun UserScreen(
         DefaultDialog(
             title = stringResource(id = R.string.block_user_dialog_title),
             text = stringResource(id = R.string.block_user_dialog_message),
-            confirmText = stringResource(id = com.upsaclay.common.R.string.block),
+            confirmText = stringResource(id = R.string.block),
             critical = true,
             onConfirm = {
                 showBlockUserDialog = false
@@ -171,7 +171,7 @@ private fun UserScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .mediumPadding(innerPadding),
+                .rootMediumPadding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.mediumSpacing()
         ) {
@@ -249,12 +249,12 @@ private fun UserBottomSheet(
                 modifier = Modifier.fillMaxWidth(),
                 text = {
                     Text(
-                        text = stringResource(id = com.upsaclay.common.R.string.unblock)
+                        text = stringResource(id = R.string.unblock)
                     )
                 },
                 icon = {
                     Icon(
-                        painter = painterResource(id = com.upsaclay.common.R.drawable.ic_outline_block),
+                        painter = painterResource(id = R.drawable.ic_outline_block),
                         contentDescription = null
                     )
                 },
@@ -265,12 +265,12 @@ private fun UserBottomSheet(
                 modifier = Modifier.fillMaxWidth(),
                 text = {
                     Text(
-                        text = stringResource(id = com.upsaclay.common.R.string.block)
+                        text = stringResource(id = R.string.block)
                     )
                 },
                 icon = {
                     Icon(
-                        painter = painterResource(id = com.upsaclay.common.R.drawable.ic_outline_block),
+                        painter = painterResource(id = R.drawable.ic_outline_block),
                         contentDescription = null
                     )
                 },
@@ -282,13 +282,13 @@ private fun UserBottomSheet(
             modifier = Modifier.fillMaxWidth(),
             text = {
                 Text(
-                    text = stringResource(id = com.upsaclay.common.R.string.report),
+                    text = stringResource(id = R.string.report),
                     color = MaterialTheme.colorScheme.error
                 )
             },
             icon = {
                 Icon(
-                    painter = painterResource(id = com.upsaclay.common.R.drawable.ic_outline_report),
+                    painter = painterResource(id = R.drawable.ic_outline_report),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.error
                 )
@@ -296,7 +296,7 @@ private fun UserBottomSheet(
             onClick = onReportClick
         )
 
-        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.large_padding)))
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.large_padding)))
     }
 }
 

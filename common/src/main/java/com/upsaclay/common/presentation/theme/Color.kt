@@ -7,14 +7,11 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.TextFieldColors
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 internal val white = Color(0xFFFFFFFF)
 internal val black = Color(0xFF121212)
-internal val lightGray = Color(0xFFCCCCCC)
-internal val darkGray = Color(0xFF3C3C3C)
 
 internal val primaryLight = Color(0xFF67708A)
 internal val primaryContainerLight = Color(0xFFDDE0E7)
@@ -63,18 +60,6 @@ val ColorScheme.white: Color
     @Composable
     get() = com.upsaclay.common.presentation.theme.white
 
-val ColorScheme.lightGray: Color
-    @Composable
-    get() = com.upsaclay.common.presentation.theme.lightGray
-
-val ColorScheme.darkGray: Color
-    @Composable
-    get() = com.upsaclay.common.presentation.theme.darkGray
-
-val ColorScheme.dynamicGray: Color
-    @Composable
-    get() = if (isSystemInDarkTheme()) darkGray else lightGray
-
 val ColorScheme.gold: Color
     @Composable
     get() = Color(0xFFB98129)
@@ -86,10 +71,6 @@ val ColorScheme.inputBackground: Color
 val ColorScheme.inputForeground: Color
     @Composable
     get() = if (isSystemInDarkTheme()) Color(0xFFBEBEBE) else Color(0xFF646464)
-
-val ColorScheme.cursor: Color
-    @Composable
-    get() = if (isSystemInDarkTheme()) white else black
 
 val ColorScheme.previewText: Color
     @Composable
@@ -112,15 +93,6 @@ val ColorScheme.outlinedTextFieldColor: TextFieldColors
     get() = OutlinedTextFieldDefaults.colors(
         unfocusedContainerColor = Color.Transparent,
         focusedContainerColor = Color.Transparent
-    )
-
-val ColorScheme.transparentTextFieldColor: TextFieldColors
-    @Composable
-    get() = TextFieldDefaults.colors(
-        unfocusedContainerColor = Color.Transparent,
-        focusedContainerColor = Color.Transparent,
-        focusedIndicatorColor = Color.Transparent,
-        unfocusedIndicatorColor = Color.Transparent,
     )
 
 val ColorScheme.listDivider: Color

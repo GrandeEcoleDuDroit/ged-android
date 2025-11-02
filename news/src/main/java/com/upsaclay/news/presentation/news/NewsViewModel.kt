@@ -4,14 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upsaclay.common.domain.ConnectivityObserver
 import com.upsaclay.common.domain.entity.NoInternetConnectionException
-import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.UserRepository
+import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapNetworkErrorMessage
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.entity.Announcement
-import com.upsaclay.news.domain.entity.AnnouncementReport
 import com.upsaclay.news.domain.entity.Announcement.AnnouncementState
+import com.upsaclay.news.domain.entity.AnnouncementReport
 import com.upsaclay.news.domain.repository.AnnouncementRepository
 import com.upsaclay.news.domain.usecase.DeleteAnnouncementUseCase
 import com.upsaclay.news.domain.usecase.RefreshAnnouncementUseCase
@@ -55,7 +55,7 @@ class NewsViewModel(
                 _event.emit(SingleUiEvent.Error(mapErrorMessage(e)))
             } finally {
                 _uiState.update {
-                    it.copy(refreshing = false) 
+                    it.copy(refreshing = false)
                 }
             }
         }
@@ -77,16 +77,16 @@ class NewsViewModel(
                     throw NoInternetConnectionException()
                 }
 
-                _uiState.update { 
-                    it.copy(loading = true) 
+                _uiState.update {
+                    it.copy(loading = true)
                 }
                 deleteAnnouncementUseCase(announcement)
                 _event.emit(SingleUiEvent.Success(R.string.announcement_deleted))
             } catch (e: Exception) {
                 _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
             } finally {
-                _uiState.update { 
-                    it.copy(loading = false) 
+                _uiState.update {
+                    it.copy(loading = false)
                 }
             }
         }
@@ -106,8 +106,8 @@ class NewsViewModel(
             } catch (e: Exception) {
                 _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
             } finally {
-                _uiState.update { 
-                    it.copy(loading = false) 
+                _uiState.update {
+                    it.copy(loading = false)
                 }
             }
         }

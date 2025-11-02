@@ -26,11 +26,11 @@ val newsDataModule = module {
 
     single<CoroutineScope>(BACKGROUND_SCOPE) {
         CoroutineScope(
-    SupervisorJob() +
-            Dispatchers.IO +
-            CoroutineExceptionHandler { _, throwable ->
-                e("Uncaught error in backgroundScope", throwable)
-            }
+            SupervisorJob() +
+                    Dispatchers.IO +
+                    CoroutineExceptionHandler { _, throwable ->
+                        e("Uncaught error in backgroundScope", throwable)
+                    }
         )
     }
 
