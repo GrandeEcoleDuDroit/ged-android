@@ -1,7 +1,8 @@
 package com.upsaclay.news
 
+import androidx.compose.ui.text.input.TextFieldValue
 import com.upsaclay.common.domain.ConnectivityObserver
-import com.upsaclay.news.domain.longAnnouncementFixture
+import com.upsaclay.news.domain.announcementFixture
 import com.upsaclay.news.domain.repository.AnnouncementRepository
 import com.upsaclay.news.presentation.announcement.editannouncement.EditAnnouncementViewModel
 import io.mockk.coVerify
@@ -23,7 +24,7 @@ class EditAnnouncementViewModelTest {
     private lateinit var viewModel: EditAnnouncementViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
     private val title = "Title"
-    private val content = "Content"
+    private val content = TextFieldValue(text = "Content")
 
     @Before
     fun setUp() {
@@ -32,7 +33,7 @@ class EditAnnouncementViewModelTest {
         every { connectivityObserver.isConnected } returns true
 
         viewModel = EditAnnouncementViewModel(
-            announcement = longAnnouncementFixture,
+            announcement = announcementFixture,
             announcementRepository = announcementRepository,
             connectivityObserver = connectivityObserver
         )
@@ -73,7 +74,7 @@ class EditAnnouncementViewModelTest {
     fun updateAnnouncement_should_not_update_when_content_is_empty() {
         // Given
         viewModel.onTitleChange("title")
-        viewModel.onContentChange("")
+        viewModel.onContentChange(TextFieldValue())
 
         // When
         viewModel.updateAnnouncement()
@@ -85,8 +86,8 @@ class EditAnnouncementViewModelTest {
     @Test
     fun updateAnnouncement_should_not_update_when_title_and_content_are_same() {
         // Given
-        viewModel.onTitleChange(longAnnouncementFixture.title!!)
-        viewModel.onContentChange(longAnnouncementFixture.content)
+        viewModel.onTitleChange(announcementFixture.title!!)
+        viewModel.onContentChange(TextFieldValue(announcementFixture.content))
 
         // When
         viewModel.updateAnnouncement()
@@ -98,10 +99,10 @@ class EditAnnouncementViewModelTest {
     @Test
     fun announcement_should_be_trim_when_updated() {
         // Given
-        val titleWithSpaces = "  ${longAnnouncementFixture.title}  "
-        val contentWithSpaces = "  ${longAnnouncementFixture.content}  "
+        val titleWithSpaces = "  ${announcementFixture.title}  "
+        val contentWithSpaces = "  ${announcementFixture.content}  "
         viewModel.onTitleChange(titleWithSpaces)
-        viewModel.onContentChange(contentWithSpaces)
+        viewModel.onContentChange(TextFieldValue(contentWithSpaces))
 
         // When
         viewModel.updateAnnouncement()
@@ -109,7 +110,7 @@ class EditAnnouncementViewModelTest {
         // Then
         coVerify {
             announcementRepository.updateAnnouncement(
-                longAnnouncementFixture.copy(
+                announcementFixture.copy(
                     title = titleWithSpaces.trim(),
                     content = contentWithSpaces.trim()
                 )
