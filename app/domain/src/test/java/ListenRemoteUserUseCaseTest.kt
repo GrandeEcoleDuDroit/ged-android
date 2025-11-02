@@ -1,9 +1,9 @@
 package com.upsaclay.gedoise.usecase
 
+import com.upsaclay.app.domain.ListenRemoteUserUseCase
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.domain.userFixture2
-import com.upsaclay.app.domain.ListenRemoteUserUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every

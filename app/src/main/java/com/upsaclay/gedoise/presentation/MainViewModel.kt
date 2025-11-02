@@ -2,12 +2,12 @@ package com.upsaclay.gedoise.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.upsaclay.authentication.domain.usecase.ListenAuthenticationStateUseCase
 import com.upsaclay.app.domain.ClearDataUseCase
 import com.upsaclay.app.domain.FcmTokenUseCase
 import com.upsaclay.app.domain.ListenBlockedUserEvents
 import com.upsaclay.app.domain.ListenRemoteUserUseCase
 import com.upsaclay.app.domain.SynchronizeDataUseCase
+import com.upsaclay.authentication.domain.usecase.ListenAuthenticationStateUseCase
 import com.upsaclay.message.domain.usecase.ListenRemoteConversationsUseCase
 import com.upsaclay.message.domain.usecase.ListenRemoteMessagesUseCase
 import kotlinx.coroutines.Job

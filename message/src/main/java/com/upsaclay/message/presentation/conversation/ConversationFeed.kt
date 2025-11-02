@@ -5,10 +5,11 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ShapeDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -18,6 +19,9 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
+import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.previewText
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.message.R
@@ -56,7 +60,6 @@ private fun EmptyConversationText(onCreateClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
             .testTag(stringResource(R.string.conversation_screen_empty_conversation_text_tag)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -68,8 +71,13 @@ private fun EmptyConversationText(onCreateClick: () -> Unit) {
         )
 
         TextButton(
-            contentPadding = PaddingValues(dimensionResource(com.upsaclay.common.R.dimen.default_padding)),
-            modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.large_padding)),
+            contentPadding = PaddingValues(
+                top = dimensionResource(com.upsaclay.common.R.dimen.default_padding),
+                bottom = dimensionResource(com.upsaclay.common.R.dimen.default_padding),
+                start = ButtonDefaults.TextButtonContentPadding.calculateLeftPadding(LayoutDirection.Rtl),
+                end = ButtonDefaults.TextButtonContentPadding.calculateRightPadding(LayoutDirection.Rtl)
+            ),
+            modifier = Modifier.height(30.dp),
             shape = ShapeDefaults.ExtraSmall,
             onClick = onCreateClick
         ) {
@@ -89,10 +97,14 @@ private fun EmptyConversationText(onCreateClick: () -> Unit) {
 @Phones
 @Composable
 private fun ConversationFeedPreview() {
-    ConversationFeed(
-        conversations = conversationsUIFixture,
-        onClick = {},
-        onLongClick = {},
-        onCreateClick = {}
-    )
+    GedoiseTheme {
+        Surface {
+            ConversationFeed(
+                conversations = conversationsUIFixture,
+                onClick = {},
+                onLongClick = {},
+                onCreateClick = {}
+            )
+        }
+    }
 }

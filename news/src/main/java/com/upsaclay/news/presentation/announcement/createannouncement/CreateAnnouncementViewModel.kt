@@ -7,6 +7,8 @@ import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.GenerateIdUseCase
 import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.domain.entity.Announcement.AnnouncementState
+import com.upsaclay.news.domain.entity.Announcement.Companion.CONTENT_MAX_LENGTH
+import com.upsaclay.news.domain.entity.Announcement.Companion.TITLE_MAX_LENGTH
 import com.upsaclay.news.domain.usecase.CreateAnnouncementUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,24 +22,22 @@ class CreateAnnouncementViewModel(
     private val createAnnouncementUseCase: CreateAnnouncementUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(CreateAnnouncementUiState())
-    internal val uiState : StateFlow<CreateAnnouncementUiState> = _uiState
+    internal val uiState: StateFlow<CreateAnnouncementUiState> = _uiState
     private val user: User? = userRepository.currentUser
 
     fun onTitleChange(title: String) {
-        if (title.length > 300) return
         _uiState.update {
             it.copy(
-                title = title,
-                createEnabled = validateCreate(_uiState.value.content)
+                title = title.take(TITLE_MAX_LENGTH),
+                createEnabled = validateCreate(uiState.value.content)
             )
         }
     }
 
     fun onContentChange(content: String) {
-        if (content.length > 2000) return
         _uiState.update {
             it.copy(
-                content = content,
+                content = content.take(CONTENT_MAX_LENGTH),
                 createEnabled = validateCreate(content)
             )
         }
@@ -45,7 +45,7 @@ class CreateAnnouncementViewModel(
 
     fun createAnnouncement() {
         if (user == null) return
-        val (title, content) = _uiState.value
+        val (title, content) = uiState.value
         val announcement = Announcement(
             id = GenerateIdUseCase.stringId,
             title = if (title.isBlank()) null else title.trim(),

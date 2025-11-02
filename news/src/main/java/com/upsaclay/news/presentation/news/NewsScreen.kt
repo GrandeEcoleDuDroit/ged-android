@@ -131,7 +131,7 @@ private fun NewsScreen(
         PullToRefreshComponent(
             modifier = Modifier.padding(paddingValues),
             onRefresh = onRefresh,
-            isRefreshing = refreshing
+            refreshing = refreshing
         ) {
             RecentAnnouncementSection(
                 announcements = announcements,

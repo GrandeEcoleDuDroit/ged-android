@@ -5,6 +5,7 @@ import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.isNotEnabled
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.text.input.TextFieldValue
 import com.upsaclay.news.domain.longAnnouncementFixture
 import com.upsaclay.news.presentation.announcement.editannouncement.EditAnnouncementDestination
 import com.upsaclay.news.presentation.announcement.editannouncement.EditAnnouncementViewModel
@@ -23,7 +24,7 @@ class EditAnnouncementScreenTest {
     private val editAnnouncementViewModel: EditAnnouncementViewModel = mockk()
     private val uiState = EditAnnouncementViewModel.EditAnnouncementUiState(
         title = "",
-        content = ""
+        content = TextFieldValue()
     )
 
     @Before
@@ -35,7 +36,11 @@ class EditAnnouncementScreenTest {
     @Test
     fun save_button_should_be_disabled_when_updateEnabled_is_false() {
         // Given
-        every { editAnnouncementViewModel.uiState } returns MutableStateFlow(uiState.copy(updateEnabled = false))
+        every { editAnnouncementViewModel.uiState } returns MutableStateFlow(
+            uiState.copy(
+                updateEnabled = false
+            )
+        )
 
         // When
         rule.setContent {
@@ -54,7 +59,7 @@ class EditAnnouncementScreenTest {
     @Test
     fun save_button_should_be_enabled_when_updateEnabled_is_true() {
         // Given
-        every { editAnnouncementViewModel.uiState } returns MutableStateFlow(uiState.copy(content = ""))
+        every { editAnnouncementViewModel.uiState } returns MutableStateFlow(uiState.copy(content = TextFieldValue()))
 
         // When
         rule.setContent {

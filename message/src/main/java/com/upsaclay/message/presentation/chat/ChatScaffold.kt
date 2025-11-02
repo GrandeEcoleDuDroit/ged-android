@@ -9,7 +9,6 @@ import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -66,10 +65,9 @@ private fun ChatScaffoldPreview() {
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(it),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("Chat content")
-                }
+                    contentAlignment = Alignment.Center,
+                    content = {}
+                )
             }
         }
     }

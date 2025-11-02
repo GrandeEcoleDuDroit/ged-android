@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -132,17 +133,19 @@ private fun LegalNoticeText() {
 @Composable
 private fun PreviewThirdRegistrationForm() {
     GedoiseTheme {
-        ThirdRegistrationForm(
-            email = "",
-            password = "",
-            loading = false,
-            legalNoticeChecked = false,
-            emailError = null,
-            passwordError = null,
-            errorMessage = null,
-            onEmailChange = {},
-            onPasswordChange = {},
-            onLegalNoticeCheckedChange = {}
-        )
+        Surface {
+            ThirdRegistrationForm(
+                email = "",
+                password = "",
+                loading = false,
+                legalNoticeChecked = false,
+                emailError = null,
+                passwordError = null,
+                errorMessage = null,
+                onEmailChange = {},
+                onPasswordChange = {},
+                onLegalNoticeCheckedChange = {}
+            )
+        }
     }
 }

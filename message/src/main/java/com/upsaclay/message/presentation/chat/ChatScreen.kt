@@ -1,7 +1,6 @@
 package com.upsaclay.message.presentation.chat
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,12 +18,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.paging.PagingData
 import com.upsaclay.common.domain.entity.User
-import com.upsaclay.common.extension.mediumPadding
+import com.upsaclay.common.extension.rootMediumPadding
 import com.upsaclay.common.extension.smallMediumSpacing
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.DefaultDialog
@@ -36,8 +35,8 @@ import com.upsaclay.message.R
 import com.upsaclay.message.domain.conversationFixture
 import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.Message
-import com.upsaclay.message.domain.entity.MessageReport
 import com.upsaclay.message.domain.entity.Message.MessageState
+import com.upsaclay.message.domain.entity.MessageReport
 import com.upsaclay.message.domain.messagesFixture
 import com.upsaclay.message.presentation.chat.ChatViewModel.MessageEvent
 import kotlinx.coroutines.flow.Flow
@@ -121,7 +120,7 @@ private fun ChatScreen(
     onUnblockUserClick: (String) -> Unit,
     onDeleteConversationClick: () -> Unit
 ) {
-    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
     val bottomSheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
     )
@@ -181,14 +180,14 @@ private fun ChatScreen(
         interlocutor = conversation.interlocutor,
         snackbarHostState = snackbarHostState,
         onBackClick = {
-            keyboardController?.hide()
+            focusManager.clearFocus()
             onBackClick()
         },
         onInterlocutorClick = { onInterlocutorClick(conversation.interlocutor) }
     ) { innerPadding ->
         Column(
             modifier = Modifier
-                .mediumPadding(innerPadding)
+                .rootMediumPadding(innerPadding)
                 .fillMaxSize(),
             verticalArrangement = Arrangement.smallMediumSpacing()
         ) {
@@ -289,15 +288,12 @@ private fun MessageBottomSection(
             onUnblockUserClick = onUnblockUserClick
         )
     } else {
-        Box(modifier = modifier) {
             MessageInput(
-                modifier = Modifier
-                    .testTag(stringResource(R.string.chat_screen_message_input_tag)),
+                modifier = Modifier.testTag(stringResource(R.string.chat_screen_message_input_tag)),
                 value = messageText,
                 onValueChange = onMessageTextChange,
                 onSendClick = onSendMessageClick
             )
-        }
     }
 }
 

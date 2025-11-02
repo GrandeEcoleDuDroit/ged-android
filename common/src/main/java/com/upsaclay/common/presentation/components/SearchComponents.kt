@@ -1,10 +1,9 @@
 package com.upsaclay.common.presentation.components
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -14,7 +13,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ShapeDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -25,16 +24,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import com.upsaclay.common.R
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.cursor
 import com.upsaclay.common.presentation.theme.inputBackground
+import com.upsaclay.common.utils.Phones
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,7 +41,6 @@ fun StaticSearchBar(
     query: String,
     onQueryChange: (String) -> Unit,
     onResetQuery: () -> Unit = { onQueryChange("") },
-    textStyle: TextStyle = TextStyle.Default,
     leadingIcon: @Composable () -> Unit = {
         Icon(
             imageVector = Icons.Default.Search,
@@ -66,24 +62,26 @@ fun StaticSearchBar(
         modifier = modifier,
         value = query,
         onValueChange = onQueryChange,
-        textStyle = textStyle.copy(color = MaterialTheme.colorScheme.onBackground),
+        textStyle = TextStyle.Default.copy(
+            color = MaterialTheme.colorScheme.onSurface
+        ),
         keyboardOptions = KeyboardOptions(
             capitalization = KeyboardCapitalization.Sentences
         ),
-        cursorBrush = SolidColor(MaterialTheme.colorScheme.cursor)
+        cursorBrush = SolidColor(TextFieldDefaults.colors().cursorColor)
     ) { innerTextField ->
         TextFieldDefaults.DecorationBox(
             innerTextField = innerTextField,
             value = query,
             placeholder = { Text(text = placeholder) },
-            shape = ShapeDefaults.ExtraLarge,
+            shape = CircleShape,
             enabled = true,
             colors = TextFieldDefaults.colors(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
                 focusedContainerColor = MaterialTheme.colorScheme.inputBackground,
                 unfocusedContainerColor = MaterialTheme.colorScheme.inputBackground,
-                cursorColor = MaterialTheme.colorScheme.cursor
+                cursorColor =  TextFieldDefaults.colors().cursorColor
             ),
             contentPadding = PaddingValues(),
             singleLine = true,
@@ -101,14 +99,12 @@ fun StaticSearchBar(
  * =====================================================================
  */
 
-@Preview(showBackground = true)
+@Phones
 @Composable
 private fun SearchBarPreview() {
     var query by remember { mutableStateOf("") }
     GedoiseTheme {
-        Box(
-            modifier = Modifier.padding(dimensionResource(R.dimen.small_padding))
-        ) {
+        Surface {
             StaticSearchBar(
                 modifier = Modifier.fillMaxWidth(),
                 query = query,

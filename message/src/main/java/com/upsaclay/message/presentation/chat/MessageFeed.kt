@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,7 +32,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.upsaclay.common.domain.entity.User
-import com.upsaclay.common.extension.mediumPadding
+import com.upsaclay.common.extension.rootMediumPadding
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.previewText
 import com.upsaclay.common.utils.FormatLocalDateTimeHelper
@@ -40,7 +41,7 @@ import com.upsaclay.message.R
 import com.upsaclay.message.domain.conversationFixture
 import com.upsaclay.message.domain.entity.Message
 import com.upsaclay.message.domain.entity.Message.MessageState
-import com.upsaclay.message.domain.messageFixture
+import com.upsaclay.message.domain.messagesFixture
 import com.upsaclay.message.presentation.chat.ChatViewModel.MessageEvent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -199,14 +200,16 @@ private fun messagePadding(sameSender: Boolean, sameTime: Boolean): Dp =
 @Composable
 private fun MessageFeedPreview() {
     GedoiseTheme {
-        MessageFeed(
-            modifier = Modifier.mediumPadding(),
-            messages = flowOf(PagingData.from(listOf(messageFixture))),
-            interlocutor = conversationFixture.interlocutor,
-            newMessageEvent = null,
-            onErrorSentMessageClick = {},
-            onReceivedMessageLongClick = {},
-            onInterlocutorClick = {}
-        )
+        Surface {
+            MessageFeed(
+                modifier = Modifier.rootMediumPadding(),
+                messages = flowOf(PagingData.from(messagesFixture)),
+                interlocutor = conversationFixture.interlocutor,
+                newMessageEvent = null,
+                onErrorSentMessageClick = {},
+                onReceivedMessageLongClick = {},
+                onInterlocutorClick = {}
+            )
+        }
     }
 }

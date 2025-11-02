@@ -3,11 +3,11 @@ package com.upsaclay.common.presentation.user
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upsaclay.common.R
-import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.entity.UserReport
 import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.repository.UserRepository
+import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapNetworkErrorMessage
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

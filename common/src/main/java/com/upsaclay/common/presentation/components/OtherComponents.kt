@@ -43,7 +43,7 @@ import kotlinx.coroutines.delay
 fun PullToRefreshComponent(
     modifier: Modifier = Modifier,
     onRefresh: () -> Unit,
-    isRefreshing: Boolean,
+    refreshing: Boolean,
     content: @Composable () -> Unit
 ) {
     val pullToRefreshState = rememberPullToRefreshState()
@@ -59,8 +59,8 @@ fun PullToRefreshComponent(
             }
         }
 
-        LaunchedEffect(isRefreshing) {
-            if (!isRefreshing) {
+        LaunchedEffect(refreshing) {
+            if (!refreshing) {
                 pullToRefreshState.endRefresh()
             }
         }
@@ -147,17 +147,17 @@ private fun ClickableMenuItemPreview() {
 @Preview(showBackground = true, widthDp = 200, heightDp = 200)
 @Composable
 private fun PullRefreshComponentPreview() {
-    var isRefreshing by remember { mutableStateOf(true) }
+    var refreshing by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
         delay(1000)
-        isRefreshing = false
+        refreshing = false
     }
 
     GedoiseTheme {
         PullToRefreshComponent(
             onRefresh = { },
-            isRefreshing = isRefreshing
+            refreshing = refreshing
         ) {
             LazyColumn(modifier = Modifier.padding(dimensionResource(R.dimen.medium_padding))) {
                 item {

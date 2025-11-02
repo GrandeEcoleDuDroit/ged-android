@@ -1,6 +1,7 @@
 package com.upsaclay.news.presentation.announcement.allannouncements
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,7 +13,6 @@ import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -22,15 +22,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
+import com.upsaclay.common.extension.noRippleClickable
+import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.BackTopBar
 import com.upsaclay.common.presentation.components.CircularProgressBar
 import com.upsaclay.common.presentation.components.DefaultDialog
@@ -44,9 +44,10 @@ import com.upsaclay.common.utils.Phones
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.announcementsFixture
 import com.upsaclay.news.domain.entity.Announcement
-import com.upsaclay.news.domain.entity.AnnouncementReport
 import com.upsaclay.news.domain.entity.Announcement.AnnouncementState
+import com.upsaclay.news.domain.entity.AnnouncementReport
 import com.upsaclay.news.presentation.announcement.components.AnnouncementBottomSheet
+import com.upsaclay.news.presentation.announcement.components.ExtendedAnnouncementItem
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -115,7 +116,6 @@ private fun AllAnnouncementsScreen(
     onReportAnnouncementClick: (AnnouncementReport) -> Unit,
     onDeleteAnnouncementClick: (Announcement) -> Unit
 ) {
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     var showAnnouncementBottomSheet by remember { mutableStateOf(false) }
     var showAnnouncementReportBottomSheet by remember { mutableStateOf(false) }
     var showDeleteAnnouncementDialog by remember { mutableStateOf(false) }
@@ -140,12 +140,10 @@ private fun AllAnnouncementsScreen(
     }
 
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             BackTopBar(
                 onBackClick = onBackClick,
-                title = stringResource(R.string.all_announcements),
-                scrollBehavior = scrollBehavior
+                title = stringResource(R.string.all_announcements)
             )
         },
         snackbarHost = {
@@ -157,10 +155,10 @@ private fun AllAnnouncementsScreen(
         PullToRefreshComponent(
             modifier = Modifier.padding(innerPadding),
             onRefresh = onRefresh,
-            isRefreshing = refreshing
+            refreshing = refreshing
         ) {
             announcements?.let {
-                LazyColumn {
+                LazyColumn(modifier = Modifier.fillMaxSize()) {
                     if (announcements.isEmpty()) {
                         item {
                             Text(
@@ -173,16 +171,20 @@ private fun AllAnnouncementsScreen(
                         }
                     } else {
                         itemsIndexed(announcements) { index, announcement ->
+                            ListDivider()
+
                             ExtendedAnnouncementItem(
-                                announcement = announcement,
-                                onClick = {
-                                    if (announcement.state == AnnouncementState.PUBLISHED) {
-                                        onAnnouncementClick(announcement.id)
-                                    } else {
-                                        clickedAnnouncement = announcement
-                                        showAnnouncementBottomSheet = true
+                                modifier = Modifier
+                                    .noRippleClickable {
+                                        if (announcement.state == AnnouncementState.PUBLISHED) {
+                                            onAnnouncementClick(announcement.id)
+                                        } else {
+                                            clickedAnnouncement = announcement
+                                            showAnnouncementBottomSheet = true
+                                        }
                                     }
-                                },
+                                    .padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                                announcement = announcement,
                                 onOptionClick = {
                                     clickedAnnouncement = announcement
                                     showAnnouncementBottomSheet = true
@@ -190,12 +192,8 @@ private fun AllAnnouncementsScreen(
                                 onAuthorClick = { onAuthorClick(announcement.author) }
                             )
 
-                            if (index != announcements.lastIndex) {
-                                ListDivider(
-                                    modifier = Modifier.padding(
-                                        start = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)
-                                    )
-                                )
+                            if (index == announcements.lastIndex) {
+                                ListDivider()
                             }
                         }
                     }

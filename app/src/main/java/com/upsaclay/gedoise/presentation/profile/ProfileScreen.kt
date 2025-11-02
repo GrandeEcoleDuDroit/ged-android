@@ -1,14 +1,13 @@
 package com.upsaclay.gedoise.presentation.profile
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -18,13 +17,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.presentation.components.CircularProgressBar
@@ -76,7 +73,6 @@ fun ProfileScreen(
     if (showLogoutDialog) {
         DefaultDialog(
             modifier = Modifier.testTag(stringResource(id = R.string.profile_screen_logout_dialog_tag)),
-            title = stringResource(id = R.string.logout),
             text = stringResource(id = R.string.logout_dialog_message),
             confirmText = stringResource(id = R.string.logout),
             critical = true,
@@ -99,33 +95,33 @@ fun ProfileScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            Row(
+            ListItem(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable(onClick = onAccountInformationClick)
-                    .padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
-            ) {
-                ProfilePicture(
-                    url = user.profilePictureUrl,
-                    scale = 0.6f
-                )
-
-                Column {
-                    Text(
-                        text = user.fullName,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Medium
+                    .clickable(onClick = onAccountInformationClick),
+                leadingContent = {
+                    ProfilePicture(
+                        url = user.profilePictureUrl,
+                        scale = 0.6f
                     )
+                },
+                headlineContent = {
+                    Column {
+                        Text(
+                            text = user.fullName,
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontSize = 18.sp
+                            )
+                        )
 
-                    Text(
-                        text = user.email,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.informationText
-                    )
+                        Text(
+                            text = user.email,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.informationText
+                        )
+                    }
                 }
-            }
+            )
 
             HorizontalDivider()
 

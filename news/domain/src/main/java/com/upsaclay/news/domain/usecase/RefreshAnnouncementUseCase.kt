@@ -3,6 +3,7 @@ package com.upsaclay.news.domain.usecase
 import kotlinx.coroutines.delay
 
 private const val DEBOUNCE_INTERVAL = 10000L
+
 class RefreshAnnouncementUseCase(
     private val synchronizeAnnouncementsUseCase: SynchronizeAnnouncementsUseCase
 ) {

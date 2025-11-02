@@ -5,9 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upsaclay.common.domain.ConnectivityObserver
 import com.upsaclay.common.domain.entity.NoInternetConnectionException
-import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.UserRepository
+import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapNetworkErrorMessage
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.entity.Announcement
@@ -113,8 +113,8 @@ class ReadAnnouncementViewModel(
         val loading: Boolean = false
     )
 
-    sealed interface ReadAnnouncementUiEvent: SingleUiEvent {
-        data object AnnouncementDeleted: ReadAnnouncementUiEvent
-        data class AnnouncementReported(@StringRes val messageId: Int): ReadAnnouncementUiEvent
+    sealed interface ReadAnnouncementUiEvent : SingleUiEvent {
+        data object AnnouncementDeleted : ReadAnnouncementUiEvent
+        data class AnnouncementReported(@StringRes val messageId: Int) : ReadAnnouncementUiEvent
     }
 }

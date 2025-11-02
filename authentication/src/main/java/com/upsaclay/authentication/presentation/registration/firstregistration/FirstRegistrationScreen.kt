@@ -19,7 +19,7 @@ import androidx.compose.ui.res.stringResource
 import com.upsaclay.authentication.R
 import com.upsaclay.authentication.presentation.components.RegistrationScaffold
 import com.upsaclay.common.domain.extensions.uppercaseFirstLetter
-import com.upsaclay.common.extension.mediumPadding
+import com.upsaclay.common.extension.rootMediumPadding
 import com.upsaclay.common.presentation.components.PrimaryButton
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
@@ -70,11 +70,11 @@ private fun FirstRegistrationScreen(
             focusManager.clearFocus()
             onBackClick()
         }
-    ) { paddingValues ->
+    ) { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .mediumPadding(paddingValues)
+                .rootMediumPadding(innerPadding)
                 .pointerInput(Unit) {
                     detectTapGestures(
                         onPress = { focusManager.clearFocus() }

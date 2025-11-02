@@ -27,11 +27,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
-import com.upsaclay.common.extension.mediumPadding
 import com.upsaclay.common.extension.mediumSpacing
+import com.upsaclay.common.extension.rootMediumPadding
+import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
@@ -157,7 +157,7 @@ fun AccountInformationScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .mediumPadding(innerPadding),
+                .rootMediumPadding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.mediumSpacing()
         ) {

@@ -2,8 +2,8 @@ package com.upsaclay.news.presentation.announcement.readannouncement
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
@@ -22,20 +22,29 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import com.upsaclay.common.presentation.SingleUiEvent
+import androidx.compose.ui.text.style.TextOverflow
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture2
+import com.upsaclay.common.extension.noRippleClickable
+import com.upsaclay.common.extension.rootMediumPadding
+import com.upsaclay.common.extension.smallMediumSpacing
+import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.BackTopBar
 import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.LoadingDialog
+import com.upsaclay.common.presentation.components.OptionButton
+import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.presentation.theme.previewText
 import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.getElapsedTimeValue
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.domain.entity.AnnouncementReport
@@ -106,6 +115,7 @@ fun ReadAnnouncementScreen(
     onReportAnnouncementClick: (AnnouncementReport) -> Unit,
     onDeleteAnnouncementClick: () -> Unit
 ) {
+    val elapsedTimeValue = getElapsedTimeValue(announcement.date)
     var showDeleteAnnouncementDialog by remember { mutableStateOf(false) }
     var showBottomSheet by remember { mutableStateOf(false) }
     var showReportBottomSheet by remember { mutableStateOf(false) }
@@ -132,7 +142,10 @@ fun ReadAnnouncementScreen(
         topBar = {
             BackTopBar(
                 onBackClick = onBackClick,
-                title = stringResource(id = R.string.announcement)
+                title = stringResource(id = R.string.announcement),
+                leadingIcon = {
+                    OptionButton { showBottomSheet = true }
+                }
             )
         },
         snackbarHost = {
@@ -146,40 +159,17 @@ fun ReadAnnouncementScreen(
                )
             }
         }
-    ) { contentPadding ->
-        SelectionContainer  {
-            Column(
+    ) { innerPadding ->
+        SelectionContainer {
+            Announcement(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(
-                        top = contentPadding.calculateTopPadding(),
-                        start = dimensionResource(com.upsaclay.common.R.dimen.medium_padding),
-                        end = dimensionResource(com.upsaclay.common.R.dimen.medium_padding),
-                        bottom = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)
-                    )
+                    .rootMediumPadding(innerPadding)
                     .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
-            ) {
-                AnnouncementHeader(
-                    announcement = announcement,
-                    onOptionClick = { showBottomSheet = true },
-                    onAuthorClick = { onAuthorClick(announcement.author) }
-                )
-
-                announcement.title?.let {
-                    Text(
-                        modifier = Modifier.testTag(stringResource(id = R.string.read_screen_announcement_title_tag)),
-                        text = it,
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                }
-
-                Text(
-                    modifier = Modifier.testTag(stringResource(id = R.string.read_screen_announcement_content_tag)),
-                    text = announcement.content,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
+                announcement = announcement,
+                elapsedTimeValue = elapsedTimeValue,
+                onAuthorClick = { onAuthorClick(announcement.author) }
+            )
         }
 
         if (showBottomSheet) {
@@ -220,12 +210,64 @@ fun ReadAnnouncementScreen(
                                 fullName = announcement.author.fullName,
                                 email = announcement.author.email
                             ),
-                            reason = reason,
+                            reason = reason
                         )
                     )
                 }
             )
         }
+    }
+}
+
+@Composable
+private fun Announcement(
+    modifier: Modifier = Modifier,
+    announcement: Announcement,
+    elapsedTimeValue: String,
+    onAuthorClick: () -> Unit
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.smallMediumSpacing()
+    ) {
+        Row(
+            modifier = Modifier.noRippleClickable(onClick = onAuthorClick),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding))
+        ) {
+            ProfilePicture(
+                url = announcement.author.profilePictureUrl,
+                scale = 0.4f
+            )
+
+            Text(
+                modifier = Modifier.weight(fill = false, weight = 1f),
+                text = announcement.author.fullName,
+                style = MaterialTheme.typography.titleMedium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            Text(
+                text = elapsedTimeValue,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.previewText
+            )
+        }
+
+        announcement.title?.let {
+            Text(
+                modifier = Modifier.testTag(stringResource(id = R.string.read_screen_announcement_title_tag)),
+                text = it,
+                style = MaterialTheme.typography.titleLarge
+            )
+        }
+
+        Text(
+            modifier = Modifier.testTag(stringResource(id = R.string.read_screen_announcement_content_tag)),
+            text = announcement.content,
+            style = MaterialTheme.typography.bodyLarge
+        )
     }
 }
 

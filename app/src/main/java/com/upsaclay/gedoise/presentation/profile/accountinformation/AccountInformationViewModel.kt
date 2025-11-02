@@ -5,11 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upsaclay.common.domain.ConnectivityObserver
 import com.upsaclay.common.domain.entity.NoInternetConnectionException
-import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.DeleteProfilePictureUseCase
 import com.upsaclay.common.domain.usecase.UpdateProfilePictureUseCase
+import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapNetworkErrorMessage
 import com.upsaclay.gedoise.R
 import kotlinx.coroutines.flow.MutableSharedFlow
