@@ -9,6 +9,7 @@ import com.upsaclay.message.domain.entity.ConversationUi
 import com.upsaclay.message.domain.entity.Message
 import com.upsaclay.message.domain.entity.Message.MessageState
 import com.upsaclay.message.domain.entity.MessageNotification
+import com.upsaclay.message.domain.entity.MessageNotificationUi
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
@@ -113,27 +114,23 @@ val conversationsFixture = listOf(
     )
 )
 
-val messageContentFixture = MessageNotification.MessageContent(
-    content = messageFixture.content,
-    date = messageFixture.date.toEpochMilliUTC()
-)
-
 val messageNotificationFixture = MessageNotification(
     conversation = conversationFixture,
-    messageContent = messageContentFixture
+    message = MessageNotification.Message(
+        messageId = messageFixture.id,
+        content = messageFixture.content,
+        timestamp = messageFixture.date.toEpochMilliUTC()
+    )
 )
 
 val messageNotificationsFixture = listOf(
     messageNotificationFixture,
     messageNotificationFixture.copy(
         conversation = conversationFixture.copy(id = "2"),
-        messageContent = messageContentFixture.copy(
-            content = messageFixture2.content,
-            date = messageFixture2.date.toEpochMilliUTC()
+        message = MessageNotification.Message(
+            messageId = 2,
+            content = messageFixture.content,
+            timestamp = messageFixture.date.toEpochMilliUTC(),
         )
-    ),
-    messageNotificationFixture.copy(
-        conversation = conversationFixture.copy(id = "3"),
-        messageContent = messageContentFixture
     )
 )

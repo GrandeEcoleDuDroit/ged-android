@@ -17,6 +17,7 @@ import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_SCHO
 import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_STATE
 import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_TESTER
 import com.upsaclay.message.data.model.MessageField.CONTENT
+import com.upsaclay.message.data.model.MessageField.MESSAGE_ID
 import com.upsaclay.message.data.model.MessageField.TIMESTAMP
 
 internal const val MESSAGE_NOTIFICATION_TABLE_NAME = "message_notification"
@@ -24,6 +25,8 @@ internal const val MESSAGE_NOTIFICATION_TABLE_NAME = "message_notification"
 @Entity(tableName = MESSAGE_NOTIFICATION_TABLE_NAME)
 data class LocalMessageNotification(
     @PrimaryKey
+    @ColumnInfo(name = MESSAGE_ID)
+    val messageId: Long,
     @ColumnInfo(name = CONTENT)
     val content: String,
     @ColumnInfo(name = TIMESTAMP)

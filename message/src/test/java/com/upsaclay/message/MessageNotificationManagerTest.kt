@@ -2,8 +2,8 @@ package com.upsaclay.message
 
 import com.upsaclay.common.domain.repository.RouteRepository
 import com.upsaclay.message.domain.converter.ConversationJsonConverter
-import com.upsaclay.message.domain.entity.MessagesNotification
-import com.upsaclay.message.domain.mapper.toMessagesNotification
+import com.upsaclay.message.domain.entity.MessageNotificationUi
+import com.upsaclay.message.domain.mapper.toNotificationsUi
 import com.upsaclay.message.domain.messageNotificationFixture
 import com.upsaclay.message.domain.messageNotificationsFixture
 import com.upsaclay.message.domain.repository.MessageNotificationRepository
@@ -25,6 +25,15 @@ class MessageNotificationManagerTest {
     private val messageNotificationPresenter: MessageNotificationPresenter = mockk()
 
     private lateinit var manager: MessageNotificationManager
+    private val messageNotificationUi = MessageNotificationUi(
+        conversation = messageNotificationFixture.conversation,
+        messages = listOf(
+            MessageNotificationUi.Message(
+                text = messageNotificationFixture.message.content,
+                timestamp = messageNotificationFixture.message.timestamp
+            )
+        )
+    )
 
     @Before
     fun setUp() {
@@ -67,11 +76,6 @@ class MessageNotificationManagerTest {
     @Test
     fun showNotification_should_not_show_notification_when_current_screen_is_message() = runTest {
         // Given
-        // Given
-        val messagesNotification = MessagesNotification(
-            conversation = messageNotificationFixture.conversation,
-            messages = listOf(messageNotificationFixture.messageContent)
-        )
         every { routeRepository.currentRoute } returns ChatRoute(
             conversationJson = ConversationJsonConverter.toConversationJson(messageNotificationFixture.conversation)
         )
@@ -80,35 +84,29 @@ class MessageNotificationManagerTest {
         manager.showNotification(messageNotificationFixture)
 
         // Then
-        coVerify(exactly = 0) { messageNotificationPresenter.showNotification(messagesNotification) }
+        coVerify(exactly = 0) { messageNotificationPresenter.showNotification(messageNotificationUi) }
     }
 
     @Test
     fun showNotification_should_show_notification_when_current_screen_is_not_message() = runTest {
-        // Given
-        val messagesNotification = MessagesNotification(
-            conversation = messageNotificationFixture.conversation,
-            messages = listOf(messageNotificationFixture.messageContent)
-        )
-
         // When
         manager.showNotification(messageNotificationFixture)
 
         // Then
-        coVerify { messageNotificationPresenter.showNotification(messagesNotification) }
+        coVerify { messageNotificationPresenter.showNotification(messageNotificationUi) }
     }
 
     @Test
     fun showNotification_should_show_stored_message_notifications() = runTest {
         // Given
-        val messageNotifications = listOf(messageNotificationFixture).toMessagesNotification()
+        val messageNotificationsUi = listOf(messageNotificationFixture).toNotificationsUi()
 
         // When
         manager.showNotification(messageNotificationFixture)
 
         // Then
         coVerify { messageNotificationRepository.getMessageNotifications(messageNotificationFixture.conversation.id) }
-        coVerify { messageNotificationPresenter.showNotification(messageNotifications[0]) }
+        coVerify { messageNotificationPresenter.showNotification(messageNotificationsUi[0]) }
     }
 
     @Test

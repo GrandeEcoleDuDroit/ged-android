@@ -3,7 +3,7 @@ package com.upsaclay.message.notification
 import com.upsaclay.common.domain.repository.RouteRepository
 import com.upsaclay.message.domain.converter.ConversationJsonConverter
 import com.upsaclay.message.domain.entity.MessageNotification
-import com.upsaclay.message.domain.mapper.toMessagesNotification
+import com.upsaclay.message.domain.mapper.toNotificationsUi
 import com.upsaclay.message.domain.repository.MessageNotificationRepository
 import com.upsaclay.message.presentation.chat.ChatRoute
 
@@ -18,12 +18,12 @@ class MessageNotificationManager(
 
     suspend fun showNotification(messageNotification: MessageNotification) {
         messageNotificationRepository.storeMessageNotification(messageNotification)
-        val messageNotifications = messageNotificationRepository
+        val messageNotificationsUi = messageNotificationRepository
             .getMessageNotifications(messageNotification.conversation.id)
-            .toMessagesNotification()
+            .toNotificationsUi()
 
         if (!isCurrentMessageScreen(messageNotification.conversation.id)) {
-            messageNotifications.forEach {
+            messageNotificationsUi.forEach {
                 messageNotificationPresenter.showNotification(it)
             }
         }
@@ -35,10 +35,10 @@ class MessageNotificationManager(
     }
 
     private fun isCurrentMessageScreen(conversationId: String): Boolean {
-        val messageScreen = routeRepository.currentRoute as? ChatRoute
+        val messageScreen = routeRepository.currentRoute as? ChatRoute ?: return false
         return messageScreen
-            ?.conversationJson
-            ?.let(ConversationJsonConverter::toConversation)
+            .conversationJson
+            .let(ConversationJsonConverter::toConversation)
             ?.id == conversationId
     }
 }

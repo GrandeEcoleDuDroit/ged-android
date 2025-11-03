@@ -54,10 +54,11 @@ class SendMessageUseCase(
         runCatching {
             userRepository.currentUser?.let {
                 val messageNotification = MessageNotification(
-                    conversation,
-                    MessageNotification.MessageContent(
-                        message.content,
-                        message.date.toEpochMilliUTC()
+                    conversation = conversation,
+                    message = MessageNotification.Message(
+                        messageId = message.id,
+                        content = message.content,
+                        timestamp = message.date.toEpochMilliUTC(),
                     )
                 )
                 messageNotificationRepository.sendNotification(it, messageNotification)
