@@ -215,7 +215,7 @@ class CreateMissionViewModel(
     private fun initMemberUsers() {
         viewModelScope.launch {
             userRepository.getMemberUsers()
-                .filterNot { it.isDeleted }
+                .filterNot { it.state == User.UserState.DELETED }
                 .also { users ->
                     _uiState.update { it.copy(memberUsers = users) }
                     defaultMemberUsers = users
@@ -251,7 +251,7 @@ class CreateMissionViewModel(
         val title: String = "",
         val description: String = "",
         val selectedSchoolLevels: List<SchoolLevel> = emptyList(),
-        val schoolLevels: List<SchoolLevel> = SchoolLevel.entries,
+        val schoolLevels: List<SchoolLevel> = SchoolLevel.getSchoolLevels(),
         val startDate: LocalDate = LocalDate.now(),
         val endDate: LocalDate = LocalDate.now(),
         val frequency: String = "",

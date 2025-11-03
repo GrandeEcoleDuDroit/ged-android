@@ -108,7 +108,6 @@ private fun TaskModalBottomSheet(
     val state = rememberModalBottomSheetState(
         confirmValueChange = {
             if (it == SheetValue.Hidden) {
-                focusRequester.freeFocus()
                 onDismissRequest()
                 true
             } else {

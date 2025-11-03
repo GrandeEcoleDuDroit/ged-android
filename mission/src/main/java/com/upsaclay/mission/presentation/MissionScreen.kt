@@ -40,7 +40,6 @@ import com.upsaclay.common.presentation.theme.informationText
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
-import com.upsaclay.mission.domain.entity.MissionState
 import com.upsaclay.mission.domain.missionsFixture
 import com.upsaclay.mission.presentation.components.MissionCard
 import com.upsaclay.mission.presentation.components.bottomsheet.MissionBottomSheet
@@ -75,7 +74,7 @@ fun MissionDestination(
 
     MissionScreen(
         missions = uiState.value.missions,
-        isMemberUser = uiState.value.user?.isMember == true,
+        admin = uiState.value.user?.admin == true,
         loading = uiState.value.loading,
         snackbarHostState = snackbarHostState,
         onMissionClick = onMissionClick,
@@ -89,7 +88,7 @@ fun MissionDestination(
 @Composable
 private fun MissionScreen(
     missions: List<Mission>,
-    isMemberUser: Boolean,
+    admin: Boolean,
     loading: Boolean,
     snackbarHostState: SnackbarHostState,
     onMissionClick: (Int) -> Unit,
@@ -120,7 +119,7 @@ private fun MissionScreen(
     }
 
     MissionScaffold(
-        isMemberUser = isMemberUser,
+        admin = admin,
         snackbarHostState = snackbarHostState,
         onCreateMissionClick = onCreateMissionClick,
         bottomBar = bottomBar
@@ -184,7 +183,7 @@ private fun MissionScreen(
 
 @Composable
 private fun MissionScaffold(
-    isMemberUser: Boolean,
+    admin: Boolean,
     snackbarHostState: SnackbarHostState,
     onCreateMissionClick: () -> Unit,
     bottomBar: @Composable () -> Unit,
@@ -201,7 +200,7 @@ private fun MissionScaffold(
             }
         },
         floatingActionButton = {
-            if (isMemberUser) {
+            if (admin) {
                 SimpleFloatingActionButton(
                     icon = {
                         Icon(
@@ -229,7 +228,7 @@ private fun MissionScreenPreview() {
     GedoiseTheme {
         MissionScreen(
             missions = missionsFixture,
-            isMemberUser = true,
+            admin = true,
             loading = false,
             snackbarHostState = SnackbarHostState(),
             onMissionClick = {},
