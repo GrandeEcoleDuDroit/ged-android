@@ -1,10 +1,10 @@
 package com.upsaclay.message.data.remote
 
-import com.upsaclay.message.domain.entity.MessageNotification
-
 data class RemoteMessageNotification(
     val conversation: Conversation,
-    val message: MessageNotification.MessageContent
+    val messageId: Long,
+    val content: String,
+    val timestamp: Long
 ) {
     data class Conversation(
         val id: String,

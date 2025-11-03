@@ -23,6 +23,9 @@ import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.MessageNotification
 
 fun MessageNotification.toLocal() = LocalMessageNotification(
+    messageId = message.messageId,
+    content = message.content,
+    messageTimestamp = message.timestamp,
     conversationId = conversation.id,
     interlocutorId = conversation.interlocutor.id,
     interlocutorFirstName = conversation.interlocutor.firstName,
@@ -35,9 +38,7 @@ fun MessageNotification.toLocal() = LocalMessageNotification(
     interlocutorTester = conversation.interlocutor.tester,
     createdAt = conversation.createdAt.toEpochMilliUTC(),
     conversationState = conversation.state.name,
-    conversationDeleteTime = conversation.deleteTime?.toEpochMilliUTC(),
-    content = messageContent.content,
-    messageTimestamp = messageContent.date
+    conversationDeleteTime = conversation.deleteTime?.toEpochMilliUTC()
 )
 
 fun MessageNotification.toRemote(currentUser: User) = RemoteMessageNotification(
@@ -58,12 +59,18 @@ fun MessageNotification.toRemote(currentUser: User) = RemoteMessageNotification(
         createdAt = conversation.createdAt.toEpochMilliUTC(),
         deleteTime = conversation.deleteTime?.toEpochMilliUTC()
     ),
-    message = messageContent
+    messageId = message.messageId,
+    content = message.content,
+    timestamp = message.timestamp
 )
 
 fun LocalMessageNotification.toMessageNotification() = MessageNotification(
     conversation = toConversation(),
-    messageContent = toMessage()
+    message = MessageNotification.Message(
+        messageId = messageId,
+        content = content,
+        timestamp = messageTimestamp
+    )
 )
 
 private fun LocalMessageNotification.toConversation() = Conversation(
@@ -84,11 +91,6 @@ private fun LocalMessageNotification.toConversation() = Conversation(
     deleteTime = conversationDeleteTime?.toLocalDateTimeUTC()
 )
 
-private fun LocalMessageNotification.toMessage() = MessageNotification.MessageContent(
-    content = content,
-    date = messageTimestamp,
-)
-
 fun RemoteMessageNotification.toMessageNotification() = MessageNotification(
     conversation = Conversation(
         id = conversation.id,
@@ -107,13 +109,17 @@ fun RemoteMessageNotification.toMessageNotification() = MessageNotification(
         state = Conversation.ConversationState.CREATED,
         deleteTime = conversation.deleteTime?.toLocalDateTimeUTC()
     ),
-    messageContent = message
+    message = MessageNotification.Message(
+        messageId = messageId,
+        content = content,
+        timestamp = timestamp
+    )
 )
 
 fun RemoteMessageNotification.toFcm() = FcmMessage(
     notification = FcmNotification(
         title = conversation.interlocutor.fullName,
-        body = message.content
+        body = content
     ),
     data = FcmData(
         type = FcmDataType.MESSAGE,
@@ -132,7 +138,7 @@ fun RemoteMessageNotification.toFcm() = FcmMessage(
             aps = Aps(
                 alert = Alert(
                     title = conversation.interlocutor.fullName,
-                    body = message.content
+                    body = content
                 )
             )
         )

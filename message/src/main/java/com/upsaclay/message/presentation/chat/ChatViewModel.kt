@@ -18,6 +18,7 @@ import com.upsaclay.message.domain.repository.MessageRepository
 import com.upsaclay.message.domain.usecase.DeleteConversationUseCase
 import com.upsaclay.message.domain.usecase.SendMessageUseCase
 import com.upsaclay.message.notification.MessageNotificationManager
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -53,6 +54,7 @@ class ChatViewModel(
     internal val messages: Flow<PagingData<Message>> = messageRepository.getPagingMessages(conversation.id)
     private val _event = MutableSharedFlow<SingleUiEvent>()
     internal val event: Flow<SingleUiEvent> = _event
+    private var seeMessagesJob: Job? = null
 
     init {
         listenConversation()
@@ -60,8 +62,6 @@ class ChatViewModel(
         listenBlockUserIds()
 
         emitNewMessageReceived()
-        seeMessages()
-        seeNewMessage()
         clearChatNotifications()
     }
 
@@ -167,12 +167,29 @@ class ChatViewModel(
         }
     }
 
-    private fun seeMessages() {
-        viewModelScope.launch {
-            user?.let {
-                messageRepository.updateSeenMessages(conversation.id, it.id)
+    fun seeMessages() {
+        seeMessagesJob = viewModelScope.launch {
+            launch {
+                user?.let {
+                    messageRepository.updateSeenMessages(conversation.id, it.id)
+                }
+            }
+
+            launch {
+                messageRepository.getLastMessageFlow(conversation.id)
+                    .filterNotNull()
+                    .filter { it.senderId != user?.id }
+                    .filter { !it.seen }
+                    .collect {
+                        messageRepository.updateSeenMessage(it)
+                    }
             }
         }
+    }
+
+    fun stopSeeingMessages() {
+        seeMessagesJob?.cancel()
+        seeMessagesJob = null
     }
 
     private fun emitNewMessageReceived() {
@@ -182,18 +199,6 @@ class ChatViewModel(
                 .filter { Duration.between(it.date, LocalDateTime.now(ZoneOffset.UTC)).toMinutes() < 1L }
                 .collect {
                     _event.emit(MessageEvent.NewMessage(it))
-                }
-        }
-    }
-
-    private fun seeNewMessage() {
-        viewModelScope.launch {
-            messageRepository.getLastMessageFlow(conversation.id)
-                .filterNotNull()
-                .filter { it.senderId != user?.id }
-                .filter { it.seen.not() }
-                .collect {
-                    messageRepository.updateSeenMessage(it)
                 }
         }
     }

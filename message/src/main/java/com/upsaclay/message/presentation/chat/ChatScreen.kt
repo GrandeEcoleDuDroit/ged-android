@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.paging.PagingData
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.extension.rootMediumPadding
@@ -77,6 +78,14 @@ fun ChatDestination(
 
                 is SingleUiEvent.Error -> showSnackBar(context.getString(event.messageId))
             }
+        }
+    }
+
+    LifecycleResumeEffect(Unit) {
+        viewModel.seeMessages()
+
+        onPauseOrDispose {
+            viewModel.stopSeeingMessages()
         }
     }
 

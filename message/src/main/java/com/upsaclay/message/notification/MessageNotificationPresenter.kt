@@ -26,8 +26,7 @@ import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.message.domain.MessageNotificationUtils
 import com.upsaclay.message.domain.converter.ConversationJsonConverter
 import com.upsaclay.message.domain.entity.Conversation
-import com.upsaclay.message.domain.entity.MessageNotification
-import com.upsaclay.message.domain.entity.MessagesNotification
+import com.upsaclay.message.domain.entity.MessageNotificationUi
 import java.io.InputStream
 
 const val CONVERSATION_ID_EXTRA = "conversation_id_extra"
@@ -44,14 +43,14 @@ class MessageNotificationPresenter (
         createNotificationChannel()
     }
 
-    suspend fun showNotification(messagesNotification: MessagesNotification) {
+    suspend fun showNotification(messageNotificationUi: MessageNotificationUi) {
         if (!notificationManager.areNotificationsEnabled()) {
             return
         }
 
-        val messages = messagesNotification.messages
-        val interlocutor = messagesNotification.conversation.interlocutor
-        val intent = buildConversationIntent(messagesNotification.conversation)
+        val messages = messageNotificationUi.messages
+        val interlocutor = messageNotificationUi.conversation.interlocutor
+        val intent = buildConversationIntent(messageNotificationUi.conversation)
         val userIcon = createUserIcon(interlocutor.profilePictureUrl)
         val user = buildPerson(interlocutor, userIcon)
 
@@ -62,7 +61,7 @@ class MessageNotificationPresenter (
             intent = intent
         )
 
-        notificationManager.notify(messagesNotification.conversation.id.hashCode(), notification)
+        notificationManager.notify(messageNotificationUi.conversation.id.hashCode(), notification)
     }
 
     fun clearNotification(conversationId: String) {
@@ -133,7 +132,7 @@ class MessageNotificationPresenter (
 
     private fun buildNotification(
         interlocutor: User,
-        messages: List<MessageNotification.MessageContent>,
+        messages: List<MessageNotificationUi.Message>,
         person: Person,
         intent: PendingIntent
     ): Notification {
@@ -143,8 +142,8 @@ class MessageNotificationPresenter (
             .also {
                 messages.forEach { message ->
                     it.addMessage(
-                        message.content,
-                        message.date,
+                        message.text,
+                        message.timestamp,
                         person
                     )
                 }
