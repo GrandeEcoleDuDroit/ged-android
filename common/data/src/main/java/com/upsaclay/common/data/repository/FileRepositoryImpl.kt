@@ -7,41 +7,42 @@ import com.upsaclay.common.domain.entity.InvalidFormatFileException
 import com.upsaclay.common.domain.repository.FileRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.ByteArrayOutputStream
 import java.io.File
 
-internal class FileRepositoryImpl(private val context: Context) : FileRepository {
-    override suspend fun createFile(fileName: String, uri: String): File = withContext(Dispatchers.IO) {
-        val parsedUri = uri.toUri()
-        val extension = getType(parsedUri) ?: throw InvalidFormatFileException()
-        val bytes = readBytes(parsedUri)
-        return@withContext writeNewFile("$fileName.$extension", bytes)
+internal class FileRepositoryImpl(private val context: Context): FileRepository {
+    private val contentResolver = context.contentResolver
+
+    override suspend fun createCacheFile(fileName: String, uri: String): File? = withContext(Dispatchers.IO) {
+        val name = getFileName(uri)
+        val file = File(context.cacheDir, name)
+        return@withContext writeFile(file, uri.toUri())
     }
 
-    private suspend fun writeNewFile(fileName: String, bytes: ByteArray): File = withContext(Dispatchers.IO) {
-        val file = File(context.cacheDir, fileName)
-        val outPutStream = file.outputStream()
-        outPutStream.write(bytes)
-        outPutStream.close()
-        file
+    override suspend fun createLocalFile(fileName: String, uri: String): File? = withContext(Dispatchers.IO) {
+        val name = getFileName(uri)
+        val file = File(context.filesDir, name)
+        return@withContext writeFile(file, uri.toUri())
     }
 
-    private fun readBytes(uri: Uri): ByteArray {
-        val inputStream = context.contentResolver.openInputStream(uri)
-        val byteArrayOutputStream = ByteArrayOutputStream()
-        val buffer = ByteArray(1024)
-        var length: Int
-
-        inputStream?.let {
-            while (inputStream.read(buffer).also { length = it } > 0) {
-                byteArrayOutputStream.write(buffer, 0, length)
-            }
-            inputStream.close()
+    override suspend fun getFile(path: String): File? {
+        return withContext(Dispatchers.IO) {
+            val file = File(path)
+            if (file.exists()) file else null
         }
-
-        return byteArrayOutputStream.toByteArray()
     }
 
-    private fun getType(uri: Uri): String? =
-        context.contentResolver.getType(uri)?.split("/")?.last()
+    private fun getFileName(uri: String): String {
+        return contentResolver.getType(uri.toUri())?.split("/")?.last()
+            ?: throw InvalidFormatFileException()
+    }
+
+    private fun writeFile(file: File, uri: Uri): File? {
+        val inputStream = contentResolver.openInputStream(uri) ?: return null
+        inputStream.use { input ->
+            file.outputStream().use { output ->
+                input.copyTo(output)
+            }
+        }
+        return file
+    }
 }

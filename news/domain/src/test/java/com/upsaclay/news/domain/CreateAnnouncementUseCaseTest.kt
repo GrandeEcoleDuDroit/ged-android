@@ -21,7 +21,7 @@ class CreateAnnouncementUseCaseTest {
     fun setUp() {
         coEvery { announcementRepository.createAnnouncement(any()) } returns Unit
         coEvery { announcementRepository.updateAnnouncement(any()) } returns Unit
-        coEvery { announcementRepository.updateLocalAnnouncement(any()) } returns Unit
+        coEvery { announcementRepository.upsertLocalAnnouncement(any()) } returns Unit
 
         useCase = CreateAnnouncementUseCase(
             announcementRepository = announcementRepository,
@@ -53,7 +53,7 @@ class CreateAnnouncementUseCaseTest {
 
         // Then
         coVerify {
-            announcementRepository.updateLocalAnnouncement(announcement.copy(state = AnnouncementState.PUBLISHED))
+            announcementRepository.upsertLocalAnnouncement(announcement.copy(state = AnnouncementState.PUBLISHED))
         }
     }
 
@@ -68,7 +68,7 @@ class CreateAnnouncementUseCaseTest {
 
         // Then
         coVerify {
-            announcementRepository.updateLocalAnnouncement(announcement.copy(state = AnnouncementState.ERROR))
+            announcementRepository.upsertLocalAnnouncement(announcement.copy(state = AnnouncementState.ERROR))
         }
     }
 }

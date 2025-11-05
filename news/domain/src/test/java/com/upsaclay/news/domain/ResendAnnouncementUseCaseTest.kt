@@ -20,7 +20,7 @@ class ResendAnnouncementUseCaseTest {
     @Before
     fun setUp() {
         coEvery { announcementRepository.createAnnouncement(any()) } returns Unit
-        coEvery { announcementRepository.updateLocalAnnouncement(any()) } returns Unit
+        coEvery { announcementRepository.upsertLocalAnnouncement(any()) } returns Unit
 
         useCase = ResendAnnouncementUseCase(
             announcementRepository = announcementRepository,
@@ -52,7 +52,7 @@ class ResendAnnouncementUseCaseTest {
 
         // Then
         coVerify {
-            announcementRepository.updateLocalAnnouncement(announcement.copy(state = AnnouncementState.PUBLISHED))
+            announcementRepository.upsertLocalAnnouncement(announcement.copy(state = AnnouncementState.PUBLISHED))
         }
     }
 
@@ -67,7 +67,7 @@ class ResendAnnouncementUseCaseTest {
 
         // Then
         coVerify {
-            announcementRepository.updateLocalAnnouncement(announcement.copy(state = AnnouncementState.ERROR))
+            announcementRepository.upsertLocalAnnouncement(announcement.copy(state = AnnouncementState.ERROR))
         }
     }
 }

@@ -9,7 +9,6 @@ import com.upsaclay.message.domain.entity.ConversationUi
 import com.upsaclay.message.domain.entity.Message
 import com.upsaclay.message.domain.entity.Message.MessageState
 import com.upsaclay.message.domain.entity.MessageNotification
-import com.upsaclay.message.domain.entity.MessageNotificationUi
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 

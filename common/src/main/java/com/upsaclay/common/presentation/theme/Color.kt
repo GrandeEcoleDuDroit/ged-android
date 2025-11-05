@@ -7,6 +7,7 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
@@ -84,9 +85,25 @@ val ColorScheme.informationText: Color
     @Composable
     get() = if (isSystemInDarkTheme()) Color(0xFFA1A4B0) else Color(0xFF6F7181)
 
-val ColorScheme.backgroundLoadingImage: Color
+val ColorScheme.loadingImageBackground: Color
     @Composable
     get() = if (isSystemInDarkTheme()) Color(0xFF323232) else Color(0xFFEEEEEE)
+
+val ColorScheme.emptyImageBackground: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color(0xFF323232) else Color(0xFFE6E6E6)
+
+val ColorScheme.emptyImageForeground: Color
+    @Composable
+    get() = TextFieldDefaults.colors().unfocusedLeadingIconColor
+
+val ColorScheme.defaultImageBackground: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color(0xFF454957) else Color(0xFFDCE0E8)
+
+val ColorScheme.defaultImageForeground: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color(0xFFC2C5CF) else Color(0xFFC2C5CF)
 
 val ColorScheme.outlinedTextFieldColor: TextFieldColors
     @Composable
@@ -115,3 +132,20 @@ val ColorScheme.checkBoxColor: CheckboxColors
         disabledUncheckedBorderColor = CheckboxDefaults.colors().disabledUncheckedBorderColor,
         disabledIndeterminateBorderColor = CheckboxDefaults.colors().disabledIndeterminateBorderColor
     )
+
+val ColorScheme.iconBackground: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color(0xFF323232) else Color(0xFFE6E6E6)
+
+val ColorScheme.backButtonBackground: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color(0xFF323232) else Color(0xFFF5F5F5)
+
+
+val ColorScheme.leadingIcon: Color
+    @Composable
+    get() = TextFieldDefaults.colors().unfocusedLeadingIconColor
+
+val ColorScheme.trailingIcon: Color
+    @Composable
+    get() = TextFieldDefaults.colors().unfocusedTrailingIconColor

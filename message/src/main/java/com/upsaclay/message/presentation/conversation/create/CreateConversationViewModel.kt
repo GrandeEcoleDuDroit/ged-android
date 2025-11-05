@@ -6,6 +6,7 @@ import com.upsaclay.common.domain.entity.CurrentUserNotFoundException
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.repository.UserRepository
+import com.upsaclay.common.domain.usecase.GetUsersUseCase
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapNetworkErrorMessage
 import com.upsaclay.message.domain.entity.Conversation
@@ -20,7 +21,8 @@ import kotlinx.coroutines.launch
 class CreateConversationViewModel(
     private val userRepository: UserRepository,
     private val blockedUserRepository: BlockedUserRepository,
-    private val getConversationUseCase: GetConversationUseCase
+    private val getConversationUseCase: GetConversationUseCase,
+    private val getUsersUseCase: GetUsersUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(CreateConversationUiState())
     val uiState: StateFlow<CreateConversationUiState> = _uiState
@@ -38,10 +40,9 @@ class CreateConversationViewModel(
         viewModelScope.launch {
             val blockedUserIds = blockedUserRepository.getLocalBlockedUserIds()
             try {
-                userRepository.getUsers()
+                getUsersUseCase()
                     .filter {
                         it.id != userRepository.currentUser?.id
-                                && it.state != User.UserState.DELETED
                                 && it.id !in blockedUserIds
                     }
                     .sortedBy { it.fullName }

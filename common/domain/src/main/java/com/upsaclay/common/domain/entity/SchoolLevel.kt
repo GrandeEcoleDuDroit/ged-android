@@ -16,4 +16,6 @@ enum class SchoolLevel(val number: Int, val value: String) {
 
         fun getSchoolLevels() = SchoolLevel.entries.filter { it != UNKNOWN }
     }
+
+    override fun toString(): String = value
 }

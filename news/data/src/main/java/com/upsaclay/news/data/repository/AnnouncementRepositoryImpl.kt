@@ -48,10 +48,6 @@ internal class AnnouncementRepositoryImpl(
         announcementLocalDataSource.upsertAnnouncement(announcement)
     }
 
-    override suspend fun updateLocalAnnouncement(announcement: Announcement) {
-        announcementLocalDataSource.upsertAnnouncement(announcement)
-    }
-
     override suspend fun upsertLocalAnnouncement(announcement: Announcement) {
         announcementLocalDataSource.upsertAnnouncement(announcement)
     }

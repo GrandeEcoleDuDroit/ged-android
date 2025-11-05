@@ -14,7 +14,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class ProfileScreenTest {
+class ProfileScreenUiTest {
     @get:Rule
     val rule = createAndroidComposeRule<ComponentActivity>()
 

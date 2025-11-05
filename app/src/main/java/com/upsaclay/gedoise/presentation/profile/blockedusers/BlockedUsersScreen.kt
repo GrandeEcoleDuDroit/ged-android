@@ -1,6 +1,8 @@
 package com.upsaclay.gedoise.presentation.profile.blockedusers
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,16 +27,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.usersFixture
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.BackTopBar
 import com.upsaclay.common.presentation.components.DefaultDialog
+import com.upsaclay.common.presentation.components.EmptyText
 import com.upsaclay.common.presentation.components.UserItem
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.informationText
@@ -120,17 +125,7 @@ private fun BlockedUsersScreen(
         ) {
             if (blockedUsers.isEmpty()) {
                 item {
-                    Spacer(
-                        modifier = Modifier
-                            .height(dimensionResource(com.upsaclay.common.R.dimen.small_padding))
-                            .testTag(stringResource(R.string.empty_blocked_users_list_tag))
-                    )
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(R.string.no_blocked_user),
-                        color = MaterialTheme.colorScheme.informationText,
-                        textAlign = TextAlign.Center
-                    )
+                    EmptyText(text = stringResource(R.string.no_blocked_user))
                 }
             } else {
                 items(blockedUsers) { user ->

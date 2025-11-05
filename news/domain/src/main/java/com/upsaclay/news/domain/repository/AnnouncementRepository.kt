@@ -19,8 +19,6 @@ interface AnnouncementRepository {
 
     suspend fun updateAnnouncement(announcement: Announcement)
 
-    suspend fun updateLocalAnnouncement(announcement: Announcement)
-
     suspend fun upsertLocalAnnouncement(announcement: Announcement)
 
     suspend fun deleteAnnouncements(userId: String)

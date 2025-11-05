@@ -1,16 +1,18 @@
 package com.upsaclay.common.presentation.components
 
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -73,6 +75,21 @@ fun BackButton(
     }
 }
 
+@Composable
+fun SimpleFloatingActionButton(
+    modifier: Modifier = Modifier,
+    icon: @Composable () -> Unit,
+    onClick: () -> Unit
+) {
+    FloatingActionButton (
+        onClick = onClick,
+        modifier = modifier,
+        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+        content = icon
+    )
+
+}
+
 /*
  =====================================================================
                                 Preview
@@ -84,8 +101,33 @@ fun BackButton(
 private fun PrimaryButtonPreview() {
     GedoiseTheme {
         PrimaryButton(
-            modifier = Modifier.fillMaxWidth(),
             text = "Primary Button",
+            onClick = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun OptionButtonPreview() {
+    GedoiseTheme {
+        OptionButton(
+            onClick = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun SimpleFloatingActionButtonPreview() {
+    GedoiseTheme {
+        SimpleFloatingActionButton(
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    null
+                )
+            },
             onClick = {}
         )
     }

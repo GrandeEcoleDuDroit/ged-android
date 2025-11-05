@@ -9,6 +9,7 @@
     <string name="forum_icon_description">Icon to access the forum</string>
     <string name="message_icon_description">Icon to access messaging</string>
     <string name="profile_icon_description">Icon to access the profile</string>
+    <string name="mission_icon_description">Icon to access the mission</string>
     <string name="close">Close</string>
     <string name="show">View</string>
     <string name="next">Next</string>
@@ -64,7 +65,7 @@
     <string name="timeout_error">The service took too long to respond. Please try again.</string>
     <string name="no_user">No users</string>
     <string name="no_internet_connection">No internet connection.</string>
-    <string name="admin">Administrator</string>
+    <string name="administrator">Administrator</string>
     <string name="unblock">Unblock</string>
     <string name="reported_user">User reported</string>
     <string name="blocked_user">User blocked</string>

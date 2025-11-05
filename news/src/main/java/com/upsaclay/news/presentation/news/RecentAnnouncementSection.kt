@@ -3,7 +3,6 @@ package com.upsaclay.news.presentation.news
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -22,12 +20,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.LayoutDirection
-import androidx.compose.ui.unit.dp
 import com.upsaclay.common.presentation.components.CircularProgressBar
+import com.upsaclay.common.presentation.components.EmptyText
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.informationText
 import com.upsaclay.common.presentation.theme.sectionTitle
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.news.R
@@ -59,20 +54,7 @@ fun RecentAnnouncementSection(
                 modifier = Modifier.testTag(stringResource(id = R.string.news_screen_empty_announcement_text_tag))
             )
 
-            TextButton(
-                modifier = Modifier.height(30.dp),
-                onClick = onSeeAllAnnouncementsClick,
-                contentPadding = PaddingValues(
-                    top = dimensionResource(com.upsaclay.common.R.dimen.default_padding),
-                    bottom = dimensionResource(com.upsaclay.common.R.dimen.default_padding),
-                    start = ButtonDefaults.TextButtonContentPadding.calculateLeftPadding(
-                        LayoutDirection.Rtl
-                    ),
-                    end = ButtonDefaults.TextButtonContentPadding.calculateRightPadding(
-                        LayoutDirection.Rtl
-                    )
-                )
-            ) {
+            TextButton(onClick = onSeeAllAnnouncementsClick) {
                 Text(
                     text = stringResource(com.upsaclay.common.R.string.see_all)
                 )
@@ -90,15 +72,9 @@ fun RecentAnnouncementSection(
                 if (announcements.isEmpty()) {
                     item {
                         Spacer(
-                            modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.small_padding))
+                            modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
                         )
-                        Text(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = stringResource(id = R.string.no_announcement),
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.informationText,
-                            textAlign = TextAlign.Center
-                        )
+                        EmptyText(text = stringResource(id = R.string.no_announcement))
                     }
                 } else {
                     items(announcements) { announcement ->

@@ -2,6 +2,7 @@ package com.upsaclay.message
 
 import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.repository.UserRepository
+import com.upsaclay.common.domain.usecase.GetUsersUseCase
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.domain.usersFixture
 import com.upsaclay.message.domain.conversationFixture
@@ -25,6 +26,7 @@ class CreateConversationViewModelTest {
     private val userRepository: UserRepository = mockk()
     private val blockedUserRepository: BlockedUserRepository = mockk()
     private val getConversationUseCase: GetConversationUseCase = mockk()
+    private val getUsersUseCase: GetUsersUseCase = mockk()
 
     private lateinit var createConversationViewModel: CreateConversationViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
@@ -36,13 +38,14 @@ class CreateConversationViewModelTest {
         every { userRepository.user } returns MutableStateFlow(userFixture)
         every { userRepository.currentUser } returns userFixture
         coEvery { getConversationUseCase(any()) } returns conversationFixture
-        coEvery { userRepository.getUsers() } returns usersFixture
         coEvery { blockedUserRepository.getLocalBlockedUserIds() } returns emptySet()
+        coEvery { getUsersUseCase() } returns usersFixture
 
         createConversationViewModel = CreateConversationViewModel(
             userRepository = userRepository,
             blockedUserRepository = blockedUserRepository,
-            getConversationUseCase = getConversationUseCase
+            getConversationUseCase = getConversationUseCase,
+            getUsersUseCase = getUsersUseCase
         )
     }
 
@@ -61,13 +64,14 @@ class CreateConversationViewModelTest {
         val users = usersFixture
             .filterNot { it.id == userFixture.id }
             .sortedBy { it.fullName }
-        coEvery { userRepository.getUsers() } returns users
+        coEvery { getUsersUseCase() } returns users
 
         // When
         createConversationViewModel = CreateConversationViewModel(
             userRepository = userRepository,
             blockedUserRepository = blockedUserRepository,
-            getConversationUseCase = getConversationUseCase
+            getConversationUseCase = getConversationUseCase,
+            getUsersUseCase = getUsersUseCase
         )
 
         // Then
@@ -79,13 +83,14 @@ class CreateConversationViewModelTest {
         // Given
         val blockedUserId = "userId"
         coEvery { blockedUserRepository.getLocalBlockedUserIds() } returns setOf(blockedUserId)
-        coEvery { userRepository.getUsers() } returns listOf(userFixture.copy(id = blockedUserId))
+        coEvery { getUsersUseCase()} returns listOf(userFixture.copy(id = blockedUserId))
 
         // When
         createConversationViewModel = CreateConversationViewModel(
             userRepository = userRepository,
             blockedUserRepository = blockedUserRepository,
-            getConversationUseCase = getConversationUseCase
+            getConversationUseCase = getConversationUseCase,
+            getUsersUseCase = getUsersUseCase
         )
 
         // Then

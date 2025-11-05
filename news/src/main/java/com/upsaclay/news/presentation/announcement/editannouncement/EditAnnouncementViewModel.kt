@@ -38,27 +38,21 @@ class EditAnnouncementViewModel(
     val event: SharedFlow<SingleUiEvent> = _event
 
     fun onTitleChange(title: String) {
+        val titleTruncated = title.take(TITLE_MAX_LENGTH)
         _uiState.update {
             it.copy(
-                title = title.take(TITLE_MAX_LENGTH),
-                updateEnabled = validateUpdate(
-                    title.take(TITLE_MAX_LENGTH),
-                    it.content.text
-                )
+                title = titleTruncated,
+                updateEnabled = validateUpdate(titleTruncated, it.content.text)
             )
         }
     }
 
     fun onContentChange(content: TextFieldValue) {
+        val contentTruncated = content.text.take(CONTENT_MAX_LENGTH)
         _uiState.update {
             it.copy(
-                content = content.copy(
-                    text = content.text.take(CONTENT_MAX_LENGTH)
-                ),
-                updateEnabled = validateUpdate(
-                    it.title,
-                    content.text.take(CONTENT_MAX_LENGTH)
-                )
+                content = content.copy(text = contentTruncated),
+                updateEnabled = validateUpdate(it.title, contentTruncated)
             )
         }
     }

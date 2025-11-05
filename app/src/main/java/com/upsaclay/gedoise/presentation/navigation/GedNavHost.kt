@@ -43,6 +43,12 @@ import com.upsaclay.message.presentation.conversation.create.CreateConversationR
 import com.upsaclay.message.presentation.conversation.create.createConversationScreen
 import com.upsaclay.message.presentation.conversation.create.navigateToCreateConversation
 import com.upsaclay.message.presentation.conversation.navigateToConversation
+import com.upsaclay.mission.presentation.createmission.createMissionScreen
+import com.upsaclay.mission.presentation.createmission.navigateToCreateMission
+import com.upsaclay.mission.presentation.missionSection
+import com.upsaclay.mission.presentation.navigateToMission
+import com.upsaclay.mission.presentation.missiondetails.navigateToMissionDetails
+import com.upsaclay.mission.presentation.missiondetails.missionDetailsScreen
 import com.upsaclay.news.presentation.NewsRoute
 import com.upsaclay.news.presentation.announcement.allannouncements.allAnnouncementsScreen
 import com.upsaclay.news.presentation.announcement.allannouncements.navigateToAllAnnouncements
@@ -84,6 +90,8 @@ fun GedNavHost(
             }
 
             TopLevelDestinationRoute.MESSAGE -> navigateToConversation(navOptions = navOptions)
+
+            TopLevelDestinationRoute.MISSION -> navigateToMission(navOptions = navOptions)
 
             TopLevelDestinationRoute.PROFILE -> navigateToProfile(navOptions = navOptions)
         }
@@ -221,5 +229,21 @@ fun GedNavHost(
         }
 
         userScreen(onBackClick = navController::popBackStack)
+
+        missionSection(
+            onMissionClick = navController::navigateToMissionDetails,
+            onCreateMissionClick = navController::navigateToCreateMission,
+            bottomBar = bottomBar
+        ) {
+            createMissionScreen(
+                onBackClick = navController::popBackStack
+            )
+
+            missionDetailsScreen(
+                onBackClick = navController::popBackStack,
+                onManagerClick = navController::navigateToUser,
+                onParticipantClick = navController::navigateToUser
+            )
+        }
     }
 }

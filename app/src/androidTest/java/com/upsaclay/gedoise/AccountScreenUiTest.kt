@@ -17,7 +17,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class AccountScreenTest {
+class AccountScreenUiTest {
     private val uiStateFixture = AccountInformationViewModel.AccountInformationUiState(
         user = userFixture,
         screenState = AccountInformationScreenState.READ,

@@ -198,7 +198,6 @@ internal class UserFirestoreApi {
 
     suspend fun getUsers(): List<FirestoreUser> =
         usersCollection
-            .limit(20)
             .get()
             .await()
             .mapNotNull {
