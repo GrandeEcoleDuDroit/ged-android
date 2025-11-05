@@ -2,6 +2,7 @@ package com.upsaclay.message
 
 import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.repository.UserRepository
+import com.upsaclay.common.domain.usecase.GetUsersUseCase
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.domain.usersFixture
 import com.upsaclay.message.domain.conversationFixture
@@ -25,6 +26,7 @@ class CreateConversationViewModelTest {
     private val userRepository: UserRepository = mockk()
     private val blockedUserRepository: BlockedUserRepository = mockk()
     private val getConversationUseCase: GetConversationUseCase = mockk()
+    private val getUsersUseCase: GetUsersUseCase = mockk()
 
     private lateinit var createConversationViewModel: CreateConversationViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
@@ -38,11 +40,13 @@ class CreateConversationViewModelTest {
         coEvery { getConversationUseCase(any()) } returns conversationFixture
         coEvery { userRepository.getUsers() } returns usersFixture
         coEvery { blockedUserRepository.getLocalBlockedUserIds() } returns emptySet()
+        coEvery { getUsersUseCase() } returns usersFixture
 
         createConversationViewModel = CreateConversationViewModel(
             userRepository = userRepository,
             blockedUserRepository = blockedUserRepository,
-            getConversationUseCase = getConversationUseCase
+            getConversationUseCase = getConversationUseCase,
+            getUsersUseCase = getUsersUseCase
         )
     }
 
@@ -67,7 +71,8 @@ class CreateConversationViewModelTest {
         createConversationViewModel = CreateConversationViewModel(
             userRepository = userRepository,
             blockedUserRepository = blockedUserRepository,
-            getConversationUseCase = getConversationUseCase
+            getConversationUseCase = getConversationUseCase,
+            getUsersUseCase = getUsersUseCase
         )
 
         // Then
@@ -85,7 +90,8 @@ class CreateConversationViewModelTest {
         createConversationViewModel = CreateConversationViewModel(
             userRepository = userRepository,
             blockedUserRepository = blockedUserRepository,
-            getConversationUseCase = getConversationUseCase
+            getConversationUseCase = getConversationUseCase,
+            getUsersUseCase = getUsersUseCase
         )
 
         // Then

@@ -4,7 +4,6 @@ import com.google.firebase.Firebase
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.firestore
-import com.upsaclay.common.data.UserField.Firestore.ADMIN
 import com.upsaclay.common.data.UserField.Firestore.EMAIL
 import com.upsaclay.common.data.UserField.Firestore.PROFILE_PICTURE_FILE_NAME
 import com.upsaclay.common.data.UserField.Firestore.TABLE_NAME
@@ -69,13 +68,6 @@ internal class UserApiImpl(
         return mapFirebaseException(
             message = "Failed to get users",
             block = { userFirestoreApi.getUsers().map { it.toUser() } }
-        )
-    }
-
-    override suspend fun getMemberUsers(): List<User> {
-        return mapFirebaseException(
-            message = "Failed to get member users",
-            block = { userFirestoreApi.getAdminUsers().map { it.toUser() } }
         )
     }
 
@@ -206,15 +198,6 @@ internal class UserFirestoreApi {
 
     suspend fun getUsers(): List<FirestoreUser> =
         usersCollection
-            .get()
-            .await()
-            .mapNotNull {
-                it.toObject(FirestoreUser::class.java)
-            }
-
-    suspend fun getAdminUsers(): List<FirestoreUser> =
-        usersCollection
-            .whereEqualTo(ADMIN, true)
             .get()
             .await()
             .mapNotNull {

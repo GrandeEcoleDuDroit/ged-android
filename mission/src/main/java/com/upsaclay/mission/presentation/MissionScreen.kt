@@ -1,21 +1,16 @@
 package com.upsaclay.mission.presentation
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -24,22 +19,23 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.extension.mediumSpacing
+import com.upsaclay.common.extension.rootMediumPadding
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.DefaultDialog
+import com.upsaclay.common.presentation.components.EmptyText
 import com.upsaclay.common.presentation.components.LoadingDialog
+import com.upsaclay.common.presentation.components.PullToRefreshComponent
 import com.upsaclay.common.presentation.components.SimpleFloatingActionButton
 import com.upsaclay.common.presentation.components.TitleTopBar
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.informationText
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
+import com.upsaclay.mission.domain.entity.MissionState
 import com.upsaclay.mission.domain.missionsFixture
 import com.upsaclay.mission.presentation.components.MissionCard
 import com.upsaclay.mission.presentation.components.bottomsheet.MissionBottomSheet
@@ -76,11 +72,13 @@ fun MissionDestination(
         missions = uiState.value.missions,
         admin = uiState.value.user?.admin == true,
         loading = uiState.value.loading,
+        refreshing = uiState.value.refreshing,
         snackbarHostState = snackbarHostState,
         onMissionClick = onMissionClick,
         onCreateMissionClick = onCreateMissionClick,
         onResendMissionClick = viewModel::resendMission,
         onDeleteMissionClick = viewModel::deleteMission,
+        onRefresh = viewModel::refresh,
         bottomBar = bottomBar
     )
 }
@@ -90,11 +88,13 @@ private fun MissionScreen(
     missions: List<Mission>,
     admin: Boolean,
     loading: Boolean,
+    refreshing: Boolean,
     snackbarHostState: SnackbarHostState,
     onMissionClick: (Int) -> Unit,
     onCreateMissionClick: () -> Unit,
     onResendMissionClick: (Mission) -> Unit,
     onDeleteMissionClick: (Mission) -> Unit,
+    onRefresh: () -> Unit,
     bottomBar: @Composable () -> Unit
 ) {
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -124,43 +124,30 @@ private fun MissionScreen(
         onCreateMissionClick = onCreateMissionClick,
         bottomBar = bottomBar
     ) { innerPadding ->
-        LazyColumn(
-            modifier = Modifier.padding(
-                top = innerPadding.calculateTopPadding(),
-                start = dimensionResource(com.upsaclay.common.R.dimen.medium_padding),
-                end = dimensionResource(com.upsaclay.common.R.dimen.medium_padding),
-                bottom = innerPadding.calculateBottomPadding() +
-                        dimensionResource(com.upsaclay.common.R.dimen.medium_padding)
-            ),
-            verticalArrangement = Arrangement.mediumSpacing()
+        PullToRefreshComponent(
+            modifier = Modifier.rootMediumPadding(innerPadding),
+            onRefresh = onRefresh,
+            refreshing = refreshing
         ) {
-            if (missions.isEmpty()) {
-                item {
-                    Box(
-                        modifier = Modifier.fillMaxWidth(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = stringResource(R.string.no_mission),
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.informationText
+            LazyColumn(verticalArrangement = Arrangement.mediumSpacing()) {
+                if (missions.isEmpty()) {
+                    item {
+                        EmptyText(text = stringResource(R.string.no_mission))
+                    }
+                } else {
+                    items(missions) { mission ->
+                        MissionCard(
+                            mission = mission,
+                            onClick = {
+                                if (mission.state is MissionState.Published) {
+                                    onMissionClick(mission.id)
+                                } else {
+                                    clickedMission = mission
+                                    showBottomSheet = true
+                                }
+                            }
                         )
                     }
-                }
-            } else {
-                items(missions) { mission ->
-                    MissionCard(
-                        mission = mission,
-                        onClick = {
-//                            if (mission.state is MissionState.Published) {
-//                                onMissionClick(mission.id)
-//                            } else {
-//                                clickedMission = mission
-//                                showBottomSheet = true
-//                            }
-                            onMissionClick(mission.id)
-                        }
-                    )
                 }
             }
         }
@@ -231,10 +218,12 @@ private fun MissionScreenPreview() {
             admin = true,
             loading = false,
             snackbarHostState = SnackbarHostState(),
+            refreshing = false,
             onMissionClick = {},
             onCreateMissionClick = {},
             onResendMissionClick = {},
             onDeleteMissionClick = {},
+            onRefresh = {},
             bottomBar = {}
         )
     }

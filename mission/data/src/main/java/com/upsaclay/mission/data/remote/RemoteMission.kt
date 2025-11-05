@@ -4,8 +4,8 @@ import com.google.gson.annotations.SerializedName
 import com.upsaclay.mission.data.MissionField.Local.MISSION_ID
 import com.upsaclay.mission.data.MissionField.Remote.MISSION_DATE
 import com.upsaclay.mission.data.MissionField.Remote.MISSION_DESCRIPTION
+import com.upsaclay.mission.data.MissionField.Remote.MISSION_DURATION
 import com.upsaclay.mission.data.MissionField.Remote.MISSION_END_DATE
-import com.upsaclay.mission.data.MissionField.Remote.MISSION_FREQUENCY
 import com.upsaclay.mission.data.MissionField.Remote.MISSION_IMAGE_FILE_NAME
 import com.upsaclay.mission.data.MissionField.Remote.MISSION_MANAGERS
 import com.upsaclay.mission.data.MissionField.Remote.MISSION_MAX_PARTICIPANTS
@@ -30,8 +30,8 @@ data class RemoteMission(
     val missionStartDate: Long,
     @SerializedName(MISSION_END_DATE)
     val missionEndDate: Long,
-    @SerializedName(MISSION_FREQUENCY)
-    val missionFrequency: String,
+    @SerializedName(MISSION_DURATION)
+    val missionDuration: String?,
     @SerializedName(MISSION_MANAGERS)
     val missionManagerIds: String,
     @SerializedName(MISSION_PARTICIPANTS)

@@ -35,10 +35,11 @@ class CreateAnnouncementViewModel(
     }
 
     fun onContentChange(content: String) {
+        val contentTruncated = content.take(CONTENT_MAX_LENGTH)
         _uiState.update {
             it.copy(
-                content = content.take(CONTENT_MAX_LENGTH),
-                createEnabled = validateCreate(content)
+                content = contentTruncated,
+                createEnabled = validateCreate(contentTruncated)
             )
         }
     }

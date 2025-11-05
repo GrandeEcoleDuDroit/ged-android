@@ -34,7 +34,7 @@ val missionFixture = Mission(
     date = LocalDateTime.now(),
     startDate = LocalDate.now(),
     endDate = LocalDate.now().plusDays(1),
-    frequency = "Once a week",
+    duration = "Once a week",
     managers = usersFixture,
     participants = usersFixture,
     maxParticipants = 20,
@@ -43,15 +43,6 @@ val missionFixture = Mission(
 )
 
 val missionsFixture = listOf(
-    missionFixture.copy(
-        id = 4,
-        title = "Fourth mission",
-        description = "The third mission has a medium-length description to provide some context.",
-        state = MissionState.Error(),
-        managers = listOf(userFixture2, userFixture),
-        participants = listOf(userFixture2, userFixture),
-        schoolLevels = listOf(SchoolLevel.GED_1, SchoolLevel.GED_2, SchoolLevel.GED_3)
-    ),
     missionFixture,
     missionFixture.copy(
         id = 2,
@@ -68,5 +59,14 @@ val missionsFixture = listOf(
         managers = listOf(userFixture2, userFixture),
         participants = listOf(userFixture2, userFixture),
         schoolLevels = listOf(SchoolLevel.GED_1, SchoolLevel.GED_2, SchoolLevel.GED_3)
-    )
+    ),
+    missionFixture.copy(
+        id = 4,
+        title = "Fourth mission",
+        description = "The third mission has a medium-length description to provide some context.",
+        state = MissionState.Error(),
+        managers = listOf(userFixture2, userFixture),
+        participants = listOf(userFixture2, userFixture),
+        schoolLevels = listOf(SchoolLevel.GED_1, SchoolLevel.GED_2, SchoolLevel.GED_3)
+    ),
 )

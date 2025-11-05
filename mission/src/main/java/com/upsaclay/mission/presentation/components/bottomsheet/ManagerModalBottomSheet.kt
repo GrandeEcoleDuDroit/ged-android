@@ -2,7 +2,6 @@ package com.upsaclay.mission.presentation.components.bottomsheet
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,12 +32,12 @@ import com.upsaclay.common.R
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.domain.usersFixture
-import com.upsaclay.common.extension.mediumSpacing
+import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.components.StaticSearchBar
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.previewText
 import com.upsaclay.common.utils.Phones
-import com.upsaclay.mission.presentation.components.item.HorizontalManagerItem
+import com.upsaclay.mission.presentation.components.item.ManagerItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,7 +52,6 @@ fun SelectManagerModalBottomSheet(
 ) {
     var currentSelectedManagers by remember { mutableStateOf(selectedManagers) }
     var saveEnabled by remember { mutableStateOf(false) }
-
     val state = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
     )
@@ -62,70 +60,68 @@ fun SelectManagerModalBottomSheet(
         onDismissRequest = onDismissRequest,
         sheetState = state
     ) {
-        Column {
-            StaticSearchBar(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = dimensionResource(R.dimen.medium_padding)),
-                query = userQuery,
-                onQueryChange = onUserQueryChange,
-                onResetQuery = onResetQuery,
-                placeholder = stringResource(R.string.search_ellipsis)
-            )
+        StaticSearchBar(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = dimensionResource(R.dimen.medium_padding)),
+            query = userQuery,
+            onQueryChange = onUserQueryChange,
+            onResetQuery = onResetQuery,
+            placeholder = stringResource(R.string.search_ellipsis)
+        )
 
-            LazyColumn(
-                modifier = Modifier
-                    .padding(top = dimensionResource(R.dimen.medium_padding))
-                    .weight(1f)
-            ) {
-                if (users.isEmpty()) {
-                    item {
-                        Text(
-                            modifier = Modifier
-                                .padding(dimensionResource(R.dimen.small_padding))
-                                .fillMaxWidth(),
-                            text = stringResource(id = com.upsaclay.common.R.string.no_user),
-                            textAlign = TextAlign.Center,
-                            color = MaterialTheme.colorScheme.previewText
-                        )
-                    }
-                } else {
-                    items(users) { user ->
-                        val selected = currentSelectedManagers.contains(user)
-                        SelectableManagerItem(
-                            user = user,
-                            selected = selected,
-                            onUserClick = {
-                                currentSelectedManagers = if (selected) {
-                                    currentSelectedManagers - user
-                                } else {
-                                    currentSelectedManagers + user
-                                }
-
-                                saveEnabled = currentSelectedManagers.isNotEmpty() &&
-                                        currentSelectedManagers != selectedManagers
+        LazyColumn(
+            modifier = Modifier
+                .padding(top = dimensionResource(R.dimen.medium_padding))
+                .weight(1f)
+        ) {
+            if (users.isEmpty()) {
+                item {
+                    Text(
+                        modifier = Modifier
+                            .padding(dimensionResource(R.dimen.small_padding))
+                            .fillMaxWidth(),
+                        text = stringResource(id = com.upsaclay.common.R.string.no_user),
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.previewText
+                    )
+                }
+            } else {
+                items(users) { user ->
+                    val selected = currentSelectedManagers.contains(user)
+                    SelectableManagerItem(
+                        user = user,
+                        selected = selected,
+                        onUserClick = {
+                            currentSelectedManagers = if (selected) {
+                                currentSelectedManagers - user
+                            } else {
+                                currentSelectedManagers + user
                             }
-                        )
-                    }
+
+                            saveEnabled = currentSelectedManagers.isNotEmpty() &&
+                                    currentSelectedManagers != selectedManagers
+                        }
+                    )
                 }
             }
-
-            TextButton(
-                modifier = Modifier
-                    .align(Alignment.End)
-                    .padding(end = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
-                onClick = { onSaveClick(currentSelectedManagers) },
-                enabled = saveEnabled
-            ) {
-                Text(
-                    text = stringResource(R.string.save),
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
-
-            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.medium_padding)))
         }
+
+        TextButton(
+            modifier = Modifier
+                .align(Alignment.End)
+                .padding(end = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+            onClick = { onSaveClick(currentSelectedManagers) },
+            enabled = saveEnabled
+        ) {
+            Text(
+                text = stringResource(R.string.save),
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.SemiBold
+            )
+        }
+
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.medium_padding)))
     }
 }
 
@@ -141,17 +137,16 @@ private fun SelectableManagerItem(
             .clickable(onClick = { onUserClick(user) })
             .padding(
                 horizontal = dimensionResource(R.dimen.medium_padding),
-                vertical = dimensionResource(R.dimen.small_medium_padding)
             ),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.mediumSpacing()
+        horizontalArrangement = Arrangement.smallSpacing()
     ) {
         Checkbox(
             checked = selected,
             onCheckedChange = null
         )
 
-        HorizontalManagerItem(
+        ManagerItem(
             user = user,
             imageScale = 0.5f
         )
@@ -168,17 +163,16 @@ private fun SelectableManagerItem(
 @Composable
 private fun SelectManagerModalBottomSheetPreview() {
     var query by remember { mutableStateOf("") }
-    var selectedUsers by remember { mutableStateOf(listOf(userFixture)) }
 
     GedoiseTheme {
         Surface {
             SelectManagerModalBottomSheet(
                 users = usersFixture + usersFixture,
-                selectedManagers = selectedUsers,
+                selectedManagers = listOf(userFixture),
                 userQuery = query,
                 onSaveClick = {},
                 onUserQueryChange = { query = it },
-                onResetQuery = { query = ""},
+                onResetQuery = { query = "" },
                 onDismissRequest = {}
             )
         }

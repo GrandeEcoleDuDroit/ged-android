@@ -28,20 +28,20 @@ import com.upsaclay.common.utils.Phones
 
 @Composable
 fun UserInformationItems(user: User) {
-    val accountInfos: List<AccountInfo> = listOf(
-        AccountInfo(
+    val accountInformationValues: List<AccountInformationValue> = listOf(
+        AccountInformationValue(
             stringResource(id = com.upsaclay.common.R.string.last_name),
             user.lastName
         ),
-        AccountInfo(
+        AccountInformationValue(
             stringResource(id = com.upsaclay.common.R.string.first_name),
             user.firstName
         ),
-        AccountInfo(
+        AccountInformationValue(
             stringResource(id = com.upsaclay.common.R.string.email),
             user.email
         ),
-        AccountInfo(
+        AccountInformationValue(
             stringResource(id = com.upsaclay.common.R.string.school_level),
             user.schoolLevel.value
         )
@@ -52,9 +52,9 @@ fun UserInformationItems(user: User) {
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
     ) {
-        accountInfos.forEach { accountInfo ->
+        accountInformationValues.forEach { accountInfo ->
             UserInformationItem(
-                accountInfo = accountInfo
+                accountInformationValue = accountInfo
             )
         }
 
@@ -65,7 +65,7 @@ fun UserInformationItems(user: User) {
                 horizontalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding))
             ) {
                 Text(
-                    text = stringResource(R.string.admin),
+                    text = stringResource(R.string.administrator),
                     color = MaterialTheme.colorScheme.primary,
                     style = MaterialTheme.typography.labelLarge
                 )
@@ -83,21 +83,21 @@ fun UserInformationItems(user: User) {
 
 @Composable
 internal fun UserInformationItem(
-    accountInfo: AccountInfo
+    accountInformationValue: AccountInformationValue
 ) {
     Column {
         Text(
-            text = accountInfo.label,
+            text = accountInformationValue.label,
             color = MaterialTheme.colorScheme.primary,
             style = MaterialTheme.typography.labelLarge
         )
 
-        Text(text = accountInfo.value)
+        Text(text = accountInformationValue.value)
     }
 }
 
 
-data class AccountInfo(
+data class AccountInformationValue(
     val label: String,
     val value: String
 )

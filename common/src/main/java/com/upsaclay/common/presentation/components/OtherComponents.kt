@@ -2,6 +2,7 @@ package com.upsaclay.common.presentation.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -28,6 +30,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -44,7 +47,7 @@ fun PullToRefreshComponent(
     modifier: Modifier = Modifier,
     onRefresh: () -> Unit,
     refreshing: Boolean,
-    content: @Composable () -> Unit
+    content: @Composable BoxScope.() -> Unit
 ) {
     val pullToRefreshState = rememberPullToRefreshState()
 
@@ -95,6 +98,8 @@ fun TextItem(
 fun UserItem(
     modifier: Modifier = Modifier,
     user: User,
+    imageScale: Float = 0.5f,
+    textStyle: TextStyle = LocalTextStyle.current,
     trailingContent: @Composable (() -> Unit)? = null
 ) {
     val userName = if (user.state != User.UserState.DELETED) {
@@ -105,13 +110,13 @@ fun UserItem(
 
     ListItem(
         modifier = modifier.fillMaxWidth(),
-        headlineContent = { Text(text = userName) },
         leadingContent = {
             ProfilePicture(
                 url = user.profilePictureUrl,
-                scale = 0.5f
+                scale = imageScale
             )
         },
+        headlineContent = { Text(text = userName, style = textStyle) },
         trailingContent = trailingContent
     )
 }

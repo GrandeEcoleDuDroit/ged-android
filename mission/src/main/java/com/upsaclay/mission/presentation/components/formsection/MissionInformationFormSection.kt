@@ -1,6 +1,5 @@
 package com.upsaclay.mission.presentation.components.formsection
 
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -8,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,11 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import com.upsaclay.common.domain.entity.SchoolLevel
-import com.upsaclay.common.extension.bringIntoView
 import com.upsaclay.common.extension.smallMediumSpacing
 import com.upsaclay.common.presentation.components.SimpleOutlinedTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
@@ -41,14 +37,13 @@ fun MissionInformationFormSection(
     selectedSchoolLevels: List<SchoolLevel>,
     startDate: LocalDate,
     endDate: LocalDate,
-    frequency: String,
+    duration: String,
     participantNumber: String,
     onSelectedSchoolLevelsChange: (SchoolLevel) -> Unit,
     onStartDateClick: () -> Unit,
     onEndDateClick: () -> Unit,
-    onFrequencyChange: (String) -> Unit,
-    onParticipantNumberChange: (String) -> Unit,
-    scrollState: ScrollState,
+    onDurationChange: (String) -> Unit,
+    onParticipantNumberChange: (String) -> Unit
 ) {
     Column(
         modifier = modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
@@ -57,40 +52,48 @@ fun MissionInformationFormSection(
         SectionTitle(title = stringResource(R.string.information))
 
         OutlinedSchoolLevelDropDownMenu(
-            modifier = Modifier
-                .fillMaxWidth()
-                .bringIntoView(scrollState),
+            modifier = Modifier.fillMaxWidth(),
             schoolLevels = schoolLevels,
             selectedSchoolLevels = selectedSchoolLevels,
             onSelectedSchoolLevelsChange = onSelectedSchoolLevelsChange
         )
 
         OutlinedDatePicker(
-            modifier = Modifier
-                .fillMaxWidth()
-                .bringIntoView(scrollState),
+            modifier = Modifier.fillMaxWidth(),
             date = startDate,
             onClick = onStartDateClick,
-            label = stringResource(R.string.start_date),
+            label = stringResource(R.string.mission_start_date_field),
         )
 
         OutlinedDatePicker(
-            modifier = Modifier
-                .fillMaxWidth()
-                .bringIntoView(scrollState),
+            modifier = Modifier.fillMaxWidth(),
             date = endDate,
             onClick = onEndDateClick,
-            label = stringResource(R.string.end_date),
+            label = stringResource(R.string.mission_end_date_field),
+        )
+
+        SimpleOutlinedTextField(
+            modifier = Modifier.fillMaxWidth(0.6f),
+            value = participantNumber,
+            onValueChange = onParticipantNumberChange,
+            label = stringResource(R.string.mission_max_participant_field),
+            leadingIcon = {
+                Icon(
+                    painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_group),
+                    null
+                )
+            },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number
+            )
         )
 
         SelectionContainer {
             SimpleOutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .bringIntoView(scrollState),
-                value = frequency,
-                onValueChange = onFrequencyChange,
-                label = stringResource(R.string.frequency),
+                modifier = Modifier.fillMaxWidth(),
+                value = duration,
+                onValueChange = onDurationChange,
+                label = stringResource(R.string.mission_duration_field),
                 leadingIcon = {
                     Icon(
                         painter = painterResource(R.drawable.ic_outline_schedule),
@@ -103,22 +106,6 @@ fun MissionInformationFormSection(
                 )
             )
         }
-
-        SimpleOutlinedTextField(
-            modifier = Modifier.fillMaxWidth(0.6f),
-            value = participantNumber,
-            onValueChange = onParticipantNumberChange,
-            label = stringResource(R.string.max_participant),
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_group),
-                    null
-                )
-            },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number
-            )
-        )
     }
 }
 
@@ -132,7 +119,7 @@ fun MissionInformationFormSection(
 @Composable
 private fun CreateMissionInformationSectionPreview() {
     var selectedSchoolLevels by remember { mutableStateOf(emptyList<SchoolLevel>()) }
-    var frequency by remember { mutableStateOf("") }
+    var duration by remember { mutableStateOf("") }
     var participantsNumber by remember { mutableStateOf("") }
 
     GedoiseTheme {
@@ -142,7 +129,7 @@ private fun CreateMissionInformationSectionPreview() {
                 selectedSchoolLevels = selectedSchoolLevels,
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(7),
-                frequency = frequency,
+                duration = duration,
                 participantNumber = participantsNumber,
                 onSelectedSchoolLevelsChange = {
                     if (selectedSchoolLevels.contains(it)) {
@@ -153,9 +140,8 @@ private fun CreateMissionInformationSectionPreview() {
                 },
                 onStartDateClick = {},
                 onEndDateClick = {},
-                onFrequencyChange = { frequency = it },
-                onParticipantNumberChange = { participantsNumber = it },
-                scrollState = ScrollState(0)
+                onDurationChange = { duration = it },
+                onParticipantNumberChange = { participantsNumber = it }
             )
         }
     }

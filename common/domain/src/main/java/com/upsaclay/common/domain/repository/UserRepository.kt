@@ -10,8 +10,6 @@ interface UserRepository {
 
     suspend fun getUsers(): List<User>
 
-    suspend fun getMemberUsers(): List<User>
-
     suspend fun getUser(userId: String): User?
 
     suspend fun getCurrentUser(): User?

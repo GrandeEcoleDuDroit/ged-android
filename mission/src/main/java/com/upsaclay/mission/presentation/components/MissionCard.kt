@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,17 +22,15 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.extension.extraSmallSpacing
 import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.missionContent
-import com.upsaclay.common.presentation.theme.missionTitle
+import com.upsaclay.common.presentation.theme.informationText
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
@@ -95,7 +94,7 @@ private fun DefaultMissionCard(
                 .padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
             verticalArrangement = Arrangement.mediumSpacing()
         ) {
-            CardTitle(
+            CardHeader(
                 modifier = Modifier.fillMaxWidth(),
                 mission = mission
             )
@@ -103,8 +102,7 @@ private fun DefaultMissionCard(
             CardContent(mission = mission)
 
             CardFooter(
-                modifier = Modifier.fillMaxWidth(),
-                schoolLevels = mission.schoolLevels.takeIf { mission.schoolLevelRestricted() }
+                schoolLevels = mission.schoolLevels.takeIf { mission.schoolLevelRestricted }
             )
         }
     }
@@ -126,42 +124,52 @@ private fun PublishingMissionCard(
 }
 
 @Composable
-private fun CardTitle(
+private fun CardHeader(
     modifier: Modifier = Modifier,
     mission: Mission
 ) {
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.smallSpacing()
+    Column(
+        verticalArrangement = Arrangement.smallSpacing()
     ) {
-        Text(
-            modifier = Modifier.weight(1f),
-            text = mission.title,
-            style = MaterialTheme.typography.missionTitle,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis
-        )
-
         Row(
+            modifier = modifier,
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.smallSpacing(),
+            horizontalArrangement = Arrangement.smallSpacing()
         ) {
-            Icon(
-                modifier = Modifier.size(20.dp),
-                painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_group),
-                contentDescription = null
+            Text(
+                modifier = Modifier.weight(1f),
+                text = mission.title,
+                style = titleStyle,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
             )
 
-            Text(
-                text = stringResource(
-                    R.string.participant_number,
-                    mission.participants.size,
-                    mission.maxParticipants
-                ),
-                style = MaterialTheme.typography.bodyMedium
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.smallSpacing(),
+            ) {
+                Icon(
+                    modifier = Modifier.size(20.dp),
+                    painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_group),
+                    contentDescription = null
+                )
+
+                Text(
+                    text = stringResource(
+                        R.string.participant_number,
+                        mission.participants.size,
+                        mission.maxParticipants
+                    ),
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
         }
+
+        Text(
+            text = MissionFormatter.formatDate(mission.startDate, mission.endDate),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.informationText
+        )
     }
 }
 
@@ -173,27 +181,19 @@ private fun CardContent(
     Text(
         modifier = modifier,
         text = mission.description,
-        style = MaterialTheme.typography.missionContent,
+        style = descriptionStyle,
         maxLines = 3,
         overflow = TextOverflow.Ellipsis
     )
 }
 
 @Composable
-private fun CardFooter(
-    modifier: Modifier = Modifier,
-    schoolLevels: List<SchoolLevel>?
-) {
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        schoolLevels?.let {
-            Text(
-                text = MissionFormatter.formatSchoolLevels(it),
-                style = MaterialTheme.typography.bodySmall
-            )
-        }
+private fun CardFooter(schoolLevels: List<SchoolLevel>?) {
+    schoolLevels?.let {
+        Text(
+            text = MissionFormatter.formatSchoolLevels(it),
+            style = MaterialTheme.typography.labelSmall
+        )
     }
 }
 
@@ -219,18 +219,15 @@ private fun ErrorMissionCard(
                 .padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
             verticalArrangement = Arrangement.mediumSpacing()
         ) {
-            CardTitle(
+            CardHeader(
                 modifier = Modifier.fillMaxWidth(),
                 mission = mission
             )
 
             CardContent(mission = mission)
 
-            if (mission.schoolLevelRestricted()) {
-                CardFooter(
-                    modifier = Modifier.fillMaxWidth(),
-                    schoolLevels = mission.schoolLevels
-                )
+            if (mission.schoolLevelRestricted) {
+                CardFooter(schoolLevels = mission.schoolLevels)
             }
         }
     }
@@ -283,6 +280,14 @@ private fun MissionCardImage(
     )
 }
 
+private val titleStyle: TextStyle
+    @Composable
+    get() = MaterialTheme.typography.titleLarge
+
+private val descriptionStyle: TextStyle
+    @Composable
+    get() = MaterialTheme.typography.bodyLarge
+
 /*
  =====================================================================
                                 Preview
@@ -295,11 +300,13 @@ private fun DefaultMissionCardPreview() {
     val mission = missionFixture
 
     GedoiseTheme {
-        DefaultMissionCard(
-            mission = mission,
-            imageModel = null,
-            onClick = {}
-        )
+        Surface {
+            DefaultMissionCard(
+                mission = mission,
+                imageModel = null,
+                onClick = {}
+            )
+        }
     }
 }
 
@@ -309,11 +316,13 @@ private fun PublishingMissionCardPreview() {
     val mission = missionFixture
 
     GedoiseTheme {
-        PublishingMissionCard(
-            mission = mission,
-            imageModel = null,
-            onClick = {}
-        )
+        Surface {
+            PublishingMissionCard(
+                mission = mission,
+                imageModel = null,
+                onClick = {}
+            )
+        }
     }
 }
 
@@ -323,10 +332,12 @@ private fun ErrorMissionCardPreview() {
     val mission = missionFixture
 
     GedoiseTheme {
-        ErrorMissionCard(
-            mission = mission,
-            imageModel = null,
-            onClick = {}
-        )
+        Surface {
+            ErrorMissionCard(
+                mission = mission,
+                imageModel = null,
+                onClick = {}
+            )
+        }
     }
 }

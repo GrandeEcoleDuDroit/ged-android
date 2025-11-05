@@ -32,26 +32,22 @@ fun MissionInformationItem(
     mission: Mission,
     textStyle: TextStyle = MaterialTheme.typography.bodyMedium
 ) {
-    val missionInfos = mutableListOf(
-        MissionInfo(
+    val missionInformationValues = mutableListOf(
+        MissionInformationValue(
             iconRes = R.drawable.ic_outline_school,
-            value = if (mission.schoolLevelRestricted()) {
+            value = if (mission.schoolLevelRestricted) {
                 MissionFormatter.formatSchoolLevels(mission.schoolLevels)
             } else {
                 stringResource(R.string.everyone)
             }
         ),
-        MissionInfo(
+        MissionInformationValue(
             iconRes = com.upsaclay.common.R.drawable.ic_outline_calendar,
             value = MissionFormatter.formatDate(mission.startDate, mission.endDate)
         ),
-        MissionInfo(
-            iconRes = R.drawable.ic_outline_schedule,
-            value = mission.frequency
-        ),
-        MissionInfo(
+        MissionInformationValue(
             iconRes = com.upsaclay.common.R.drawable.ic_outline_group,
-            value = if (mission.full()) {
+            value = if (mission.full) {
                 stringResource(R.string.full)
             } else {
                 stringResource(
@@ -65,11 +61,20 @@ fun MissionInformationItem(
         )
     )
 
+    mission.duration?.let {
+        missionInformationValues.add(
+            MissionInformationValue(
+                iconRes = R.drawable.ic_outline_schedule,
+                value = it
+            )
+        )
+    }
+
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.mediumSpacing()
     ) {
-        missionInfos.forEach {
+        missionInformationValues.forEach {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.smallSpacing()
@@ -88,7 +93,7 @@ fun MissionInformationItem(
     }
 }
 
-data class MissionInfo(
+data class MissionInformationValue(
     @DrawableRes val iconRes: Int,
     val value: String
 )

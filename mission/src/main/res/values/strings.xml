@@ -9,7 +9,7 @@
     <string name="everyone">Tout le monde</string>
     <string name="start_date">Date de début</string>
     <string name="end_date">Date de fin</string>
-    <string name="frequency">Fréquence</string>
+    <string name="duration">Durée</string>
     <string name="managers">Gérants</string>
     <string name="participants">Participants</string>
     <string name="max_participant">Participants max</string>
@@ -39,4 +39,10 @@
     <string name="no_mission_tag" translatable="false">No mission tag</string>
     <string name="missions_card_tag" translatable="false">Missions card tag</string>
     <string name="missions_card_school_level_tag" translatable="false">Mission card school level tag</string>
+    <string name="mission_school_level_field">Niveau scolaire</string>
+    <string name="mission_end_date_field">Date de fin</string>
+    <string name="mission_start_date_field">Date de début</string>
+    <string name="mission_max_participant_field">Participant max</string>
+    <string name="mission_duration_field">Durée (optionnel)</string>
+    <string name="no_participants">Aucun participant</string>
 </resources>

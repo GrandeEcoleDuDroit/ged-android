@@ -81,8 +81,7 @@ fun MissionForm(
             title = value.title,
             description = value.description,
             onTitleChange = onTitleChange,
-            onDescriptionChange = onDescriptionChange,
-            scrollState = scrollState
+            onDescriptionChange = onDescriptionChange
         )
 
         HorizontalDivider(modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)))
@@ -92,14 +91,13 @@ fun MissionForm(
             selectedSchoolLevels = value.selectedSchoolLevels,
             startDate = value.startDate,
             endDate = value.endDate,
-            frequency = value.frequency,
+            duration = value.frequency,
             participantNumber = value.participantNumber,
             onSelectedSchoolLevelsChange = onSelectedSchoolLevelChange,
             onStartDateClick = onStartDateClick,
             onEndDateClick = onEndDateClick,
-            onFrequencyChange = onFrequencyChange,
-            onParticipantNumberChange = onParticipantNumberChange,
-            scrollState = scrollState,
+            onDurationChange = onFrequencyChange,
+            onParticipantNumberChange = onParticipantNumberChange
         )
 
         HorizontalDivider(modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)))
@@ -146,7 +144,7 @@ private fun CreateMissionFormPreview() {
                 value = MissionFormValue(
                     title = title,
                     description = description,
-                    schoolLevels = SchoolLevel.entries,
+                    schoolLevels = SchoolLevel.getSchoolLevels(),
                     selectedSchoolLevels = selectedSchoolLevels,
                     startDate = LocalDate.now(),
                     endDate = LocalDate.now(),

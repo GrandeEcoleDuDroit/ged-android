@@ -1,7 +1,6 @@
 package com.upsaclay.mission.presentation.components.formsection
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,7 +11,6 @@ import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,12 +21,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import com.upsaclay.common.extension.bringIntoView
-import com.upsaclay.common.extension.smallSpacing
+import androidx.compose.ui.text.TextStyle
+import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.presentation.components.TransparentTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.missionContent
-import com.upsaclay.common.presentation.theme.missionTitle
+import com.upsaclay.common.presentation.theme.inputForeground
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.mission.R
 import kotlinx.coroutines.launch
@@ -39,8 +36,7 @@ fun MissionTitleDescriptionFormSection(
     title: String,
     description: String,
     onTitleChange: (String) -> Unit,
-    onDescriptionChange: (String) -> Unit,
-    scrollState: ScrollState
+    onDescriptionChange: (String) -> Unit
 ) {
     val bringIntoViewRequester = remember { BringIntoViewRequester() }
     val coroutineScope = rememberCoroutineScope()
@@ -48,12 +44,11 @@ fun MissionTitleDescriptionFormSection(
     SelectionContainer {
         Column(
             modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
-            verticalArrangement = Arrangement.smallSpacing()
+            verticalArrangement = Arrangement.mediumSpacing()
         ) {
             TransparentTextField(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .bringIntoView(scrollState)
                     .bringIntoViewRequester(bringIntoViewRequester)
                     .onFocusEvent {
                         if (it.isFocused) {
@@ -67,11 +62,11 @@ fun MissionTitleDescriptionFormSection(
                 placeholder = {
                     Text(
                         text = stringResource(R.string.title),
-                        style = MaterialTheme.typography.missionTitle,
-                        color = TextFieldDefaults.colors().unfocusedPlaceholderColor
+                        style = titleStyle,
+                        color = MaterialTheme.colorScheme.inputForeground
                     )
                 },
-                textStyle = MaterialTheme.typography.missionTitle
+                textStyle = titleStyle
             )
 
             TransparentTextField(
@@ -90,15 +85,25 @@ fun MissionTitleDescriptionFormSection(
                 placeholder = {
                     Text(
                         text = stringResource(R.string.description),
-                        color = TextFieldDefaults.colors().unfocusedPlaceholderColor
+                        style = descriptionStyle,
+                        color = MaterialTheme.colorScheme.inputForeground
                     )
                 },
                 minLines = 4,
-                textStyle = MaterialTheme.typography.missionContent
+                textStyle = descriptionStyle
             )
         }
     }
 }
+
+private val titleStyle: TextStyle
+    @Composable
+    get() = MaterialTheme.typography.titleLarge
+
+private val descriptionStyle: TextStyle
+    @Composable
+    get() = MaterialTheme.typography.bodyLarge
+
 
 /*
  =====================================================================
@@ -118,8 +123,7 @@ private fun CreateMissionTitleDescriptionSectionPreview() {
                 title = title,
                 description = description,
                 onTitleChange = { title = it },
-                onDescriptionChange = { description = it },
-                scrollState = ScrollState(0)
+                onDescriptionChange = { description = it }
             )
         }
     }

@@ -2,6 +2,12 @@ package com.upsaclay.mission.presentation.components.item
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -10,36 +16,59 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.presentation.theme.gold
 import com.upsaclay.common.utils.Phones
 
 @Composable
-fun HorizontalManagerItem(
+fun ManagerItem(
     modifier: Modifier = Modifier,
     user: User,
     imageScale: Float,
-    textStyle: TextStyle = MaterialTheme.typography.bodyMedium
+    showAdminIndicator: Boolean = true,
+    textStyle: TextStyle = LocalTextStyle.current,
+    trailingContent: @Composable (() -> Unit)? = null
 ) {
-    Row(
+    ListItem(
         modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.smallSpacing()
-    ) {
-        ProfilePicture(
-            url = user.profilePictureUrl,
-            scale = imageScale
-        )
+        leadingContent = {
+            ProfilePicture(
+                url = user.profilePictureUrl,
+                scale = imageScale
+            )
+        },
+        headlineContent = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.smallSpacing()
+            ) {
+                Text(
+                    modifier = Modifier.weight(1f, fill = false),
+                    text = user.fullName,
+                    textAlign = TextAlign.Center,
+                    style = textStyle,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1
+                )
 
-        Text(
-            text = user.fullName,
-            textAlign = TextAlign.Center,
-            style = textStyle
-        )
-    }
+                if (user.admin && showAdminIndicator) {
+                    Icon(
+                        imageVector = Icons.Default.Star,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.gold,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+            }
+        },
+        trailingContent = trailingContent
+    )
 }
 
 /*
@@ -50,10 +79,10 @@ fun HorizontalManagerItem(
 
 @Phones
 @Composable
-private fun HorizontalManagerItemPreview() {
+private fun ManagerItemPreview() {
     GedoiseTheme {
         Surface {
-            HorizontalManagerItem(
+            ManagerItem(
                 user = userFixture,
                 imageScale = 0.5f
             )

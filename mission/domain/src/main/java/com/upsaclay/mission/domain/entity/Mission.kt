@@ -13,16 +13,24 @@ data class Mission(
     val date: LocalDateTime,
     val startDate: LocalDate,
     val endDate: LocalDate,
-    val frequency: String,
+    val duration: String?,
     val managers: List<User>,
     val participants: List<User>,
     val maxParticipants: Int,
     val tasks: List<MissionTask>,
     val state: MissionState
 ) {
-    fun schoolLevelRestricted(): Boolean = schoolLevels.isNotEmpty() && schoolLevels.size < SchoolLevel.entries.size
+    val schoolLevelRestricted: Boolean
+        get() = schoolLevels.isNotEmpty() && schoolLevels.size < SchoolLevel.entries.size
 
-    fun full(): Boolean = participants.size >= maxParticipants
+    val full: Boolean
+        get() = participants.size >= maxParticipants
+
+    val expired: Boolean
+        get() = endDate.isBefore(LocalDate.now())
+
+    fun schoolLevelPermitted(schoolLevel: SchoolLevel): Boolean =
+        schoolLevels.isEmpty() || schoolLevels.contains(schoolLevel)
 }
 
 sealed class MissionState {

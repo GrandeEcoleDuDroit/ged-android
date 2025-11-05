@@ -84,6 +84,12 @@ class MissionViewModel(
         }
     }
 
+    fun refresh() {
+        _uiState.update {
+            it.copy(refreshing = false)
+        }
+    }
+
     private fun listenMissions() {
         viewModelScope.launch {
             missionRepository.missions.collect { missions ->
@@ -107,6 +113,7 @@ class MissionViewModel(
     data class MissionUiState(
         val missions: List<Mission> = emptyList(),
         val user: User? = null,
-        val loading: Boolean = false
+        val loading: Boolean = false,
+        val refreshing: Boolean = false
     )
 }

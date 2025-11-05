@@ -24,10 +24,6 @@ internal class UserRemoteDataSource(
         userApi.getUsers()
     }
 
-    suspend fun getMemberUsers(): List<User> = withContext(Dispatchers.IO) {
-        userApi.getMemberUsers()
-    }
-
     suspend fun createUser(user: User) {
         withContext(Dispatchers.IO) {
             userApi.createUser(user)

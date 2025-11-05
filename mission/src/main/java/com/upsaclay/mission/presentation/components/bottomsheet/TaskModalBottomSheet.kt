@@ -43,6 +43,27 @@ import kotlinx.coroutines.android.awaitFrame
 import kotlinx.coroutines.delay
 
 @Composable
+fun AddTaskModalBottomSheet(
+    onDismissRequest: () -> Unit,
+    onAddClick: (MissionTask) -> Unit
+) {
+    var missionTask by remember { mutableStateOf(MissionTask(GenerateIdUseCase.intId, "")) }
+    var createEnabled by remember { mutableStateOf(false) }
+
+    TaskModalBottomSheet(
+        missionTask = missionTask,
+        onValueChange = {
+            missionTask = missionTask.copy(value = it.take(200))
+            createEnabled = missionTask.value.isNotBlank()
+        },
+        enabled = createEnabled,
+        labelButton = stringResource(R.string.add),
+        onClick = onAddClick,
+        onDismissRequest = onDismissRequest
+    )
+}
+
+@Composable
 fun EditTaskModalBottomSheet(
     initialMissionTask: MissionTask,
     onDismissRequest: () -> Unit,
@@ -60,27 +81,6 @@ fun EditTaskModalBottomSheet(
         enabled = editEnabled,
         labelButton = stringResource(com.upsaclay.common.R.string.save),
         onClick = onEditClick,
-        onDismissRequest = onDismissRequest
-    )
-}
-
-@Composable
-fun AddTaskModalBottomSheet(
-    onDismissRequest: () -> Unit,
-    onAddClick: (MissionTask) -> Unit
-) {
-    var missionTask by remember { mutableStateOf(MissionTask(GenerateIdUseCase.intId, "")) }
-    var createEnabled by remember { mutableStateOf(false) }
-
-    TaskModalBottomSheet(
-        missionTask = missionTask,
-        onValueChange = {
-            missionTask = missionTask.copy(value = it)
-            createEnabled = missionTask.value.isNotBlank()
-        },
-        enabled = createEnabled,
-        labelButton = stringResource(R.string.add),
-        onClick = onAddClick,
         onDismissRequest = onDismissRequest
     )
 }
@@ -176,7 +176,6 @@ private fun TaskModalBottomSheet(
 @Phones
 @Composable
 private fun EditTaskBottomSheetPreview() {
-
     GedoiseTheme {
         Surface {
             EditTaskModalBottomSheet(

@@ -7,6 +7,7 @@ import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.GenerateIdUseCase
+import com.upsaclay.common.domain.usecase.GetUsersUseCase
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.MissionState
 import com.upsaclay.mission.domain.entity.MissionTask
@@ -22,15 +23,16 @@ import java.time.ZoneOffset
 
 class CreateMissionViewModel(
     private val userRepository: UserRepository,
-    private val createMissionUseCase: CreateMissionUseCase
+    private val createMissionUseCase: CreateMissionUseCase,
+    private val getUsersUseCase: GetUsersUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(CreateMissionUiState())
     val uiState: StateFlow<CreateMissionUiState> = _uiState
-    private var defaultMemberUsers: List<User> = emptyList()
+    private var defaultUsers: List<User> = emptyList()
 
     init {
         initCurrentUser()
-        initMemberUsers()
+        initUsers()
     }
 
     fun createMission() {
@@ -42,10 +44,10 @@ class CreateMissionViewModel(
             date = LocalDateTime.now(ZoneOffset.UTC),
             startDate = uiState.value.startDate,
             endDate = uiState.value.endDate,
-            frequency = uiState.value.frequency,
+            duration = uiState.value.duration.takeIf { it.isNotBlank() },
             managers = uiState.value.selectedManagers,
             participants = emptyList(),
-            maxParticipants = uiState.value.participantNumber.toInt(),
+            maxParticipants = uiState.value.maxParticipants.toInt(),
             tasks = uiState.value.tasks.values.toList(),
             state = MissionState.Draft(imageUri = uiState.value.imageUri?.toString()),
         )
@@ -53,22 +55,30 @@ class CreateMissionViewModel(
         createMissionUseCase(mission)
     }
 
+    fun onImageUriChange(uri: Uri?) {
+        _uiState.update { it.copy(imageUri = uri) }
+    }
+
+    fun onRemoveImageUri() {
+        _uiState.update { it.copy(imageUri = null) }
+    }
+
     fun onTitleChange(title: String) {
-        if (title.length > 50) return
+        val titleTruncated = title.take(100)
         _uiState.update {
             it.copy(
-                title = title,
-                createEnabled = validateCreate(title = title)
+                title = titleTruncated,
+                createEnabled = validateCreate(title = titleTruncated)
             )
         }
     }
 
     fun onDescriptionChange(description: String) {
-        if (description.length > 500) return
+        val descriptionTruncated = description.take(1000)
         _uiState.update {
             it.copy(
-                description = description,
-                createEnabled = validateCreate(description = description)
+                description = descriptionTruncated,
+                createEnabled = validateCreate(description = descriptionTruncated)
             )
         }
     }
@@ -88,7 +98,7 @@ class CreateMissionViewModel(
         _uiState.update {
             it.copy(
                 startDate = date,
-                endDate = if (!isEndDateValid(date, it.endDate)) date else it.endDate,
+                endDate = if (!endDateValid(date, it.endDate)) date else it.endDate,
             )
         }
     }
@@ -96,27 +106,24 @@ class CreateMissionViewModel(
     fun onEndDateChange(date: LocalDate) {
         _uiState.update {
             it.copy(
-                startDate = if (!isEndDateValid(it.startDate, date)) date else it.startDate,
+                startDate = if (!endDateValid(it.startDate, date)) date else it.startDate,
                 endDate = date
             )
         }
     }
 
-    fun onFrequencyChange(frequency: String) {
-        if (frequency.length > 100) return
+    fun onDurationChange(duration: String) {
+        val durationTruncated = duration.take(200)
         _uiState.update {
-            it.copy(
-                frequency = frequency,
-                createEnabled = validateCreate(frequency = frequency)
-            )
+            it.copy(duration = durationTruncated)
         }
     }
 
-    fun onParticipantNumberChange(maxParticipants: String) {
+    fun onMaxParticipantsChange(maxParticipants: String) {
         if (maxParticipants.all { it.isDigit() }) {
             _uiState.update {
                 it.copy(
-                    participantNumber = maxParticipants,
+                    maxParticipants = maxParticipants,
                     createEnabled = validateCreate(maxParticipants = maxParticipants)
                 )
             }
@@ -134,12 +141,21 @@ class CreateMissionViewModel(
         }
     }
 
-    fun onImageUriChange(uri: Uri?) {
-        _uiState.update { it.copy(imageUri = uri) }
+    fun onUserQueryChange(query: String) {
+        _uiState.update {
+            it.copy(userQuery = query)
+        }
+
+        filterUsersByName(query)
     }
 
-    fun onRemoveImageUri() {
-        _uiState.update { it.copy(imageUri = null) }
+    fun onResetUserQuery() {
+        _uiState.update {
+            it.copy(
+                userQuery = "",
+                users = defaultUsers
+            )
+        }
     }
 
     fun onAddTask(missionTask: MissionTask) {
@@ -167,35 +183,18 @@ class CreateMissionViewModel(
         }
     }
 
-    fun onUserQueryChange(query: String) {
-        _uiState.update {
-            it.copy(userQuery = query)
-        }
-
-        filterAdminUsersByName(query)
-    }
-
-    fun onResetUserQuery() {
-        _uiState.update {
-            it.copy(
-                userQuery = "",
-                memberUsers = defaultMemberUsers
-            )
-        }
-    }
-
-    private fun filterAdminUsersByName(query: String) {
+    private fun filterUsersByName(query: String) {
         val users = if (query.isNotBlank()) {
-            defaultMemberUsers.filter { user ->
+            defaultUsers.filter { user ->
                 user.firstName.contains(query, ignoreCase = true) ||
                         user.lastName.contains(query, ignoreCase = true)
             }
         } else {
-            defaultMemberUsers
+            defaultUsers
         }
 
         _uiState.update {
-            it.copy(memberUsers = users)
+            it.copy(users = users)
         }
     }
 
@@ -212,13 +211,13 @@ class CreateMissionViewModel(
         }
     }
 
-    private fun initMemberUsers() {
+    private fun initUsers() {
         viewModelScope.launch {
-            userRepository.getMemberUsers()
-                .filterNot { it.state == User.UserState.DELETED }
+            getUsersUseCase()
+                .sortedByDescending { it.admin }
                 .also { users ->
-                    _uiState.update { it.copy(memberUsers = users) }
-                    defaultMemberUsers = users
+                    _uiState.update { it.copy(users = users) }
+                    defaultUsers = users
                 }
         }
     }
@@ -226,25 +225,21 @@ class CreateMissionViewModel(
     private fun validateCreate(
         title: String = uiState.value.title,
         description: String = uiState.value.description,
-        frequency: String = uiState.value.frequency,
-        maxParticipants: String = uiState.value.participantNumber
+        maxParticipants: String = uiState.value.maxParticipants
     ): Boolean {
-        return isTitleValid(title) &&
-                isDescriptionValid(description) &&
-                isFrequencyValid(frequency) &&
-                isMaxParticipantValid(maxParticipants)
+        return titleValid(title) &&
+                descriptionValid(description) &&
+                maxParticipantsValid(maxParticipants)
     }
 
-    private fun isTitleValid(title: String): Boolean = title.isNotBlank()
+    private fun titleValid(title: String): Boolean = title.isNotBlank()
 
-    private fun isDescriptionValid(description: String): Boolean = description.isNotBlank()
+    private fun descriptionValid(description: String): Boolean = description.isNotBlank()
 
-    private fun isEndDateValid(startDate: LocalDate, endDate: LocalDate): Boolean =
+    private fun endDateValid(startDate: LocalDate, endDate: LocalDate): Boolean =
         endDate.isEqual(startDate) || endDate.isAfter(startDate)
 
-    private fun isFrequencyValid(frequency: String): Boolean = frequency.isNotBlank()
-
-    private fun isMaxParticipantValid(maxParticipants: String): Boolean =
+    private fun maxParticipantsValid(maxParticipants: String): Boolean =
         maxParticipants.toIntOrNull()?.let { it > 0 } ?: false
 
     data class CreateMissionUiState(
@@ -254,13 +249,13 @@ class CreateMissionViewModel(
         val schoolLevels: List<SchoolLevel> = SchoolLevel.getSchoolLevels(),
         val startDate: LocalDate = LocalDate.now(),
         val endDate: LocalDate = LocalDate.now(),
-        val frequency: String = "",
+        val duration: String = "",
         val selectedManagers: List<User> = emptyList(),
-        val participantNumber: String = "",
+        val maxParticipants: String = "",
         val currentTask: String = "",
         val tasks: Map<Int, MissionTask> = emptyMap(),
         val imageUri: Uri? = null,
-        val memberUsers: List<User> = emptyList(),
+        val users: List<User> = emptyList(),
         val userQuery: String = "",
         val user: User? = null,
         val createEnabled: Boolean = false

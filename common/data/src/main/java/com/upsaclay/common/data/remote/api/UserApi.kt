@@ -13,8 +13,6 @@ internal interface UserApi {
 
     suspend fun getUsers(): List<User>
 
-    suspend fun getMemberUsers(): List<User>
-
     suspend fun createUser(user: User)
 
     suspend fun updateUser(user: User)

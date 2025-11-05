@@ -34,10 +34,10 @@ fun OutlinedSchoolLevelDropDownMenu(
 
     MultiSelectionDropDownMenu(
         modifier = modifier,
-        items = schoolLevels.map { it.toString() },
-        selectedItems = selectedSchoolLevels.map { it.toString() },
+        items = schoolLevels.map { it.value },
+        selectedItems = selectedSchoolLevels.map { it.value },
         value = value,
-        label = stringResource(R.string.school_level),
+        label = stringResource(R.string.mission_school_level_field),
         leadingIcon = {
             Icon(
                 painter = painterResource(R.drawable.ic_outline_school),
@@ -45,7 +45,7 @@ fun OutlinedSchoolLevelDropDownMenu(
             )
         },
         singleLine = true,
-        onItemClicked = { SchoolLevel.fromValue(it)?.let(onSelectedSchoolLevelsChange) },
+        onItemClicked = { SchoolLevel.fromValue(it).let(onSelectedSchoolLevelsChange) },
         expanded = expanded,
         onExpandedChange = { expanded = it },
         onDismissRequest = { expanded = false }

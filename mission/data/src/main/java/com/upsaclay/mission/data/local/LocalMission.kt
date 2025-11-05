@@ -5,8 +5,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.upsaclay.mission.data.MissionField.Local.DATE
 import com.upsaclay.mission.data.MissionField.Local.DESCRIPTION
+import com.upsaclay.mission.data.MissionField.Local.DURATION
 import com.upsaclay.mission.data.MissionField.Local.END_DATE
-import com.upsaclay.mission.data.MissionField.Local.FREQUENCY
 import com.upsaclay.mission.data.MissionField.Local.IMAGE_REFERENCE
 import com.upsaclay.mission.data.MissionField.Local.MANAGERS
 import com.upsaclay.mission.data.MissionField.Local.MAX_PARTICIPANTS
@@ -37,8 +37,8 @@ data class LocalMission(
     val missionStartDate: Long,
     @ColumnInfo(name = END_DATE)
     val missionEndDate: Long,
-    @ColumnInfo(name = FREQUENCY)
-    val missionFrequency: String,
+    @ColumnInfo(name = DURATION)
+    val missionDuration: String?,
     @ColumnInfo(name = MANAGERS)
     val missionManagers: String,
     @ColumnInfo(name = PARTICIPANTS)

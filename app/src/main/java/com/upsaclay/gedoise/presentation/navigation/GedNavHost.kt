@@ -47,8 +47,8 @@ import com.upsaclay.mission.presentation.createmission.createMissionScreen
 import com.upsaclay.mission.presentation.createmission.navigateToCreateMission
 import com.upsaclay.mission.presentation.missionSection
 import com.upsaclay.mission.presentation.navigateToMission
-import com.upsaclay.mission.presentation.seemission.navigateToSeeMission
-import com.upsaclay.mission.presentation.seemission.seeMissionScreen
+import com.upsaclay.mission.presentation.missiondetails.navigateToMissionDetails
+import com.upsaclay.mission.presentation.missiondetails.missionDetailsScreen
 import com.upsaclay.news.presentation.NewsRoute
 import com.upsaclay.news.presentation.announcement.allannouncements.allAnnouncementsScreen
 import com.upsaclay.news.presentation.announcement.allannouncements.navigateToAllAnnouncements
@@ -231,7 +231,7 @@ fun GedNavHost(
         userScreen(onBackClick = navController::popBackStack)
 
         missionSection(
-            onMissionClick = navController::navigateToSeeMission,
+            onMissionClick = navController::navigateToMissionDetails,
             onCreateMissionClick = navController::navigateToCreateMission,
             bottomBar = bottomBar
         ) {
@@ -239,9 +239,10 @@ fun GedNavHost(
                 onBackClick = navController::popBackStack
             )
 
-            seeMissionScreen(
+            missionDetailsScreen(
                 onBackClick = navController::popBackStack,
-                onManagerClick = navController::navigateToUser
+                onManagerClick = navController::navigateToUser,
+                onParticipantClick = navController::navigateToUser
             )
         }
     }
