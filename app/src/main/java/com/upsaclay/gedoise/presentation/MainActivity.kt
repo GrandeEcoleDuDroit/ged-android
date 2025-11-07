@@ -19,7 +19,7 @@ import com.upsaclay.gedoise.presentation.navigation.NavigationViewModel
 import com.upsaclay.gedoise.presentation.navigation.SplashRoute
 import com.upsaclay.message.data.mapper.toMessageNotification
 import com.upsaclay.message.data.remote.RemoteMessageNotification
-import com.upsaclay.message.domain.converter.ConversationJsonConverter
+import com.upsaclay.message.domain.converter.ConversationJsonParser
 import com.upsaclay.message.notification.CONVERSATION_ID_EXTRA
 import com.upsaclay.message.notification.MessageNotificationManager
 import com.upsaclay.message.presentation.chat.ChatRoute
@@ -97,7 +97,7 @@ class MainActivity : ComponentActivity() {
             FcmDataType.MESSAGE.toString() -> {
                 extras?.getString("value")?.let { value ->
                     val messageNotification = gson.fromJson(value, RemoteMessageNotification::class.java).toMessageNotification()
-                    val conversationJson = ConversationJsonConverter.toConversationJson(messageNotification.conversation)
+                    val conversationJson = ConversationJsonParser.toJson(messageNotification.conversation)
                     navigationViewModel.intentToNavigate(ChatRoute(conversationJson))
                 }
             }

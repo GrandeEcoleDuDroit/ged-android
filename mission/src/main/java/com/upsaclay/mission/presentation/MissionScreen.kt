@@ -1,7 +1,9 @@
 package com.upsaclay.mission.presentation
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -19,12 +21,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import com.upsaclay.common.domain.entity.User
+import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.extension.rootMediumPadding
 import com.upsaclay.common.presentation.SingleUiEvent
+import com.upsaclay.common.presentation.components.CircularProgressBar
 import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.EmptyText
 import com.upsaclay.common.presentation.components.LoadingDialog
@@ -44,8 +50,9 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun MissionDestination(
-    onMissionClick: (Int) -> Unit,
+    onMissionClick: (Long) -> Unit,
     onCreateMissionClick: () -> Unit,
+    onEditMissionClick: (Mission) -> Unit,
     bottomBar: @Composable () -> Unit,
     viewModel: MissionViewModel = koinViewModel()
 ) {
@@ -68,36 +75,47 @@ fun MissionDestination(
         }
     }
 
-    MissionScreen(
-        missions = uiState.value.missions,
-        admin = uiState.value.user?.admin == true,
-        loading = uiState.value.loading,
-        refreshing = uiState.value.refreshing,
-        snackbarHostState = snackbarHostState,
-        onMissionClick = onMissionClick,
-        onCreateMissionClick = onCreateMissionClick,
-        onResendMissionClick = viewModel::resendMission,
-        onDeleteMissionClick = viewModel::deleteMission,
-        onRefresh = viewModel::refresh,
-        bottomBar = bottomBar
-    )
+    if (uiState.value.user != null) {
+        MissionScreen(
+            user = uiState.value.user!!,
+            missions = uiState.value.missions,
+            loading = uiState.value.loading,
+            refreshing = uiState.value.refreshing,
+            snackbarHostState = snackbarHostState,
+            onMissionClick = onMissionClick,
+            onCreateMissionClick = onCreateMissionClick,
+            onEditMissionClick = onEditMissionClick,
+            onResendMissionClick = viewModel::resendMission,
+            onDeleteMissionClick = viewModel::deleteMission,
+            onRefresh = viewModel::refreshMissions,
+            bottomBar = bottomBar
+        )
+    } else {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressBar()
+        }
+    }
 }
 
 @Composable
 private fun MissionScreen(
+    user: User,
     missions: List<Mission>,
-    admin: Boolean,
     loading: Boolean,
     refreshing: Boolean,
     snackbarHostState: SnackbarHostState,
-    onMissionClick: (Int) -> Unit,
+    onMissionClick: (Long) -> Unit,
     onCreateMissionClick: () -> Unit,
+    onEditMissionClick: (Mission) -> Unit,
     onResendMissionClick: (Mission) -> Unit,
     onDeleteMissionClick: (Mission) -> Unit,
     onRefresh: () -> Unit,
     bottomBar: @Composable () -> Unit
 ) {
-    var showBottomSheet by remember { mutableStateOf(false) }
+    var showMissionBottomSheet by remember { mutableStateOf(false) }
     var showDeleteMissionDialog by remember { mutableStateOf(false) }
     var clickedMission by remember { mutableStateOf<Mission?>(null) }
 
@@ -119,7 +137,7 @@ private fun MissionScreen(
     }
 
     MissionScaffold(
-        admin = admin,
+        admin = user.admin,
         snackbarHostState = snackbarHostState,
         onCreateMissionClick = onCreateMissionClick,
         bottomBar = bottomBar
@@ -143,8 +161,12 @@ private fun MissionScreen(
                                     onMissionClick(mission.id)
                                 } else {
                                     clickedMission = mission
-                                    showBottomSheet = true
+                                    showMissionBottomSheet = true
                                 }
+                            },
+                            onOptionClick = {
+                                clickedMission = mission
+                                showMissionBottomSheet = true
                             }
                         )
                     }
@@ -152,18 +174,29 @@ private fun MissionScreen(
             }
         }
 
-        if (showBottomSheet) {
-            MissionBottomSheet(
-                onDismiss = { showBottomSheet = false },
-                onDeleteClick = {
-                    showBottomSheet = false
-                    showDeleteMissionDialog = true
-                },
-                onResendClick = {
-                    showBottomSheet = false
-                    clickedMission?.let(onResendMissionClick)
-                }
-            )
+        if (showMissionBottomSheet) {
+            clickedMission?.let { mission ->
+                MissionBottomSheet(
+                    missionState = mission.state,
+                    isEditable = mission.managers.contains(user),
+                    onResendClick = {
+                        showMissionBottomSheet = false
+                        onResendMissionClick(mission)
+                    },
+                    onEditClick = {
+                        showMissionBottomSheet = false
+                        onEditMissionClick(mission)
+                    },
+                    onReportClick = {
+                        showMissionBottomSheet = false
+                    },
+                    onDeleteClick = {
+                        showMissionBottomSheet = false
+                        showDeleteMissionDialog = true
+                    },
+                    onDismiss = { showMissionBottomSheet = false }
+                )
+            }
         }
     }
 }
@@ -214,13 +247,14 @@ private fun MissionScaffold(
 private fun MissionScreenPreview() {
     GedoiseTheme {
         MissionScreen(
+            user = userFixture,
             missions = missionsFixture,
-            admin = true,
             loading = false,
             snackbarHostState = SnackbarHostState(),
             refreshing = false,
             onMissionClick = {},
             onCreateMissionClick = {},
+            onEditMissionClick = {},
             onResendMissionClick = {},
             onDeleteMissionClick = {},
             onRefresh = {},

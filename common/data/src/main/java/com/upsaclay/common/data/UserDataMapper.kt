@@ -1,5 +1,6 @@
 package com.upsaclay.common.data
 
+import androidx.core.graphics.scaleMatrix
 import com.upsaclay.common.data.UrlUtils.extractFileName
 import com.upsaclay.common.data.UrlUtils.formatOracleBucketUrl
 import com.upsaclay.common.data.local.LocalUser
@@ -69,6 +70,18 @@ internal fun FirestoreUser.toUser() = User(
     profilePictureUrl = formatOracleBucketUrl(profilePictureFileName),
     state = User.UserState.fromString(state),
     tester = tester
+)
+
+fun ServerUser.toUser() = User(
+    id = userId,
+    firstName = userFirstName,
+    lastName = userLastName,
+    email = userEmail,
+    schoolLevel = SchoolLevel.fromNumber(userSchoolLevel),
+    admin = userAdmin == 1,
+    profilePictureUrl = formatOracleBucketUrl(userProfilePictureFileName),
+    state = User.UserState.fromString(userState),
+    tester = userTester == 1
 )
 
 internal fun UserReport.toRemote() = RemoteUserReport(

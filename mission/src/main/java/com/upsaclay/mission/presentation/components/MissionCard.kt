@@ -19,18 +19,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.extension.extraSmallSpacing
 import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.extension.smallSpacing
+import com.upsaclay.common.presentation.components.OptionButton
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.informationText
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
@@ -42,7 +44,8 @@ import com.upsaclay.mission.presentation.MissionFormatter
 fun MissionCard(
     modifier: Modifier = Modifier,
     mission: Mission,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onOptionClick: () -> Unit
 ) {
     when (val state = mission.state) {
         is MissionState.Published -> {
@@ -50,7 +53,8 @@ fun MissionCard(
                 modifier = modifier,
                 mission = mission,
                 imageModel = state.imageUrl,
-                onClick = onClick
+                onClick = onClick,
+                onOptionClick = onOptionClick
             )
         }
 
@@ -59,7 +63,8 @@ fun MissionCard(
                 modifier = modifier,
                 mission = mission,
                 imageModel = state.imagePath,
-                onClick = onClick
+                onClick = onClick,
+                onOptionClick = onOptionClick
             )
         }
 
@@ -68,7 +73,8 @@ fun MissionCard(
                 modifier = modifier,
                 mission = mission,
                 imageModel = state.imagePath,
-                onClick = onClick
+                onClick = onClick,
+                onOptionClick = onOptionClick
             )
         }
 
@@ -81,12 +87,23 @@ private fun DefaultMissionCard(
     modifier: Modifier = Modifier,
     mission: Mission,
     imageModel: Any?,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onOptionClick: () -> Unit
 ) {
     OutlinedCard(
         modifier = modifier.clickable(onClick = onClick)
     ) {
-        MissionCardImage(model = imageModel)
+        Box {
+            MissionCardImage(
+                modifier = Modifier.align(Alignment.Center),
+                model = imageModel,
+            )
+
+            OptionButton(
+                modifier = Modifier.align(Alignment.TopEnd),
+                onClick = onOptionClick
+            )
+        }
 
         Column(
             modifier = Modifier
@@ -113,27 +130,29 @@ private fun PublishingMissionCard(
     modifier: Modifier = Modifier,
     mission: Mission,
     imageModel: Any?,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onOptionClick: () -> Unit
 ) {
    DefaultMissionCard(
        modifier = modifier.alpha(0.5f),
        mission = mission,
        imageModel = imageModel,
-       onClick = onClick
+       onClick = onClick,
+       onOptionClick = onOptionClick
    )
 }
 
 @Composable
 private fun CardHeader(
     modifier: Modifier = Modifier,
-    mission: Mission
+    mission: Mission,
 ) {
     Column(
         verticalArrangement = Arrangement.smallSpacing()
     ) {
         Row(
             modifier = modifier,
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.Top,
             horizontalArrangement = Arrangement.smallSpacing()
         ) {
             Text(
@@ -145,6 +164,7 @@ private fun CardHeader(
             )
 
             Row(
+                modifier = Modifier.padding(top = dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding)),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.smallSpacing(),
             ) {
@@ -160,16 +180,25 @@ private fun CardHeader(
                         mission.participants.size,
                         mission.maxParticipants
                     ),
-                    style = MaterialTheme.typography.bodySmall
+                    style = MaterialTheme.typography.bodyMedium
                 )
             }
         }
 
-        Text(
-            text = MissionFormatter.formatDate(mission.startDate, mission.endDate),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.informationText
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.smallSpacing()
+        ) {
+            Icon(
+                painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_calendar),
+                contentDescription = null
+            )
+
+            Text(
+                text = MissionFormatter.formatDate(mission.startDate, mission.endDate),
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
     }
 }
 
@@ -202,15 +231,27 @@ private fun ErrorMissionCard(
     modifier: Modifier = Modifier,
     mission: Mission,
     imageModel: Any?,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onOptionClick: () -> Unit
 ) {
     OutlinedCard(
         modifier = modifier.clickable(onClick = onClick)
     ) {
         Box {
-            MissionCardImage(model = imageModel)
+            MissionCardImage(
+                modifier = Modifier.align(Alignment.Center),
+                model = imageModel
+            )
 
             ErrorBanner(modifier = Modifier.align(Alignment.TopCenter))
+
+            OptionButton(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(
+                    ),
+                onClick = onOptionClick
+            )
         }
 
         Column(
@@ -221,7 +262,7 @@ private fun ErrorMissionCard(
         ) {
             CardHeader(
                 modifier = Modifier.fillMaxWidth(),
-                mission = mission
+                mission = mission,
             )
 
             CardContent(mission = mission)
@@ -304,7 +345,8 @@ private fun DefaultMissionCardPreview() {
             DefaultMissionCard(
                 mission = mission,
                 imageModel = null,
-                onClick = {}
+                onClick = {},
+                onOptionClick = {}
             )
         }
     }
@@ -320,7 +362,8 @@ private fun PublishingMissionCardPreview() {
             PublishingMissionCard(
                 mission = mission,
                 imageModel = null,
-                onClick = {}
+                onClick = {},
+                onOptionClick = {}
             )
         }
     }
@@ -336,7 +379,8 @@ private fun ErrorMissionCardPreview() {
             ErrorMissionCard(
                 mission = mission,
                 imageModel = null,
-                onClick = {}
+                onClick = {},
+                onOptionClick = {}
             )
         }
     }

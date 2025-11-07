@@ -6,7 +6,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class Mission(
-    val id: Int,
+    val id: Long,
     val title: String,
     val description: String,
     val schoolLevels: List<SchoolLevel>,
@@ -21,7 +21,8 @@ data class Mission(
     val state: MissionState
 ) {
     val schoolLevelRestricted: Boolean
-        get() = schoolLevels.isNotEmpty() && schoolLevels.size < SchoolLevel.entries.size
+        get() = schoolLevels.isNotEmpty() &&
+                schoolLevels.size < SchoolLevel.getSchoolLevels().size
 
     val full: Boolean
         get() = participants.size >= maxParticipants
@@ -34,29 +35,34 @@ data class Mission(
 }
 
 sealed class MissionState {
-    data class Draft(val imageUri: String? = null): MissionState()
-    data class Publishing(val imagePath: String? = null): MissionState()
-    data class Published(val imageUrl: String? = null): MissionState()
-    data class Error(val imagePath: String? = null): MissionState()
-
-    override fun toString(): String {
-        return when (this) {
-            is Draft -> "DRAFT"
-            is Publishing -> "PUBLISHING"
-            is Published -> "PUBLISHED"
-            is Error -> "ERROR"
-        }
+    data class Draft(val imageUri: String? = null): MissionState() {
+        override fun toString(): String = DRAFT
     }
 
-    companion object {
-        fun fromString(value: String, imagePathOrUri: String?): MissionState {
-            return when (value) {
-                "DRAFT" -> Draft(imageUri = imagePathOrUri)
-                "PUBLISHING" -> Publishing(imagePath = imagePathOrUri)
-                "PUBLISHED" -> Published(imageUrl = imagePathOrUri)
-                "ERROR" -> Error(imagePath = imagePathOrUri)
-                else -> Error(imagePath = imagePathOrUri)
-            }
+    data class Publishing(val imagePath: String? = null): MissionState() {
+        override fun toString(): String = PUBLISHING
+    }
+
+    data class Published(val imageUrl: String? = null): MissionState() {
+        override fun toString(): String = PUBLISHED
+    }
+
+    data class Error(val imagePath: String? = null): MissionState() {
+        override fun toString(): String = ERROR
+    }
+
+    val imageModel: String?
+        get() = when (this) {
+            is Draft -> imageUri
+            is Publishing -> imagePath
+            is Published -> imageUrl
+            is Error -> imagePath
         }
+
+    companion object {
+        const val DRAFT = "DRAFT"
+        const val PUBLISHING = "PUBLISHING"
+        const val PUBLISHED = "PUBLISHED"
+        const val ERROR = "ERROR"
     }
 }

@@ -1,7 +1,7 @@
 package com.upsaclay.message.notification
 
 import com.upsaclay.common.domain.repository.RouteRepository
-import com.upsaclay.message.domain.converter.ConversationJsonConverter
+import com.upsaclay.message.domain.converter.ConversationJsonParser
 import com.upsaclay.message.domain.entity.MessageNotification
 import com.upsaclay.message.domain.mapper.toNotificationsUi
 import com.upsaclay.message.domain.repository.MessageNotificationRepository
@@ -38,7 +38,7 @@ class MessageNotificationManager(
         val messageScreen = routeRepository.currentRoute as? ChatRoute ?: return false
         return messageScreen
             .conversationJson
-            .let(ConversationJsonConverter::toConversation)
+            .let(ConversationJsonParser::toConversation)
             ?.id == conversationId
     }
 }

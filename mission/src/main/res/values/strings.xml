@@ -45,4 +45,6 @@
     <string name="mission_max_participant_field">Participant max</string>
     <string name="mission_duration_field">Durée (optionnel)</string>
     <string name="no_participants">Aucun participant</string>
+    <string name="mission_reported">Mission signalé</string>
+    <string name="edit_mission">Editer mission</string>
 </resources>

@@ -17,7 +17,7 @@ fun NavGraphBuilder.deleteAccountScreen(
 ) {
     composable<DeleteAccountRoute> {
         DeleteAccountDestination(
-            onBackClick = onBackClick,
+            onBackClick = onBackClick
         )
     }
 }

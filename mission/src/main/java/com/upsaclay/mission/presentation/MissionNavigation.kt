@@ -7,6 +7,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.upsaclay.common.domain.entity.Route
+import com.upsaclay.mission.domain.entity.Mission
 import kotlinx.serialization.Serializable
 
 @Serializable data object MissionBaseRoute: Route
@@ -17,8 +18,9 @@ fun NavController.navigateToMission(navOptions: NavOptions? = null) {
 }
 
 fun NavGraphBuilder.missionSection(
-    onMissionClick: (Int) -> Unit,
+    onMissionClick: (Long) -> Unit,
     onCreateMissionClick: () -> Unit,
+    onEditMissionClick: (Mission) -> Unit,
     bottomBar: @Composable () -> Unit,
     missionDestinations: NavGraphBuilder.() -> Unit
 ) {
@@ -27,6 +29,7 @@ fun NavGraphBuilder.missionSection(
             MissionDestination(
                 onMissionClick = onMissionClick,
                 onCreateMissionClick = onCreateMissionClick,
+                onEditMissionClick = onEditMissionClick,
                 bottomBar = bottomBar
             )
         }

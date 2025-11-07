@@ -15,7 +15,7 @@ class MissionLocalDataSource(private val missionDao: MissionDao) {
             localMissions.map { it.toMission() }
         }
 
-    fun getMissionFlow(missionId: Int): Flow<Mission> =
+    fun getMissionFlow(missionId: Long): Flow<Mission> =
         missionDao.getMissionFlow(missionId).mapNotNull { it?.toMission() }
 
     suspend fun upsertMission(mission: Mission) {

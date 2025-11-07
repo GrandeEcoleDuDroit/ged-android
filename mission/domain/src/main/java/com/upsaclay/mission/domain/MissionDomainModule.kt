@@ -27,7 +27,7 @@ val missionDomainModule = module {
     single {
         CreateMissionUseCase(
             missionRepository = get(),
-            fileRepository = get(),
+            imageRepository = get(),
             scope = get(BACKGROUND_SCOPE)
         )
     }

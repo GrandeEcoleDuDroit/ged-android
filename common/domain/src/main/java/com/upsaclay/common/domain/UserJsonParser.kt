@@ -4,13 +4,9 @@ import com.google.gson.Gson
 import com.upsaclay.common.domain.entity.User
 
 object UserJsonParser {
-    fun fromJson(userJson: String): User? {
-        return runCatching {
-            Gson().fromJson(userJson, User::class.java)
-        }.getOrNull()
-    }
+    private val gson = Gson()
 
-    fun toJson(user: User): String {
-        return Gson().toJson(user)
-    }
+    fun toUser(userJson: String): User? = gson.fromJson(userJson, User::class.java)
+
+    fun toJson(user: User): String = gson.toJson(user)
 }

@@ -24,7 +24,7 @@ const val MISSION_TABLE = "missions_table"
 data class LocalMission(
     @PrimaryKey
     @ColumnInfo(name = MISSION_ID)
-    val missionId: Int,
+    val missionId: Long,
     @ColumnInfo(name = TITLE)
     val missionTitle: String,
     @ColumnInfo(name = DESCRIPTION)

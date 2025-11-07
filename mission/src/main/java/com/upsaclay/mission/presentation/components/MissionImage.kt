@@ -1,6 +1,7 @@
 package com.upsaclay.mission.presentation.components
 
 import android.content.res.Configuration
+import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -12,12 +13,15 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.upsaclay.common.presentation.components.LargeAsyncImage
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.utils.Phones
 import com.upsaclay.mission.R
 
 @Composable
@@ -62,13 +66,12 @@ private fun DefaultImage(modifier: Modifier) {
  =====================================================================
  */
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Phones
 @Composable
 private fun MissionImagePreview() {
     GedoiseTheme {
         Surface {
-            MissionImage(model = null)
+            MissionImage(model = "null")
         }
     }
 }

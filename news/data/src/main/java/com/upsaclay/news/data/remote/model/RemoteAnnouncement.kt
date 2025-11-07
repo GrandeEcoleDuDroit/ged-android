@@ -15,7 +15,7 @@ import com.upsaclay.news.data.AnnouncementField.Remote.USER_SCHOOL_LEVEL
 import com.upsaclay.news.data.AnnouncementField.Remote.USER_STATE
 import com.upsaclay.news.data.AnnouncementField.Remote.USER_TESTER
 
-internal data class RemoteAnnouncement(
+internal data class OutbondRemoteAnnouncement(
     @SerializedName(ANNOUNCEMENT_ID)
     val announcementId: String,
     @SerializedName(ANNOUNCEMENT_TITLE)
@@ -28,7 +28,7 @@ internal data class RemoteAnnouncement(
     val userId: String
 )
 
-internal data class RemoteAnnouncementWithUser(
+internal data class InboundRemoteAnnouncement(
     @SerializedName(ANNOUNCEMENT_ID)
     val announcementId: String,
     @SerializedName(ANNOUNCEMENT_TITLE)

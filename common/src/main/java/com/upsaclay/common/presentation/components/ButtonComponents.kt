@@ -43,17 +43,16 @@ fun PrimaryButton(
 fun OptionButton(
     modifier: Modifier = Modifier,
     contentDescription: String? = null,
+    color: IconButtonColors = IconButtonDefaults.iconButtonColors(),
     onClick: () -> Unit
 ) {
     IconButton(
         onClick = onClick,
+        colors = color,
         modifier = modifier
-            .size(30.dp)
-            .clip(CircleShape)
     ) {
         Icon(
             imageVector = Icons.Default.MoreVert,
-            tint = Color.Gray,
             contentDescription = contentDescription
         )
     }

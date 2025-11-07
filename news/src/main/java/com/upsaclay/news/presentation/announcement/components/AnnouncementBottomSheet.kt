@@ -46,8 +46,7 @@ fun AnnouncementBottomSheet(
             AnnouncementState.ERROR -> {
                 ErrorAnnouncementBottomSheet(
                     onResendClick = onResendClick,
-                    onDeleteClick = onDeleteClick,
-                    onDismiss = onDismiss
+                    onDeleteClick = onDeleteClick
                 )
             }
 
@@ -69,53 +68,44 @@ fun AnnouncementBottomSheet(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ErrorAnnouncementBottomSheet(
     onResendClick: () -> Unit,
-    onDeleteClick: () -> Unit,
-    onDismiss: () -> Unit
+    onDeleteClick: () -> Unit
 ) {
-    ModalBottomSheet(
-        modifier = Modifier.testTag(stringResource(id = R.string.announcement_bottom_sheet_tag)),
-        onDismissRequest = onDismiss
-    ) {
-        TextItem(
-            modifier = Modifier.fillMaxWidth(),
-            text = {
-                Text(text = stringResource(id = com.upsaclay.common.R.string.resend))
-            },
-            icon = {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Outlined.Send,
-                    contentDescription = null
-                )
-            },
-            onClick = onResendClick
-        )
+    TextItem(
+        modifier = Modifier.fillMaxWidth(),
+        text = {
+            Text(text = stringResource(id = com.upsaclay.common.R.string.resend))
+        },
+        icon = {
+            Icon(
+                imageVector = Icons.AutoMirrored.Outlined.Send,
+                contentDescription = null
+            )
+        },
+        onClick = onResendClick
+    )
 
-        TextItem(
-            modifier = Modifier
-                .fillMaxWidth()
-                .testTag(stringResource(id = R.string.announcement_bottom_sheet_delete_field_tag)),
-            text = {
-                Text(
-                    text = stringResource(id = com.upsaclay.common.R.string.delete),
-                    color = MaterialTheme.colorScheme.error
-                )
-            },
-            icon = {
-                Icon(
-                    imageVector = Icons.Outlined.Delete,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.error
-                )
-            },
-            onClick = onDeleteClick
-        )
-
-        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.large_padding)))
-    }
+    TextItem(
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag(stringResource(id = R.string.announcement_bottom_sheet_delete_field_tag)),
+        text = {
+            Text(
+                text = stringResource(id = com.upsaclay.common.R.string.delete),
+                color = MaterialTheme.colorScheme.error
+            )
+        },
+        icon = {
+            Icon(
+                imageVector = Icons.Outlined.Delete,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.error
+            )
+        },
+        onClick = onDeleteClick
+    )
 }
 
 @Composable
@@ -230,8 +220,7 @@ fun ErrorAnnouncementBottomSheetPreview() {
         Surface {
             ErrorAnnouncementBottomSheet(
                 onResendClick = {},
-                onDeleteClick = {},
-                onDismiss = {}
+                onDeleteClick = {}
             )
         }
     }

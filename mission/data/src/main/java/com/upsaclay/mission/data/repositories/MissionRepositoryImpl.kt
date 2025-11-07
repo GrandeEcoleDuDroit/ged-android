@@ -23,12 +23,21 @@ class MissionRepositoryImpl(
         )
     override val missions: Flow<List<Mission>> = _missions
 
-    override fun getMissionFlow(missionId: Int): Flow<Mission> =
+    override val currentMissions: List<Mission>
+        get() = _missions.value
+
+    override fun getMissionFlow(missionId: Long): Flow<Mission> =
         missionLocalDataSource.getMissionFlow(missionId)
+
+    override suspend fun getRemoteMissions(): List<Mission> = missionRemoteDataSource.getMissions()
 
     override suspend fun createMission(mission: Mission, file: File?) {
         missionLocalDataSource.upsertMission(mission)
         missionRemoteDataSource.createMission(mission, file)
+    }
+
+    override suspend fun updateMission(mission: Mission) {
+
     }
 
     override suspend fun upsertLocalMission(mission: Mission) {

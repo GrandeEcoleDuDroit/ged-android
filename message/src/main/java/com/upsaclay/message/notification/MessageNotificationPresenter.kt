@@ -24,7 +24,7 @@ import com.upsaclay.common.R
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.message.domain.MessageNotificationUtils
-import com.upsaclay.message.domain.converter.ConversationJsonConverter
+import com.upsaclay.message.domain.converter.ConversationJsonParser
 import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.MessageNotificationUi
 import java.io.InputStream
@@ -82,7 +82,7 @@ class MessageNotificationPresenter (
 
     private fun buildConversationIntent(conversation: Conversation): PendingIntent {
         val intent = intentHelper.getMainActivityIntent(context).apply {
-            putExtra(CONVERSATION_ID_EXTRA, ConversationJsonConverter.toConversationJson(conversation))
+            putExtra(CONVERSATION_ID_EXTRA, ConversationJsonParser.toJson(conversation))
             addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
         }
 

@@ -7,9 +7,15 @@ import java.io.File
 interface MissionRepository {
     val missions: Flow<List<Mission>>
 
-    fun getMissionFlow(missionId: Int): Flow<Mission>
+    val currentMissions: List<Mission>
+
+    fun getMissionFlow(missionId: Long): Flow<Mission>
+
+    suspend fun getRemoteMissions(): List<Mission>
 
     suspend fun createMission(mission: Mission, file: File?)
+
+    suspend fun updateMission(mission: Mission)
 
     suspend fun upsertLocalMission(mission: Mission)
 

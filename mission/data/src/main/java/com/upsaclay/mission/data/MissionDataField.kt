@@ -27,10 +27,18 @@ object MissionField {
         const val MISSION_START_DATE = "MISSION_START_DATE"
         const val MISSION_END_DATE = "MISSION_END_DATE"
         const val MISSION_DURATION = "MISSION_DURATION"
-        const val MISSION_MANAGERS = "MISSION_MANAGERS"
-        const val MISSION_PARTICIPANTS = "MISSION_PARTICIPANTS"
         const val MISSION_MAX_PARTICIPANTS = "MISSION_MAX_PARTICIPANTS"
-        const val MISSION_TASKS = "MISSION_TASKS"
         const val MISSION_IMAGE_FILE_NAME = "MISSION_IMAGE_FILE_NAME"
+        const val MISSION_TASKS = "MISSION_TASKS"
+
+        object Inbound {
+            const val MISSION_MANAGERS = "MISSION_MANAGERS"
+            const val MISSION_PARTICIPANTS = "MISSION_PARTICIPANTS"
+        }
+
+        object Outbound {
+            const val MISSION_MANAGER_IDS = "MISSION_MANAGER_IDS"
+            const val MISSION_PARTICIPANT_IDS = "MISSION_PARTICIPANT_IDS"
+        }
     }
 }

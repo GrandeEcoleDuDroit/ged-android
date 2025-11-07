@@ -8,8 +8,8 @@ enum class SchoolLevel(val number: Int, val value: String) {
     UNKNOWN(0, "Unknown");
 
     companion object {
-        fun fromNumber(year: Int): SchoolLevel =
-            SchoolLevel.entries.find { it.number == year } ?: UNKNOWN
+        fun fromNumber(number: Int): SchoolLevel =
+            SchoolLevel.entries.find { it.number == number } ?: UNKNOWN
 
         fun fromValue(value: String): SchoolLevel =
             SchoolLevel.entries.find { it.value == value } ?: UNKNOWN

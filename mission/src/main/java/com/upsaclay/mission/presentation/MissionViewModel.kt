@@ -84,9 +84,13 @@ class MissionViewModel(
         }
     }
 
-    fun refresh() {
+    fun refreshMissions() {
         _uiState.update {
-            it.copy(refreshing = false)
+            it.copy(refreshing = true)
+        }
+
+        viewModelScope.launch {
+
         }
     }
 

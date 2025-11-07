@@ -155,7 +155,7 @@ private fun NewsScreen(
                     isEditable = user.admin && announcement.author.id == user.id,
                     onEditClick = {
                         showAnnouncementBottomSheet = false
-                        clickedAnnouncement?.id?.let(onEditAnnouncementClick)
+                        onEditAnnouncementClick(announcement.id)
                     },
                     onResendClick = {
                         showAnnouncementBottomSheet = false

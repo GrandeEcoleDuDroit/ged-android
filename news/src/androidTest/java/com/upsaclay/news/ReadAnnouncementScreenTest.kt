@@ -42,7 +42,7 @@ class ReadAnnouncementScreenTest {
                 announcementId = longAnnouncementFixture.id,
                 onBackClick = {},
                 onAuthorClick = {},
-                onEditClick = {},
+                onEditAnnouncementClick = {},
                 viewModel = readAnnouncementViewModel
             )
         }
@@ -60,7 +60,7 @@ class ReadAnnouncementScreenTest {
                 announcementId = longAnnouncementFixture.id,
                 onBackClick = {},
                 onAuthorClick = {},
-                onEditClick = {},
+                onEditAnnouncementClick = {},
                 viewModel = readAnnouncementViewModel
             )
         }
@@ -83,7 +83,7 @@ class ReadAnnouncementScreenTest {
                 announcementId = longAnnouncementFixture.id,
                 onBackClick = {},
                 onAuthorClick = {},
-                onEditClick = {},
+                onEditAnnouncementClick = {},
                 viewModel = readAnnouncementViewModel
             )
         }
@@ -101,7 +101,7 @@ class ReadAnnouncementScreenTest {
                 announcementId = longAnnouncementFixture.id,
                 onBackClick = {},
                 onAuthorClick = {},
-                onEditClick = {},
+                onEditAnnouncementClick = {},
                 viewModel = readAnnouncementViewModel
             )
         }
@@ -123,7 +123,7 @@ class ReadAnnouncementScreenTest {
                 announcementId = longAnnouncementFixture.id,
                 onBackClick = {},
                 onAuthorClick = {},
-                onEditClick = {},
+                onEditAnnouncementClick = {},
                 viewModel = readAnnouncementViewModel
             )
         }

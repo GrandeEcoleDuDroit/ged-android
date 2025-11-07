@@ -37,7 +37,7 @@ import com.upsaclay.mission.R
 @Composable
 fun MissionImageFormSection(
     modifier: Modifier = Modifier,
-    imageUri: String?,
+    imageModel: String?,
     onImageClick: () -> Unit,
     onRemoveImageClick: () -> Unit
 ) {
@@ -47,7 +47,7 @@ fun MissionImageFormSection(
             .clickable(onClick = onImageClick),
         contentAlignment = Alignment.Center
     ) {
-        imageUri?.let {
+        imageModel?.let {
             NonEmptyImage(
                 modifier = Modifier.fillMaxSize(),
                 imageUri = it,
@@ -127,7 +127,7 @@ private fun CreateMissionImageSectionPreview() {
     GedoiseTheme {
         Surface {
             MissionImageFormSection(
-                imageUri = null,
+                imageModel = null,
                 onImageClick = {},
                 onRemoveImageClick = {}
             )

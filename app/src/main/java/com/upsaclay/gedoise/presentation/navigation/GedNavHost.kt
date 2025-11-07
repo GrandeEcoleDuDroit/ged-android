@@ -45,10 +45,12 @@ import com.upsaclay.message.presentation.conversation.create.navigateToCreateCon
 import com.upsaclay.message.presentation.conversation.navigateToConversation
 import com.upsaclay.mission.presentation.createmission.createMissionScreen
 import com.upsaclay.mission.presentation.createmission.navigateToCreateMission
+import com.upsaclay.mission.presentation.editmission.editMissionScreen
+import com.upsaclay.mission.presentation.editmission.navigateToEditMission
 import com.upsaclay.mission.presentation.missionSection
-import com.upsaclay.mission.presentation.navigateToMission
-import com.upsaclay.mission.presentation.missiondetails.navigateToMissionDetails
 import com.upsaclay.mission.presentation.missiondetails.missionDetailsScreen
+import com.upsaclay.mission.presentation.missiondetails.navigateToMissionDetails
+import com.upsaclay.mission.presentation.navigateToMission
 import com.upsaclay.news.presentation.NewsRoute
 import com.upsaclay.news.presentation.announcement.allannouncements.allAnnouncementsScreen
 import com.upsaclay.news.presentation.announcement.allannouncements.navigateToAllAnnouncements
@@ -160,7 +162,7 @@ fun GedNavHost(
 
             readAnnouncementScreen(
                 onBackClick = navController::popBackStack,
-                onEditClick = navController::navigateToEditAnnouncement,
+                onEditAnnouncementClick = navController::navigateToEditAnnouncement,
                 onAuthorClick = navController::navigateToUser
             )
 
@@ -233,6 +235,7 @@ fun GedNavHost(
         missionSection(
             onMissionClick = navController::navigateToMissionDetails,
             onCreateMissionClick = navController::navigateToCreateMission,
+            onEditMissionClick = navController::navigateToEditMission,
             bottomBar = bottomBar
         ) {
             createMissionScreen(
@@ -242,7 +245,12 @@ fun GedNavHost(
             missionDetailsScreen(
                 onBackClick = navController::popBackStack,
                 onManagerClick = navController::navigateToUser,
-                onParticipantClick = navController::navigateToUser
+                onParticipantClick = navController::navigateToUser,
+                onEditMissionClick = navController::navigateToEditMission
+            )
+
+            editMissionScreen(
+                onBackClick = navController::popBackStack
             )
         }
     }
