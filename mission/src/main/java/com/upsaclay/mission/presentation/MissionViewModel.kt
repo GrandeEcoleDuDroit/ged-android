@@ -115,7 +115,7 @@ class MissionViewModel(
     }
 
     data class MissionUiState(
-        val missions: List<Mission> = emptyList(),
+        val missions: List<Mission>? = null,
         val user: User? = null,
         val loading: Boolean = false,
         val refreshing: Boolean = false

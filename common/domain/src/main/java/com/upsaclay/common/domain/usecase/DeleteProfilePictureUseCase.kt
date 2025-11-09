@@ -9,6 +9,6 @@ class DeleteProfilePictureUseCase(
 ) {
     suspend operator fun invoke(userId: String, profilePictureUrl: String) {
         userRepository.deleteProfilePictureFileName(userId)
-        imageRepository.deleteImage(profilePictureUrl.substringAfterLast("/"))
+        imageRepository.deleteRemoteImage(profilePictureUrl.substringAfterLast("/"))
     }
 }

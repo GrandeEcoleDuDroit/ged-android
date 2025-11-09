@@ -24,7 +24,7 @@ class UpdateProfilePictureUseCaseTest {
     @Before
     fun setUp() {
         coEvery { imageRepository.uploadImage(any(), any()) } returns Unit
-        coEvery { imageRepository.deleteImage(any()) } returns Unit
+        coEvery { imageRepository.deleteRemoteImage(any()) } returns Unit
 
         updateProfilePictureUseCase = UpdateProfilePictureUseCase(
             imageRepository = imageRepository
@@ -48,7 +48,7 @@ class UpdateProfilePictureUseCaseTest {
 
         // Then
         coVerify { userRepository.updateProfilePictureFileName(userFixture.id, any()) }
-        coVerify { imageRepository.deleteImage(userFixture.profilePictureUrl!!) }
+        coVerify { imageRepository.deleteRemoteImage(userFixture.profilePictureUrl!!) }
     }
 
     @Test(expected = TimeoutCancellationException::class)

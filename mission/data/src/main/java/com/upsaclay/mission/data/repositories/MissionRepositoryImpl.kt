@@ -31,13 +31,14 @@ class MissionRepositoryImpl(
 
     override suspend fun getRemoteMissions(): List<Mission> = missionRemoteDataSource.getMissions()
 
-    override suspend fun createMission(mission: Mission, file: File?) {
+    override suspend fun createMission(mission: Mission, imageFile: File?) {
         missionLocalDataSource.upsertMission(mission)
-        missionRemoteDataSource.createMission(mission, file)
+        missionRemoteDataSource.createMission(mission, imageFile)
     }
 
-    override suspend fun updateMission(mission: Mission) {
-
+    override suspend fun updateMission(mission: Mission, imageFile: File?) {
+        missionRemoteDataSource.updateMission(mission, imageFile)
+        missionLocalDataSource.upsertMission(mission)
     }
 
     override suspend fun upsertLocalMission(mission: Mission) {

@@ -27,7 +27,7 @@ class DeleteAccountUseCase(
         )
 
         userRepository.updateRemoteUser(deletedUser)
-        user.profilePictureUrl?.let { imageRepository.deleteImage(it) }
+        user.profilePictureUrl?.let { imageRepository.deleteRemoteImage(it) }
         userRepository.deleteLocalUser()
     }
 }

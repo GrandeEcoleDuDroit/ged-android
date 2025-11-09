@@ -16,10 +16,6 @@ import com.upsaclay.mission.data.remote.OutboundRemoteMission
 import com.upsaclay.mission.data.remote.RemoteMissionTask
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.MissionState
-import com.upsaclay.mission.domain.entity.MissionState.Companion.DRAFT
-import com.upsaclay.mission.domain.entity.MissionState.Companion.ERROR
-import com.upsaclay.mission.domain.entity.MissionState.Companion.PUBLISHED
-import com.upsaclay.mission.domain.entity.MissionState.Companion.PUBLISHING
 import com.upsaclay.mission.domain.entity.MissionTask
 
 fun LocalMission.toMission(): Mission {
@@ -30,9 +26,9 @@ fun LocalMission.toMission(): Mission {
 
     val schoolLevelNumbers = gson.fromJson<List<Int>>(missionSchoolLevels, schoolLevelNumbersType)
     val state = when (missionState) {
-        DRAFT -> MissionState.Draft(missionImageReference)
-        PUBLISHING -> MissionState.Publishing(missionImageReference)
-        PUBLISHED -> MissionState.Published(UrlUtils.formatOracleBucketUrl(missionImageReference))
+        MissionState.Draft.TYPE -> MissionState.Draft(missionImageReference)
+        MissionState.Publishing.TYPE -> MissionState.Publishing(missionImageReference)
+        MissionState.Published.TYPE -> MissionState.Published(UrlUtils.formatOracleBucketUrl(missionImageReference))
         else -> MissionState.Error(missionImageReference)
     }
 

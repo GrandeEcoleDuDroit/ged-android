@@ -5,6 +5,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
@@ -77,19 +78,20 @@ fun EditMissionDestination(
     EditMissionScreen(
         title = uiState.title,
         description = uiState.description,
-        allSchoolLevels = uiState.allSchoolLevels,
-        schoolLevels = uiState.schoolLevels,
         startDate = uiState.startDate,
         endDate = uiState.endDate,
+        allSchoolLevels = uiState.allSchoolLevels,
+        schoolLevels = uiState.schoolLevels,
         duration = uiState.duration,
         maxParticipants = uiState.maxParticipants,
         missionTasks = uiState.tasks,
         missionState = uiState.state,
         users = uiState.users,
         userQuery = uiState.userQuery,
+        imageUri = uiState.imageUri,
         managers = uiState.managers,
-        editEnabled = uiState.editEnabled,
         loading = uiState.loading,
+        editEnabled = uiState.updateEnabled,
         snackbarHostState = snackbarHostState,
         onTitleChange = viewModel::onTitleChange,
         onDescriptionChange = viewModel::onDescriptionChange,
@@ -103,7 +105,7 @@ fun EditMissionDestination(
         onUserQueryChange = viewModel::onUserQueryChange,
         onResetUserQuery = viewModel::onResetUserQuery,
         onImageUriChange = viewModel::onImageUriChange,
-        onRemoveImageClick = viewModel::onRemoveImageUri,
+        onRemoveImageClick = viewModel::onRemoveImage,
         onAddTaskClick = viewModel::onAddTask,
         onEditTaskClick = viewModel::onEditTask,
         onRemoveTaskClick = viewModel::onRemoveTask,
@@ -116,19 +118,20 @@ fun EditMissionDestination(
 private fun EditMissionScreen(
     title: String,
     description: String,
-    allSchoolLevels: List<SchoolLevel>,
-    schoolLevels: List<SchoolLevel>,
     startDate: LocalDate,
     endDate: LocalDate,
+    allSchoolLevels: List<SchoolLevel>,
+    schoolLevels: List<SchoolLevel>,
     duration: String,
     maxParticipants: String,
     missionTasks: List<MissionTask>,
     missionState: MissionState,
     users: List<User>,
     userQuery: String,
+    imageUri: Uri?,
     managers: List<User>,
-    editEnabled: Boolean,
     loading: Boolean,
+    editEnabled: Boolean,
     snackbarHostState: SnackbarHostState,
     onTitleChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
@@ -164,6 +167,7 @@ private fun EditMissionScreen(
     }
 
     Scaffold(
+        modifier = Modifier.imePadding(),
         topBar = {
             EditTopBar(
                 title = stringResource(R.string.edit_mission),
@@ -193,15 +197,15 @@ private fun EditMissionScreen(
             value = MissionFormValue(
                 title = title,
                 description = description,
-                allSchoolLevels = allSchoolLevels,
-                schoolLevels = schoolLevels,
                 startDate = startDate,
                 endDate = endDate,
+                allSchoolLevels = allSchoolLevels,
+                schoolLevels = schoolLevels,
                 duration = duration,
                 maxParticipants = maxParticipants,
                 managers = managers,
                 tasks = missionTasks,
-                state = missionState
+                imageReference = imageUri?.toString() ?: missionState.imageReference
             ),
             onTitleChange = onTitleChange,
             onDescriptionChange = onDescriptionChange,
@@ -312,10 +316,10 @@ private fun CreateMissionScreenPreview() {
         EditMissionScreen(
             title = mission.title,
             description = mission.description,
-            allSchoolLevels = SchoolLevel.entries,
-            schoolLevels = mission.schoolLevels,
             startDate = mission.startDate,
             endDate = mission.endDate,
+            allSchoolLevels = SchoolLevel.entries,
+            schoolLevels = mission.schoolLevels,
             duration = mission.duration.toString(),
             maxParticipants = mission.maxParticipants.toString(),
             managers = listOf(userFixture),
@@ -323,8 +327,9 @@ private fun CreateMissionScreenPreview() {
             missionState = MissionState.Published(),
             users = usersFixture,
             userQuery = "",
-            editEnabled = false,
+            imageUri = null,
             loading = false,
+            editEnabled = false,
             snackbarHostState = SnackbarHostState(),
             onTitleChange = {},
             onDescriptionChange = {},

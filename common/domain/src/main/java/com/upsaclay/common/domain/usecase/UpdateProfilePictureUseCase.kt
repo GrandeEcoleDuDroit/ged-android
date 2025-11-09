@@ -13,7 +13,7 @@ class UpdateProfilePictureUseCase(
         withTimeout(15000) {
             val fileName = imageRepository.uploadImage(profilePictureFileName(user.id), profilePictureUri)
             userRepository.updateProfilePictureFileName(user.id, fileName)
-            user.profilePictureUrl?.let { imageRepository.deleteImage(it) }
+            user.profilePictureUrl?.let { imageRepository.deleteRemoteImage(it) }
         }
     }
 

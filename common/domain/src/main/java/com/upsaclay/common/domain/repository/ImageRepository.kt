@@ -10,5 +10,7 @@ interface ImageRepository {
 
     suspend fun createLocalImage(fileName: String, uri: String): File?
 
-    suspend fun deleteImage(url: String)
+    suspend fun deleteRemoteImage(url: String)
+
+    suspend fun deleteLocalImage(fileName: String)
 }

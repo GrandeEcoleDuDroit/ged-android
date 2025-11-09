@@ -26,7 +26,6 @@ import com.upsaclay.common.presentation.components.EditTopBar
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.mission.R
-import com.upsaclay.mission.domain.entity.MissionState
 import com.upsaclay.mission.domain.entity.MissionTask
 import com.upsaclay.mission.domain.missionFixture
 import com.upsaclay.mission.presentation.MissionBottomSheetType
@@ -46,10 +45,10 @@ fun CreateMissionDestination(
     CreateMissionScreen(
         title = uiState.title,
         description = uiState.description,
-        allSchoolLevels = uiState.allSchoolLevels,
-        schoolLevels = uiState.schoolLevels,
         startDate = uiState.startDate,
         endDate = uiState.endDate,
+        allSchoolLevels = uiState.allSchoolLevels,
+        schoolLevels = uiState.schoolLevels,
         duration = uiState.duration,
         maxParticipants = uiState.maxParticipants,
         missionTasks = uiState.tasks,
@@ -152,15 +151,15 @@ private fun CreateMissionScreen(
             value = MissionFormValue(
                 title = title,
                 description = description,
-                allSchoolLevels = allSchoolLevels,
-                schoolLevels = schoolLevels,
                 startDate = startDate,
                 endDate = endDate,
+                allSchoolLevels = allSchoolLevels,
+                schoolLevels = schoolLevels,
                 duration = duration,
                 maxParticipants = maxParticipants,
                 managers = managers,
                 tasks = missionTasks,
-                state = MissionState.Draft(imageUri?.toString())
+                imageReference = imageUri?.toString()
             ),
             onTitleChange = onTitleChange,
             onDescriptionChange = onDescriptionChange,
@@ -271,10 +270,10 @@ private fun CreateMissionScreenPreview() {
         CreateMissionScreen(
             title = mission.title,
             description = mission.description,
-            allSchoolLevels = SchoolLevel.entries,
-            schoolLevels = mission.schoolLevels,
             startDate = mission.startDate,
             endDate = mission.endDate,
+            allSchoolLevels = SchoolLevel.entries,
+            schoolLevels = mission.schoolLevels,
             duration = mission.duration.toString(),
             maxParticipants = mission.maxParticipants.toString(),
             managers = listOf(userFixture),

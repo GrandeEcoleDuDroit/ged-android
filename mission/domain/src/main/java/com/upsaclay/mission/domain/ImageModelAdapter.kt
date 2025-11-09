@@ -17,16 +17,16 @@ object MissionStateAdapter: JsonSerializer<MissionState>, JsonDeserializer<Missi
     ): JsonElement {
         return when (src) {
             is MissionState.Draft -> context.serialize(src).asJsonObject
-                .apply { addProperty("type", MissionState.DRAFT) }
+                .apply { addProperty("type", MissionState.Draft.TYPE) }
 
             is MissionState.Publishing -> context.serialize(src).asJsonObject
-                .apply { addProperty("type", MissionState.PUBLISHING) }
+                .apply { addProperty("type", MissionState.Publishing.TYPE) }
 
             is MissionState.Published -> context.serialize(src).asJsonObject
-                .apply { addProperty("type", MissionState.PUBLISHED) }
+                .apply { addProperty("type", MissionState.Published.TYPE) }
 
             is MissionState.Error -> context.serialize(src).asJsonObject
-                .apply { addProperty("type", MissionState.ERROR) }
+                .apply { addProperty("type", MissionState.Error.TYPE) }
         }
     }
 
@@ -36,10 +36,10 @@ object MissionStateAdapter: JsonSerializer<MissionState>, JsonDeserializer<Missi
         context: JsonDeserializationContext
     ): MissionState {
         return when (val type = json.asJsonObject.get("type").asString) {
-            MissionState.DRAFT -> context.deserialize(json, MissionState.Draft::class.java)
-            MissionState.PUBLISHING -> context.deserialize(json, MissionState.Publishing::class.java)
-            MissionState.PUBLISHED -> context.deserialize(json, MissionState.Published::class.java)
-            MissionState.ERROR -> context.deserialize(json, MissionState.Error::class.java)
+            MissionState.Draft.TYPE -> context.deserialize(json, MissionState.Draft::class.java)
+            MissionState.Publishing.TYPE -> context.deserialize(json, MissionState.Publishing::class.java)
+            MissionState.Published.TYPE -> context.deserialize(json, MissionState.Published::class.java)
+            MissionState.Error.TYPE -> context.deserialize(json, MissionState.Error::class.java)
             else -> throw JsonParseException("Unrecognized mission state type : $type")
         }
     }

@@ -17,6 +17,12 @@ class MissionRemoteDataSource(private val missionApi: MissionApi) {
         }
     }
 
+    suspend fun updateMission(mission: Mission, imageFile: File?) {
+        withContext(Dispatchers.IO) {
+            missionApi.updateMission(mission, imageFile)
+        }
+    }
+
     suspend fun deleteMission(missionId: Long, imageUrl: String?) {
         withContext(Dispatchers.IO) {
             missionApi.deleteMission(missionId, imageUrl)

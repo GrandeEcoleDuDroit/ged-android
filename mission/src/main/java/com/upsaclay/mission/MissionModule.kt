@@ -24,7 +24,7 @@ val missionModule = module {
     viewModel { (mission: Mission) ->
         EditMissionViewModel(
             mission = mission,
-            missionRepository = get(),
+            updateMissionUseCase = get(),
             connectivityObserver = get(),
             getUsersUseCase = get()
         )

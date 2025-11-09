@@ -8,10 +8,10 @@ class DeleteMissionUseCase(
     private val missionRepository: MissionRepository
 ) {
     suspend operator fun invoke(mission: Mission) {
-        when (val state = mission.state) {
-            is MissionState.Published -> missionRepository.deleteMission(mission, state.imageUrl)
-
-            else -> missionRepository.deleteLocalMission(mission)
+        if (mission.state is MissionState.Published) {
+            missionRepository.deleteMission(mission, mission.state.imageUrl)
+        } else {
+            missionRepository.deleteLocalMission(mission)
         }
     }
 }

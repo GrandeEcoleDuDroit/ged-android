@@ -13,6 +13,7 @@ import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.MissionState
 import com.upsaclay.mission.domain.entity.MissionTask
 import com.upsaclay.mission.domain.usecase.CreateMissionUseCase
+import com.upsaclay.mission.presentation.extension.managerSorting
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.take
@@ -41,10 +42,10 @@ class CreateMissionViewModel(
             id = GenerateIdUseCase.longId,
             title = uiState.value.title.trim(),
             description = uiState.value.description.trim(),
-            schoolLevels = uiState.value.schoolLevels,
             date = LocalDateTime.now(ZoneOffset.UTC),
             startDate = uiState.value.startDate,
             endDate = uiState.value.endDate,
+            schoolLevels = uiState.value.schoolLevels,
             duration = uiState.value.duration.takeIf { it.isNotBlank() }?.trim(),
             managers = uiState.value.managers,
             participants = emptyList(),
@@ -53,37 +54,34 @@ class CreateMissionViewModel(
             state = MissionState.Draft(uiState.value.imageUri?.toString()),
         )
 
-        createMissionUseCase(mission)
+        createMissionUseCase(mission, uiState.value.imageUri?.toString())
+    }
+
+    fun onImageUriChange(uri: Uri?) {
+        _uiState.update { it.copy(imageUri = uri) }
+    }
+
+    fun onRemoveImageUri() {
+        _uiState.update { it.copy(imageUri = null) }
     }
 
     fun onTitleChange(title: String) {
-        val titleTruncated = title.take(100)
+        val truncatedTitle = title.take(100)
         _uiState.update {
             it.copy(
-                title = titleTruncated,
-                createEnabled = validateCreate(title = titleTruncated)
+                title = truncatedTitle,
+                createEnabled = validateCreate(title = truncatedTitle)
             )
         }
     }
 
     fun onDescriptionChange(description: String) {
-        val descriptionTruncated = description.take(1000)
+        val truncatedDescription = description.take(1000)
         _uiState.update {
             it.copy(
-                description = descriptionTruncated,
-                createEnabled = validateCreate(description = descriptionTruncated)
+                description = truncatedDescription,
+                createEnabled = validateCreate(description = truncatedDescription)
             )
-        }
-    }
-
-    fun onSchoolLevelChange(schoolLevel: SchoolLevel) {
-        _uiState.update { currentState ->
-            val updatedSchoolLevels = if (currentState.schoolLevels.contains(schoolLevel)) {
-                currentState.schoolLevels - schoolLevel
-            } else {
-                currentState.schoolLevels + schoolLevel
-            }
-            currentState.copy(schoolLevels = updatedSchoolLevels.sorted())
         }
     }
 
@@ -105,15 +103,23 @@ class CreateMissionViewModel(
         }
     }
 
-    fun onDurationChange(duration: String) {
-        val durationTruncated = duration.take(200)
+    fun onSchoolLevelChange(schoolLevel: SchoolLevel) {
         _uiState.update {
-            it.copy(duration = durationTruncated)
+            val schoolLevels = if (it.schoolLevels.contains(schoolLevel)) {
+                it.schoolLevels - schoolLevel
+            } else {
+                it.schoolLevels + schoolLevel
+            }.sorted()
+
+            it.copy(schoolLevels = schoolLevels)
         }
     }
 
     fun onMaxParticipantsChange(maxParticipants: String) {
-        if (maxParticipants.all { it.isDigit() }) {
+        if (
+            maxParticipants.isEmpty() ||
+            maxParticipants.toIntOrNull()?.let { it > 0 } == true
+        ) {
             _uiState.update {
                 it.copy(
                     maxParticipants = maxParticipants,
@@ -123,8 +129,19 @@ class CreateMissionViewModel(
         }
     }
 
+    fun onDurationChange(duration: String) {
+        val truncatedDuration = duration.take(200)
+        _uiState.update {
+            it.copy(duration = truncatedDuration)
+        }
+    }
+
     fun onSaveManagers(managers: List<User>) {
-        _uiState.update { it.copy(managers = managers) }
+        _uiState.update {
+            it.copy(
+                managers = managers
+            )
+        }
     }
 
     fun onRemoveManager(manager: User) {
@@ -179,14 +196,6 @@ class CreateMissionViewModel(
         }
     }
 
-    fun onImageUriChange(uri: Uri?) {
-        _uiState.update { it.copy(imageUri = uri) }
-    }
-
-    fun onRemoveImageUri() {
-        _uiState.update { it.copy(imageUri = null) }
-    }
-
     private fun filterUsersByName(query: String) {
         val users = if (query.isNotBlank()) {
             defaultUsers.filter { user ->
@@ -218,8 +227,7 @@ class CreateMissionViewModel(
     private fun initUsers() {
         viewModelScope.launch {
             getUsersUseCase()
-                .sortedBy { it.fullName }
-                .sortedByDescending { it.admin }
+                .managerSorting()
                 .also { users ->
                     _uiState.update { it.copy(users = users) }
                     defaultUsers = users
@@ -250,9 +258,9 @@ class CreateMissionViewModel(
     data class CreateMissionUiState(
         val title: String = "",
         val description: String = "",
-        val schoolLevels: List<SchoolLevel> = emptyList(),
         val startDate: LocalDate = LocalDate.now(),
         val endDate: LocalDate = LocalDate.now(),
+        val schoolLevels: List<SchoolLevel> = emptyList(),
         val duration: String = "",
         val managers: List<User> = emptyList(),
         val maxParticipants: String = "",

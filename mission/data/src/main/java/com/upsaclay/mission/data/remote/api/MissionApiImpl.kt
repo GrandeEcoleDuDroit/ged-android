@@ -18,7 +18,9 @@ import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Part
+import retrofit2.http.Path
 import java.io.File
 
 internal class MissionApiImpl(
@@ -28,7 +30,7 @@ internal class MissionApiImpl(
 
     override suspend fun getMissions(): List<Mission> {
         return mapServerResponseException(
-            message = "Failed to fetch missions",
+            message = "Failed to get missions",
             block = { serverMissionApi.getMissions() }
         )?.map(InboundRemoteMission::toMission) ?: emptyList()
     }
@@ -51,6 +53,24 @@ internal class MissionApiImpl(
         }
     }
 
+    override suspend fun updateMission(mission: Mission, imageFile: File?) {
+        val missionPart = gson
+            .toJson(mission.toRemote(imageFile?.name))
+            .toRequestBody("application/json".toMediaType())
+
+        val imagePart = imageFile?.let {
+            val requestFile = it.asRequestBody("image/*".toMediaType())
+            MultipartBody.Part.createFormData("image", it.name, requestFile)
+        }
+
+        withContext(Dispatchers.IO) {
+            mapServerResponseException(
+                message = "Failed to update mission",
+                block = { serverMissionApi.updateMission(mission.id.toString(), imagePart, missionPart) }
+            )
+        }
+    }
+
     override suspend fun deleteMission(missionId: Long, imageUrl: String?) {
         withContext(Dispatchers.IO) {
             mapServerResponseException(
@@ -68,6 +88,14 @@ internal interface ServerMissionApi {
     @Multipart
     @POST("missions/create")
     suspend fun createMission(
+        @Part image: MultipartBody.Part?,
+        @Part("mission") remoteMission: RequestBody
+    ): Response<ServerResponse>
+
+    @Multipart
+    @PUT("missions/{missionId}")
+    suspend fun updateMission(
+        @Path("missionId") missionId: String,
         @Part image: MultipartBody.Part?,
         @Part("mission") remoteMission: RequestBody
     ): Response<ServerResponse>

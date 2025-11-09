@@ -4,6 +4,8 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.CheckboxColors
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.IconButtonColors
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.TextFieldColors
@@ -103,7 +105,7 @@ val ColorScheme.defaultImageBackground: Color
 
 val ColorScheme.defaultImageForeground: Color
     @Composable
-    get() = if (isSystemInDarkTheme()) Color(0xFFC2C5CF) else Color(0xFFC2C5CF)
+    get() = if (isSystemInDarkTheme()) Color(0xFFC2C5CF) else Color(0xFFA8ACB5)
 
 val ColorScheme.outlinedTextFieldColor: TextFieldColors
     @Composable
@@ -137,10 +139,19 @@ val ColorScheme.iconBackground: Color
     @Composable
     get() = if (isSystemInDarkTheme()) Color(0xFF323232) else Color(0xFFE6E6E6)
 
-val ColorScheme.backButtonBackground: Color
+private val ColorScheme.imageIconButtonContainer: Color
     @Composable
-    get() = if (isSystemInDarkTheme()) Color(0xFF323232) else Color(0xFFF5F5F5)
+    get() = if (isSystemInDarkTheme()) {
+        Color(0xFF323232)
+    } else {
+        Color(0xFFF5F5F5)
+    }.copy(alpha = 0.7f)
 
+val ColorScheme.imageIconButtonColors: IconButtonColors
+    @Composable
+    get() = IconButtonDefaults.iconButtonColors(
+        containerColor = imageIconButtonContainer
+    )
 
 val ColorScheme.leadingIcon: Color
     @Composable

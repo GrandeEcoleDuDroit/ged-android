@@ -75,10 +75,10 @@ fun MissionDestination(
         }
     }
 
-    if (uiState.value.user != null) {
+    if (uiState.value.user != null && uiState.value.missions != null) {
         MissionScreen(
             user = uiState.value.user!!,
-            missions = uiState.value.missions,
+            missions = uiState.value.missions!!,
             loading = uiState.value.loading,
             refreshing = uiState.value.refreshing,
             snackbarHostState = snackbarHostState,
@@ -177,8 +177,8 @@ private fun MissionScreen(
         if (showMissionBottomSheet) {
             clickedMission?.let { mission ->
                 MissionBottomSheet(
-                    missionState = mission.state,
-                    isEditable = mission.managers.contains(user),
+                    mission = mission,
+                    currentUser = user,
                     onResendClick = {
                         showMissionBottomSheet = false
                         onResendMissionClick(mission)

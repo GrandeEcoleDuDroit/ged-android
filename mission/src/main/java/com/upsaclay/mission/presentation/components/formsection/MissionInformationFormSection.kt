@@ -33,10 +33,10 @@ import java.time.LocalDate
 @Composable
 fun MissionInformationFormSection(
     modifier: Modifier = Modifier,
-    schoolLevels: List<SchoolLevel>,
-    selectedSchoolLevels: List<SchoolLevel>,
     startDate: LocalDate,
     endDate: LocalDate,
+    allSchoolLevels: List<SchoolLevel>,
+    schoolLevels: List<SchoolLevel>,
     duration: String,
     participantNumber: String,
     onSelectedSchoolLevelsChange: (SchoolLevel) -> Unit,
@@ -51,13 +51,6 @@ fun MissionInformationFormSection(
     ) {
         SectionTitle(title = stringResource(R.string.information))
 
-        OutlinedSchoolLevelDropDownMenu(
-            modifier = Modifier.fillMaxWidth(),
-            schoolLevels = schoolLevels,
-            selectedSchoolLevels = selectedSchoolLevels,
-            onSelectedSchoolLevelsChange = onSelectedSchoolLevelsChange
-        )
-
         OutlinedDatePicker(
             modifier = Modifier.fillMaxWidth(),
             date = startDate,
@@ -70,6 +63,13 @@ fun MissionInformationFormSection(
             date = endDate,
             onClick = onEndDateClick,
             label = stringResource(R.string.mission_end_date_field),
+        )
+
+        OutlinedSchoolLevelDropDownMenu(
+            modifier = Modifier.fillMaxWidth(),
+            schoolLevels = allSchoolLevels,
+            selectedSchoolLevels = schoolLevels,
+            onSelectedSchoolLevelsChange = onSelectedSchoolLevelsChange
         )
 
         SimpleOutlinedTextField(
@@ -118,24 +118,24 @@ fun MissionInformationFormSection(
 @Phones
 @Composable
 private fun CreateMissionInformationSectionPreview() {
-    var selectedSchoolLevels by remember { mutableStateOf(emptyList<SchoolLevel>()) }
+    var schoolLevels by remember { mutableStateOf(emptyList<SchoolLevel>()) }
     var duration by remember { mutableStateOf("") }
     var participantsNumber by remember { mutableStateOf("") }
 
     GedoiseTheme {
         Surface {
             MissionInformationFormSection(
-                schoolLevels = SchoolLevel.entries.toList(),
-                selectedSchoolLevels = selectedSchoolLevels,
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(7),
+                allSchoolLevels = SchoolLevel.getSchoolLevels(),
+                schoolLevels = schoolLevels,
                 duration = duration,
                 participantNumber = participantsNumber,
                 onSelectedSchoolLevelsChange = {
-                    if (selectedSchoolLevels.contains(it)) {
-                        selectedSchoolLevels = selectedSchoolLevels - it
+                    if (schoolLevels.contains(it)) {
+                        schoolLevels = schoolLevels - it
                     } else {
-                        selectedSchoolLevels = selectedSchoolLevels + it
+                        schoolLevels = schoolLevels + it
                     }
                 },
                 onStartDateClick = {},

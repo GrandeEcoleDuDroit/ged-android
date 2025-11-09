@@ -4,14 +4,12 @@ import android.content.res.Configuration
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -19,7 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import com.upsaclay.common.extension.mediumSpacing
-import com.upsaclay.common.extension.smallSpacing
+import com.upsaclay.common.presentation.components.TextIcon
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
@@ -34,16 +32,16 @@ fun MissionInformationItem(
 ) {
     val missionInformationValues = mutableListOf(
         MissionInformationValue(
+            iconRes = com.upsaclay.common.R.drawable.ic_outline_calendar,
+            value = MissionFormatter.formatDate(mission.startDate, mission.endDate)
+        ),
+        MissionInformationValue(
             iconRes = R.drawable.ic_outline_school,
             value = if (mission.schoolLevelRestricted) {
                 MissionFormatter.formatSchoolLevels(mission.schoolLevels)
             } else {
                 stringResource(R.string.everyone)
             }
-        ),
-        MissionInformationValue(
-            iconRes = com.upsaclay.common.R.drawable.ic_outline_calendar,
-            value = MissionFormatter.formatDate(mission.startDate, mission.endDate)
         ),
         MissionInformationValue(
             iconRes = com.upsaclay.common.R.drawable.ic_outline_group,
@@ -75,21 +73,22 @@ fun MissionInformationItem(
         verticalArrangement = Arrangement.mediumSpacing()
     ) {
         missionInformationValues.forEach {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.smallSpacing()
-            ) {
-                Icon(
-                    painter = painterResource(it.iconRes),
-                    contentDescription = null
-                )
-
-                Text(
-                    text = it.value,
-                    style = textStyle
-                )
-            }
+            TextIcon(
+                icon = {
+                    Icon(
+                        painter = painterResource(it.iconRes),
+                        contentDescription = null
+                    )
+                },
+                text = {
+                    Text(
+                        text = it.value,
+                        style = textStyle
+                    )
+                }
+            )
         }
+
     }
 }
 

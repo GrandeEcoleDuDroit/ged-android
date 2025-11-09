@@ -62,8 +62,8 @@ import com.upsaclay.mission.domain.entity.MissionTask
 import com.upsaclay.mission.domain.missionFixture
 import com.upsaclay.mission.presentation.components.MissionImage
 import com.upsaclay.mission.presentation.components.bottomsheet.MissionBottomSheet
-import com.upsaclay.mission.presentation.components.item.ManagerItem
 import com.upsaclay.mission.presentation.components.item.MissionInformationItem
+import com.upsaclay.mission.presentation.components.item.MissionUserItem
 import com.upsaclay.mission.presentation.components.item.SectionTitle
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -176,7 +176,8 @@ private fun MissionDetailsScreen(
                         is MissionState.Publishing -> state.imagePath
                         is MissionState.Published -> state.imageUrl
                         is MissionState.Error -> state.imagePath
-                    }
+                    },
+                    defaultImageScale = 1.6f
                 )
 
                 Column(
@@ -246,8 +247,8 @@ private fun MissionDetailsScreen(
 
     if (showBottomSheet) {
         MissionBottomSheet(
-            missionState = mission.state,
-            isEditable = mission.managers.contains(user),
+            mission = mission,
+            currentUser = user,
             onEditClick = {
                 showBottomSheet = false
                 onEditMissionClick(mission)
@@ -344,7 +345,7 @@ private fun ManagerSection(
             modifier = Modifier.heightIn(max = 200.dp)
         ) {
             items(managers) {
-                ManagerItem(
+                MissionUserItem(
                     modifier = Modifier.clickable { onManagerClick(it) },
                     user = it,
                     imageScale = 0.4f,

@@ -9,10 +9,10 @@ data class Mission(
     val id: Long,
     val title: String,
     val description: String,
-    val schoolLevels: List<SchoolLevel>,
     val date: LocalDateTime,
     val startDate: LocalDate,
     val endDate: LocalDate,
+    val schoolLevels: List<SchoolLevel>,
     val duration: String?,
     val managers: List<User>,
     val participants: List<User>,
@@ -36,33 +36,38 @@ data class Mission(
 
 sealed class MissionState {
     data class Draft(val imageUri: String? = null): MissionState() {
-        override fun toString(): String = DRAFT
+        override fun toString(): String = TYPE
+        companion object {
+            const val TYPE = "DRAFT"
+        }
     }
 
     data class Publishing(val imagePath: String? = null): MissionState() {
-        override fun toString(): String = PUBLISHING
+        override fun toString(): String = TYPE
+        companion object {
+            const val TYPE = "PUBLISHING"
+        }
     }
 
     data class Published(val imageUrl: String? = null): MissionState() {
-        override fun toString(): String = PUBLISHED
+        override fun toString(): String = TYPE
+        companion object {
+            const val TYPE = "PUBLISHED"
+        }
     }
 
     data class Error(val imagePath: String? = null): MissionState() {
-        override fun toString(): String = ERROR
+        override fun toString(): String = TYPE
+        companion object {
+            const val TYPE = "ERROR"
+        }
     }
 
-    val imageModel: String?
+    val imageReference: String?
         get() = when (this) {
             is Draft -> imageUri
             is Publishing -> imagePath
             is Published -> imageUrl
             is Error -> imagePath
         }
-
-    companion object {
-        const val DRAFT = "DRAFT"
-        const val PUBLISHING = "PUBLISHING"
-        const val PUBLISHED = "PUBLISHED"
-        const val ERROR = "ERROR"
-    }
 }

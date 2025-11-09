@@ -39,10 +39,14 @@ internal class ImageRepositoryImpl(
         file.name
     }
 
-    override suspend fun deleteImage(url: String) {
+    override suspend fun deleteRemoteImage(url: String) {
         UrlUtils.extractFileName(url)?.let {
             imageRemoteDataSource.deleteImage(it)
         }
+    }
+
+    override suspend fun deleteLocalImage(fileName: String) {
+        File(context.filesDir, fileName).delete()
     }
 
     private fun getType(uri: String): String {

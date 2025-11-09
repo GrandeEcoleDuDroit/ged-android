@@ -31,7 +31,7 @@ import com.upsaclay.common.presentation.theme.leadingIcon
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.mission.R
 import com.upsaclay.mission.presentation.components.RemoveButton
-import com.upsaclay.mission.presentation.components.item.ManagerItem
+import com.upsaclay.mission.presentation.components.item.MissionUserItem
 import com.upsaclay.mission.presentation.components.item.SectionTitle
 
 @Composable
@@ -54,7 +54,7 @@ fun MissionManagerFormSection(
         )
 
         managers.forEach {
-            ManagerItem(
+            MissionUserItem(
                 user = it,
                 imageScale = 0.4f,
                 trailingContent = if (managers.size > 1) {

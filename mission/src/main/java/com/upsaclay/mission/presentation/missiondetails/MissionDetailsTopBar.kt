@@ -10,7 +10,6 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -24,7 +23,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.upsaclay.common.presentation.components.OptionButton
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.backButtonBackground
+import com.upsaclay.common.presentation.theme.imageIconButtonColors
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.mission.R
 
@@ -67,9 +66,7 @@ private fun ImageTopBar(
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(
-            colors = IconButtonDefaults.iconButtonColors(
-                containerColor = MaterialTheme.colorScheme.backButtonBackground
-            ),
+            colors = MaterialTheme.colorScheme.imageIconButtonColors,
             onClick = onBackClick
         ) {
             Icon(
@@ -79,9 +76,7 @@ private fun ImageTopBar(
         }
 
         OptionButton(
-            color = IconButtonDefaults.iconButtonColors(
-                containerColor = MaterialTheme.colorScheme.backButtonBackground
-            ),
+            color = MaterialTheme.colorScheme.imageIconButtonColors,
             onClick = onOptionClick
         )
     }
