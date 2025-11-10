@@ -3,6 +3,7 @@ package com.upsaclay.mission
 import android.net.Uri
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.repository.UserRepository
+import com.upsaclay.common.domain.usecase.GenerateIdUseCase
 import com.upsaclay.common.domain.usecase.GetUsersUseCase
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.domain.userFixture2
@@ -27,14 +28,17 @@ class CreateMissionViewModelTest {
     private val userRepository: UserRepository = mockk()
     private val createMissionUseCase: CreateMissionUseCase = mockk()
     private val getUsersUseCase: GetUsersUseCase = mockk()
+    private val generateIdUseCase: GenerateIdUseCase = mockk()
 
     private lateinit var viewModel: CreateMissionViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
+    private val newId = "newId"
 
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
 
+        every { generateIdUseCase() } returns newId
         every { userRepository.user } returns MutableStateFlow(userFixture)
         coEvery { createMissionUseCase(any(), any()) } returns Unit
         coEvery { getUsersUseCase() } returns usersFixture
@@ -42,7 +46,8 @@ class CreateMissionViewModelTest {
         viewModel = CreateMissionViewModel(
             userRepository = userRepository,
             createMissionUseCase = createMissionUseCase,
-            getUsersUseCase = getUsersUseCase
+            getUsersUseCase = getUsersUseCase,
+            generateIdUseCase = generateIdUseCase
         )
     }
 
@@ -383,7 +388,8 @@ class CreateMissionViewModelTest {
         viewModel = CreateMissionViewModel(
             userRepository = userRepository,
             createMissionUseCase = createMissionUseCase,
-            getUsersUseCase = getUsersUseCase
+            getUsersUseCase = getUsersUseCase,
+            generateIdUseCase = generateIdUseCase
         )
         viewModel.onUserQueryChange(userQuery)
 
@@ -421,10 +427,10 @@ class CreateMissionViewModelTest {
     @Test
     fun onAddTask_should_add_task() {
         // Given
-        val task = MissionTask("id", "task")
+        val task = MissionTask(newId, "task")
 
         // When
-        viewModel.onAddTask(task)
+        viewModel.onAddTask(task.value)
 
         // Then
         assertEquals(listOf(task), viewModel.uiState.value.tasks)
@@ -433,11 +439,11 @@ class CreateMissionViewModelTest {
     @Test
     fun onAddTask_should_trim_task() {
         // Given
-        val task = MissionTask("id", " task ")
-        val trimmedTask = MissionTask("id", "task")
+        val task = MissionTask(newId, " task ")
+        val trimmedTask = task.copy(value = "task")
 
         // When
-        viewModel.onAddTask(task)
+        viewModel.onAddTask(task.value)
 
         // Then
         assertEquals(listOf(trimmedTask), viewModel.uiState.value.tasks)
@@ -446,11 +452,11 @@ class CreateMissionViewModelTest {
     @Test
     fun onEditTask_should_edit_task() {
         // Given
-        val task = MissionTask("id", "task")
-        val editedTask = MissionTask("id", "editedTask")
+        val task = MissionTask(newId, "task")
+        val editedTask = task.copy(value = "editedTask")
 
         // When
-        viewModel.onAddTask(task)
+        viewModel.onAddTask(task.value)
         viewModel.onEditTask(editedTask)
 
         // Then
@@ -460,12 +466,12 @@ class CreateMissionViewModelTest {
     @Test
     fun onEditTask_should_trimmed_task() {
         // Given
-        val task = MissionTask("id", "task")
-        val editedTask = MissionTask("id", " editedTask ")
-        val trimmedEditedTask = MissionTask("id", "editedTask")
+        val task = MissionTask(newId, "task")
+        val editedTask = task.copy(value = " editedTask ")
+        val trimmedEditedTask = task.copy(value = "editedTask")
 
         // When
-        viewModel.onAddTask(task)
+        viewModel.onAddTask(task.value)
         viewModel.onEditTask(editedTask)
 
         // Then
@@ -475,13 +481,13 @@ class CreateMissionViewModelTest {
     @Test
     fun onRemoveTask_should_remove_task() {
         // Given
-        val task = MissionTask("id", "task")
+        val task = MissionTask(newId, "task")
 
         // When
-        viewModel.onAddTask(task)
+        viewModel.onAddTask(task.value)
         viewModel.onRemoveTask(task)
 
         // Then
-        assertEquals(emptyList(), viewModel.uiState.value.tasks)
+        assertEquals(emptyList(), viewModel.uiState.value.tasks.map { it.value })
     }
 }

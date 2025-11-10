@@ -17,7 +17,7 @@ class UpdateProfilePictureUseCaseTest {
     private val userRepository: UserRepository = mockk()
     private val imageRepository: ImageRepository = mockk()
 
-    private lateinit var updateProfilePictureUseCase: UpdateProfilePictureUseCase
+    private lateinit var useCase: UpdateProfilePictureUseCase
 
     private val uri = "uri"
 
@@ -25,8 +25,9 @@ class UpdateProfilePictureUseCaseTest {
     fun setUp() {
         coEvery { imageRepository.uploadImage(any(), any()) } returns ""
         coEvery { imageRepository.deleteRemoteImage(any()) } returns Unit
+        coEvery { userRepository.updateProfilePictureFileName(any(), any()) } returns Unit
 
-        updateProfilePictureUseCase = UpdateProfilePictureUseCase(
+        useCase = UpdateProfilePictureUseCase(
             userRepository = userRepository,
             imageRepository = imageRepository
         )
@@ -35,7 +36,7 @@ class UpdateProfilePictureUseCaseTest {
     @Test
     fun updateProfilePictureUseCase_should_update_profile_picture() = runTest {
         // When
-        updateProfilePictureUseCase(userFixture, uri)
+        useCase(userFixture, uri)
 
         // Then
         coVerify { userRepository.updateProfilePictureFileName(userFixture.id, any()) }
@@ -45,7 +46,7 @@ class UpdateProfilePictureUseCaseTest {
     @Test
     fun updateProfilePictureUseCase_should_delete_previous_profile_picture_when_not_null() = runTest {
         // When
-        updateProfilePictureUseCase(userFixture, uri)
+        useCase(userFixture, uri)
 
         // Then
         coVerify { userRepository.updateProfilePictureFileName(userFixture.id, any()) }
@@ -58,6 +59,6 @@ class UpdateProfilePictureUseCaseTest {
         coEvery { imageRepository.uploadImage(any(), any()) } just awaits
 
         // When
-        updateProfilePictureUseCase(userFixture, uri)
+        useCase(userFixture, uri)
     }
 }

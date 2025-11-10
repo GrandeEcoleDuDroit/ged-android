@@ -32,7 +32,8 @@ class EditMissionViewModel(
     private val mission: Mission,
     private val connectivityObserver: ConnectivityObserver,
     private val getUsersUseCase: GetUsersUseCase,
-    private val updateMissionUseCase: UpdateMissionUseCase
+    private val updateMissionUseCase: UpdateMissionUseCase,
+    private val generateIdUseCase: GenerateIdUseCase
 ): ViewModel() {
     private val _uiState = MutableStateFlow(
         EditMissionUiState(
@@ -257,7 +258,7 @@ class EditMissionViewModel(
     }
 
     fun onAddTask(value: String) {
-        val task = MissionTask(GenerateIdUseCase(), value)
+        val task = MissionTask(generateIdUseCase(), value.trim())
         val tasks = uiState.value.tasks + task
         _uiState.update {
             it.copy(tasks = tasks)
@@ -270,7 +271,7 @@ class EditMissionViewModel(
     fun onEditTask(missionTask: MissionTask) {
         val tasks = uiState.value.tasks.replace(
             predicate = { it.id == missionTask.id },
-            value = missionTask
+            value = missionTask.copy(value = missionTask.value.trim())
         )
         _uiState.update {
             it.copy(tasks = tasks)

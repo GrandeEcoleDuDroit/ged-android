@@ -3,6 +3,7 @@ package com.upsaclay.message
 import androidx.paging.PagingData
 import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.repository.UserRepository
+import com.upsaclay.common.domain.usecase.GenerateIdUseCase
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.message.domain.conversationFixture
 import com.upsaclay.message.domain.messageFixture
@@ -36,6 +37,7 @@ class ChatViewModelTest {
     private val sendMessageUseCase: SendMessageUseCase = mockk()
     private val messageNotificationManager: MessageNotificationManager = mockk()
     private val deleteConversationUseCase: DeleteConversationUseCase = mockk()
+    private val generateIdUseCase: GenerateIdUseCase = mockk()
 
     private lateinit var chatViewModel: ChatViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
@@ -45,6 +47,7 @@ class ChatViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
 
+        every { generateIdUseCase() } returns "testId"
         every { conversationRepository.getConversationFlow(any()) } returns flowOf(conversationFixture)
         every { userRepository.user } returns MutableStateFlow(userFixture)
         every { userRepository.currentUser } returns userFixture
@@ -65,7 +68,8 @@ class ChatViewModelTest {
             sendMessageUseCase = sendMessageUseCase,
             messageNotificationManager = messageNotificationManager,
             blockedUserRepository = blockedUserRepository,
-            deleteConversationUseCase = deleteConversationUseCase
+            deleteConversationUseCase = deleteConversationUseCase,
+            generateIdUseCase = generateIdUseCase
         )
     }
 

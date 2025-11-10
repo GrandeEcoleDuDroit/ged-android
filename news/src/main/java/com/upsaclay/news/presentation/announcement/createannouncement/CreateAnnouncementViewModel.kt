@@ -19,7 +19,8 @@ import java.time.ZoneOffset
 
 class CreateAnnouncementViewModel(
     userRepository: UserRepository,
-    private val createAnnouncementUseCase: CreateAnnouncementUseCase
+    private val createAnnouncementUseCase: CreateAnnouncementUseCase,
+    private val generateIdUseCase: GenerateIdUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(CreateAnnouncementUiState())
     internal val uiState: StateFlow<CreateAnnouncementUiState> = _uiState
@@ -48,7 +49,7 @@ class CreateAnnouncementViewModel(
         if (user == null) return
         val (title, content) = uiState.value
         val announcement = Announcement(
-            id = GenerateIdUseCase(),
+            id = generateIdUseCase(),
             title = if (title.isBlank()) null else title.trim(),
             content = content.trim(),
             date = LocalDateTime.now(ZoneOffset.UTC),

@@ -3,6 +3,7 @@ package com.upsaclay.mission
 import android.net.Uri
 import com.upsaclay.common.domain.ConnectivityObserver
 import com.upsaclay.common.domain.entity.SchoolLevel
+import com.upsaclay.common.domain.usecase.GenerateIdUseCase
 import com.upsaclay.common.domain.usecase.GetUsersUseCase
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.domain.userFixture2
@@ -14,6 +15,7 @@ import com.upsaclay.mission.domain.usecase.UpdateMissionUseCase
 import com.upsaclay.mission.presentation.editmission.EditMissionViewModel
 import com.upsaclay.mission.presentation.extension.managerSorting
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -27,21 +29,25 @@ class EditMissionViewModelTest {
     private val connectivityObserver: ConnectivityObserver = mockk()
     private val getUsersUseCase: GetUsersUseCase = mockk()
     private val updateMissionUseCase: UpdateMissionUseCase = mockk()
+    private val generateIdUseCase: GenerateIdUseCase = mockk()
 
     private lateinit var viewModel: EditMissionViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
+    private val newId = "newId"
 
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
 
+        every { generateIdUseCase() } returns newId
         coEvery { getUsersUseCase() } returns usersFixture
 
         viewModel = EditMissionViewModel(
             mission = missionFixture,
             connectivityObserver = connectivityObserver,
             getUsersUseCase = getUsersUseCase,
-            updateMissionUseCase = updateMissionUseCase
+            updateMissionUseCase = updateMissionUseCase,
+            generateIdUseCase = generateIdUseCase
         )
     }
 
@@ -218,7 +224,8 @@ class EditMissionViewModelTest {
             mission = missionFixture.copy(schoolLevels = emptyList()),
             connectivityObserver = connectivityObserver,
             getUsersUseCase = getUsersUseCase,
-            updateMissionUseCase
+            updateMissionUseCase = updateMissionUseCase,
+            generateIdUseCase = generateIdUseCase
         )
         viewModel.onSchoolLevelChange(schoolLevel)
 
@@ -236,7 +243,8 @@ class EditMissionViewModelTest {
             mission = missionFixture.copy(schoolLevels = emptyList()),
             connectivityObserver = connectivityObserver,
             getUsersUseCase = getUsersUseCase,
-            updateMissionUseCase
+            updateMissionUseCase = updateMissionUseCase,
+            generateIdUseCase = generateIdUseCase
         )
         viewModel.onSchoolLevelChange(schoolLevel)
         viewModel.onSchoolLevelChange(schoolLevel)
@@ -255,7 +263,8 @@ class EditMissionViewModelTest {
             mission = missionFixture.copy(schoolLevels = emptyList()),
             connectivityObserver = connectivityObserver,
             getUsersUseCase = getUsersUseCase,
-            updateMissionUseCase
+            updateMissionUseCase = updateMissionUseCase,
+            generateIdUseCase = generateIdUseCase
         )
         schoolLevels.forEach {
             viewModel.onSchoolLevelChange(it)
@@ -410,7 +419,8 @@ class EditMissionViewModelTest {
             mission = missionFixture,
             connectivityObserver = connectivityObserver,
             getUsersUseCase = getUsersUseCase,
-            updateMissionUseCase = updateMissionUseCase
+            updateMissionUseCase = updateMissionUseCase,
+            generateIdUseCase = generateIdUseCase
         )
         viewModel.onUserQueryChange(userQuery)
 
@@ -448,10 +458,10 @@ class EditMissionViewModelTest {
     @Test
     fun onAddTask_should_add_task() {
         // Given
-        val task = MissionTask("id", "task")
+        val task = MissionTask(newId, "task")
 
         // When
-        viewModel.onAddTask(task)
+        viewModel.onAddTask(task.value)
 
         // Then
         assertEquals(missionFixture.tasks + task, viewModel.uiState.value.tasks)
@@ -460,11 +470,11 @@ class EditMissionViewModelTest {
     @Test
     fun onAddTask_should_trim_task() {
         // Given
-        val task = MissionTask("id", " task ")
-        val trimmedTask = MissionTask("id", "task")
+        val task = MissionTask(newId, " task ")
+        val trimmedTask = task.copy(value =  "task")
 
         // When
-        viewModel.onAddTask(task)
+        viewModel.onAddTask(task.value)
 
         // Then
         assertEquals(missionFixture.tasks + trimmedTask, viewModel.uiState.value.tasks)
@@ -473,11 +483,11 @@ class EditMissionViewModelTest {
     @Test
     fun onEditTask_should_edit_task() {
         // Given
-        val task = MissionTask("id", "task")
-        val editedTask = MissionTask("id", "editedTask")
+        val task = MissionTask(newId, "task")
+        val editedTask = task.copy(value =  "editedTask")
 
         // When
-        viewModel.onAddTask(task)
+        viewModel.onAddTask(task.value)
         viewModel.onEditTask(editedTask)
 
         // Then
@@ -487,12 +497,12 @@ class EditMissionViewModelTest {
     @Test
     fun onEditTask_should_trimmed_task() {
         // Given
-        val task = MissionTask("id", "task")
-        val editedTask = MissionTask("id", " editedTask ")
-        val trimmedEditedTask = MissionTask("id", "editedTask")
+        val task = MissionTask(newId, "task")
+        val editedTask = task.copy(value = " editedTask ")
+        val trimmedEditedTask = task.copy(value = "editedTask")
 
         // When
-        viewModel.onAddTask(task)
+        viewModel.onAddTask(task.value)
         viewModel.onEditTask(editedTask)
 
         // Then
@@ -502,10 +512,10 @@ class EditMissionViewModelTest {
     @Test
     fun onRemoveTask_should_remove_task() {
         // Given
-        val task = MissionTask("id", "task")
+        val task = MissionTask(newId, "task")
 
         // When
-        viewModel.onAddTask(task)
+        viewModel.onAddTask(task.value)
         viewModel.onRemoveTask(task)
 
         // Then

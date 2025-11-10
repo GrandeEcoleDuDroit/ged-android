@@ -23,7 +23,8 @@ val messageModule = module {
             blockedUserRepository = get(),
             sendMessageUseCase = get(),
             messageNotificationManager = get(),
-            deleteConversationUseCase = get()
+            deleteConversationUseCase = get(),
+            generateIdUseCase = get()
         )
     }
     singleOf(::MessageNotificationPresenter)

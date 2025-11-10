@@ -41,7 +41,6 @@ import com.upsaclay.mission.domain.missionTaskFixture
 import kotlinx.coroutines.android.awaitFrame
 import kotlinx.coroutines.delay
 
-
 @Composable
 fun AddTaskModalBottomSheet(
     onDismissRequest: () -> Unit,

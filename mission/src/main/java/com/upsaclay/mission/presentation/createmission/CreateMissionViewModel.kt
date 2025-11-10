@@ -29,7 +29,8 @@ import java.time.ZoneOffset
 class CreateMissionViewModel(
     private val userRepository: UserRepository,
     private val createMissionUseCase: CreateMissionUseCase,
-    private val getUsersUseCase: GetUsersUseCase
+    private val getUsersUseCase: GetUsersUseCase,
+    private val generateIdUseCase: GenerateIdUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(CreateMissionUiState())
     val uiState: StateFlow<CreateMissionUiState> = _uiState
@@ -42,7 +43,7 @@ class CreateMissionViewModel(
 
     fun createMission() {
         val mission = Mission(
-            id = GenerateIdUseCase(),
+            id = generateIdUseCase(),
             title = uiState.value.title.trim(),
             description = uiState.value.description.trim(),
             date = LocalDateTime.now(ZoneOffset.UTC),
@@ -198,7 +199,7 @@ class CreateMissionViewModel(
     }
 
     fun onAddTask(value: String) {
-        val task = MissionTask(GenerateIdUseCase(), value)
+        val task = MissionTask(generateIdUseCase(), value.trim())
         _uiState.update {
             it.copy(tasks = it.tasks + task)
         }
@@ -209,7 +210,7 @@ class CreateMissionViewModel(
             state.copy(
                 tasks = state.tasks.replace(
                     predicate = { it.id == missionTask.id },
-                    value = missionTask
+                    value = missionTask.copy(value = missionTask.value.trim())
                 )
             )
         }
