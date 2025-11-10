@@ -2,7 +2,7 @@ package com.upsaclay.message.data.remote.model
 
 internal data class RemoteMessageReport(
     val conversationId: String,
-    val messageId: Long,
+    val messageId: String,
     val recipientInfo: RemoteMessageReport.RemoteUserInfo,
     val reason: String
 ) {

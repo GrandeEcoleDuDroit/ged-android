@@ -4,8 +4,8 @@ import com.google.gson.Gson
 import com.upsaclay.common.data.exceptions.mapServerResponseException
 import com.upsaclay.common.data.remote.model.ServerResponse
 import com.upsaclay.mission.data.remote.InboundRemoteMission
-import com.upsaclay.mission.data.toMission
-import com.upsaclay.mission.data.toRemote
+import com.upsaclay.mission.data.mapper.toMission
+import com.upsaclay.mission.data.mapper.toRemote
 import com.upsaclay.mission.domain.entity.Mission
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -15,6 +15,9 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
+import retrofit2.http.DELETE
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -32,7 +35,7 @@ internal class MissionApiImpl(
         return mapServerResponseException(
             message = "Failed to get missions",
             block = { serverMissionApi.getMissions() }
-        )?.map(InboundRemoteMission::toMission) ?: emptyList()
+        )?.map { it.toMission() } ?: emptyList()
     }
 
     override suspend fun createMission(mission: Mission, imageFile: File?) {
@@ -71,11 +74,11 @@ internal class MissionApiImpl(
         }
     }
 
-    override suspend fun deleteMission(missionId: Long, imageUrl: String?) {
+    override suspend fun deleteMission(missionId: String, imageFileName: String?) {
         withContext(Dispatchers.IO) {
             mapServerResponseException(
                 message = "Failed to delete mission",
-                block = { serverMissionApi.deleteMission(missionId, imageUrl) },
+                block = { serverMissionApi.deleteMission(missionId, imageFileName) },
             )
         }
     }
@@ -100,10 +103,10 @@ internal interface ServerMissionApi {
         @Part("mission") remoteMission: RequestBody
     ): Response<ServerResponse>
 
-    @Multipart
+    @FormUrlEncoded
     @POST("missions/delete")
     suspend fun deleteMission(
-        @Part missionId: Long,
-        @Part imageUrl: String?
+        @Field("missionId") missionId: String,
+        @Field("imageFileName") imageFileName: String?
     ): Response<ServerResponse>
 }

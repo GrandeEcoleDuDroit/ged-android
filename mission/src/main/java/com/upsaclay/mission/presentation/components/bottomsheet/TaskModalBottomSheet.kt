@@ -47,7 +47,7 @@ fun AddTaskModalBottomSheet(
     onDismissRequest: () -> Unit,
     onAddClick: (MissionTask) -> Unit
 ) {
-    var missionTask by remember { mutableStateOf(MissionTask(GenerateIdUseCase.longId, "")) }
+    var missionTask by remember { mutableStateOf(MissionTask(GenerateIdUseCase(), "")) }
     var createEnabled by remember { mutableStateOf(false) }
 
     TaskModalBottomSheet(

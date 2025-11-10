@@ -9,7 +9,7 @@ interface MissionRepository {
 
     val currentMissions: List<Mission>
 
-    fun getMissionFlow(missionId: Long): Flow<Mission>
+    fun getMissionFlow(missionId: String): Flow<Mission>
 
     suspend fun getRemoteMissions(): List<Mission>
 

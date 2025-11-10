@@ -18,7 +18,7 @@ fun NavController.navigateToMission(navOptions: NavOptions? = null) {
 }
 
 fun NavGraphBuilder.missionSection(
-    onMissionClick: (Long) -> Unit,
+    onMissionClick: (String) -> Unit,
     onCreateMissionClick: () -> Unit,
     onEditMissionClick: (Mission) -> Unit,
     bottomBar: @Composable () -> Unit,

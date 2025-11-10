@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -24,11 +25,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.extension.mediumSpacing
-import com.upsaclay.common.extension.rootMediumPadding
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.CircularProgressBar
 import com.upsaclay.common.presentation.components.DefaultDialog
@@ -50,7 +51,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun MissionDestination(
-    onMissionClick: (Long) -> Unit,
+    onMissionClick: (String) -> Unit,
     onCreateMissionClick: () -> Unit,
     onEditMissionClick: (Mission) -> Unit,
     bottomBar: @Composable () -> Unit,
@@ -107,7 +108,7 @@ private fun MissionScreen(
     loading: Boolean,
     refreshing: Boolean,
     snackbarHostState: SnackbarHostState,
-    onMissionClick: (Long) -> Unit,
+    onMissionClick: (String) -> Unit,
     onCreateMissionClick: () -> Unit,
     onEditMissionClick: (Mission) -> Unit,
     onResendMissionClick: (Mission) -> Unit,
@@ -143,11 +144,16 @@ private fun MissionScreen(
         bottomBar = bottomBar
     ) { innerPadding ->
         PullToRefreshComponent(
-            modifier = Modifier.rootMediumPadding(innerPadding),
+            modifier = Modifier.padding(innerPadding),
             onRefresh = onRefresh,
             refreshing = refreshing
         ) {
-            LazyColumn(verticalArrangement = Arrangement.mediumSpacing()) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                verticalArrangement = Arrangement.mediumSpacing()
+            ) {
                 if (missions.isEmpty()) {
                     item {
                         EmptyText(text = stringResource(R.string.no_mission))

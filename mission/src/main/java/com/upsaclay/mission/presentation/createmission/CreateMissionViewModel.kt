@@ -39,7 +39,7 @@ class CreateMissionViewModel(
 
     fun createMission() {
         val mission = Mission(
-            id = GenerateIdUseCase.longId,
+            id = GenerateIdUseCase(),
             title = uiState.value.title.trim(),
             description = uiState.value.description.trim(),
             date = LocalDateTime.now(ZoneOffset.UTC),

@@ -10,5 +10,5 @@ interface MissionApi {
 
     suspend fun updateMission(mission: Mission, imageFile: File?)
 
-    suspend fun deleteMission(missionId: Long, imageUrl: String?)
+    suspend fun deleteMission(missionId: String, imageFileName: String?)
 }

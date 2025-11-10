@@ -1,8 +1,10 @@
 package com.upsaclay.mission.data.repositories
 
+import com.upsaclay.common.data.UrlUtils
 import com.upsaclay.mission.data.local.MissionLocalDataSource
 import com.upsaclay.mission.data.remote.MissionRemoteDataSource
 import com.upsaclay.mission.domain.entity.Mission
+import com.upsaclay.mission.domain.entity.MissionState
 import com.upsaclay.mission.domain.repository.MissionRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -26,7 +28,7 @@ class MissionRepositoryImpl(
     override val currentMissions: List<Mission>
         get() = _missions.value
 
-    override fun getMissionFlow(missionId: Long): Flow<Mission> =
+    override fun getMissionFlow(missionId: String): Flow<Mission> =
         missionLocalDataSource.getMissionFlow(missionId)
 
     override suspend fun getRemoteMissions(): List<Mission> = missionRemoteDataSource.getMissions()
@@ -46,7 +48,8 @@ class MissionRepositoryImpl(
     }
 
     override suspend fun deleteMission(mission: Mission, imageUrl: String?) {
-        missionRemoteDataSource.deleteMission(mission.id, imageUrl)
+        val imageFileName = UrlUtils.extractFileName(imageUrl)
+        missionRemoteDataSource.deleteMission(mission.id, imageFileName)
         missionLocalDataSource.deleteMission(mission)
     }
 

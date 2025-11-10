@@ -14,7 +14,7 @@ import com.upsaclay.news.domain.entity.Announcement.AnnouncementState
 import com.upsaclay.news.domain.entity.AnnouncementReport
 import com.upsaclay.news.domain.repository.AnnouncementRepository
 import com.upsaclay.news.domain.usecase.DeleteAnnouncementUseCase
-import com.upsaclay.news.domain.usecase.RefreshAnnouncementUseCase
+import com.upsaclay.news.domain.usecase.RefreshAnnouncementsUseCase
 import com.upsaclay.news.domain.usecase.ResendAnnouncementUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 class NewsViewModel(
     private val resendAnnouncementUseCase: ResendAnnouncementUseCase,
     private val deleteAnnouncementUseCase: DeleteAnnouncementUseCase,
-    private val refreshAnnouncementUseCase: RefreshAnnouncementUseCase,
+    private val refreshAnnouncementsUseCase: RefreshAnnouncementsUseCase,
     private val announcementRepository: AnnouncementRepository,
     private val userRepository: UserRepository,
     private val connectivityObserver: ConnectivityObserver
@@ -50,7 +50,7 @@ class NewsViewModel(
         }
         viewModelScope.launch {
             try {
-                refreshAnnouncementUseCase()
+                refreshAnnouncementsUseCase()
             } catch (e: Exception) {
                 _event.emit(SingleUiEvent.Error(mapErrorMessage(e)))
             } finally {
@@ -143,7 +143,7 @@ class NewsViewModel(
     private fun mapErrorMessage(e: Exception): Int {
         return when (e) {
             is NoInternetConnectionException -> com.upsaclay.common.R.string.no_internet_connection
-            else -> R.string.announcement_refresh_error
+            else -> R.string.announcements_refresh_error
         }
     }
 

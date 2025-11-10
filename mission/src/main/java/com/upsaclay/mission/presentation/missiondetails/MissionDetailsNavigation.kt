@@ -9,9 +9,9 @@ import com.upsaclay.common.domain.entity.User
 import com.upsaclay.mission.domain.entity.Mission
 import kotlinx.serialization.Serializable
 
-@Serializable data class MissionDetailsRoute(val missionId: Long): Route
+@Serializable data class MissionDetailsRoute(val missionId: String): Route
 
-fun NavController.navigateToMissionDetails(missionId: Long) {
+fun NavController.navigateToMissionDetails(missionId: String) {
     navigate(route = MissionDetailsRoute(missionId))
 }
 

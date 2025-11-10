@@ -6,7 +6,7 @@ import com.upsaclay.common.domain.userFixture
 import com.upsaclay.news.domain.announcementsFixture
 import com.upsaclay.news.domain.repository.AnnouncementRepository
 import com.upsaclay.news.domain.usecase.DeleteAnnouncementUseCase
-import com.upsaclay.news.domain.usecase.RefreshAnnouncementUseCase
+import com.upsaclay.news.domain.usecase.RefreshAnnouncementsUseCase
 import com.upsaclay.news.domain.usecase.ResendAnnouncementUseCase
 import com.upsaclay.news.presentation.news.NewsViewModel
 import io.mockk.coEvery
@@ -27,7 +27,7 @@ import org.junit.Test
 class NewsViewModelTest {
     private val resendAnnouncementUseCase: ResendAnnouncementUseCase = mockk()
     private val deleteAnnouncementUseCase: DeleteAnnouncementUseCase = mockk()
-    private val refreshAnnouncementUseCase: RefreshAnnouncementUseCase = mockk()
+    private val refreshAnnouncementsUseCase: RefreshAnnouncementsUseCase = mockk()
     private val connectivityObserver: ConnectivityObserver = mockk()
 
     private val userRepository: UserRepository = mockk()
@@ -44,13 +44,13 @@ class NewsViewModelTest {
         every { announcementRepository.announcements } returns flowOf(announcementsFixture)
         every { userRepository.user } returns MutableStateFlow(userFixture)
         every { resendAnnouncementUseCase(any()) } returns Unit
-        coEvery { refreshAnnouncementUseCase() } returns Unit
+        coEvery { refreshAnnouncementsUseCase() } returns Unit
         coEvery { deleteAnnouncementUseCase(any()) } returns Unit
 
         newsViewModel = NewsViewModel(
             resendAnnouncementUseCase = resendAnnouncementUseCase,
             deleteAnnouncementUseCase = deleteAnnouncementUseCase,
-            refreshAnnouncementUseCase = refreshAnnouncementUseCase,
+            refreshAnnouncementsUseCase = refreshAnnouncementsUseCase,
             announcementRepository = announcementRepository,
             userRepository = userRepository,
             connectivityObserver = connectivityObserver
@@ -63,7 +63,7 @@ class NewsViewModelTest {
         newsViewModel.refreshAnnouncements()
 
         // Then
-        coVerify { refreshAnnouncementUseCase() }
+        coVerify { refreshAnnouncementsUseCase() }
     }
 
     @Test

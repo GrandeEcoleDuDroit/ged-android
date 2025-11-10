@@ -1,6 +1,7 @@
 package com.upsaclay.mission.data.remote
 
 import com.google.gson.annotations.SerializedName
+import com.upsaclay.common.data.remote.model.ServerUser
 import com.upsaclay.mission.data.MissionField.Remote.Inbound.MISSION_MANAGERS
 import com.upsaclay.mission.data.MissionField.Remote.Inbound.MISSION_PARTICIPANTS
 import com.upsaclay.mission.data.MissionField.Remote.MISSION_DATE
@@ -10,7 +11,7 @@ import com.upsaclay.mission.data.MissionField.Remote.MISSION_END_DATE
 import com.upsaclay.mission.data.MissionField.Remote.MISSION_ID
 import com.upsaclay.mission.data.MissionField.Remote.MISSION_IMAGE_FILE_NAME
 import com.upsaclay.mission.data.MissionField.Remote.MISSION_MAX_PARTICIPANTS
-import com.upsaclay.mission.data.MissionField.Remote.MISSION_SCHOOL_LEVEL
+import com.upsaclay.mission.data.MissionField.Remote.MISSION_SCHOOL_LEVELS
 import com.upsaclay.mission.data.MissionField.Remote.MISSION_START_DATE
 import com.upsaclay.mission.data.MissionField.Remote.MISSION_TASKS
 import com.upsaclay.mission.data.MissionField.Remote.MISSION_TITLE
@@ -19,12 +20,12 @@ import com.upsaclay.mission.data.MissionField.Remote.Outbound.MISSION_PARTICIPAN
 
 data class OutboundRemoteMission(
     @SerializedName(MISSION_ID)
-    val missionId: Long,
+    val missionId: String,
     @SerializedName(MISSION_TITLE)
     val missionTitle: String,
     @SerializedName(MISSION_DESCRIPTION)
     val missionDescription: String,
-    @SerializedName(MISSION_SCHOOL_LEVEL)
+    @SerializedName(MISSION_SCHOOL_LEVELS)
     val missionSchoolLevels: String,
     @SerializedName(MISSION_DATE)
     val missionDate: Long,
@@ -48,13 +49,13 @@ data class OutboundRemoteMission(
 
 data class InboundRemoteMission(
     @SerializedName(MISSION_ID)
-    val missionId: Long,
+    val missionId: String,
     @SerializedName(MISSION_TITLE)
     val missionTitle: String,
     @SerializedName(MISSION_DESCRIPTION)
     val missionDescription: String,
-    @SerializedName(MISSION_SCHOOL_LEVEL)
-    val missionSchoolLevels: String,
+    @SerializedName(MISSION_SCHOOL_LEVELS)
+    val missionSchoolLevels: String?,
     @SerializedName(MISSION_DATE)
     val missionDate: Long,
     @SerializedName(MISSION_START_DATE)
@@ -64,13 +65,18 @@ data class InboundRemoteMission(
     @SerializedName(MISSION_DURATION)
     val missionDuration: String?,
     @SerializedName(MISSION_MANAGERS)
-    val missionManagers: String,
+    val missionManagers: List<ServerUser>,
     @SerializedName(MISSION_PARTICIPANTS)
-    val missionParticipants: String,
+    val missionParticipants: List<ServerUser>?,
     @SerializedName(MISSION_MAX_PARTICIPANTS)
     val missionMaxParticipants: Int,
     @SerializedName(MISSION_TASKS)
-    val missionTasks: String,
+    val missionTasks: List<RemoteMissionTask>?,
     @SerializedName(MISSION_IMAGE_FILE_NAME)
     val missionImageFileName: String?
+)
+
+data class InboundRemoteMissionResult(
+    @SerializedName("MISSION_JSON")
+    val missionJson: List<InboundRemoteMission>
 )

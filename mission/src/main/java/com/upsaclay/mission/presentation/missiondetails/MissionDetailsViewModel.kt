@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class MissionDetailsViewModel(
-    private val missionId: Long,
+    private val missionId: String,
     private val missionRepository: MissionRepository,
     private val userRepository: UserRepository,
     private val connectivityObserver: ConnectivityObserver,

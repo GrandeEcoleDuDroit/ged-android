@@ -14,7 +14,7 @@ interface MissionDao {
     fun getMissions(): Flow<List<LocalMission>>
 
     @Query("SELECT * FROM $MISSION_TABLE WHERE $MISSION_ID = :missionId")
-    fun getMissionFlow(missionId: Long): Flow<LocalMission?>
+    fun getMissionFlow(missionId: String): Flow<LocalMission?>
 
     @Upsert
     suspend fun upsertMission(mission: LocalMission)

@@ -100,7 +100,9 @@ private fun DefaultMissionCard(
             )
 
             OptionButton(
-                modifier = Modifier.align(Alignment.TopEnd),
+                modifier = Modifier
+                    .padding(dimensionResource(com.upsaclay.common.R.dimen.small_padding))
+                    .align(Alignment.TopEnd),
                 onClick = onOptionClick
             )
         }
@@ -212,7 +214,7 @@ private fun CardFooter(schoolLevels: List<SchoolLevel>?) {
     schoolLevels?.let {
         Text(
             text = MissionFormatter.formatSchoolLevels(it),
-            style = MaterialTheme.typography.labelSmall
+            style = MaterialTheme.typography.labelMedium
         )
     }
 }

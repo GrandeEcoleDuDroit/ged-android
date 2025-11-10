@@ -12,7 +12,7 @@ import org.koin.dsl.module
 val missionModule = module {
     viewModelOf(::MissionViewModel)
     viewModelOf(::CreateMissionViewModel)
-    viewModel { (missionId: Long) ->
+    viewModel { (missionId: String) ->
         MissionDetailsViewModel(
             missionId = missionId,
             missionRepository = get(),

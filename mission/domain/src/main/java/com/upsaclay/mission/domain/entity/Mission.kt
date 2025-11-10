@@ -6,7 +6,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class Mission(
-    val id: Long,
+    val id: String,
     val title: String,
     val description: String,
     val date: LocalDateTime,

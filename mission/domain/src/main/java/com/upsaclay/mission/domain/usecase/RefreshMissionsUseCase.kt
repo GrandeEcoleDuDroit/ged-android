@@ -1,11 +1,11 @@
-package com.upsaclay.news.domain.usecase
+package com.upsaclay.mission.domain.usecase
 
 import kotlinx.coroutines.delay
 
 private const val DEBOUNCE_INTERVAL = 10000L
 
-class RefreshAnnouncementUseCase(
-    private val synchronizeAnnouncementsUseCase: SynchronizeAnnouncementsUseCase
+class RefreshMissionsUseCase(
+    private val synchronizeMissionsUseCase: SynchronizeMissionsUseCase
 ) {
     internal var lastRequestTime: Long = 0
 
@@ -13,7 +13,7 @@ class RefreshAnnouncementUseCase(
         delay(500)
         val currentTime = System.currentTimeMillis()
         if (currentTime - lastRequestTime > DEBOUNCE_INTERVAL) {
-            synchronizeAnnouncementsUseCase()
+            synchronizeMissionsUseCase()
             lastRequestTime = currentTime
         }
     }

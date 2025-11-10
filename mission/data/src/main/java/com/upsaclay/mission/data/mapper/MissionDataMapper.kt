@@ -1,4 +1,4 @@
-package com.upsaclay.mission.data
+package com.upsaclay.mission.data.mapper
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -11,6 +11,7 @@ import com.upsaclay.common.domain.extensions.toEpochMilliUTC
 import com.upsaclay.common.domain.extensions.toLocalDateTimeUTC
 import com.upsaclay.common.domain.extensions.toLocalDateUTC
 import com.upsaclay.mission.data.local.LocalMission
+import com.upsaclay.mission.data.local.LocalMissionTask
 import com.upsaclay.mission.data.remote.InboundRemoteMission
 import com.upsaclay.mission.data.remote.OutboundRemoteMission
 import com.upsaclay.mission.data.remote.RemoteMissionTask
@@ -21,7 +22,7 @@ import com.upsaclay.mission.domain.entity.MissionTask
 fun LocalMission.toMission(): Mission {
     val gson = Gson()
     val schoolLevelNumbersType = object : TypeToken<List<Int>>() {}.type
-    val missionTasksType = object : TypeToken<List<MissionTask>>() {}.type
+    val missionTasksType = object : TypeToken<List<LocalMissionTask>>() {}.type
     val usersType = object : TypeToken<List<User>>() {}.type
 
     val schoolLevelNumbers = gson.fromJson<List<Int>>(missionSchoolLevels, schoolLevelNumbersType)
@@ -31,6 +32,9 @@ fun LocalMission.toMission(): Mission {
         MissionState.Published.TYPE -> MissionState.Published(UrlUtils.formatOracleBucketUrl(missionImageReference))
         else -> MissionState.Error(missionImageReference)
     }
+    val tasks = missionTasks?.let {
+        gson.fromJson<List<LocalMissionTask>>(it, missionTasksType)
+    }?.map(LocalMissionTask::toMissionTask) ?: emptyList()
 
     return Mission(
         id = missionId,
@@ -44,7 +48,7 @@ fun LocalMission.toMission(): Mission {
         managers = gson.fromJson(missionManagers, usersType),
         participants = gson.fromJson(missionParticipants, usersType),
         maxParticipants = missionMaxParticipants,
-        tasks = missionTasks?.let { gson.fromJson(it, missionTasksType) } ?: emptyList(),
+        tasks = tasks,
         state = state
     )
 }
@@ -53,7 +57,7 @@ fun Mission.toLocal(): LocalMission {
     val gson = Gson()
     val schoolLevelNumbersType = object : TypeToken<List<Int>>() {}.type
     val usersType = object : TypeToken<List<User>>() {}.type
-    val missionTasksType = object : TypeToken<List<MissionTask>>() {}.type
+    val localMissionTasksType = object : TypeToken<List<LocalMissionTask>>() {}.type
 
     val schoolLevelNumbers = schoolLevels.map { it.number }
     val imageReference = when (val state = state) {
@@ -62,6 +66,7 @@ fun Mission.toLocal(): LocalMission {
         is MissionState.Published -> UrlUtils.extractFileName(state.imageUrl)
         is MissionState.Error -> state.imagePath
     }
+    val localMissionsTask = tasks.map(MissionTask::toLocal)
 
     return LocalMission(
         missionId = id,
@@ -75,7 +80,7 @@ fun Mission.toLocal(): LocalMission {
         missionManagers = gson.toJson(managers, usersType),
         missionParticipants = gson.toJson(participants, usersType),
         missionMaxParticipants = maxParticipants,
-        missionTasks = gson.toJson(tasks, missionTasksType),
+        missionTasks = gson.toJson(localMissionsTask, localMissionTasksType),
         missionImageReference = imageReference,
         missionState = state.toString()
     )
@@ -109,39 +114,31 @@ fun Mission.toRemote(imageFileName: String?): OutboundRemoteMission {
 }
 
 fun MissionTask.toRemote() = RemoteMissionTask(
-    id = id,
-    value = value
+    missionTaskId = id,
+    missionTaskValue = value
 )
 
 fun InboundRemoteMission.toMission(): Mission {
     val gson = Gson()
     val schoolLevelNumbersType = object : TypeToken<List<Int>>() {}.type
-    val userType = object : TypeToken<List<ServerUser>>() {}.type
-    val missionTasksType = object : TypeToken<List<RemoteMissionTask>>() {}.type
 
-    val schoolLevels = gson.fromJson<List<Int>>(missionSchoolLevels, schoolLevelNumbersType)
-    val managers = gson.fromJson<List<ServerUser>>(missionManagers, userType)
-    val missionTasks = gson.fromJson<List<RemoteMissionTask>>(missionTasks, missionTasksType)
-    val participants = gson.fromJson<List<ServerUser>>(missionParticipants, userType)
+    val schoolLevelNumbers = missionSchoolLevels?.let {
+        gson.fromJson<List<Int>>(it, schoolLevelNumbersType)
+    } ?: emptyList()
 
     return Mission(
         id = missionId,
         title = missionTitle,
         description = missionDescription,
-        schoolLevels = schoolLevels.map(SchoolLevel::fromNumber),
+        schoolLevels = schoolLevelNumbers.map { SchoolLevel.fromNumber(it) },
         date = missionDate.toLocalDateTimeUTC(),
         startDate = missionStartDate.toLocalDateUTC(),
         endDate = missionEndDate.toLocalDateUTC(),
         duration = missionDuration,
-        managers = managers.map(ServerUser::toUser),
-        participants = participants.map(ServerUser::toUser),
+        managers = missionManagers.map(ServerUser::toUser),
+        participants = missionParticipants?.map(ServerUser::toUser) ?: emptyList(),
         maxParticipants = missionMaxParticipants,
-        tasks = missionTasks.map(RemoteMissionTask::toMissionTask),
+        tasks = missionTasks?.map(RemoteMissionTask::toMissionTask) ?: emptyList(),
         state = MissionState.Published(UrlUtils.formatOracleBucketUrl(missionImageFileName))
     )
 }
-
-fun RemoteMissionTask.toMissionTask() = MissionTask(
-    id = id,
-    value = value
-)

@@ -14,23 +14,11 @@ class GenerateIdUseCaseTest {
     }
 
     @Test
-    fun generateIdUseCase_stringId_should_generate_unique_id() {
+    fun generateIdUseCase_should_generate_unique_id() {
         for (i in 0..100000) {
             // When
-            val id1 = generateIdUseCase.stringId
-            val id2 = generateIdUseCase.stringId
-
-            // Then
-            assertNotEquals(id1, id2)
-        }
-    }
-
-    @Test
-    fun generateIdUseCase_longId_should_generate_unique_id() {
-        for (i in 0..100000) {
-            // When
-            val id1 = generateIdUseCase.longId
-            val id2 = generateIdUseCase.longId
+            val id1 = generateIdUseCase()
+            val id2 = generateIdUseCase()
 
             // Then
             assertNotEquals(id1, id2)

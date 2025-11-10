@@ -22,7 +22,7 @@ object MissionField {
         const val MISSION_ID = "MISSION_ID"
         const val MISSION_TITLE = "MISSION_TITLE"
         const val MISSION_DESCRIPTION = "MISSION_DESCRIPTION"
-        const val MISSION_SCHOOL_LEVEL = "MISSION_SCHOOL_LEVEL"
+        const val MISSION_SCHOOL_LEVELS = "MISSION_SCHOOL_LEVELS"
         const val MISSION_DATE = "MISSION_DATE"
         const val MISSION_START_DATE = "MISSION_START_DATE"
         const val MISSION_END_DATE = "MISSION_END_DATE"
@@ -40,5 +40,16 @@ object MissionField {
             const val MISSION_MANAGER_IDS = "MISSION_MANAGER_IDS"
             const val MISSION_PARTICIPANT_IDS = "MISSION_PARTICIPANT_IDS"
         }
+    }
+}
+
+object MissionTaskField {
+    object Local {
+        const val MISSION_TASK_ID = "missionTaskId"
+        const val MISSION_TASK_VALUE = "missionTaskValue"
+    }
+    object Remote {
+        const val MISSION_TASK_ID = "MISSION_TASK_ID"
+        const val MISSION_TASK_VALUE = "MISSION_TASK_VALUE"
     }
 }

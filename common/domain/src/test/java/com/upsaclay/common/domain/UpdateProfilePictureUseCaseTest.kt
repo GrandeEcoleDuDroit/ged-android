@@ -23,10 +23,11 @@ class UpdateProfilePictureUseCaseTest {
 
     @Before
     fun setUp() {
-        coEvery { imageRepository.uploadImage(any(), any()) } returns Unit
+        coEvery { imageRepository.uploadImage(any(), any()) } returns ""
         coEvery { imageRepository.deleteRemoteImage(any()) } returns Unit
 
         updateProfilePictureUseCase = UpdateProfilePictureUseCase(
+            userRepository = userRepository,
             imageRepository = imageRepository
         )
     }

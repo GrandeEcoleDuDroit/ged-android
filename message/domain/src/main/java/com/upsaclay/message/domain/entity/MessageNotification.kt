@@ -5,7 +5,7 @@ data class MessageNotification(
     val message: MessageNotification.Message
 ) {
     data class Message(
-        val messageId: Long,
+        val messageId: String,
         val content: String,
         val timestamp: Long
     )

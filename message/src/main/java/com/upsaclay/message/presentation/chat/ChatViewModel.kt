@@ -76,7 +76,7 @@ class ChatViewModel(
             val text = uiState.value.messageText.takeUnless { it.isEmpty() } ?: return
             val user = requireNotNull(user)
             val message = Message(
-                id = GenerateIdUseCase.longId,
+                id = GenerateIdUseCase(),
                 conversationId = conversation.id,
                 senderId = user.id,
                 recipientId = conversation.interlocutor.id,

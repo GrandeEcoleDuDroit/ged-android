@@ -2,7 +2,9 @@ package com.upsaclay.mission.domain
 
 import com.upsaclay.mission.domain.usecase.CreateMissionUseCase
 import com.upsaclay.mission.domain.usecase.DeleteMissionUseCase
+import com.upsaclay.mission.domain.usecase.RefreshMissionsUseCase
 import com.upsaclay.mission.domain.usecase.ResendMissionUseCase
+import com.upsaclay.mission.domain.usecase.SynchronizeMissionsUseCase
 import com.upsaclay.mission.domain.usecase.UpdateMissionUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -43,4 +45,6 @@ val missionDomainModule = module {
 
     singleOf(::DeleteMissionUseCase)
     singleOf(::UpdateMissionUseCase)
+    singleOf(::SynchronizeMissionsUseCase)
+    singleOf(::RefreshMissionsUseCase)
 }

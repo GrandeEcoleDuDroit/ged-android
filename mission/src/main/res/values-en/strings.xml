@@ -42,4 +42,5 @@
     <string name="no_participants">No participant</string>
     <string name="mission_reported">Mission reported</string>
     <string name="edit_mission">Edit mission</string>
+    <string name="missions_refresh_error">Unable to refresh missions</string>
 </resources>

@@ -48,7 +48,7 @@ class CreateAnnouncementViewModel(
         if (user == null) return
         val (title, content) = uiState.value
         val announcement = Announcement(
-            id = GenerateIdUseCase.stringId,
+            id = GenerateIdUseCase(),
             title = if (title.isBlank()) null else title.trim(),
             content = content.trim(),
             date = LocalDateTime.now(ZoneOffset.UTC),

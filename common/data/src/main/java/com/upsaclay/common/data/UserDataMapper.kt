@@ -74,8 +74,8 @@ internal fun FirestoreUser.toUser() = User(
 
 fun ServerUser.toUser() = User(
     id = userId,
-    firstName = userFirstName,
-    lastName = userLastName,
+    firstName = userFirstName.uppercaseFirstLetter(),
+    lastName = userLastName.uppercaseFirstLetter(),
     email = userEmail,
     schoolLevel = SchoolLevel.fromNumber(userSchoolLevel),
     admin = userAdmin == 1,
