@@ -146,7 +146,7 @@ private fun EditMissionScreen(
     onResetUserQuery: () -> Unit,
     onImageUriChange: (Uri) -> Unit,
     onRemoveImageClick: () -> Unit,
-    onAddTaskClick: (MissionTask) -> Unit,
+    onAddTaskClick: (String) -> Unit,
     onEditTaskClick: (MissionTask) -> Unit,
     onRemoveTaskClick: (MissionTask) -> Unit,
     onSaveMissionClick: () -> Unit,
@@ -259,8 +259,8 @@ private fun EditMissionScreen(
         is MissionBottomSheetType.AddTask -> {
             AddTaskModalBottomSheet(
                 onDismissRequest = { bottomSheetType = null },
-                onAddClick = { task ->
-                    onAddTaskClick(task)
+                onAddClick = {
+                    onAddTaskClick(it)
                     bottomSheetType = null
                 }
             )
@@ -269,7 +269,7 @@ private fun EditMissionScreen(
         is MissionBottomSheetType.EditTask -> {
             (bottomSheetType as? MissionBottomSheetType.EditTask)?.missionTask?.let {
                 EditTaskModalBottomSheet(
-                    initialMissionTask = it,
+                    initialTask = it,
                     onDismissRequest = { bottomSheetType = null },
                     onEditClick = { task ->
                         onEditTaskClick(task)

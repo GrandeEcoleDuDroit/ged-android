@@ -1,7 +1,5 @@
 package com.upsaclay.common.presentation.components
 
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
@@ -16,11 +14,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 
 @Composable
@@ -43,12 +38,14 @@ fun PrimaryButton(
 fun OptionButton(
     modifier: Modifier = Modifier,
     contentDescription: String? = null,
-    color: IconButtonColors = IconButtonDefaults.iconButtonColors(),
+    colors: IconButtonColors = IconButtonDefaults.iconButtonColors(
+        contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+    ),
     onClick: () -> Unit
 ) {
     IconButton(
         onClick = onClick,
-        colors = color,
+        colors = colors,
         modifier = modifier
     ) {
         Icon(

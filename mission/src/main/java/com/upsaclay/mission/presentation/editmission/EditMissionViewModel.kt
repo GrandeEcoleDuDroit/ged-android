@@ -8,9 +8,13 @@ import com.upsaclay.common.domain.entity.NoInternetConnectionException
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.extensions.replace
+import com.upsaclay.common.domain.usecase.GenerateIdUseCase
 import com.upsaclay.common.domain.usecase.GetUsersUseCase
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapNetworkErrorMessage
+import com.upsaclay.mission.domain.MissionConstants.MAX_DESCRIPTION_LENGTH
+import com.upsaclay.mission.domain.MissionConstants.MAX_DURATION_LENGTH
+import com.upsaclay.mission.domain.MissionConstants.MAX_TITLE_LENGTH
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.MissionState
 import com.upsaclay.mission.domain.entity.MissionTask
@@ -124,7 +128,7 @@ class EditMissionViewModel(
     }
 
     fun onTitleChange(title: String) {
-        val truncatedTitle = title.take(100)
+        val truncatedTitle = title.take(MAX_TITLE_LENGTH)
         _uiState.update {
             it.copy(title = truncatedTitle)
         }
@@ -134,7 +138,7 @@ class EditMissionViewModel(
     }
 
     fun onDescriptionChange(description: String) {
-        val truncatedDescription = description.take(1000)
+        val truncatedDescription = description.take(MAX_DESCRIPTION_LENGTH)
         _uiState.update {
             it.copy(description = truncatedDescription)
         }
@@ -199,7 +203,7 @@ class EditMissionViewModel(
     }
 
     fun onDurationChange(duration: String) {
-        val truncatedDuration = duration.take(200)
+        val truncatedDuration = duration.take(MAX_DURATION_LENGTH)
         _uiState.update {
             it.copy(duration = truncatedDuration)
         }
@@ -252,13 +256,11 @@ class EditMissionViewModel(
         }
     }
 
-    fun onAddTask(missionTask: MissionTask) {
-        val trimmedTask = missionTask.copy(value = missionTask.value.trim())
-        val tasks = uiState.value.tasks + trimmedTask
+    fun onAddTask(value: String) {
+        val task = MissionTask(GenerateIdUseCase(), value)
+        val tasks = uiState.value.tasks + task
         _uiState.update {
-            it.copy(
-                tasks = tasks
-            )
+            it.copy(tasks = tasks)
         }
         missionUpdate.update {
             it.copy(tasksUpdated = validateTasks(tasks))
@@ -266,10 +268,9 @@ class EditMissionViewModel(
     }
 
     fun onEditTask(missionTask: MissionTask) {
-        val trimmedTask = missionTask.copy(value = missionTask.value.trim())
         val tasks = uiState.value.tasks.replace(
             predicate = { it.id == missionTask.id },
-            value = trimmedTask
+            value = missionTask
         )
         _uiState.update {
             it.copy(tasks = tasks)
@@ -311,8 +312,7 @@ class EditMissionViewModel(
         endDate.isEqual(startDate) || endDate.isAfter(startDate)
 
     private fun validateMaxParticipants(maxParticipants: String): Boolean =
-        maxParticipants != mission.maxParticipants.toString() &&
-                maxParticipants.toIntOrNull()?.let { it > 0 } ?: false
+        maxParticipants != mission.maxParticipants.toString()
 
     private fun validateDuration(duration: String): Boolean =
         duration != mission.duration.orEmpty()
@@ -320,7 +320,8 @@ class EditMissionViewModel(
     private fun validateManagers(managers: List<User>): Boolean =
         managers != mission.managers
 
-    private fun validateTasks(tasks: List<MissionTask>): Boolean = tasks != mission.tasks
+    private fun validateTasks(tasks: List<MissionTask>): Boolean =
+        tasks != mission.tasks
 
     private fun validateMandatoryFields(): Boolean =
         uiState.value.title.isNotBlank() &&

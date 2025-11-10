@@ -10,9 +10,11 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -52,6 +54,7 @@ internal fun MissionTopBar(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ImageTopBar(
     modifier: Modifier = Modifier,
@@ -60,13 +63,15 @@ private fun ImageTopBar(
 ) {
     Row(
         modifier = modifier
-            .padding(dimensionResource(com.upsaclay.common.R.dimen.small_padding))
+            .padding(dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding))
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(
-            colors = MaterialTheme.colorScheme.imageIconButtonColors,
+            colors = MaterialTheme.colorScheme.imageIconButtonColors.copy(
+                contentColor = TopAppBarDefaults.topAppBarColors().navigationIconContentColor
+            ),
             onClick = onBackClick
         ) {
             Icon(
@@ -76,12 +81,15 @@ private fun ImageTopBar(
         }
 
         OptionButton(
-            color = MaterialTheme.colorScheme.imageIconButtonColors,
+            colors = MaterialTheme.colorScheme.imageIconButtonColors.copy(
+                contentColor = TopAppBarDefaults.topAppBarColors().actionIconContentColor
+            ),
             onClick = onOptionClick
         )
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DefaultTopBar(
     modifier: Modifier = Modifier,
@@ -90,18 +98,22 @@ private fun DefaultTopBar(
     onOptionClick: () -> Unit
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.surface)
+            .padding(dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding))
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Row(
-            modifier = modifier
-                .weight(1f)
-                .background(MaterialTheme.colorScheme.surface)
-                .padding(dimensionResource(com.upsaclay.common.R.dimen.small_padding)),
+            modifier = Modifier.weight(1f),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(onClick = onBackClick) {
+            IconButton(
+                onClick = onBackClick,
+                colors = IconButtonDefaults.iconButtonColors(
+                    contentColor = TopAppBarDefaults.topAppBarColors().navigationIconContentColor
+                )
+            ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = stringResource(com.upsaclay.common.R.string.arrow_back_icon_description)
@@ -109,16 +121,20 @@ private fun DefaultTopBar(
             }
 
             Text(
-                modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding)),
+                modifier = Modifier.padding(start = dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding)),
                 text = title,
                 style = MaterialTheme.typography.titleLarge,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                color = TopAppBarDefaults.topAppBarColors().titleContentColor
             )
         }
 
         OptionButton(
-            onClick = onOptionClick
+            onClick = onOptionClick,
+            colors = IconButtonDefaults.iconButtonColors(
+                contentColor = TopAppBarDefaults.topAppBarColors().actionIconContentColor
+            )
         )
     }
 }

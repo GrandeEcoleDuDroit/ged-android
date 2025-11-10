@@ -9,6 +9,9 @@ import com.upsaclay.common.domain.extensions.replace
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.GenerateIdUseCase
 import com.upsaclay.common.domain.usecase.GetUsersUseCase
+import com.upsaclay.mission.domain.MissionConstants.MAX_DESCRIPTION_LENGTH
+import com.upsaclay.mission.domain.MissionConstants.MAX_DURATION_LENGTH
+import com.upsaclay.mission.domain.MissionConstants.MAX_TITLE_LENGTH
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.MissionState
 import com.upsaclay.mission.domain.entity.MissionTask
@@ -58,15 +61,19 @@ class CreateMissionViewModel(
     }
 
     fun onImageUriChange(uri: Uri?) {
-        _uiState.update { it.copy(imageUri = uri) }
+        _uiState.update {
+            it.copy(imageUri = uri)
+        }
     }
 
     fun onRemoveImageUri() {
-        _uiState.update { it.copy(imageUri = null) }
+        _uiState.update {
+            it.copy(imageUri = null)
+        }
     }
 
     fun onTitleChange(title: String) {
-        val truncatedTitle = title.take(100)
+        val truncatedTitle = title.take(MAX_TITLE_LENGTH)
         _uiState.update {
             it.copy(
                 title = truncatedTitle,
@@ -76,7 +83,7 @@ class CreateMissionViewModel(
     }
 
     fun onDescriptionChange(description: String) {
-        val truncatedDescription = description.take(1000)
+        val truncatedDescription = description.take(MAX_DESCRIPTION_LENGTH)
         _uiState.update {
             it.copy(
                 description = truncatedDescription,
@@ -89,7 +96,7 @@ class CreateMissionViewModel(
         _uiState.update {
             it.copy(
                 startDate = date,
-                endDate = if (!validateEndDate(date, it.endDate)) date else it.endDate,
+                endDate = if (!validateEndDate(date, it.endDate)) date else it.endDate
             )
         }
     }
@@ -131,7 +138,7 @@ class CreateMissionViewModel(
     }
 
     fun onDurationChange(duration: String) {
-        val truncatedDuration = duration.take(200)
+        val truncatedDuration = duration.take(MAX_DURATION_LENGTH)
         _uiState.update {
             it.copy(duration = truncatedDuration)
         }
@@ -190,22 +197,19 @@ class CreateMissionViewModel(
         }
     }
 
-    fun onAddTask(missionTask: MissionTask) {
-        val trimmedTask = missionTask.copy(value = missionTask.value.trim())
+    fun onAddTask(value: String) {
+        val task = MissionTask(GenerateIdUseCase(), value)
         _uiState.update {
-            it.copy(
-                tasks = it.tasks + trimmedTask
-            )
+            it.copy(tasks = it.tasks + task)
         }
     }
 
     fun onEditTask(missionTask: MissionTask) {
-        val trimmedTask = missionTask.copy(value = missionTask.value.trim())
         _uiState.update { state ->
             state.copy(
                 tasks = state.tasks.replace(
                     predicate = { it.id == missionTask.id },
-                    value = trimmedTask
+                    value = missionTask
                 )
             )
         }
@@ -260,8 +264,7 @@ class CreateMissionViewModel(
     private fun validateEndDate(startDate: LocalDate, endDate: LocalDate): Boolean =
         endDate.isEqual(startDate) || endDate.isAfter(startDate)
 
-    private fun validateMaxParticipants(maxParticipants: String): Boolean =
-        maxParticipants.toIntOrNull()?.let { it > 0 } ?: false
+    private fun validateMaxParticipants(maxParticipants: String): Boolean = maxParticipants.isNotBlank()
 
     data class CreateMissionUiState(
         val title: String = "",

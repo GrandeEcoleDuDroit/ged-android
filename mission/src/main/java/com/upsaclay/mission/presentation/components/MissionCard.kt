@@ -73,8 +73,7 @@ fun MissionCard(
                 modifier = modifier,
                 mission = mission,
                 imageModel = state.imagePath,
-                onClick = onClick,
-                onOptionClick = onOptionClick
+                onClick = onClick
             )
         }
 
@@ -101,7 +100,7 @@ private fun DefaultMissionCard(
 
             OptionButton(
                 modifier = Modifier
-                    .padding(dimensionResource(com.upsaclay.common.R.dimen.small_padding))
+                    .padding(dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding))
                     .align(Alignment.TopEnd),
                 onClick = onOptionClick
             )
@@ -224,8 +223,7 @@ private fun ErrorMissionCard(
     modifier: Modifier = Modifier,
     mission: Mission,
     imageModel: Any?,
-    onClick: () -> Unit,
-    onOptionClick: () -> Unit
+    onClick: () -> Unit
 ) {
     OutlinedCard(
         modifier = modifier.clickable(onClick = onClick)
@@ -237,11 +235,6 @@ private fun ErrorMissionCard(
             )
 
             ErrorBanner(modifier = Modifier.align(Alignment.TopCenter))
-
-            OptionButton(
-                modifier = Modifier.align(Alignment.TopEnd),
-                onClick = onOptionClick
-            )
         }
 
         Column(
@@ -369,8 +362,7 @@ private fun ErrorMissionCardPreview() {
             ErrorMissionCard(
                 mission = mission,
                 imageModel = null,
-                onClick = {},
-                onOptionClick = {}
+                onClick = {}
             )
         }
     }
