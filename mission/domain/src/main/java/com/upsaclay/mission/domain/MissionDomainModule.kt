@@ -39,6 +39,7 @@ val missionDomainModule = module {
         ResendMissionUseCase(
             missionRepository = get(),
             fileRepository = get(),
+            imageRepository = get(),
             scope = get(BACKGROUND_SCOPE)
         )
     }

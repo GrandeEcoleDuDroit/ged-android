@@ -116,16 +116,17 @@ class CreateMissionViewModel(
     }
 
     fun onMaxParticipantsChange(maxParticipants: String) {
-        if (
-            maxParticipants.isEmpty() ||
-            maxParticipants.toIntOrNull()?.let { it > 0 } == true
-        ) {
-            _uiState.update {
-                it.copy(
-                    maxParticipants = maxParticipants,
-                    createEnabled = validateCreate(maxParticipants = maxParticipants)
-                )
-            }
+        val value = when {
+            maxParticipants.isEmpty() -> ""
+            maxParticipants.toIntOrNull()?.let { it > 0 } == true -> maxParticipants
+            else -> uiState.value.maxParticipants
+        }
+
+        _uiState.update {
+            it.copy(
+                maxParticipants = value,
+                createEnabled = validateCreate(maxParticipants = value)
+            )
         }
     }
 
@@ -145,8 +146,15 @@ class CreateMissionViewModel(
     }
 
     fun onRemoveManager(manager: User) {
-        _uiState.update {
-            it.copy(managers = it.managers - manager)
+        val managers = uiState.value.managers
+
+        if (
+            managers.size > 1 ||
+            !managers.contains(manager)
+        ) {
+            _uiState.update {
+                it.copy(managers = managers - manager)
+            }
         }
     }
 
@@ -156,6 +164,21 @@ class CreateMissionViewModel(
         }
 
         filterUsersByName(query)
+    }
+
+    private fun filterUsersByName(query: String) {
+        val users = if (query.isNotBlank()) {
+            defaultUsers.filter { user ->
+                user.firstName.contains(query, ignoreCase = true) ||
+                        user.lastName.contains(query, ignoreCase = true)
+            }
+        } else {
+            defaultUsers
+        }
+
+        _uiState.update {
+            it.copy(users = users)
+        }
     }
 
     fun onResetUserQuery() {
@@ -193,21 +216,6 @@ class CreateMissionViewModel(
             state.copy(
                 tasks = state.tasks - missionTask
             )
-        }
-    }
-
-    private fun filterUsersByName(query: String) {
-        val users = if (query.isNotBlank()) {
-            defaultUsers.filter { user ->
-                user.firstName.contains(query, ignoreCase = true) ||
-                        user.lastName.contains(query, ignoreCase = true)
-            }
-        } else {
-            defaultUsers
-        }
-
-        _uiState.update {
-            it.copy(users = users)
         }
     }
 

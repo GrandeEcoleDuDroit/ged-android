@@ -184,16 +184,17 @@ class EditMissionViewModel(
     }
 
     fun onMaxParticipantsChange(maxParticipants: String) {
-        if (
-            maxParticipants.isEmpty() ||
-            maxParticipants.toIntOrNull()?.let { it > 0 } == true
-        ) {
-            _uiState.update {
-                it.copy(maxParticipants = maxParticipants)
-            }
-            missionUpdate.update {
-                it.copy(maxParticipantsUpdated = validateMaxParticipants(maxParticipants))
-            }
+        val value = when {
+            maxParticipants.isEmpty() -> ""
+            maxParticipants.toIntOrNull()?.let { it > 0 } == true -> maxParticipants
+            else -> uiState.value.maxParticipants
+        }
+
+        _uiState.update {
+            it.copy(maxParticipants = value)
+        }
+        missionUpdate.update {
+            it.copy(maxParticipantsUpdated = validateMaxParticipants(value))
         }
     }
 
@@ -218,12 +219,19 @@ class EditMissionViewModel(
     }
 
     fun onRemoveManager(manager: User) {
-        val managers = uiState.value.managers - manager
-        _uiState.update {
-            it.copy(managers = managers)
-        }
-        missionUpdate.update {
-            it.copy(managersUpdated = validateManagers(managers))
+        val managers = uiState.value.managers
+
+        if (
+            managers.size > 1 ||
+            !managers.contains(manager)
+        ) {
+            val updatedManagers = managers - manager
+            _uiState.update {
+                it.copy(managers = updatedManagers)
+            }
+            missionUpdate.update {
+                it.copy(managersUpdated = validateManagers(updatedManagers))
+            }
         }
     }
 

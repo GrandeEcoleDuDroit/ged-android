@@ -15,7 +15,7 @@ class CreateMissionUseCase(
 ) {
     operator fun invoke(mission: Mission, imageUri: String?) {
         scope.launch {
-            val fileName = imageFileName(mission.id.toString())
+            val fileName = imageFileName(mission.id)
             val image = imageUri?.let { uri ->
                 imageRepository.createLocalImage(fileName, uri)
             }

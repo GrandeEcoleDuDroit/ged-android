@@ -11,7 +11,7 @@ class UpdateMissionUseCase(
     private val imageRepository: ImageRepository
 ) {
     suspend operator fun invoke(mission: Mission, newImageUri: String?, oldMissionState: MissionState) {
-        val fileName = imageFileName(mission.id.toString())
+        val fileName = imageFileName(mission.id)
         val newImage = newImageUri?.let {
             imageRepository.createLocalImage(fileName, it)
         }

@@ -29,7 +29,6 @@ class NewsViewModelTest {
     private val deleteAnnouncementUseCase: DeleteAnnouncementUseCase = mockk()
     private val refreshAnnouncementsUseCase: RefreshAnnouncementsUseCase = mockk()
     private val connectivityObserver: ConnectivityObserver = mockk()
-
     private val userRepository: UserRepository = mockk()
     private val announcementRepository: AnnouncementRepository = mockk()
 
