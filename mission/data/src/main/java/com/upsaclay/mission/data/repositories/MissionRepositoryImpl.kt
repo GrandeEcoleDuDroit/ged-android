@@ -4,6 +4,7 @@ import com.upsaclay.common.data.UrlUtils
 import com.upsaclay.mission.data.local.MissionLocalDataSource
 import com.upsaclay.mission.data.remote.MissionRemoteDataSource
 import com.upsaclay.mission.domain.entity.Mission
+import com.upsaclay.mission.domain.entity.MissionReport
 import com.upsaclay.mission.domain.entity.MissionState
 import com.upsaclay.mission.domain.repository.MissionRepository
 import kotlinx.coroutines.CoroutineScope
@@ -55,5 +56,9 @@ class MissionRepositoryImpl(
 
     override suspend fun deleteLocalMission(mission: Mission) {
         missionLocalDataSource.deleteMission(mission)
+    }
+
+    override suspend fun reportMission(report: MissionReport) {
+        missionRemoteDataSource.reportMission(report)
     }
 }

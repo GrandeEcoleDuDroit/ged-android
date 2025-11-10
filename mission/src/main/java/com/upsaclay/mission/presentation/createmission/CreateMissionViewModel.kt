@@ -118,7 +118,7 @@ class CreateMissionViewModel(
     fun onMaxParticipantsChange(maxParticipants: String) {
         val value = when {
             maxParticipants.isEmpty() -> ""
-            maxParticipants.toIntOrNull()?.let { it > 0 } == true -> maxParticipants
+            maxParticipants.toIntOrNull()?.let { it > 0 } == true -> maxParticipants.toInt().toString()
             else -> uiState.value.maxParticipants
         }
 

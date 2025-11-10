@@ -51,6 +51,7 @@ class MissionDetailsViewModel(
                 _uiState.update {
                     it.copy(loading = true)
                 }
+                missionRepository.reportMission(report)
                 _event.emit(MissionDetailsUiEvent.MissionReported(R.string.mission_reported))
             } catch (e: Exception) {
                 _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))

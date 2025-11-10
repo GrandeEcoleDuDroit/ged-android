@@ -14,8 +14,10 @@ import com.upsaclay.mission.data.local.LocalMission
 import com.upsaclay.mission.data.local.LocalMissionTask
 import com.upsaclay.mission.data.remote.InboundRemoteMission
 import com.upsaclay.mission.data.remote.OutboundRemoteMission
+import com.upsaclay.mission.data.remote.RemoteMissionReport
 import com.upsaclay.mission.data.remote.RemoteMissionTask
 import com.upsaclay.mission.domain.entity.Mission
+import com.upsaclay.mission.domain.entity.MissionReport
 import com.upsaclay.mission.domain.entity.MissionState
 import com.upsaclay.mission.domain.entity.MissionTask
 
@@ -142,3 +144,14 @@ fun InboundRemoteMission.toMission(): Mission {
         state = MissionState.Published(UrlUtils.formatOracleBucketUrl(missionImageFileName))
     )
 }
+
+internal fun MissionReport.toRemote() = RemoteMissionReport(
+    missionId = missionId,
+    userInfo = userInfo.toRemote(),
+    reason = reason.toString()
+)
+
+internal fun MissionReport.UserInfo.toRemote() = RemoteMissionReport.RemoteUserInfo(
+    fullName = fullName,
+    email = email
+)

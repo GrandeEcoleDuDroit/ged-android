@@ -10,11 +10,13 @@ import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapNetworkErrorMessage
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
+import com.upsaclay.mission.domain.entity.MissionReport
 import com.upsaclay.mission.domain.entity.MissionState
 import com.upsaclay.mission.domain.repository.MissionRepository
 import com.upsaclay.mission.domain.usecase.DeleteMissionUseCase
 import com.upsaclay.mission.domain.usecase.RefreshMissionsUseCase
 import com.upsaclay.mission.domain.usecase.ResendMissionUseCase
+import com.upsaclay.mission.presentation.missiondetails.MissionDetailsViewModel.MissionDetailsUiEvent
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -52,6 +54,27 @@ class MissionViewModel(
             } finally {
                 _uiState.update {
                     it.copy(refreshing = false)
+                }
+            }
+        }
+    }
+
+    fun reportMission(report: MissionReport) {
+        viewModelScope.launch {
+            try {
+                if (!connectivityObserver.isConnected) {
+                    throw NoInternetConnectionException()
+                }
+                _uiState.update {
+                    it.copy(loading = true)
+                }
+                missionRepository.reportMission(report)
+                _event.emit(MissionDetailsUiEvent.MissionReported(R.string.mission_reported))
+            } catch (e: Exception) {
+                _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
+            } finally {
+                _uiState.update {
+                    it.copy(loading = false)
                 }
             }
         }

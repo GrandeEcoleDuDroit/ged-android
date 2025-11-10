@@ -36,7 +36,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
@@ -308,7 +307,7 @@ private fun MissionDetailsScreen(
                 onReportMissionClick(
                     MissionReport(
                         missionId = mission.id,
-                        authorInfo = MissionReport.UserInfo(
+                        userInfo = MissionReport.UserInfo(
                             fullName = user.fullName,
                             email = user.email
                         ),

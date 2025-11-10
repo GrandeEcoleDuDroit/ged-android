@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
@@ -36,12 +37,14 @@ import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.EmptyText
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.PullToRefreshComponent
+import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.components.SimpleFloatingActionButton
 import com.upsaclay.common.presentation.components.TitleTopBar
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
+import com.upsaclay.mission.domain.entity.MissionReport
 import com.upsaclay.mission.domain.entity.MissionState
 import com.upsaclay.mission.domain.missionsFixture
 import com.upsaclay.mission.presentation.components.MissionCard
@@ -88,6 +91,7 @@ fun MissionDestination(
             onEditMissionClick = onEditMissionClick,
             onResendMissionClick = viewModel::resendMission,
             onDeleteMissionClick = viewModel::deleteMission,
+            onReportMissionClick = viewModel::reportMission,
             onRefresh = viewModel::refreshMissions,
             bottomBar = bottomBar
         )
@@ -101,6 +105,7 @@ fun MissionDestination(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MissionScreen(
     user: User,
@@ -113,12 +118,14 @@ private fun MissionScreen(
     onEditMissionClick: (Mission) -> Unit,
     onResendMissionClick: (Mission) -> Unit,
     onDeleteMissionClick: (Mission) -> Unit,
+    onReportMissionClick: (MissionReport) -> Unit,
     onRefresh: () -> Unit,
     bottomBar: @Composable () -> Unit
 ) {
     var showMissionBottomSheet by remember { mutableStateOf(false) }
     var showDeleteMissionDialog by remember { mutableStateOf(false) }
     var clickedMission by remember { mutableStateOf<Mission?>(null) }
+    var showMissionReportBottomSheet by remember { mutableStateOf(false) }
 
     if (showDeleteMissionDialog) {
         DefaultDialog(
@@ -195,6 +202,7 @@ private fun MissionScreen(
                     },
                     onReportClick = {
                         showMissionBottomSheet = false
+                        showMissionReportBottomSheet = true
                     },
                     onDeleteClick = {
                         showMissionBottomSheet = false
@@ -203,6 +211,29 @@ private fun MissionScreen(
                     onDismiss = { showMissionBottomSheet = false }
                 )
             }
+        }
+
+        if (showMissionReportBottomSheet) {
+            ReportBottomSheet(
+                items = MissionReport.Reason.entries,
+                onDismiss = { showMissionReportBottomSheet = false },
+                onReportClick = { reason ->
+                    showMissionReportBottomSheet = false
+
+                    clickedMission?.let { mission ->
+                        onReportMissionClick(
+                            MissionReport(
+                                missionId = mission.id,
+                                userInfo = MissionReport.UserInfo(
+                                    fullName = user.fullName,
+                                    email = user.email
+                                ),
+                                reason = reason,
+                            )
+                        )
+                    }
+                }
+            )
         }
     }
 }
@@ -263,6 +294,7 @@ private fun MissionScreenPreview() {
             onEditMissionClick = {},
             onResendMissionClick = {},
             onDeleteMissionClick = {},
+            onReportMissionClick = {},
             onRefresh = {},
             bottomBar = {}
         )

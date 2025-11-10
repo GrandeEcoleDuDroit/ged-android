@@ -3,19 +3,19 @@ package com.upsaclay.mission.data.remote.api
 import com.google.gson.Gson
 import com.upsaclay.common.data.exceptions.mapServerResponseException
 import com.upsaclay.common.data.remote.model.ServerResponse
-import com.upsaclay.mission.data.remote.InboundRemoteMission
 import com.upsaclay.mission.data.mapper.toMission
 import com.upsaclay.mission.data.mapper.toRemote
+import com.upsaclay.mission.data.remote.InboundRemoteMission
+import com.upsaclay.mission.data.remote.RemoteMissionReport
 import com.upsaclay.mission.domain.entity.Mission
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.upsaclay.mission.domain.entity.MissionReport
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
-import retrofit2.http.DELETE
+import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -48,12 +48,10 @@ internal class MissionApiImpl(
             MultipartBody.Part.createFormData("image", it.name, requestFile)
         }
 
-        withContext(Dispatchers.IO) {
-            mapServerResponseException(
-                message = "Failed to create mission",
-                block = { serverMissionApi.createMission(imagePart, missionPart) }
-            )
-        }
+        mapServerResponseException(
+            message = "Failed to create mission",
+            block = { serverMissionApi.createMission(imagePart, missionPart) }
+        )
     }
 
     override suspend fun updateMission(mission: Mission, imageFile: File?) {
@@ -66,21 +64,24 @@ internal class MissionApiImpl(
             MultipartBody.Part.createFormData("image", it.name, requestFile)
         }
 
-        withContext(Dispatchers.IO) {
-            mapServerResponseException(
-                message = "Failed to update mission",
-                block = { serverMissionApi.updateMission(mission.id.toString(), imagePart, missionPart) }
-            )
-        }
+        mapServerResponseException(
+            message = "Failed to update mission",
+            block = { serverMissionApi.updateMission(mission.id, imagePart, missionPart) }
+        )
     }
 
     override suspend fun deleteMission(missionId: String, imageFileName: String?) {
-        withContext(Dispatchers.IO) {
-            mapServerResponseException(
-                message = "Failed to delete mission",
-                block = { serverMissionApi.deleteMission(missionId, imageFileName) },
-            )
-        }
+        mapServerResponseException(
+            message = "Failed to delete mission",
+            block = { serverMissionApi.deleteMission(missionId, imageFileName) },
+        )
+    }
+
+    override suspend fun reportMission(report: MissionReport) {
+        mapServerResponseException(
+            message = "Failed to report mission",
+            block = { serverMissionApi.reportMission(report.toRemote()) }
+        )
     }
 }
 
@@ -109,4 +110,7 @@ internal interface ServerMissionApi {
         @Field("missionId") missionId: String,
         @Field("imageFileName") imageFileName: String?
     ): Response<ServerResponse>
+
+    @POST("missions/report")
+    suspend fun reportMission(@Body remoteMissionReport: RemoteMissionReport): Response<ServerResponse>
 }

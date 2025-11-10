@@ -1,6 +1,7 @@
 package com.upsaclay.mission.data.remote.api
 
 import com.upsaclay.mission.domain.entity.Mission
+import com.upsaclay.mission.domain.entity.MissionReport
 import java.io.File
 
 interface MissionApi {
@@ -11,4 +12,6 @@ interface MissionApi {
     suspend fun updateMission(mission: Mission, imageFile: File?)
 
     suspend fun deleteMission(missionId: String, imageFileName: String?)
+
+    suspend fun reportMission(report: MissionReport)
 }
