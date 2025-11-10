@@ -1,13 +1,13 @@
 package com.upsaclay.common.data.remote.model
 
 import com.google.gson.annotations.SerializedName
-import com.upsaclay.common.data.UserField.Server.USER_ID
-import com.upsaclay.common.data.UserField.Server.USER_FIRST_NAME
-import com.upsaclay.common.data.UserField.Server.USER_LAST_NAME
-import com.upsaclay.common.data.UserField.Server.USER_EMAIL
-import com.upsaclay.common.data.UserField.Server.USER_SCHOOL_LEVEL
 import com.upsaclay.common.data.UserField.Server.USER_ADMIN
+import com.upsaclay.common.data.UserField.Server.USER_EMAIL
+import com.upsaclay.common.data.UserField.Server.USER_FIRST_NAME
+import com.upsaclay.common.data.UserField.Server.USER_ID
+import com.upsaclay.common.data.UserField.Server.USER_LAST_NAME
 import com.upsaclay.common.data.UserField.Server.USER_PROFILE_PICTURE_FILE_NAME
+import com.upsaclay.common.data.UserField.Server.USER_SCHOOL_LEVEL
 import com.upsaclay.common.data.UserField.Server.USER_STATE
 import com.upsaclay.common.data.UserField.Server.USER_TESTER
 

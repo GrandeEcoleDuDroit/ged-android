@@ -1,6 +1,5 @@
 package com.upsaclay.mission.data.remote
 
-import com.upsaclay.mission.data.mapper.toRemote
 import com.upsaclay.mission.data.remote.api.MissionApi
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.MissionReport

@@ -8,9 +8,9 @@ import com.upsaclay.common.domain.extensions.toEpochMilliUTC
 import com.upsaclay.common.domain.extensions.toLocalDateTimeUTC
 import com.upsaclay.common.domain.extensions.uppercaseFirstLetter
 import com.upsaclay.news.data.local.model.LocalAnnouncement
+import com.upsaclay.news.data.remote.model.InboundRemoteAnnouncement
 import com.upsaclay.news.data.remote.model.OutbondRemoteAnnouncement
 import com.upsaclay.news.data.remote.model.RemoteAnnouncementReport
-import com.upsaclay.news.data.remote.model.InboundRemoteAnnouncement
 import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.domain.entity.Announcement.AnnouncementState
 import com.upsaclay.news.domain.entity.AnnouncementReport

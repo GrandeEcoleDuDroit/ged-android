@@ -1,6 +1,5 @@
 package com.upsaclay.common.data
 
-import androidx.core.graphics.scaleMatrix
 import com.upsaclay.common.data.UrlUtils.extractFileName
 import com.upsaclay.common.data.UrlUtils.formatOracleBucketUrl
 import com.upsaclay.common.data.local.LocalUser
