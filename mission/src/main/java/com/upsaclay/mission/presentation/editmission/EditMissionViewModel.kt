@@ -294,10 +294,10 @@ class EditMissionViewModel(
         imageModel != mission.state.imageReference
 
     private fun validateTitle(title: String): Boolean =
-        title != mission.title
+        title != mission.title && title.isNotBlank()
 
     private fun validateDescription(description: String): Boolean =
-        description != mission.description
+        description != mission.description && description.isNotBlank()
 
     private fun validateSchoolLevels(schoolLevels: List<SchoolLevel>): Boolean =
         schoolLevels != mission.schoolLevels
@@ -312,7 +312,7 @@ class EditMissionViewModel(
         endDate.isEqual(startDate) || endDate.isAfter(startDate)
 
     private fun validateMaxParticipants(maxParticipants: String): Boolean =
-        maxParticipants != mission.maxParticipants.toString()
+        maxParticipants != mission.maxParticipants.toString() && maxParticipants.isNotBlank()
 
     private fun validateDuration(duration: String): Boolean =
         duration != mission.duration.orEmpty()
