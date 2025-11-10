@@ -19,7 +19,6 @@ object MissionFormatter {
 
     fun formatRemainingParticipants(participantsCount: Int, maxParticipants: Int): String {
         val remaining = max(maxParticipants - participantsCount, 0)
-        return remaining
-            .takeIf { it < 100 }?.toString() ?: "99+"
+        return remaining.takeIf { it < 100 }?.toString() ?: "99+"
     }
 }

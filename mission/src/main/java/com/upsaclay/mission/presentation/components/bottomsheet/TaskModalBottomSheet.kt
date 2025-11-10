@@ -35,7 +35,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.mission.R
-import com.upsaclay.mission.domain.MissionConstants.MAX_TASK_LENGTH
+import com.upsaclay.mission.presentation.MissionConstants.MAX_TASK_LENGTH
 import com.upsaclay.mission.domain.entity.MissionTask
 import com.upsaclay.mission.domain.missionTaskFixture
 import kotlinx.coroutines.android.awaitFrame

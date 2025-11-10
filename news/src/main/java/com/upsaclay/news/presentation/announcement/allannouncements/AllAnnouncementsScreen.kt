@@ -149,12 +149,12 @@ private fun AllAnnouncementsScreen(
             }
         }
     ) { innerPadding ->
-        PullToRefreshComponent(
-            modifier = Modifier.padding(innerPadding),
-            onRefresh = onRefresh,
-            refreshing = refreshing
-        ) {
-            announcements?.let {
+        announcements?.let {
+            PullToRefreshComponent(
+                modifier = Modifier.padding(innerPadding),
+                onRefresh = onRefresh,
+                refreshing = refreshing
+            ) {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     if (announcements.isEmpty()) {
                         item {
@@ -189,70 +189,72 @@ private fun AllAnnouncementsScreen(
                         }
                     }
                 }
-            } ?: run {
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressBar(
-                        modifier = Modifier.padding(top = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
-                    )
-                }
+            }
+        } ?: run {
+            Box(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressBar(
+                    modifier = Modifier.padding(top = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+                )
             }
         }
-    }
 
-    if (showAnnouncementBottomSheet) {
-        clickedAnnouncement?.let { announcement ->
-            AnnouncementBottomSheet(
-                announcement = announcement,
-                isEditable = user.admin && announcement.author.id == user.id,
-                onEditClick = {
-                    showAnnouncementBottomSheet = false
-                    clickedAnnouncement?.let(onEditAnnouncementClick)
-                },
-                onResendClick = {
-                    showAnnouncementBottomSheet = false
-                    onResendAnnouncementClick(announcement)
-                },
-                onReportClick = {
-                    showAnnouncementBottomSheet = false
-                    showAnnouncementReportBottomSheet = true
-                },
-                onDeleteClick = {
-                    showAnnouncementBottomSheet = false
-                    showDeleteAnnouncementDialog = true
-                },
-                onDismiss = { showAnnouncementBottomSheet = false }
+        if (showAnnouncementBottomSheet) {
+            clickedAnnouncement?.let { announcement ->
+                AnnouncementBottomSheet(
+                    announcement = announcement,
+                    isEditable = user.admin && announcement.author.id == user.id,
+                    onEditClick = {
+                        showAnnouncementBottomSheet = false
+                        clickedAnnouncement?.let(onEditAnnouncementClick)
+                    },
+                    onResendClick = {
+                        showAnnouncementBottomSheet = false
+                        onResendAnnouncementClick(announcement)
+                    },
+                    onReportClick = {
+                        showAnnouncementBottomSheet = false
+                        showAnnouncementReportBottomSheet = true
+                    },
+                    onDeleteClick = {
+                        showAnnouncementBottomSheet = false
+                        showDeleteAnnouncementDialog = true
+                    },
+                    onDismiss = { showAnnouncementBottomSheet = false }
+                )
+            }
+        }
+
+        if (showAnnouncementReportBottomSheet) {
+            ReportBottomSheet(
+                items = AnnouncementReport.Reason.entries,
+                onDismiss = { showAnnouncementReportBottomSheet = false },
+                onReportClick = { reason ->
+                    showAnnouncementReportBottomSheet = false
+
+                    clickedAnnouncement?.let { announcement ->
+                        onReportAnnouncementClick(
+                            AnnouncementReport(
+                                announcementId = announcement.id,
+                                userInfo = AnnouncementReport.UserInfo(
+                                    fullName = user.fullName,
+                                    email = user.email
+                                ),
+                                authorInfo = AnnouncementReport.UserInfo(
+                                    fullName = announcement.author.fullName,
+                                    email = announcement.author.email
+                                ),
+                                reason = reason,
+                            )
+                        )
+                    }
+                }
             )
         }
-    }
-
-    if (showAnnouncementReportBottomSheet) {
-        ReportBottomSheet(
-            items = AnnouncementReport.Reason.entries,
-            onDismiss = { showAnnouncementReportBottomSheet = false },
-            onReportClick = { reason ->
-                showAnnouncementReportBottomSheet = false
-
-                clickedAnnouncement?.let { announcement ->
-                    onReportAnnouncementClick(
-                        AnnouncementReport(
-                            announcementId = announcement.id,
-                            userInfo = AnnouncementReport.UserInfo(
-                                fullName = user.fullName,
-                                email = user.email
-                            ),
-                            authorInfo = AnnouncementReport.UserInfo(
-                                fullName = announcement.author.fullName,
-                                email = announcement.author.email
-                            ),
-                            reason = reason,
-                        )
-                    )
-                }
-            }
-        )
     }
 }
 
@@ -268,7 +270,7 @@ private fun AllAnnouncementsScreenPreview() {
     GedoiseTheme {
         AllAnnouncementsScreen(
             user = userFixture,
-            announcements = announcementsFixture,
+            announcements = null,
             refreshing = false,
             loading = false,
             onBackClick = {},

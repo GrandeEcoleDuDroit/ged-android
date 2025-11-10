@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -79,10 +80,10 @@ fun MissionDestination(
         }
     }
 
-    if (uiState.value.user != null && uiState.value.missions != null) {
+    if (uiState.value.user != null) {
         MissionScreen(
             user = uiState.value.user!!,
-            missions = uiState.value.missions!!,
+            missions = uiState.value.missions,
             loading = uiState.value.loading,
             refreshing = uiState.value.refreshing,
             snackbarHostState = snackbarHostState,
@@ -95,13 +96,6 @@ fun MissionDestination(
             onRefresh = viewModel::refreshMissions,
             bottomBar = bottomBar
         )
-    } else {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressBar()
-        }
     }
 }
 
@@ -109,7 +103,7 @@ fun MissionDestination(
 @Composable
 private fun MissionScreen(
     user: User,
-    missions: List<Mission>,
+    missions: List<Mission>?,
     loading: Boolean,
     refreshing: Boolean,
     snackbarHostState: SnackbarHostState,
@@ -150,40 +144,52 @@ private fun MissionScreen(
         onCreateMissionClick = onCreateMissionClick,
         bottomBar = bottomBar
     ) { innerPadding ->
-        PullToRefreshComponent(
-            modifier = Modifier.padding(innerPadding),
-            onRefresh = onRefresh,
-            refreshing = refreshing
-        ) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
-                verticalArrangement = Arrangement.mediumSpacing()
+        missions?.let { missions ->
+            PullToRefreshComponent(
+                modifier = Modifier.padding(innerPadding),
+                onRefresh = onRefresh,
+                refreshing = refreshing
             ) {
-                if (missions.isEmpty()) {
-                    item {
-                        EmptyText(text = stringResource(R.string.no_mission))
-                    }
-                } else {
-                    items(missions) { mission ->
-                        MissionCard(
-                            mission = mission,
-                            onClick = {
-                                if (mission.state is MissionState.Published) {
-                                    onMissionClick(mission.id)
-                                } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                    verticalArrangement = Arrangement.mediumSpacing()
+                ) {
+                    if (missions.isEmpty()) {
+                        item {
+                            EmptyText(text = stringResource(R.string.no_mission))
+                        }
+                    } else {
+                        items(missions) { mission ->
+                            MissionCard(
+                                mission = mission,
+                                onClick = {
+                                    if (mission.state is MissionState.Published) {
+                                        onMissionClick(mission.id)
+                                    } else {
+                                        clickedMission = mission
+                                        showMissionBottomSheet = true
+                                    }
+                                },
+                                onOptionClick = {
                                     clickedMission = mission
                                     showMissionBottomSheet = true
                                 }
-                            },
-                            onOptionClick = {
-                                clickedMission = mission
-                                showMissionBottomSheet = true
-                            }
-                        )
+                            )
+                        }
                     }
                 }
+            }
+        } ?: run {
+            Box(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxWidth()
+                    .padding(top = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                contentAlignment = Alignment.TopCenter
+            ) {
+                CircularProgressBar()
             }
         }
 

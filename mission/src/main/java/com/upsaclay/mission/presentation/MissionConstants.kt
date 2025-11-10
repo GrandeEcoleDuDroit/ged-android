@@ -1,4 +1,4 @@
-package com.upsaclay.mission.domain
+package com.upsaclay.mission.presentation
 
 object MissionConstants {
     const val MAX_TITLE_LENGTH = 100
