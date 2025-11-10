@@ -15,14 +15,11 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -31,13 +28,14 @@ import com.upsaclay.common.presentation.components.LargeAsyncImage
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.emptyImageBackground
 import com.upsaclay.common.presentation.theme.emptyImageForeground
+import com.upsaclay.common.presentation.theme.imageIconButtonColors
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.mission.R
 
 @Composable
 fun MissionImageFormSection(
     modifier: Modifier = Modifier,
-    imageUri: String?,
+    imageModel: String?,
     onImageClick: () -> Unit,
     onRemoveImageClick: () -> Unit
 ) {
@@ -47,7 +45,7 @@ fun MissionImageFormSection(
             .clickable(onClick = onImageClick),
         contentAlignment = Alignment.Center
     ) {
-        imageUri?.let {
+        imageModel?.let {
             NonEmptyImage(
                 modifier = Modifier.fillMaxSize(),
                 imageUri = it,
@@ -100,16 +98,14 @@ private fun NonEmptyImage(
             modifier = Modifier
                 .padding(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding))
                 .align(Alignment.TopEnd)
-                .clip(ShapeDefaults.ExtraLarge)
-                .background(Color.Black.copy(alpha = 0.5f))
                 .size(dimensionResource(R.dimen.mission_image_remove_button_size)),
+            colors = MaterialTheme.colorScheme.imageIconButtonColors,
             onClick = onRemoveImageClick
         ) {
             Icon(
                 modifier = Modifier.size(dimensionResource(R.dimen.mission_image_remove_button_icon_size)),
                 imageVector = Icons.Default.Clear,
-                contentDescription = "Delete Image",
-                tint = Color.White
+                contentDescription = "Delete Image"
             )
         }
     }
@@ -127,7 +123,7 @@ private fun CreateMissionImageSectionPreview() {
     GedoiseTheme {
         Surface {
             MissionImageFormSection(
-                imageUri = null,
+                imageModel = null,
                 onImageClick = {},
                 onRemoveImageClick = {}
             )

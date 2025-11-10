@@ -27,7 +27,7 @@ import com.upsaclay.common.presentation.theme.gold
 import com.upsaclay.common.utils.Phones
 
 @Composable
-fun ManagerItem(
+fun MissionUserItem(
     modifier: Modifier = Modifier,
     user: User,
     imageScale: Float,
@@ -79,10 +79,10 @@ fun ManagerItem(
 
 @Phones
 @Composable
-private fun ManagerItemPreview() {
+private fun MissionUserItemPreview() {
     GedoiseTheme {
         Surface {
-            ManagerItem(
+            MissionUserItem(
                 user = userFixture,
                 imageScale = 0.5f
             )

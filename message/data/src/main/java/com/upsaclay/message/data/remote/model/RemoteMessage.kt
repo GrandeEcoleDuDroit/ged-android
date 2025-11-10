@@ -7,7 +7,7 @@ import com.upsaclay.message.data.model.MessageField
 internal data class RemoteMessage(
     @get:PropertyName(MessageField.MESSAGE_ID)
     @set:PropertyName(MessageField.MESSAGE_ID)
-    var messageId: Long = 0,
+    var messageId: String = "",
 
     @get:PropertyName(MessageField.CONVERSATION_ID)
     @set:PropertyName(MessageField.CONVERSATION_ID)

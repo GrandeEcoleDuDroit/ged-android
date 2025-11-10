@@ -1,26 +1,24 @@
 package com.upsaclay.news.domain
 
-import com.upsaclay.news.domain.usecase.RefreshAnnouncementUseCase
+import com.upsaclay.news.domain.usecase.RefreshAnnouncementsUseCase
 import com.upsaclay.news.domain.usecase.SynchronizeAnnouncementsUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 
-@OptIn(ExperimentalCoroutinesApi::class)
-class RefreshAnnouncementUseCaseTest {
+class RefreshAnnouncementsUseCaseTest {
     private val synchronizeAnnouncementsUseCase: SynchronizeAnnouncementsUseCase = mockk()
 
-    private lateinit var useCase: RefreshAnnouncementUseCase
+    private lateinit var useCase: RefreshAnnouncementsUseCase
 
     @Before
     fun setUp() {
         coEvery { synchronizeAnnouncementsUseCase() } returns Unit
 
-        useCase = RefreshAnnouncementUseCase(
+        useCase = RefreshAnnouncementsUseCase(
             synchronizeAnnouncementsUseCase = synchronizeAnnouncementsUseCase
         )
     }

@@ -71,6 +71,18 @@ internal fun FirestoreUser.toUser() = User(
     tester = tester
 )
 
+fun ServerUser.toUser() = User(
+    id = userId,
+    firstName = userFirstName.uppercaseFirstLetter(),
+    lastName = userLastName.uppercaseFirstLetter(),
+    email = userEmail,
+    schoolLevel = SchoolLevel.fromNumber(userSchoolLevel),
+    admin = userAdmin == 1,
+    profilePictureUrl = formatOracleBucketUrl(userProfilePictureFileName),
+    state = User.UserState.fromString(userState),
+    tester = userTester == 1
+)
+
 internal fun UserReport.toRemote() = RemoteUserReport(
     userId = userId,
     userInfo = userInfo.toRemote(),

@@ -1,6 +1,5 @@
 package com.upsaclay.mission.presentation.components.bottomsheet
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -33,10 +32,10 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.TextFieldValue
-import com.upsaclay.common.domain.usecase.GenerateIdUseCase
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.mission.R
+import com.upsaclay.mission.presentation.MissionConstants.MAX_TASK_LENGTH
 import com.upsaclay.mission.domain.entity.MissionTask
 import com.upsaclay.mission.domain.missionTaskFixture
 import kotlinx.coroutines.android.awaitFrame
@@ -45,17 +44,12 @@ import kotlinx.coroutines.delay
 @Composable
 fun AddTaskModalBottomSheet(
     onDismissRequest: () -> Unit,
-    onAddClick: (MissionTask) -> Unit
+    onAddClick: (String) -> Unit
 ) {
-    var missionTask by remember { mutableStateOf(MissionTask(GenerateIdUseCase.intId, "")) }
     var createEnabled by remember { mutableStateOf(false) }
 
     TaskModalBottomSheet(
-        missionTask = missionTask,
-        onValueChange = {
-            missionTask = missionTask.copy(value = it.take(200))
-            createEnabled = missionTask.value.isNotBlank()
-        },
+        onValueChange = { createEnabled = it.isNotBlank() },
         enabled = createEnabled,
         labelButton = stringResource(R.string.add),
         onClick = onAddClick,
@@ -65,22 +59,22 @@ fun AddTaskModalBottomSheet(
 
 @Composable
 fun EditTaskModalBottomSheet(
-    initialMissionTask: MissionTask,
+    initialTask: MissionTask,
     onDismissRequest: () -> Unit,
     onEditClick: (MissionTask) -> Unit
 ) {
-    var task by remember { mutableStateOf(initialMissionTask) }
     var editEnabled by remember { mutableStateOf(false) }
 
     TaskModalBottomSheet(
-        missionTask = task,
+        initialValue = initialTask.value,
         onValueChange = {
-            task = task.copy(value = it)
-            editEnabled = task.value.isNotBlank() && task.value != initialMissionTask.value
+            editEnabled = it.isNotBlank() && it != initialTask.value
         },
         enabled = editEnabled,
         labelButton = stringResource(com.upsaclay.common.R.string.save),
-        onClick = onEditClick,
+        onClick = { value ->
+            onEditClick(initialTask.copy(value = value))
+        },
         onDismissRequest = onDismissRequest
     )
 }
@@ -88,24 +82,25 @@ fun EditTaskModalBottomSheet(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TaskModalBottomSheet(
-    missionTask: MissionTask,
+    initialValue: String = "",
     onValueChange: (String) -> Unit,
     enabled: Boolean,
     labelButton: String,
-    onClick: (MissionTask) -> Unit,
+    onClick: (String) -> Unit,
     onDismissRequest: () -> Unit
 ) {
     val focusRequester = remember { FocusRequester() }
     var textFieldValue by remember {
         mutableStateOf(
             TextFieldValue(
-                text = missionTask.value,
-                selection = TextRange(missionTask.value.length)
+                text = initialValue,
+                selection = TextRange(initialValue.length)
             )
         )
     }
 
     val state = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true,
         confirmValueChange = {
             if (it == SheetValue.Hidden) {
                 onDismissRequest()
@@ -116,54 +111,50 @@ private fun TaskModalBottomSheet(
         }
     )
 
-    ModalBottomSheet(
-        onDismissRequest = {},
-        sheetState = state
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            OutlinedTextField(
-                modifier = Modifier
-                    .focusRequester(focusRequester)
-                    .fillMaxWidth(),
-                value = textFieldValue,
-                onValueChange = {
-                    if (it.text.length < 100) {
-                        textFieldValue = it
-                        onValueChange(it.text)
-                    }
-                },
-                keyboardOptions = KeyboardOptions(KeyboardCapitalization.Sentences),
-                placeholder = { Text(text = stringResource(R.string.enter_task)) },
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedBorderColor = Color.Transparent,
-                    focusedBorderColor = Color.Transparent
-                )
-            )
-
-            TextButton(
-                modifier = Modifier
-                    .align(Alignment.End)
-                    .padding(end = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
-                onClick = { onClick(missionTask.copy(value = missionTask.value.trim())) },
-                enabled = enabled,
-            ) {
-                Text(
-                    text = labelButton,
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)))
-    }
-
     LaunchedEffect(Unit) {
         awaitFrame()
         delay(200)
         focusRequester.requestFocus()
+    }
+
+    ModalBottomSheet(
+        onDismissRequest = {},
+        sheetState = state
+    ) {
+        OutlinedTextField(
+            modifier = Modifier
+                .focusRequester(focusRequester)
+                .weight(1f, fill = false)
+                .fillMaxWidth(),
+            value = textFieldValue,
+            onValueChange = {
+                val text = it.text.take(MAX_TASK_LENGTH)
+                textFieldValue = it.copy(text = text)
+                onValueChange(text)
+            },
+            keyboardOptions = KeyboardOptions(KeyboardCapitalization.Sentences),
+            placeholder = { Text(text = stringResource(R.string.enter_task)) },
+            colors = OutlinedTextFieldDefaults.colors(
+                unfocusedBorderColor = Color.Transparent,
+                focusedBorderColor = Color.Transparent
+            )
+        )
+
+        TextButton(
+            modifier = Modifier
+                .align(Alignment.End)
+                .padding(end = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+            onClick = { onClick(textFieldValue.text) },
+            enabled = enabled,
+        ) {
+            Text(
+                text = labelButton,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.SemiBold
+            )
+        }
+
+        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)))
     }
 }
 
@@ -179,7 +170,7 @@ private fun EditTaskBottomSheetPreview() {
     GedoiseTheme {
         Surface {
             EditTaskModalBottomSheet(
-                initialMissionTask = missionTaskFixture,
+                initialTask = missionTaskFixture,
                 onDismissRequest = {},
                 onEditClick = {}
             )

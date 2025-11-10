@@ -3,7 +3,7 @@ package com.upsaclay.message.domain.entity
 import java.time.LocalDateTime
 
 data class Message(
-    val id: Long,
+    val id: String,
     val senderId: String,
     val recipientId: String,
     val conversationId: String,

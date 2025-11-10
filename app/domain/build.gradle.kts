@@ -31,4 +31,5 @@ dependencies {
     implementation(project(":message:domain"))
     implementation(project(":news:domain"))
     implementation(project(":common:domain"))
+    implementation(project(":mission:domain"))
 }

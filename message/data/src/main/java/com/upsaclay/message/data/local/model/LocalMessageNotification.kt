@@ -26,7 +26,7 @@ internal const val MESSAGE_NOTIFICATION_TABLE_NAME = "message_notification"
 data class LocalMessageNotification(
     @PrimaryKey
     @ColumnInfo(name = MESSAGE_ID)
-    val messageId: Long,
+    val messageId: String,
     @ColumnInfo(name = CONTENT)
     val content: String,
     @ColumnInfo(name = TIMESTAMP)

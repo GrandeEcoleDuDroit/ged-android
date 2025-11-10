@@ -57,7 +57,7 @@ data class LocalConversationMessage(
     val conversationDeleteTime: Long?,
 
     @ColumnInfo(name = MESSAGE_ID)
-    val messageId: Long,
+    val messageId: String,
     @ColumnInfo(name = SENDER_ID)
     val senderId: String,
     @ColumnInfo(name = RECIPIENT_ID)

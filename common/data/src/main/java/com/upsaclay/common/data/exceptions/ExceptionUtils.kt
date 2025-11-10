@@ -33,17 +33,22 @@ suspend fun <T> Any.mapServerResponseException(
     message: String? = null,
     specificMap: ((Response<T>) -> T?)? = null
 ): T? {
-    val response = block()
-    return if (response.isSuccessful) {
-        response.body()
-    } else {
-        val errorMessage = formatHttpError(response)
-        specificMap?.let {
-            e("$message: $errorMessage", Exception(errorMessage))
-            it(response)
-        } ?: run {
-            e("$message: $errorMessage", Exception(errorMessage))
-            throw InternalServerException(errorMessage)
+    try {
+        val response = block()
+        return if (response.isSuccessful) {
+            response.body()
+        } else {
+            val errorMessage = formatHttpError(response)
+            specificMap?.let {
+                e("$message: $errorMessage", Exception(errorMessage))
+                it(response)
+            } ?: run {
+                e("$message: $errorMessage", Exception(errorMessage))
+                throw InternalServerException(errorMessage)
+            }
         }
+    } catch (e: java.lang.Exception) {
+        this.e("$message: ${e.message}", e)
+        throw e
     }
 }

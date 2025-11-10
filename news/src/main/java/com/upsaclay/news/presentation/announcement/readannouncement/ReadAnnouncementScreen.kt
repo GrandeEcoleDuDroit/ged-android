@@ -57,7 +57,7 @@ import org.koin.core.parameter.parametersOf
 fun ReadAnnouncementDestination(
     announcementId: String,
     onBackClick: () -> Unit,
-    onEditClick: (Announcement) -> Unit,
+    onEditAnnouncementClick: (Announcement) -> Unit,
     onAuthorClick: (User) -> Unit,
     viewModel: ReadAnnouncementViewModel = koinViewModel(
         parameters = { parametersOf(announcementId) }
@@ -95,7 +95,7 @@ fun ReadAnnouncementDestination(
             snackbarHostState = snackbarHostState,
             onBackClick = onBackClick,
             onAuthorClick = onAuthorClick,
-            onEditAnnouncementClick = onEditClick,
+            onEditAnnouncementClick = onEditAnnouncementClick,
             onReportAnnouncementClick = viewModel::reportAnnouncement,
             onDeleteAnnouncementClick = viewModel::deleteAnnouncement
         )

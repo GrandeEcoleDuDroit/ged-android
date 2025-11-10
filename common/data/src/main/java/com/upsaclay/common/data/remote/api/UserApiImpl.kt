@@ -93,7 +93,7 @@ internal class UserApiImpl(
     override suspend fun updateUser(user: User) {
         mapServerResponseException(
             message = "Failed to update user with Server",
-            block = { userServerApi.updateUser(user.toServerUser()) }
+            block = { userServerApi.updateUser(user.id, user.toServerUser()) }
         )
         mapFirebaseException(
             message = "Failed to update user with Firestore",
@@ -148,7 +148,10 @@ internal interface UserServerApi {
     ): Response<ServerResponse>
 
     @PUT("users/{userId}")
-    suspend fun updateUser(@Body serverUser: ServerUser): Response<ServerResponse>
+    suspend fun updateUser(
+        @Path("userId") userId: String,
+        @Body serverUser: ServerUser
+    ): Response<ServerResponse>
 
     @DELETE("users/profile-picture-file-name/{userId}")
     suspend fun deleteProfilePictureFileName(@Path("userId") userId: String): Response<ServerResponse>

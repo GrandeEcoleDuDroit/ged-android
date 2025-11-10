@@ -29,6 +29,8 @@ import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.extension.extraSmallSpacing
 import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.extension.smallSpacing
+import com.upsaclay.common.presentation.components.OptionButton
+import com.upsaclay.common.presentation.components.TextIcon
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.informationText
 import com.upsaclay.common.utils.Phones
@@ -42,7 +44,8 @@ import com.upsaclay.mission.presentation.MissionFormatter
 fun MissionCard(
     modifier: Modifier = Modifier,
     mission: Mission,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onOptionClick: () -> Unit
 ) {
     when (val state = mission.state) {
         is MissionState.Published -> {
@@ -50,7 +53,8 @@ fun MissionCard(
                 modifier = modifier,
                 mission = mission,
                 imageModel = state.imageUrl,
-                onClick = onClick
+                onClick = onClick,
+                onOptionClick = onOptionClick
             )
         }
 
@@ -59,7 +63,8 @@ fun MissionCard(
                 modifier = modifier,
                 mission = mission,
                 imageModel = state.imagePath,
-                onClick = onClick
+                onClick = onClick,
+                onOptionClick = onOptionClick
             )
         }
 
@@ -81,12 +86,25 @@ private fun DefaultMissionCard(
     modifier: Modifier = Modifier,
     mission: Mission,
     imageModel: Any?,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onOptionClick: () -> Unit
 ) {
     OutlinedCard(
         modifier = modifier.clickable(onClick = onClick)
     ) {
-        MissionCardImage(model = imageModel)
+        Box {
+            MissionCardImage(
+                modifier = Modifier.align(Alignment.Center),
+                model = imageModel,
+            )
+
+            OptionButton(
+                modifier = Modifier
+                    .padding(dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding))
+                    .align(Alignment.TopEnd),
+                onClick = onOptionClick
+            )
+        }
 
         Column(
             modifier = Modifier
@@ -113,27 +131,29 @@ private fun PublishingMissionCard(
     modifier: Modifier = Modifier,
     mission: Mission,
     imageModel: Any?,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onOptionClick: () -> Unit
 ) {
    DefaultMissionCard(
        modifier = modifier.alpha(0.5f),
        mission = mission,
        imageModel = imageModel,
-       onClick = onClick
+       onClick = onClick,
+       onOptionClick = onOptionClick
    )
 }
 
 @Composable
 private fun CardHeader(
     modifier: Modifier = Modifier,
-    mission: Mission
+    mission: Mission,
 ) {
     Column(
         verticalArrangement = Arrangement.smallSpacing()
     ) {
         Row(
             modifier = modifier,
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.Top,
             horizontalArrangement = Arrangement.smallSpacing()
         ) {
             Text(
@@ -144,25 +164,26 @@ private fun CardHeader(
                 overflow = TextOverflow.Ellipsis
             )
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.smallSpacing(),
-            ) {
-                Icon(
-                    modifier = Modifier.size(20.dp),
-                    painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_group),
-                    contentDescription = null
-                )
-
-                Text(
-                    text = stringResource(
-                        R.string.participant_number,
-                        mission.participants.size,
-                        mission.maxParticipants
-                    ),
-                    style = MaterialTheme.typography.bodySmall
-                )
-            }
+            TextIcon(
+                modifier = Modifier.padding(top = dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding)),
+                icon = {
+                    Icon(
+                        modifier = Modifier.size(20.dp),
+                        painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_group),
+                        contentDescription = null
+                    )
+                },
+                text = {
+                    Text(
+                        text = stringResource(
+                            R.string.participant_number,
+                            mission.participants.size,
+                            mission.maxParticipants
+                        ),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+            )
         }
 
         Text(
@@ -192,7 +213,7 @@ private fun CardFooter(schoolLevels: List<SchoolLevel>?) {
     schoolLevels?.let {
         Text(
             text = MissionFormatter.formatSchoolLevels(it),
-            style = MaterialTheme.typography.labelSmall
+            style = MaterialTheme.typography.labelMedium
         )
     }
 }
@@ -208,7 +229,10 @@ private fun ErrorMissionCard(
         modifier = modifier.clickable(onClick = onClick)
     ) {
         Box {
-            MissionCardImage(model = imageModel)
+            MissionCardImage(
+                modifier = Modifier.align(Alignment.Center),
+                model = imageModel
+            )
 
             ErrorBanner(modifier = Modifier.align(Alignment.TopCenter))
         }
@@ -221,7 +245,7 @@ private fun ErrorMissionCard(
         ) {
             CardHeader(
                 modifier = Modifier.fillMaxWidth(),
-                mission = mission
+                mission = mission,
             )
 
             CardContent(mission = mission)
@@ -304,7 +328,8 @@ private fun DefaultMissionCardPreview() {
             DefaultMissionCard(
                 mission = mission,
                 imageModel = null,
-                onClick = {}
+                onClick = {},
+                onOptionClick = {}
             )
         }
     }
@@ -320,7 +345,8 @@ private fun PublishingMissionCardPreview() {
             PublishingMissionCard(
                 mission = mission,
                 imageModel = null,
-                onClick = {}
+                onClick = {},
+                onOptionClick = {}
             )
         }
     }

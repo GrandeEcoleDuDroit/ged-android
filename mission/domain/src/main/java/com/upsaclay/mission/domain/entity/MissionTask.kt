@@ -1,6 +1,6 @@
 package com.upsaclay.mission.domain.entity
 
 data class MissionTask(
-    val id: Int,
+    val id: String,
     val value: String
 )

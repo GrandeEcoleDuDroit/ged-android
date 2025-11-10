@@ -8,13 +8,13 @@ import java.time.LocalDate
 data class MissionFormValue(
     val title: String,
     val description: String,
-    val schoolLevels: List<SchoolLevel>,
-    val selectedSchoolLevels: List<SchoolLevel>,
     val startDate: LocalDate,
     val endDate: LocalDate,
-    val frequency: String,
-    val participantNumber: String,
-    val selectedManagers: List<User>,
-    val missionTasks: List<MissionTask>,
-    val imageUri: String?,
+    val allSchoolLevels: List<SchoolLevel>,
+    val schoolLevels: List<SchoolLevel>,
+    val duration: String,
+    val maxParticipants: String,
+    val managers: List<User>,
+    val tasks: List<MissionTask>,
+    val imageReference: String?
 )

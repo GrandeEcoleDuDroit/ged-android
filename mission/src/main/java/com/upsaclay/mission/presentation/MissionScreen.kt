@@ -1,11 +1,16 @@
 package com.upsaclay.mission.presentation
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
@@ -19,22 +24,28 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import com.upsaclay.common.domain.entity.User
+import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.extension.mediumSpacing
-import com.upsaclay.common.extension.rootMediumPadding
 import com.upsaclay.common.presentation.SingleUiEvent
+import com.upsaclay.common.presentation.components.CircularProgressBar
 import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.EmptyText
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.PullToRefreshComponent
+import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.components.SimpleFloatingActionButton
 import com.upsaclay.common.presentation.components.TitleTopBar
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
+import com.upsaclay.mission.domain.entity.MissionReport
 import com.upsaclay.mission.domain.entity.MissionState
 import com.upsaclay.mission.domain.missionsFixture
 import com.upsaclay.mission.presentation.components.MissionCard
@@ -44,8 +55,9 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun MissionDestination(
-    onMissionClick: (Int) -> Unit,
+    onMissionClick: (String) -> Unit,
     onCreateMissionClick: () -> Unit,
+    onEditMissionClick: (Mission) -> Unit,
     bottomBar: @Composable () -> Unit,
     viewModel: MissionViewModel = koinViewModel()
 ) {
@@ -68,38 +80,46 @@ fun MissionDestination(
         }
     }
 
-    MissionScreen(
-        missions = uiState.value.missions,
-        admin = uiState.value.user?.admin == true,
-        loading = uiState.value.loading,
-        refreshing = uiState.value.refreshing,
-        snackbarHostState = snackbarHostState,
-        onMissionClick = onMissionClick,
-        onCreateMissionClick = onCreateMissionClick,
-        onResendMissionClick = viewModel::resendMission,
-        onDeleteMissionClick = viewModel::deleteMission,
-        onRefresh = viewModel::refresh,
-        bottomBar = bottomBar
-    )
+    if (uiState.value.user != null) {
+        MissionScreen(
+            user = uiState.value.user!!,
+            missions = uiState.value.missions,
+            loading = uiState.value.loading,
+            refreshing = uiState.value.refreshing,
+            snackbarHostState = snackbarHostState,
+            onMissionClick = onMissionClick,
+            onCreateMissionClick = onCreateMissionClick,
+            onEditMissionClick = onEditMissionClick,
+            onResendMissionClick = viewModel::resendMission,
+            onDeleteMissionClick = viewModel::deleteMission,
+            onReportMissionClick = viewModel::reportMission,
+            onRefresh = viewModel::refreshMissions,
+            bottomBar = bottomBar
+        )
+    }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MissionScreen(
-    missions: List<Mission>,
-    admin: Boolean,
+    user: User,
+    missions: List<Mission>?,
     loading: Boolean,
     refreshing: Boolean,
     snackbarHostState: SnackbarHostState,
-    onMissionClick: (Int) -> Unit,
+    onMissionClick: (String) -> Unit,
     onCreateMissionClick: () -> Unit,
+    onEditMissionClick: (Mission) -> Unit,
     onResendMissionClick: (Mission) -> Unit,
     onDeleteMissionClick: (Mission) -> Unit,
+    onReportMissionClick: (MissionReport) -> Unit,
     onRefresh: () -> Unit,
     bottomBar: @Composable () -> Unit
 ) {
-    var showBottomSheet by remember { mutableStateOf(false) }
+    var showMissionBottomSheet by remember { mutableStateOf(false) }
     var showDeleteMissionDialog by remember { mutableStateOf(false) }
     var clickedMission by remember { mutableStateOf<Mission?>(null) }
+    var showMissionReportBottomSheet by remember { mutableStateOf(false) }
 
     if (showDeleteMissionDialog) {
         DefaultDialog(
@@ -119,49 +139,105 @@ private fun MissionScreen(
     }
 
     MissionScaffold(
-        admin = admin,
+        admin = user.admin,
         snackbarHostState = snackbarHostState,
         onCreateMissionClick = onCreateMissionClick,
         bottomBar = bottomBar
     ) { innerPadding ->
-        PullToRefreshComponent(
-            modifier = Modifier.rootMediumPadding(innerPadding),
-            onRefresh = onRefresh,
-            refreshing = refreshing
-        ) {
-            LazyColumn(verticalArrangement = Arrangement.mediumSpacing()) {
-                if (missions.isEmpty()) {
-                    item {
-                        EmptyText(text = stringResource(R.string.no_mission))
-                    }
-                } else {
-                    items(missions) { mission ->
-                        MissionCard(
-                            mission = mission,
-                            onClick = {
-                                if (mission.state is MissionState.Published) {
-                                    onMissionClick(mission.id)
-                                } else {
+        missions?.let { missions ->
+            PullToRefreshComponent(
+                modifier = Modifier.padding(innerPadding),
+                onRefresh = onRefresh,
+                refreshing = refreshing
+            ) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                    verticalArrangement = Arrangement.mediumSpacing()
+                ) {
+                    if (missions.isEmpty()) {
+                        item {
+                            EmptyText(text = stringResource(R.string.no_mission))
+                        }
+                    } else {
+                        items(missions) { mission ->
+                            MissionCard(
+                                mission = mission,
+                                onClick = {
+                                    if (mission.state is MissionState.Published) {
+                                        onMissionClick(mission.id)
+                                    } else {
+                                        clickedMission = mission
+                                        showMissionBottomSheet = true
+                                    }
+                                },
+                                onOptionClick = {
                                     clickedMission = mission
-                                    showBottomSheet = true
+                                    showMissionBottomSheet = true
                                 }
-                            }
-                        )
+                            )
+                        }
                     }
                 }
             }
+        } ?: run {
+            Box(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxWidth()
+                    .padding(top = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                contentAlignment = Alignment.TopCenter
+            ) {
+                CircularProgressBar()
+            }
         }
 
-        if (showBottomSheet) {
-            MissionBottomSheet(
-                onDismiss = { showBottomSheet = false },
-                onDeleteClick = {
-                    showBottomSheet = false
-                    showDeleteMissionDialog = true
-                },
-                onResendClick = {
-                    showBottomSheet = false
-                    clickedMission?.let(onResendMissionClick)
+        if (showMissionBottomSheet) {
+            clickedMission?.let { mission ->
+                MissionBottomSheet(
+                    mission = mission,
+                    currentUser = user,
+                    onResendClick = {
+                        showMissionBottomSheet = false
+                        onResendMissionClick(mission)
+                    },
+                    onEditClick = {
+                        showMissionBottomSheet = false
+                        onEditMissionClick(mission)
+                    },
+                    onReportClick = {
+                        showMissionBottomSheet = false
+                        showMissionReportBottomSheet = true
+                    },
+                    onDeleteClick = {
+                        showMissionBottomSheet = false
+                        showDeleteMissionDialog = true
+                    },
+                    onDismiss = { showMissionBottomSheet = false }
+                )
+            }
+        }
+
+        if (showMissionReportBottomSheet) {
+            ReportBottomSheet(
+                items = MissionReport.Reason.entries,
+                onDismiss = { showMissionReportBottomSheet = false },
+                onReportClick = { reason ->
+                    showMissionReportBottomSheet = false
+
+                    clickedMission?.let { mission ->
+                        onReportMissionClick(
+                            MissionReport(
+                                missionId = mission.id,
+                                userInfo = MissionReport.UserInfo(
+                                    fullName = user.fullName,
+                                    email = user.email
+                                ),
+                                reason = reason,
+                            )
+                        )
+                    }
                 }
             )
         }
@@ -214,15 +290,17 @@ private fun MissionScaffold(
 private fun MissionScreenPreview() {
     GedoiseTheme {
         MissionScreen(
+            user = userFixture,
             missions = missionsFixture,
-            admin = true,
             loading = false,
             snackbarHostState = SnackbarHostState(),
             refreshing = false,
             onMissionClick = {},
             onCreateMissionClick = {},
+            onEditMissionClick = {},
             onResendMissionClick = {},
             onDeleteMissionClick = {},
+            onReportMissionClick = {},
             onRefresh = {},
             bottomBar = {}
         )

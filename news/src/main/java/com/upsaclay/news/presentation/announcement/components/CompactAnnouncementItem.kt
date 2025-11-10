@@ -80,7 +80,8 @@ internal fun CompactAnnouncementItem(
         },
         trailingContent = {
             OptionButton(
-                modifier = Modifier.testTag(stringResource(id = com.upsaclay.news.R.string.announcement_option_button_tag)),
+                modifier = Modifier
+                    .testTag(stringResource(id = com.upsaclay.news.R.string.announcement_option_button_tag)),
                 contentDescription = stringResource(id = com.upsaclay.news.R.string.announcement_option_icon_description),
                 onClick = onOptionClick
             )

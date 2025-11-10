@@ -1,6 +1,5 @@
 package com.upsaclay.mission.presentation.missiondetails
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,80 +15,114 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.upsaclay.common.domain.entity.User
+import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.extension.extraSmallSpacing
 import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.extension.smallMediumSpacing
 import com.upsaclay.common.extension.smallSpacing
+import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.CircularProgressBar
+import com.upsaclay.common.presentation.components.DefaultDialog
+import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.PrimaryButton
+import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.components.UserItem
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.backButtonBackground
 import com.upsaclay.common.presentation.theme.informationText
 import com.upsaclay.common.utils.Phones
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
+import com.upsaclay.mission.domain.entity.MissionReport
 import com.upsaclay.mission.domain.entity.MissionState
 import com.upsaclay.mission.domain.entity.MissionTask
 import com.upsaclay.mission.domain.missionFixture
 import com.upsaclay.mission.presentation.components.MissionImage
-import com.upsaclay.mission.presentation.components.item.ManagerItem
+import com.upsaclay.mission.presentation.components.bottomsheet.MissionBottomSheet
 import com.upsaclay.mission.presentation.components.item.MissionInformationItem
+import com.upsaclay.mission.presentation.components.item.MissionUserItem
 import com.upsaclay.mission.presentation.components.item.SectionTitle
+import com.upsaclay.mission.presentation.missiondetails.MissionDetailsViewModel.MissionDetailsUiEvent
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable
 fun MissionDetailsDestination(
     onBackClick: () -> Unit,
-    missionId: Int,
+    missionId: String,
     onManagerClick: (User) -> Unit,
     onParticipantClick: (User) -> Unit,
+    onEditMissionClick: (Mission) -> Unit,
     viewModel: MissionDetailsViewModel = koinViewModel(
         parameters = { parametersOf(missionId) }
     )
 ) {
-    val uiState = viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(Unit) {
+        viewModel.event.collect { event ->
+            when (event) {
+                is SingleUiEvent.Error -> scope.launch {
+                    snackbarHostState.showSnackbar(context.getString(event.messageId))
+                }
+
+                is MissionDetailsUiEvent.MissionDeleted -> onBackClick()
+            }
+        }
+    }
 
     if (
-        uiState.value.mission != null &&
-        uiState.value.registrationDisabled != null
+        uiState.mission != null &&
+        uiState.registrationDisabled != null &&
+        uiState.user != null
     ) {
         MissionDetailsScreen(
             onBackClick = onBackClick,
-            mission = uiState.value.mission!!,
-            registerButtonEnabled = uiState.value.registrationDisabled!!,
+            user = uiState.user!!,
+            mission = uiState.mission!!,
+            loading = uiState.loading,
+            registerButtonEnabled = uiState.registrationDisabled!!,
+            snackbarHostState = snackbarHostState,
             onRegisterClick = viewModel::registerToMission,
             onManagerClick = onManagerClick,
-            onParticipantClick = onParticipantClick
+            onParticipantClick = onParticipantClick,
+            onEditMissionClick = onEditMissionClick,
+            onReportMissionClick = viewModel::reportMission,
+            onDeleteMissionClick = viewModel::deleteMission
         )
     } else {
         Box(
@@ -105,14 +138,40 @@ fun MissionDetailsDestination(
 @Composable
 private fun MissionDetailsScreen(
     onBackClick: () -> Unit,
+    user: User,
     mission: Mission,
+    loading: Boolean,
     registerButtonEnabled: Boolean,
+    snackbarHostState: SnackbarHostState,
     onRegisterClick: () -> Unit,
     onManagerClick: (User) -> Unit,
-    onParticipantClick: (User) -> Unit
+    onParticipantClick: (User) -> Unit,
+    onEditMissionClick: (Mission) -> Unit,
+    onReportMissionClick: (MissionReport) -> Unit,
+    onDeleteMissionClick: () -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val contentStyle = MaterialTheme.typography.bodyMedium
+    var showBottomSheet by remember { mutableStateOf(false) }
+    var showDeleteMissionDialog by remember { mutableStateOf(false) }
+    var showReportBottomSheet by remember { mutableStateOf(false) }
+
+    if (showDeleteMissionDialog) {
+        DefaultDialog(
+            text = stringResource(R.string.delete_mission_dialog_text),
+            confirmText = stringResource(com.upsaclay.common.R.string.delete),
+            critical = true,
+            onConfirm = {
+                showDeleteMissionDialog = false
+                onDeleteMissionClick()
+            },
+            onCancel = { showDeleteMissionDialog = false }
+        )
+    }
+
+    if (loading) {
+        LoadingDialog()
+    }
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -130,11 +189,17 @@ private fun MissionDetailsScreen(
                     onClick = onRegisterClick
                 )
             }
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState) {
+                Snackbar(snackbarData = it)
+            }
         }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
             Column(
-                modifier = Modifier.verticalScroll(rememberScrollState())
+                modifier = Modifier.verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.smallSpacing()
             ) {
                 MissionImage(
                     modifier = Modifier.height(dimensionResource(R.dimen.mission_image_height)),
@@ -143,7 +208,8 @@ private fun MissionDetailsScreen(
                         is MissionState.Publishing -> state.imagePath
                         is MissionState.Published -> state.imageUrl
                         is MissionState.Error -> state.imagePath
-                    }
+                    },
+                    defaultImageScale = 1.6f
                 )
 
                 Column(
@@ -205,86 +271,50 @@ private fun MissionDetailsScreen(
                 modifier = Modifier.align(Alignment.TopStart),
                 scrollBehavior = scrollBehavior,
                 title = mission.title,
-                onBackClick = onBackClick
+                onBackClick = onBackClick,
+                onOptionClick = { showBottomSheet = true }
             )
         }
     }
-}
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun MissionTopBar(
-    modifier: Modifier = Modifier,
-    scrollBehavior: TopAppBarScrollBehavior,
-    title: String,
-    onBackClick: () -> Unit
-) {
-    if (scrollBehavior.state.contentOffset.dp <= dimensionResource(R.dimen.image_top_bar_offset)) {
-        DefaultTopBar(
-            modifier = modifier,
-            title = title,
-            onBackClick = onBackClick
+    if (showBottomSheet) {
+        MissionBottomSheet(
+            mission = mission,
+            currentUser = user,
+            onEditClick = {
+                showBottomSheet = false
+                onEditMissionClick(mission)
+            },
+            onResendClick = {},
+            onReportClick = {
+                showBottomSheet = false
+                showReportBottomSheet = true
+            },
+            onDeleteClick = {
+                showBottomSheet = false
+                showDeleteMissionDialog = true
+            },
+            onDismiss = { showBottomSheet = false }
         )
-    } else {
-        ImageTopBar(
-            modifier = modifier,
-            onBackClick = onBackClick
-        )
     }
-}
 
-@Composable
-private fun ImageTopBar(
-    modifier: Modifier = Modifier,
-    onBackClick: () -> Unit
-) {
-    Row(
-        modifier = modifier
-            .padding(dimensionResource(com.upsaclay.common.R.dimen.small_padding))
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        IconButton(
-            colors = IconButtonDefaults.iconButtonColors(
-                containerColor = MaterialTheme.colorScheme.backButtonBackground
-            ),
-            onClick = onBackClick
-        ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = stringResource(com.upsaclay.common.R.string.arrow_back_icon_description)
-            )
-        }
-    }
-}
-
-@Composable
-private fun DefaultTopBar(
-    modifier: Modifier = Modifier,
-    title: String,
-    onBackClick: () -> Unit
-) {
-    Row(
-        modifier = modifier
-            .background(MaterialTheme.colorScheme.surface)
-            .padding(dimensionResource(com.upsaclay.common.R.dimen.small_padding))
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        IconButton(onClick = onBackClick) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = stringResource(com.upsaclay.common.R.string.arrow_back_icon_description)
-            )
-        }
-
-        Text(
-            modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding)),
-            text = title,
-            style = MaterialTheme.typography.titleLarge,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+    if (showReportBottomSheet) {
+        ReportBottomSheet(
+            items = MissionReport.Reason.entries,
+            onDismiss = { showReportBottomSheet = false },
+            onReportClick = { reason ->
+                showReportBottomSheet = false
+                onReportMissionClick(
+                    MissionReport(
+                        missionId = mission.id,
+                        userInfo = MissionReport.UserInfo(
+                            fullName = user.fullName,
+                            email = user.email
+                        ),
+                        reason = reason
+                    )
+                )
+            }
         )
     }
 }
@@ -296,7 +326,7 @@ private fun TitleAndDescriptionSection(
 ) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.smallMediumSpacing()
+        verticalArrangement = Arrangement.mediumSpacing()
     ) {
         Text(
             text = mission.title,
@@ -347,7 +377,7 @@ private fun ManagerSection(
             modifier = Modifier.heightIn(max = 200.dp)
         ) {
             items(managers) {
-                ManagerItem(
+                MissionUserItem(
                     modifier = Modifier.clickable { onManagerClick(it) },
                     user = it,
                     imageScale = 0.4f,
@@ -447,12 +477,18 @@ private fun MissionDetailsScreenPreview() {
     GedoiseTheme {
         Surface {
             MissionDetailsScreen(
+                user = userFixture,
                 mission = missionFixture,
+                loading = false,
                 registerButtonEnabled = true,
+                snackbarHostState = SnackbarHostState(),
                 onRegisterClick = {},
                 onBackClick = {},
                 onManagerClick = {},
-                onParticipantClick = {}
+                onParticipantClick = {},
+                onEditMissionClick = {},
+                onReportMissionClick = {},
+                onDeleteMissionClick = {}
             )
         }
     }

@@ -4,7 +4,7 @@ import kotlinx.coroutines.delay
 
 private const val DEBOUNCE_INTERVAL = 10000L
 
-class RefreshAnnouncementUseCase(
+class RefreshAnnouncementsUseCase(
     private val synchronizeAnnouncementsUseCase: SynchronizeAnnouncementsUseCase
 ) {
     internal var lastRequestTime: Long = 0

@@ -93,6 +93,7 @@ fun LargeAsyncImage(
         contentDescription = "",
         modifier = modifier,
         contentScale = ContentScale.Crop,
+        error = ColorPainter(color),
         onLoading = { ColorPainter(color) },
         onError = { ColorPainter(color) }
     )

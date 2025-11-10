@@ -2,7 +2,7 @@ package com.upsaclay.message.data.remote
 
 data class RemoteMessageNotification(
     val conversation: Conversation,
-    val messageId: Long,
+    val messageId: String,
     val content: String,
     val timestamp: Long
 ) {

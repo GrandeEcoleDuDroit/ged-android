@@ -1,7 +1,7 @@
 package com.upsaclay.message
 
 import com.upsaclay.common.domain.repository.RouteRepository
-import com.upsaclay.message.domain.converter.ConversationJsonConverter
+import com.upsaclay.message.domain.converter.ConversationJsonParser
 import com.upsaclay.message.domain.entity.MessageNotificationUi
 import com.upsaclay.message.domain.mapper.toNotificationsUi
 import com.upsaclay.message.domain.messageNotificationFixture
@@ -77,7 +77,7 @@ class MessageNotificationManagerTest {
     fun showNotification_should_not_show_notification_when_current_screen_is_message() = runTest {
         // Given
         every { routeRepository.currentRoute } returns ChatRoute(
-            conversationJson = ConversationJsonConverter.toConversationJson(messageNotificationFixture.conversation)
+            conversationJson = ConversationJsonParser.toJson(messageNotificationFixture.conversation)
         )
 
         // When

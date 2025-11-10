@@ -45,26 +45,26 @@ fun CreateMissionDestination(
     CreateMissionScreen(
         title = uiState.title,
         description = uiState.description,
-        schoolLevels = uiState.schoolLevels,
-        selectedSchoolLevels = uiState.selectedSchoolLevels,
         startDate = uiState.startDate,
         endDate = uiState.endDate,
+        allSchoolLevels = uiState.allSchoolLevels,
+        schoolLevels = uiState.schoolLevels,
         duration = uiState.duration,
         maxParticipants = uiState.maxParticipants,
-        missionTasks = uiState.tasks.values.toList(),
+        missionTasks = uiState.tasks,
         imageUri = uiState.imageUri,
         users = uiState.users,
         userQuery = uiState.userQuery,
-        selectedManagers = uiState.selectedManagers,
+        managers = uiState.managers,
         createEnabled = uiState.createEnabled,
         onTitleChange = viewModel::onTitleChange,
         onDescriptionChange = viewModel::onDescriptionChange,
-        onSelectedSchoolLevelChange = viewModel::onSelectedSchoolLevelChange,
+        onSchoolLevelChange = viewModel::onSchoolLevelChange,
         onStartDateChange = viewModel::onStartDateChange,
         onEndDateChange = viewModel::onEndDateChange,
-        onFrequencyChange = viewModel::onDurationChange,
-        onParticipantNumberChange = viewModel::onMaxParticipantsChange,
-        onSaveSelectedMangers = viewModel::onSaveSelectedManagers,
+        onDurationChange = viewModel::onDurationChange,
+        onMaxParticipantsChange = viewModel::onMaxParticipantsChange,
+        onSaveManagersClick = viewModel::onSaveManagers,
         onRemoveManagerClick = viewModel::onRemoveManager,
         onUserQueryChange = viewModel::onUserQueryChange,
         onResetUserQuery = viewModel::onResetUserQuery,
@@ -85,8 +85,8 @@ fun CreateMissionDestination(
 private fun CreateMissionScreen(
     title: String,
     description: String,
+    allSchoolLevels: List<SchoolLevel>,
     schoolLevels: List<SchoolLevel>,
-    selectedSchoolLevels: List<SchoolLevel>,
     startDate: LocalDate,
     endDate: LocalDate,
     duration: String,
@@ -95,22 +95,22 @@ private fun CreateMissionScreen(
     imageUri: Uri?,
     users: List<User>,
     userQuery: String,
-    selectedManagers: List<User>,
+    managers: List<User>,
     createEnabled: Boolean,
     onTitleChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
-    onSelectedSchoolLevelChange: (SchoolLevel) -> Unit,
+    onSchoolLevelChange: (SchoolLevel) -> Unit,
     onStartDateChange: (LocalDate) -> Unit,
     onEndDateChange: (LocalDate) -> Unit,
-    onFrequencyChange: (String) -> Unit,
-    onParticipantNumberChange: (String) -> Unit,
-    onSaveSelectedMangers: (List<User>) -> Unit,
+    onDurationChange: (String) -> Unit,
+    onMaxParticipantsChange: (String) -> Unit,
+    onSaveManagersClick: (List<User>) -> Unit,
     onRemoveManagerClick: (User) -> Unit,
     onUserQueryChange: (String) -> Unit,
     onResetUserQuery: () -> Unit,
     onImageUriChange: (Uri) -> Unit,
     onRemoveImageClick: () -> Unit,
-    onAddTaskClick: (MissionTask) -> Unit,
+    onAddTaskClick: (String) -> Unit,
     onEditTaskClick: (MissionTask) -> Unit,
     onRemoveTaskClick: (MissionTask) -> Unit,
     onCreateMissionClick: () -> Unit,
@@ -151,23 +151,23 @@ private fun CreateMissionScreen(
             value = MissionFormValue(
                 title = title,
                 description = description,
-                schoolLevels = schoolLevels,
-                selectedSchoolLevels = selectedSchoolLevels,
                 startDate = startDate,
                 endDate = endDate,
-                frequency = duration,
-                participantNumber = maxParticipants,
-                selectedManagers = selectedManagers,
-                missionTasks = missionTasks,
-                imageUri = imageUri?.toString()
+                allSchoolLevels = allSchoolLevels,
+                schoolLevels = schoolLevels,
+                duration = duration,
+                maxParticipants = maxParticipants,
+                managers = managers,
+                tasks = missionTasks,
+                imageReference = imageUri?.toString()
             ),
             onTitleChange = onTitleChange,
             onDescriptionChange = onDescriptionChange,
-            onSelectedSchoolLevelChange = onSelectedSchoolLevelChange,
+            onSchoolLevelChange = onSchoolLevelChange,
             onStartDateClick = { showStartDateModal = true },
             onEndDateClick = { showEndDateModal = true },
-            onFrequencyChange = onFrequencyChange,
-            onParticipantNumberChange = onParticipantNumberChange,
+            onDurationChange = onDurationChange,
+            onMaxParticipantsChange = onMaxParticipantsChange,
             onShowManagerListClick = { bottomSheetType = MissionBottomSheetType.SelectManager },
             onRemoveManagerClick = onRemoveManagerClick,
             onAddTaskClick = { bottomSheetType = MissionBottomSheetType.AddTask },
@@ -213,8 +213,8 @@ private fun CreateMissionScreen(
         is MissionBottomSheetType.AddTask -> {
             AddTaskModalBottomSheet(
                 onDismissRequest = { bottomSheetType = null },
-                onAddClick = { task ->
-                    onAddTaskClick(task)
+                onAddClick = {
+                    onAddTaskClick(it)
                     bottomSheetType = null
                 }
             )
@@ -223,7 +223,7 @@ private fun CreateMissionScreen(
         is MissionBottomSheetType.EditTask -> {
             (bottomSheetType as? MissionBottomSheetType.EditTask)?.missionTask?.let {
                 EditTaskModalBottomSheet(
-                    initialMissionTask = it,
+                    initialTask = it,
                     onDismissRequest = { bottomSheetType = null },
                     onEditClick = { task ->
                         onEditTaskClick(task)
@@ -236,12 +236,12 @@ private fun CreateMissionScreen(
         is MissionBottomSheetType.SelectManager -> {
             SelectManagerModalBottomSheet(
                 users = users,
-                selectedManagers = selectedManagers,
+                selectedManagers = managers,
                 userQuery = userQuery,
                 onUserQueryChange = onUserQueryChange,
                 onResetQuery = onResetUserQuery,
                 onSaveClick = {
-                    onSaveSelectedMangers(it)
+                    onSaveManagersClick(it)
                     bottomSheetType = null
                 },
                 onDismissRequest = {
@@ -270,13 +270,13 @@ private fun CreateMissionScreenPreview() {
         CreateMissionScreen(
             title = mission.title,
             description = mission.description,
-            schoolLevels = SchoolLevel.entries,
-            selectedSchoolLevels = mission.schoolLevels,
             startDate = mission.startDate,
             endDate = mission.endDate,
+            allSchoolLevels = SchoolLevel.entries,
+            schoolLevels = mission.schoolLevels,
             duration = mission.duration.toString(),
             maxParticipants = mission.maxParticipants.toString(),
-            selectedManagers = listOf(userFixture),
+            managers = listOf(userFixture),
             missionTasks = mission.tasks,
             imageUri = null,
             users = usersFixture,
@@ -284,13 +284,13 @@ private fun CreateMissionScreenPreview() {
             createEnabled = false,
             onTitleChange = {},
             onDescriptionChange = {},
-            onSelectedSchoolLevelChange = {},
+            onSchoolLevelChange = {},
             onRemoveManagerClick = {},
             onStartDateChange = {},
             onEndDateChange = {},
-            onFrequencyChange = {},
-            onParticipantNumberChange = {},
-            onSaveSelectedMangers = {},
+            onDurationChange = {},
+            onMaxParticipantsChange = {},
+            onSaveManagersClick = {},
             onUserQueryChange = {},
             onResetUserQuery = {},
             onImageUriChange = {},

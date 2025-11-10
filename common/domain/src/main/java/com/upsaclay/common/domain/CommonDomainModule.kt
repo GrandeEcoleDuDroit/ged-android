@@ -1,6 +1,7 @@
 package com.upsaclay.common.domain
 
 import com.upsaclay.common.domain.usecase.DeleteProfilePictureUseCase
+import com.upsaclay.common.domain.usecase.GenerateIdUseCase
 import com.upsaclay.common.domain.usecase.GetUsersUseCase
 import com.upsaclay.common.domain.usecase.SynchronizeBlockedUsersUseCase
 import com.upsaclay.common.domain.usecase.UpdateProfilePictureUseCase
@@ -12,4 +13,5 @@ val commonDomainModule = module {
     singleOf(::UpdateProfilePictureUseCase)
     singleOf(::SynchronizeBlockedUsersUseCase)
     singleOf(::GetUsersUseCase)
+    singleOf(::GenerateIdUseCase)
 }

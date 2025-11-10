@@ -88,13 +88,13 @@ class EditAnnouncementViewModel(
     }
 
     private fun validateUpdate(title: String, content: String): Boolean =
-        validateTitle(title) || validateContent(content)
+        (validateTitle(title) || validateContent(content)) && validateMandatoryFields()
 
-    private fun validateTitle(title: String): Boolean =
-        title != announcement.title && uiState.value.content.text.isNotBlank()
+    private fun validateTitle(title: String): Boolean = title != announcement.title
 
-    private fun validateContent(content: String): Boolean =
-        content.trim() != announcement.content.trim() && content.isNotBlank()
+    private fun validateContent(content: String): Boolean = content.trim() != announcement.content.trim()
+
+    private fun validateMandatoryFields(): Boolean = uiState.value.content.text.isNotBlank()
 
     data class EditAnnouncementUiState(
         val title: String = "",

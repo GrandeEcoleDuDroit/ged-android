@@ -17,7 +17,7 @@ fun NavController.navigateToReadAnnouncement(announcementId: String) {
 
 fun NavGraphBuilder.readAnnouncementScreen(
     onBackClick: () -> Unit,
-    onEditClick: (Announcement) -> Unit,
+    onEditAnnouncementClick: (Announcement) -> Unit,
     onAuthorClick: (User) -> Unit
 ) {
     composable<ReadAnnouncementRoute> {
@@ -25,7 +25,7 @@ fun NavGraphBuilder.readAnnouncementScreen(
         ReadAnnouncementDestination(
             announcementId = announcementId,
             onBackClick = onBackClick,
-            onEditClick = onEditClick,
+            onEditAnnouncementClick = onEditAnnouncementClick,
             onAuthorClick = onAuthorClick
         )
     }

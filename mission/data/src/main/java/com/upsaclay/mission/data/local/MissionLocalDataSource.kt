@@ -1,7 +1,7 @@
 package com.upsaclay.mission.data.local
 
-import com.upsaclay.mission.data.toLocal
-import com.upsaclay.mission.data.toMission
+import com.upsaclay.mission.data.mapper.toLocal
+import com.upsaclay.mission.data.mapper.toMission
 import com.upsaclay.mission.domain.entity.Mission
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -15,7 +15,7 @@ class MissionLocalDataSource(private val missionDao: MissionDao) {
             localMissions.map { it.toMission() }
         }
 
-    fun getMissionFlow(missionId: Int): Flow<Mission> =
+    fun getMissionFlow(missionId: String): Flow<Mission> =
         missionDao.getMissionFlow(missionId).mapNotNull { it?.toMission() }
 
     suspend fun upsertMission(mission: Mission) {

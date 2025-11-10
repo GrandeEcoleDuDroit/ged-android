@@ -2,8 +2,6 @@ package com.upsaclay.mission.presentation.createmission
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -42,11 +40,11 @@ fun MissionForm(
     value: MissionFormValue,
     onTitleChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
-    onSelectedSchoolLevelChange: (SchoolLevel) -> Unit,
+    onSchoolLevelChange: (SchoolLevel) -> Unit,
     onStartDateClick: () -> Unit,
     onEndDateClick: () -> Unit,
-    onFrequencyChange: (String) -> Unit,
-    onParticipantNumberChange: (String) -> Unit,
+    onDurationChange: (String) -> Unit,
+    onMaxParticipantsChange: (String) -> Unit,
     onShowManagerListClick: () -> Unit,
     onRemoveManagerClick: (User) -> Unit,
     onAddTaskClick: () -> Unit,
@@ -56,14 +54,14 @@ fun MissionForm(
     onRemoveImageClick: () -> Unit
 ) {
     val scrollState = rememberScrollState()
-    var currentSize by remember { mutableIntStateOf(value.missionTasks.size) }
+    var currentSize by remember { mutableIntStateOf(value.tasks.size) }
 
-    LaunchedEffect(value.missionTasks) {
-        if (value.missionTasks.size > currentSize) {
+    LaunchedEffect(value.tasks) {
+        if (value.tasks.size > currentSize) {
             awaitFrame()
             delay(200)
             scrollState.animateScrollTo(scrollState.maxValue)
-            currentSize = value.missionTasks.size
+            currentSize = value.tasks.size
         }
     }
 
@@ -72,7 +70,7 @@ fun MissionForm(
         verticalArrangement = Arrangement.mediumSpacing()
     ) {
         MissionImageFormSection(
-            imageUri = value.imageUri,
+            imageModel = value.imageReference,
             onImageClick = onImageClick,
             onRemoveImageClick = onRemoveImageClick
         )
@@ -87,23 +85,23 @@ fun MissionForm(
         HorizontalDivider(modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)))
 
         MissionInformationFormSection(
+            allSchoolLevels = value.allSchoolLevels,
             schoolLevels = value.schoolLevels,
-            selectedSchoolLevels = value.selectedSchoolLevels,
             startDate = value.startDate,
             endDate = value.endDate,
-            duration = value.frequency,
-            participantNumber = value.participantNumber,
-            onSelectedSchoolLevelsChange = onSelectedSchoolLevelChange,
+            duration = value.duration,
+            participantNumber = value.maxParticipants,
+            onSelectedSchoolLevelsChange = onSchoolLevelChange,
             onStartDateClick = onStartDateClick,
             onEndDateClick = onEndDateClick,
-            onDurationChange = onFrequencyChange,
-            onParticipantNumberChange = onParticipantNumberChange
+            onDurationChange = onDurationChange,
+            onParticipantNumberChange = onMaxParticipantsChange
         )
 
         HorizontalDivider(modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)))
 
         MissionManagerFormSection(
-            managers = value.selectedManagers,
+            managers = value.managers,
             onShowManagerListClick = onShowManagerListClick,
             onRemoveManagerClick = onRemoveManagerClick
         )
@@ -111,13 +109,11 @@ fun MissionForm(
         HorizontalDivider(modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)))
 
         MissionTaskFormSection(
-            missionTasks = value.missionTasks,
+            missionTasks = value.tasks,
             onAddTaskClick = onAddTaskClick,
             onTaskClick = onEditTaskClick,
             onRemoveTaskClick = onRemoveTaskClick
         )
-
-        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.small_padding)))
     }
 }
 
@@ -144,23 +140,23 @@ private fun CreateMissionFormPreview() {
                 value = MissionFormValue(
                     title = title,
                     description = description,
-                    schoolLevels = SchoolLevel.getSchoolLevels(),
-                    selectedSchoolLevels = selectedSchoolLevels,
+                    allSchoolLevels = SchoolLevel.getSchoolLevels(),
+                    schoolLevels = selectedSchoolLevels,
                     startDate = LocalDate.now(),
                     endDate = LocalDate.now(),
-                    frequency = frequency,
-                    participantNumber = participantNumber,
-                    selectedManagers = managers,
-                    imageUri = null,
-                    missionTasks = missionTasks
+                    duration = frequency,
+                    maxParticipants = participantNumber,
+                    managers = managers,
+                    imageReference = null,
+                    tasks = missionTasks
                 ),
                 onTitleChange = { title = it },
                 onDescriptionChange = { description = it },
-                onSelectedSchoolLevelChange = {},
+                onSchoolLevelChange = {},
                 onStartDateClick = {},
                 onEndDateClick = {},
-                onFrequencyChange = { frequency = it },
-                onParticipantNumberChange = { participantNumber = it },
+                onDurationChange = { frequency = it },
+                onMaxParticipantsChange = { participantNumber = it },
                 onShowManagerListClick = { managers = managers + userFixture },
                 onRemoveManagerClick = { managers = managers - it },
                 onAddTaskClick = { missionTasks += missionTaskFixture },

@@ -37,7 +37,7 @@ import com.upsaclay.common.presentation.components.StaticSearchBar
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.previewText
 import com.upsaclay.common.utils.Phones
-import com.upsaclay.mission.presentation.components.item.ManagerItem
+import com.upsaclay.mission.presentation.components.item.MissionUserItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -146,7 +146,7 @@ private fun SelectableManagerItem(
             onCheckedChange = null
         )
 
-        ManagerItem(
+        MissionUserItem(
             user = user,
             imageScale = 0.5f
         )

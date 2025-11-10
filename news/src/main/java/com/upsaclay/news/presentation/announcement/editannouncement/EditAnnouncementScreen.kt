@@ -68,7 +68,7 @@ fun EditAnnouncementDestination(
         onTitleChange = viewModel::onTitleChange,
         onContentChange = viewModel::onContentChange,
         onBackClick = onBackClick,
-        onUpdateAnnouncementClick = viewModel::updateAnnouncement
+        onSaveAnnouncementClick = viewModel::updateAnnouncement
     )
 }
 
@@ -82,7 +82,7 @@ private fun EditAnnouncementScreen(
     onTitleChange: (String) -> Unit,
     onContentChange: (TextFieldValue) -> Unit,
     onBackClick: () -> Unit,
-    onUpdateAnnouncementClick: () -> Unit
+    onSaveAnnouncementClick: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -101,7 +101,7 @@ private fun EditAnnouncementScreen(
                 },
                 onActionClick = {
                     focusManager.clearFocus()
-                    onUpdateAnnouncementClick()
+                    onSaveAnnouncementClick()
                 },
                 buttonEnable = updateEnabled && !loading,
                 actionLabel = stringResource(id = com.upsaclay.common.R.string.save)
@@ -154,7 +154,7 @@ private fun EditAnnouncementScreenPreview() {
                 onTitleChange = { title = it },
                 onContentChange = { content = it },
                 onBackClick = {},
-                onUpdateAnnouncementClick = {}
+                onSaveAnnouncementClick = {}
             )
         }
     }

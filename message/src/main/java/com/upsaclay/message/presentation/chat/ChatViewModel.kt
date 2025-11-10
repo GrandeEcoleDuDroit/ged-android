@@ -39,7 +39,8 @@ class ChatViewModel(
     private val messageNotificationManager: MessageNotificationManager,
     private val blockedUserRepository: BlockedUserRepository,
     private val sendMessageUseCase: SendMessageUseCase,
-    private val deleteConversationUseCase: DeleteConversationUseCase
+    private val deleteConversationUseCase: DeleteConversationUseCase,
+    private val generateIdUseCase: GenerateIdUseCase
 ): ViewModel() {
     private val user: User? = userRepository.currentUser
     private val _uiState = MutableStateFlow(
@@ -76,7 +77,7 @@ class ChatViewModel(
             val text = uiState.value.messageText.takeUnless { it.isEmpty() } ?: return
             val user = requireNotNull(user)
             val message = Message(
-                id = GenerateIdUseCase.longId,
+                id = generateIdUseCase(),
                 conversationId = conversation.id,
                 senderId = user.id,
                 recipientId = conversation.interlocutor.id,
