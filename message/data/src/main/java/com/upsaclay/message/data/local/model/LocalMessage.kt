@@ -3,33 +3,33 @@ package com.upsaclay.message.data.local.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.upsaclay.message.data.model.MessageField.CONTENT
-import com.upsaclay.message.data.model.MessageField.CONVERSATION_ID
-import com.upsaclay.message.data.model.MessageField.Local.STATE
-import com.upsaclay.message.data.model.MessageField.MESSAGE_ID
-import com.upsaclay.message.data.model.MessageField.RECIPIENT_ID
-import com.upsaclay.message.data.model.MessageField.SEEN
-import com.upsaclay.message.data.model.MessageField.SENDER_ID
-import com.upsaclay.message.data.model.MessageField.TABLE_NAME
-import com.upsaclay.message.data.model.MessageField.TIMESTAMP
+import com.upsaclay.message.data.model.MessageField.Local.MESSAGE_CONTENT
+import com.upsaclay.message.data.model.MessageField.Local.MESSAGE_CONVERSATION_ID
+import com.upsaclay.message.data.model.MessageField.Local.MESSAGE_ID
+import com.upsaclay.message.data.model.MessageField.Local.MESSAGE_RECIPIENT_ID
+import com.upsaclay.message.data.model.MessageField.Local.MESSAGE_SEEN
+import com.upsaclay.message.data.model.MessageField.Local.MESSAGE_SENDER_ID
+import com.upsaclay.message.data.model.MessageField.Local.MESSAGE_STATE
+import com.upsaclay.message.data.model.MessageField.Local.MESSAGE_TIMESTAMP
+import com.upsaclay.message.data.model.MessageField.MESSAGE_TABLE_NAME
 
-@Entity(tableName = TABLE_NAME)
+@Entity(tableName = MESSAGE_TABLE_NAME)
 data class LocalMessage(
     @PrimaryKey
     @ColumnInfo(name = MESSAGE_ID)
     val messageId: String,
-    @ColumnInfo(name = SENDER_ID)
-    val senderId: String,
-    @ColumnInfo(name = RECIPIENT_ID)
-    val recipientId: String,
-    @ColumnInfo(name = CONVERSATION_ID)
-    val conversationId: String,
-    @ColumnInfo(name = CONTENT)
-    val content: String,
-    @ColumnInfo(name = TIMESTAMP)
+    @ColumnInfo(name = MESSAGE_SENDER_ID)
+    val messageSenderId: String,
+    @ColumnInfo(name = MESSAGE_RECIPIENT_ID)
+    val messageRecipientId: String,
+    @ColumnInfo(name = MESSAGE_CONVERSATION_ID)
+    val messageConversationId: String,
+    @ColumnInfo(name = MESSAGE_CONTENT)
+    val messageContent: String,
+    @ColumnInfo(name = MESSAGE_TIMESTAMP)
     val messageTimestamp: Long,
-    @ColumnInfo(name = SEEN)
-    val seen: Boolean,
-    @ColumnInfo(name = STATE)
-    val state: String
+    @ColumnInfo(name = MESSAGE_SEEN)
+    val messageSeen: Boolean,
+    @ColumnInfo(name = MESSAGE_STATE)
+    val messageState: String
 )

@@ -2,34 +2,40 @@ package com.upsaclay.message.data.remote.model
 
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.PropertyName
-import com.upsaclay.message.data.model.MessageField
+import com.upsaclay.message.data.model.MessageField.Remote.CONTENT
+import com.upsaclay.message.data.model.MessageField.Remote.CONVERSATION_ID
+import com.upsaclay.message.data.model.MessageField.Remote.MESSAGE_ID
+import com.upsaclay.message.data.model.MessageField.Remote.RECIPIENT_ID
+import com.upsaclay.message.data.model.MessageField.Remote.SEEN
+import com.upsaclay.message.data.model.MessageField.Remote.SENDER_ID
+import com.upsaclay.message.data.model.MessageField.Remote.TIMESTAMP
 
 internal data class RemoteMessage(
-    @get:PropertyName(MessageField.MESSAGE_ID)
-    @set:PropertyName(MessageField.MESSAGE_ID)
+    @get:PropertyName(MESSAGE_ID)
+    @set:PropertyName(MESSAGE_ID)
     var messageId: String = "",
 
-    @get:PropertyName(MessageField.CONVERSATION_ID)
-    @set:PropertyName(MessageField.CONVERSATION_ID)
+    @get:PropertyName(CONVERSATION_ID)
+    @set:PropertyName(CONVERSATION_ID)
     var conversationId: String = "",
 
-    @get:PropertyName(MessageField.SENDER_ID)
-    @set:PropertyName(MessageField.SENDER_ID)
+    @get:PropertyName(SENDER_ID)
+    @set:PropertyName(SENDER_ID)
     var senderId: String = "",
 
-    @get:PropertyName(MessageField.RECIPIENT_ID)
-    @set:PropertyName(MessageField.RECIPIENT_ID)
+    @get:PropertyName(RECIPIENT_ID)
+    @set:PropertyName(RECIPIENT_ID)
     var recipientId: String = "",
 
-    @get:PropertyName(MessageField.CONTENT)
-    @set:PropertyName(MessageField.CONTENT)
+    @get:PropertyName(CONTENT)
+    @set:PropertyName(CONTENT)
     var content: String = "",
 
-    @get:PropertyName(MessageField.TIMESTAMP)
-    @set:PropertyName(MessageField.TIMESTAMP)
+    @get:PropertyName(TIMESTAMP)
+    @set:PropertyName(TIMESTAMP)
     var timestamp: Timestamp = Timestamp.now(),
 
-    @get:PropertyName(MessageField.SEEN)
-    @set:PropertyName(MessageField.SEEN)
+    @get:PropertyName(SEEN)
+    @set:PropertyName(SEEN)
     var seen: Boolean = false
 )

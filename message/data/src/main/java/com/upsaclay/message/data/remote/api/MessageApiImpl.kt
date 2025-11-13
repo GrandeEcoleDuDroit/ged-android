@@ -6,7 +6,8 @@ import com.google.firebase.firestore.MetadataChanges
 import com.google.firebase.firestore.firestore
 import com.upsaclay.common.data.remote.model.ServerResponse
 import com.upsaclay.message.data.model.ConversationField
-import com.upsaclay.message.data.model.MessageField
+import com.upsaclay.message.data.model.MessageField.Local.MESSAGE_SEEN
+import com.upsaclay.message.data.model.MessageField.MESSAGE_TABLE_NAME
 import com.upsaclay.message.data.remote.model.RemoteMessage
 import com.upsaclay.message.data.remote.model.RemoteMessageReport
 import com.upsaclay.message.data.remote.withOffsetTime
@@ -21,12 +22,12 @@ import retrofit2.http.POST
 internal class MessageApiImpl(
     private val messageServerApi: MessageServerApi
 ) : MessageApi {
-    private val conversationsCollection = Firebase.firestore.collection(ConversationField.TABLE_NAME)
+    private val conversationsCollection = Firebase.firestore.collection(ConversationField.CONVERSATION_TABLE_NAME)
 
     override fun listenMessages(conversationId: String, interlocutorId: String, offsetTime: Timestamp?): Flow<RemoteMessage> = callbackFlow {
         val listener = conversationsCollection
             .document(conversationId)
-            .collection(MessageField.TABLE_NAME)
+            .collection(MESSAGE_TABLE_NAME)
             .withOffsetTime(offsetTime)
             .addSnapshotListener(MetadataChanges.INCLUDE) { snapshot, error ->
                 error?.let {
@@ -49,8 +50,8 @@ internal class MessageApiImpl(
     override suspend fun createMessage(remoteMessage: RemoteMessage) {
         conversationsCollection
             .document(remoteMessage.conversationId)
-            .collection(MessageField.TABLE_NAME)
-            .document(remoteMessage.messageId.toString())
+            .collection(MESSAGE_TABLE_NAME)
+            .document(remoteMessage.messageId)
             .set(remoteMessage)
             .await()
     }
@@ -58,9 +59,9 @@ internal class MessageApiImpl(
     override suspend fun updateSeenMessage(remoteMessage: RemoteMessage) {
         conversationsCollection
             .document(remoteMessage.conversationId)
-            .collection(MessageField.TABLE_NAME)
-            .document(remoteMessage.messageId.toString())
-            .update(MessageField.SEEN, remoteMessage.seen)
+            .collection(MESSAGE_TABLE_NAME)
+            .document(remoteMessage.messageId)
+            .update(MESSAGE_SEEN, remoteMessage.seen)
             .await()
     }
 

@@ -2,20 +2,21 @@ package com.upsaclay.mission.data
 
 object MissionField {
     object Local {
-        const val MISSION_ID = "missionId"
-        const val TITLE = "title"
-        const val DESCRIPTION = "description"
-        const val SCHOOL_LEVELS = "schoolLevels"
-        const val DATE = "date"
-        const val START_DATE = "startDate"
-        const val END_DATE = "endDate"
-        const val DURATION = "duration"
-        const val MANAGERS = "managers"
-        const val PARTICIPANTS = "participants"
-        const val MAX_PARTICIPANTS = "maxParticipants"
-        const val TASKS = "tasks"
-        const val IMAGE_REFERENCE = "imageReference"
-        const val STATE = "state"
+        const val MISSION_TABLE_NAME = "missions"
+        const val MISSION_ID = "mission_id"
+        const val MISSION_TITLE = "mission_title"
+        const val MISSION_DESCRIPTION = "mission_description"
+        const val MISSION_SCHOOL_LEVELS = "mission_school_levels"
+        const val MISSION_DATE = "mission_date"
+        const val MISSION_START_DATE = "mission_start_date"
+        const val MISSION_END_DATE = "mission_end_date"
+        const val MISSION_DURATION = "mission_duration"
+        const val MISSION_MANAGERS = "mission_managers"
+        const val MISSION_PARTICIPANTS = "mission_participants"
+        const val MISSION_MAX_PARTICIPANTS = "mission_max_participants"
+        const val MISSION_TASKS = "mission_tasks"
+        const val MISSION_IMAGE_REFERENCE = "mission_image_reference"
+        const val MISSION_STATE = "mission_state"
     }
 
     object Remote {
@@ -45,8 +46,8 @@ object MissionField {
 
 object MissionTaskField {
     object Local {
-        const val MISSION_TASK_ID = "missionTaskId"
-        const val MISSION_TASK_VALUE = "missionTaskValue"
+        const val MISSION_TASK_ID = "mission_task_id"
+        const val MISSION_TASK_VALUE = "mission_task_value"
     }
     object Remote {
         const val MISSION_TASK_ID = "MISSION_TASK_ID"

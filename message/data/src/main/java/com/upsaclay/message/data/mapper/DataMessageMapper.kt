@@ -24,24 +24,24 @@ internal fun RemoteMessage.toMessage() = Message(
 
 fun LocalMessage.toMessage() = Message(
     id = messageId,
-    senderId = senderId,
-    recipientId = recipientId,
-    conversationId = conversationId,
-    content = content,
+    senderId = messageSenderId,
+    recipientId = messageRecipientId,
+    conversationId = messageConversationId,
+    content = messageContent,
     date = messageTimestamp.toLocalDateTimeUTC(),
-    seen = seen,
-    state = MessageState.valueOf(state)
+    seen = messageSeen,
+    state = MessageState.valueOf(messageState)
 )
 
 fun Message.toLocal() = LocalMessage(
     messageId = id,
-    senderId = senderId,
-    recipientId = recipientId,
-    conversationId = conversationId,
-    content = content,
+    messageSenderId = senderId,
+    messageRecipientId = recipientId,
+    messageConversationId = conversationId,
+    messageContent = content,
     messageTimestamp = date.toEpochMilliUTC(),
-    seen = seen,
-    state = state.name
+    messageSeen = seen,
+    messageState = state.name
 )
 
 internal fun Message.toRemote() = RemoteMessage(

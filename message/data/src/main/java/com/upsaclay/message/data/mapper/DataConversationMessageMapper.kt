@@ -20,29 +20,29 @@ fun LocalConversationMessage.toConversationMessage() = ConversationMessage(
 private fun LocalConversationMessage.toConversation() = Conversation(
     id = conversationId,
     interlocutor = User(
-        id = interlocutorId,
-        firstName = interlocutorFirstName.uppercaseFirstLetter(),
-        lastName = interlocutorLastName.uppercaseFirstLetter(),
-        email = interlocutorEmail,
-        schoolLevel = SchoolLevel.fromNumber(interlocutorSchoolLevel),
-        admin = interlocutorAdmin,
-        profilePictureUrl = UrlUtils.formatOracleBucketUrl(interlocutorProfilePictureFileName),
-        state = UserState.fromString(interlocutorState),
-        tester = interlocutorTester
+        id = conversationInterlocutorId,
+        firstName = conversationInterlocutorFirstName.uppercaseFirstLetter(),
+        lastName = conversationInterlocutorLastName.uppercaseFirstLetter(),
+        email = conversationInterlocutorEmail,
+        schoolLevel = SchoolLevel.fromNumber(conversationInterlocutorSchoolLevel),
+        admin = conversationInterlocutorAdmin,
+        profilePictureUrl = UrlUtils.formatOracleBucketUrl(conversationInterlocutorProfilePictureFileName),
+        state = UserState.fromString(conversationInterlocutorState),
+        tester = conversationInterlocutorTester
     ),
-    createdAt = createdAt.toLocalDateTimeUTC(),
+    createdAt = conversationCreatedAt.toLocalDateTimeUTC(),
     state = Conversation.ConversationState.valueOf(conversationState),
     deleteTime = conversationDeleteTime?.toLocalDateTimeUTC()
 )
 
 private fun LocalConversationMessage.toMessage() = Message(
     id = messageId,
-    senderId = senderId,
-    recipientId = recipientId,
+    senderId = messageSenderId,
+    recipientId = messageRecipientId,
     conversationId = conversationId,
-    content = content,
+    content = messageContent,
     date = messageTimestamp.toLocalDateTimeUTC(),
-    seen = seen,
+    seen = messageSeen,
     state = MessageState.valueOf(messageState)
 )
 

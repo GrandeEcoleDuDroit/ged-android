@@ -10,23 +10,26 @@ import com.upsaclay.common.domain.extensions.toEpochMilliUTC
 import com.upsaclay.common.domain.extensions.toLocalDateTimeUTC
 import com.upsaclay.common.domain.extensions.uppercaseFirstLetter
 import com.upsaclay.message.data.local.model.LocalConversation
-import com.upsaclay.message.data.model.ConversationField
+import com.upsaclay.message.data.model.ConversationField.Remote.CONVERSATION_ID
+import com.upsaclay.message.data.model.ConversationField.Remote.CREATED_AT
+import com.upsaclay.message.data.model.ConversationField.Remote.DELETE_TIME
+import com.upsaclay.message.data.model.ConversationField.Remote.PARTICIPANTS
 import com.upsaclay.message.data.remote.model.RemoteConversation
 import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.Conversation.ConversationState
 
 fun Conversation.toLocal() = LocalConversation(
     conversationId = id,
-    interlocutorId = interlocutor.id,
-    interlocutorFirstName = interlocutor.firstName.lowercase(),
-    interlocutorLastName = interlocutor.lastName.lowercase(),
-    interlocutorEmail = interlocutor.email,
-    interlocutorAdmin = interlocutor.admin,
-    interlocutorSchoolLevel = interlocutor.schoolLevel.number,
-    interlocutorProfilePictureFileName = UrlUtils.extractFileName(interlocutor.profilePictureUrl),
-    interlocutorState = interlocutor.state.toString(),
-    interlocutorTester = interlocutor.tester,
-    createdAt = createdAt.toEpochMilliUTC(),
+    conversationInterlocutorId = interlocutor.id,
+    conversationInterlocutorFirstName = interlocutor.firstName.lowercase(),
+    conversationInterlocutorLastName = interlocutor.lastName.lowercase(),
+    conversationInterlocutorEmail = interlocutor.email,
+    conversationInterlocutorAdmin = interlocutor.admin,
+    conversationInterlocutorSchoolLevel = interlocutor.schoolLevel.number,
+    conversationInterlocutorProfilePictureFileName = UrlUtils.extractFileName(interlocutor.profilePictureUrl),
+    conversationInterlocutorState = interlocutor.state.toString(),
+    conversationInterlocutorTester = interlocutor.tester,
+    conversationCreatedAt = createdAt.toEpochMilliUTC(),
     conversationState = state.name,
     conversationDeleteTime = deleteTime?.toEpochMilliUTC()
 )
@@ -40,21 +43,21 @@ internal fun Conversation.toRemote(userId: String) = RemoteConversation(
 
 fun LocalConversation.toConversation(): Conversation {
     val interlocutor = User(
-        id = interlocutorId,
-        firstName = interlocutorFirstName.uppercaseFirstLetter(),
-        lastName = interlocutorLastName.uppercaseFirstLetter(),
-        email = interlocutorEmail,
-        schoolLevel = SchoolLevel.fromNumber(interlocutorSchoolLevel),
-        admin = interlocutorAdmin,
-        profilePictureUrl = UrlUtils.formatOracleBucketUrl(interlocutorProfilePictureFileName),
-        state = UserState.fromString(interlocutorState),
-        tester = interlocutorTester
+        id = conversationInterlocutorId,
+        firstName = conversationInterlocutorFirstName.uppercaseFirstLetter(),
+        lastName = conversationInterlocutorLastName.uppercaseFirstLetter(),
+        email = conversationInterlocutorEmail,
+        schoolLevel = SchoolLevel.fromNumber(conversationInterlocutorSchoolLevel),
+        admin = conversationInterlocutorAdmin,
+        profilePictureUrl = UrlUtils.formatOracleBucketUrl(conversationInterlocutorProfilePictureFileName),
+        state = UserState.fromString(conversationInterlocutorState),
+        tester = conversationInterlocutorTester
     )
 
     return Conversation(
         id = conversationId,
         interlocutor = interlocutor,
-        createdAt = createdAt.toLocalDateTimeUTC(),
+        createdAt = conversationCreatedAt.toLocalDateTimeUTC(),
         state = ConversationState.valueOf(conversationState),
         deleteTime = conversationDeleteTime?.toLocalDateTimeUTC()
     )
@@ -70,11 +73,11 @@ internal fun RemoteConversation.toConversation(userId: String, interlocutor: Use
 
 internal fun RemoteConversation.toMap(): Map<String, Any> {
     val data = mutableMapOf<String, Any>()
-    data[ConversationField.CONVERSATION_ID] = conversationId
-    data[ConversationField.Remote.PARTICIPANTS] = participants
-    data[ConversationField.CREATED_AT] = createdAt
+    data[CONVERSATION_ID] = conversationId
+    data[PARTICIPANTS] = participants
+    data[CREATED_AT] = createdAt
     deleteTime?.let {
-        data[ConversationField.DELETE_TIME] = it
+        data[DELETE_TIME] = it
     }
     return data
 }

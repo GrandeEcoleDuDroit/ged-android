@@ -24,19 +24,19 @@ import com.upsaclay.message.domain.entity.MessageNotification
 
 fun MessageNotification.toLocal() = LocalMessageNotification(
     messageId = message.messageId,
-    content = message.content,
+    messageContent = message.content,
     messageTimestamp = message.timestamp,
     conversationId = conversation.id,
-    interlocutorId = conversation.interlocutor.id,
-    interlocutorFirstName = conversation.interlocutor.firstName,
-    interlocutorLastName = conversation.interlocutor.lastName,
-    interlocutorEmail = conversation.interlocutor.email,
-    interlocutorSchoolLevel = conversation.interlocutor.schoolLevel.number,
-    interlocutorAdmin = conversation.interlocutor.admin,
-    interlocutorProfilePictureFileName = UrlUtils.extractFileName(conversation.interlocutor.profilePictureUrl),
-    interlocutorState = conversation.interlocutor.state.toString(),
-    interlocutorTester = conversation.interlocutor.tester,
-    createdAt = conversation.createdAt.toEpochMilliUTC(),
+    conversationInterlocutorId = conversation.interlocutor.id,
+    conversationInterlocutorFirstName = conversation.interlocutor.firstName,
+    conversationInterlocutorLastName = conversation.interlocutor.lastName,
+    conversationInterlocutorEmail = conversation.interlocutor.email,
+    conversationInterlocutorSchoolLevel = conversation.interlocutor.schoolLevel.number,
+    conversationInterlocutorAdmin = conversation.interlocutor.admin,
+    conversationInterlocutorProfilePictureFileName = UrlUtils.extractFileName(conversation.interlocutor.profilePictureUrl),
+    conversationInterlocutorState = conversation.interlocutor.state.toString(),
+    conversationInterlocutorTester = conversation.interlocutor.tester,
+    conversationCreatedAt = conversation.createdAt.toEpochMilliUTC(),
     conversationState = conversation.state.name,
     conversationDeleteTime = conversation.deleteTime?.toEpochMilliUTC()
 )
@@ -68,7 +68,7 @@ fun LocalMessageNotification.toMessageNotification() = MessageNotification(
     conversation = toConversation(),
     message = MessageNotification.Message(
         messageId = messageId,
-        content = content,
+        content = messageContent,
         timestamp = messageTimestamp
     )
 )
@@ -76,17 +76,17 @@ fun LocalMessageNotification.toMessageNotification() = MessageNotification(
 private fun LocalMessageNotification.toConversation() = Conversation(
     id = conversationId,
     interlocutor = User(
-        id = interlocutorId,
-        firstName = interlocutorFirstName,
-        lastName = interlocutorLastName,
-        email = interlocutorEmail,
-        schoolLevel = SchoolLevel.fromNumber(interlocutorSchoolLevel),
-        admin = interlocutorAdmin,
-        profilePictureUrl = UrlUtils.formatOracleBucketUrl(interlocutorProfilePictureFileName),
-        state = User.UserState.fromString(interlocutorState),
-        tester = interlocutorTester
+        id = conversationInterlocutorId,
+        firstName = conversationInterlocutorFirstName,
+        lastName = conversationInterlocutorLastName,
+        email = conversationInterlocutorEmail,
+        schoolLevel = SchoolLevel.fromNumber(conversationInterlocutorSchoolLevel),
+        admin = conversationInterlocutorAdmin,
+        profilePictureUrl = UrlUtils.formatOracleBucketUrl(conversationInterlocutorProfilePictureFileName),
+        state = User.UserState.fromString(conversationInterlocutorState),
+        tester = conversationInterlocutorTester
     ),
-    createdAt = createdAt.toLocalDateTimeUTC(),
+    createdAt = conversationCreatedAt.toLocalDateTimeUTC(),
     state = Conversation.ConversationState.valueOf(conversationState),
     deleteTime = conversationDeleteTime?.toLocalDateTimeUTC()
 )

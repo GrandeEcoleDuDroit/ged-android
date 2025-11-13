@@ -26,7 +26,7 @@ internal class UserLocalDataSource(private val userDataStore: UserDataStore) {
     suspend fun updateProfilePictureFileName(fileName: String?) {
         withContext(Dispatchers.IO) {
             userDataStore.getUser()?.let { userDTO ->
-                userDataStore.storeUser(userDTO.copy(profilePictureFileName = fileName))
+                userDataStore.storeUser(userDTO.copy(userProfilePictureFileName = fileName))
             }
         }
     }

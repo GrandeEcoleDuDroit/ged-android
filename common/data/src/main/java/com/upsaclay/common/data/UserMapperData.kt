@@ -13,14 +13,14 @@ import com.upsaclay.common.domain.extensions.uppercaseFirstLetter
 
 fun User.toLocal() = LocalUser(
     userId = id,
-    firstName = firstName.lowercase(),
-    lastName = lastName.lowercase(),
-    email = email,
-    schoolLevel = schoolLevel.number,
-    admin = if (admin) 1 else 0,
-    profilePictureFileName = extractFileName(profilePictureUrl),
-    state = state.toString(),
-    tester = if (tester) 1 else 0
+    userFirstName = firstName.lowercase(),
+    userLastName = lastName.lowercase(),
+    userEmail = email,
+    userSchoolLevel = schoolLevel.number,
+    userAdmin = if (admin) 1 else 0,
+    userProfilePictureFileName = extractFileName(profilePictureUrl),
+    userState = state.toString(),
+    userTester = if (tester) 1 else 0
 )
 
 internal fun User.toServerUser() = ServerUser(
@@ -49,14 +49,14 @@ internal fun User.toFirestoreUser() = FirestoreUser(
 
 internal fun LocalUser.toUser() = User(
     id = userId,
-    firstName = firstName.uppercaseFirstLetter(),
-    lastName = lastName.uppercaseFirstLetter(),
-    email = email,
-    schoolLevel = SchoolLevel.fromNumber(schoolLevel),
-    admin = admin == 1,
-    profilePictureUrl = formatOracleBucketUrl(profilePictureFileName),
-    state = User.UserState.fromString(state),
-    tester = tester == 1
+    firstName = userFirstName.uppercaseFirstLetter(),
+    lastName = userLastName.uppercaseFirstLetter(),
+    email = userEmail,
+    schoolLevel = SchoolLevel.fromNumber(userSchoolLevel),
+    admin = userAdmin == 1,
+    profilePictureUrl = formatOracleBucketUrl(userProfilePictureFileName),
+    state = User.UserState.fromString(userState),
+    tester = userTester == 1
 )
 
 internal fun FirestoreUser.toUser() = User(
