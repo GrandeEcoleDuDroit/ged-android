@@ -347,9 +347,7 @@ class EditMissionViewModel(
     private fun initUsers() {
         viewModelScope.launch {
             getUsersUseCase()
-                .sortedBy { it.fullName }
-                .sortedByDescending { mission.managers.contains(it) }
-                .sortedByDescending { it.admin }
+                .managerSorting(mission)
                 .also { users ->
                     _uiState.update { it.copy(users = users) }
                     defaultUsers = users
