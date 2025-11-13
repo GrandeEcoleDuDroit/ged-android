@@ -16,7 +16,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import com.upsaclay.authentication.R
 import com.upsaclay.common.presentation.components.SimpleOutlinedTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 
 @Composable
 fun FirstRegistrationForm(
@@ -61,7 +61,7 @@ fun FirstRegistrationForm(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun PreviewFirstRegistrationForm() {
     GedoiseTheme {

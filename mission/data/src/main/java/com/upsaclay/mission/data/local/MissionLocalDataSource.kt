@@ -1,5 +1,6 @@
 package com.upsaclay.mission.data.local
 
+import com.upsaclay.common.domain.entity.User
 import com.upsaclay.mission.data.mapper.toLocal
 import com.upsaclay.mission.data.mapper.toMission
 import com.upsaclay.mission.domain.entity.Mission
@@ -27,6 +28,28 @@ class MissionLocalDataSource(private val missionDao: MissionDao) {
     suspend fun deleteMission(mission: Mission) {
         withContext(Dispatchers.IO) {
             missionDao.deleteMission(mission.toLocal())
+        }
+    }
+
+    suspend fun addParticipant(missionId: String, user: User) {
+        withContext(Dispatchers.IO) {
+            missionDao.getMission(missionId)?.let { localMission ->
+                val mission = localMission.toMission().let { mission ->
+                    mission.copy(participants = mission.participants.toMutableList().apply { add(user) })
+                }
+                missionDao.upsertMission(mission.toLocal())
+            }
+        }
+    }
+
+    suspend fun removeParticipant(missionId: String, userId: String) {
+        withContext(Dispatchers.IO) {
+            missionDao.getMission(missionId)?.let { localMission ->
+                val mission = localMission.toMission().let { mission ->
+                    mission.copy(participants = mission.participants.filter { it.id != userId })
+                }
+                missionDao.upsertMission(mission.toLocal())
+            }
         }
     }
 }

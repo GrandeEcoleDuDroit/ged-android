@@ -34,27 +34,25 @@ fun MissionBottomSheet(
     mission: Mission,
     currentUser: User,
     onEditClick: () -> Unit,
-    onResendClick: () -> Unit,
+    onResendClick: () -> Unit = {},
     onDeleteClick: () -> Unit,
     onReportClick: () -> Unit,
     onDismiss: () -> Unit
 ) {
-    val isEditable = currentUser.admin || mission.managers.contains(currentUser)
-
     ModalBottomSheet(
         onDismissRequest = onDismiss
     ) {
         when (mission.state) {
             is MissionState.Error -> {
-                ErrorMissionBottomSheet(
+                ErrorMissionBottomSheetContent(
                     onDeleteClick = onDeleteClick,
                     onResendClick = onResendClick
                 )
             }
 
             else -> {
-                if (isEditable) {
-                    EditableMissionBottomSheet(
+                if (mission.managers.contains(currentUser)) {
+                    EditableMissionBottomSheetContent(
                         onEditClick = onEditClick,
                         onDeleteClick = onDeleteClick
                     )
@@ -69,7 +67,7 @@ fun MissionBottomSheet(
 }
 
 @Composable
-private fun EditableMissionBottomSheet(
+private fun EditableMissionBottomSheetContent(
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit
 ) {
@@ -128,7 +126,7 @@ private fun NonEditableMissionBottomSheetContent(
 }
 
 @Composable
-private fun ErrorMissionBottomSheet(
+private fun ErrorMissionBottomSheetContent(
     onResendClick: () -> Unit,
     onDeleteClick: () -> Unit
 ) {
@@ -207,10 +205,10 @@ fun NonEditableMissionBottomSheetPreview() {
 
 @Preview(heightDp = 400)
 @Composable
-fun ErrorMissionBottomSheetPreview() {
+fun ErrorMissionBottomSheetContentPreview() {
     GedoiseTheme {
         Surface {
-            ErrorMissionBottomSheet(
+            ErrorMissionBottomSheetContent(
                 onResendClick = {},
                 onDeleteClick = {}
             )

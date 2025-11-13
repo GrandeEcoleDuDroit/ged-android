@@ -1,6 +1,6 @@
 package com.upsaclay.common.data
 
-internal object UserField {
+object UserField {
     internal object Local {
         const val USER_ID = "userId"
         const val FIRST_NAME = "firstName"
@@ -13,7 +13,7 @@ internal object UserField {
         const val TESTER = "tester"
     }
 
-    internal object Server {
+    object Server {
         const val USER_ID = "USER_ID"
         const val USER_FIRST_NAME = "USER_FIRST_NAME"
         const val USER_LAST_NAME = "USER_LAST_NAME"

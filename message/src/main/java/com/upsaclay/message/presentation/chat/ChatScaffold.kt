@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 
 @Composable
 fun ChatScaffold(
@@ -50,7 +50,7 @@ fun ChatScaffold(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun ChatScaffoldPreview() {
     GedoiseTheme {

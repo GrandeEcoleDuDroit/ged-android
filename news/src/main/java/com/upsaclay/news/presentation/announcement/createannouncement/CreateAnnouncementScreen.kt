@@ -13,7 +13,7 @@ import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.extension.rootMediumPadding
 import com.upsaclay.common.presentation.components.EditTopBar
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
 import com.upsaclay.news.presentation.announcement.components.CreateAnnouncementInputs
 import org.koin.androidx.compose.koinViewModel
@@ -84,7 +84,7 @@ private fun CreateAnnouncementScreen(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun CreateAnnouncementScreenPreview() {
     var title by remember { mutableStateOf("") }

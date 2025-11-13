@@ -10,4 +10,6 @@
     <dimen name="large_padding">24dp</dimen>
     <dimen name="extra_large_padding">32dp</dimen>
     <dimen name="very_extra_large_padding">64dp</dimen>
+    <dimen name="modal_bottom_sheet_bottom_space">24dp</dimen>
+    <dimen name="bottom_bar_height">80dp</dimen>
 </resources>

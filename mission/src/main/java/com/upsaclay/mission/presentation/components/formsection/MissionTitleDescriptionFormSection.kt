@@ -26,7 +26,7 @@ import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.presentation.components.TransparentTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.inputForeground
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
 import kotlinx.coroutines.launch
 
@@ -111,7 +111,7 @@ private val descriptionStyle: TextStyle
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun CreateMissionTitleDescriptionSectionPreview() {
     var title by remember { mutableStateOf("") }

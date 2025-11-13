@@ -1,12 +1,17 @@
 package com.upsaclay.mission.data.remote.api
 
 import com.google.gson.Gson
+import com.upsaclay.common.data.UserField.Server.USER_ID
 import com.upsaclay.common.data.exceptions.mapServerResponseException
 import com.upsaclay.common.data.remote.model.ServerResponse
+import com.upsaclay.mission.data.MissionField.Remote.MISSION_ID
+import com.upsaclay.mission.data.MissionField.Remote.MISSION_IMAGE_FILE_NAME
 import com.upsaclay.mission.data.mapper.toMission
 import com.upsaclay.mission.data.mapper.toRemote
-import com.upsaclay.mission.data.remote.InboundRemoteMission
-import com.upsaclay.mission.data.remote.RemoteMissionReport
+import com.upsaclay.mission.data.remote.models.InboundRemoteMission
+import com.upsaclay.mission.data.remote.models.RemoteAddMissionParticipant
+import com.upsaclay.mission.data.remote.models.RemoteMissionReport
+import com.upsaclay.mission.domain.entity.AddMissionParticipant
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.MissionReport
 import okhttp3.MediaType.Companion.toMediaType
@@ -83,6 +88,20 @@ internal class MissionApiImpl(
             block = { serverMissionApi.reportMission(report.toRemote()) }
         )
     }
+
+    override suspend fun addParticipant(addMissionParticipant: AddMissionParticipant) {
+        mapServerResponseException(
+            message = "Failed to add participant to mission",
+            block = { serverMissionApi.addParticipant(addMissionParticipant.toRemote()) }
+        )
+    }
+
+    override suspend fun removeParticipant(missionId: String, userId: String) {
+        mapServerResponseException(
+            message = "Failed to remove participant from mission",
+            block = { serverMissionApi.removeParticipant(missionId, userId) }
+        )
+    }
 }
 
 internal interface ServerMissionApi {
@@ -107,10 +126,22 @@ internal interface ServerMissionApi {
     @FormUrlEncoded
     @POST("missions/delete")
     suspend fun deleteMission(
-        @Field("missionId") missionId: String,
-        @Field("imageFileName") imageFileName: String?
+        @Field(MISSION_ID) missionId: String,
+        @Field(MISSION_IMAGE_FILE_NAME) missionImageFileName: String?
     ): Response<ServerResponse>
 
     @POST("missions/report")
     suspend fun reportMission(@Body remoteMissionReport: RemoteMissionReport): Response<ServerResponse>
+
+    @POST("missions/add-participant")
+    suspend fun addParticipant(
+        @Body remoteAddMissionParticipant: RemoteAddMissionParticipant
+    ): Response<ServerResponse>
+
+    @FormUrlEncoded
+    @POST("missions/remove-participant")
+    suspend fun removeParticipant(
+        @Field(MISSION_ID) missionId: String,
+        @Field(USER_ID) userId: String
+    ): Response<ServerResponse>
 }

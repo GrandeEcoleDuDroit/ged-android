@@ -1,7 +1,7 @@
 package com.upsaclay.mission.data.mapper
 
 import com.upsaclay.mission.data.local.LocalMissionTask
-import com.upsaclay.mission.data.remote.RemoteMissionTask
+import com.upsaclay.mission.data.remote.models.RemoteMissionTask
 import com.upsaclay.mission.domain.entity.MissionTask
 
 

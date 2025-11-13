@@ -33,16 +33,16 @@ import com.upsaclay.common.presentation.components.DatePickerModal
 import com.upsaclay.common.presentation.components.EditTopBar
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.MissionState
 import com.upsaclay.mission.domain.entity.MissionTask
 import com.upsaclay.mission.domain.missionFixture
 import com.upsaclay.mission.presentation.MissionBottomSheetType
-import com.upsaclay.mission.presentation.components.bottomsheet.AddTaskModalBottomSheet
-import com.upsaclay.mission.presentation.components.bottomsheet.EditTaskModalBottomSheet
-import com.upsaclay.mission.presentation.components.bottomsheet.SelectManagerModalBottomSheet
+import com.upsaclay.mission.presentation.components.bottomsheet.AddTaskBottomSheet
+import com.upsaclay.mission.presentation.components.bottomsheet.EditTaskBottomSheet
+import com.upsaclay.mission.presentation.components.bottomsheet.SelectManagerBottomSheet
 import com.upsaclay.mission.presentation.createmission.MissionForm
 import com.upsaclay.mission.presentation.createmission.MissionFormValue
 import kotlinx.coroutines.launch
@@ -257,7 +257,7 @@ private fun EditMissionScreen(
 
     when (bottomSheetType) {
         is MissionBottomSheetType.AddTask -> {
-            AddTaskModalBottomSheet(
+            AddTaskBottomSheet(
                 onDismissRequest = { bottomSheetType = null },
                 onAddClick = {
                     onAddTaskClick(it)
@@ -268,7 +268,7 @@ private fun EditMissionScreen(
 
         is MissionBottomSheetType.EditTask -> {
             (bottomSheetType as? MissionBottomSheetType.EditTask)?.missionTask?.let {
-                EditTaskModalBottomSheet(
+                EditTaskBottomSheet(
                     initialTask = it,
                     onDismissRequest = { bottomSheetType = null },
                     onEditClick = { task ->
@@ -280,7 +280,7 @@ private fun EditMissionScreen(
         }
 
         is MissionBottomSheetType.SelectManager -> {
-            SelectManagerModalBottomSheet(
+            SelectManagerBottomSheet(
                 users = users,
                 selectedManagers = managers,
                 userQuery = userQuery,
@@ -307,7 +307,7 @@ private fun EditMissionScreen(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun CreateMissionScreenPreview() {
     val mission = missionFixture

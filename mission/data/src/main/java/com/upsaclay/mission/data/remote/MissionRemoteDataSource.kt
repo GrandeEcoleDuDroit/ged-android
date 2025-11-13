@@ -1,6 +1,7 @@
 package com.upsaclay.mission.data.remote
 
 import com.upsaclay.mission.data.remote.api.MissionApi
+import com.upsaclay.mission.domain.entity.AddMissionParticipant
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.MissionReport
 import kotlinx.coroutines.Dispatchers
@@ -33,6 +34,18 @@ class MissionRemoteDataSource(private val missionApi: MissionApi) {
     suspend fun reportMission(report: MissionReport) {
         withContext(Dispatchers.IO) {
             missionApi.reportMission(report)
+        }
+    }
+
+    suspend fun addParticipant(addMissionParticipant: AddMissionParticipant) {
+        withContext(Dispatchers.IO) {
+            missionApi.addParticipant(addMissionParticipant)
+        }
+    }
+
+    suspend fun removeParticipant(missionId: String, userId: String) {
+        withContext(Dispatchers.IO) {
+            missionApi.removeParticipant(missionId, userId)
         }
     }
 }

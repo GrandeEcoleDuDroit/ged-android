@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.upsaclay.common.presentation.components.LargeAsyncImage
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.defaultImageForeground
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 
 @Composable
 fun MissionImage(
@@ -69,7 +69,7 @@ private fun DefaultImage(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun MissionImagePreview() {
     GedoiseTheme {

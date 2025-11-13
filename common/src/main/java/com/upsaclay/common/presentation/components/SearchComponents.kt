@@ -31,7 +31,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import com.upsaclay.common.R
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.inputBackground
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -99,7 +99,7 @@ fun StaticSearchBar(
  * =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun SearchBarPreview() {
     var query by remember { mutableStateOf("") }

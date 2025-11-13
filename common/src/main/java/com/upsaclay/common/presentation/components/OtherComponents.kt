@@ -38,7 +38,7 @@ import com.upsaclay.common.R
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -127,7 +127,7 @@ fun UserItem(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun ClickableMenuItemPreview() {
     GedoiseTheme {
@@ -173,7 +173,7 @@ private fun PullRefreshComponentPreview() {
     }
 }
 
-@Phones
+@PhonePreviews
 @Composable
 private fun UserItemPreview() {
     GedoiseTheme {

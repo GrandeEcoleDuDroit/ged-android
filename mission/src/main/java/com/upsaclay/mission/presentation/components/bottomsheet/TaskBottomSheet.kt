@@ -33,22 +33,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.TextFieldValue
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
-import com.upsaclay.mission.presentation.MissionConstants.MAX_TASK_LENGTH
 import com.upsaclay.mission.domain.entity.MissionTask
 import com.upsaclay.mission.domain.missionTaskFixture
+import com.upsaclay.mission.presentation.MissionConstants.MAX_TASK_LENGTH
 import kotlinx.coroutines.android.awaitFrame
 import kotlinx.coroutines.delay
 
 @Composable
-fun AddTaskModalBottomSheet(
+fun AddTaskBottomSheet(
     onDismissRequest: () -> Unit,
     onAddClick: (String) -> Unit
 ) {
     var createEnabled by remember { mutableStateOf(false) }
 
-    TaskModalBottomSheet(
+    TaskBottomSheet(
         onValueChange = { createEnabled = it.isNotBlank() },
         enabled = createEnabled,
         labelButton = stringResource(R.string.add),
@@ -58,14 +58,14 @@ fun AddTaskModalBottomSheet(
 }
 
 @Composable
-fun EditTaskModalBottomSheet(
+fun EditTaskBottomSheet(
     initialTask: MissionTask,
     onDismissRequest: () -> Unit,
     onEditClick: (MissionTask) -> Unit
 ) {
     var editEnabled by remember { mutableStateOf(false) }
 
-    TaskModalBottomSheet(
+    TaskBottomSheet(
         initialValue = initialTask.value,
         onValueChange = {
             editEnabled = it.isNotBlank() && it != initialTask.value
@@ -81,7 +81,7 @@ fun EditTaskModalBottomSheet(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun TaskModalBottomSheet(
+private fun TaskBottomSheet(
     initialValue: String = "",
     onValueChange: (String) -> Unit,
     enabled: Boolean,
@@ -154,7 +154,7 @@ private fun TaskModalBottomSheet(
             )
         }
 
-        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)))
+        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.modal_bottom_sheet_bottom_space)))
     }
 }
 
@@ -164,12 +164,12 @@ private fun TaskModalBottomSheet(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun EditTaskBottomSheetPreview() {
     GedoiseTheme {
         Surface {
-            EditTaskModalBottomSheet(
+            EditTaskBottomSheet(
                 initialTask = missionTaskFixture,
                 onDismissRequest = {},
                 onEditClick = {}

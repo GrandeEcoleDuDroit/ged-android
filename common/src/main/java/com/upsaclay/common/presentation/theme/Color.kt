@@ -1,6 +1,8 @@
 package com.upsaclay.common.presentation.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CheckboxColors
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ColorScheme
@@ -99,24 +101,43 @@ val ColorScheme.emptyImageForeground: Color
     @Composable
     get() = TextFieldDefaults.colors().unfocusedLeadingIconColor
 
-val ColorScheme.defaultImageBackground: Color
-    @Composable
-    get() = if (isSystemInDarkTheme()) Color(0xFF454957) else Color(0xFFDCE0E8)
-
 val ColorScheme.defaultImageForeground: Color
     @Composable
     get() = if (isSystemInDarkTheme()) Color(0xFFC2C5CF) else Color(0xFFA8ACB5)
 
-val ColorScheme.outlinedTextFieldColor: TextFieldColors
+val ColorScheme.iconBackground: Color
     @Composable
-    get() = OutlinedTextFieldDefaults.colors(
-        unfocusedContainerColor = Color.Transparent,
-        focusedContainerColor = Color.Transparent
-    )
+    get() = if (isSystemInDarkTheme()) Color(0xFF323232) else Color(0xFFE6E6E6)
 
 val ColorScheme.listDivider: Color
     @Composable
     get() = if (isSystemInDarkTheme()) Color(0xFF464646) else Color(0xFFBEBEBE)
+
+
+val ColorScheme.activatedButtonColors: ButtonColors
+    @Composable
+    get() = ButtonDefaults.buttonColors(
+        containerColor = if (isSystemInDarkTheme()) Color(0xFF323232) else Color(0xFFE6E6E6),
+        contentColor = if (isSystemInDarkTheme()) white else Color(0xFF3C3C3C)
+    )
+
+val ColorScheme.loadingButtonColors: ButtonColors
+    @Composable
+    get() = ButtonDefaults.buttonColors(
+        disabledContainerColor = MaterialTheme.colorScheme.primary,
+        disabledContentColor = MaterialTheme.colorScheme.white
+    )
+
+val ColorScheme.imageIconButtonColors: IconButtonColors
+    @Composable
+    get() = IconButtonDefaults.iconButtonColors(
+        containerColor = if (isSystemInDarkTheme()) {
+            Color(0xFF323232)
+        } else {
+            Color(0xFFF5F5F5)
+        }.copy(alpha = 0.7f)
+    )
+
 
 val ColorScheme.checkBoxColor: CheckboxColors
     @Composable
@@ -135,28 +156,10 @@ val ColorScheme.checkBoxColor: CheckboxColors
         disabledIndeterminateBorderColor = CheckboxDefaults.colors().disabledIndeterminateBorderColor
     )
 
-val ColorScheme.iconBackground: Color
-    @Composable
-    get() = if (isSystemInDarkTheme()) Color(0xFF323232) else Color(0xFFE6E6E6)
 
-private val ColorScheme.imageIconButtonContainer: Color
+val ColorScheme.outlinedTextFieldColor: TextFieldColors
     @Composable
-    get() = if (isSystemInDarkTheme()) {
-        Color(0xFF323232)
-    } else {
-        Color(0xFFF5F5F5)
-    }.copy(alpha = 0.7f)
-
-val ColorScheme.imageIconButtonColors: IconButtonColors
-    @Composable
-    get() = IconButtonDefaults.iconButtonColors(
-        containerColor = imageIconButtonContainer
+    get() = OutlinedTextFieldDefaults.colors(
+        unfocusedContainerColor = Color.Transparent,
+        focusedContainerColor = Color.Transparent
     )
-
-val ColorScheme.leadingIcon: Color
-    @Composable
-    get() = TextFieldDefaults.colors().unfocusedLeadingIconColor
-
-val ColorScheme.trailingIcon: Color
-    @Composable
-    get() = TextFieldDefaults.colors().unfocusedTrailingIconColor

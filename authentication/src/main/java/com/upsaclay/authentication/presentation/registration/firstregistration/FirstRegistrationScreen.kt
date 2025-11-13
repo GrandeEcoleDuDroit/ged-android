@@ -22,7 +22,7 @@ import com.upsaclay.common.domain.extensions.uppercaseFirstLetter
 import com.upsaclay.common.extension.rootMediumPadding
 import com.upsaclay.common.presentation.components.PrimaryButton
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -110,7 +110,7 @@ private fun FirstRegistrationScreen(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun FirstRegistrationScreenPreview() {
     var firstName by remember { mutableStateOf("") }

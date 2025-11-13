@@ -1,23 +1,27 @@
 package com.upsaclay.mission.presentation.missiondetails
 
-import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upsaclay.common.domain.ConnectivityObserver
 import com.upsaclay.common.domain.entity.NoInternetConnectionException
 import com.upsaclay.common.domain.entity.User
+import com.upsaclay.common.domain.extensions.launchDelayed
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapNetworkErrorMessage
 import com.upsaclay.mission.R
+import com.upsaclay.mission.domain.entity.AddMissionParticipant
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.MissionReport
 import com.upsaclay.mission.domain.repository.MissionRepository
 import com.upsaclay.mission.domain.usecase.DeleteMissionUseCase
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -34,50 +38,68 @@ class MissionDetailsViewModel(
     val event: SharedFlow<SingleUiEvent> = _event
 
     init {
-        listenUser()
-        listenMission()
+        listenUserMission()
     }
 
     fun registerToMission() {
-        TODO("Not yet implemented")
+        val user = uiState.value.user ?: return
+        val mission = uiState.value.mission ?: return
+        val addMissionParticipant = AddMissionParticipant(
+            missionId = missionId,
+            schoolLevels = mission.schoolLevels,
+            maxParticipants = mission.maxParticipants,
+            participantsNumber = mission.participants.size,
+            user = user
+        )
+       executeRequest {
+           missionRepository.addParticipant(addMissionParticipant)
+       }
+    }
+
+    fun unregisterFromMission() {
+        val user = uiState.value.user ?: return
+        executeRequest {
+            missionRepository.removeParticipant(missionId, user.id)
+        }
     }
 
     fun reportMission(report: MissionReport) {
-        viewModelScope.launch {
-            try {
-                if (!connectivityObserver.isConnected) {
-                    throw NoInternetConnectionException()
-                }
-                _uiState.update {
-                    it.copy(loading = true)
-                }
-                missionRepository.reportMission(report)
-                _event.emit(MissionDetailsUiEvent.MissionReported(R.string.mission_reported))
-            } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
-            } finally {
-                _uiState.update {
-                    it.copy(loading = false)
-                }
-            }
+        executeRequest {
+            missionRepository.reportMission(report)
+            _event.emit(SingleUiEvent.Success(R.string.mission_reported))
         }
     }
 
     fun deleteMission() {
         val mission = uiState.value.mission ?: return
+        executeRequest {
+            deleteMissionUseCase(mission)
+            _event.emit(MissionDetailsUiEvent.MissionDetailsDeleted)
+        }
+    }
+
+    fun removeParticipant(userId: String) {
+        val missionId = uiState.value.mission?.id ?: return
+        executeRequest {
+            missionRepository.removeParticipant(missionId, userId)
+        }
+    }
+
+    private fun executeRequest(block: suspend () -> Unit) {
+        var loadingJob: Job? = null
         viewModelScope.launch {
             try {
                 if (!connectivityObserver.isConnected) {
                     throw NoInternetConnectionException()
                 }
-                _uiState.update {
-                    it.copy(loading = true)
+                loadingJob = launchDelayed(300) {
+                    _uiState.update { it.copy(loading = true) }
                 }
-                deleteMissionUseCase(mission)
-                _event.emit(MissionDetailsUiEvent.MissionDeleted)
+                block()
             } catch (e: Exception) {
                 _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
             } finally {
+                loadingJob?.cancel()
                 _uiState.update {
                     it.copy(loading = false)
                 }
@@ -85,48 +107,58 @@ class MissionDetailsViewModel(
         }
     }
 
-    private fun listenMission() {
-        viewModelScope.launch {
-            missionRepository.getMissionFlow(missionId).collect { mission ->
-                _uiState.update {
-                    it.copy(
-                        mission = mission,
-                        registrationDisabled = invalidRegistration(it.user, mission)
-                    )
-                }
+    private fun listenUserMission() {
+        combine(
+            userRepository.user,
+            missionRepository.getMissionFlow(missionId)
+        ) { user, mission ->
+            val isManager = mission.managers.contains(user)
+            _uiState.update {
+                it.copy(
+                    user = user,
+                    mission = mission,
+                    isManager = isManager,
+                    buttonState = updateMissionButtonState(user, mission, isManager)
+                )
             }
-        }
+        }.launchIn(viewModelScope)
     }
 
-    private fun listenUser() {
-        viewModelScope.launch {
-            userRepository.user.collect { user ->
-                _uiState.update {
-                    it.copy(
-                        user = user,
-                        registrationDisabled = invalidRegistration(user, it.mission)
-                    )
-                }
+    private fun updateMissionButtonState(
+        user: User,
+        mission: Mission,
+        isManager: Boolean
+    ): MissionButtonState {
+        return when {
+            isManager -> MissionButtonState.Hidden
+
+            mission.complete -> MissionButtonState.Complete
+
+            mission.participants.contains(user) -> MissionButtonState.Registered
+
+            else -> {
+                val enabled = !mission.full && mission.schoolLevelPermitted(user.schoolLevel)
+                MissionButtonState.Register(enabled)
             }
         }
-    }
-
-    private fun invalidRegistration(user: User?, mission: Mission?): Boolean {
-        if (user == null || mission == null) return true
-
-        return mission.full || mission.expired ||
-                mission.schoolLevelPermitted(user.schoolLevel)
     }
 
     data class MissionDetailsUiState(
         val user: User? = null,
         val mission: Mission? = null,
+        val isManager: Boolean = false,
         val loading: Boolean = false,
-        val registrationDisabled: Boolean? = null
+        val buttonState: MissionButtonState = MissionButtonState.Hidden
     )
 
-    sealed interface MissionDetailsUiEvent : SingleUiEvent {
-        data object MissionDeleted : MissionDetailsUiEvent
-        data class MissionReported(@StringRes val messageId: Int) : MissionDetailsUiEvent
+    sealed class MissionDetailsUiEvent: SingleUiEvent {
+        data object MissionDetailsDeleted: MissionDetailsUiEvent()
+    }
+
+    sealed class MissionButtonState {
+        data class Register(val enabled: Boolean = true): MissionButtonState()
+        data object Registered: MissionButtonState()
+        data object Complete: MissionButtonState()
+        data object Hidden: MissionButtonState()
     }
 }

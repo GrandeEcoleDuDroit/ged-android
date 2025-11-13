@@ -3,6 +3,7 @@ package com.upsaclay.mission.data.repositories
 import com.upsaclay.common.data.UrlUtils
 import com.upsaclay.mission.data.local.MissionLocalDataSource
 import com.upsaclay.mission.data.remote.MissionRemoteDataSource
+import com.upsaclay.mission.domain.entity.AddMissionParticipant
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.MissionReport
 import com.upsaclay.mission.domain.repository.MissionRepository
@@ -59,5 +60,15 @@ class MissionRepositoryImpl(
 
     override suspend fun reportMission(report: MissionReport) {
         missionRemoteDataSource.reportMission(report)
+    }
+
+    override suspend fun addParticipant(addMissionParticipant: AddMissionParticipant) {
+        missionRemoteDataSource.addParticipant(addMissionParticipant)
+        missionLocalDataSource.addParticipant(addMissionParticipant.missionId, addMissionParticipant.user)
+    }
+
+    override suspend fun removeParticipant(missionId: String, userId: String) {
+        missionRemoteDataSource.removeParticipant(missionId, userId)
+        missionLocalDataSource.removeParticipant(missionId, userId)
     }
 }

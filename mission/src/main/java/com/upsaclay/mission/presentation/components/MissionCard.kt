@@ -33,7 +33,7 @@ import com.upsaclay.common.presentation.components.OptionButton
 import com.upsaclay.common.presentation.components.TextIcon
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.informationText
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.MissionState
@@ -318,7 +318,7 @@ private val descriptionStyle: TextStyle
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun DefaultMissionCardPreview() {
     val mission = missionFixture
@@ -335,7 +335,7 @@ private fun DefaultMissionCardPreview() {
     }
 }
 
-@Phones
+@PhonePreviews
 @Composable
 private fun PublishingMissionCardPreview() {
     val mission = missionFixture
@@ -352,7 +352,7 @@ private fun PublishingMissionCardPreview() {
     }
 }
 
-@Phones
+@PhonePreviews
 @Composable
 private fun ErrorMissionCardPreview() {
     val mission = missionFixture

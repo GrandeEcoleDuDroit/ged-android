@@ -44,7 +44,7 @@ import com.upsaclay.authentication.R
 import com.upsaclay.common.extension.rootMediumPadding
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -199,7 +199,7 @@ private fun HeaderSection() {
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun AuthenticationScreenPreview() {
     var email by remember { mutableStateOf("") }

@@ -25,9 +25,9 @@ import com.upsaclay.authentication.presentation.components.RegistrationScaffold
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.extension.rootMediumPadding
 import com.upsaclay.common.presentation.components.PrimaryButton
-import com.upsaclay.common.presentation.components.SingleSelectionDropDownMenu
+import com.upsaclay.common.presentation.components.SingleSelectionDropDown
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -76,7 +76,7 @@ private fun SecondRegistrationScreen(
                     style = MaterialTheme.typography.titleMedium
                 )
 
-                SingleSelectionDropDownMenu(
+                SingleSelectionDropDown(
                     items = schoolLevels.map { it.value },
                     selectedItem = schoolLevel.value,
                     onItemClicked = {
@@ -107,7 +107,7 @@ private fun SecondRegistrationScreen(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun SecondRegistrationScreenPreview() {
     var selectedItem by remember { mutableStateOf(SchoolLevel.GED_1) }

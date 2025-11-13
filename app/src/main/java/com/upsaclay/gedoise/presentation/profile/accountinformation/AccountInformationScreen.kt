@@ -36,9 +36,9 @@ import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.user.UserInformationItems
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.gedoise.R
-import com.upsaclay.gedoise.presentation.components.AccountModelBottomSheet
+import com.upsaclay.gedoise.presentation.components.AccountBottomSheet
 import com.upsaclay.gedoise.presentation.components.AccountTopBar
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -185,7 +185,7 @@ fun AccountInformationScreen(
         }
 
         if (showBottomSheet) {
-            AccountModelBottomSheet(
+            AccountBottomSheet(
                 onDismiss = { showBottomSheet = false },
                 onNewProfilePictureClick = {
                     singlePhotoPickerLauncher.launch(
@@ -207,7 +207,7 @@ fun AccountInformationScreen(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun AccountScreenPreview() {
     GedoiseTheme {

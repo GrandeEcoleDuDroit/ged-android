@@ -41,7 +41,7 @@ import com.upsaclay.common.presentation.components.TitleTopBar
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.gold
 import com.upsaclay.common.presentation.theme.informationText
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.gedoise.R
 import org.koin.androidx.compose.koinViewModel
 
@@ -208,7 +208,7 @@ fun ProfileScreen(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 fun ProfileScreenPreview() {
     GedoiseTheme {

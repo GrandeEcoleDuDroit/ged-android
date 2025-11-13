@@ -16,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.presentation.components.SimpleOutlinedTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.LocalDateFormatter
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
 import java.time.LocalDate
 
@@ -57,7 +57,7 @@ fun OutlinedDatePicker(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun OutlinedDatePickerPreview() {
     GedoiseTheme {

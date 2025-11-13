@@ -22,8 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.leadingIcon
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.MissionTask
 import com.upsaclay.mission.domain.tasksFixture
@@ -62,7 +61,7 @@ fun MissionTaskFormSection(
                     .clickable(onClick = { onTaskClick(it) })
                     .padding(
                         horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding),
-                        vertical = dimensionResource(com.upsaclay.common.R.dimen.small_padding)
+                        vertical = 10.dp
                     ),
                 missionTask = it,
                 onRemoveTaskClick = { onRemoveTaskClick(it) }
@@ -81,7 +80,7 @@ private fun AddMissionTaskItem(modifier: Modifier = Modifier) {
         Icon(
             imageVector = Icons.Default.Add,
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.leadingIcon
+            tint = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
         Text(text = stringResource(R.string.add_task))
@@ -115,7 +114,7 @@ fun MissionTaskItem(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun CreateMissionTaskSectionPreview() {
     GedoiseTheme {

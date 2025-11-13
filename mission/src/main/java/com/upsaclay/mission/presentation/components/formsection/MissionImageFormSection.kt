@@ -29,7 +29,7 @@ import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.emptyImageBackground
 import com.upsaclay.common.presentation.theme.emptyImageForeground
 import com.upsaclay.common.presentation.theme.imageIconButtonColors
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
 
 @Composable
@@ -117,7 +117,7 @@ private fun NonEmptyImage(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun CreateMissionImageSectionPreview() {
     GedoiseTheme {

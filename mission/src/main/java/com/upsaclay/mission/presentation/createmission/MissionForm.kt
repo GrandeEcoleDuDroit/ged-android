@@ -2,6 +2,8 @@ package com.upsaclay.mission.presentation.createmission
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -22,7 +24,7 @@ import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.domain.userFixture2
 import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.domain.entity.MissionTask
 import com.upsaclay.mission.domain.missionTaskFixture
 import com.upsaclay.mission.presentation.components.formsection.MissionImageFormSection
@@ -114,6 +116,8 @@ fun MissionForm(
             onTaskClick = onEditTaskClick,
             onRemoveTaskClick = onRemoveTaskClick
         )
+
+        Spacer(Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.default_padding)))
     }
 }
 
@@ -123,7 +127,7 @@ fun MissionForm(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun CreateMissionFormPreview() {
     var title by remember { mutableStateOf("") }

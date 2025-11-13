@@ -33,7 +33,7 @@ import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.BackTopBar
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.gedoise.R
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -157,7 +157,7 @@ private fun DeleteAccountScreen(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun DeleteAccountScreenPreview() {
     GedoiseTheme {

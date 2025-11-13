@@ -1,5 +1,6 @@
 package com.upsaclay.mission.domain.repository
 
+import com.upsaclay.mission.domain.entity.AddMissionParticipant
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.MissionReport
 import kotlinx.coroutines.flow.Flow
@@ -25,4 +26,8 @@ interface MissionRepository {
     suspend fun deleteLocalMission(mission: Mission)
 
     suspend fun reportMission(report: MissionReport)
+
+    suspend fun addParticipant(addMissionParticipant: AddMissionParticipant)
+
+    suspend fun removeParticipant(missionId: String, userId: String)
 }

@@ -23,7 +23,7 @@ import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.extension.smallMediumSpacing
 import com.upsaclay.common.presentation.components.SimpleOutlinedTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
 import com.upsaclay.mission.presentation.components.OutlinedDatePicker
 import com.upsaclay.mission.presentation.components.OutlinedSchoolLevelDropDownMenu
@@ -115,7 +115,7 @@ fun MissionInformationFormSection(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun CreateMissionInformationSectionPreview() {
     var schoolLevels by remember { mutableStateOf(emptyList<SchoolLevel>()) }

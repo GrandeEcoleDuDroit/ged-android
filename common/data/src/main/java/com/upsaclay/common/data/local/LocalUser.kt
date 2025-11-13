@@ -3,7 +3,7 @@ package com.upsaclay.common.data.local
 import com.google.gson.annotations.SerializedName
 import com.upsaclay.common.data.UserField
 
-internal data class LocalUser(
+data class LocalUser(
     @SerializedName(UserField.Local.USER_ID)
     val userId: String,
     @SerializedName(UserField.Local.FIRST_NAME)

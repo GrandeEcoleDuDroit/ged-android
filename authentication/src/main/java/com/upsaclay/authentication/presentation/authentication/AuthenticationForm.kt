@@ -30,7 +30,7 @@ import com.upsaclay.authentication.presentation.components.OutlinePasswordTextFi
 import com.upsaclay.common.extension.extraSmallSpacing
 import com.upsaclay.common.presentation.components.SimpleOutlinedTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 
 @Composable
 fun AuthenticationForm(
@@ -79,7 +79,6 @@ fun AuthenticationForm(
             modifier = Modifier
                 .fillMaxWidth()
                 .testTag(stringResource(id = R.string.authentication_screen_login_button_tag)),
-            text = stringResource(id = R.string.login),
             isLoading = loading,
             onClick = {
                 focusManager.clearFocus()
@@ -163,7 +162,7 @@ private fun RegistrationText(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun AuthenticationFormPreview() {
     GedoiseTheme {

@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.previewText
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.message.R
 import com.upsaclay.message.domain.conversationsUIFixture
 import com.upsaclay.message.domain.entity.ConversationUi
@@ -94,7 +94,7 @@ private fun EmptyConversationText(onCreateClick: () -> Unit) {
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun ConversationFeedPreview() {
     GedoiseTheme {

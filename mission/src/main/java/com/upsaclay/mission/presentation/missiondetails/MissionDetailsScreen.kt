@@ -1,24 +1,23 @@
 package com.upsaclay.mission.presentation.missiondetails
 
-import androidx.compose.foundation.clickable
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.BottomAppBarDefaults
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
@@ -36,42 +35,36 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.tooling.preview.Preview
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
-import com.upsaclay.common.extension.extraSmallSpacing
 import com.upsaclay.common.extension.mediumSpacing
-import com.upsaclay.common.extension.smallMediumSpacing
 import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.CircularProgressBar
 import com.upsaclay.common.presentation.components.DefaultDialog
-import com.upsaclay.common.presentation.components.LoadingDialog
+import com.upsaclay.common.presentation.components.LoadingButton
 import com.upsaclay.common.presentation.components.PrimaryButton
 import com.upsaclay.common.presentation.components.ReportBottomSheet
-import com.upsaclay.common.presentation.components.UserItem
+import com.upsaclay.common.presentation.components.TextItem
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.informationText
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.presentation.theme.activatedButtonColors
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.MissionReport
 import com.upsaclay.mission.domain.entity.MissionState
-import com.upsaclay.mission.domain.entity.MissionTask
 import com.upsaclay.mission.domain.missionFixture
 import com.upsaclay.mission.presentation.components.MissionImage
 import com.upsaclay.mission.presentation.components.bottomsheet.MissionBottomSheet
-import com.upsaclay.mission.presentation.components.item.MissionInformationItem
-import com.upsaclay.mission.presentation.components.item.MissionUserItem
-import com.upsaclay.mission.presentation.components.item.SectionTitle
+import com.upsaclay.mission.presentation.missiondetails.MissionDetailsViewModel.MissionButtonState
 import com.upsaclay.mission.presentation.missiondetails.MissionDetailsViewModel.MissionDetailsUiEvent
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -92,44 +85,48 @@ fun MissionDetailsDestination(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+    val showSnackBar = { message: String ->
+        scope.launch {
+            snackbarHostState.showSnackbar(message = message)
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
-                is SingleUiEvent.Error -> scope.launch {
-                    snackbarHostState.showSnackbar(context.getString(event.messageId))
-                }
-
-                is MissionDetailsUiEvent.MissionDeleted -> onBackClick()
+                is SingleUiEvent.Error -> showSnackBar(context.getString(event.messageId))
+                is SingleUiEvent.Success -> showSnackBar(context.getString(event.messageId))
+                is MissionDetailsUiEvent.MissionDetailsDeleted -> onBackClick()
             }
         }
     }
 
-    if (
-        uiState.mission != null &&
-        uiState.registrationDisabled != null &&
-        uiState.user != null
-    ) {
+    if (uiState.mission != null && uiState.user != null) {
         MissionDetailsScreen(
             onBackClick = onBackClick,
             user = uiState.user!!,
             mission = uiState.mission!!,
             loading = uiState.loading,
-            registerButtonEnabled = uiState.registrationDisabled!!,
+            isManager = uiState.isManager,
+            buttonState = uiState.buttonState,
             snackbarHostState = snackbarHostState,
             onRegisterClick = viewModel::registerToMission,
+            onUnregisterClick = viewModel::unregisterFromMission,
             onManagerClick = onManagerClick,
             onParticipantClick = onParticipantClick,
+            onRemoveParticipantClick = viewModel::removeParticipant,
             onEditMissionClick = onEditMissionClick,
             onReportMissionClick = viewModel::reportMission,
             onDeleteMissionClick = viewModel::deleteMission
         )
     } else {
         Box(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-            CircularProgressBar()
+            CircularProgressBar(
+                modifier = Modifier.padding(top = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+            )
         }
     }
 }
@@ -141,20 +138,37 @@ private fun MissionDetailsScreen(
     user: User,
     mission: Mission,
     loading: Boolean,
-    registerButtonEnabled: Boolean,
+    isManager: Boolean,
+    buttonState: MissionButtonState,
     snackbarHostState: SnackbarHostState,
     onRegisterClick: () -> Unit,
+    onUnregisterClick: () -> Unit,
     onManagerClick: (User) -> Unit,
     onParticipantClick: (User) -> Unit,
+    onRemoveParticipantClick: (String) -> Unit,
     onEditMissionClick: (Mission) -> Unit,
     onReportMissionClick: (MissionReport) -> Unit,
     onDeleteMissionClick: () -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-    val contentStyle = MaterialTheme.typography.bodyMedium
-    var showBottomSheet by remember { mutableStateOf(false) }
-    var showDeleteMissionDialog by remember { mutableStateOf(false) }
+    val buttonModifier = Modifier
+        .windowInsetsPadding(BottomAppBarDefaults.windowInsets)
+        .padding(
+            vertical = dimensionResource(com.upsaclay.common.R.dimen.small_padding),
+            horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)
+        )
+        .fillMaxWidth()
+
+    var showMissionBottomSheet by remember { mutableStateOf(false) }
+    var showParticipantBottomSheet by remember { mutableStateOf(false) }
     var showReportBottomSheet by remember { mutableStateOf(false) }
+
+    var showDeleteMissionDialog by remember { mutableStateOf(false) }
+    var showUnregisterDialog by remember { mutableStateOf(false) }
+    var showRemoveParticipantDialog by remember { mutableStateOf(false) }
+
+    var clickedParticipant by remember { mutableStateOf<User?>(null) }
+    val hapticFeedback = LocalHapticFeedback.current
 
     if (showDeleteMissionDialog) {
         DefaultDialog(
@@ -169,25 +183,59 @@ private fun MissionDetailsScreen(
         )
     }
 
-    if (loading) {
-        LoadingDialog()
+    if (showUnregisterDialog) {
+        DefaultDialog(
+            text = stringResource(R.string.unregister_mission_dialog_text),
+            confirmText = stringResource(com.upsaclay.common.R.string.confirm),
+            onConfirm = {
+                showUnregisterDialog = false
+                onUnregisterClick()
+            },
+            onCancel = { showUnregisterDialog = false }
+        )
+    }
+
+    if (showRemoveParticipantDialog) {
+        clickedParticipant?.let {
+            DefaultDialog(
+                text = stringResource(R.string.remove_participant_dialog_text, it.fullName),
+                confirmText = stringResource(com.upsaclay.common.R.string.remove),
+                critical = true,
+                onConfirm = {
+                    showRemoveParticipantDialog = false
+                    onRemoveParticipantClick(it.id)
+                },
+                onCancel = { showRemoveParticipantDialog = false }
+            )
+        }
     }
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         bottomBar = {
-            BottomAppBar(
-                containerColor = Color.Transparent,
-                contentPadding = PaddingValues()
-            ) {
-                PrimaryButton(
-                    modifier = Modifier
-                        .padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
-                        .fillMaxWidth(),
-                    text = stringResource(R.string.register),
-                    enable = registerButtonEnabled,
-                    onClick = onRegisterClick
-                )
+            when (buttonState) {
+                is MissionButtonState.Register -> {
+                    RegisterButton(
+                        modifier = buttonModifier,
+                        enabled = buttonState.enabled,
+                        loading = loading,
+                        onClick = onRegisterClick
+                    )
+                }
+
+                is MissionButtonState.Registered -> {
+                    RegisteredButton(
+                        modifier = buttonModifier,
+                        loading = loading,
+                        onClick = { showUnregisterDialog = true }
+                    )
+                }
+
+                is MissionButtonState.Complete -> {
+                    CompleteButton(modifier = buttonModifier)
+                }
+
+                else -> Unit
             }
         },
         snackbarHost = {
@@ -213,10 +261,10 @@ private fun MissionDetailsScreen(
                 )
 
                 Column(
-                    modifier = Modifier.padding(vertical = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                    modifier = Modifier.padding(top  = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
                     verticalArrangement = Arrangement.mediumSpacing()
                 ) {
-                    TitleAndDescriptionSection(
+                    MissionDetailsTitleAndDescriptionSection(
                         modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
                         mission = mission
                     )
@@ -225,20 +273,18 @@ private fun MissionDetailsScreen(
                         modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
                     )
 
-                    InformationSection(
+                    MissionDetailsInformationSection(
                         modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
-                        mission = mission,
-                        textStyle = contentStyle
+                        mission = mission
                     )
 
                     HorizontalDivider(
                         modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
                     )
 
-                    ManagerSection(
+                    MissionDetailsManagerSection(
                         modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
                         managers = mission.managers,
-                        textStyle = contentStyle,
                         onManagerClick = onManagerClick
                     )
 
@@ -246,11 +292,17 @@ private fun MissionDetailsScreen(
                         modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
                     )
 
-                    ParticipantSection(
+                    MissionDetailsParticipantSection(
                         modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
                         users = mission.participants,
-                        textStyle = contentStyle,
-                        onParticipantClick = onParticipantClick
+                        onParticipantClick = onParticipantClick,
+                        onLongParticipantClick = {
+                            if (isManager) {
+                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                clickedParticipant = it
+                                showParticipantBottomSheet = true
+                            }
+                        }
                     )
 
                     if (mission.tasks.isNotEmpty()) {
@@ -258,11 +310,14 @@ private fun MissionDetailsScreen(
                             modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
                         )
 
-                        TaskSection(
+                        MissionDetailsTaskSection(
                             modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
-                            tasks = mission.tasks,
-                            textStyle = contentStyle
+                            tasks = mission.tasks
                         )
+                    }
+
+                    if (buttonState is MissionButtonState.Hidden) {
+                        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.small_padding)))
                     }
                 }
             }
@@ -272,30 +327,59 @@ private fun MissionDetailsScreen(
                 scrollBehavior = scrollBehavior,
                 title = mission.title,
                 onBackClick = onBackClick,
-                onOptionClick = { showBottomSheet = true }
+                onOptionClick = { showMissionBottomSheet = true }
             )
         }
     }
 
-    if (showBottomSheet) {
+    if (showMissionBottomSheet) {
         MissionBottomSheet(
             mission = mission,
             currentUser = user,
             onEditClick = {
-                showBottomSheet = false
+                showMissionBottomSheet = false
                 onEditMissionClick(mission)
             },
-            onResendClick = {},
             onReportClick = {
-                showBottomSheet = false
+                showMissionBottomSheet = false
                 showReportBottomSheet = true
             },
             onDeleteClick = {
-                showBottomSheet = false
+                showMissionBottomSheet = false
                 showDeleteMissionDialog = true
             },
-            onDismiss = { showBottomSheet = false }
+            onDismiss = { showMissionBottomSheet = false }
         )
+    }
+
+    if (showParticipantBottomSheet) {
+        clickedParticipant?.let {
+            ModalBottomSheet(
+                onDismissRequest = { showParticipantBottomSheet = false },
+            ) {
+                TextItem(
+                    text = {
+                        Text(
+                            text = stringResource(com.upsaclay.common.R.string.remove),
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    },
+                    icon = {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_outline_remove_person),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.error
+                        )
+                    },
+                    onClick = {
+                        showParticipantBottomSheet = false
+                        showRemoveParticipantDialog = true
+                    }
+                )
+
+                Spacer(Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.modal_bottom_sheet_bottom_space)))
+            }
+        }
     }
 
     if (showReportBottomSheet) {
@@ -320,150 +404,52 @@ private fun MissionDetailsScreen(
 }
 
 @Composable
-private fun TitleAndDescriptionSection(
+private fun RegisterButton(
     modifier: Modifier = Modifier,
-    mission: Mission
+    enabled: Boolean,
+    loading: Boolean,
+    onClick: () -> Unit
 ) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.mediumSpacing()
-    ) {
-        Text(
-            text = mission.title,
-            style = titleStyle
-        )
-
-        Text(
-            text = mission.description,
-            style = descriptionStyle
-        )
-    }
-}
-
-@Composable
-private fun InformationSection(
-    modifier: Modifier = Modifier,
-    mission: Mission,
-    textStyle: TextStyle
-) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.smallMediumSpacing()
-    ) {
-        SectionTitle(title = stringResource(R.string.information))
-
-        MissionInformationItem(
-            modifier = Modifier.fillMaxWidth(),
-            mission = mission,
-            textStyle = textStyle
-        )
-    }
-}
-
-@Composable
-private fun ManagerSection(
-    modifier: Modifier = Modifier,
-    managers: List<User>,
-    textStyle: TextStyle,
-    onManagerClick: (User) -> Unit
-) {
-    Column(verticalArrangement = Arrangement.extraSmallSpacing()) {
-        SectionTitle(
+    if (loading) {
+        LoadingButton(modifier = modifier)
+    } else {
+        PrimaryButton(
             modifier = modifier,
-            title = stringResource(R.string.managers)
+            text = stringResource(R.string.register_mission_button_text),
+            enabled = enabled,
+            onClick = onClick
         )
-
-        LazyColumn(
-            modifier = Modifier.heightIn(max = 200.dp)
-        ) {
-            items(managers) {
-                MissionUserItem(
-                    modifier = Modifier.clickable { onManagerClick(it) },
-                    user = it,
-                    imageScale = 0.4f,
-                    showAdminIndicator = false,
-                    textStyle = textStyle
-                )
-            }
-        }
     }
 }
 
 @Composable
-private fun ParticipantSection(
+private fun RegisteredButton(
     modifier: Modifier = Modifier,
-    users: List<User>,
-    textStyle: TextStyle,
-    onParticipantClick: (User) -> Unit
+    loading: Boolean,
+    onClick: () -> Unit
 ) {
-    Column(verticalArrangement = Arrangement.extraSmallSpacing()) {
-        SectionTitle(
+    if (loading) {
+        LoadingButton(modifier = modifier)
+    } else {
+        Button(
             modifier = modifier,
-            title = stringResource(R.string.participants)
-        )
-
-        LazyColumn(
-            modifier = Modifier.heightIn(max = 200.dp)
+            colors = MaterialTheme.colorScheme.activatedButtonColors,
+            onClick = onClick
         ) {
-            if (users.isEmpty()) {
-                item {
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(R.string.no_participants),
-                        style = textStyle,
-                        color = MaterialTheme.colorScheme.informationText,
-                        textAlign = TextAlign.Center
-                    )
-                }
-            } else {
-                items(users) {
-                    UserItem(
-                        modifier = Modifier.clickable { onParticipantClick(it) },
-                        user = it,
-                        imageScale = 0.4f,
-                        textStyle = textStyle
-                    )
-                }
-            }
+            Text(text = stringResource(R.string.registered_mission_button_text))
         }
     }
 }
 
 @Composable
-private fun TaskSection(
-    modifier: Modifier = Modifier,
-    tasks: List<MissionTask>,
-    textStyle: TextStyle
-) {
-    Column(
+private fun CompleteButton(modifier: Modifier = Modifier) {
+    PrimaryButton(
         modifier = modifier,
-        verticalArrangement = Arrangement.smallSpacing()
-    ) {
-        SectionTitle(title = stringResource(R.string.tasks))
-
-        Column(
-            verticalArrangement = Arrangement.smallMediumSpacing()
-        ) {
-            tasks.forEach {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.smallSpacing()
-                ) {
-                    Text(text = "\u2022", fontSize = 20.sp)
-                    Text(text = it.value, style = textStyle)
-                }
-            }
-        }
-    }
+        text = stringResource(R.string.complete_mission_button_text),
+        enabled = false,
+        onClick = {}
+    )
 }
-
-private val titleStyle: TextStyle
-    @Composable
-    get() = MaterialTheme.typography.titleLarge
-
-private val descriptionStyle: TextStyle
-    @Composable
-    get() = MaterialTheme.typography.bodyLarge
 
 /*
  =====================================================================
@@ -471,7 +457,7 @@ private val descriptionStyle: TextStyle
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun MissionDetailsScreenPreview() {
     GedoiseTheme {
@@ -480,16 +466,55 @@ private fun MissionDetailsScreenPreview() {
                 user = userFixture,
                 mission = missionFixture,
                 loading = false,
-                registerButtonEnabled = true,
+                isManager = true,
+                buttonState = MissionButtonState.Register(),
                 snackbarHostState = SnackbarHostState(),
                 onRegisterClick = {},
+                onUnregisterClick = {},
                 onBackClick = {},
                 onManagerClick = {},
                 onParticipantClick = {},
+                onRemoveParticipantClick = {},
                 onEditMissionClick = {},
                 onReportMissionClick = {},
                 onDeleteMissionClick = {}
             )
         }
+    }
+}
+
+@Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun RegisterButtonPreview() {
+    GedoiseTheme {
+        RegisterButton(
+            modifier = Modifier.fillMaxWidth(),
+            enabled = true,
+            loading = false,
+            onClick = {}
+        )
+    }
+}
+
+@Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun RegisteredButtonPreview() {
+    GedoiseTheme {
+        RegisteredButton(
+            modifier = Modifier.fillMaxWidth(),
+            loading = false,
+            onClick = {}
+        )
+    }
+}
+
+@Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun CompleteButtonPreview() {
+    GedoiseTheme {
+        CompleteButton(modifier = Modifier.fillMaxWidth())
     }
 }

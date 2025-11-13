@@ -25,7 +25,7 @@ import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.EditTopBar
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.announcementFixture
 import com.upsaclay.news.domain.entity.Announcement
@@ -132,7 +132,7 @@ private fun EditAnnouncementScreen(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun EditAnnouncementScreenPreview() {
     var title by remember { mutableStateOf(announcementFixture.title ?: "") }

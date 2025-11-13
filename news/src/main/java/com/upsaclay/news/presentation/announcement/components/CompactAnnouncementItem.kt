@@ -21,7 +21,7 @@ import com.upsaclay.common.presentation.components.OptionButton
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.previewText
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.common.utils.getElapsedTimeValue
 import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.domain.entity.Announcement.AnnouncementState
@@ -124,7 +124,7 @@ private fun LeadingContent(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun CompactAnnouncementItemPreview() {
     GedoiseTheme {
@@ -138,7 +138,7 @@ private fun CompactAnnouncementItemPreview() {
     }
 }
 
-@Phones
+@PhonePreviews
 @Composable
 private fun PublishingCompactAnnouncementItemPreview() {
     GedoiseTheme {
@@ -152,7 +152,7 @@ private fun PublishingCompactAnnouncementItemPreview() {
     }
 }
 
-@Phones
+@PhonePreviews
 @Composable
 private fun ErrorCompactAnnouncementItemPreview() {
     GedoiseTheme {

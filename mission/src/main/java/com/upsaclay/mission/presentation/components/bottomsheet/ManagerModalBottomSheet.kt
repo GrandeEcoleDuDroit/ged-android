@@ -36,12 +36,12 @@ import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.components.StaticSearchBar
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.previewText
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.presentation.components.item.MissionUserItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SelectManagerModalBottomSheet(
+fun SelectManagerBottomSheet(
     users: List<User>,
     selectedManagers: List<User>,
     userQuery: String,
@@ -121,7 +121,7 @@ fun SelectManagerModalBottomSheet(
             )
         }
 
-        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.medium_padding)))
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.modal_bottom_sheet_bottom_space)))
     }
 }
 
@@ -159,14 +159,14 @@ private fun SelectableManagerItem(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
-private fun SelectManagerModalBottomSheetPreview() {
+private fun SelectManagerBottomSheetPreview() {
     var query by remember { mutableStateOf("") }
 
     GedoiseTheme {
         Surface {
-            SelectManagerModalBottomSheet(
+            SelectManagerBottomSheet(
                 users = usersFixture + usersFixture,
                 selectedManagers = listOf(userFixture),
                 userQuery = query,

@@ -5,6 +5,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -17,17 +18,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.presentation.theme.loadingButtonColors
+import com.upsaclay.common.presentation.theme.white
 
 @Composable
 fun PrimaryButton(
     modifier: Modifier = Modifier,
     text: String,
-    enable: Boolean = true,
+    enabled: Boolean = true,
     onClick: () -> Unit
 ) {
     Button(
         modifier = modifier,
-        enabled = enable,
+        enabled = enabled,
         onClick = onClick
     ) {
         Text(text = text)
@@ -86,6 +89,24 @@ fun SimpleFloatingActionButton(
 
 }
 
+@Composable
+fun LoadingButton(
+    modifier: Modifier = Modifier,
+    colors: ButtonColors = MaterialTheme.colorScheme.loadingButtonColors
+) {
+    Button(
+        modifier = modifier,
+        onClick = {},
+        enabled = false,
+        colors = colors
+    ) {
+        CircularProgressBar(
+            color = MaterialTheme.colorScheme.white,
+            scale = 0.5f
+        )
+    }
+}
+
 /*
  =====================================================================
                                 Preview
@@ -126,5 +147,13 @@ private fun SimpleFloatingActionButtonPreview() {
             },
             onClick = {}
         )
+    }
+}
+
+@Preview
+@Composable
+private fun LoadingButtonPreview() {
+    GedoiseTheme {
+        LoadingButton()
     }
 }

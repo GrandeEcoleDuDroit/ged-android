@@ -3,7 +3,6 @@ package com.upsaclay.mission.domain
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.domain.userFixture2
-import com.upsaclay.common.domain.usersFixture
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.MissionState
 import com.upsaclay.mission.domain.entity.MissionTask
@@ -35,8 +34,8 @@ val missionFixture = Mission(
     startDate = LocalDate.now(),
     endDate = LocalDate.now().plusDays(1),
     duration = "Once a week",
-    managers = usersFixture,
-    participants = usersFixture,
+    managers = listOf(userFixture),
+    participants = listOf(userFixture2),
     maxParticipants = 20,
     tasks = tasksFixture,
     state = MissionState.Published(),

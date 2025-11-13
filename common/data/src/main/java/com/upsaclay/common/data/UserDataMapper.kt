@@ -11,7 +11,7 @@ import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.entity.UserReport
 import com.upsaclay.common.domain.extensions.uppercaseFirstLetter
 
-internal fun User.toLocal() = LocalUser(
+fun User.toLocal() = LocalUser(
     userId = id,
     firstName = firstName.lowercase(),
     lastName = lastName.lowercase(),

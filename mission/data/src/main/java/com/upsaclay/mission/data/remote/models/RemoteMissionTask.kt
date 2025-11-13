@@ -1,4 +1,4 @@
-package com.upsaclay.mission.data.remote
+package com.upsaclay.mission.data.remote.models
 
 import com.google.gson.annotations.SerializedName
 import com.upsaclay.mission.data.MissionTaskField.Remote.MISSION_TASK_ID

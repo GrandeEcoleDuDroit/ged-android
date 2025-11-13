@@ -23,11 +23,11 @@ import androidx.compose.ui.res.dimensionResource
 import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.outlinedTextFieldColor
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SingleSelectionDropDownMenu(
+fun SingleSelectionDropDown(
     modifier: Modifier = Modifier,
     items: List<String>,
     selectedItem: String,
@@ -134,9 +134,9 @@ fun MultiSelectionDropDownMenu(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
-private fun SimpleDropDownMenuPreview() {
+private fun SimpleDropDownPreview() {
     val items = listOf("Item 1", "Item 2", "Item 3")
     var selectedItem by remember {
         mutableStateOf(items[0])
@@ -147,7 +147,7 @@ private fun SimpleDropDownMenuPreview() {
 
     GedoiseTheme {
         Surface {
-            SingleSelectionDropDownMenu(
+            SingleSelectionDropDown(
                 modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding)),
                 items = items,
                 selectedItem = selectedItem,
@@ -166,7 +166,7 @@ private fun SimpleDropDownMenuPreview() {
     }
 }
 
-@Phones
+@PhonePreviews
 @Composable
 private fun MultiDropDownMenuPreview() {
     val items = listOf("Item 1", "Item 2", "Item 3")
