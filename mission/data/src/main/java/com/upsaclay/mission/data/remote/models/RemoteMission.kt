@@ -1,4 +1,4 @@
-package com.upsaclay.mission.data.remote
+package com.upsaclay.mission.data.remote.models
 
 import com.google.gson.annotations.SerializedName
 import com.upsaclay.common.data.remote.model.ServerUser
@@ -74,9 +74,4 @@ data class InboundRemoteMission(
     val missionTasks: List<RemoteMissionTask>?,
     @SerializedName(MISSION_IMAGE_FILE_NAME)
     val missionImageFileName: String?
-)
-
-data class InboundRemoteMissionResult(
-    @SerializedName("MISSION_JSON")
-    val missionJson: List<InboundRemoteMission>
 )

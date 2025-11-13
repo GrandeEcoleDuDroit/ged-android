@@ -31,7 +31,7 @@ import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.message.R
 import com.upsaclay.message.domain.conversationFixture
 import com.upsaclay.message.domain.entity.Conversation
@@ -312,7 +312,7 @@ private fun MessageBottomSection(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun ChatScreenPreview() {
     var text by remember { mutableStateOf("") }

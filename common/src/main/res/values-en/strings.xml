@@ -36,7 +36,7 @@
     <string name="arrow_back_icon_description">Go back</string>
     <string name="ged_logo_description">Logo of the university La Grande École du Droit</string>
     <string name="profile_picture_description">User\'s profile picture</string>
-    <string name="icon_add_descrption">Add icon</string>
+    <string name="icon_add_description">Add icon</string>
     <string name="school_level">School level</string>
     <string name="first_name">First name</string>
     <string name="last_name">Last name</string>
@@ -74,4 +74,5 @@
     <string name="block_user_dialog_message">You will no longer see any of their content.</string>
     <string name="unblock_user_dialog_message">Do you want to unblock this user?</string>
     <string name="deleted_user">Deleted user</string>
+    <string name="confirm">Confirm</string>
 </resources>

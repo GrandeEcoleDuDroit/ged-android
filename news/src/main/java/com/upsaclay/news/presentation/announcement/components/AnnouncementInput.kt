@@ -26,7 +26,7 @@ import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.presentation.components.TransparentTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.hintText
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
 
 @Composable
@@ -174,7 +174,7 @@ private fun AnnouncementContentInput(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun AnnouncementInputPreview() {
     var title by remember { mutableStateOf("") }

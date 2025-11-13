@@ -24,14 +24,14 @@ import com.upsaclay.common.domain.usersFixture
 import com.upsaclay.common.presentation.components.DatePickerModal
 import com.upsaclay.common.presentation.components.EditTopBar
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.MissionTask
 import com.upsaclay.mission.domain.missionFixture
 import com.upsaclay.mission.presentation.MissionBottomSheetType
-import com.upsaclay.mission.presentation.components.bottomsheet.AddTaskModalBottomSheet
-import com.upsaclay.mission.presentation.components.bottomsheet.EditTaskModalBottomSheet
-import com.upsaclay.mission.presentation.components.bottomsheet.SelectManagerModalBottomSheet
+import com.upsaclay.mission.presentation.components.bottomsheet.AddTaskBottomSheet
+import com.upsaclay.mission.presentation.components.bottomsheet.EditTaskBottomSheet
+import com.upsaclay.mission.presentation.components.bottomsheet.SelectManagerBottomSheet
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate
 
@@ -211,7 +211,7 @@ private fun CreateMissionScreen(
 
     when (bottomSheetType) {
         is MissionBottomSheetType.AddTask -> {
-            AddTaskModalBottomSheet(
+            AddTaskBottomSheet(
                 onDismissRequest = { bottomSheetType = null },
                 onAddClick = {
                     onAddTaskClick(it)
@@ -222,7 +222,7 @@ private fun CreateMissionScreen(
 
         is MissionBottomSheetType.EditTask -> {
             (bottomSheetType as? MissionBottomSheetType.EditTask)?.missionTask?.let {
-                EditTaskModalBottomSheet(
+                EditTaskBottomSheet(
                     initialTask = it,
                     onDismissRequest = { bottomSheetType = null },
                     onEditClick = { task ->
@@ -234,7 +234,7 @@ private fun CreateMissionScreen(
         }
 
         is MissionBottomSheetType.SelectManager -> {
-            SelectManagerModalBottomSheet(
+            SelectManagerBottomSheet(
                 users = users,
                 selectedManagers = managers,
                 userQuery = userQuery,
@@ -261,7 +261,7 @@ private fun CreateMissionScreen(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun CreateMissionScreenPreview() {
     val mission = missionFixture

@@ -42,7 +42,7 @@ import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.components.SimpleFloatingActionButton
 import com.upsaclay.common.presentation.components.TitleTopBar
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.MissionReport
@@ -285,7 +285,7 @@ private fun MissionScaffold(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun MissionScreenPreview() {
     GedoiseTheme {

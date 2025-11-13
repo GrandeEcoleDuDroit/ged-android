@@ -21,7 +21,7 @@ import com.upsaclay.common.presentation.components.OptionButton
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.previewText
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.common.utils.getElapsedTimeValue
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.entity.Announcement
@@ -86,7 +86,7 @@ fun AnnouncementHeader(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun AnnouncementHeaderPreview() {
     GedoiseTheme {

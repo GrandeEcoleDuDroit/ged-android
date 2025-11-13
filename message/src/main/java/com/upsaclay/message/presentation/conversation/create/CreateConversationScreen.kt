@@ -34,7 +34,7 @@ import com.upsaclay.common.presentation.components.CircularProgressBar
 import com.upsaclay.common.presentation.components.UserItem
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.previewText
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.message.domain.entity.Conversation
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -173,7 +173,7 @@ private fun UsersFeed(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun CreateConversationScreenPreview() {
     val users: List<User> = usersFixture + usersFixture

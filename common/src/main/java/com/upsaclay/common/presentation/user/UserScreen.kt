@@ -47,7 +47,7 @@ import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.components.TextItem
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -306,7 +306,7 @@ private fun UserBottomSheet(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun UserScreenPreview() {
     GedoiseTheme {

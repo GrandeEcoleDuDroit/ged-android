@@ -16,7 +16,6 @@ import com.upsaclay.mission.domain.repository.MissionRepository
 import com.upsaclay.mission.domain.usecase.DeleteMissionUseCase
 import com.upsaclay.mission.domain.usecase.RefreshMissionsUseCase
 import com.upsaclay.mission.domain.usecase.ResendMissionUseCase
-import com.upsaclay.mission.presentation.missiondetails.MissionDetailsViewModel.MissionDetailsUiEvent
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -50,7 +49,7 @@ class MissionViewModel(
             try {
                 refreshMissionsUseCase()
             } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapErrorMessage(e)))
+                _event.emit(SingleUiEvent.Error(mapRefreshErrorMessage(e)))
             } finally {
                 _uiState.update {
                     it.copy(refreshing = false)
@@ -69,7 +68,7 @@ class MissionViewModel(
                     it.copy(loading = true)
                 }
                 missionRepository.reportMission(report)
-                _event.emit(MissionDetailsUiEvent.MissionReported(R.string.mission_reported))
+                _event.emit(SingleUiEvent.Success(R.string.mission_reported))
             } catch (e: Exception) {
                 _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
             } finally {
@@ -111,12 +110,11 @@ class MissionViewModel(
                 ) {
                     throw NoInternetConnectionException()
                 }
-
                 _uiState.update {
                     it.copy(loading = true)
                 }
-
                 deleteMissionUseCase(mission)
+                _event.emit(SingleUiEvent.Success(R.string.mission_deleted))
             } catch (e: Exception) {
                 _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
             } finally {
@@ -147,7 +145,7 @@ class MissionViewModel(
         }
     }
 
-    private fun mapErrorMessage(e: Exception): Int {
+    private fun mapRefreshErrorMessage(e: Exception): Int {
         return when (e) {
             is NoInternetConnectionException -> com.upsaclay.common.R.string.no_internet_connection
             else -> R.string.missions_refresh_error

@@ -63,7 +63,7 @@ class EditMissionViewModelTest {
         assertEquals(missionFixture.managers, viewModel.uiState.value.managers)
         assertEquals(missionFixture.maxParticipants.toString(), viewModel.uiState.value.maxParticipants)
         assertEquals(missionFixture.tasks, viewModel.uiState.value.tasks)
-        assertEquals(usersFixture.managerSorting(), viewModel.uiState.value.users)
+        assertEquals(usersFixture.managerSorting(missionFixture), viewModel.uiState.value.users)
         assertEquals("", viewModel.uiState.value.userQuery)
         assertEquals(SchoolLevel.getSchoolLevels(), viewModel.uiState.value.allSchoolLevels)
     }
@@ -434,7 +434,10 @@ class EditMissionViewModelTest {
         viewModel.onUserQueryChange("")
 
         // Then
-        assertEquals(usersFixture.managerSorting(), viewModel.uiState.value.users)
+        assertEquals(
+            usersFixture.managerSorting(missionFixture),
+            viewModel.uiState.value.users
+        )
     }
 
     @Test
@@ -452,7 +455,7 @@ class EditMissionViewModelTest {
         viewModel.onResetUserQuery()
 
         // Then
-        assertEquals(usersFixture.managerSorting(), viewModel.uiState.value.users)
+        assertEquals(usersFixture.managerSorting(missionFixture), viewModel.uiState.value.users)
     }
 
     @Test

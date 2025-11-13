@@ -27,8 +27,7 @@ import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.usersFixture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.iconBackground
-import com.upsaclay.common.presentation.theme.leadingIcon
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
 import com.upsaclay.mission.presentation.components.RemoveButton
 import com.upsaclay.mission.presentation.components.item.MissionUserItem
@@ -84,7 +83,7 @@ private fun AddManagerItem(modifier: Modifier = Modifier) {
                 Icon(
                     painter = painterResource(R.drawable.ic_outline_add_person),
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.leadingIcon,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         },
@@ -100,7 +99,7 @@ private fun AddManagerItem(modifier: Modifier = Modifier) {
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 fun CreateMissionManagerSectionPreview() {
     GedoiseTheme {

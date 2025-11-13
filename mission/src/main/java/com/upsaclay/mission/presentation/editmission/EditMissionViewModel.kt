@@ -12,13 +12,13 @@ import com.upsaclay.common.domain.usecase.GenerateIdUseCase
 import com.upsaclay.common.domain.usecase.GetUsersUseCase
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapNetworkErrorMessage
-import com.upsaclay.mission.presentation.MissionConstants.MAX_DESCRIPTION_LENGTH
-import com.upsaclay.mission.presentation.MissionConstants.MAX_DURATION_LENGTH
-import com.upsaclay.mission.presentation.MissionConstants.MAX_TITLE_LENGTH
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.MissionState
 import com.upsaclay.mission.domain.entity.MissionTask
 import com.upsaclay.mission.domain.usecase.UpdateMissionUseCase
+import com.upsaclay.mission.presentation.MissionConstants.MAX_DESCRIPTION_LENGTH
+import com.upsaclay.mission.presentation.MissionConstants.MAX_DURATION_LENGTH
+import com.upsaclay.mission.presentation.MissionConstants.MAX_TITLE_LENGTH
 import com.upsaclay.mission.presentation.extension.managerSorting
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -347,9 +347,7 @@ class EditMissionViewModel(
     private fun initUsers() {
         viewModelScope.launch {
             getUsersUseCase()
-                .sortedBy { it.fullName }
-                .sortedByDescending { mission.managers.contains(it) }
-                .sortedByDescending { it.admin }
+                .managerSorting(mission)
                 .also { users ->
                     _uiState.update { it.copy(users = users) }
                     defaultUsers = users

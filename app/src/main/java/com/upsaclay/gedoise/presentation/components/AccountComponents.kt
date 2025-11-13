@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun AccountModelBottomSheet(
+internal fun AccountBottomSheet(
     modifier: Modifier = Modifier,
     onDismiss: () -> Unit,
     onNewProfilePictureClick: () -> Unit,
@@ -87,7 +87,7 @@ internal fun AccountModelBottomSheet(
                 }
             )
         }
-        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.large_padding)))
+        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.modal_bottom_sheet_bottom_space)))
     }
 }
 

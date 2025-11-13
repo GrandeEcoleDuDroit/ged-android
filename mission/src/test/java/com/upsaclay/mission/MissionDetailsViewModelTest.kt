@@ -1,9 +1,10 @@
 package com.upsaclay.mission
 
 import com.upsaclay.common.domain.ConnectivityObserver
-import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.userFixture
+import com.upsaclay.common.domain.userFixture2
+import com.upsaclay.mission.domain.entity.MissionReport
 import com.upsaclay.mission.domain.missionFixture
 import com.upsaclay.mission.domain.repository.MissionRepository
 import com.upsaclay.mission.domain.usecase.DeleteMissionUseCase
@@ -36,7 +37,10 @@ class MissionDetailsViewModelTest {
 
         every { connectivityObserver.isConnected } returns true
         every { missionRepository.getMissionFlow(any()) } returns flowOf(missionFixture)
-        every { userRepository.user } returns flowOf(userFixture)
+        every { userRepository.user } returns flowOf(userFixture2)
+        coEvery { missionRepository.removeParticipant(any(), any()) } returns Unit
+        coEvery { missionRepository.reportMission(any()) } returns Unit
+        coEvery { missionRepository.addParticipant(any()) } returns Unit
         coEvery { deleteMissionUseCase(any()) } returns Unit
 
         viewModel = MissionDetailsViewModel(
@@ -51,10 +55,37 @@ class MissionDetailsViewModelTest {
     @Test
     fun missionDetailsViewModel_default_values_are_correct() {
         // Then
-        assertEquals(userFixture, viewModel.uiState.value.user)
+        assertEquals(userFixture2, viewModel.uiState.value.user)
         assertEquals(missionFixture, viewModel.uiState.value.mission)
         assertEquals(false, viewModel.uiState.value.loading)
-        assertEquals(true, viewModel.uiState.value.registrationDisabled)
+    }
+
+    @Test
+    fun unregisterFromMission_should_remove_current_user_from_mission() {
+        // When
+        viewModel.unregisterFromMission()
+
+        // Then
+        coVerify { missionRepository.removeParticipant(missionFixture.id, userFixture2.id) }
+    }
+
+    @Test
+    fun reportMission_should_report_mission() {
+        // Given
+        val report = MissionReport(
+            missionId = missionFixture.id,
+            userInfo = MissionReport.UserInfo(
+                fullName = userFixture2.fullName,
+                email = userFixture2.email
+            ),
+            reason = MissionReport.Reason.FALSE_INFORMATION
+        )
+
+        // When
+        viewModel.reportMission(report)
+
+        // Then
+        coVerify { missionRepository.reportMission(report) }
     }
 
     @Test
@@ -67,34 +98,114 @@ class MissionDetailsViewModelTest {
     }
 
     @Test
-    fun registration_should_be_disabled_when_user_school_level_not_match() {
-        // Given
-        val mission = missionFixture.copy(schoolLevels = listOf(SchoolLevel.GED_1))
-        val user = userFixture.copy(schoolLevel = SchoolLevel.GED_2)
-        every { missionRepository.getMissionFlow(any()) } returns flowOf(mission)
-        every { userRepository.user } returns flowOf(user)
+    fun remoteParticipant_should_remove_participant() {
+        // When
+        viewModel.removeParticipant(userFixture2.id)
 
         // Then
-        assert(viewModel.uiState.value.registrationDisabled == true)
+        coVerify { missionRepository.removeParticipant(missionFixture.id, userFixture2.id) }
     }
 
     @Test
-    fun registration_should_be_disabled_when_mission_is_expired() {
+    fun button_state_should_be_register_enabled_when_mission_is_not_full_and_user_is_not_registered() {
+        // Given
+        val mission = missionFixture.copy(
+            participants = emptyList()
+        )
+        every { missionRepository.getMissionFlow(any()) } returns flowOf(mission)
+
+        // When
+        viewModel = MissionDetailsViewModel(
+            missionId = missionFixture.id,
+            missionRepository = missionRepository,
+            userRepository = userRepository,
+            deleteMissionUseCase = deleteMissionUseCase,
+            connectivityObserver = connectivityObserver
+        )
+
+        // Then
+        assertEquals(MissionDetailsViewModel.MissionButtonState.Register(), viewModel.uiState.value.buttonState)
+    }
+
+    @Test
+    fun button_state_should_be_register_disabled_when_mission_is_full_and_user_is_not_registered() {
+        // Given
+        val user = userFixture2.copy(id = "3")
+        val mission = missionFixture.copy(
+            maxParticipants = 1,
+            participants = listOf(user)
+        )
+        every { missionRepository.getMissionFlow(any()) } returns flowOf(mission)
+
+        // When
+        viewModel = MissionDetailsViewModel(
+            missionId = missionFixture.id,
+            missionRepository = missionRepository,
+            userRepository = userRepository,
+            deleteMissionUseCase = deleteMissionUseCase,
+            connectivityObserver = connectivityObserver
+        )
+
+        // Then
+        assertEquals(MissionDetailsViewModel.MissionButtonState.Register(false), viewModel.uiState.value.buttonState)
+    }
+
+    @Test
+    fun button_state_should_be_registered_when_user_is_registered() {
+        // Given
+        val mission = missionFixture.copy(
+            maxParticipants = 1,
+            participants = listOf(userFixture2)
+        )
+        every { missionRepository.getMissionFlow(any()) } returns flowOf(mission)
+
+        // When
+        viewModel = MissionDetailsViewModel(
+            missionId = missionFixture.id,
+            missionRepository = missionRepository,
+            userRepository = userRepository,
+            deleteMissionUseCase = deleteMissionUseCase,
+            connectivityObserver = connectivityObserver
+        )
+
+        // Then
+        assertEquals(MissionDetailsViewModel.MissionButtonState.Registered, viewModel.uiState.value.buttonState)
+    }
+
+    @Test
+    fun button_state_should_be_complete_when_mission_is_expired() {
         // Given
         val mission = missionFixture.copy(endDate = LocalDate.now().minusDays(1))
         every { missionRepository.getMissionFlow(any()) } returns flowOf(mission)
 
+        // When
+        viewModel = MissionDetailsViewModel(
+            missionId = missionFixture.id,
+            missionRepository = missionRepository,
+            userRepository = userRepository,
+            deleteMissionUseCase = deleteMissionUseCase,
+            connectivityObserver = connectivityObserver
+        )
+
         // Then
-        assert(viewModel.uiState.value.registrationDisabled == true)
+        assertEquals(MissionDetailsViewModel.MissionButtonState.Complete, viewModel.uiState.value.buttonState )
     }
 
     @Test
-    fun registration_should_be_disabled_when_mission_is_full() {
+    fun button_state_should_be_hidden_when_user_is_manager() {
         // Given
-        val mission = missionFixture.copy(maxParticipants = 1, participants = listOf(userFixture))
-        every { missionRepository.getMissionFlow(any()) } returns flowOf(mission)
+        every { userRepository.user } returns flowOf(userFixture)
+
+        // When
+        viewModel = MissionDetailsViewModel(
+            missionId = missionFixture.id,
+            missionRepository = missionRepository,
+            userRepository = userRepository,
+            deleteMissionUseCase = deleteMissionUseCase,
+            connectivityObserver = connectivityObserver
+        )
 
         // Then
-        assert(viewModel.uiState.value.registrationDisabled == true)
+        assertEquals(MissionDetailsViewModel.MissionButtonState.Hidden, viewModel.uiState.value.buttonState )
     }
 }

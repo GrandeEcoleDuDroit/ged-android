@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 
 @Composable
 fun ManagerIcon(
@@ -43,7 +43,7 @@ fun ManagerIcon(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun ManagerIconPreview() {
     GedoiseTheme {

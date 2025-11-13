@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import com.upsaclay.common.presentation.components.OptionButton
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.imageIconButtonColors
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -145,7 +145,7 @@ private fun DefaultTopBar(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun ImageTopBarPreview() {
     GedoiseTheme {
@@ -158,7 +158,7 @@ private fun ImageTopBarPreview() {
     }
 }
 
-@Phones
+@PhonePreviews
 @Composable
 private fun DefaultTopBarPreview() {
     GedoiseTheme {

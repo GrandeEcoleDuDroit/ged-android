@@ -34,7 +34,7 @@ import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.LinearProgressBar
 import com.upsaclay.common.presentation.components.PrimaryButton
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -142,7 +142,7 @@ private fun ThirdRegistrationScreen(
                         .align(Alignment.BottomEnd)
                         .rootMediumPadding()
                         .testTag(stringResource(R.string.registration_screen_next_button_tag)),
-                    enable = !loading,
+                    enabled = !loading,
                     text = stringResource(id = com.upsaclay.common.R.string.next),
                     onClick = onRegistrationClick
                 )
@@ -157,7 +157,7 @@ private fun ThirdRegistrationScreen(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun ThirdRegistrationScreenPreview() {
     var email by remember { mutableStateOf("") }

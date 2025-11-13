@@ -27,7 +27,7 @@ data class Mission(
     val full: Boolean
         get() = participants.size >= maxParticipants
 
-    val expired: Boolean
+    val complete: Boolean
         get() = endDate.isBefore(LocalDate.now())
 
     fun schoolLevelPermitted(schoolLevel: SchoolLevel): Boolean =

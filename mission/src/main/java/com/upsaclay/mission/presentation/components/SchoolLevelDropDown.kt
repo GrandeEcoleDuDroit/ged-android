@@ -15,7 +15,7 @@ import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.presentation.components.MultiSelectionDropDownMenu
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
 
 @Composable
@@ -58,7 +58,7 @@ fun OutlinedSchoolLevelDropDownMenu(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun SchoolLevelDropDownPreview() {
     var selectedSchoolLevels by remember { mutableStateOf(emptyList<SchoolLevel>()) }

@@ -24,7 +24,7 @@ import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.gold
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 
 @Composable
 fun UserInformationItems(user: User) {
@@ -108,7 +108,7 @@ data class AccountInformationValue(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun AccountInfoItemsPreview() {
     GedoiseTheme {

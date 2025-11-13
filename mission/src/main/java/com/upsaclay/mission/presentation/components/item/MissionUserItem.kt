@@ -24,7 +24,7 @@ import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.gold
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 
 @Composable
 fun MissionUserItem(
@@ -77,7 +77,7 @@ fun MissionUserItem(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun MissionUserItemPreview() {
     GedoiseTheme {

@@ -23,7 +23,7 @@ import com.upsaclay.common.presentation.components.CircularProgressBar
 import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.message.R
 import com.upsaclay.message.domain.conversationsUIFixture
 import com.upsaclay.message.domain.entity.Conversation
@@ -150,7 +150,7 @@ private fun ConversationScreen(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun ConversationsScreenPreview() {
     val conversations = conversationsUIFixture.sortedByDescending { it.lastMessage.date }

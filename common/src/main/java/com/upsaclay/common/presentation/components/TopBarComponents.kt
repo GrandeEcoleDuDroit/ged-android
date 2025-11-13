@@ -27,7 +27,7 @@ import com.upsaclay.common.R
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.topBarTitle
 import com.upsaclay.common.presentation.theme.white
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -173,7 +173,7 @@ fun SearchTopBar(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun TitleTopBarPreview() {
     GedoiseTheme {
@@ -184,7 +184,7 @@ private fun TitleTopBarPreview() {
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Phones
+@PhonePreviews
 @Composable
 private fun BackTopBarPreview() {
     GedoiseTheme {
@@ -197,7 +197,7 @@ private fun BackTopBarPreview() {
     }
 }
 
-@Phones
+@PhonePreviews
 @Composable
 private fun EditTopBarPreview() {
     GedoiseTheme {
@@ -212,7 +212,7 @@ private fun EditTopBarPreview() {
     }
 }
 
-@Phones
+@PhonePreviews
 @Composable
 private fun SearchTopBarPreview() {
     GedoiseTheme {

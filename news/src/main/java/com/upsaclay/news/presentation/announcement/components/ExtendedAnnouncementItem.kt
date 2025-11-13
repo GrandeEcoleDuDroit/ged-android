@@ -28,7 +28,7 @@ import com.upsaclay.common.presentation.components.OptionButton
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.previewText
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.common.utils.getElapsedTimeValue
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.entity.Announcement
@@ -238,7 +238,7 @@ private val contentStyle: TextStyle
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun DefaultItemPreview() {
     GedoiseTheme {
@@ -253,7 +253,7 @@ private fun DefaultItemPreview() {
     }
 }
 
-@Phones
+@PhonePreviews
 @Composable
 private fun PublishingItemPreview() {
     GedoiseTheme {
@@ -268,7 +268,7 @@ private fun PublishingItemPreview() {
     }
 }
 
-@Phones
+@PhonePreviews
 @Composable
 private fun ErrorItemPreview() {
     GedoiseTheme {
@@ -283,7 +283,7 @@ private fun ErrorItemPreview() {
     }
 }
 
-@Phones
+@PhonePreviews
 @Composable
 private fun AnnouncementHeaderPreview() {
     GedoiseTheme {

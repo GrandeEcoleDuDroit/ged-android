@@ -15,7 +15,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,7 +48,7 @@ fun <T>ReportBottomSheet(
             )
         }
 
-        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.large_padding)))
+        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.modal_bottom_sheet_bottom_space)))
     }
 }
 
@@ -59,7 +59,7 @@ fun <T>ReportBottomSheet(
  */
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Phones
+@PhonePreviews
 @Composable
 private fun PreviewReportBottomSheet() {
     GedoiseTheme {

@@ -15,7 +15,7 @@ import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 
 @Composable
 fun ParticipantItem(
@@ -48,7 +48,7 @@ fun ParticipantItem(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun ParticipantItemPreview() {
     GedoiseTheme {

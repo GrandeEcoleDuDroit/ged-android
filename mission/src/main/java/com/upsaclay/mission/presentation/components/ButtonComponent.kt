@@ -11,8 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.leadingIcon
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 
 @Composable
 fun RemoveButton(
@@ -27,7 +26,7 @@ fun RemoveButton(
             modifier = Modifier.size(20.dp),
             imageVector = Icons.Default.Clear,
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.leadingIcon
+            tint = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }
@@ -38,7 +37,7 @@ fun RemoveButton(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun RemoveButtonPreview() {
     GedoiseTheme {

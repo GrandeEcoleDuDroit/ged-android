@@ -12,10 +12,10 @@ import com.upsaclay.common.domain.extensions.toLocalDateTimeUTC
 import com.upsaclay.common.domain.extensions.toLocalDateUTC
 import com.upsaclay.mission.data.local.LocalMission
 import com.upsaclay.mission.data.local.LocalMissionTask
-import com.upsaclay.mission.data.remote.InboundRemoteMission
-import com.upsaclay.mission.data.remote.OutboundRemoteMission
-import com.upsaclay.mission.data.remote.RemoteMissionReport
-import com.upsaclay.mission.data.remote.RemoteMissionTask
+import com.upsaclay.mission.data.remote.models.InboundRemoteMission
+import com.upsaclay.mission.data.remote.models.OutboundRemoteMission
+import com.upsaclay.mission.data.remote.models.RemoteMissionReport
+import com.upsaclay.mission.data.remote.models.RemoteMissionTask
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.MissionReport
 import com.upsaclay.mission.domain.entity.MissionState

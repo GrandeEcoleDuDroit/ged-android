@@ -17,7 +17,7 @@ import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.presentation.components.BackTopBar
 import com.upsaclay.common.presentation.components.SearchTopBar
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.message.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -74,7 +74,7 @@ fun CreateConversationScaffold(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun CreateConversationScaffoldPreview() {
     GedoiseTheme {

@@ -27,7 +27,7 @@ import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.previewText
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.common.utils.getElapsedTimeValue
 import com.upsaclay.message.R
 import com.upsaclay.message.domain.entity.Conversation.ConversationState
@@ -149,7 +149,7 @@ private fun SwitchConversationItem(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun ReadConversationItemPreview() {
     GedoiseTheme {
@@ -167,7 +167,7 @@ private fun ReadConversationItemPreview() {
     }
 }
 
-@Phones
+@PhonePreviews
 @Composable
 private fun UnreadConversationItemPreview() {
     GedoiseTheme {
@@ -185,7 +185,7 @@ private fun UnreadConversationItemPreview() {
     }
 }
 
-@Phones
+@PhonePreviews
 @Composable
 private fun SendingConversationItemPreview() {
     GedoiseTheme {

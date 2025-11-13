@@ -12,7 +12,7 @@ import androidx.compose.ui.res.stringResource
 import com.upsaclay.authentication.R
 import com.upsaclay.common.presentation.components.BackTopBar
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,7 +48,7 @@ internal fun RegistrationScaffold(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun RegistrationScaffoldPreview() {
     GedoiseTheme {

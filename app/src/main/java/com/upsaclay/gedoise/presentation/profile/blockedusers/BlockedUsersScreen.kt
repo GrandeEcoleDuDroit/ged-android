@@ -32,7 +32,7 @@ import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.EmptyText
 import com.upsaclay.common.presentation.components.UserItem
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.gedoise.R
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -146,7 +146,7 @@ private fun BlockedUsersScreen(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun BlockedUserScreenPreview() {
     GedoiseTheme {

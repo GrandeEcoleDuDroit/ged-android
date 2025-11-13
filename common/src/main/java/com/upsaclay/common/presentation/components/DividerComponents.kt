@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import com.upsaclay.common.R
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.listDivider
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 
 @Composable
 fun ListDivider(modifier: Modifier = Modifier) {
@@ -31,7 +31,7 @@ fun ListDivider(modifier: Modifier = Modifier) {
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 fun ListDividerPreview() {
     val items = listOf("Item 1", "Item 2", "Item 3", "Item 4", "Item 5")

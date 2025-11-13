@@ -33,7 +33,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.outlinedTextFieldColor
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 
 @Composable
 fun SimpleOutlinedTextField(
@@ -218,7 +218,7 @@ fun TransparentTextField(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun SimpleOutlinedTextFieldPreview() {
     var text by remember { mutableStateOf("") }
@@ -235,7 +235,7 @@ private fun SimpleOutlinedTextFieldPreview() {
     }
 }
 
-@Phones
+@PhonePreviews
 @Composable
 private fun SimpleTextFieldPreview() {
     var text by remember { mutableStateOf("") }

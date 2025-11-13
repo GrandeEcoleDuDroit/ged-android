@@ -27,7 +27,7 @@ import com.upsaclay.authentication.presentation.components.OutlinePasswordTextFi
 import com.upsaclay.common.presentation.components.SimpleOutlinedTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.checkBoxColor
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 
 @Composable
 fun ThirdRegistrationForm(
@@ -129,7 +129,7 @@ private fun LegalNoticeText() {
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun PreviewThirdRegistrationForm() {
     GedoiseTheme {

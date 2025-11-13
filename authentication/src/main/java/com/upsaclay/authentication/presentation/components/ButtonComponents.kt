@@ -2,57 +2,32 @@ package com.upsaclay.authentication.presentation.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.upsaclay.common.presentation.components.CircularProgressBar
+import com.upsaclay.authentication.R
+import com.upsaclay.common.presentation.components.LoadingButton
 import com.upsaclay.common.presentation.components.PrimaryButton
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.white
 
 @Composable
 fun LoginButton(
     modifier: Modifier = Modifier,
-    text: String,
     isLoading: Boolean,
     onClick: () -> Unit
 ) {
     if (isLoading) {
-        LoadingLargeButton(modifier = modifier)
+        LoadingButton(modifier = modifier)
     } else {
         PrimaryButton(
-            text = text,
-            onClick = onClick,
-            modifier = modifier
-        )
-    }
-}
-
-@Composable
-private fun LoadingLargeButton(modifier: Modifier = Modifier) {
-    Button(
-        onClick = { },
-        enabled = false,
-        colors = ButtonColors(
-            contentColor = MaterialTheme.colorScheme.white,
-            containerColor = MaterialTheme.colorScheme.primary,
-            disabledContainerColor = MaterialTheme.colorScheme.primary,
-            disabledContentColor = MaterialTheme.colorScheme.primary
-        ),
-        modifier = modifier.height(45.dp)
-    ) {
-        CircularProgressBar(
-            color = MaterialTheme.colorScheme.white,
-            scale = 0.6f
+            modifier = modifier,
+            text = stringResource(id = R.string.login),
+            onClick = onClick
         )
     }
 }
@@ -72,7 +47,6 @@ private fun LoginButtonPreview() {
         LoginButton(
             modifier = Modifier.fillMaxWidth(),
             isLoading = isLoading,
-            text = "Se connecter",
             onClick = { isLoading = !isLoading }
         )
     }

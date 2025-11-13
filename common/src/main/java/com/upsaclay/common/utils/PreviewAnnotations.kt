@@ -18,7 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
     showBackground = true,
     uiMode = Configuration.UI_MODE_NIGHT_YES
 )
-annotation class Phones
+annotation class PhonePreviews
 
 @Preview(
     name = "Tablet",
