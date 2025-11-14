@@ -10,6 +10,7 @@ import com.upsaclay.message.domain.converter.ConversationJsonParser
 import com.upsaclay.message.domain.usecase.GetUnreadConversationsCountUseCase
 import com.upsaclay.message.presentation.chat.ChatRoute
 import com.upsaclay.news.presentation.NewsBaseRoute
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -40,10 +41,11 @@ class NavigationViewModelTest {
         every { routeRepository.currentRoute } returns null
         every { routeRepository.setCurrentRoute(any()) } returns Unit
         every { getUnreadConversationsCountUseCase() } returns flowOf(0)
+        coEvery { listenAuthenticationStateUseCase.listen() } returns Unit
     }
 
     @Test
-    fun startDestination_should_be_NewsRoute_when_authenticated() = runTest(testDispatcher) {
+    fun startDestination_should_be_NewsRoute_when_authenticated() = runTest {
         // When
         navigationViewModel = NavigationViewModel(
             getUnreadConversationsCountUseCase = getUnreadConversationsCountUseCase,

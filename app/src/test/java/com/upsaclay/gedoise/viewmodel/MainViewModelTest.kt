@@ -48,6 +48,7 @@ class MainViewModelTest {
         coEvery { listenRemoteConversationsUseCase.start() } returns Unit
         coEvery { listenRemoteUserUseCase.start() } returns Unit
         coEvery { listenBlockedUserEvents.start() } returns Unit
+        coEvery { listenAuthenticationStateUseCase.listen() } returns Unit
 
         mainViewModel = MainViewModel(
             listenAuthenticationStateUseCase = listenAuthenticationStateUseCase,

@@ -28,13 +28,11 @@ class MainViewModel(
 ): ViewModel() {
     private var listeningJob: Job? = null
 
-    init {
+    fun listenAuthenticationChanges() {
         viewModelScope.launch {
             listenAuthenticationStateUseCase.listen()
         }
-    }
 
-    fun listenAuthenticationChanges() {
         viewModelScope.launch {
             listenAuthenticationStateUseCase.authenticated.collectLatest { authenticated ->
                 try {
