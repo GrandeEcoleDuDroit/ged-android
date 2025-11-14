@@ -6,15 +6,14 @@ import com.upsaclay.common.data.toUser
 import com.upsaclay.common.domain.entity.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.withContext
 
 internal class UserLocalDataSource(private val userDataStore: UserDataStore) {
-    fun getUserFlow(): Flow<User> = userDataStore.getUserFlow().filterNotNull().map { it.toUser()}
+    fun getUserFlow(): Flow<User> = userDataStore.getUserFlow().mapNotNull { it?.toUser() }
 
     suspend fun getUser(): User? = withContext(Dispatchers.IO) {
-        userDataStore.getUser()?.toUser()
+        runCatching { userDataStore.getUser()?.toUser() }.getOrNull()
     }
 
     suspend fun storeUser(user: User) {

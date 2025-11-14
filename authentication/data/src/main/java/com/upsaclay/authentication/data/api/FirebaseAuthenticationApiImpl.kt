@@ -19,7 +19,8 @@ class FirebaseAuthenticationApiImpl: FirebaseAuthenticationApi {
         refreshAndCacheToken()
     }
 
-    override fun isAuthenticated(): Boolean = firebaseAuth.currentUser != null
+    override fun isAuthenticated(): Boolean =
+        firebaseAuth.currentUser != null
 
     override fun listenAuthenticationState(): Flow<Boolean> = callbackFlow {
         val listener = FirebaseAuth.AuthStateListener { auth ->

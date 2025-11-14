@@ -26,11 +26,5 @@ val authenticationDomainModule = module {
 
     singleOf(::LoginUseCase)
     singleOf(::RegisterUseCase)
-    single {
-        ListenAuthenticationStateUseCase(
-            authenticationRepository = get(),
-            userRepository = get(),
-            scope = get(BACKGROUND_SCOPE)
-        )
-    }
+    singleOf(::ListenAuthenticationStateUseCase)
 }

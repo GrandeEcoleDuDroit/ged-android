@@ -64,7 +64,7 @@ class MainViewModelTest {
     @Test
     fun data_should_be_listened_when_user_is_authenticated() {
         // When
-        mainViewModel.updateDataOnAuthChange()
+        mainViewModel.listenAuthenticationChanges()
 
         // Then
         coVerify { listenRemoteConversationsUseCase.start() }
@@ -75,7 +75,7 @@ class MainViewModelTest {
     @Test
     fun data_should_be_synchronized_when_user_is_authenticated() {
         // When
-        mainViewModel.updateDataOnAuthChange()
+        mainViewModel.listenAuthenticationChanges()
 
         // Then
         coVerify { synchronizeDataUseCase() }
@@ -87,7 +87,7 @@ class MainViewModelTest {
         every { listenAuthenticationStateUseCase.authenticated } returns flowOf(false)
 
         // When
-        mainViewModel.updateDataOnAuthChange()
+        mainViewModel.listenAuthenticationChanges()
 
         // Then
         coVerify { listenRemoteMessagesUseCase.stopAll() }
@@ -99,7 +99,7 @@ class MainViewModelTest {
         every { listenAuthenticationStateUseCase.authenticated } returns flowOf(false)
 
         // When
-        mainViewModel.updateDataOnAuthChange()
+        mainViewModel.listenAuthenticationChanges()
         advanceUntilIdle()
 
         // Then
