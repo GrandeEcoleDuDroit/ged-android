@@ -24,11 +24,15 @@ class MainViewModel(
     private val listenBlockedUserEvents: ListenBlockedUserEvents,
     private val synchronizeDataUseCase: SynchronizeDataUseCase,
     private val clearDataUseCase: ClearDataUseCase,
-    private val fcmTokenUseCase: FcmTokenUseCase,
+    private val fcmTokenUseCase: FcmTokenUseCase
 ): ViewModel() {
     private var listeningJob: Job? = null
 
-    fun updateDataOnAuthChange() {
+    fun listenAuthenticationChanges() {
+        viewModelScope.launch {
+            listenAuthenticationStateUseCase.listen()
+        }
+
         viewModelScope.launch {
             listenAuthenticationStateUseCase.authenticated.collectLatest { authenticated ->
                 try {
