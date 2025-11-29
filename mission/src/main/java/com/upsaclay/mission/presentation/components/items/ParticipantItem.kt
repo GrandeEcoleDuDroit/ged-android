@@ -1,4 +1,4 @@
-package com.upsaclay.mission.presentation.components.item
+package com.upsaclay.mission.presentation.components.items
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row

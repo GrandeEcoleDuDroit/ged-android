@@ -1,4 +1,4 @@
-package com.upsaclay.mission.presentation.components.item
+package com.upsaclay.mission.presentation.components.items
 
 import android.content.res.Configuration
 import androidx.annotation.DrawableRes

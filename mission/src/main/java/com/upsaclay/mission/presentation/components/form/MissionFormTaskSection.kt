@@ -1,4 +1,4 @@
-package com.upsaclay.mission.presentation.components.formsection
+package com.upsaclay.mission.presentation.components.form
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,12 +25,12 @@ import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.MissionTask
-import com.upsaclay.mission.domain.tasksFixture
+import com.upsaclay.mission.domain.missionTasksFixture
 import com.upsaclay.mission.presentation.components.RemoveButton
-import com.upsaclay.mission.presentation.components.item.SectionTitle
+import com.upsaclay.mission.presentation.components.items.SectionTitle
 
 @Composable
-fun MissionTaskFormSection(
+fun MissionFormTaskSection(
     missionTasks: List<MissionTask>,
     onTaskClick: (MissionTask) -> Unit,
     onAddTaskClick: () -> Unit,
@@ -83,7 +83,10 @@ private fun AddMissionTaskItem(modifier: Modifier = Modifier) {
             tint = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
-        Text(text = stringResource(R.string.add_task))
+        Text(
+            text = stringResource(R.string.add_task),
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }
 
@@ -116,11 +119,11 @@ fun MissionTaskItem(
 
 @PhonePreviews
 @Composable
-private fun CreateMissionTaskSectionPreview() {
+private fun MissionFormTaskSectionPreview() {
     GedoiseTheme {
         Surface {
-            MissionTaskFormSection(
-                missionTasks = tasksFixture,
+            MissionFormTaskSection(
+                missionTasks = missionTasksFixture,
                 onAddTaskClick = {},
                 onTaskClick = {},
                 onRemoveTaskClick = {}

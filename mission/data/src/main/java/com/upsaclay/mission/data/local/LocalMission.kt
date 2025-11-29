@@ -47,7 +47,7 @@ data class LocalMission(
     @ColumnInfo(name = MISSION_TASKS)
     val missionTasks: String?,
     @ColumnInfo(name = MISSION_IMAGE_REFERENCE)
-    val missionImageReference: String?,
+    val missionImageFileName: String?,
     @ColumnInfo(name = MISSION_STATE)
     val missionState: String
 )

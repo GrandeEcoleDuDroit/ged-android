@@ -1,6 +1,6 @@
 import com.upsaclay.common.domain.repository.FileRepository
 import com.upsaclay.common.domain.repository.ImageRepository
-import com.upsaclay.mission.domain.entity.MissionState
+import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.missionFixture
 import com.upsaclay.mission.domain.repository.MissionRepository
 import com.upsaclay.mission.domain.usecase.ResendMissionUseCase
@@ -27,7 +27,7 @@ class ResendMissionUseCaseTest {
         coEvery { missionRepository.createMission(any(), any()) } returns Unit
         coEvery { missionRepository.upsertLocalMission(any()) } returns Unit
         coEvery { fileRepository.getFile(any()) } returns file
-        coEvery { imageRepository.deleteLocalImage(any()) } returns Unit
+        coEvery { imageRepository.deleteLocalImage(any(), any()) } returns Unit
 
         useCase = ResendMissionUseCase(
             missionRepository = missionRepository,
@@ -147,7 +147,7 @@ class ResendMissionUseCaseTest {
 
         // Then
         coVerify {
-            imageRepository.deleteLocalImage(file.name)
+            imageRepository.deleteLocalImage(any(), file.name)
         }
     }
 }

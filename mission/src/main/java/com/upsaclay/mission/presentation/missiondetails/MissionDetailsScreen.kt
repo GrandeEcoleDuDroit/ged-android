@@ -59,11 +59,11 @@ import com.upsaclay.common.presentation.theme.activatedButtonColors
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
+import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.entity.MissionReport
-import com.upsaclay.mission.domain.entity.MissionState
 import com.upsaclay.mission.domain.missionFixture
 import com.upsaclay.mission.presentation.components.MissionImage
-import com.upsaclay.mission.presentation.components.bottomsheet.MissionBottomSheet
+import com.upsaclay.mission.presentation.components.bottomsheets.MissionBottomSheet
 import com.upsaclay.mission.presentation.missiondetails.MissionDetailsViewModel.MissionButtonState
 import com.upsaclay.mission.presentation.missiondetails.MissionDetailsViewModel.MissionDetailsUiEvent
 import kotlinx.coroutines.launch
@@ -154,7 +154,7 @@ private fun MissionDetailsScreen(
     val buttonModifier = Modifier
         .windowInsetsPadding(BottomAppBarDefaults.windowInsets)
         .padding(
-            vertical = dimensionResource(com.upsaclay.common.R.dimen.small_padding),
+            vertical = dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding),
             horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)
         )
         .fillMaxWidth()
@@ -252,7 +252,7 @@ private fun MissionDetailsScreen(
                 MissionImage(
                     modifier = Modifier.height(dimensionResource(R.dimen.mission_image_height)),
                     model = when (val state = mission.state) {
-                        is MissionState.Draft -> state.imageUri
+                        is MissionState.Draft -> null
                         is MissionState.Publishing -> state.imagePath
                         is MissionState.Published -> state.imageUrl
                         is MissionState.Error -> state.imagePath
@@ -335,7 +335,7 @@ private fun MissionDetailsScreen(
     if (showMissionBottomSheet) {
         MissionBottomSheet(
             mission = mission,
-            currentUser = user,
+            editable = mission.managers.any { it.id == user.id },
             onEditClick = {
                 showMissionBottomSheet = false
                 onEditMissionClick(mission)

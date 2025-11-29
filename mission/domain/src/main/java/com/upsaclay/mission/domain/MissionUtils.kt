@@ -1,5 +1,8 @@
 package com.upsaclay.mission.domain
 
 object MissionUtils {
-    fun imageFileName(missionId: String): String = "${missionId}-mission-image-${System.currentTimeMillis()}"
+    const val FOLDER_NAME = "MissionImages"
+
+    fun formatImageFileName(missionId: String): String =
+        "${missionId}-mission-image-${System.currentTimeMillis()}"
 }

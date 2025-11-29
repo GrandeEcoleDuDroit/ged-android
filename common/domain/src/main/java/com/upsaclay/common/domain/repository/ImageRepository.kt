@@ -4,13 +4,19 @@ import java.io.File
 import java.io.InputStream
 
 interface ImageRepository {
-    suspend fun getImage(fileName: String): InputStream?
+    suspend fun getRemoteImage(fileName: String): InputStream?
 
-    suspend fun uploadImage(fileName: String, uri: String): String
+    fun getFileExtension(uri: String): String
 
-    suspend fun createLocalImage(fileName: String, uri: String): File?
+    suspend fun createLocalImage(folderName: String, fileName: String, uri: String): File?
+
+    suspend fun createCacheImage(fileName: String, uri: String): File?
+
+    suspend fun uploadImage(file: File)
 
     suspend fun deleteRemoteImage(url: String)
 
-    suspend fun deleteLocalImage(fileName: String)
+    suspend fun deleteLocalImage(folderName: String, fileName: String)
+
+    suspend fun deleteCacheImage(fileName: String)
 }

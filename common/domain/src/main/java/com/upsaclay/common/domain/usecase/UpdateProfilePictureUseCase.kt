@@ -11,11 +11,18 @@ class UpdateProfilePictureUseCase(
 ) {
     suspend operator fun invoke(user: User, profilePictureUri: String) {
         withTimeout(15000) {
-            val fileName = imageRepository.uploadImage(profilePictureFileName(user.id), profilePictureUri)
-            userRepository.updateProfilePictureFileName(user.id, fileName)
-            user.profilePictureUrl?.let { imageRepository.deleteRemoteImage(it) }
+            imageRepository.createCacheImage(formatProfilePictureFileName(user.id), profilePictureUri)?.let { file ->
+                imageRepository.uploadImage(file)
+                userRepository.updateProfilePictureFileName(user.id, file.name)
+                imageRepository.deleteCacheImage(file.name)
+            }
+
+            user.profilePictureUrl?.let { url ->
+                imageRepository.deleteRemoteImage(url)
+            }
+
         }
     }
 
-    private fun profilePictureFileName(userId: String) = "${userId}-profile-picture-${System.currentTimeMillis()}"
+    private fun formatProfilePictureFileName(userId: String) = "${userId}-profile-picture-${System.currentTimeMillis()}"
 }

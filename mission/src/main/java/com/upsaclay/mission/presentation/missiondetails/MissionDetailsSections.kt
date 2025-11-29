@@ -37,9 +37,9 @@ import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.MissionTask
 import com.upsaclay.mission.domain.missionFixture
-import com.upsaclay.mission.presentation.components.item.MissionInformationItem
-import com.upsaclay.mission.presentation.components.item.MissionUserItem
-import com.upsaclay.mission.presentation.components.item.SectionTitle
+import com.upsaclay.mission.presentation.components.items.MissionInformationItem
+import com.upsaclay.mission.presentation.components.items.MissionUserItem
+import com.upsaclay.mission.presentation.components.items.SectionTitle
 
 @Composable
 fun MissionDetailsTitleAndDescriptionSection(

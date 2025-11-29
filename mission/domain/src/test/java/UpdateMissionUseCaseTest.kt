@@ -1,5 +1,5 @@
 import com.upsaclay.common.domain.repository.ImageRepository
-import com.upsaclay.mission.domain.entity.MissionState
+import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.missionFixture
 import com.upsaclay.mission.domain.repository.MissionRepository
 import com.upsaclay.mission.domain.usecase.UpdateMissionUseCase
@@ -22,9 +22,9 @@ class UpdateMissionUseCaseTest {
 
     @Before
     fun setUp() {
-        coEvery { imageRepository.createLocalImage(any(), any()) } returns file
+        coEvery { imageRepository.createCacheImage(any(), any()) } returns file
         coEvery { missionRepository.updateMission(any(), any()) } returns Unit
-        coEvery { imageRepository.deleteLocalImage(any()) } returns Unit
+        coEvery { imageRepository.deleteLocalImage(any(), any()) } returns Unit
         coEvery { imageRepository.deleteRemoteImage(any()) } returns Unit
 
         useCase = UpdateMissionUseCase(
@@ -34,7 +34,7 @@ class UpdateMissionUseCaseTest {
     }
 
     @Test
-    fun updateMissionUseCase_should_create_image_when_image_uri_is_not_null() = runTest {
+    fun updateMissionUseCase_should_create_cache_image_when_image_uri_is_not_null() = runTest {
         // Given
         val mission = missionFixture.copy(state = MissionState.Published())
 
@@ -43,7 +43,7 @@ class UpdateMissionUseCaseTest {
 
         // Then
         coVerify {
-            imageRepository.createLocalImage(any(), imageUri)
+            imageRepository.createCacheImage(any(), imageUri)
         }
         coVerify {
             missionRepository.updateMission(
@@ -76,6 +76,6 @@ class UpdateMissionUseCaseTest {
         useCase(mission, imageUri, MissionState.Published())
 
         // Then
-        coVerify { imageRepository.deleteLocalImage(file.name) }
+        coVerify { imageRepository.deleteLocalImage(any(), file.name) }
     }
 }

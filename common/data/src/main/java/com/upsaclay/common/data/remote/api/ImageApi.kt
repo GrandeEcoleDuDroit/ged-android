@@ -8,5 +8,5 @@ interface ImageApi {
 
     suspend fun uploadImage(imageFile: File)
 
-    suspend fun deleteImage(filename: String)
+    suspend fun deleteImage(fileName: String)
 }

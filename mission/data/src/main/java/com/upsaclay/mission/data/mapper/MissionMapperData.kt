@@ -17,11 +17,44 @@ import com.upsaclay.mission.data.remote.models.OutboundRemoteMission
 import com.upsaclay.mission.data.remote.models.RemoteMissionReport
 import com.upsaclay.mission.data.remote.models.RemoteMissionTask
 import com.upsaclay.mission.domain.entity.Mission
+import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.entity.MissionReport
-import com.upsaclay.mission.domain.entity.MissionState
 import com.upsaclay.mission.domain.entity.MissionTask
 
-fun LocalMission.toMission(): Mission {
+fun Mission.toLocal(): LocalMission {
+    val gson = Gson()
+    val schoolLevelNumbersType = object : TypeToken<List<Int>>() {}.type
+    val usersType = object : TypeToken<List<User>>() {}.type
+    val localMissionTasksType = object : TypeToken<List<LocalMissionTask>>() {}.type
+
+    val schoolLevelNumbers = schoolLevels.map { it.number }
+    val imageFileName = when (val state = state) {
+        is MissionState.Draft -> null
+        is MissionState.Publishing -> UrlUtils.extractFileNameFromPath(state.imagePath)
+        is MissionState.Published -> UrlUtils.extractFileNameFromUrl(state.imageUrl)
+        is MissionState.Error -> UrlUtils.extractFileNameFromPath(state.imagePath)
+    }
+    val localMissionTasks = tasks.map(MissionTask::toLocal)
+
+    return LocalMission(
+        missionId = id,
+        missionTitle = title,
+        missionDescription = description,
+        missionSchoolLevels = gson.toJson(schoolLevelNumbers, schoolLevelNumbersType),
+        missionDate = date.toEpochMilliUTC(),
+        missionStartDate = startDate.toEpochMilliUTC(),
+        missionEndDate = endDate.toEpochMilliUTC(),
+        missionDuration = duration,
+        missionManagers = gson.toJson(managers, usersType),
+        missionParticipants = gson.toJson(participants, usersType),
+        missionMaxParticipants = maxParticipants,
+        missionTasks = gson.toJson(localMissionTasks, localMissionTasksType),
+        missionImageFileName = imageFileName,
+        missionState = state.toString()
+    )
+}
+
+fun LocalMission.toMission(getImagePath: (String) -> String): Mission {
     val gson = Gson()
     val schoolLevelNumbersType = object : TypeToken<List<Int>>() {}.type
     val missionTasksType = object : TypeToken<List<LocalMissionTask>>() {}.type
@@ -29,10 +62,10 @@ fun LocalMission.toMission(): Mission {
 
     val schoolLevelNumbers = gson.fromJson<List<Int>>(missionSchoolLevels, schoolLevelNumbersType)
     val state = when (missionState) {
-        MissionState.Draft.TYPE -> MissionState.Draft(missionImageReference)
-        MissionState.Publishing.TYPE -> MissionState.Publishing(missionImageReference)
-        MissionState.Published.TYPE -> MissionState.Published(UrlUtils.formatOracleBucketUrl(missionImageReference))
-        else -> MissionState.Error(missionImageReference)
+        MissionState.Draft.TYPE -> MissionState.Draft
+        MissionState.Publishing.TYPE -> MissionState.Publishing(missionImageFileName?.let(getImagePath))
+        MissionState.Published.TYPE -> MissionState.Published(UrlUtils.formatOracleBucketUrl(missionImageFileName))
+        else -> MissionState.Error(missionImageFileName?.let(getImagePath))
     }
     val tasks = missionTasks?.let {
         gson.fromJson<List<LocalMissionTask>>(it, missionTasksType)
@@ -55,40 +88,7 @@ fun LocalMission.toMission(): Mission {
     )
 }
 
-fun Mission.toLocal(): LocalMission {
-    val gson = Gson()
-    val schoolLevelNumbersType = object : TypeToken<List<Int>>() {}.type
-    val usersType = object : TypeToken<List<User>>() {}.type
-    val localMissionTasksType = object : TypeToken<List<LocalMissionTask>>() {}.type
-
-    val schoolLevelNumbers = schoolLevels.map { it.number }
-    val imageReference = when (val state = state) {
-        is MissionState.Draft -> state.imageUri
-        is MissionState.Publishing -> state.imagePath
-        is MissionState.Published -> UrlUtils.extractFileName(state.imageUrl)
-        is MissionState.Error -> state.imagePath
-    }
-    val localMissionsTask = tasks.map(MissionTask::toLocal)
-
-    return LocalMission(
-        missionId = id,
-        missionTitle = title,
-        missionDescription = description,
-        missionSchoolLevels = gson.toJson(schoolLevelNumbers, schoolLevelNumbersType),
-        missionDate = date.toEpochMilliUTC(),
-        missionStartDate = startDate.toEpochMilliUTC(),
-        missionEndDate = endDate.toEpochMilliUTC(),
-        missionDuration = duration,
-        missionManagers = gson.toJson(managers, usersType),
-        missionParticipants = gson.toJson(participants, usersType),
-        missionMaxParticipants = maxParticipants,
-        missionTasks = gson.toJson(localMissionsTask, localMissionTasksType),
-        missionImageReference = imageReference,
-        missionState = state.toString()
-    )
-}
-
-fun Mission.toRemote(imageFileName: String?): OutboundRemoteMission {
+fun Mission.toRemote(): OutboundRemoteMission {
     val gson = Gson()
     val schoolLevelNumbersType = object : TypeToken<List<Int>>() {}.type
     val userIdsType = object : TypeToken<List<String>>() {}.type
@@ -97,6 +97,12 @@ fun Mission.toRemote(imageFileName: String?): OutboundRemoteMission {
     val remoteMissionTasks = tasks.map(MissionTask::toRemote)
     val managerIds = managers.map { it.id }
     val participantIds = participants.map { it.id }
+    val imageFileName = when (val state = state) {
+        is MissionState.Draft -> null
+        is MissionState.Publishing -> UrlUtils.extractFileNameFromPath(state.imagePath)
+        is MissionState.Published -> UrlUtils.extractFileNameFromUrl(state.imageUrl)
+        is MissionState.Error -> UrlUtils.extractFileNameFromPath(state.imagePath)
+    }
 
     return OutboundRemoteMission(
         missionId = id,
@@ -114,11 +120,6 @@ fun Mission.toRemote(imageFileName: String?): OutboundRemoteMission {
         missionImageFileName = imageFileName
     )
 }
-
-fun MissionTask.toRemote() = RemoteMissionTask(
-    missionTaskId = id,
-    missionTaskValue = value
-)
 
 fun InboundRemoteMission.toMission(): Mission {
     val gson = Gson()

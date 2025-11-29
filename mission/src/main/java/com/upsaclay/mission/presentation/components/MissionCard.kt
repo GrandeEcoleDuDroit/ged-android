@@ -26,7 +26,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.upsaclay.common.domain.entity.SchoolLevel
-import com.upsaclay.common.extension.extraSmallSpacing
 import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.components.OptionButton
@@ -36,7 +35,7 @@ import com.upsaclay.common.presentation.theme.informationText
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
-import com.upsaclay.mission.domain.entity.MissionState
+import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.missionFixture
 import com.upsaclay.mission.presentation.MissionFormatter
 
@@ -119,9 +118,9 @@ private fun DefaultMissionCard(
 
             CardContent(mission = mission)
 
-            CardFooter(
-                schoolLevels = mission.schoolLevels.takeIf { mission.schoolLevelRestricted }
-            )
+            if (mission.schoolLevelRestricted) {
+                CardFooter(schoolLevels = mission.schoolLevels)
+            }
         }
     }
 }
@@ -141,6 +140,45 @@ private fun PublishingMissionCard(
        onClick = onClick,
        onOptionClick = onOptionClick
    )
+}
+
+@Composable
+private fun ErrorMissionCard(
+    modifier: Modifier = Modifier,
+    mission: Mission,
+    imageModel: Any?,
+    onClick: () -> Unit
+) {
+    OutlinedCard(
+        modifier = modifier.clickable(onClick = onClick)
+    ) {
+        Box {
+            MissionCardImage(
+                modifier = Modifier.align(Alignment.Center),
+                model = imageModel
+            )
+
+            ErrorBanner(modifier = Modifier.align(Alignment.TopCenter))
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+            verticalArrangement = Arrangement.mediumSpacing()
+        ) {
+            CardHeader(
+                modifier = Modifier.fillMaxWidth(),
+                mission = mission,
+            )
+
+            CardContent(mission = mission)
+
+            if (mission.schoolLevelRestricted) {
+                CardFooter(schoolLevels = mission.schoolLevels)
+            }
+        }
+    }
 }
 
 @Composable
@@ -209,57 +247,16 @@ private fun CardContent(
 }
 
 @Composable
-private fun CardFooter(schoolLevels: List<SchoolLevel>?) {
-    schoolLevels?.let {
-        Text(
-            text = MissionFormatter.formatSchoolLevels(it),
-            style = MaterialTheme.typography.labelMedium
-        )
-    }
-}
-
-@Composable
-private fun ErrorMissionCard(
-    modifier: Modifier = Modifier,
-    mission: Mission,
-    imageModel: Any?,
-    onClick: () -> Unit
-) {
-    OutlinedCard(
-        modifier = modifier.clickable(onClick = onClick)
-    ) {
-        Box {
-            MissionCardImage(
-                modifier = Modifier.align(Alignment.Center),
-                model = imageModel
-            )
-
-            ErrorBanner(modifier = Modifier.align(Alignment.TopCenter))
-        }
-
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
-            verticalArrangement = Arrangement.mediumSpacing()
-        ) {
-            CardHeader(
-                modifier = Modifier.fillMaxWidth(),
-                mission = mission,
-            )
-
-            CardContent(mission = mission)
-
-            if (mission.schoolLevelRestricted) {
-                CardFooter(schoolLevels = mission.schoolLevels)
-            }
-        }
-    }
+private fun CardFooter(schoolLevels: List<SchoolLevel>) {
+    Text(
+        text = MissionFormatter.formatSchoolLevels(schoolLevels),
+        style = MaterialTheme.typography.labelMedium
+    )
 }
 
 @Composable
 private fun ErrorBanner(modifier: Modifier = Modifier) {
-    Row(
+    TextIcon(
         modifier = modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.background.copy(alpha = 0.8f))
@@ -267,28 +264,28 @@ private fun ErrorBanner(modifier: Modifier = Modifier) {
                 vertical = dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding),
                 horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)
             ),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.extraSmallSpacing()
-    ) {
-        Icon(
-            painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_error),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.error,
-            modifier = Modifier.size(18.dp)
-        )
-
-        Text(
-            modifier = Modifier
-                .padding(
-                    top = dimensionResource(com.upsaclay.common.R.dimen.small_padding),
-                    bottom = dimensionResource(com.upsaclay.common.R.dimen.small_padding),
-                    end = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)
-                ),
-            text = stringResource(R.string.sending_error),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.error
-        )
-    }
+        icon = {
+            Icon(
+                painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_error),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.error,
+                modifier = Modifier.size(18.dp)
+            )
+        },
+        text = {
+            Text(
+                modifier = Modifier
+                    .padding(
+                        top = dimensionResource(com.upsaclay.common.R.dimen.small_padding),
+                        bottom = dimensionResource(com.upsaclay.common.R.dimen.small_padding),
+                        end = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)
+                    ),
+                text = stringResource(R.string.sending_error),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.error
+            )
+        }
+    )
 }
 
 @Composable

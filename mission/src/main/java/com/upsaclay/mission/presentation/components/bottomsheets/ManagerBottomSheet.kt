@@ -1,4 +1,4 @@
-package com.upsaclay.mission.presentation.components.bottomsheet
+package com.upsaclay.mission.presentation.components.bottomsheets
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,17 +27,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import com.upsaclay.common.R
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.domain.usersFixture
 import com.upsaclay.common.extension.smallSpacing
+import com.upsaclay.common.presentation.components.EmptyText
 import com.upsaclay.common.presentation.components.StaticSearchBar
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.previewText
 import com.upsaclay.common.utils.PhonePreviews
-import com.upsaclay.mission.presentation.components.item.MissionUserItem
+import com.upsaclay.mission.presentation.components.items.MissionUserItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -77,14 +76,7 @@ fun SelectManagerBottomSheet(
         ) {
             if (users.isEmpty()) {
                 item {
-                    Text(
-                        modifier = Modifier
-                            .padding(dimensionResource(R.dimen.small_padding))
-                            .fillMaxWidth(),
-                        text = stringResource(id = com.upsaclay.common.R.string.no_user),
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.previewText
-                    )
+                    EmptyText(text = stringResource(id = R.string.no_user))
                 }
             } else {
                 items(users) { user ->

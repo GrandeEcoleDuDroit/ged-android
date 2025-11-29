@@ -11,7 +11,6 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.TextFieldColors
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
@@ -99,7 +98,7 @@ val ColorScheme.emptyImageBackground: Color
 
 val ColorScheme.emptyImageForeground: Color
     @Composable
-    get() = TextFieldDefaults.colors().unfocusedLeadingIconColor
+    get() = MaterialTheme.colorScheme.onSurfaceVariant
 
 val ColorScheme.defaultImageForeground: Color
     @Composable

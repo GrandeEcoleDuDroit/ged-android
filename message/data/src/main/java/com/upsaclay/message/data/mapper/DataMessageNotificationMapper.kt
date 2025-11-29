@@ -33,7 +33,7 @@ fun MessageNotification.toLocal() = LocalMessageNotification(
     conversationInterlocutorEmail = conversation.interlocutor.email,
     conversationInterlocutorSchoolLevel = conversation.interlocutor.schoolLevel.number,
     conversationInterlocutorAdmin = conversation.interlocutor.admin,
-    conversationInterlocutorProfilePictureFileName = UrlUtils.extractFileName(conversation.interlocutor.profilePictureUrl),
+    conversationInterlocutorProfilePictureFileName = UrlUtils.extractFileNameFromUrl(conversation.interlocutor.profilePictureUrl),
     conversationInterlocutorState = conversation.interlocutor.state.toString(),
     conversationInterlocutorTester = conversation.interlocutor.tester,
     conversationCreatedAt = conversation.createdAt.toEpochMilliUTC(),
@@ -52,7 +52,7 @@ fun MessageNotification.toRemote(currentUser: User) = RemoteMessageNotification(
             email = currentUser.email,
             schoolLevel = currentUser.schoolLevel.number,
             admin = currentUser.admin,
-            profilePictureFileName = UrlUtils.extractFileName(currentUser.profilePictureUrl),
+            profilePictureFileName = UrlUtils.extractFileNameFromUrl(currentUser.profilePictureUrl),
             state = currentUser.state.toString(),
             tester = currentUser.tester
         ),

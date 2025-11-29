@@ -45,11 +45,11 @@ import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
+import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.entity.MissionReport
-import com.upsaclay.mission.domain.entity.MissionState
 import com.upsaclay.mission.domain.missionsFixture
 import com.upsaclay.mission.presentation.components.MissionCard
-import com.upsaclay.mission.presentation.components.bottomsheet.MissionBottomSheet
+import com.upsaclay.mission.presentation.components.bottomsheets.MissionBottomSheet
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -197,7 +197,7 @@ private fun MissionScreen(
             clickedMission?.let { mission ->
                 MissionBottomSheet(
                     mission = mission,
-                    currentUser = user,
+                    editable = mission.managers.contains(user),
                     onResendClick = {
                         showMissionBottomSheet = false
                         onResendMissionClick(mission)

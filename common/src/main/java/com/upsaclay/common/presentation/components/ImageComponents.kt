@@ -82,7 +82,7 @@ fun ProfilePictureWithIcon(
 }
 
 @Composable
-fun LargeAsyncImage(
+fun SimpleAsyncImage(
     modifier: Modifier = Modifier,
     model: Any
 ) {

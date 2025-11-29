@@ -1,7 +1,7 @@
 package com.upsaclay.mission.presentation
 
 import com.upsaclay.common.domain.entity.SchoolLevel
-import com.upsaclay.common.utils.LocalDateFormatter
+import com.upsaclay.common.utils.DateUtils
 import java.time.LocalDate
 import kotlin.math.max
 
@@ -11,9 +11,9 @@ object MissionFormatter {
 
     fun formatDate(startDate: LocalDate, endDate: LocalDate): String {
         return when {
-            startDate == endDate -> LocalDateFormatter.formatDayMonthYear(startDate)
-            else -> LocalDateFormatter.formatDayMonthYear(startDate) + " - " +
-                    LocalDateFormatter.formatDayMonthYear(endDate)
+            startDate == endDate -> DateUtils.formatDayMonthYear(startDate)
+            else -> DateUtils.formatDayMonthYear(startDate) + " - " +
+                    DateUtils.formatDayMonthYear(endDate)
         }
     }
 

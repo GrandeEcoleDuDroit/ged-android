@@ -1,5 +1,5 @@
 import com.upsaclay.common.domain.repository.ImageRepository
-import com.upsaclay.mission.domain.entity.MissionState
+import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.missionFixture
 import com.upsaclay.mission.domain.repository.MissionRepository
 import com.upsaclay.mission.domain.usecase.DeleteMissionUseCase
@@ -22,7 +22,7 @@ class DeleteMissionUseCaseTest {
     fun setUp() {
         coEvery { missionRepository.deleteMission(any(), any()) } returns Unit
         coEvery { missionRepository.deleteLocalMission(any()) } returns Unit
-        coEvery { imageRepository.deleteLocalImage(any()) } returns Unit
+        coEvery { imageRepository.deleteLocalImage(any(), any()) } returns Unit
 
         useCase = DeleteMissionUseCase(
             missionRepository = missionRepository,
@@ -45,7 +45,7 @@ class DeleteMissionUseCaseTest {
     @Test
     fun deleteMissionUseCase_should_delete_local_mission_when_state_is_not_published() = runTest {
         // Given
-        val mission = missionFixture.copy(state = MissionState.Draft())
+        val mission = missionFixture.copy(state = MissionState.Draft)
 
         // When
         useCase(mission = mission)
@@ -63,6 +63,6 @@ class DeleteMissionUseCaseTest {
         useCase(mission = mission)
 
         // Then
-        coVerify { imageRepository.deleteLocalImage(imagePath) }
+        coVerify { imageRepository.deleteLocalImage(any(), imagePath) }
     }
 }

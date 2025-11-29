@@ -10,6 +10,11 @@ fun MissionTask.toLocal() = LocalMissionTask(
     missionTaskValue = value
 )
 
+fun MissionTask.toRemote() = RemoteMissionTask(
+    missionTaskId = id,
+    missionTaskValue = value
+)
+
 fun LocalMissionTask.toMissionTask() = MissionTask(
     id = missionTaskId,
     value = missionTaskValue

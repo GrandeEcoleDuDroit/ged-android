@@ -103,7 +103,7 @@ class MessageNotificationPresenter (
 
     private suspend fun createUserIcon(profilePictureUrl: String?): IconCompat {
         return runCatching {
-            profilePictureUrl?.let { imageRepository.getImage(it) }
+            profilePictureUrl?.let { imageRepository.getRemoteImage(it) }
         }.getOrNull()?.use {
             IconCompat.createWithBitmap(getCircledBitmap(it))
         } ?: IconCompat.createWithResource(context, R.drawable.default_profile_picture)

@@ -87,22 +87,23 @@ class MissionDetailsViewModel(
 
     private fun executeRequest(block: suspend () -> Unit) {
         var loadingJob: Job? = null
+
         viewModelScope.launch {
             try {
                 if (!connectivityObserver.isConnected) {
                     throw NoInternetConnectionException()
                 }
+
                 loadingJob = launchDelayed(300) {
                     _uiState.update { it.copy(loading = true) }
                 }
+
                 block()
             } catch (e: Exception) {
                 _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
             } finally {
                 loadingJob?.cancel()
-                _uiState.update {
-                    it.copy(loading = false)
-                }
+                _uiState.update { it.copy(loading = false) }
             }
         }
     }
@@ -112,7 +113,7 @@ class MissionDetailsViewModel(
             userRepository.user,
             missionRepository.getMissionFlow(missionId)
         ) { user, mission ->
-            val isManager = mission.managers.contains(user)
+            val isManager = mission.managers.any { it.id == user.id }
             _uiState.update {
                 it.copy(
                     user = user,
@@ -134,7 +135,7 @@ class MissionDetailsViewModel(
 
             mission.complete -> MissionButtonState.Complete
 
-            mission.participants.contains(user) -> MissionButtonState.Registered
+            mission.participants.any { it.id == user.id } -> MissionButtonState.Registered
 
             else -> {
                 val enabled = !mission.full && mission.schoolLevelPermitted(user.schoolLevel)

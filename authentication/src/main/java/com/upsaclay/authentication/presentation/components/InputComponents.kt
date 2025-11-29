@@ -10,6 +10,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.upsaclay.authentication.R
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.inputForeground
+import com.upsaclay.common.utils.PhonePreviews
 
 @Composable
 fun OutlinePasswordTextField(
@@ -88,21 +90,17 @@ fun OutlinePasswordTextField(
  =====================================================================
  */
 
-@Preview(showBackground = true)
+@PhonePreviews
 @Composable
 private fun OutlinedPasswordPreview() {
     var password by remember { mutableStateOf("") }
 
     GedoiseTheme {
-        Column(
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.medium_large_padding))
-        ) {
-            OutlinePasswordTextField(
-                text = password,
-                onValueChange = { password = it },
-                keyboardActions = KeyboardActions.Default
-            )
-        }
+       Surface {
+           OutlinePasswordTextField(
+               text = password,
+               onValueChange = { password = it }
+           )
+       }
     }
 }

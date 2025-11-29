@@ -1,5 +1,5 @@
 import com.upsaclay.common.domain.repository.ImageRepository
-import com.upsaclay.mission.domain.entity.MissionState
+import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.missionFixture
 import com.upsaclay.mission.domain.repository.MissionRepository
 import com.upsaclay.mission.domain.usecase.CreateMissionUseCase
@@ -23,8 +23,8 @@ class CreateMissionUseCaseTest {
 
     @Before
     fun setUp() {
-        coEvery { imageRepository.createLocalImage(any(), any()) } returns file
-        coEvery { imageRepository.deleteLocalImage(any()) } returns Unit
+        coEvery { imageRepository.createLocalImage(any(), any(), any()) } returns file
+        coEvery { imageRepository.deleteLocalImage(any(), any()) } returns Unit
         coEvery { missionRepository.createMission(any(), any()) } returns Unit
         coEvery { missionRepository.upsertLocalMission(any()) } returns Unit
 
@@ -42,14 +42,14 @@ class CreateMissionUseCaseTest {
 
         // Then
         coVerify {
-            imageRepository.createLocalImage(any(), imageUri)
+            imageRepository.createLocalImage(any(), any(), imageUri)
         }
     }
 
     @Test
     fun createMission_should_create_mission_with_publishing_state() {
         // Given
-        val mission = missionFixture.copy(state = MissionState.Draft())
+        val mission = missionFixture.copy(state = MissionState.Draft)
 
         // When
         useCase(mission, null)
@@ -63,7 +63,7 @@ class CreateMissionUseCaseTest {
     @Test
     fun createMission_should_create_mission_with_publishing_state_and_image_path_when_image_uri_is_provided() {
         // Given
-        val mission = missionFixture.copy(state = MissionState.Draft())
+        val mission = missionFixture.copy(state = MissionState.Draft)
 
         // When
         useCase(mission, imageUri)
@@ -77,7 +77,7 @@ class CreateMissionUseCaseTest {
     @Test
     fun createMission_should_update_local_mission_to_published_state_when_succeeds() {
         // Given
-        val mission = missionFixture.copy(state = MissionState.Draft())
+        val mission = missionFixture.copy(state = MissionState.Draft)
 
         // When
         useCase(mission, null)
@@ -91,7 +91,7 @@ class CreateMissionUseCaseTest {
     @Test
     fun createMission_should_update_local_mission_to_published_state_with_image_name_when_succeeds_and_image_uri_is_provided() {
         // Given
-        val mission = missionFixture.copy(state = MissionState.Draft())
+        val mission = missionFixture.copy(state = MissionState.Draft)
 
         // When
         useCase(mission, imageUri)
@@ -105,7 +105,7 @@ class CreateMissionUseCaseTest {
     @Test
     fun createMission_should_update_local_mission_to_error_state_when_fails() {
         // Given
-        val mission = missionFixture.copy(state = MissionState.Draft())
+        val mission = missionFixture.copy(state = MissionState.Draft)
         coEvery { missionRepository.createMission(any(), any()) } throws Exception()
 
         // When
@@ -120,7 +120,7 @@ class CreateMissionUseCaseTest {
     @Test
     fun createMission_should_update_local_mission_to_error_state_and_image_path_when_image_uri_is_provided_when_fails() {
         // Given
-        val mission = missionFixture.copy(state = MissionState.Draft())
+        val mission = missionFixture.copy(state = MissionState.Draft)
         coEvery { missionRepository.createMission(any(), any()) } throws Exception()
 
         // When
@@ -135,14 +135,14 @@ class CreateMissionUseCaseTest {
     @Test
     fun createMission_should_delete_local_image_when_succeed() {
         // Given
-        val mission = missionFixture.copy(state = MissionState.Draft())
+        val mission = missionFixture.copy(state = MissionState.Draft)
 
         // When
         useCase(mission, imageUri)
 
         // Then
         coVerify {
-            imageRepository.deleteLocalImage(file.name)
+            imageRepository.deleteLocalImage(any(), file.name)
         }
     }
 }

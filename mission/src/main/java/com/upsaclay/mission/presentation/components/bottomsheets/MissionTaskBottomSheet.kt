@@ -1,4 +1,4 @@
-package com.upsaclay.mission.presentation.components.bottomsheet
+package com.upsaclay.mission.presentation.components.bottomsheets
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -36,44 +36,43 @@ import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.MissionTask
-import com.upsaclay.mission.domain.missionTaskFixture
 import com.upsaclay.mission.presentation.MissionConstants.MAX_TASK_LENGTH
 import kotlinx.coroutines.android.awaitFrame
 import kotlinx.coroutines.delay
 
 @Composable
-fun AddTaskBottomSheet(
+fun AddMissionTaskBottomSheet(
     onDismissRequest: () -> Unit,
     onAddClick: (String) -> Unit
 ) {
     var createEnabled by remember { mutableStateOf(false) }
 
-    TaskBottomSheet(
+    MissionTaskBottomSheet(
         onValueChange = { createEnabled = it.isNotBlank() },
-        enabled = createEnabled,
-        labelButton = stringResource(R.string.add),
-        onClick = onAddClick,
+        buttonEnabled = createEnabled,
+        buttonLabel = stringResource(R.string.add),
+        onButtonClick = onAddClick,
         onDismissRequest = onDismissRequest
     )
 }
 
 @Composable
-fun EditTaskBottomSheet(
-    initialTask: MissionTask,
+fun EditMissionTaskBottomSheet(
+    missionTask: MissionTask,
     onDismissRequest: () -> Unit,
     onEditClick: (MissionTask) -> Unit
 ) {
     var editEnabled by remember { mutableStateOf(false) }
 
-    TaskBottomSheet(
-        initialValue = initialTask.value,
+    MissionTaskBottomSheet(
+        initialValue = missionTask.value,
         onValueChange = {
-            editEnabled = it.isNotBlank() && it != initialTask.value
+            editEnabled = it.isNotBlank() && it != missionTask.value
         },
-        enabled = editEnabled,
-        labelButton = stringResource(com.upsaclay.common.R.string.save),
-        onClick = { value ->
-            onEditClick(initialTask.copy(value = value))
+        buttonEnabled = editEnabled,
+        buttonLabel = stringResource(com.upsaclay.common.R.string.save),
+        onButtonClick = { value ->
+            onEditClick(missionTask.copy(value = value))
         },
         onDismissRequest = onDismissRequest
     )
@@ -81,12 +80,12 @@ fun EditTaskBottomSheet(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun TaskBottomSheet(
+private fun MissionTaskBottomSheet(
     initialValue: String = "",
     onValueChange: (String) -> Unit,
-    enabled: Boolean,
-    labelButton: String,
-    onClick: (String) -> Unit,
+    buttonEnabled: Boolean,
+    buttonLabel: String,
+    onButtonClick: (String) -> Unit,
     onDismissRequest: () -> Unit
 ) {
     val focusRequester = remember { FocusRequester() }
@@ -144,11 +143,11 @@ private fun TaskBottomSheet(
             modifier = Modifier
                 .align(Alignment.End)
                 .padding(end = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
-            onClick = { onClick(textFieldValue.text) },
-            enabled = enabled,
+            onClick = { onButtonClick(textFieldValue.text) },
+            enabled = buttonEnabled,
         ) {
             Text(
-                text = labelButton,
+                text = buttonLabel,
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.SemiBold
             )
@@ -166,13 +165,15 @@ private fun TaskBottomSheet(
 
 @PhonePreviews
 @Composable
-private fun EditTaskBottomSheetPreview() {
+private fun MissionTaskBottomSheetPreview() {
     GedoiseTheme {
         Surface {
-            EditTaskBottomSheet(
-                initialTask = missionTaskFixture,
-                onDismissRequest = {},
-                onEditClick = {}
+            MissionTaskBottomSheet(
+                onValueChange = {},
+                buttonEnabled = true,
+                buttonLabel = stringResource(R.string.add),
+                onButtonClick = {},
+                onDismissRequest = {}
             )
         }
     }

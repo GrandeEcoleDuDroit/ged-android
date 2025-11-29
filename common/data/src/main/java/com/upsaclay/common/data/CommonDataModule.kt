@@ -1,6 +1,7 @@
 package com.upsaclay.common.data
 
 import com.upsaclay.common.data.local.BlockedUserLocalDataSource
+import com.upsaclay.common.data.local.ImageLocalDataSource
 import com.upsaclay.common.data.local.UserLocalDataSource
 import com.upsaclay.common.data.local.datastore.BlockedUserDataStore
 import com.upsaclay.common.data.local.datastore.UserDataStore
@@ -94,9 +95,10 @@ val commonDataModule = module {
 
     singleOf(::ImageApiImpl) { bind<ImageApi>() }
     singleOf(::ImageRemoteDataSource)
+    singleOf(::ImageLocalDataSource)
+    singleOf(::ImageRepositoryImpl) { bind<ImageRepository>() }
 
     singleOf(::FileRepositoryImpl) { bind<FileRepository>() }
-    singleOf(::ImageRepositoryImpl) { bind<ImageRepository>() }
 
     singleOf(::UserFirestoreApi)
     singleOf(::UserApiImpl) { bind<UserApi>() }

@@ -1,5 +1,8 @@
-package com.upsaclay.mission.presentation.components.formsection
+package com.upsaclay.mission.presentation.components.form
 
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,6 +17,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -21,17 +26,17 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.extension.smallMediumSpacing
+import com.upsaclay.common.presentation.components.MultiSelectionDropDownMenu
 import com.upsaclay.common.presentation.components.SimpleOutlinedTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.utils.DateUtils
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
-import com.upsaclay.mission.presentation.components.OutlinedDatePicker
-import com.upsaclay.mission.presentation.components.OutlinedSchoolLevelDropDownMenu
-import com.upsaclay.mission.presentation.components.item.SectionTitle
+import com.upsaclay.mission.presentation.components.items.SectionTitle
 import java.time.LocalDate
 
 @Composable
-fun MissionInformationFormSection(
+fun MissionFormInformationSection(
     modifier: Modifier = Modifier,
     startDate: LocalDate,
     endDate: LocalDate,
@@ -39,14 +44,14 @@ fun MissionInformationFormSection(
     schoolLevels: List<SchoolLevel>,
     duration: String,
     participantNumber: String,
-    onSelectedSchoolLevelsChange: (SchoolLevel) -> Unit,
+    onSchoolLevelChange: (SchoolLevel) -> Unit,
     onStartDateClick: () -> Unit,
     onEndDateClick: () -> Unit,
     onDurationChange: (String) -> Unit,
     onParticipantNumberChange: (String) -> Unit
 ) {
     Column(
-        modifier = modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+        modifier = modifier,
         verticalArrangement = Arrangement.smallMediumSpacing()
     ) {
         SectionTitle(title = stringResource(R.string.information))
@@ -67,16 +72,16 @@ fun MissionInformationFormSection(
 
         OutlinedSchoolLevelDropDownMenu(
             modifier = Modifier.fillMaxWidth(),
-            schoolLevels = allSchoolLevels,
-            selectedSchoolLevels = schoolLevels,
-            onSelectedSchoolLevelsChange = onSelectedSchoolLevelsChange
+            allSchoolLevels = allSchoolLevels,
+            schoolLevels = schoolLevels,
+            onSchoolLevelChange = onSchoolLevelChange
         )
 
         SimpleOutlinedTextField(
             modifier = Modifier.fillMaxWidth(0.6f),
             value = participantNumber,
             onValueChange = onParticipantNumberChange,
-            label = stringResource(R.string.mission_max_participant_field),
+            label = stringResource(R.string.mission_max_participants_field),
             leadingIcon = {
                 Icon(
                     painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_group),
@@ -109,6 +114,71 @@ fun MissionInformationFormSection(
     }
 }
 
+@Composable
+private fun OutlinedSchoolLevelDropDownMenu(
+    modifier: Modifier = Modifier,
+    allSchoolLevels: List<SchoolLevel>,
+    schoolLevels: List<SchoolLevel>,
+    onSchoolLevelChange: (SchoolLevel) -> Unit,
+) {
+    var expanded by remember { mutableStateOf(false) }
+    val value = when {
+        schoolLevels.isEmpty() -> stringResource(R.string.everyone)
+        schoolLevels.size == allSchoolLevels.size -> stringResource(R.string.everyone)
+        else -> schoolLevels.joinToString(" - ")
+    }
+
+    MultiSelectionDropDownMenu(
+        modifier = modifier,
+        items = allSchoolLevels.map { it.value },
+        selectedItems = schoolLevels.map { it.value },
+        value = value,
+        label = stringResource(R.string.mission_school_level_field),
+        leadingIcon = {
+            Icon(
+                painter = painterResource(R.drawable.ic_outline_school),
+                contentDescription = null,
+            )
+        },
+        singleLine = true,
+        onItemSelected = { SchoolLevel.fromValue(it).let(onSchoolLevelChange) },
+        expanded = expanded,
+        onExpandedChange = { expanded = it },
+        onDismissRequest = { expanded = false }
+    )
+}
+
+@Composable
+private fun OutlinedDatePicker(
+    modifier: Modifier = Modifier,
+    date: LocalDate,
+    onClick: () -> Unit,
+    label: String,
+) {
+    SimpleOutlinedTextField(
+        modifier = modifier
+            .pointerInput(date) {
+                awaitEachGesture {
+                    awaitFirstDown(pass = PointerEventPass.Initial)
+                    val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
+                    if (upEvent != null) {
+                        onClick()
+                    }
+                }
+            },
+        value = DateUtils.formatDayMonthYear(date),
+        onValueChange = {},
+        readOnly = true,
+        label = label,
+        leadingIcon = {
+            Icon(
+                painter = painterResource(com.upsaclay.common.R.drawable.ic_fill_calendar),
+                contentDescription = null,
+            )
+        }
+    )
+}
+
 /*
  =====================================================================
                                 Preview
@@ -117,31 +187,68 @@ fun MissionInformationFormSection(
 
 @PhonePreviews
 @Composable
-private fun CreateMissionInformationSectionPreview() {
+private fun MissionFormInformationSectionPreview() {
     var schoolLevels by remember { mutableStateOf(emptyList<SchoolLevel>()) }
     var duration by remember { mutableStateOf("") }
     var participantsNumber by remember { mutableStateOf("") }
 
     GedoiseTheme {
         Surface {
-            MissionInformationFormSection(
+            MissionFormInformationSection(
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(7),
                 allSchoolLevels = SchoolLevel.getSchoolLevels(),
                 schoolLevels = schoolLevels,
                 duration = duration,
                 participantNumber = participantsNumber,
-                onSelectedSchoolLevelsChange = {
-                    if (schoolLevels.contains(it)) {
-                        schoolLevels = schoolLevels - it
+                onSchoolLevelChange = {
+                    schoolLevels = if (schoolLevels.contains(it)) {
+                        schoolLevels - it
                     } else {
-                        schoolLevels = schoolLevels + it
+                        schoolLevels + it
                     }
                 },
                 onStartDateClick = {},
                 onEndDateClick = {},
                 onDurationChange = { duration = it },
                 onParticipantNumberChange = { participantsNumber = it }
+            )
+        }
+    }
+}
+
+@PhonePreviews
+@Composable
+private fun SchoolLevelDropDownPreview() {
+    var selectedSchoolLevels by remember { mutableStateOf(emptyList<SchoolLevel>()) }
+    GedoiseTheme {
+        Surface {
+            OutlinedSchoolLevelDropDownMenu(
+                modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.small_padding)),
+                allSchoolLevels = SchoolLevel.entries,
+                schoolLevels = emptyList() ,
+                onSchoolLevelChange = {
+                    selectedSchoolLevels = if (selectedSchoolLevels.contains(it)) {
+                        selectedSchoolLevels - it
+                    } else {
+                        selectedSchoolLevels + it
+                    }
+                }
+            )
+        }
+    }
+}
+
+@PhonePreviews
+@Composable
+private fun OutlinedDatePickerPreview() {
+    GedoiseTheme {
+        Surface {
+            OutlinedDatePicker(
+                modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.small_padding)),
+                date = LocalDate.now(),
+                onClick = {},
+                label = stringResource(R.string.start_date)
             )
         }
     }

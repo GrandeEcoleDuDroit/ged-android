@@ -49,7 +49,7 @@ class MissionRepositoryImpl(
     }
 
     override suspend fun deleteMission(mission: Mission, imageUrl: String?) {
-        val imageFileName = UrlUtils.extractFileName(imageUrl)
+        val imageFileName = UrlUtils.extractFileNameFromUrl(imageUrl)
         missionRemoteDataSource.deleteMission(mission.id, imageFileName)
         missionLocalDataSource.deleteMission(mission)
     }

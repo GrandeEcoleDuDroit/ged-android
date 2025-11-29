@@ -297,12 +297,12 @@ private fun MessageBottomSection(
             onUnblockUserClick = onUnblockUserClick
         )
     } else {
-            MessageInput(
-                modifier = Modifier.testTag(stringResource(R.string.chat_screen_message_input_tag)),
-                value = messageText,
-                onValueChange = onMessageTextChange,
-                onSendClick = onSendMessageClick
-            )
+        MessageInput(
+            modifier = Modifier.testTag(stringResource(R.string.chat_screen_message_input_tag)),
+            value = messageText,
+            onValueChange = onMessageTextChange,
+            onSendClick = onSendMessageClick
+        )
     }
 }
 

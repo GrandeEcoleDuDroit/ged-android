@@ -8,7 +8,7 @@ import com.upsaclay.common.domain.usecase.GetUsersUseCase
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.domain.userFixture2
 import com.upsaclay.common.domain.usersFixture
-import com.upsaclay.mission.domain.entity.MissionState
+import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.entity.MissionTask
 import com.upsaclay.mission.domain.missionFixture
 import com.upsaclay.mission.domain.usecase.UpdateMissionUseCase
@@ -84,7 +84,7 @@ class EditMissionViewModelTest {
     fun onRemoveImage_should_remove_image() {
         // Given
         val expectedState = when (missionFixture.state) {
-            is MissionState.Draft -> MissionState.Draft(null)
+            is MissionState.Draft -> MissionState.Draft
             is MissionState.Publishing -> MissionState.Publishing(null)
             is MissionState.Published -> MissionState.Published(null)
             is MissionState.Error -> MissionState.Error(null)

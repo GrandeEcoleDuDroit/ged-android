@@ -75,7 +75,7 @@ fun MultiSelectionDropDownMenu(
     selectedItems: List<String>,
     value: String,
     label: String,
-    onItemClicked: (String) -> Unit,
+    onItemSelected: (String) -> Unit,
     expanded: Boolean,
     isEnable: Boolean = true,
     singleLine: Boolean = false,
@@ -121,7 +121,7 @@ fun MultiSelectionDropDownMenu(
                             Text(text = item)
                         }
                     },
-                    onClick = { onItemClicked(item) }
+                    onClick = { onItemSelected(item) }
                 )
             }
         }
@@ -185,7 +185,7 @@ private fun MultiDropDownMenuPreview() {
                 selectedItems = selectedItems,
                 value = selectedItems.joinToString(" - "),
                 label = "Select Items",
-                onItemClicked = { item ->
+                onItemSelected = { item ->
                     selectedItems = if (selectedItems.contains(item)) {
                         selectedItems - item
                     } else {

@@ -10,8 +10,8 @@ import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapNetworkErrorMessage
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
+import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.entity.MissionReport
-import com.upsaclay.mission.domain.entity.MissionState
 import com.upsaclay.mission.domain.repository.MissionRepository
 import com.upsaclay.mission.domain.usecase.DeleteMissionUseCase
 import com.upsaclay.mission.domain.usecase.RefreshMissionsUseCase

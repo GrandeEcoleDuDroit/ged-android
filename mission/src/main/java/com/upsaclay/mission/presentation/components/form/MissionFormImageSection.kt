@@ -1,4 +1,4 @@
-package com.upsaclay.mission.presentation.components.formsection
+package com.upsaclay.mission.presentation.components.form
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,7 +24,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.upsaclay.common.presentation.components.LargeAsyncImage
+import com.upsaclay.common.presentation.components.SimpleAsyncImage
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.emptyImageBackground
 import com.upsaclay.common.presentation.theme.emptyImageForeground
@@ -33,7 +33,7 @@ import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
 
 @Composable
-fun MissionImageFormSection(
+fun MissionFormImageSection(
     modifier: Modifier = Modifier,
     imageModel: String?,
     onImageClick: () -> Unit,
@@ -89,7 +89,7 @@ private fun NonEmptyImage(
     onRemoveImageClick: () -> Unit
 ) {
     Box(modifier = modifier) {
-        LargeAsyncImage(
+        SimpleAsyncImage(
             modifier = Modifier.fillMaxSize(),
             model = imageUri
         )
@@ -119,10 +119,10 @@ private fun NonEmptyImage(
 
 @PhonePreviews
 @Composable
-private fun CreateMissionImageSectionPreview() {
+private fun MissionFormImageSectionPreview() {
     GedoiseTheme {
         Surface {
-            MissionImageFormSection(
+            MissionFormImageSection(
                 imageModel = null,
                 onImageClick = {},
                 onRemoveImageClick = {}

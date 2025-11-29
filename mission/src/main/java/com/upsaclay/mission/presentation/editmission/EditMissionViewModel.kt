@@ -13,7 +13,7 @@ import com.upsaclay.common.domain.usecase.GetUsersUseCase
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapNetworkErrorMessage
 import com.upsaclay.mission.domain.entity.Mission
-import com.upsaclay.mission.domain.entity.MissionState
+import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.entity.MissionTask
 import com.upsaclay.mission.domain.usecase.UpdateMissionUseCase
 import com.upsaclay.mission.presentation.MissionConstants.MAX_DESCRIPTION_LENGTH
@@ -111,7 +111,7 @@ class EditMissionViewModel(
 
     fun onRemoveImage() {
         val state = when (mission.state) {
-            is MissionState.Draft -> MissionState.Draft(null)
+            is MissionState.Draft -> MissionState.Draft
             is MissionState.Publishing -> MissionState.Publishing(null)
             is MissionState.Published -> MissionState.Published(null)
             is MissionState.Error -> MissionState.Error(null)
@@ -226,10 +226,7 @@ class EditMissionViewModel(
     fun onRemoveManager(manager: User) {
         val managers = uiState.value.managers
 
-        if (
-            managers.size > 1 ||
-            !managers.contains(manager)
-        ) {
+        if (managers.size > 1) {
             val updatedManagers = managers - manager
             _uiState.update {
                 it.copy(managers = updatedManagers)

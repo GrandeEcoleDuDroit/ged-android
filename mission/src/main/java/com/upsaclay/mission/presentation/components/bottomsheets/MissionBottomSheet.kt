@@ -1,4 +1,4 @@
-package com.upsaclay.mission.presentation.components.bottomsheet
+package com.upsaclay.mission.presentation.components.bottomsheets
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,19 +20,17 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.upsaclay.common.domain.entity.User
-import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.presentation.components.TextItem
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.mission.domain.entity.Mission
-import com.upsaclay.mission.domain.entity.MissionState
+import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.missionFixture
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MissionBottomSheet(
     mission: Mission,
-    currentUser: User,
+    editable: Boolean,
     onEditClick: () -> Unit,
     onResendClick: () -> Unit = {},
     onDeleteClick: () -> Unit,
@@ -51,7 +49,7 @@ fun MissionBottomSheet(
             }
 
             else -> {
-                if (mission.managers.contains(currentUser)) {
+                if (editable) {
                     EditableMissionBottomSheetContent(
                         onEditClick = onEditClick,
                         onDeleteClick = onDeleteClick
@@ -174,7 +172,7 @@ fun EditableMissionBottomSheetPreview() {
         Surface {
             MissionBottomSheet(
                 mission = missionFixture,
-                currentUser = userFixture,
+                editable = true,
                 onEditClick = {},
                 onResendClick = {},
                 onReportClick = {},
@@ -192,7 +190,7 @@ fun NonEditableMissionBottomSheetPreview() {
         Surface {
             MissionBottomSheet(
                 mission = missionFixture,
-                currentUser = userFixture.copy(admin = false),
+                editable = false,
                 onEditClick = {},
                 onResendClick = {},
                 onReportClick = {},

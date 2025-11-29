@@ -4,14 +4,14 @@ import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.domain.userFixture2
 import com.upsaclay.mission.domain.entity.Mission
-import com.upsaclay.mission.domain.entity.MissionState
+import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.entity.MissionTask
 import java.time.LocalDate
 import java.time.LocalDateTime
 
 val missionTaskFixture = MissionTask("1", "Task 1")
 
-val tasksFixture = listOf(
+val missionTasksFixture = listOf(
     missionTaskFixture,
     missionTaskFixture.copy(id = "2", value = "Task 2"),
     missionTaskFixture.copy(id = "3", value = "Task 3")
@@ -32,12 +32,12 @@ val missionFixture = Mission(
     ),
     date = LocalDateTime.now(),
     startDate = LocalDate.now(),
-    endDate = LocalDate.now().plusDays(1),
+    endDate = LocalDate.now().minusDays(1),
     duration = "Once a week",
     managers = listOf(userFixture),
     participants = listOf(userFixture2),
     maxParticipants = 20,
-    tasks = tasksFixture,
+    tasks = missionTasksFixture,
     state = MissionState.Published(),
 )
 
@@ -57,15 +57,14 @@ val missionsFixture = listOf(
         description = "The third mission has a medium-length description to provide some context.",
         managers = listOf(userFixture2, userFixture),
         participants = listOf(userFixture2, userFixture),
-        schoolLevels = listOf(SchoolLevel.GED_1, SchoolLevel.GED_2, SchoolLevel.GED_3)
+        schoolLevels = emptyList()
     ),
     missionFixture.copy(
         id = "4",
         title = "Fourth mission",
         description = "The third mission has a medium-length description to provide some context.",
-        state = MissionState.Error(),
         managers = listOf(userFixture2, userFixture),
         participants = listOf(userFixture2, userFixture),
-        schoolLevels = listOf(SchoolLevel.GED_1, SchoolLevel.GED_2, SchoolLevel.GED_3)
-    ),
+        schoolLevels = listOf(SchoolLevel.GED_1, SchoolLevel.GED_2, SchoolLevel.GED_3, SchoolLevel.GED_3)
+    )
 )

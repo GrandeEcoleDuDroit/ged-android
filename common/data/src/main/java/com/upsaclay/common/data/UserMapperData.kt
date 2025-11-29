@@ -1,6 +1,6 @@
 package com.upsaclay.common.data
 
-import com.upsaclay.common.data.UrlUtils.extractFileName
+import com.upsaclay.common.data.UrlUtils.extractFileNameFromUrl
 import com.upsaclay.common.data.UrlUtils.formatOracleBucketUrl
 import com.upsaclay.common.data.local.LocalUser
 import com.upsaclay.common.data.remote.model.FirestoreUser
@@ -18,7 +18,7 @@ fun User.toLocal() = LocalUser(
     userEmail = email,
     userSchoolLevel = schoolLevel.number,
     userAdmin = if (admin) 1 else 0,
-    userProfilePictureFileName = extractFileName(profilePictureUrl),
+    userProfilePictureFileName = extractFileNameFromUrl(profilePictureUrl),
     userState = state.toString(),
     userTester = if (tester) 1 else 0
 )
@@ -30,7 +30,7 @@ internal fun User.toServerUser() = ServerUser(
     userEmail = email,
     userSchoolLevel = schoolLevel.number,
     userAdmin = if (admin) 1 else 0,
-    userProfilePictureFileName = extractFileName(profilePictureUrl),
+    userProfilePictureFileName = extractFileNameFromUrl(profilePictureUrl),
     userState = state.toString(),
     userTester = if (tester) 1 else 0
 )
@@ -42,7 +42,7 @@ internal fun User.toFirestoreUser() = FirestoreUser(
     email = email,
     schoolLevel = schoolLevel.number,
     admin = admin,
-    profilePictureFileName = extractFileName(profilePictureUrl),
+    profilePictureFileName = extractFileNameFromUrl(profilePictureUrl),
     state = state.toString(),
     tester = tester
 )

@@ -6,5 +6,7 @@ object UrlUtils {
         return "${BuildConfig.ORACLE_BUCKET_URL}/$fileName"
     }
 
-    fun extractFileName(url: String?): String? = url?.substringAfterLast("/")
+    fun extractFileNameFromUrl(url: String?): String? = url?.substringAfterLast("/")
+
+    fun extractFileNameFromPath(path: String?): String? = path?.substringAfterLast("/")
 }

@@ -1,4 +1,4 @@
-package com.upsaclay.mission.presentation.createmission
+package com.upsaclay.mission.presentation.components.form
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,9 +10,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -27,13 +25,6 @@ import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.domain.entity.MissionTask
 import com.upsaclay.mission.domain.missionTaskFixture
-import com.upsaclay.mission.presentation.components.formsection.MissionImageFormSection
-import com.upsaclay.mission.presentation.components.formsection.MissionInformationFormSection
-import com.upsaclay.mission.presentation.components.formsection.MissionManagerFormSection
-import com.upsaclay.mission.presentation.components.formsection.MissionTaskFormSection
-import com.upsaclay.mission.presentation.components.formsection.MissionTitleDescriptionFormSection
-import kotlinx.coroutines.android.awaitFrame
-import kotlinx.coroutines.delay
 import java.time.LocalDate
 
 @Composable
@@ -55,29 +46,18 @@ fun MissionForm(
     onImageClick: () -> Unit,
     onRemoveImageClick: () -> Unit
 ) {
-    val scrollState = rememberScrollState()
-    var currentSize by remember { mutableIntStateOf(value.tasks.size) }
-
-    LaunchedEffect(value.tasks) {
-        if (value.tasks.size > currentSize) {
-            awaitFrame()
-            delay(200)
-            scrollState.animateScrollTo(scrollState.maxValue)
-            currentSize = value.tasks.size
-        }
-    }
-
     Column(
-        modifier = modifier.verticalScroll(scrollState),
+        modifier = modifier.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.mediumSpacing()
     ) {
-        MissionImageFormSection(
+        MissionFormImageSection(
             imageModel = value.imageReference,
             onImageClick = onImageClick,
             onRemoveImageClick = onRemoveImageClick
         )
 
-        MissionTitleDescriptionFormSection(
+        MissionFormTitleDescriptionSection(
+            modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
             title = value.title,
             description = value.description,
             onTitleChange = onTitleChange,
@@ -86,14 +66,15 @@ fun MissionForm(
 
         HorizontalDivider(modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)))
 
-        MissionInformationFormSection(
+        MissionFormInformationSection(
+            modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
             allSchoolLevels = value.allSchoolLevels,
             schoolLevels = value.schoolLevels,
             startDate = value.startDate,
             endDate = value.endDate,
             duration = value.duration,
             participantNumber = value.maxParticipants,
-            onSelectedSchoolLevelsChange = onSchoolLevelChange,
+            onSchoolLevelChange = onSchoolLevelChange,
             onStartDateClick = onStartDateClick,
             onEndDateClick = onEndDateClick,
             onDurationChange = onDurationChange,
@@ -102,7 +83,7 @@ fun MissionForm(
 
         HorizontalDivider(modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)))
 
-        MissionManagerFormSection(
+        MissionFormManagerSection(
             managers = value.managers,
             onShowManagerListClick = onShowManagerListClick,
             onRemoveManagerClick = onRemoveManagerClick
@@ -110,8 +91,8 @@ fun MissionForm(
 
         HorizontalDivider(modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)))
 
-        MissionTaskFormSection(
-            missionTasks = value.tasks,
+        MissionFormTaskSection(
+            missionTasks = value.missionTasks,
             onAddTaskClick = onAddTaskClick,
             onTaskClick = onEditTaskClick,
             onRemoveTaskClick = onRemoveTaskClick
@@ -121,6 +102,20 @@ fun MissionForm(
     }
 }
 
+data class MissionFormValue(
+    val title: String,
+    val description: String,
+    val startDate: LocalDate,
+    val endDate: LocalDate,
+    val allSchoolLevels: List<SchoolLevel>,
+    val schoolLevels: List<SchoolLevel>,
+    val duration: String,
+    val maxParticipants: String,
+    val managers: List<User>,
+    val missionTasks: List<MissionTask>,
+    val imageReference: String?
+)
+
 /*
  =====================================================================
                                 Preview
@@ -129,10 +124,10 @@ fun MissionForm(
 
 @PhonePreviews
 @Composable
-private fun CreateMissionFormPreview() {
+private fun MissionFormPreview() {
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
-    val selectedSchoolLevels = emptyList<SchoolLevel>()
+    val selectedSchoolLevels = listOf(SchoolLevel.GED_3)
     var frequency by remember { mutableStateOf("") }
     var participantNumber by remember { mutableStateOf("") }
     var missionTasks by remember { mutableStateOf(listOf(missionTaskFixture)) }
@@ -152,7 +147,7 @@ private fun CreateMissionFormPreview() {
                     maxParticipants = participantNumber,
                     managers = managers,
                     imageReference = null,
-                    tasks = missionTasks
+                    missionTasks = missionTasks
                 ),
                 onTitleChange = { title = it },
                 onDescriptionChange = { description = it },

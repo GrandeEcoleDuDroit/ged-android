@@ -10,7 +10,7 @@ import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.GenerateIdUseCase
 import com.upsaclay.common.domain.usecase.GetUsersUseCase
 import com.upsaclay.mission.domain.entity.Mission
-import com.upsaclay.mission.domain.entity.MissionState
+import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.entity.MissionTask
 import com.upsaclay.mission.domain.usecase.CreateMissionUseCase
 import com.upsaclay.mission.presentation.MissionConstants.MAX_DESCRIPTION_LENGTH
@@ -55,7 +55,7 @@ class CreateMissionViewModel(
             participants = emptyList(),
             maxParticipants = uiState.value.maxParticipants.trim().toInt(),
             tasks = uiState.value.tasks,
-            state = MissionState.Draft(uiState.value.imageUri?.toString()),
+            state = MissionState.Draft,
         )
 
         createMissionUseCase(mission, uiState.value.imageUri?.toString())
@@ -93,20 +93,20 @@ class CreateMissionViewModel(
         }
     }
 
-    fun onStartDateChange(date: LocalDate) {
+    fun onStartDateChange(startDate: LocalDate) {
         _uiState.update {
             it.copy(
-                startDate = date,
-                endDate = if (!validateEndDate(date, it.endDate)) date else it.endDate
+                startDate = startDate,
+                endDate = if (!validateEndDate(startDate, it.endDate)) startDate else it.endDate
             )
         }
     }
 
-    fun onEndDateChange(date: LocalDate) {
+    fun onEndDateChange(endDate: LocalDate) {
         _uiState.update {
             it.copy(
-                startDate = if (!validateEndDate(it.startDate, date)) date else it.startDate,
-                endDate = date
+                startDate = if (!validateEndDate(it.startDate, endDate)) endDate else it.startDate,
+                endDate = endDate
             )
         }
     }
@@ -156,10 +156,7 @@ class CreateMissionViewModel(
     fun onRemoveManager(manager: User) {
         val managers = uiState.value.managers
 
-        if (
-            managers.size > 1 ||
-            !managers.contains(manager)
-        ) {
+        if (managers.size > 1) {
             _uiState.update {
                 it.copy(managers = managers - manager)
             }

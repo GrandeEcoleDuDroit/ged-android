@@ -45,7 +45,7 @@ internal class MissionApiImpl(
 
     override suspend fun createMission(mission: Mission, imageFile: File?) {
         val missionPart = gson
-            .toJson(mission.toRemote(imageFile?.name))
+            .toJson(mission.toRemote())
             .toRequestBody("application/json".toMediaType())
 
         val imagePart = imageFile?.let {
@@ -61,7 +61,7 @@ internal class MissionApiImpl(
 
     override suspend fun updateMission(mission: Mission, imageFile: File?) {
         val missionPart = gson
-            .toJson(mission.toRemote(imageFile?.name))
+            .toJson(mission.toRemote())
             .toRequestBody("application/json".toMediaType())
 
         val imagePart = imageFile?.let {

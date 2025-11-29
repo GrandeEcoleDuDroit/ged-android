@@ -1,13 +1,13 @@
 package com.upsaclay.common
 
-import com.upsaclay.common.utils.FormatLocalDateTimeHelper
+import com.upsaclay.common.utils.DateUtils
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
 import java.time.LocalDateTime
 import java.util.Locale
 
-class FormatLocalDateTimeHelperTest {
-    private val formatLocalDateTimeUseCase = FormatLocalDateTimeHelper
+class DateUtilsTest {
+    private val formatLocalDateTimeUseCase = DateUtils
     private val localDateTime = LocalDateTime.of(2021, 9, 1, 12, 0, 0)
 
     @Test

@@ -1,23 +1,29 @@
 package com.upsaclay.mission.data.local
 
+import android.content.Context
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.mission.data.mapper.toLocal
 import com.upsaclay.mission.data.mapper.toMission
+import com.upsaclay.mission.domain.MissionUtils
 import com.upsaclay.mission.domain.entity.Mission
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.withContext
+import java.io.File
 
-class MissionLocalDataSource(private val missionDao: MissionDao) {
+class MissionLocalDataSource(
+    private val context: Context,
+    private val missionDao: MissionDao
+) {
     fun getMissions(): Flow<List<Mission>> = missionDao.getMissions()
         .map { localMissions ->
-            localMissions.map { it.toMission() }
+            localMissions.map { it.toMission(::getImagePath) }
         }
 
     fun getMissionFlow(missionId: String): Flow<Mission> =
-        missionDao.getMissionFlow(missionId).mapNotNull { it?.toMission() }
+        missionDao.getMissionFlow(missionId).mapNotNull { it?.toMission(::getImagePath) }
 
     suspend fun upsertMission(mission: Mission) {
         withContext(Dispatchers.IO) {
@@ -34,7 +40,7 @@ class MissionLocalDataSource(private val missionDao: MissionDao) {
     suspend fun addParticipant(missionId: String, user: User) {
         withContext(Dispatchers.IO) {
             missionDao.getMission(missionId)?.let { localMission ->
-                val mission = localMission.toMission().let { mission ->
+                val mission = localMission.toMission(::getImagePath).let { mission ->
                     mission.copy(participants = mission.participants.toMutableList().apply { add(user) })
                 }
                 missionDao.upsertMission(mission.toLocal())
@@ -45,11 +51,16 @@ class MissionLocalDataSource(private val missionDao: MissionDao) {
     suspend fun removeParticipant(missionId: String, userId: String) {
         withContext(Dispatchers.IO) {
             missionDao.getMission(missionId)?.let { localMission ->
-                val mission = localMission.toMission().let { mission ->
+                val mission = localMission.toMission(::getImagePath).let { mission ->
                     mission.copy(participants = mission.participants.filter { it.id != userId })
                 }
                 missionDao.upsertMission(mission.toLocal())
             }
         }
+    }
+
+    private fun getImagePath(fileName: String): String {
+        val parent = File(context.filesDir, MissionUtils.FOLDER_NAME)
+        return File(parent, fileName).path
     }
 }

@@ -35,7 +35,7 @@
     <string name="mission_school_level_field">School level</string>
     <string name="mission_end_date_field">End date</string>
     <string name="mission_start_date_field">Start date</string>
-    <string name="mission_max_participant_field">Max participant</string>
+    <string name="mission_max_participants_field">Max participants</string>
     <string name="mission_duration_field">Duration (optional)</string>
     <string name="no_participants">No participant</string>
 

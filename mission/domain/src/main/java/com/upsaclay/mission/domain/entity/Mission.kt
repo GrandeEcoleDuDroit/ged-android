@@ -32,42 +32,45 @@ data class Mission(
 
     fun schoolLevelPermitted(schoolLevel: SchoolLevel): Boolean =
         schoolLevels.isEmpty() || schoolLevels.contains(schoolLevel)
-}
 
-sealed class MissionState {
-    data class Draft(val imageUri: String? = null): MissionState() {
-        override fun toString(): String = TYPE
-        companion object {
+    sealed class MissionState {
+        data object Draft: MissionState() {
+            override fun toString(): String = TYPE
             const val TYPE = "DRAFT"
         }
-    }
 
-    data class Publishing(val imagePath: String? = null): MissionState() {
-        override fun toString(): String = TYPE
-        companion object {
-            const val TYPE = "PUBLISHING"
-        }
-    }
+        data class Publishing(val imagePath: String? = null): MissionState() {
+            override fun toString(): String = TYPE
 
-    data class Published(val imageUrl: String? = null): MissionState() {
-        override fun toString(): String = TYPE
-        companion object {
-            const val TYPE = "PUBLISHED"
+            companion object {
+                const val TYPE = "PUBLISHING"
+            }
         }
-    }
 
-    data class Error(val imagePath: String? = null): MissionState() {
-        override fun toString(): String = TYPE
-        companion object {
-            const val TYPE = "ERROR"
-        }
-    }
+        data class Published(val imageUrl: String? = null): MissionState() {
+            override fun toString(): String = TYPE
 
-    val imageReference: String?
-        get() = when (this) {
-            is Draft -> imageUri
-            is Publishing -> imagePath
-            is Published -> imageUrl
-            is Error -> imagePath
+            companion object {
+                const val TYPE = "PUBLISHED"
+            }
         }
+
+        data class Error(val imagePath: String? = null): MissionState() {
+            override fun toString(): String = TYPE
+
+            companion object {
+                const val TYPE = "ERROR"
+            }
+        }
+
+        val imageReference: String?
+            get() = when (this) {
+                is Draft -> null
+                is Publishing -> imagePath
+                is Published -> imageUrl
+                is Error -> imagePath
+            }
+    }
 }
+
+

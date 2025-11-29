@@ -36,10 +36,10 @@ internal class ImageApiImpl(
         )
     }
 
-    override suspend fun deleteImage(filename: String) {
+    override suspend fun deleteImage(fileName: String) {
         mapServerResponseException(
             message = "Failed to delete image with Server",
-            block = { serverImageApi.deleteImage(filename) }
+            block = { serverImageApi.deleteImage(fileName) }
         )
     }
 
@@ -48,7 +48,7 @@ internal class ImageApiImpl(
         @POST("image/upload")
         suspend fun uploadImage(@Part image: MultipartBody.Part): Response<ServerResponse>
 
-        @DELETE("image/{filename}")
-        suspend fun deleteImage(@Path("filename") filename: String): Response<ServerResponse>
+        @DELETE("image/{fileName}")
+        suspend fun deleteImage(@Path("fileName") fileName: String): Response<ServerResponse>
     }
 }

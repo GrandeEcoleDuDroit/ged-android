@@ -23,7 +23,7 @@ class UpdateProfilePictureUseCaseTest {
 
     @Before
     fun setUp() {
-        coEvery { imageRepository.uploadImage(any(), any()) } returns ""
+        coEvery { imageRepository.uploadImage(any()) } returns Unit
         coEvery { imageRepository.deleteRemoteImage(any()) } returns Unit
         coEvery { userRepository.updateProfilePictureFileName(any(), any()) } returns Unit
 
@@ -40,7 +40,7 @@ class UpdateProfilePictureUseCaseTest {
 
         // Then
         coVerify { userRepository.updateProfilePictureFileName(userFixture.id, any()) }
-        coVerify { imageRepository.uploadImage(any(), any()) }
+        coVerify { imageRepository.uploadImage(any()) }
     }
 
     @Test
@@ -56,7 +56,7 @@ class UpdateProfilePictureUseCaseTest {
     @Test(expected = TimeoutCancellationException::class)
     fun updateProfilePictureUseCase_should_throw_TimeoutCancellationException_when_uploading_image_takes_more_than_15_seconds() = runTest {
         // Given
-        coEvery { imageRepository.uploadImage(any(), any()) } just awaits
+        coEvery { imageRepository.uploadImage(any()) } just awaits
 
         // When
         useCase(userFixture, uri)

@@ -1,6 +1,6 @@
 package com.upsaclay.mission.domain.usecase
 
-import com.upsaclay.mission.domain.entity.MissionState
+import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.repository.MissionRepository
 
 class SynchronizeMissionsUseCase(private val missionRepository: MissionRepository) {

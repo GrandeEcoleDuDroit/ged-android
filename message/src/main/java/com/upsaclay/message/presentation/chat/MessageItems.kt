@@ -63,9 +63,8 @@ import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.black
 import com.upsaclay.common.presentation.theme.informationText
 import com.upsaclay.common.presentation.theme.inputBackground
-import com.upsaclay.common.presentation.theme.inputForeground
 import com.upsaclay.common.presentation.theme.white
-import com.upsaclay.common.utils.FormatLocalDateTimeHelper
+import com.upsaclay.common.utils.DateUtils
 import com.upsaclay.message.R
 import com.upsaclay.message.domain.entity.Message
 import com.upsaclay.message.domain.entity.Message.MessageState
@@ -227,7 +226,7 @@ private fun MessageBubble(
             modifier = Modifier
                 .padding(start = dimensionResource(com.upsaclay.common.R.dimen.small_padding))
                 .align(Alignment.Bottom),
-            text = FormatLocalDateTimeHelper.formatHourMinute(date),
+            text = DateUtils.formatHourMinute(date),
             style = MaterialTheme.typography.labelSmall,
             color = dateTimeTextColor
         )
@@ -267,7 +266,6 @@ fun MessageInput(
                     Text(
                         text = stringResource(id = R.string.message_placeholder),
                         style = TextStyle(platformStyle = PlatformTextStyle(false)),
-                        color = MaterialTheme.colorScheme.inputForeground
                     )
                 },
                 enabled = true,

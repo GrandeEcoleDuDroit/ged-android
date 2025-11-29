@@ -1,4 +1,4 @@
-package com.upsaclay.mission.presentation.components.item
+package com.upsaclay.mission.presentation.components.items
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -15,7 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.upsaclay.common.domain.entity.User
@@ -51,7 +50,6 @@ fun MissionUserItem(
                 Text(
                     modifier = Modifier.weight(1f, fill = false),
                     text = user.fullName,
-                    textAlign = TextAlign.Center,
                     style = textStyle,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1

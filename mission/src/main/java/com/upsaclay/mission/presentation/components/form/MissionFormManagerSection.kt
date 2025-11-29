@@ -1,4 +1,4 @@
-package com.upsaclay.mission.presentation.components.formsection
+package com.upsaclay.mission.presentation.components.form
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,11 +30,11 @@ import com.upsaclay.common.presentation.theme.iconBackground
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
 import com.upsaclay.mission.presentation.components.RemoveButton
-import com.upsaclay.mission.presentation.components.item.MissionUserItem
-import com.upsaclay.mission.presentation.components.item.SectionTitle
+import com.upsaclay.mission.presentation.components.items.MissionUserItem
+import com.upsaclay.mission.presentation.components.items.SectionTitle
 
 @Composable
-fun MissionManagerFormSection(
+fun MissionFormManagerSection(
     modifier: Modifier = Modifier,
     managers: List<User>,
     onShowManagerListClick: () -> Unit,
@@ -57,7 +57,7 @@ fun MissionManagerFormSection(
                 user = it,
                 imageScale = 0.4f,
                 trailingContent = if (managers.size > 1) {
-                    {
+                    @Composable {
                         RemoveButton(
                             onClick = { onRemoveManagerClick(it) }
                         )
@@ -88,7 +88,10 @@ private fun AddManagerItem(modifier: Modifier = Modifier) {
             }
         },
         headlineContent = {
-            Text(text = stringResource(R.string.add_manager))
+            Text(
+                text = stringResource(R.string.add_manager),
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     )
 }
@@ -101,10 +104,10 @@ private fun AddManagerItem(modifier: Modifier = Modifier) {
 
 @PhonePreviews
 @Composable
-fun CreateMissionManagerSectionPreview() {
+fun MissionFormManagerSectionPreview() {
     GedoiseTheme {
         Surface {
-            MissionManagerFormSection(
+            MissionFormManagerSection(
                 managers = usersFixture,
                 onShowManagerListClick = {},
                 onRemoveManagerClick = {}
