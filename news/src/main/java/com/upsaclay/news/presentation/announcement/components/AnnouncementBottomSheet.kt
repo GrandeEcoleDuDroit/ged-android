@@ -30,7 +30,7 @@ import com.upsaclay.news.domain.entity.Announcement.AnnouncementState
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AnnouncementBottomSheet(
-    announcement: Announcement,
+    announcementState: Announcement.AnnouncementState,
     isEditable: Boolean,
     onEditClick: () -> Unit,
     onResendClick: () -> Unit,
@@ -42,7 +42,7 @@ fun AnnouncementBottomSheet(
         modifier = Modifier.testTag(stringResource(id = R.string.announcement_bottom_sheet_tag)),
         onDismissRequest = onDismiss
     ) {
-        when (announcement.state) {
+        when (announcementState) {
             AnnouncementState.ERROR -> {
                 ErrorAnnouncementBottomSheet(
                     onResendClick = onResendClick,
@@ -183,7 +183,7 @@ fun EditableAnnouncementBottomSheetPreview() {
     GedoiseTheme {
         Surface {
             AnnouncementBottomSheet(
-                announcement = announcementFixture,
+                announcementState = announcementFixture.state,
                 isEditable = true,
                 onEditClick = {},
                 onResendClick = {},
@@ -201,7 +201,7 @@ fun NonEditableAnnouncementBottomSheetPreview() {
     GedoiseTheme {
         Surface {
             AnnouncementBottomSheet(
-                announcement = announcementFixture,
+                announcementState = announcementFixture.state,
                 isEditable = false,
                 onEditClick = {},
                 onResendClick = {},

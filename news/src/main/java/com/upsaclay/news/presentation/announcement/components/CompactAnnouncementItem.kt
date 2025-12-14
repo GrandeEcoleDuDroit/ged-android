@@ -20,7 +20,7 @@ import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.components.OptionButton
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.previewText
+import com.upsaclay.common.presentation.theme.supportingText
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.common.utils.getElapsedTimeValue
 import com.upsaclay.news.domain.entity.Announcement
@@ -35,9 +35,7 @@ internal fun CompactAnnouncementItem(
     onOptionClick: () -> Unit
 ) {
     val elapsedTimeValue = getElapsedTimeValue(announcement.date)
-    val loading = announcement.state == AnnouncementState.PUBLISHING
-
-    val alpha = if (loading) 0.5f else 1f
+    val alpha = if (announcement.state == AnnouncementState.PUBLISHING) 0.5f else 1f
 
     ListItem(
         modifier = modifier
@@ -46,7 +44,7 @@ internal fun CompactAnnouncementItem(
         leadingContent = {
             LeadingContent(
                 state = announcement.state,
-                userProfilePictureUrl = announcement.author.profilePictureUrl
+                profilePictureUrl = announcement.author.profilePictureUrl
             )
         },
         headlineContent = {
@@ -65,14 +63,14 @@ internal fun CompactAnnouncementItem(
                 Text(
                     text = elapsedTimeValue,
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.previewText
+                    color = MaterialTheme.colorScheme.supportingText
                 )
             }
         },
         supportingContent = {
             Text(
                 text = announcement.title ?: announcement.content,
-                color = MaterialTheme.colorScheme.previewText,
+                color = MaterialTheme.colorScheme.supportingText,
                 style = MaterialTheme.typography.bodyMedium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -92,7 +90,7 @@ internal fun CompactAnnouncementItem(
 @Composable
 private fun LeadingContent(
     state: AnnouncementState,
-    userProfilePictureUrl: String?
+    profilePictureUrl: String?
 ) {
     if (state == AnnouncementState.ERROR) {
         Row(
@@ -106,13 +104,13 @@ private fun LeadingContent(
             )
 
             ProfilePicture(
-                url = userProfilePictureUrl,
+                url = profilePictureUrl,
                 scale = 0.5f
             )
         }
     } else {
         ProfilePicture(
-            url = userProfilePictureUrl,
+            url = profilePictureUrl,
             scale = 0.5f
         )
     }

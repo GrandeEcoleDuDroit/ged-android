@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.upsaclay.common.domain.entity.User
@@ -30,6 +28,7 @@ import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.extension.smallMediumSpacing
 import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.components.EmptyText
+import com.upsaclay.common.presentation.components.SectionTitle
 import com.upsaclay.common.presentation.components.UserItem
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.PhonePreviews
@@ -37,9 +36,11 @@ import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.MissionTask
 import com.upsaclay.mission.domain.missionFixture
-import com.upsaclay.mission.presentation.components.item.MissionInformationItem
-import com.upsaclay.mission.presentation.components.item.MissionUserItem
-import com.upsaclay.mission.presentation.components.item.SectionTitle
+import com.upsaclay.mission.presentation.MissionPresentationUtils.descriptionStyle
+import com.upsaclay.mission.presentation.MissionPresentationUtils.detailsContentStyle
+import com.upsaclay.mission.presentation.MissionPresentationUtils.titleStyle
+import com.upsaclay.mission.presentation.components.items.MissionInformationValuesItem
+import com.upsaclay.mission.presentation.components.items.MissionUserItem
 
 @Composable
 fun MissionDetailsTitleAndDescriptionSection(
@@ -73,10 +74,10 @@ fun MissionDetailsInformationSection(
     ) {
         SectionTitle(title = stringResource(R.string.information))
 
-        MissionInformationItem(
+        MissionInformationValuesItem(
             modifier = Modifier.fillMaxWidth(),
             mission = mission,
-            textStyle = contentStyle
+            textStyle = detailsContentStyle
         )
     }
 }
@@ -102,7 +103,7 @@ fun MissionDetailsManagerSection(
                     user = it,
                     imageScale = 0.4f,
                     showAdminIndicator = false,
-                    textStyle = contentStyle
+                    textStyle = detailsContentStyle
                 )
             }
         }
@@ -113,7 +114,7 @@ fun MissionDetailsManagerSection(
 @Composable
 fun MissionDetailsParticipantSection(
     modifier: Modifier = Modifier,
-    users: List<User>,
+    participants: List<User>,
     onParticipantClick: (User) -> Unit,
     onLongParticipantClick: (User) -> Unit,
 ) {
@@ -128,17 +129,17 @@ fun MissionDetailsParticipantSection(
         LazyColumn(
             modifier = Modifier.heightIn(max = 200.dp)
         ) {
-            if (users.isEmpty()) {
+            if (participants.isEmpty()) {
                 item {
                     EmptyText(
-                        text = stringResource(R.string.no_participants),
-                        textStyle = contentStyle
+                        text = stringResource(R.string.no_participant),
+                        textStyle = detailsContentStyle
                     )
 
                     Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding)))
                 }
             } else {
-                items(users) {
+                items(participants) {
                     UserItem(
                         modifier = Modifier.combinedClickable(
                             onClick = { onParticipantClick(it) },
@@ -146,7 +147,7 @@ fun MissionDetailsParticipantSection(
                         ),
                         user = it,
                         imageScale = 0.4f,
-                        textStyle = contentStyle
+                        textStyle = detailsContentStyle
                     )
                 }
             }
@@ -157,7 +158,7 @@ fun MissionDetailsParticipantSection(
 @Composable
 fun MissionDetailsTaskSection(
     modifier: Modifier = Modifier,
-    tasks: List<MissionTask>
+    missionTasks: List<MissionTask>
 ) {
     Column(
         modifier = modifier,
@@ -168,30 +169,18 @@ fun MissionDetailsTaskSection(
         Column(
             verticalArrangement = Arrangement.smallMediumSpacing()
         ) {
-            tasks.forEach {
+            missionTasks.forEach {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically,
+                    verticalAlignment = Alignment.Top,
                     horizontalArrangement = Arrangement.smallSpacing()
                 ) {
                     Text(text = "\u2022", fontSize = 20.sp)
-                    Text(text = it.value, style = contentStyle)
+                    Text(text = it.value, style = detailsContentStyle)
                 }
             }
         }
     }
 }
-
-private val titleStyle: TextStyle
-    @Composable
-    get() = MaterialTheme.typography.titleLarge
-
-private val descriptionStyle: TextStyle
-    @Composable
-    get() = MaterialTheme.typography.bodyLarge
-
-private val contentStyle: TextStyle
-    @Composable
-    get() = MaterialTheme.typography.bodyMedium
 
 /*
  =====================================================================
@@ -240,7 +229,7 @@ private fun MissionDetailsParticipantSectionPreview() {
     GedoiseTheme {
         Surface {
             MissionDetailsParticipantSection(
-                users = emptyList(),
+                participants = emptyList(),
                 onParticipantClick = {},
                 onLongParticipantClick = {}
             )
@@ -254,7 +243,7 @@ private fun MissionDetailsTaskSectionPreview() {
     GedoiseTheme {
         Surface {
             MissionDetailsTaskSection(
-                tasks = missionFixture.tasks
+                missionTasks = missionFixture.tasks
             )
         }
     }

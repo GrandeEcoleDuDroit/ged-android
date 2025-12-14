@@ -34,8 +34,7 @@ import androidx.paging.compose.itemKey
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.extension.rootMediumPadding
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.previewText
-import com.upsaclay.common.utils.FormatLocalDateTimeHelper
+import com.upsaclay.common.utils.DateUtils
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.message.R
 import com.upsaclay.message.domain.conversationFixture
@@ -138,9 +137,9 @@ internal fun MessageFeed(
                         modifier = Modifier
                             .padding(top = topPadding, bottom = dimensionResource(com.upsaclay.common.R.dimen.medium_large_padding))
                             .fillMaxWidth(),
-                        text = FormatLocalDateTimeHelper.formatDayMonthYear(message.date),
+                        text = DateUtils.formatDayMonthYear(message.date),
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.previewText,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center
                     )
                 } else {

@@ -1,9 +1,9 @@
 package com.upsaclay.mission.domain.usecase
 
 import com.upsaclay.common.domain.repository.ImageRepository
-import com.upsaclay.mission.domain.MissionUtils.imageFileName
+import com.upsaclay.mission.domain.MissionUtils
 import com.upsaclay.mission.domain.entity.Mission
-import com.upsaclay.mission.domain.entity.MissionState
+import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.repository.MissionRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -15,25 +15,30 @@ class CreateMissionUseCase(
 ) {
     operator fun invoke(mission: Mission, imageUri: String?) {
         scope.launch {
-            val fileName = imageFileName(mission.id)
-            val image = imageUri?.let { uri ->
-                imageRepository.createLocalImage(fileName, uri)
+            var imagePath: String? = null
+            val imageFile = imageUri?.let { uri ->
+                val extension = imageRepository.getFileExtension(uri)
+                val fileName = "${MissionUtils.Image.generateFileName(mission.id)}.$extension"
+                imagePath = MissionUtils.Image.makeRelativePath(fileName)
+                imageRepository.createLocalImage(imagePath!!, uri)
             }
 
             try {
                 missionRepository.createMission(
-                    mission.copy(state = MissionState.Publishing(image?.path)),
-                    image
+                    mission.copy(state = MissionState.Publishing(imagePath)),
+                    imageFile
                 )
+
                 missionRepository.upsertLocalMission(
-                    mission.copy(state = MissionState.Published(image?.name))
+                    mission.copy(state = MissionState.Published(imagePath))
                 )
-                image?.name?.let {
+
+                imagePath?.let {
                     imageRepository.deleteLocalImage(it)
                 }
             } catch (e: Exception) {
                 missionRepository.upsertLocalMission(
-                    mission.copy(state = MissionState.Error(image?.path))
+                    mission.copy(state = MissionState.Error(imagePath))
                 )
             }
         }

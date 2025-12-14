@@ -107,44 +107,46 @@ private fun UserScreen(
     userBlocked: Boolean,
     snackbarHostState: SnackbarHostState = SnackbarHostState()
 ) {
-    var showUserBottomSheet by remember { mutableStateOf(false) }
-    var showReportBottomSheet by remember { mutableStateOf(false) }
-    var showBlockUserDialog by remember { mutableStateOf(false) }
-    var showUnblockUserDialog by remember { mutableStateOf(false) }
+    var activeBottomSheet by remember { mutableStateOf<UserScreenBottomSheet?>(null) }
+    var activeDialog by remember { mutableStateOf<UserScreenDialog?>(null) }
     val userName = if (user.state != User.UserState.DELETED) {
         user.fullName
     } else {
         stringResource(id = R.string.deleted_user)
     }
 
+    when(activeDialog) {
+        is UserScreenDialog.BlockUserDialog -> {
+            DefaultDialog(
+                title = stringResource(id = R.string.block_user_dialog_title),
+                text = stringResource(id = R.string.block_user_dialog_message),
+                confirmText = stringResource(id = R.string.block),
+                critical = true,
+                onConfirm = {
+                    activeDialog = null
+                    onBlockUserClick(user.id)
+                },
+                onCancel = { activeDialog = null }
+            )
+        }
+
+        is UserScreenDialog.UnblockUserDialog -> {
+            DefaultDialog(
+                text = stringResource(id = R.string.unblock_user_dialog_message),
+                confirmText = stringResource(id = R.string.unblock),
+                onConfirm = {
+                    activeDialog = null
+                    onUnblockUserClick(user.id)
+                },
+                onCancel = { activeDialog = null }
+            )
+        }
+
+        else -> Unit
+    }
+
     if (loading) {
         LoadingDialog()
-    }
-
-    if (showBlockUserDialog) {
-        DefaultDialog(
-            title = stringResource(id = R.string.block_user_dialog_title),
-            text = stringResource(id = R.string.block_user_dialog_message),
-            confirmText = stringResource(id = R.string.block),
-            critical = true,
-            onConfirm = {
-                showBlockUserDialog = false
-                onBlockUserClick(user.id)
-            },
-            onCancel = { showBlockUserDialog = false }
-        )
-    }
-
-    if (showUnblockUserDialog) {
-        DefaultDialog(
-            text = stringResource(id = R.string.unblock_user_dialog_message),
-            confirmText = stringResource(id = R.string.unblock),
-            onConfirm = {
-                showUnblockUserDialog = false
-                onUnblockUserClick(user.id)
-            },
-            onCancel = { showUnblockUserDialog = false }
-        )
     }
 
     Scaffold(
@@ -155,7 +157,7 @@ private fun UserScreen(
                 leadingIcon = {
                     if (user != currentUser) {
                         OptionButton(
-                            onClick = { showUserBottomSheet = true },
+                            onClick = { activeBottomSheet = UserScreenBottomSheet.UserBottomSheet },
                             contentDescription = "Show user options"
                         )
                     }
@@ -188,47 +190,48 @@ private fun UserScreen(
         }
     }
 
-    if (showUserBottomSheet) {
-        UserBottomSheet(
-            onDismiss = { showUserBottomSheet = false },
-            onReportClick = {
-                showUserBottomSheet = false
-                showReportBottomSheet = true
-            },
-            onBlockClick = {
-                showUserBottomSheet = false
-                showBlockUserDialog = true
-            },
-            onUnblockClick = {
-                showUserBottomSheet = false
-                showUnblockUserDialog = true
-            },
-            isBlocked = userBlocked
-        )
-    }
+    when(activeBottomSheet) {
+        is UserScreenBottomSheet.UserBottomSheet -> {
+            UserBottomSheet(
+                onBlockClick = {
+                    activeBottomSheet = null
+                    activeDialog = UserScreenDialog.BlockUserDialog
+                },
+                onUnblockClick = {
+                    activeBottomSheet = null
+                    activeDialog = UserScreenDialog.UnblockUserDialog
+                },
+                onReportClick = { activeBottomSheet = UserScreenBottomSheet.UserReportBottomSheet },
+                isBlocked = userBlocked,
+                onDismiss = { activeBottomSheet = null }
+            )
+        }
 
-    if (showReportBottomSheet) {
-        ReportBottomSheet(
-            items = UserReport.Reason.entries,
-            onDismiss = { showReportBottomSheet = false },
-            onReportClick = { reason ->
-                showReportBottomSheet = false
-                onReportUserClick(
-                    UserReport(
-                        userId = user.id,
-                        userInfo = UserReport.UserInfo(
-                            fullName = user.fullName,
-                            email = user.email
-                        ),
-                        reporterInfo = UserReport.UserInfo(
-                            fullName = currentUser.fullName,
-                            email = currentUser.email
-                        ),
-                        reason = reason
+        is UserScreenBottomSheet.UserReportBottomSheet -> {
+            ReportBottomSheet(
+                items = UserReport.Reason.entries,
+                onReportClick = { reason ->
+                    activeBottomSheet = null
+                    onReportUserClick(
+                        UserReport(
+                            reportedUser = UserReport.ReportedUser(
+                                id = user.id,
+                                fullName = user.fullName,
+                                email = user.email
+                            ),
+                            reporter = UserReport.Reporter(
+                                fullName = currentUser.fullName,
+                                email = currentUser.email
+                            ),
+                            reason = reason
+                        )
                     )
-                )
-            }
-        )
+                },
+                onDismiss = { activeBottomSheet = null },
+            )
+        }
+
+        else -> Unit
     }
 }
 
@@ -298,6 +301,16 @@ private fun UserBottomSheet(
 
         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.large_padding)))
     }
+}
+
+private sealed class UserScreenBottomSheet {
+    data object UserBottomSheet: UserScreenBottomSheet()
+    data object UserReportBottomSheet: UserScreenBottomSheet()
+}
+
+private sealed class UserScreenDialog {
+    data object BlockUserDialog: UserScreenDialog()
+    data object UnblockUserDialog: UserScreenDialog()
 }
 
 /*

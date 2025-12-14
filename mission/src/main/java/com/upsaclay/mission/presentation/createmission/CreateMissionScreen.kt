@@ -29,9 +29,11 @@ import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.MissionTask
 import com.upsaclay.mission.domain.missionFixture
 import com.upsaclay.mission.presentation.MissionBottomSheetType
-import com.upsaclay.mission.presentation.components.bottomsheet.AddTaskBottomSheet
-import com.upsaclay.mission.presentation.components.bottomsheet.EditTaskBottomSheet
-import com.upsaclay.mission.presentation.components.bottomsheet.SelectManagerBottomSheet
+import com.upsaclay.mission.presentation.components.bottomsheets.AddMissionTaskBottomSheet
+import com.upsaclay.mission.presentation.components.bottomsheets.EditMissionTaskBottomSheet
+import com.upsaclay.mission.presentation.components.bottomsheets.SelectManagerBottomSheet
+import com.upsaclay.mission.presentation.components.form.MissionForm
+import com.upsaclay.mission.presentation.components.form.MissionFormValue
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate
 
@@ -51,28 +53,28 @@ fun CreateMissionDestination(
         schoolLevels = uiState.schoolLevels,
         duration = uiState.duration,
         maxParticipants = uiState.maxParticipants,
-        missionTasks = uiState.tasks,
         imageUri = uiState.imageUri,
         users = uiState.users,
         userQuery = uiState.userQuery,
         managers = uiState.managers,
+        missionTasks = uiState.missionTasks,
         createEnabled = uiState.createEnabled,
         onTitleChange = viewModel::onTitleChange,
         onDescriptionChange = viewModel::onDescriptionChange,
-        onSchoolLevelChange = viewModel::onSchoolLevelChange,
         onStartDateChange = viewModel::onStartDateChange,
         onEndDateChange = viewModel::onEndDateChange,
-        onDurationChange = viewModel::onDurationChange,
+        onSchoolLevelChange = viewModel::onSchoolLevelChange,
         onMaxParticipantsChange = viewModel::onMaxParticipantsChange,
+        onDurationChange = viewModel::onDurationChange,
         onSaveManagersClick = viewModel::onSaveManagers,
         onRemoveManagerClick = viewModel::onRemoveManager,
         onUserQueryChange = viewModel::onUserQueryChange,
         onResetUserQuery = viewModel::onResetUserQuery,
         onImageUriChange = viewModel::onImageUriChange,
         onRemoveImageClick = viewModel::onRemoveImageUri,
-        onAddTaskClick = viewModel::onAddTask,
-        onEditTaskClick = viewModel::onEditTask,
-        onRemoveTaskClick = viewModel::onRemoveTask,
+        onAddTaskClick = viewModel::onAddMissionTask,
+        onEditTaskClick = viewModel::onEditMissionTask,
+        onRemoveTaskClick = viewModel::onRemoveMissionTask,
         onCreateMissionClick = {
             viewModel.createMission()
             onBackClick()
@@ -91,25 +93,25 @@ private fun CreateMissionScreen(
     endDate: LocalDate,
     duration: String,
     maxParticipants: String,
-    missionTasks: List<MissionTask>,
     imageUri: Uri?,
     users: List<User>,
     userQuery: String,
     managers: List<User>,
+    missionTasks: List<MissionTask>,
     createEnabled: Boolean,
+    onImageUriChange: (Uri) -> Unit,
+    onRemoveImageClick: () -> Unit,
     onTitleChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
     onSchoolLevelChange: (SchoolLevel) -> Unit,
     onStartDateChange: (LocalDate) -> Unit,
     onEndDateChange: (LocalDate) -> Unit,
-    onDurationChange: (String) -> Unit,
     onMaxParticipantsChange: (String) -> Unit,
+    onDurationChange: (String) -> Unit,
     onSaveManagersClick: (List<User>) -> Unit,
     onRemoveManagerClick: (User) -> Unit,
     onUserQueryChange: (String) -> Unit,
     onResetUserQuery: () -> Unit,
-    onImageUriChange: (Uri) -> Unit,
-    onRemoveImageClick: () -> Unit,
     onAddTaskClick: (String) -> Unit,
     onEditTaskClick: (MissionTask) -> Unit,
     onRemoveTaskClick: (MissionTask) -> Unit,
@@ -118,7 +120,7 @@ private fun CreateMissionScreen(
 ) {
     var showStartDateModal by remember { mutableStateOf(false) }
     var showEndDateModal by remember { mutableStateOf(false) }
-    var bottomSheetType by remember { mutableStateOf<MissionBottomSheetType?>(null) }
+    var missionBottomSheetType by remember { mutableStateOf<MissionBottomSheetType?>(null) }
     val focusManager = LocalFocusManager.current
 
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
@@ -149,6 +151,7 @@ private fun CreateMissionScreen(
                     )
                 },
             value = MissionFormValue(
+                imageReference = imageUri?.toString(),
                 title = title,
                 description = description,
                 startDate = startDate,
@@ -158,21 +161,8 @@ private fun CreateMissionScreen(
                 duration = duration,
                 maxParticipants = maxParticipants,
                 managers = managers,
-                tasks = missionTasks,
-                imageReference = imageUri?.toString()
+                missionTasks = missionTasks
             ),
-            onTitleChange = onTitleChange,
-            onDescriptionChange = onDescriptionChange,
-            onSchoolLevelChange = onSchoolLevelChange,
-            onStartDateClick = { showStartDateModal = true },
-            onEndDateClick = { showEndDateModal = true },
-            onDurationChange = onDurationChange,
-            onMaxParticipantsChange = onMaxParticipantsChange,
-            onShowManagerListClick = { bottomSheetType = MissionBottomSheetType.SelectManager },
-            onRemoveManagerClick = onRemoveManagerClick,
-            onAddTaskClick = { bottomSheetType = MissionBottomSheetType.AddTask },
-            onEditTaskClick = { bottomSheetType = MissionBottomSheetType.EditTask(it) },
-            onRemoveTaskClick = onRemoveTaskClick,
             onImageClick = {
                 singlePhotoPickerLauncher.launch(
                     PickVisualMediaRequest(
@@ -180,7 +170,19 @@ private fun CreateMissionScreen(
                     )
                 )
             },
-            onRemoveImageClick = onRemoveImageClick
+            onRemoveImageClick = onRemoveImageClick,
+            onTitleChange = onTitleChange,
+            onDescriptionChange = onDescriptionChange,
+            onSchoolLevelChange = onSchoolLevelChange,
+            onStartDateClick = { showStartDateModal = true },
+            onEndDateClick = { showEndDateModal = true },
+            onDurationChange = onDurationChange,
+            onMaxParticipantsChange = onMaxParticipantsChange,
+            onShowManagerListClick = { missionBottomSheetType = MissionBottomSheetType.SelectManager },
+            onRemoveManagerClick = onRemoveManagerClick,
+            onAddTaskClick = { missionBottomSheetType = MissionBottomSheetType.AddTask },
+            onEditTaskClick = { missionBottomSheetType = MissionBottomSheetType.EditTask(it) },
+            onRemoveTaskClick = onRemoveTaskClick
         )
     }
 
@@ -209,28 +211,26 @@ private fun CreateMissionScreen(
         )
     }
 
-    when (bottomSheetType) {
+    when (val type = missionBottomSheetType) {
         is MissionBottomSheetType.AddTask -> {
-            AddTaskBottomSheet(
-                onDismissRequest = { bottomSheetType = null },
+            AddMissionTaskBottomSheet(
+                onDismissRequest = { missionBottomSheetType = null },
                 onAddClick = {
                     onAddTaskClick(it)
-                    bottomSheetType = null
+                    missionBottomSheetType = null
                 }
             )
         }
 
         is MissionBottomSheetType.EditTask -> {
-            (bottomSheetType as? MissionBottomSheetType.EditTask)?.missionTask?.let {
-                EditTaskBottomSheet(
-                    initialTask = it,
-                    onDismissRequest = { bottomSheetType = null },
-                    onEditClick = { task ->
-                        onEditTaskClick(task)
-                        bottomSheetType = null
-                    }
-                )
-            }
+            EditMissionTaskBottomSheet(
+                missionTask = type.missionTask,
+                onDismissRequest = { missionBottomSheetType = null },
+                onEditClick = { task ->
+                    onEditTaskClick(task)
+                    missionBottomSheetType = null
+                }
+            )
         }
 
         is MissionBottomSheetType.SelectManager -> {
@@ -242,11 +242,11 @@ private fun CreateMissionScreen(
                 onResetQuery = onResetUserQuery,
                 onSaveClick = {
                     onSaveManagersClick(it)
-                    bottomSheetType = null
+                    missionBottomSheetType = null
                 },
                 onDismissRequest = {
                     onResetUserQuery()
-                    bottomSheetType = null
+                    missionBottomSheetType = null
                 }
             )
         }
@@ -268,16 +268,16 @@ private fun CreateMissionScreenPreview() {
 
     GedoiseTheme {
         CreateMissionScreen(
-            title = mission.title,
-            description = mission.description,
+            title = "",
+            description = "",
             startDate = mission.startDate,
             endDate = mission.endDate,
             allSchoolLevels = SchoolLevel.entries,
-            schoolLevels = mission.schoolLevels,
-            duration = mission.duration.toString(),
-            maxParticipants = mission.maxParticipants.toString(),
+            schoolLevels = emptyList(),
+            duration = "",
+            maxParticipants = "",
             managers = listOf(userFixture),
-            missionTasks = mission.tasks,
+            missionTasks = emptyList(),
             imageUri = null,
             users = usersFixture,
             userQuery = "",

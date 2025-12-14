@@ -1,7 +1,5 @@
 package com.upsaclay.news.presentation.announcement.editannouncement
 
-import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upsaclay.common.domain.ConnectivityObserver
@@ -27,10 +25,7 @@ class EditAnnouncementViewModel(
     private val _uiState = MutableStateFlow(
         EditAnnouncementUiState(
             title = announcement.title ?: "",
-            content = TextFieldValue(
-                text = announcement.content,
-                selection = TextRange(announcement.content.length)
-            )
+            content = announcement.content
         )
     )
     internal val uiState: StateFlow<EditAnnouncementUiState> = _uiState
@@ -38,33 +33,33 @@ class EditAnnouncementViewModel(
     val event: SharedFlow<SingleUiEvent> = _event
 
     fun onTitleChange(title: String) {
-        val titleTruncated = title.take(TITLE_MAX_LENGTH)
+        val truncatedTitle = title.take(TITLE_MAX_LENGTH)
         _uiState.update {
             it.copy(
-                title = titleTruncated,
-                updateEnabled = validateUpdate(titleTruncated, it.content.text)
+                title = truncatedTitle,
+                updateEnabled = validateUpdate(truncatedTitle, it.content)
             )
         }
     }
 
-    fun onContentChange(content: TextFieldValue) {
-        val contentTruncated = content.text.take(CONTENT_MAX_LENGTH)
+    fun onContentChange(content: String) {
+        val truncatedContent = content.take(CONTENT_MAX_LENGTH)
         _uiState.update {
             it.copy(
-                content = content.copy(text = contentTruncated),
-                updateEnabled = validateUpdate(it.title, contentTruncated)
+                content = truncatedContent,
+                updateEnabled = validateUpdate(it.title, truncatedContent)
             )
         }
     }
 
     fun updateAnnouncement() {
-        if (!validateUpdate(uiState.value.title, uiState.value.content.text)) {
+        if (!validateUpdate(uiState.value.title, uiState.value.content)) {
             return
         }
 
         val trimmedAnnouncement = announcement.copy(
             title = uiState.value.title.trim(),
-            content = uiState.value.content.text.trim()
+            content = uiState.value.content.trim()
         )
 
         viewModelScope.launch {
@@ -94,11 +89,11 @@ class EditAnnouncementViewModel(
 
     private fun validateContent(content: String): Boolean = content.trim() != announcement.content.trim()
 
-    private fun validateMandatoryFields(): Boolean = uiState.value.content.text.isNotBlank()
+    private fun validateMandatoryFields(): Boolean = uiState.value.content.isNotBlank()
 
     data class EditAnnouncementUiState(
         val title: String = "",
-        val content: TextFieldValue = TextFieldValue(),
+        val content: String = "",
         val loading: Boolean = false,
         val updateEnabled: Boolean = false
     )

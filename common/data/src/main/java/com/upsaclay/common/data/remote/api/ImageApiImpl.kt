@@ -2,17 +2,20 @@ package com.upsaclay.common.data.remote.api
 
 import com.upsaclay.common.data.exceptions.mapServerResponseException
 import com.upsaclay.common.data.remote.model.ServerResponse
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
-import retrofit2.http.DELETE
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
-import retrofit2.http.Path
 import java.io.File
 
 internal class ImageApiImpl(
@@ -27,28 +30,34 @@ internal class ImageApiImpl(
         return client.newCall(request).execute()
     }
 
-    override suspend fun uploadImage(imageFile: File) {
+    override suspend fun uploadImage(imageFile: File, imagePath: String) {
         val requestBody = imageFile.asRequestBody("multipart/form-data".toMediaTypeOrNull())
         val multipartBody = MultipartBody.Part.createFormData("image", imageFile.name, requestBody)
+        val imagePathBody = imagePath.toRequestBody("text/plain".toMediaType())
+
         mapServerResponseException(
             message = "Failed to upload image with Server",
-            block = { serverImageApi.uploadImage(multipartBody) }
+            block = { serverImageApi.uploadImage(multipartBody, imagePathBody) }
         )
     }
 
-    override suspend fun deleteImage(filename: String) {
+    override suspend fun deleteImage(imagePath: String) {
         mapServerResponseException(
             message = "Failed to delete image with Server",
-            block = { serverImageApi.deleteImage(filename) }
+            block = { serverImageApi.deleteImage(imagePath) }
         )
     }
 
     internal interface ServerImageApi {
         @Multipart
         @POST("image/upload")
-        suspend fun uploadImage(@Part image: MultipartBody.Part): Response<ServerResponse>
+        suspend fun uploadImage(
+            @Part image: MultipartBody.Part,
+            @Part("imagePath") imagePath: RequestBody
+        ): Response<ServerResponse>
 
-        @DELETE("image/{filename}")
-        suspend fun deleteImage(@Path("filename") filename: String): Response<ServerResponse>
+        @FormUrlEncoded
+        @POST("image/delete")
+        suspend fun deleteImage(@Field("imagePath") imagePath: String): Response<ServerResponse>
     }
 }

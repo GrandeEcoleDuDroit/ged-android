@@ -14,6 +14,7 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.setMain
@@ -22,6 +23,7 @@ import org.junit.Test
 import java.time.LocalDate
 import kotlin.test.assertEquals
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class MissionDetailsViewModelTest {
     private val missionRepository: MissionRepository = mockk()
     private val userRepository: UserRepository = mockk()
@@ -55,7 +57,7 @@ class MissionDetailsViewModelTest {
     @Test
     fun missionDetailsViewModel_default_values_are_correct() {
         // Then
-        assertEquals(userFixture2, viewModel.uiState.value.user)
+        assertEquals(userFixture2, viewModel.uiState.value.currentUser)
         assertEquals(missionFixture, viewModel.uiState.value.mission)
         assertEquals(false, viewModel.uiState.value.loading)
     }
@@ -74,7 +76,7 @@ class MissionDetailsViewModelTest {
         // Given
         val report = MissionReport(
             missionId = missionFixture.id,
-            userInfo = MissionReport.UserInfo(
+            reporter = MissionReport.Reporter(
                 fullName = userFixture2.fullName,
                 email = userFixture2.email
             ),

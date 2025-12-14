@@ -11,7 +11,6 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.TextFieldColors
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
@@ -29,10 +28,10 @@ internal val backgroundLight = Color(0xFFFFFFFF)
 internal val onBackgroundLight = black
 internal val errorLight = Color(0xFFED5245)
 internal val surfaceLight = Color(0xFFFFFFFF)
+internal val onSurfaceLight = black
 internal val onSurfaceVariantLight = Color(0xFF4F4F4F)
 internal val inverseSurfaceLight = Color(0xFF303133)
 internal val inverseOnSurfaceLight = Color(0xFFEFF1F4)
-internal val onSurfaceLight = black
 internal val surfaceContainerHighLight = Color(0xFFE7E9EC)
 internal val surfaceVariantLight = Color(0xFFE0E4EC)
 internal val outlineLight = Color(0xFF74777E)
@@ -42,18 +41,18 @@ internal val primaryDark = Color(0xFF67708A)
 internal val primaryContainerDark = Color(0xFF444958)
 internal val onPrimaryContainerDark = Color(0xFFE3E3E3)
 internal val onPrimaryDark = white
+internal val onSecondaryContainerDark = white
+internal val secondaryContainerDark = Color(0xFF444958)
+internal val surfaceContainerHighDark = Color(0xFF444958)
+internal val onBackgroundDark = white
+internal val backgroundDark = Color(0xFF191919)
 internal val errorDark = Color(0xFFD64A4C)
 internal val surfaceDark = Color(0xFF191919)
-internal val surfaceContainerHighDark = Color(0xFF444958)
-internal val surfaceVariantDark = Color(0xFF45484F)
 internal val onSurfaceDark = white
 internal val onSurfaceVariantDark = Color(0xFFD2D2D2)
 internal val inverseSurfaceDark = white
 internal val inverseOnSurfaceDark = Color(0xFF303133)
-internal val onSecondaryContainerDark = white
-internal val secondaryContainerDark = Color(0xFF444958)
-internal val backgroundDark = Color(0xFF191919)
-internal val onBackgroundDark = white
+internal val surfaceVariantDark = Color(0xFF45484F)
 internal val outlineDark = Color(0xFF939393)
 internal val outlineVariantDark = Color(0xFF3C3C3C)
 
@@ -77,7 +76,7 @@ val ColorScheme.inputForeground: Color
     @Composable
     get() = if (isSystemInDarkTheme()) Color(0xFFBEBEBE) else Color(0xFF646464)
 
-val ColorScheme.previewText: Color
+val ColorScheme.supportingText: Color
     @Composable
     get() = if (isSystemInDarkTheme()) Color(0xFFA1A4B0) else Color(0xFF6F7181)
 
@@ -96,10 +95,6 @@ val ColorScheme.loadingImageBackground: Color
 val ColorScheme.emptyImageBackground: Color
     @Composable
     get() = if (isSystemInDarkTheme()) Color(0xFF323232) else Color(0xFFE6E6E6)
-
-val ColorScheme.emptyImageForeground: Color
-    @Composable
-    get() = TextFieldDefaults.colors().unfocusedLeadingIconColor
 
 val ColorScheme.defaultImageForeground: Color
     @Composable
@@ -132,9 +127,9 @@ val ColorScheme.imageIconButtonColors: IconButtonColors
     @Composable
     get() = IconButtonDefaults.iconButtonColors(
         containerColor = if (isSystemInDarkTheme()) {
-            Color(0xFF323232)
+            Color(0xFF232323)
         } else {
-            Color(0xFFF5F5F5)
+            Color(0xFFFFFFFF)
         }.copy(alpha = 0.7f)
     )
 

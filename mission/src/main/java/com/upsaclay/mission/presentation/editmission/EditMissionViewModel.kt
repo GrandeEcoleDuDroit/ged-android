@@ -13,13 +13,13 @@ import com.upsaclay.common.domain.usecase.GetUsersUseCase
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapNetworkErrorMessage
 import com.upsaclay.mission.domain.entity.Mission
-import com.upsaclay.mission.domain.entity.MissionState
+import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.entity.MissionTask
 import com.upsaclay.mission.domain.usecase.UpdateMissionUseCase
-import com.upsaclay.mission.presentation.MissionConstants.MAX_DESCRIPTION_LENGTH
-import com.upsaclay.mission.presentation.MissionConstants.MAX_DURATION_LENGTH
-import com.upsaclay.mission.presentation.MissionConstants.MAX_TITLE_LENGTH
-import com.upsaclay.mission.presentation.extension.managerSorting
+import com.upsaclay.mission.presentation.MissionPresentationUtils.MAX_DESCRIPTION_LENGTH
+import com.upsaclay.mission.presentation.MissionPresentationUtils.MAX_DURATION_LENGTH
+import com.upsaclay.mission.presentation.MissionPresentationUtils.MAX_TITLE_LENGTH
+import com.upsaclay.mission.presentation.extension.missionManagerSorting
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -53,11 +53,11 @@ class EditMissionViewModel(
     private var defaultUsers: List<User> = emptyList()
     private val _event = MutableSharedFlow<SingleUiEvent>()
     val event: SharedFlow<SingleUiEvent> = _event
-    private val missionUpdate = MutableStateFlow(MissionUpdate())
+    private val missionUpdateState = MutableStateFlow(MissionUpdateState())
 
     init {
         initUsers()
-        listenMissionUpdate()
+        listenMissionUpdateState()
     }
 
     fun updateMission() {
@@ -86,8 +86,8 @@ class EditMissionViewModel(
                 }
                 updateMissionUseCase(
                     mission = newMission,
-                    newImageUri = uiState.value.imageUri?.toString(),
-                    oldMissionState = mission.state
+                    imageUri = uiState.value.imageUri?.toString(),
+                    previousMissionState = mission.state
                 )
                 _event.emit(SingleUiEvent.Success())
             } catch (e: Exception) {
@@ -104,14 +104,14 @@ class EditMissionViewModel(
         _uiState.update {
             it.copy(imageUri = uri)
         }
-        missionUpdate.update {
-            it.copy(imageModelUpdated = validateImageModel(uri?.toString()))
+        missionUpdateState.update {
+            it.copy(imageReferenceUpdated = validateImageReference(uri?.toString()))
         }
     }
 
     fun onRemoveImage() {
         val state = when (mission.state) {
-            is MissionState.Draft -> MissionState.Draft(null)
+            is MissionState.Draft -> MissionState.Draft
             is MissionState.Publishing -> MissionState.Publishing(null)
             is MissionState.Published -> MissionState.Published(null)
             is MissionState.Error -> MissionState.Error(null)
@@ -123,8 +123,8 @@ class EditMissionViewModel(
                 imageUri = null
             )
         }
-        missionUpdate.update {
-            it.copy(imageModelUpdated = validateImageModel(null))
+        missionUpdateState.update {
+            it.copy(imageReferenceUpdated = validateImageReference(null))
         }
     }
 
@@ -133,7 +133,7 @@ class EditMissionViewModel(
         _uiState.update {
             it.copy(title = truncatedTitle)
         }
-        missionUpdate.update {
+        missionUpdateState.update {
             it.copy(titleUpdated = validateTitle(truncatedTitle))
         }
     }
@@ -143,32 +143,33 @@ class EditMissionViewModel(
         _uiState.update {
             it.copy(description = truncatedDescription)
         }
-        missionUpdate.update {
+        missionUpdateState.update {
             it.copy(descriptionUpdated = validateDescription(truncatedDescription))
         }
     }
 
-    fun onStartDateChange(date: LocalDate) {
+    fun onStartDateChange(startDate: LocalDate) {
         _uiState.update {
             it.copy(
-                startDate = date,
-                endDate = if (!validateEndDate(date, it.endDate)) date else it.endDate
+                startDate = startDate,
+                endDate = if (!validateEndDate(startDate, it.endDate)) startDate else it.endDate
             )
         }
-        missionUpdate.update {
-            it.copy(startDateUpdated = startDateUpdated(date))
+        missionUpdateState.update {
+            it.copy(startDateUpdated = validateStartDate(startDate))
         }
     }
 
-    fun onEndDateChange(date: LocalDate) {
+    fun onEndDateChange(endDate: LocalDate) {
+        val endDateValid = validateEndDate(uiState.value.startDate, endDate)
         _uiState.update {
             it.copy(
-                startDate = if (!validateEndDate(it.startDate, date)) date else it.startDate,
-                endDate = date
+                startDate = if (!endDateValid) endDate else it.startDate,
+                endDate = endDate
             )
         }
-        missionUpdate.update {
-            it.copy(endDateUpdated = endDateUpdated(date))
+        missionUpdateState.update {
+            it.copy(endDateUpdated = endDateValid)
         }
     }
 
@@ -183,7 +184,7 @@ class EditMissionViewModel(
         _uiState.update {
             it.copy(schoolLevels = schoolLevels)
         }
-        missionUpdate.update {
+        missionUpdateState.update {
             it.copy(schoolLevelsUpdated = validateSchoolLevels(schoolLevels))
         }
     }
@@ -198,7 +199,7 @@ class EditMissionViewModel(
         _uiState.update {
             it.copy(maxParticipants = value)
         }
-        missionUpdate.update {
+        missionUpdateState.update {
             it.copy(maxParticipantsUpdated = validateMaxParticipants(value))
         }
     }
@@ -208,33 +209,29 @@ class EditMissionViewModel(
         _uiState.update {
             it.copy(duration = truncatedDuration)
         }
-        missionUpdate.update {
+        missionUpdateState.update {
             it.copy(durationUpdated = validateDuration(truncatedDuration))
         }
     }
 
     fun onSaveManagers(managers: List<User>) {
-        val sortedManagers = managers.managerSorting()
         _uiState.update {
-            it.copy(managers = sortedManagers)
+            it.copy(managers = managers)
         }
-        missionUpdate.update {
-            it.copy(managersUpdated = validateManagers(sortedManagers))
+        missionUpdateState.update {
+            it.copy(managersUpdated = validateManagers(managers))
         }
     }
 
     fun onRemoveManager(manager: User) {
         val managers = uiState.value.managers
 
-        if (
-            managers.size > 1 ||
-            !managers.contains(manager)
-        ) {
+        if (managers.size > 1) {
             val updatedManagers = managers - manager
             _uiState.update {
                 it.copy(managers = updatedManagers)
             }
-            missionUpdate.update {
+            missionUpdateState.update {
                 it.copy(managersUpdated = validateManagers(updatedManagers))
             }
         }
@@ -247,87 +244,6 @@ class EditMissionViewModel(
 
         filterUsersByName(query)
     }
-
-    fun onResetUserQuery() {
-        _uiState.update {
-            it.copy(
-                userQuery = "",
-                users = defaultUsers
-            )
-        }
-    }
-
-    fun onAddTask(value: String) {
-        val task = MissionTask(generateIdUseCase(), value.trim())
-        val tasks = uiState.value.tasks + task
-        _uiState.update {
-            it.copy(tasks = tasks)
-        }
-        missionUpdate.update {
-            it.copy(tasksUpdated = validateTasks(tasks))
-        }
-    }
-
-    fun onEditTask(missionTask: MissionTask) {
-        val tasks = uiState.value.tasks.replace(
-            predicate = { it.id == missionTask.id },
-            value = missionTask.copy(value = missionTask.value.trim())
-        )
-        _uiState.update {
-            it.copy(tasks = tasks)
-        }
-        missionUpdate.update {
-            it.copy(tasksUpdated = validateTasks(tasks))
-        }
-    }
-
-    fun onRemoveTask(missionTask: MissionTask) {
-        val tasks = uiState.value.tasks - missionTask
-        _uiState.update { state ->
-            state.copy(tasks = tasks)
-        }
-        missionUpdate.update {
-            it.copy(tasksUpdated = validateTasks(tasks))
-        }
-    }
-
-    private fun validateImageModel(imageModel: String?): Boolean =
-        imageModel != mission.state.imageReference
-
-    private fun validateTitle(title: String): Boolean =
-        title != mission.title && title.isNotBlank()
-
-    private fun validateDescription(description: String): Boolean =
-        description != mission.description && description.isNotBlank()
-
-    private fun validateSchoolLevels(schoolLevels: List<SchoolLevel>): Boolean =
-        schoolLevels != mission.schoolLevels
-
-    private fun startDateUpdated(startDate: LocalDate): Boolean =
-        startDate != mission.startDate
-
-    private fun endDateUpdated(endDate: LocalDate): Boolean =
-        endDate != mission.endDate
-
-    private fun validateEndDate(startDate: LocalDate, endDate: LocalDate): Boolean =
-        endDate.isEqual(startDate) || endDate.isAfter(startDate)
-
-    private fun validateMaxParticipants(maxParticipants: String): Boolean =
-        maxParticipants != mission.maxParticipants.toString() && maxParticipants.isNotBlank()
-
-    private fun validateDuration(duration: String): Boolean =
-        duration != mission.duration.orEmpty()
-
-    private fun validateManagers(managers: List<User>): Boolean =
-        managers != mission.managers
-
-    private fun validateTasks(tasks: List<MissionTask>): Boolean =
-        tasks != mission.tasks
-
-    private fun validateMandatoryFields(): Boolean =
-        uiState.value.title.isNotBlank() &&
-                uiState.value.description.isNotBlank() &&
-                uiState.value.maxParticipants.isNotBlank()
 
     private fun filterUsersByName(query: String) {
         val users = if (query.isNotBlank()) {
@@ -344,24 +260,103 @@ class EditMissionViewModel(
         }
     }
 
+    fun onResetUserQuery() {
+        _uiState.update {
+            it.copy(
+                userQuery = "",
+                users = defaultUsers
+            )
+        }
+    }
+
+    fun onAddMissionTask(missionTaskValue: String) {
+        val missionTask = MissionTask(generateIdUseCase(), missionTaskValue.trim())
+        val missionTasks = uiState.value.tasks + missionTask
+        _uiState.update {
+            it.copy(tasks = missionTasks)
+        }
+        missionUpdateState.update {
+            it.copy(missionTasksUpdated = validateMissionTasks(missionTasks))
+        }
+    }
+
+    fun onEditMissionTask(missionTask: MissionTask) {
+        val tasks = uiState.value.tasks.replace(
+            predicate = { it.id == missionTask.id },
+            value = missionTask.copy(value = missionTask.value.trim())
+        )
+        _uiState.update {
+            it.copy(tasks = tasks)
+        }
+        missionUpdateState.update {
+            it.copy(missionTasksUpdated = validateMissionTasks(tasks))
+        }
+    }
+
+    fun onRemoveMissionTask(missionTask: MissionTask) {
+        val tasks = uiState.value.tasks - missionTask
+        _uiState.update { state ->
+            state.copy(tasks = tasks)
+        }
+        missionUpdateState.update {
+            it.copy(missionTasksUpdated = validateMissionTasks(tasks))
+        }
+    }
+
+    private fun validateImageReference(imageReference: String?): Boolean =
+        imageReference != mission.state.imageReference
+
+    private fun validateTitle(title: String): Boolean =
+        title != mission.title && title.isNotBlank()
+
+    private fun validateDescription(description: String): Boolean =
+        description != mission.description && description.isNotBlank()
+
+    private fun validateSchoolLevels(schoolLevels: List<SchoolLevel>): Boolean =
+        schoolLevels != mission.schoolLevels
+
+    private fun validateStartDate(startDate: LocalDate): Boolean =
+        startDate != mission.startDate
+
+    private fun validateEndDate(startDate: LocalDate, endDate: LocalDate): Boolean =
+        endDate != mission.endDate &&
+                (endDate.isEqual(startDate) || endDate.isAfter(startDate))
+
+    private fun validateMaxParticipants(maxParticipants: String): Boolean =
+        maxParticipants != mission.maxParticipants.toString() && maxParticipants.isNotBlank()
+
+    private fun validateDuration(duration: String): Boolean =
+        duration != mission.duration.orEmpty()
+
+    private fun validateManagers(managers: List<User>): Boolean =
+        managers != mission.managers
+
+    private fun validateMissionTasks(missionTasks: List<MissionTask>): Boolean =
+        missionTasks != mission.tasks
+
+    private fun validateMandatoryFields(): Boolean =
+        uiState.value.title.isNotBlank() &&
+                uiState.value.description.isNotBlank() &&
+                uiState.value.maxParticipants.isNotBlank()
+
+    private fun listenMissionUpdateState() {
+        viewModelScope.launch {
+            missionUpdateState.collect { missionUpdateState ->
+                _uiState.update {
+                    it.copy(updateEnabled = missionUpdateState.updated && validateMandatoryFields())
+                }
+            }
+        }
+    }
+
     private fun initUsers() {
         viewModelScope.launch {
             getUsersUseCase()
-                .managerSorting(mission)
+                .missionManagerSorting(mission)
                 .also { users ->
                     _uiState.update { it.copy(users = users) }
                     defaultUsers = users
                 }
-        }
-    }
-
-    private fun listenMissionUpdate() {
-        viewModelScope.launch {
-            missionUpdate.collect { missionUpdate ->
-                _uiState.update {
-                    it.copy(updateEnabled = missionUpdate.isUpdated && validateMandatoryFields())
-                }
-            }
         }
     }
 
@@ -385,7 +380,7 @@ class EditMissionViewModel(
         val allSchoolLevels: List<SchoolLevel> = SchoolLevel.getSchoolLevels()
     }
 
-    private data class MissionUpdate(
+    private data class MissionUpdateState(
         val titleUpdated: Boolean = false,
         val descriptionUpdated: Boolean = false,
         val startDateUpdated: Boolean = false,
@@ -394,10 +389,10 @@ class EditMissionViewModel(
         val maxParticipantsUpdated: Boolean = false,
         val durationUpdated: Boolean = false,
         val managersUpdated: Boolean = false,
-        val tasksUpdated: Boolean = false,
-        val imageModelUpdated: Boolean = false
+        val missionTasksUpdated: Boolean = false,
+        val imageReferenceUpdated: Boolean = false
     ) {
-        val isUpdated: Boolean
+        val updated: Boolean
             get() = titleUpdated ||
                     descriptionUpdated ||
                     startDateUpdated ||
@@ -406,7 +401,7 @@ class EditMissionViewModel(
                     maxParticipantsUpdated ||
                     durationUpdated ||
                     managersUpdated ||
-                    tasksUpdated ||
-                    imageModelUpdated
+                    missionTasksUpdated ||
+                    imageReferenceUpdated
     }
 }

@@ -1,6 +1,7 @@
 package com.upsaclay.common.data
 
 import com.upsaclay.common.data.local.BlockedUserLocalDataSource
+import com.upsaclay.common.data.local.ImageLocalDataSource
 import com.upsaclay.common.data.local.UserLocalDataSource
 import com.upsaclay.common.data.local.datastore.BlockedUserDataStore
 import com.upsaclay.common.data.local.datastore.UserDataStore
@@ -40,6 +41,7 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 val GED_SERVER_QUALIFIER = named("server_qualifier")
 private val OKHTTP_CLIENT_QUALIFIER = named("okhttp_client_qualifier")
@@ -94,9 +96,10 @@ val commonDataModule = module {
 
     singleOf(::ImageApiImpl) { bind<ImageApi>() }
     singleOf(::ImageRemoteDataSource)
+    singleOf(::ImageLocalDataSource)
+    singleOf(::ImageRepositoryImpl) { bind<ImageRepository>() }
 
     singleOf(::FileRepositoryImpl) { bind<FileRepository>() }
-    singleOf(::ImageRepositoryImpl) { bind<ImageRepository>() }
 
     singleOf(::UserFirestoreApi)
     singleOf(::UserApiImpl) { bind<UserApi>() }

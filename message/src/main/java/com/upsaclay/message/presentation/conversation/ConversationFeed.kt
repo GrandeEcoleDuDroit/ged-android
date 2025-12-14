@@ -22,7 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.previewText
+import com.upsaclay.common.presentation.theme.supportingText
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.message.R
 import com.upsaclay.message.domain.conversationsUIFixture
@@ -66,7 +66,7 @@ private fun EmptyConversationText(onCreateClick: () -> Unit) {
         Text(
             text = stringResource(id = R.string.start_conversation),
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.previewText,
+            color = MaterialTheme.colorScheme.supportingText,
             textAlign = TextAlign.Center
         )
 

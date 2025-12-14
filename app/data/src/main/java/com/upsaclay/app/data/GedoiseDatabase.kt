@@ -24,7 +24,7 @@ import com.upsaclay.news.data.local.model.LocalAnnouncement
         LocalMessageNotification::class,
         LocalMission::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class GedoiseDatabase : RoomDatabase() {

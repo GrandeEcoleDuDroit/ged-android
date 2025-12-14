@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,13 +20,13 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.TextFieldValue
 import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.presentation.components.TransparentTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.hintText
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
+import com.upsaclay.news.presentation.announcement.AnnouncementPresentationUtils.contentStyle
+import com.upsaclay.news.presentation.announcement.AnnouncementPresentationUtils.titleStyle
 
 @Composable
 fun CreateAnnouncementInputs(
@@ -60,15 +59,12 @@ fun CreateAnnouncementInputs(
 fun EditAnnouncementInputs(
     modifier: Modifier = Modifier,
     title: String,
-    content: TextFieldValue,
+    content: String,
     onTitleChange: (String) -> Unit,
-    onContentChange: (TextFieldValue) -> Unit
+    onContentChange: (String) -> Unit
 ) {
     SelectionContainer(modifier = modifier) {
-        Column(
-            modifier = Modifier.verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.mediumSpacing()
-        ) {
+        Column(verticalArrangement = Arrangement.mediumSpacing()) {
             AnnouncementTitleInput(
                 title = title,
                 onTitleChange = onTitleChange
@@ -88,13 +84,11 @@ private fun AnnouncementTitleInput(
     onTitleChange: (String) -> Unit,
     focused: Boolean = false
 ) {
-    val textStyle = MaterialTheme.typography.titleLarge
     val focusRequester = remember { FocusRequester() }
-    val placeholder: @Composable () -> Unit = {
+    val placeholder = @Composable {
         Text(
             text = stringResource(id = R.string.title_field_entry),
-            style = textStyle,
-            color = MaterialTheme.colorScheme.hintText
+            style = titleStyle
         )
     }
 
@@ -111,7 +105,7 @@ private fun AnnouncementTitleInput(
         value = title,
         placeholder = placeholder,
         onValueChange = onTitleChange,
-        textStyle = textStyle
+        textStyle = titleStyle
     )
 }
 
@@ -120,12 +114,10 @@ private fun AnnouncementContentInput(
     content: String,
     onContentChange: (String) -> Unit
 ) {
-    val textStyle = MaterialTheme.typography.bodyLarge
-    val placeholder: @Composable () -> Unit = {
+    val placeholder = @Composable {
         Text(
             text = stringResource(id = R.string.content_field_entry),
-            style = textStyle,
-            color = MaterialTheme.colorScheme.hintText
+            style = contentStyle
         )
     }
 
@@ -134,37 +126,7 @@ private fun AnnouncementContentInput(
         value = content,
         placeholder = placeholder,
         onValueChange = onContentChange,
-        textStyle = textStyle
-    )
-}
-
-@Composable
-private fun AnnouncementContentInput(
-    content: TextFieldValue,
-    onContentChange: (TextFieldValue) -> Unit
-) {
-    val textStyle = MaterialTheme.typography.bodyLarge
-    val focusRequester = remember { FocusRequester() }
-    val placeholder: @Composable () -> Unit = {
-        Text(
-            text = stringResource(id = R.string.content_field_entry),
-            style = textStyle,
-            color = MaterialTheme.colorScheme.hintText
-        )
-    }
-
-    LaunchedEffect(Unit) {
-        focusRequester.requestFocus()
-    }
-
-    TransparentTextField(
-        modifier = Modifier
-            .fillMaxWidth()
-            .focusRequester(focusRequester),
-        value = content,
-        placeholder = placeholder,
-        onValueChange = onContentChange,
-        textStyle = textStyle
+        textStyle = contentStyle
     )
 }
 

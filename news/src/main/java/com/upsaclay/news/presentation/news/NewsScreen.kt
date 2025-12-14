@@ -99,23 +99,25 @@ private fun NewsScreen(
     onSeeAllAnnouncementsClick: () -> Unit,
     onReportAnnouncementClick: (AnnouncementReport) -> Unit
 ) {
-    var showAnnouncementBottomSheet by remember { mutableStateOf(false) }
-    var showDeleteAnnouncementDialog by remember { mutableStateOf(false) }
-    var clickedAnnouncement by remember { mutableStateOf<Announcement?>(null) }
-    var showAnnouncementReportBottomSheet by remember { mutableStateOf(false) }
+    var activeBottomSheet by remember { mutableStateOf<NewsScreenBottomSheet?>(null) }
+    var activeDialog by remember { mutableStateOf<NewsDialog?>(null) }
 
-    if (showDeleteAnnouncementDialog) {
-        DefaultDialog(
-            modifier = Modifier.testTag(stringResource(id = R.string.read_screen_delete_dialog_tag)),
-            text = stringResource(id = R.string.delete_announcement_dialog_message),
-            confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
-            critical = true,
-            onConfirm = {
-                showDeleteAnnouncementDialog = false
-                clickedAnnouncement?.let(onDeleteAnnouncementClick)
-            },
-            onCancel = { showDeleteAnnouncementDialog = false }
-        )
+    when(val dialogType = activeDialog) {
+        is NewsDialog.DeleteAnnouncementDialog -> {
+            DefaultDialog(
+                modifier = Modifier.testTag(stringResource(id = R.string.read_screen_delete_dialog_tag)),
+                text = stringResource(id = R.string.delete_announcement_dialog_message),
+                confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
+                critical = true,
+                onConfirm = {
+                    activeDialog = null
+                    onDeleteAnnouncementClick(dialogType.announcement)
+                },
+                onCancel = { activeDialog = null }
+            )
+        }
+
+        else -> Unit
     }
 
     if (loading) {
@@ -137,70 +139,75 @@ private fun NewsScreen(
                 announcements = announcements,
                 onAnnouncementClick = onAnnouncementClick,
                 onUncreatedAnnouncementClick = { announcement ->
-                    clickedAnnouncement = announcement
-                    showAnnouncementBottomSheet = true
+                    activeBottomSheet = NewsScreenBottomSheet.AnnouncementBottomSheet(announcement)
                 },
                 onSeeAllAnnouncementsClick = onSeeAllAnnouncementsClick,
                 onAnnouncementOptionClick = { announcement ->
-                    clickedAnnouncement = announcement
-                    showAnnouncementBottomSheet = true
+                    activeBottomSheet = NewsScreenBottomSheet.AnnouncementBottomSheet(announcement)
                 }
             )
         }
 
-        if (showAnnouncementBottomSheet) {
-            clickedAnnouncement?.let { announcement ->
+        when(val bottomSheet = activeBottomSheet) {
+            is NewsScreenBottomSheet.AnnouncementBottomSheet -> {
                 AnnouncementBottomSheet(
-                    announcement = announcement,
-                    isEditable = user.admin && announcement.author.id == user.id,
+                    announcementState = bottomSheet.announcement.state,
+                    isEditable = user.admin && bottomSheet.announcement.author.id == user.id,
                     onEditClick = {
-                        showAnnouncementBottomSheet = false
-                        onEditAnnouncementClick(announcement.id)
+                        activeBottomSheet = null
+                        onEditAnnouncementClick(bottomSheet.announcement.id)
                     },
                     onResendClick = {
-                        showAnnouncementBottomSheet = false
-                        onResendAnnouncementClick(announcement)
+                        activeBottomSheet = null
+                        onResendAnnouncementClick(bottomSheet.announcement)
                     },
                     onReportClick = {
-                        showAnnouncementBottomSheet = false
-                        showAnnouncementReportBottomSheet = true
+                        activeBottomSheet = NewsScreenBottomSheet.AnnouncementReportBottomSheet(bottomSheet.announcement)
                     },
                     onDeleteClick = {
-                        showAnnouncementBottomSheet = false
-                        showDeleteAnnouncementDialog = true
+                        activeBottomSheet = null
+                        activeDialog = NewsDialog.DeleteAnnouncementDialog(bottomSheet.announcement)
                     },
-                    onDismiss = { showAnnouncementBottomSheet = false }
+                    onDismiss = { activeBottomSheet = null }
                 )
             }
-        }
 
-        if (showAnnouncementReportBottomSheet) {
-            ReportBottomSheet(
-                items = AnnouncementReport.Reason.entries,
-                onDismiss = { showAnnouncementReportBottomSheet = false },
-                onReportClick = { reason ->
-                    showAnnouncementReportBottomSheet = false
-
-                    clickedAnnouncement?.let { announcement ->
+            is NewsScreenBottomSheet.AnnouncementReportBottomSheet -> {
+                ReportBottomSheet(
+                    items = AnnouncementReport.Reason.entries,
+                    onReportClick = { reason ->
+                        activeBottomSheet = null
                         onReportAnnouncementClick(
                             AnnouncementReport(
-                                announcementId = announcement.id,
-                                userInfo = AnnouncementReport.UserInfo(
+                                announcementId = bottomSheet.announcement.id,
+                                author = AnnouncementReport.Author(
+                                    fullName = bottomSheet.announcement.author.fullName,
+                                    email = bottomSheet.announcement.author.email
+                                ),
+                                reporter = AnnouncementReport.Reporter(
                                     fullName = user.fullName,
                                     email = user.email
                                 ),
-                                authorInfo = AnnouncementReport.UserInfo(
-                                    fullName = announcement.author.fullName,
-                                    email = announcement.author.email
-                                ),
-                                reason = reason,
+                                reason = reason
                             )
                         )
-                    }
-                }
-            )
+                    },
+                    onDismiss = { activeBottomSheet = null }
+                )
+            }
+
+            else -> Unit
         }
     }
+}
+
+private sealed class NewsScreenBottomSheet {
+    data class AnnouncementBottomSheet(val announcement: Announcement): NewsScreenBottomSheet()
+    data class AnnouncementReportBottomSheet(val announcement: Announcement): NewsScreenBottomSheet()
+}
+
+private sealed class NewsDialog {
+    data class DeleteAnnouncementDialog(val announcement: Announcement): NewsDialog()
 }
 
 /*

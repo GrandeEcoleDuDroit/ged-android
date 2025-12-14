@@ -3,10 +3,10 @@ package com.upsaclay.message.data.remote.model
 internal data class RemoteMessageReport(
     val conversationId: String,
     val messageId: String,
-    val recipientInfo: RemoteMessageReport.RemoteUserInfo,
+    val recipient: RemoteMessageReport.RemoteRecipient,
     val reason: String
 ) {
-    internal data class RemoteUserInfo(
+    internal data class RemoteRecipient(
         val fullName: String,
         val email: String
     )

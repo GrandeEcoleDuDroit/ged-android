@@ -5,10 +5,16 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ContentTransform
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
@@ -34,6 +40,8 @@ import com.upsaclay.common.extension.rootMediumPadding
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.LoadingDialog
+import com.upsaclay.common.presentation.components.ProfilePicture
+import com.upsaclay.common.presentation.components.ProfilePictureWithIcon
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.user.UserInformationItems
 import com.upsaclay.common.utils.PhonePreviews
@@ -161,7 +169,7 @@ fun AccountInformationScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.mediumSpacing()
         ) {
-            AccountImage(
+            AccountInformationImage(
                 modifier = Modifier.testTag(stringResource(id = R.string.account_screen_profile_picture_tag)),
                 isEdited = screenState == AccountInformationScreenState.EDIT,
                 profilePictureUri = profilePictureUri,
@@ -197,6 +205,57 @@ fun AccountInformationScreen(
                     showDeleteProfilePictureDialog = true
                 }
             )
+        }
+    }
+}
+
+@Composable
+private fun AccountInformationImage(
+    modifier: Modifier = Modifier,
+    isEdited: Boolean,
+    profilePictureUri: Uri?,
+    profilePictureUrl: String?,
+    onClick: () -> Unit
+) {
+    val scaleImage = 1.8f
+
+    AnimatedContent(
+        targetState = profilePictureUri,
+        transitionSpec = {
+            ContentTransform(
+                targetContentEnter = fadeIn(),
+                initialContentExit = fadeOut()
+            )
+        }
+    ) { uri ->
+        when(uri) {
+            null -> {
+                ProfilePictureWithIcon(
+                    modifier = modifier,
+                    url = profilePictureUrl,
+                    iconVector = Icons.Default.Edit,
+                    scale = scaleImage,
+                    onClick = onClick
+                )
+            }
+
+            else -> {
+                if (isEdited) {
+                    ProfilePicture(
+                        modifier = modifier,
+                        uri = uri,
+                        scale = scaleImage,
+                        onClick = onClick
+                    )
+                } else {
+                    ProfilePicture(
+                        modifier = modifier,
+                        uri = uri,
+                        scale = scaleImage,
+                        onClick = onClick
+                    )
+                }
+            }
         }
     }
 }

@@ -18,22 +18,18 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.upsaclay.common.extension.mediumSpacing
-import com.upsaclay.common.extension.noRippleClickable
 import com.upsaclay.common.extension.smallMediumSpacing
 import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.components.OptionButton
-import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.previewText
 import com.upsaclay.common.utils.PhonePreviews
-import com.upsaclay.common.utils.getElapsedTimeValue
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.domain.entity.Announcement.AnnouncementState
 import com.upsaclay.news.domain.longAnnouncementFixture
+import com.upsaclay.news.presentation.announcement.AnnouncementPresentationUtils
 import com.upsaclay.news.presentation.announcement.readannouncement.AnnouncementHeader
 
 @Composable
@@ -172,52 +168,19 @@ private fun Header(
     onOptionClick: () -> Unit,
     onAuthorClick: () -> Unit
 ) {
-    val elapsedTimeValue = getElapsedTimeValue(announcement.date)
-
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.smallSpacing()
     ) {
-        Row(
+        AnnouncementHeader(
             modifier = Modifier.weight(1f),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.smallMediumSpacing()
-        ) {
-            Row(
-                modifier = Modifier.noRippleClickable(onClick = onAuthorClick),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.smallMediumSpacing()
-            ) {
-                ProfilePicture(
-                    url = announcement.author.profilePictureUrl,
-                    scale = 0.3f
-                )
-
-                Row(
-                    horizontalArrangement = Arrangement.smallSpacing(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        modifier = Modifier.weight(fill = false, weight = 1f),
-                        text = announcement.author.fullName,
-                        style = MaterialTheme.typography.titleSmall,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-
-                    Text(
-                        text = elapsedTimeValue,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.previewText
-                    )
-                }
-            }
-        }
+            announcement = announcement,
+            onClick = onAuthorClick
+        )
 
         OptionButton(
-            modifier = Modifier
-                .testTag(stringResource(id = R.string.announcement_option_button_tag)),
+            modifier = Modifier.testTag(stringResource(id = R.string.announcement_option_button_tag)),
             contentDescription = stringResource(id = R.string.announcement_option_icon_description),
             onClick = onOptionClick
         )
@@ -226,7 +189,7 @@ private fun Header(
 
 private val titleStyle: TextStyle
     @Composable
-    get() = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp)
+    get() = AnnouncementPresentationUtils.titleStyle.copy(fontSize = 18.sp)
 
 private val contentStyle: TextStyle
     @Composable
@@ -290,8 +253,7 @@ private fun AnnouncementHeaderPreview() {
         Surface {
             AnnouncementHeader(
                 announcement = longAnnouncementFixture,
-                onOptionClick = {},
-                onAuthorClick = {}
+                onClick = {}
             )
         }
     }

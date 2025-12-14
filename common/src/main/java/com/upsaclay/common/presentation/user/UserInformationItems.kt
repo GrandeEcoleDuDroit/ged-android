@@ -92,7 +92,9 @@ internal fun UserInformationItem(
             style = MaterialTheme.typography.labelLarge
         )
 
-        Text(text = accountInformationValue.value)
+        Text(
+            text = accountInformationValue.value
+        )
     }
 }
 

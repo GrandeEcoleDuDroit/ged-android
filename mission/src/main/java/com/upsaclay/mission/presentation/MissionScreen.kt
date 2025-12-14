@@ -45,11 +45,11 @@ import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
+import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.entity.MissionReport
-import com.upsaclay.mission.domain.entity.MissionState
 import com.upsaclay.mission.domain.missionsFixture
 import com.upsaclay.mission.presentation.components.MissionCard
-import com.upsaclay.mission.presentation.components.bottomsheet.MissionBottomSheet
+import com.upsaclay.mission.presentation.components.bottomsheets.MissionBottomSheet
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -116,22 +116,24 @@ private fun MissionScreen(
     onRefresh: () -> Unit,
     bottomBar: @Composable () -> Unit
 ) {
-    var showMissionBottomSheet by remember { mutableStateOf(false) }
-    var showDeleteMissionDialog by remember { mutableStateOf(false) }
-    var clickedMission by remember { mutableStateOf<Mission?>(null) }
-    var showMissionReportBottomSheet by remember { mutableStateOf(false) }
+    var activeBottomSheet by remember { mutableStateOf<MissionScreenBottomSheet?>(null) }
+    var activeDialog by remember { mutableStateOf<MissionScreenDialog?>(null) }
 
-    if (showDeleteMissionDialog) {
-        DefaultDialog(
-            text = stringResource(id = R.string.delete_mission_dialog_text),
-            confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
-            critical = true,
-            onConfirm = {
-                showDeleteMissionDialog = false
-                clickedMission?.let(onDeleteMissionClick)
-            },
-            onCancel = { showDeleteMissionDialog = false }
-        )
+    when(val dialog = activeDialog) {
+        is MissionScreenDialog.DeleteMissionDialog -> {
+            DefaultDialog(
+                text = stringResource(id = R.string.delete_mission_dialog_text),
+                confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
+                critical = true,
+                onConfirm = {
+                    activeDialog = null
+                    onDeleteMissionClick(dialog.mission)
+                },
+                onCancel = { activeDialog = null }
+            )
+        }
+
+        else -> Unit
     }
 
     if (loading) {
@@ -168,13 +170,11 @@ private fun MissionScreen(
                                     if (mission.state is MissionState.Published) {
                                         onMissionClick(mission.id)
                                     } else {
-                                        clickedMission = mission
-                                        showMissionBottomSheet = true
+                                        activeBottomSheet = MissionScreenBottomSheet.MissionBottomSheet(mission)
                                     }
                                 },
                                 onOptionClick = {
-                                    clickedMission = mission
-                                    showMissionBottomSheet = true
+                                    activeBottomSheet = MissionScreenBottomSheet.MissionBottomSheet(mission)
                                 }
                             )
                         }
@@ -193,53 +193,51 @@ private fun MissionScreen(
             }
         }
 
-        if (showMissionBottomSheet) {
-            clickedMission?.let { mission ->
+        when(val bottomSheet = activeBottomSheet) {
+            is MissionScreenBottomSheet.MissionBottomSheet -> {
                 MissionBottomSheet(
-                    mission = mission,
-                    currentUser = user,
+                    mission = bottomSheet.mission,
+                    editable = bottomSheet.mission.managers.contains(user),
                     onResendClick = {
-                        showMissionBottomSheet = false
-                        onResendMissionClick(mission)
+                        activeBottomSheet = null
+                        onResendMissionClick(bottomSheet.mission)
                     },
                     onEditClick = {
-                        showMissionBottomSheet = false
-                        onEditMissionClick(mission)
+                        activeBottomSheet = null
+                        onEditMissionClick(bottomSheet.mission)
                     },
                     onReportClick = {
-                        showMissionBottomSheet = false
-                        showMissionReportBottomSheet = true
+                        activeBottomSheet = MissionScreenBottomSheet.MissionReportBottomSheet(bottomSheet.mission)
                     },
                     onDeleteClick = {
-                        showMissionBottomSheet = false
-                        showDeleteMissionDialog = true
+                        activeBottomSheet = null
+                        activeDialog = MissionScreenDialog.DeleteMissionDialog(bottomSheet.mission)
                     },
-                    onDismiss = { showMissionBottomSheet = false }
+                    onDismiss = { activeBottomSheet = null }
                 )
             }
-        }
 
-        if (showMissionReportBottomSheet) {
-            ReportBottomSheet(
-                items = MissionReport.Reason.entries,
-                onDismiss = { showMissionReportBottomSheet = false },
-                onReportClick = { reason ->
-                    showMissionReportBottomSheet = false
-
-                    clickedMission?.let { mission ->
+            is MissionScreenBottomSheet.MissionReportBottomSheet -> {
+                ReportBottomSheet(
+                    items = MissionReport.Reason.entries,
+                    onReportClick = { reason ->
+                        activeBottomSheet = null
                         onReportMissionClick(
                             MissionReport(
-                                missionId = mission.id,
-                                userInfo = MissionReport.UserInfo(
+                                missionId = bottomSheet.mission.id,
+                                reporter = MissionReport.Reporter(
                                     fullName = user.fullName,
                                     email = user.email
                                 ),
-                                reason = reason,
+                                reason = reason
                             )
                         )
-                    }
-                }
-            )
+                    },
+                    onDismiss = { activeBottomSheet = null }
+                )
+            }
+
+            else -> Unit
         }
     }
 }
@@ -277,6 +275,15 @@ private fun MissionScaffold(
         },
         content = content
     )
+}
+
+private sealed class MissionScreenBottomSheet {
+    data class MissionBottomSheet(val mission: Mission): MissionScreenBottomSheet()
+    data class MissionReportBottomSheet(val mission: Mission): MissionScreenBottomSheet()
+}
+
+private sealed class MissionScreenDialog {
+    data class DeleteMissionDialog(val mission: Mission): MissionScreenDialog()
 }
 
 /*

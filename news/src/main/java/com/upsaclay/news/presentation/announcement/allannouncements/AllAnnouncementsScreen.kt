@@ -39,6 +39,7 @@ import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
+import com.upsaclay.news.domain.announcementsFixture
 import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.domain.entity.Announcement.AnnouncementState
 import com.upsaclay.news.domain.entity.AnnouncementReport
@@ -112,23 +113,25 @@ private fun AllAnnouncementsScreen(
     onReportAnnouncementClick: (AnnouncementReport) -> Unit,
     onDeleteAnnouncementClick: (Announcement) -> Unit
 ) {
-    var showAnnouncementBottomSheet by remember { mutableStateOf(false) }
-    var showAnnouncementReportBottomSheet by remember { mutableStateOf(false) }
-    var showDeleteAnnouncementDialog by remember { mutableStateOf(false) }
-    var clickedAnnouncement by remember { mutableStateOf<Announcement?>(null) }
+    var activeBottomSheet by remember { mutableStateOf<AllAnnouncementScreenBottomSheet?>(null) }
+    var activeDialog by remember { mutableStateOf<AllAnnouncementDialog?>(null) }
 
-    if (showDeleteAnnouncementDialog) {
-        DefaultDialog(
-            modifier = Modifier.testTag(stringResource(id = R.string.read_screen_delete_dialog_tag)),
-            text = stringResource(id = R.string.delete_announcement_dialog_message),
-            confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
-            critical = true,
-            onConfirm = {
-                showDeleteAnnouncementDialog = false
-                clickedAnnouncement?.let(onDeleteAnnouncementClick)
-            },
-            onCancel = { showDeleteAnnouncementDialog = false }
-        )
+    when(val dialog = activeDialog) {
+        is AllAnnouncementDialog.DeleteAnnouncementDialog -> {
+            DefaultDialog(
+                modifier = Modifier.testTag(stringResource(id = R.string.read_screen_delete_dialog_tag)),
+                text = stringResource(id = R.string.delete_announcement_dialog_message),
+                confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
+                critical = true,
+                onConfirm = {
+                    activeDialog = null
+                    onDeleteAnnouncementClick(dialog.announcement)
+                },
+                onCancel = { activeDialog = null }
+            )
+        }
+
+        else -> Unit
     }
 
     if (loading) {
@@ -169,15 +172,15 @@ private fun AllAnnouncementsScreen(
                                         if (announcement.state == AnnouncementState.PUBLISHED) {
                                             onAnnouncementClick(announcement.id)
                                         } else {
-                                            clickedAnnouncement = announcement
-                                            showAnnouncementBottomSheet = true
+                                            activeBottomSheet =
+                                                AllAnnouncementScreenBottomSheet.AnnouncementBottomSheet(announcement)
                                         }
                                     }
                                     .padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
                                 announcement = announcement,
                                 onOptionClick = {
-                                    clickedAnnouncement = announcement
-                                    showAnnouncementBottomSheet = true
+                                    activeBottomSheet =
+                                        AllAnnouncementScreenBottomSheet.AnnouncementBottomSheet(announcement)
                                 },
                                 onAuthorClick = { onAuthorClick(announcement.author) }
                             )
@@ -202,59 +205,67 @@ private fun AllAnnouncementsScreen(
             }
         }
 
-        if (showAnnouncementBottomSheet) {
-            clickedAnnouncement?.let { announcement ->
+        when(val bottomSheet = activeBottomSheet) {
+            is AllAnnouncementScreenBottomSheet.AnnouncementBottomSheet -> {
                 AnnouncementBottomSheet(
-                    announcement = announcement,
-                    isEditable = user.admin && announcement.author.id == user.id,
+                    announcementState = bottomSheet.announcement.state,
+                    isEditable = user.admin && bottomSheet.announcement.author.id == user.id,
                     onEditClick = {
-                        showAnnouncementBottomSheet = false
-                        clickedAnnouncement?.let(onEditAnnouncementClick)
+                        activeBottomSheet = null
+                        onEditAnnouncementClick(bottomSheet.announcement)
                     },
                     onResendClick = {
-                        showAnnouncementBottomSheet = false
-                        onResendAnnouncementClick(announcement)
+                        activeBottomSheet = null
+                        onResendAnnouncementClick(bottomSheet.announcement)
                     },
                     onReportClick = {
-                        showAnnouncementBottomSheet = false
-                        showAnnouncementReportBottomSheet = true
+                        activeBottomSheet =
+                            AllAnnouncementScreenBottomSheet.AnnouncementReportBottomSheet(bottomSheet.announcement)
                     },
                     onDeleteClick = {
-                        showAnnouncementBottomSheet = false
-                        showDeleteAnnouncementDialog = true
+                        activeBottomSheet = null
+                        activeDialog = AllAnnouncementDialog.DeleteAnnouncementDialog(bottomSheet.announcement)
                     },
-                    onDismiss = { showAnnouncementBottomSheet = false }
+                    onDismiss = { activeBottomSheet = null }
                 )
             }
-        }
 
-        if (showAnnouncementReportBottomSheet) {
-            ReportBottomSheet(
-                items = AnnouncementReport.Reason.entries,
-                onDismiss = { showAnnouncementReportBottomSheet = false },
-                onReportClick = { reason ->
-                    showAnnouncementReportBottomSheet = false
-
-                    clickedAnnouncement?.let { announcement ->
+            is AllAnnouncementScreenBottomSheet.AnnouncementReportBottomSheet -> {
+                ReportBottomSheet(
+                    items = AnnouncementReport.Reason.entries,
+                    onReportClick = { reason ->
+                        activeBottomSheet = null
                         onReportAnnouncementClick(
                             AnnouncementReport(
-                                announcementId = announcement.id,
-                                userInfo = AnnouncementReport.UserInfo(
+                                announcementId = bottomSheet.announcement.id,
+                                author = AnnouncementReport.Author(
+                                    fullName = bottomSheet.announcement.author.fullName,
+                                    email = bottomSheet.announcement.author.email
+                                ),
+                                reporter = AnnouncementReport.Reporter(
                                     fullName = user.fullName,
                                     email = user.email
                                 ),
-                                authorInfo = AnnouncementReport.UserInfo(
-                                    fullName = announcement.author.fullName,
-                                    email = announcement.author.email
-                                ),
-                                reason = reason,
+                                reason = reason
                             )
                         )
-                    }
-                }
-            )
+                    },
+                    onDismiss = { activeBottomSheet = null }
+                )
+            }
+
+            else -> Unit
         }
     }
+}
+
+private sealed class AllAnnouncementScreenBottomSheet {
+    data class AnnouncementBottomSheet(val announcement: Announcement): AllAnnouncementScreenBottomSheet()
+    data class AnnouncementReportBottomSheet(val announcement: Announcement): AllAnnouncementScreenBottomSheet()
+}
+
+private sealed class AllAnnouncementDialog {
+    data class DeleteAnnouncementDialog(val announcement: Announcement): AllAnnouncementDialog()
 }
 
 /*
@@ -269,7 +280,7 @@ private fun AllAnnouncementsScreenPreview() {
     GedoiseTheme {
         AllAnnouncementsScreen(
             user = userFixture,
-            announcements = null,
+            announcements = announcementsFixture,
             refreshing = false,
             loading = false,
             onBackClick = {},

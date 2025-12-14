@@ -33,7 +33,7 @@ import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.CircularProgressBar
 import com.upsaclay.common.presentation.components.UserItem
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.previewText
+import com.upsaclay.common.presentation.theme.supportingText
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.message.domain.entity.Conversation
 import kotlinx.coroutines.launch
@@ -160,7 +160,7 @@ private fun UsersFeed(
                         .padding(top = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
                     text = stringResource(id = com.upsaclay.common.R.string.no_user),
                     textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.previewText
+                    color = MaterialTheme.colorScheme.supportingText
                 )
             }
         }

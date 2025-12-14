@@ -2,13 +2,11 @@ package com.upsaclay.news.presentation.announcement.readannouncement
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
@@ -22,16 +20,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import com.upsaclay.common.domain.entity.User
-import com.upsaclay.common.domain.userFixture2
-import com.upsaclay.common.extension.noRippleClickable
 import com.upsaclay.common.extension.rootMediumPadding
 import com.upsaclay.common.extension.smallMediumSpacing
 import com.upsaclay.common.presentation.SingleUiEvent
@@ -39,16 +32,15 @@ import com.upsaclay.common.presentation.components.BackTopBar
 import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.OptionButton
-import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.previewText
 import com.upsaclay.common.utils.PhonePreviews
-import com.upsaclay.common.utils.getElapsedTimeValue
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.domain.entity.AnnouncementReport
 import com.upsaclay.news.domain.longAnnouncementFixture
+import com.upsaclay.news.presentation.announcement.AnnouncementPresentationUtils.contentStyle
+import com.upsaclay.news.presentation.announcement.AnnouncementPresentationUtils.titleStyle
 import com.upsaclay.news.presentation.announcement.components.AnnouncementBottomSheet
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -115,7 +107,6 @@ fun ReadAnnouncementScreen(
     onReportAnnouncementClick: (AnnouncementReport) -> Unit,
     onDeleteAnnouncementClick: () -> Unit
 ) {
-    val elapsedTimeValue = getElapsedTimeValue(announcement.date)
     var showDeleteAnnouncementDialog by remember { mutableStateOf(false) }
     var showBottomSheet by remember { mutableStateOf(false) }
     var showReportBottomSheet by remember { mutableStateOf(false) }
@@ -167,14 +158,13 @@ fun ReadAnnouncementScreen(
                     .rootMediumPadding(innerPadding)
                     .verticalScroll(rememberScrollState()),
                 announcement = announcement,
-                elapsedTimeValue = elapsedTimeValue,
                 onAuthorClick = { onAuthorClick(announcement.author) }
             )
         }
 
         if (showBottomSheet) {
             AnnouncementBottomSheet(
-                announcement = announcement,
+                announcementState = announcement.state,
                 isEditable = user.admin && user.id == announcement.author.id,
                 onEditClick = {
                     showBottomSheet = false
@@ -202,13 +192,13 @@ fun ReadAnnouncementScreen(
                     onReportAnnouncementClick(
                         AnnouncementReport(
                             announcementId = announcement.id,
-                            userInfo = AnnouncementReport.UserInfo(
-                                fullName = user.fullName,
-                                email = user.email
-                            ),
-                            authorInfo = AnnouncementReport.UserInfo(
+                            author = AnnouncementReport.Author(
                                 fullName = announcement.author.fullName,
                                 email = announcement.author.email
+                            ),
+                            reporter = AnnouncementReport.Reporter(
+                                fullName = user.fullName,
+                                email = user.email
                             ),
                             reason = reason
                         )
@@ -223,50 +213,29 @@ fun ReadAnnouncementScreen(
 private fun Announcement(
     modifier: Modifier = Modifier,
     announcement: Announcement,
-    elapsedTimeValue: String,
     onAuthorClick: () -> Unit
 ) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.smallMediumSpacing()
     ) {
-        Row(
-            modifier = Modifier.noRippleClickable(onClick = onAuthorClick),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding))
-        ) {
-            ProfilePicture(
-                url = announcement.author.profilePictureUrl,
-                scale = 0.4f
-            )
-
-            Text(
-                modifier = Modifier.weight(fill = false, weight = 1f),
-                text = announcement.author.fullName,
-                style = MaterialTheme.typography.titleMedium,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-
-            Text(
-                text = elapsedTimeValue,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.previewText
-            )
-        }
+        AnnouncementHeader(
+            announcement = announcement,
+            onClick = onAuthorClick
+        )
 
         announcement.title?.let {
             Text(
                 modifier = Modifier.testTag(stringResource(id = R.string.read_screen_announcement_title_tag)),
                 text = it,
-                style = MaterialTheme.typography.titleLarge
+                style = titleStyle
             )
         }
 
         Text(
             modifier = Modifier.testTag(stringResource(id = R.string.read_screen_announcement_content_tag)),
             text = announcement.content,
-            style = MaterialTheme.typography.bodyLarge
+            style = contentStyle
         )
     }
 }
@@ -283,7 +252,7 @@ private fun NonEditableAnnouncementScreenPreview() {
     GedoiseTheme {
         Surface {
             ReadAnnouncementScreen(
-                user = userFixture2,
+                user = longAnnouncementFixture.author,
                 announcement = longAnnouncementFixture,
                 snackbarHostState = SnackbarHostState(),
                 onBackClick = {},

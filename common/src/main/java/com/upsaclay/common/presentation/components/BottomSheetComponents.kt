@@ -23,8 +23,8 @@ fun <T>ReportBottomSheet(
     modifier: Modifier = Modifier,
     sheetState: SheetState = rememberModalBottomSheetState(),
     items: List<T>,
-    onDismiss: () -> Unit,
-    onReportClick: (T) -> Unit
+    onReportClick: (T) -> Unit,
+    onDismiss: () -> Unit
 ) {
     ModalBottomSheet(
         modifier = modifier,

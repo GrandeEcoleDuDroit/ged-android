@@ -1,5 +1,6 @@
 import com.upsaclay.common.domain.repository.ImageRepository
-import com.upsaclay.mission.domain.entity.MissionState
+import com.upsaclay.mission.domain.MissionUtils
+import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.missionFixture
 import com.upsaclay.mission.domain.repository.MissionRepository
 import com.upsaclay.mission.domain.usecase.UpdateMissionUseCase
@@ -22,10 +23,12 @@ class UpdateMissionUseCaseTest {
 
     @Before
     fun setUp() {
-        coEvery { imageRepository.createLocalImage(any(), any()) } returns file
+        coEvery { imageRepository.getFileExtension(any()) } returns ""
+        coEvery { imageRepository.createCacheImage(any(), any()) } returns file
         coEvery { missionRepository.updateMission(any(), any()) } returns Unit
         coEvery { imageRepository.deleteLocalImage(any()) } returns Unit
         coEvery { imageRepository.deleteRemoteImage(any()) } returns Unit
+        coEvery { imageRepository.deleteCacheImage(any()) } returns Unit
 
         useCase = UpdateMissionUseCase(
             missionRepository = missionRepository,
@@ -34,7 +37,7 @@ class UpdateMissionUseCaseTest {
     }
 
     @Test
-    fun updateMissionUseCase_should_create_image_when_image_uri_is_not_null() = runTest {
+    fun updateMissionUseCase_should_create_cache_image_when_image_uri_is_not_null() = runTest {
         // Given
         val mission = missionFixture.copy(state = MissionState.Published())
 
@@ -43,12 +46,7 @@ class UpdateMissionUseCaseTest {
 
         // Then
         coVerify {
-            imageRepository.createLocalImage(any(), imageUri)
-        }
-        coVerify {
-            missionRepository.updateMission(
-                mission.copy(state = MissionState.Published(file.name)), file
-            )
+            imageRepository.createCacheImage(any(), imageUri)
         }
     }
 
@@ -60,22 +58,12 @@ class UpdateMissionUseCaseTest {
         // When
         useCase(
             mission = mission,
-            newImageUri = imageUri,
-            oldMissionState = MissionState.Published(imageUrl))
+            imageUri = imageUri,
+            previousMissionState = MissionState.Published(imageUrl)
+        )
 
         // Then
-        coVerify { imageRepository.deleteRemoteImage(imageUrl) }
-    }
-
-    @Test
-    fun updateMissionUseCase_should_delete_local_mission_image_when_was_created() = runTest {
-        // Given
-        val mission = missionFixture.copy(state = MissionState.Published(imageUrl))
-
-        // When
-        useCase(mission, imageUri, MissionState.Published())
-
-        // Then
-        coVerify { imageRepository.deleteLocalImage(file.name) }
+        coVerify { imageRepository.deleteRemoteImage(MissionUtils.Image.getPath(imageUrl)!!) }
+        coVerify { imageRepository.deleteCacheImage(any()) }
     }
 }

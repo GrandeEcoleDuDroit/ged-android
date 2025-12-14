@@ -4,7 +4,7 @@ import com.google.gson.GsonBuilder
 import com.upsaclay.common.domain.adapter.LocalDateAdapter
 import com.upsaclay.common.domain.adapter.LocalDateTimeAdapter
 import com.upsaclay.mission.domain.entity.Mission
-import com.upsaclay.mission.domain.entity.MissionState
+import com.upsaclay.mission.domain.entity.Mission.MissionState
 import java.time.LocalDate
 import java.time.LocalDateTime
 

@@ -51,6 +51,18 @@ fun TextIcon(
     }
 }
 
+@Composable
+fun SectionTitle(
+    modifier: Modifier = Modifier,
+    title: String
+) {
+    Text(
+        modifier = modifier,
+        text = title,
+        style = MaterialTheme.typography.titleMedium
+    )
+}
+
 /*
  =====================================================================
                                 Preview
@@ -80,6 +92,18 @@ private fun TextIconPreview() {
                     )
                 },
                 text = { Text("Text") }
+            )
+        }
+    }
+}
+
+@PhonePreviews
+@Composable
+private fun SectionTitlePreview() {
+    GedoiseTheme {
+        Surface {
+            SectionTitle(
+                title = "Section title"
             )
         }
     }

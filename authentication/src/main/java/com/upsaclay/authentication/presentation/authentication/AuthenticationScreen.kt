@@ -152,7 +152,7 @@ private fun AuthenticationScreen(
                     focusManager.clearFocus()
                     onLoginClick()
                 },
-                onRegistrationClick = onRegistrationClick
+                onRegisterClick = onRegistrationClick
             )
         }
     }

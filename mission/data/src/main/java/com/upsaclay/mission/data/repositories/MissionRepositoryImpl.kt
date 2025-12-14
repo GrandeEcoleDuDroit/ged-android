@@ -1,8 +1,8 @@
 package com.upsaclay.mission.data.repositories
 
-import com.upsaclay.common.data.UrlUtils
 import com.upsaclay.mission.data.local.MissionLocalDataSource
 import com.upsaclay.mission.data.remote.MissionRemoteDataSource
+import com.upsaclay.mission.domain.MissionUtils
 import com.upsaclay.mission.domain.entity.AddMissionParticipant
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.MissionReport
@@ -49,7 +49,7 @@ class MissionRepositoryImpl(
     }
 
     override suspend fun deleteMission(mission: Mission, imageUrl: String?) {
-        val imageFileName = UrlUtils.extractFileName(imageUrl)
+        val imageFileName = MissionUtils.Image.getFileName(imageUrl)
         missionRemoteDataSource.deleteMission(mission.id, imageFileName)
         missionLocalDataSource.deleteMission(mission)
     }
@@ -64,7 +64,7 @@ class MissionRepositoryImpl(
 
     override suspend fun addParticipant(addMissionParticipant: AddMissionParticipant) {
         missionRemoteDataSource.addParticipant(addMissionParticipant)
-        missionLocalDataSource.addParticipant(addMissionParticipant.missionId, addMissionParticipant.user)
+        missionLocalDataSource.addParticipant(addMissionParticipant.missionId, addMissionParticipant.currentUser)
     }
 
     override suspend fun removeParticipant(missionId: String, userId: String) {

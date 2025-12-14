@@ -2,10 +2,10 @@ package com.upsaclay.mission.domain.entity
 
 data class MissionReport(
     val missionId: String,
-    val userInfo: MissionReport.UserInfo,
-    val reason: MissionReport.Reason
+    val reporter: Reporter,
+    val reason: Reason
 ) {
-    data class UserInfo(
+    data class Reporter(
         val fullName: String,
         val email: String
     )

@@ -1,18 +1,20 @@
 import com.upsaclay.common.domain.repository.FileRepository
 import com.upsaclay.common.domain.repository.ImageRepository
-import com.upsaclay.mission.domain.entity.MissionState
+import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.missionFixture
 import com.upsaclay.mission.domain.repository.MissionRepository
 import com.upsaclay.mission.domain.usecase.ResendMissionUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import org.junit.Before
 import org.junit.Test
 import java.io.File
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class ResendMissionUseCaseTest {
     private val missionRepository: MissionRepository = mockk()
     private val fileRepository: FileRepository = mockk()
@@ -147,7 +149,7 @@ class ResendMissionUseCaseTest {
 
         // Then
         coVerify {
-            imageRepository.deleteLocalImage(file.name)
+            imageRepository.deleteLocalImage(file.path)
         }
     }
 }

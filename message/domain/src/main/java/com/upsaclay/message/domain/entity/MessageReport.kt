@@ -3,10 +3,10 @@ package com.upsaclay.message.domain.entity
 data class MessageReport(
     val conversationId: String,
     val messageId: String,
-    val recipientInfo: MessageReport.UserInfo,
+    val recipient: MessageReport.Recipient,
     val reason: MessageReport.Reason
 ) {
-    data class UserInfo(
+    data class Recipient(
         val fullName: String,
         val email: String
     )

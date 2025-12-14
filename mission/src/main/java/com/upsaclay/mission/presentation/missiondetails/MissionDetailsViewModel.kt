@@ -38,18 +38,18 @@ class MissionDetailsViewModel(
     val event: SharedFlow<SingleUiEvent> = _event
 
     init {
-        listenUserMission()
+        listenUserAndMission()
     }
 
     fun registerToMission() {
-        val user = uiState.value.user ?: return
+        val currentUser = uiState.value.currentUser ?: return
         val mission = uiState.value.mission ?: return
         val addMissionParticipant = AddMissionParticipant(
             missionId = missionId,
             schoolLevels = mission.schoolLevels,
             maxParticipants = mission.maxParticipants,
             participantsNumber = mission.participants.size,
-            user = user
+            currentUser = currentUser
         )
        executeRequest {
            missionRepository.addParticipant(addMissionParticipant)
@@ -57,7 +57,7 @@ class MissionDetailsViewModel(
     }
 
     fun unregisterFromMission() {
-        val user = uiState.value.user ?: return
+        val user = uiState.value.currentUser ?: return
         executeRequest {
             missionRepository.removeParticipant(missionId, user.id)
         }
@@ -87,44 +87,45 @@ class MissionDetailsViewModel(
 
     private fun executeRequest(block: suspend () -> Unit) {
         var loadingJob: Job? = null
+
         viewModelScope.launch {
             try {
                 if (!connectivityObserver.isConnected) {
                     throw NoInternetConnectionException()
                 }
+
                 loadingJob = launchDelayed(300) {
                     _uiState.update { it.copy(loading = true) }
                 }
+
                 block()
             } catch (e: Exception) {
                 _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
             } finally {
                 loadingJob?.cancel()
-                _uiState.update {
-                    it.copy(loading = false)
-                }
+                _uiState.update { it.copy(loading = false) }
             }
         }
     }
 
-    private fun listenUserMission() {
+    private fun listenUserAndMission() {
         combine(
             userRepository.user,
             missionRepository.getMissionFlow(missionId)
         ) { user, mission ->
-            val isManager = mission.managers.contains(user)
+            val isManager = mission.managers.any { it.id == user.id }
             _uiState.update {
                 it.copy(
-                    user = user,
+                    currentUser = user,
                     mission = mission,
                     isManager = isManager,
-                    buttonState = updateMissionButtonState(user, mission, isManager)
+                    buttonState = updateButtonState(user, mission, isManager)
                 )
             }
         }.launchIn(viewModelScope)
     }
 
-    private fun updateMissionButtonState(
+    private fun updateButtonState(
         user: User,
         mission: Mission,
         isManager: Boolean
@@ -134,7 +135,7 @@ class MissionDetailsViewModel(
 
             mission.complete -> MissionButtonState.Complete
 
-            mission.participants.contains(user) -> MissionButtonState.Registered
+            mission.participants.any { it.id == user.id } -> MissionButtonState.Registered
 
             else -> {
                 val enabled = !mission.full && mission.schoolLevelPermitted(user.schoolLevel)
@@ -144,7 +145,7 @@ class MissionDetailsViewModel(
     }
 
     data class MissionDetailsUiState(
-        val user: User? = null,
+        val currentUser: User? = null,
         val mission: Mission? = null,
         val isManager: Boolean = false,
         val loading: Boolean = false,

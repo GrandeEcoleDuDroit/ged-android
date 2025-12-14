@@ -6,8 +6,8 @@ import com.google.firebase.firestore.MetadataChanges
 import com.google.firebase.firestore.firestore
 import com.upsaclay.common.data.remote.model.ServerResponse
 import com.upsaclay.message.data.model.ConversationField
-import com.upsaclay.message.data.model.MessageField.Local.MESSAGE_SEEN
 import com.upsaclay.message.data.model.MessageField.MESSAGE_TABLE_NAME
+import com.upsaclay.message.data.model.MessageField.Remote.SEEN
 import com.upsaclay.message.data.remote.model.RemoteMessage
 import com.upsaclay.message.data.remote.model.RemoteMessageReport
 import com.upsaclay.message.data.remote.withOffsetTime
@@ -61,7 +61,7 @@ internal class MessageApiImpl(
             .document(remoteMessage.conversationId)
             .collection(MESSAGE_TABLE_NAME)
             .document(remoteMessage.messageId)
-            .update(MESSAGE_SEEN, remoteMessage.seen)
+            .update(SEEN, remoteMessage.seen)
             .await()
     }
 

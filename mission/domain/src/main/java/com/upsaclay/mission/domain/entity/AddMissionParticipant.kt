@@ -8,5 +8,5 @@ data class AddMissionParticipant(
     val schoolLevels: List<SchoolLevel>,
     val maxParticipants: Int,
     val participantsNumber: Int,
-    val user: User
+    val currentUser: User
 )

@@ -2,7 +2,7 @@ package com.upsaclay.mission.domain.usecase
 
 import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.mission.domain.entity.Mission
-import com.upsaclay.mission.domain.entity.MissionState
+import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.repository.MissionRepository
 
 class DeleteMissionUseCase(
@@ -15,14 +15,18 @@ class DeleteMissionUseCase(
 
             is MissionState.Publishing -> {
                 missionRepository.deleteLocalMission(mission)
-                state.imagePath?.let { imageRepository.deleteLocalImage(it) }
+                state.imagePath?.let {
+                    imageRepository.deleteLocalImage(it)
+                }
             }
 
             is MissionState.Published -> missionRepository.deleteMission(mission, state.imageUrl)
 
             is MissionState.Error -> {
                 missionRepository.deleteLocalMission(mission)
-                state.imagePath?.let { imageRepository.deleteLocalImage(it) }
+                state.imagePath?.let {
+                    imageRepository.deleteLocalImage(it)
+                }
             }
         }
     }

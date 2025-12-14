@@ -1,6 +1,7 @@
 package com.upsaclay.news.data
 
-import com.upsaclay.common.data.UrlUtils.formatOracleBucketUrl
+import com.upsaclay.common.data.extensions.formatUrl
+import com.upsaclay.common.domain.UserUtils
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.entity.User.UserState
@@ -27,9 +28,17 @@ fun Announcement.toLocal() = LocalAnnouncement(
     announcementAuthorEmail = author.email,
     announcementAuthorSchoolLevel = author.schoolLevel.number,
     announcementAuthorAdmin = author.admin,
-    announcementAuthorProfilePictureFileName = author.profilePictureUrl,
+    announcementAuthorProfilePictureFileName = UserUtils.ProfilePicture.getFileName(author.profilePictureUrl),
     announcementAuthorState = author.state.toString(),
     announcementAuthorTester = author.tester
+)
+
+internal fun Announcement.toRemote() = OutbondRemoteAnnouncement(
+    announcementId = id,
+    announcementTitle = title,
+    announcementContent = content,
+    announcementDate = date.toEpochMilliUTC(),
+    userId = author.id
 )
 
 fun LocalAnnouncement.toAnnouncement() = Announcement(
@@ -44,7 +53,7 @@ fun LocalAnnouncement.toAnnouncement() = Announcement(
         email = announcementAuthorEmail,
         schoolLevel = SchoolLevel.fromNumber(announcementAuthorSchoolLevel),
         admin = announcementAuthorAdmin,
-        profilePictureUrl = announcementAuthorProfilePictureFileName,
+        profilePictureUrl = UserUtils.ProfilePicture.formatUrl(announcementAuthorProfilePictureFileName),
         state = UserState.fromString(announcementAuthorState),
         tester = announcementAuthorTester
     ),
@@ -63,29 +72,26 @@ internal fun InboundRemoteAnnouncement.toAnnouncement() = Announcement(
         email = userEmail,
         schoolLevel = SchoolLevel.fromNumber(userSchoolLevel),
         admin = userAdmin == 1,
-        profilePictureUrl = formatOracleBucketUrl(userProfilePictureFileName),
+        profilePictureUrl = UserUtils.ProfilePicture.formatUrl(userProfilePictureFileName),
         state = UserState.fromString(userState),
         tester = userTester == 1
     ),
     state = AnnouncementState.PUBLISHED
 )
 
-internal fun Announcement.toRemote() = OutbondRemoteAnnouncement(
-    announcementId = id,
-    announcementTitle = title,
-    announcementContent = content,
-    announcementDate = date.toEpochMilliUTC(),
-    userId = author.id
-)
-
 internal fun AnnouncementReport.toRemote() = RemoteAnnouncementReport(
     announcementId = announcementId,
-    authorInfo = authorInfo.toRemote(),
-    userInfo = userInfo.toRemote(),
+    author = author.toRemote(),
+    reporter = reporter.toRemote(),
     reason = reason.toString()
 )
 
-internal fun AnnouncementReport.UserInfo.toRemote() = RemoteAnnouncementReport.RemoteUserInfo(
+private fun AnnouncementReport.Author.toRemote() = RemoteAnnouncementReport.RemoteAuthor(
+    fullName = fullName,
+    email = email
+)
+
+private fun AnnouncementReport.Reporter.toRemote() = RemoteAnnouncementReport.RemoteReporter(
     fullName = fullName,
     email = email
 )

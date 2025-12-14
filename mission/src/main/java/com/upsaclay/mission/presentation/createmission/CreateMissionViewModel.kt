@@ -10,13 +10,13 @@ import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.GenerateIdUseCase
 import com.upsaclay.common.domain.usecase.GetUsersUseCase
 import com.upsaclay.mission.domain.entity.Mission
-import com.upsaclay.mission.domain.entity.MissionState
+import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.entity.MissionTask
 import com.upsaclay.mission.domain.usecase.CreateMissionUseCase
-import com.upsaclay.mission.presentation.MissionConstants.MAX_DESCRIPTION_LENGTH
-import com.upsaclay.mission.presentation.MissionConstants.MAX_DURATION_LENGTH
-import com.upsaclay.mission.presentation.MissionConstants.MAX_TITLE_LENGTH
-import com.upsaclay.mission.presentation.extension.managerSorting
+import com.upsaclay.mission.presentation.MissionPresentationUtils.MAX_DESCRIPTION_LENGTH
+import com.upsaclay.mission.presentation.MissionPresentationUtils.MAX_DURATION_LENGTH
+import com.upsaclay.mission.presentation.MissionPresentationUtils.MAX_TITLE_LENGTH
+import com.upsaclay.mission.presentation.extension.missionManagerSorting
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.take
@@ -54,8 +54,8 @@ class CreateMissionViewModel(
             managers = uiState.value.managers,
             participants = emptyList(),
             maxParticipants = uiState.value.maxParticipants.trim().toInt(),
-            tasks = uiState.value.tasks,
-            state = MissionState.Draft(uiState.value.imageUri?.toString()),
+            tasks = uiState.value.missionTasks,
+            state = MissionState.Draft,
         )
 
         createMissionUseCase(mission, uiState.value.imageUri?.toString())
@@ -93,20 +93,20 @@ class CreateMissionViewModel(
         }
     }
 
-    fun onStartDateChange(date: LocalDate) {
+    fun onStartDateChange(startDate: LocalDate) {
         _uiState.update {
             it.copy(
-                startDate = date,
-                endDate = if (!validateEndDate(date, it.endDate)) date else it.endDate
+                startDate = startDate,
+                endDate = if (!validateEndDate(startDate, it.endDate)) startDate else it.endDate
             )
         }
     }
 
-    fun onEndDateChange(date: LocalDate) {
+    fun onEndDateChange(endDate: LocalDate) {
         _uiState.update {
             it.copy(
-                startDate = if (!validateEndDate(it.startDate, date)) date else it.startDate,
-                endDate = date
+                startDate = if (!validateEndDate(it.startDate, endDate)) endDate else it.startDate,
+                endDate = endDate
             )
         }
     }
@@ -147,19 +147,14 @@ class CreateMissionViewModel(
 
     fun onSaveManagers(managers: List<User>) {
         _uiState.update {
-            it.copy(
-                managers = managers
-            )
+            it.copy(managers = managers)
         }
     }
 
     fun onRemoveManager(manager: User) {
         val managers = uiState.value.managers
 
-        if (
-            managers.size > 1 ||
-            !managers.contains(manager)
-        ) {
+        if (managers.size > 1) {
             _uiState.update {
                 it.copy(managers = managers - manager)
             }
@@ -198,17 +193,17 @@ class CreateMissionViewModel(
         }
     }
 
-    fun onAddTask(value: String) {
-        val task = MissionTask(generateIdUseCase(), value.trim())
+    fun onAddMissionTask(missionTaskValue: String) {
+        val missionTask = MissionTask(generateIdUseCase(), missionTaskValue.trim())
         _uiState.update {
-            it.copy(tasks = it.tasks + task)
+            it.copy(missionTasks = it.missionTasks + missionTask)
         }
     }
 
-    fun onEditTask(missionTask: MissionTask) {
+    fun onEditMissionTask(missionTask: MissionTask) {
         _uiState.update { state ->
             state.copy(
-                tasks = state.tasks.replace(
+                missionTasks = state.missionTasks.replace(
                     predicate = { it.id == missionTask.id },
                     value = missionTask.copy(value = missionTask.value.trim())
                 )
@@ -216,10 +211,10 @@ class CreateMissionViewModel(
         }
     }
 
-    fun onRemoveTask(missionTask: MissionTask) {
+    fun onRemoveMissionTask(missionTask: MissionTask) {
         _uiState.update { state ->
             state.copy(
-                tasks = state.tasks - missionTask
+                missionTasks = state.missionTasks - missionTask
             )
         }
     }
@@ -240,7 +235,7 @@ class CreateMissionViewModel(
     private fun initUsers() {
         viewModelScope.launch {
             getUsersUseCase()
-                .managerSorting()
+                .missionManagerSorting()
                 .also { users ->
                     _uiState.update { it.copy(users = users) }
                     defaultUsers = users
@@ -276,7 +271,7 @@ class CreateMissionViewModel(
         val duration: String = "",
         val managers: List<User> = emptyList(),
         val maxParticipants: String = "",
-        val tasks: List<MissionTask> = emptyList(),
+        val missionTasks: List<MissionTask> = emptyList(),
         val imageUri: Uri? = null,
         val users: List<User> = emptyList(),
         val userQuery: String = "",

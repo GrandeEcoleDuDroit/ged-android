@@ -36,15 +36,15 @@ import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
-import com.upsaclay.mission.domain.entity.MissionState
+import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.entity.MissionTask
 import com.upsaclay.mission.domain.missionFixture
 import com.upsaclay.mission.presentation.MissionBottomSheetType
-import com.upsaclay.mission.presentation.components.bottomsheet.AddTaskBottomSheet
-import com.upsaclay.mission.presentation.components.bottomsheet.EditTaskBottomSheet
-import com.upsaclay.mission.presentation.components.bottomsheet.SelectManagerBottomSheet
-import com.upsaclay.mission.presentation.createmission.MissionForm
-import com.upsaclay.mission.presentation.createmission.MissionFormValue
+import com.upsaclay.mission.presentation.components.bottomsheets.AddMissionTaskBottomSheet
+import com.upsaclay.mission.presentation.components.bottomsheets.EditMissionTaskBottomSheet
+import com.upsaclay.mission.presentation.components.bottomsheets.SelectManagerBottomSheet
+import com.upsaclay.mission.presentation.components.form.MissionForm
+import com.upsaclay.mission.presentation.components.form.MissionFormValue
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -106,9 +106,9 @@ fun EditMissionDestination(
         onResetUserQuery = viewModel::onResetUserQuery,
         onImageUriChange = viewModel::onImageUriChange,
         onRemoveImageClick = viewModel::onRemoveImage,
-        onAddTaskClick = viewModel::onAddTask,
-        onEditTaskClick = viewModel::onEditTask,
-        onRemoveTaskClick = viewModel::onRemoveTask,
+        onAddTaskClick = viewModel::onAddMissionTask,
+        onEditTaskClick = viewModel::onEditMissionTask,
+        onRemoveTaskClick = viewModel::onRemoveMissionTask,
         onSaveMissionClick = viewModel::updateMission,
         onBackClick = onBackClick
     )
@@ -195,6 +195,7 @@ private fun EditMissionScreen(
                     )
                 },
             value = MissionFormValue(
+                imageReference = imageUri?.toString() ?: missionState.imageReference,
                 title = title,
                 description = description,
                 startDate = startDate,
@@ -204,8 +205,7 @@ private fun EditMissionScreen(
                 duration = duration,
                 maxParticipants = maxParticipants,
                 managers = managers,
-                tasks = missionTasks,
-                imageReference = imageUri?.toString() ?: missionState.imageReference
+                missionTasks = missionTasks
             ),
             onTitleChange = onTitleChange,
             onDescriptionChange = onDescriptionChange,
@@ -257,7 +257,7 @@ private fun EditMissionScreen(
 
     when (bottomSheetType) {
         is MissionBottomSheetType.AddTask -> {
-            AddTaskBottomSheet(
+            AddMissionTaskBottomSheet(
                 onDismissRequest = { bottomSheetType = null },
                 onAddClick = {
                     onAddTaskClick(it)
@@ -268,8 +268,8 @@ private fun EditMissionScreen(
 
         is MissionBottomSheetType.EditTask -> {
             (bottomSheetType as? MissionBottomSheetType.EditTask)?.missionTask?.let {
-                EditTaskBottomSheet(
-                    initialTask = it,
+                EditMissionTaskBottomSheet(
+                    missionTask = it,
                     onDismissRequest = { bottomSheetType = null },
                     onEditClick = { task ->
                         onEditTaskClick(task)

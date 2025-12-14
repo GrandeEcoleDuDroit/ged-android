@@ -26,7 +26,7 @@ import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.previewText
+import com.upsaclay.common.presentation.theme.supportingText
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.common.utils.getElapsedTimeValue
 import com.upsaclay.message.R
@@ -42,22 +42,20 @@ fun ConversationItem(
     onClick: () -> Unit,
     onLongClick: () -> Unit
 ) {
-    val lastMessage = conversationUi.lastMessage
-    val interlocutor = conversationUi.interlocutor
-    val elapsedTimeValue = getElapsedTimeValue(lastMessage.date)
-    val text = when(lastMessage.state) {
-        MessageState.SENT, MessageState.DRAFT, MessageState.ERROR -> lastMessage.content
-        MessageState.SENDING -> stringResource(R.string.sending)
+    val text = if (conversationUi.lastMessage.state == MessageState.SENDING) {
+        stringResource(R.string.sending)
+    } else {
+        conversationUi.lastMessage.content
     }
-    val notSender = lastMessage.senderId == interlocutor.id
+    val isNotSender = conversationUi.lastMessage.senderId == conversationUi.interlocutor.id
 
     SwitchConversationItem(
         modifier = modifier,
         interlocutor = conversationUi.interlocutor,
         conversationState = conversationUi.conversationState,
         text = text,
-        unread = notSender && !lastMessage.seen,
-        elapsedTime = elapsedTimeValue,
+        unread = isNotSender && !conversationUi.lastMessage.seen,
+        elapsedTime = getElapsedTimeValue(conversationUi.lastMessage.date),
         onClick = onClick,
         onLongClick = onLongClick
     )
@@ -81,8 +79,8 @@ private fun SwitchConversationItem(
     } else {
         stringResource(id = com.upsaclay.common.R.string.deleted_user)
     }
-    val fontWeight = if (unread) FontWeight.SemiBold else FontWeight.Normal
-    val textColor = if (unread) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.previewText
+    val fontWeight = if (unread) FontWeight.SemiBold else null
+    val textColor = if (unread) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.supportingText
     val alpha = if (loading) 0.5f else 1f
 
     ListItem(

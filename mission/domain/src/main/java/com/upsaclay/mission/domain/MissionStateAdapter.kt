@@ -6,7 +6,7 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonParseException
 import com.google.gson.JsonSerializationContext
 import com.google.gson.JsonSerializer
-import com.upsaclay.mission.domain.entity.MissionState
+import com.upsaclay.mission.domain.entity.Mission.MissionState
 import java.lang.reflect.Type
 
 object MissionStateAdapter: JsonSerializer<MissionState>, JsonDeserializer<MissionState> {
