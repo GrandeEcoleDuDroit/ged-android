@@ -18,29 +18,27 @@ class ImageLocalDataSource(private val context: Context) {
         contentResolver.getType(uri.toUri())?.split("/")?.last()
             ?: throw FileNotFoundException()
 
-    suspend fun createLocalImage(folderName: String, fileName: String, uri: String): File? = withContext(Dispatchers.IO) {
-        val parent = File(context.filesDir, folderName)
-        if (!parent.exists()) {
-            parent.mkdir()
-        }
-        createImage(File(parent, fileName), uri.toUri())
+    suspend fun createLocalImage(imagePath: String, uri: String): File? = withContext(Dispatchers.IO) {
+        val image = File(context.filesDir, imagePath)
+        val parent = File(image.path.substringBeforeLast("/"))
+        parent.mkdirs()
+        writeImage(image, uri.toUri())
+
     }
 
-    suspend fun createCacheImage(fileName: String, uri: String): File? = withContext(Dispatchers.IO) {
-        val type = getFileExtension(uri)
-        createImage(File(context.cacheDir, "$fileName.$type"), uri.toUri())
+    suspend fun createCacheImage(imagePath: String, uri: String): File? = withContext(Dispatchers.IO) {
+        writeImage(File(context.cacheDir, imagePath), uri.toUri())
     }
 
-    fun deleteLocalImage(folderName: String, fileName: String) {
-        val parent = File(context.filesDir, folderName)
-        File(parent, fileName).delete()
+    fun deleteLocalImage(imagePath: String) {
+        File(context.filesDir, imagePath).delete()
     }
 
-    fun deleteCacheImage(fileName: String) {
-        File(context.cacheDir, fileName).delete()
+    fun deleteCacheImage(imagePath: String) {
+        File(context.cacheDir, imagePath).delete()
     }
 
-    private fun createImage(file: File, uri: Uri): File? {
+    private fun writeImage(file: File, uri: Uri): File? {
         val inputStream = contentResolver.openInputStream(uri) ?: return null
         val compressFormat = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             Bitmap.CompressFormat.WEBP_LOSSY

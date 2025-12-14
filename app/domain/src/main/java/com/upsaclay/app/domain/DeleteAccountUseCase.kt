@@ -1,6 +1,7 @@
 package com.upsaclay.app.domain
 
 import com.upsaclay.authentication.domain.repository.AuthenticationRepository
+import com.upsaclay.common.domain.UserUtils
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.common.domain.repository.UserRepository
@@ -27,7 +28,9 @@ class DeleteAccountUseCase(
         )
 
         userRepository.updateRemoteUser(deletedUser)
-        user.profilePictureUrl?.let { imageRepository.deleteRemoteImage(it) }
+        UserUtils.ProfilePicture.getPath(user.profilePictureUrl)?.let {
+            imageRepository.deleteRemoteImage(it)
+        }
         userRepository.deleteLocalUser()
     }
 }

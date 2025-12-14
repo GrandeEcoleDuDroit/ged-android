@@ -57,7 +57,7 @@ fun CreateMissionDestination(
         users = uiState.users,
         userQuery = uiState.userQuery,
         managers = uiState.managers,
-        missionTasks = uiState.tasks,
+        missionTasks = uiState.missionTasks,
         createEnabled = uiState.createEnabled,
         onTitleChange = viewModel::onTitleChange,
         onDescriptionChange = viewModel::onDescriptionChange,
@@ -72,9 +72,9 @@ fun CreateMissionDestination(
         onResetUserQuery = viewModel::onResetUserQuery,
         onImageUriChange = viewModel::onImageUriChange,
         onRemoveImageClick = viewModel::onRemoveImageUri,
-        onAddTaskClick = viewModel::onAddTask,
-        onEditTaskClick = viewModel::onEditTask,
-        onRemoveTaskClick = viewModel::onRemoveTask,
+        onAddTaskClick = viewModel::onAddMissionTask,
+        onEditTaskClick = viewModel::onEditMissionTask,
+        onRemoveTaskClick = viewModel::onRemoveMissionTask,
         onCreateMissionClick = {
             viewModel.createMission()
             onBackClick()
@@ -151,6 +151,7 @@ private fun CreateMissionScreen(
                     )
                 },
             value = MissionFormValue(
+                imageReference = imageUri?.toString(),
                 title = title,
                 description = description,
                 startDate = startDate,
@@ -160,8 +161,7 @@ private fun CreateMissionScreen(
                 duration = duration,
                 maxParticipants = maxParticipants,
                 managers = managers,
-                missionTasks = missionTasks,
-                imageReference = imageUri?.toString()
+                missionTasks = missionTasks
             ),
             onImageClick = {
                 singlePhotoPickerLauncher.launch(
@@ -268,16 +268,16 @@ private fun CreateMissionScreenPreview() {
 
     GedoiseTheme {
         CreateMissionScreen(
-            title = mission.title,
-            description = mission.description,
+            title = "",
+            description = "",
             startDate = mission.startDate,
             endDate = mission.endDate,
             allSchoolLevels = SchoolLevel.entries,
-            schoolLevels = mission.schoolLevels,
-            duration = mission.duration.toString(),
-            maxParticipants = mission.maxParticipants.toString(),
+            schoolLevels = emptyList(),
+            duration = "",
+            maxParticipants = "",
             managers = listOf(userFixture),
-            missionTasks = mission.tasks,
+            missionTasks = emptyList(),
             imageUri = null,
             users = usersFixture,
             userQuery = "",

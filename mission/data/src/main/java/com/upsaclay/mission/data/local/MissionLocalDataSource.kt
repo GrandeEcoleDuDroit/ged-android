@@ -59,8 +59,6 @@ class MissionLocalDataSource(
         }
     }
 
-    private fun getImagePath(fileName: String): String {
-        val parent = File(context.filesDir, MissionUtils.FOLDER_NAME)
-        return File(parent, fileName).path
-    }
+    private fun getImagePath(fileName: String): String =
+        File(context.filesDir, MissionUtils.Image.makeRelativePath(fileName)).path
 }

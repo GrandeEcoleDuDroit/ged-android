@@ -36,7 +36,7 @@ import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.MissionTask
-import com.upsaclay.mission.presentation.MissionConstants.MAX_TASK_LENGTH
+import com.upsaclay.mission.presentation.MissionPresentationUtils.MAX_TASK_LENGTH
 import kotlinx.coroutines.android.awaitFrame
 import kotlinx.coroutines.delay
 

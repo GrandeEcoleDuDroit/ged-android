@@ -6,11 +6,13 @@ import com.upsaclay.news.domain.usecase.CreateAnnouncementUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import org.junit.Before
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class CreateAnnouncementUseCaseTest {
     private val announcementRepository: AnnouncementRepository = mockk()
 

@@ -22,7 +22,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.upsaclay.common.domain.entity.SchoolLevel
@@ -37,7 +36,9 @@ import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.missionFixture
-import com.upsaclay.mission.presentation.MissionFormatter
+import com.upsaclay.mission.presentation.MissionPresentationUtils
+import com.upsaclay.mission.presentation.MissionPresentationUtils.descriptionStyle
+import com.upsaclay.mission.presentation.MissionPresentationUtils.titleStyle
 
 @Composable
 fun MissionCard(
@@ -49,30 +50,27 @@ fun MissionCard(
     when (val state = mission.state) {
         is MissionState.Published -> {
             DefaultMissionCard(
-                modifier = modifier,
+                modifier = modifier.clickable(onClick = onClick),
                 mission = mission,
                 imageModel = state.imageUrl,
-                onClick = onClick,
                 onOptionClick = onOptionClick
             )
         }
 
         is MissionState.Publishing -> {
             PublishingMissionCard(
-                modifier = modifier,
+                modifier = modifier.clickable(onClick = onClick),
                 mission = mission,
                 imageModel = state.imagePath,
-                onClick = onClick,
                 onOptionClick = onOptionClick
             )
         }
 
         is MissionState.Error -> {
             ErrorMissionCard(
-                modifier = modifier,
+                modifier = modifier.clickable(onClick = onClick),
                 mission = mission,
-                imageModel = state.imagePath,
-                onClick = onClick
+                imageModel = state.imagePath
             )
         }
 
@@ -85,12 +83,9 @@ private fun DefaultMissionCard(
     modifier: Modifier = Modifier,
     mission: Mission,
     imageModel: Any?,
-    onClick: () -> Unit,
     onOptionClick: () -> Unit
 ) {
-    OutlinedCard(
-        modifier = modifier.clickable(onClick = onClick)
-    ) {
+    OutlinedCard(modifier = modifier) {
         Box {
             MissionCardImage(
                 modifier = Modifier.align(Alignment.Center),
@@ -130,14 +125,12 @@ private fun PublishingMissionCard(
     modifier: Modifier = Modifier,
     mission: Mission,
     imageModel: Any?,
-    onClick: () -> Unit,
     onOptionClick: () -> Unit
 ) {
    DefaultMissionCard(
        modifier = modifier.alpha(0.5f),
        mission = mission,
        imageModel = imageModel,
-       onClick = onClick,
        onOptionClick = onOptionClick
    )
 }
@@ -147,11 +140,8 @@ private fun ErrorMissionCard(
     modifier: Modifier = Modifier,
     mission: Mission,
     imageModel: Any?,
-    onClick: () -> Unit
 ) {
-    OutlinedCard(
-        modifier = modifier.clickable(onClick = onClick)
-    ) {
+    OutlinedCard(modifier = modifier) {
         Box {
             MissionCardImage(
                 modifier = Modifier.align(Alignment.Center),
@@ -225,7 +215,7 @@ private fun CardHeader(
         }
 
         Text(
-            text = MissionFormatter.formatDate(mission.startDate, mission.endDate),
+            text = MissionPresentationUtils.formatDate(mission.startDate, mission.endDate),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.informationText
         )
@@ -249,7 +239,7 @@ private fun CardContent(
 @Composable
 private fun CardFooter(schoolLevels: List<SchoolLevel>) {
     Text(
-        text = MissionFormatter.formatSchoolLevels(schoolLevels),
+        text = MissionPresentationUtils.formatSchoolLevels(schoolLevels),
         style = MaterialTheme.typography.labelMedium
     )
 }
@@ -301,14 +291,6 @@ private fun MissionCardImage(
     )
 }
 
-private val titleStyle: TextStyle
-    @Composable
-    get() = MaterialTheme.typography.titleLarge
-
-private val descriptionStyle: TextStyle
-    @Composable
-    get() = MaterialTheme.typography.bodyLarge
-
 /*
  =====================================================================
                                 Preview
@@ -325,7 +307,6 @@ private fun DefaultMissionCardPreview() {
             DefaultMissionCard(
                 mission = mission,
                 imageModel = null,
-                onClick = {},
                 onOptionClick = {}
             )
         }
@@ -342,7 +323,6 @@ private fun PublishingMissionCardPreview() {
             PublishingMissionCard(
                 mission = mission,
                 imageModel = null,
-                onClick = {},
                 onOptionClick = {}
             )
         }
@@ -358,8 +338,7 @@ private fun ErrorMissionCardPreview() {
         Surface {
             ErrorMissionCard(
                 mission = mission,
-                imageModel = null,
-                onClick = {}
+                imageModel = null
             )
         }
     }

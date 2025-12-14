@@ -7,12 +7,14 @@ import com.upsaclay.mission.domain.usecase.ResendMissionUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import org.junit.Before
 import org.junit.Test
 import java.io.File
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class ResendMissionUseCaseTest {
     private val missionRepository: MissionRepository = mockk()
     private val fileRepository: FileRepository = mockk()
@@ -27,7 +29,7 @@ class ResendMissionUseCaseTest {
         coEvery { missionRepository.createMission(any(), any()) } returns Unit
         coEvery { missionRepository.upsertLocalMission(any()) } returns Unit
         coEvery { fileRepository.getFile(any()) } returns file
-        coEvery { imageRepository.deleteLocalImage(any(), any()) } returns Unit
+        coEvery { imageRepository.deleteLocalImage(any()) } returns Unit
 
         useCase = ResendMissionUseCase(
             missionRepository = missionRepository,
@@ -147,7 +149,7 @@ class ResendMissionUseCaseTest {
 
         // Then
         coVerify {
-            imageRepository.deleteLocalImage(any(), file.name)
+            imageRepository.deleteLocalImage(file.path)
         }
     }
 }

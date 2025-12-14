@@ -1,6 +1,7 @@
 package com.upsaclay.message.data.mapper
 
-import com.upsaclay.common.data.UrlUtils
+import com.upsaclay.common.data.extensions.formatUrl
+import com.upsaclay.common.domain.UserUtils
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.entity.fcm.Alert
@@ -33,7 +34,7 @@ fun MessageNotification.toLocal() = LocalMessageNotification(
     conversationInterlocutorEmail = conversation.interlocutor.email,
     conversationInterlocutorSchoolLevel = conversation.interlocutor.schoolLevel.number,
     conversationInterlocutorAdmin = conversation.interlocutor.admin,
-    conversationInterlocutorProfilePictureFileName = UrlUtils.extractFileNameFromUrl(conversation.interlocutor.profilePictureUrl),
+    conversationInterlocutorProfilePictureFileName = UserUtils.ProfilePicture.getFileName(conversation.interlocutor.profilePictureUrl),
     conversationInterlocutorState = conversation.interlocutor.state.toString(),
     conversationInterlocutorTester = conversation.interlocutor.tester,
     conversationCreatedAt = conversation.createdAt.toEpochMilliUTC(),
@@ -52,7 +53,7 @@ fun MessageNotification.toRemote(currentUser: User) = RemoteMessageNotification(
             email = currentUser.email,
             schoolLevel = currentUser.schoolLevel.number,
             admin = currentUser.admin,
-            profilePictureFileName = UrlUtils.extractFileNameFromUrl(currentUser.profilePictureUrl),
+            profilePictureFileName = UserUtils.ProfilePicture.getFileName(currentUser.profilePictureUrl),
             state = currentUser.state.toString(),
             tester = currentUser.tester
         ),
@@ -82,7 +83,7 @@ private fun LocalMessageNotification.toConversation() = Conversation(
         email = conversationInterlocutorEmail,
         schoolLevel = SchoolLevel.fromNumber(conversationInterlocutorSchoolLevel),
         admin = conversationInterlocutorAdmin,
-        profilePictureUrl = UrlUtils.formatOracleBucketUrl(conversationInterlocutorProfilePictureFileName),
+        profilePictureUrl = UserUtils.ProfilePicture.formatUrl(conversationInterlocutorProfilePictureFileName),
         state = User.UserState.fromString(conversationInterlocutorState),
         tester = conversationInterlocutorTester
     ),
@@ -101,7 +102,7 @@ fun RemoteMessageNotification.toMessageNotification() = MessageNotification(
             email = conversation.interlocutor.email,
             schoolLevel = SchoolLevel.fromNumber(conversation.interlocutor.schoolLevel),
             admin = conversation.interlocutor.admin,
-            profilePictureUrl = UrlUtils.formatOracleBucketUrl(conversation.interlocutor.profilePictureFileName),
+            profilePictureUrl = UserUtils.ProfilePicture.formatUrl(conversation.interlocutor.profilePictureFileName),
             state = User.UserState.fromString(conversation.interlocutor.state),
             tester = conversation.interlocutor.tester
         ),

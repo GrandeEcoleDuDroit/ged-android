@@ -8,15 +8,15 @@ interface ImageRepository {
 
     fun getFileExtension(uri: String): String
 
-    suspend fun createLocalImage(folderName: String, fileName: String, uri: String): File?
+    suspend fun createLocalImage(imagePath: String, uri: String): File?
 
     suspend fun createCacheImage(fileName: String, uri: String): File?
 
-    suspend fun uploadImage(file: File)
+    suspend fun uploadImage(file: File, imagePath: String)
 
-    suspend fun deleteRemoteImage(url: String)
+    suspend fun deleteRemoteImage(imagePath: String)
 
-    suspend fun deleteLocalImage(folderName: String, fileName: String)
+    suspend fun deleteLocalImage(imagePath: String)
 
-    suspend fun deleteCacheImage(fileName: String)
+    suspend fun deleteCacheImage(imagePath: String)
 }

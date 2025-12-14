@@ -19,7 +19,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.TextFieldValue
 import com.upsaclay.common.extension.rootMediumPadding
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.EditTopBar
@@ -75,12 +74,12 @@ fun EditAnnouncementDestination(
 @Composable
 private fun EditAnnouncementScreen(
     title: String,
-    content: TextFieldValue,
+    content: String,
     loading: Boolean,
     updateEnabled: Boolean,
     snackbarHostState: SnackbarHostState,
     onTitleChange: (String) -> Unit,
-    onContentChange: (TextFieldValue) -> Unit,
+    onContentChange: (String) -> Unit,
     onBackClick: () -> Unit,
     onSaveAnnouncementClick: () -> Unit
 ) {
@@ -136,13 +135,7 @@ private fun EditAnnouncementScreen(
 @Composable
 private fun EditAnnouncementScreenPreview() {
     var title by remember { mutableStateOf(announcementFixture.title ?: "") }
-    var content by remember {
-        mutableStateOf(
-            TextFieldValue(
-                text = announcementFixture.content
-            )
-        )
-    }
+    var content by remember { mutableStateOf(announcementFixture.content) }
     GedoiseTheme {
         Surface {
             EditAnnouncementScreen(

@@ -25,13 +25,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.usersFixture
+import com.upsaclay.common.presentation.components.SectionTitle
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.iconBackground
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
 import com.upsaclay.mission.presentation.components.RemoveButton
 import com.upsaclay.mission.presentation.components.items.MissionUserItem
-import com.upsaclay.mission.presentation.components.items.SectionTitle
 
 @Composable
 fun MissionFormManagerSection(

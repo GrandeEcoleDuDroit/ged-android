@@ -22,7 +22,7 @@ class DeleteMissionUseCaseTest {
     fun setUp() {
         coEvery { missionRepository.deleteMission(any(), any()) } returns Unit
         coEvery { missionRepository.deleteLocalMission(any()) } returns Unit
-        coEvery { imageRepository.deleteLocalImage(any(), any()) } returns Unit
+        coEvery { imageRepository.deleteLocalImage(any()) } returns Unit
 
         useCase = DeleteMissionUseCase(
             missionRepository = missionRepository,
@@ -63,6 +63,6 @@ class DeleteMissionUseCaseTest {
         useCase(mission = mission)
 
         // Then
-        coVerify { imageRepository.deleteLocalImage(any(), imagePath) }
+        coVerify { imageRepository.deleteLocalImage(imagePath) }
     }
 }

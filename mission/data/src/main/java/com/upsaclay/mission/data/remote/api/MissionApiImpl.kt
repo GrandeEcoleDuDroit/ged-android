@@ -5,12 +5,12 @@ import com.upsaclay.common.data.UserField.Server.USER_ID
 import com.upsaclay.common.data.exceptions.mapServerResponseException
 import com.upsaclay.common.data.remote.model.ServerResponse
 import com.upsaclay.mission.data.MissionField.Remote.MISSION_ID
-import com.upsaclay.mission.data.MissionField.Remote.MISSION_IMAGE_FILE_NAME
 import com.upsaclay.mission.data.mapper.toMission
 import com.upsaclay.mission.data.mapper.toRemote
 import com.upsaclay.mission.data.remote.models.InboundRemoteMission
 import com.upsaclay.mission.data.remote.models.RemoteAddMissionParticipant
 import com.upsaclay.mission.data.remote.models.RemoteMissionReport
+import com.upsaclay.mission.domain.MissionUtils
 import com.upsaclay.mission.domain.entity.AddMissionParticipant
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.MissionReport
@@ -26,9 +26,7 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
-import retrofit2.http.PUT
 import retrofit2.http.Part
-import retrofit2.http.Path
 import java.io.File
 
 internal class MissionApiImpl(
@@ -44,41 +42,71 @@ internal class MissionApiImpl(
     }
 
     override suspend fun createMission(mission: Mission, imageFile: File?) {
+        var imagePart: MultipartBody.Part? = null
+        var imagePathPart: RequestBody? = null
+
+        val remoteMission = mission.toRemote()
         val missionPart = gson
-            .toJson(mission.toRemote())
+            .toJson(remoteMission)
             .toRequestBody("application/json".toMediaType())
 
-        val imagePart = imageFile?.let {
-            val requestFile = it.asRequestBody("image/*".toMediaType())
-            MultipartBody.Part.createFormData("image", it.name, requestFile)
+        if (imageFile != null && remoteMission.missionImageFileName != null) {
+            val requestFile = imageFile.asRequestBody("image/*".toMediaType())
+            imagePart = MultipartBody.Part.createFormData("image", remoteMission.missionImageFileName, requestFile)
+
+            imagePathPart = remoteMission.missionImageFileName
+                .let { MissionUtils.Image.makeRelativePath(it) }
+                .toRequestBody("text/plain".toMediaType())
         }
 
         mapServerResponseException(
             message = "Failed to create mission",
-            block = { serverMissionApi.createMission(imagePart, missionPart) }
+            block = {
+                serverMissionApi.createMission(
+                    image = imagePart,
+                    imagePath = imagePathPart,
+                    mission = missionPart
+                )
+            }
         )
     }
 
     override suspend fun updateMission(mission: Mission, imageFile: File?) {
+        var imagePart: MultipartBody.Part? = null
+        var imagePathPart: RequestBody? = null
+
+        val remoteMission = mission.toRemote()
         val missionPart = gson
             .toJson(mission.toRemote())
             .toRequestBody("application/json".toMediaType())
 
-        val imagePart = imageFile?.let {
-            val requestFile = it.asRequestBody("image/*".toMediaType())
-            MultipartBody.Part.createFormData("image", it.name, requestFile)
+        if (imageFile != null && remoteMission.missionImageFileName != null) {
+            val requestFile = imageFile.asRequestBody("image/*".toMediaType())
+            imagePart = MultipartBody.Part.createFormData("image", remoteMission.missionImageFileName, requestFile)
+
+            imagePathPart = remoteMission.missionImageFileName
+                .let { MissionUtils.Image.makeRelativePath(it) }
+                .toRequestBody("text/plain".toMediaType())
         }
 
         mapServerResponseException(
             message = "Failed to update mission",
-            block = { serverMissionApi.updateMission(mission.id, imagePart, missionPart) }
+            block = {
+                serverMissionApi.updateMission(
+                    image = imagePart,
+                    imagePath = imagePathPart,
+                    mission = missionPart
+                )
+            }
         )
     }
 
     override suspend fun deleteMission(missionId: String, imageFileName: String?) {
+        val imagePath = imageFileName?.let { MissionUtils.Image.makeRelativePath(it) }
+
         mapServerResponseException(
             message = "Failed to delete mission",
-            block = { serverMissionApi.deleteMission(missionId, imageFileName) },
+            block = { serverMissionApi.deleteMission(missionId, imagePath) },
         )
     }
 
@@ -112,22 +140,23 @@ internal interface ServerMissionApi {
     @POST("missions/create")
     suspend fun createMission(
         @Part image: MultipartBody.Part?,
-        @Part("mission") remoteMission: RequestBody
+        @Part("imagePath") imagePath: RequestBody?,
+        @Part("mission") mission: RequestBody
     ): Response<ServerResponse>
 
     @Multipart
-    @PUT("missions/{missionId}")
+    @POST("missions/update")
     suspend fun updateMission(
-        @Path("missionId") missionId: String,
         @Part image: MultipartBody.Part?,
-        @Part("mission") remoteMission: RequestBody
+        @Part("imagePath") imagePath: RequestBody?,
+        @Part("mission") mission: RequestBody
     ): Response<ServerResponse>
 
     @FormUrlEncoded
     @POST("missions/delete")
     suspend fun deleteMission(
         @Field(MISSION_ID) missionId: String,
-        @Field(MISSION_IMAGE_FILE_NAME) missionImageFileName: String?
+        @Field("imagePath") imagePath: String?
     ): Response<ServerResponse>
 
     @POST("missions/report")

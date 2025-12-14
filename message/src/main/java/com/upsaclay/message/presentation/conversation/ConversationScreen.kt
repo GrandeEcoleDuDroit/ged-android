@@ -81,22 +81,25 @@ private fun ConversationScreen(
     snackbarHostState: SnackbarHostState = SnackbarHostState(),
     bottomBar: @Composable () -> Unit
 ) {
-    var clickedConversation by remember { mutableStateOf<ConversationUi?>(null) }
-    var showBottomSheet by remember { mutableStateOf(false) }
-    var showDeleteConversationDialog by remember { mutableStateOf(false) }
+    var activeBottomSheet by remember { mutableStateOf<ConversationScreenBottomSheet?>(null) }
+    var activeDialog by remember { mutableStateOf<ConversationScreenDialog?>(null) }
 
-    if (showDeleteConversationDialog) {
-        DefaultDialog(
-            title = stringResource(id = R.string.delete_conversation_dialog_title),
-            text = stringResource(id = R.string.delete_conversation_dialog_message),
-            confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
-            critical = true,
-            onConfirm = {
-                showDeleteConversationDialog = false
-                clickedConversation?.let { onDeleteConversation(it.toConversation()) }
-            },
-            onCancel = { showDeleteConversationDialog  = false }
-        )
+    when(val dialog = activeDialog) {
+        is ConversationScreenDialog.DeleteConversationDialog -> {
+            DefaultDialog(
+                title = stringResource(id = R.string.delete_conversation_dialog_title),
+                text = stringResource(id = R.string.delete_conversation_dialog_message),
+                confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
+                critical = true,
+                onConfirm = {
+                    activeDialog = null
+                    onDeleteConversation(dialog.conversationUi.toConversation())
+                },
+                onCancel = { activeDialog = null }
+            )
+        }
+
+        else -> Unit
     }
 
     if (loading) {
@@ -114,8 +117,7 @@ private fun ConversationScreen(
                 conversations = conversations,
                 onClick = { onConversationClick(it.toConversation()) },
                 onLongClick = {
-                    clickedConversation = it
-                    showBottomSheet = true
+                    activeBottomSheet = ConversationScreenBottomSheet.ConversationBottomSheet(it)
                 },
                 onCreateClick = onCreateConversation
             )
@@ -133,15 +135,27 @@ private fun ConversationScreen(
         }
     }
 
-    if (showBottomSheet) {
-        ConversationBottomSheet(
-            onDismiss = { showBottomSheet = false },
-            onDeleteClick = {
-                showBottomSheet = false
-                showDeleteConversationDialog = true
-            }
-        )
+    when(val bottomSheetType = activeBottomSheet)  {
+        is ConversationScreenBottomSheet.ConversationBottomSheet -> {
+            ConversationBottomSheet(
+                onDismiss = { activeBottomSheet = null },
+                onDeleteClick = {
+                    activeBottomSheet = null
+                    activeDialog = ConversationScreenDialog.DeleteConversationDialog(bottomSheetType.conversationUi)
+                }
+            )
+        }
+
+        else -> Unit
     }
+}
+
+private sealed class ConversationScreenBottomSheet {
+    data class ConversationBottomSheet(val conversationUi: ConversationUi): ConversationScreenBottomSheet()
+}
+
+private sealed class ConversationScreenDialog {
+    data class DeleteConversationDialog(val conversationUi: ConversationUi): ConversationScreenDialog()
 }
 
 /*

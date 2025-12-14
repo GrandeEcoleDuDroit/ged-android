@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BottomAppBarDefaults
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -43,10 +42,10 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.extension.mediumSpacing
-import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.CircularProgressBar
 import com.upsaclay.common.presentation.components.DefaultDialog
@@ -101,17 +100,17 @@ fun MissionDetailsDestination(
         }
     }
 
-    if (uiState.mission != null && uiState.user != null) {
+    if (uiState.mission != null && uiState.currentUser != null) {
         MissionDetailsScreen(
-            onBackClick = onBackClick,
-            user = uiState.user!!,
+            user = uiState.currentUser!!,
             mission = uiState.mission!!,
             loading = uiState.loading,
             isManager = uiState.isManager,
             buttonState = uiState.buttonState,
             snackbarHostState = snackbarHostState,
-            onRegisterClick = viewModel::registerToMission,
-            onUnregisterClick = viewModel::unregisterFromMission,
+            onBackClick = onBackClick,
+            onRegisterMissionClick = viewModel::registerToMission,
+            onUnregisterMissionClick = viewModel::unregisterFromMission,
             onManagerClick = onManagerClick,
             onParticipantClick = onParticipantClick,
             onRemoveParticipantClick = viewModel::removeParticipant,
@@ -134,15 +133,15 @@ fun MissionDetailsDestination(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MissionDetailsScreen(
-    onBackClick: () -> Unit,
     user: User,
     mission: Mission,
     loading: Boolean,
     isManager: Boolean,
     buttonState: MissionButtonState,
     snackbarHostState: SnackbarHostState,
-    onRegisterClick: () -> Unit,
-    onUnregisterClick: () -> Unit,
+    onBackClick: () -> Unit,
+    onRegisterMissionClick: () -> Unit,
+    onUnregisterMissionClick: () -> Unit,
     onManagerClick: (User) -> Unit,
     onParticipantClick: (User) -> Unit,
     onRemoveParticipantClick: (String) -> Unit,
@@ -150,6 +149,8 @@ private fun MissionDetailsScreen(
     onReportMissionClick: (MissionReport) -> Unit,
     onDeleteMissionClick: () -> Unit
 ) {
+    var activeBottomSheet by remember { mutableStateOf<MissionDetailsScreenBottomSheet?>(null) }
+    var activeDialog by remember { mutableStateOf<MissionDetailsScreenDialog?>(null) }
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val buttonModifier = Modifier
         .windowInsetsPadding(BottomAppBarDefaults.windowInsets)
@@ -158,56 +159,48 @@ private fun MissionDetailsScreen(
             horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)
         )
         .fillMaxWidth()
-
-    var showMissionBottomSheet by remember { mutableStateOf(false) }
-    var showParticipantBottomSheet by remember { mutableStateOf(false) }
-    var showReportBottomSheet by remember { mutableStateOf(false) }
-
-    var showDeleteMissionDialog by remember { mutableStateOf(false) }
-    var showUnregisterDialog by remember { mutableStateOf(false) }
-    var showRemoveParticipantDialog by remember { mutableStateOf(false) }
-
-    var clickedParticipant by remember { mutableStateOf<User?>(null) }
     val hapticFeedback = LocalHapticFeedback.current
 
-    if (showDeleteMissionDialog) {
-        DefaultDialog(
-            text = stringResource(R.string.delete_mission_dialog_text),
-            confirmText = stringResource(com.upsaclay.common.R.string.delete),
-            critical = true,
-            onConfirm = {
-                showDeleteMissionDialog = false
-                onDeleteMissionClick()
-            },
-            onCancel = { showDeleteMissionDialog = false }
-        )
-    }
-
-    if (showUnregisterDialog) {
-        DefaultDialog(
-            text = stringResource(R.string.unregister_mission_dialog_text),
-            confirmText = stringResource(com.upsaclay.common.R.string.confirm),
-            onConfirm = {
-                showUnregisterDialog = false
-                onUnregisterClick()
-            },
-            onCancel = { showUnregisterDialog = false }
-        )
-    }
-
-    if (showRemoveParticipantDialog) {
-        clickedParticipant?.let {
+    when(val dialog = activeDialog) {
+        is MissionDetailsScreenDialog.DeleteMissionDialog -> {
             DefaultDialog(
-                text = stringResource(R.string.remove_participant_dialog_text, it.fullName),
+                text = stringResource(R.string.delete_mission_dialog_text),
+                confirmText = stringResource(com.upsaclay.common.R.string.delete),
+                critical = true,
+                onConfirm = {
+                    activeDialog = null
+                    onDeleteMissionClick()
+                },
+                onCancel = { activeDialog = null }
+            )
+        }
+
+        is MissionDetailsScreenDialog.UnregisterDialog -> {
+            DefaultDialog(
+                text = stringResource(R.string.unregister_mission_dialog_text),
+                confirmText = stringResource(com.upsaclay.common.R.string.confirm),
+                onConfirm = {
+                    activeDialog = null
+                    onUnregisterMissionClick()
+                },
+                onCancel = { activeDialog = null }
+            )
+        }
+
+        is MissionDetailsScreenDialog.RemoveParticipantDialog -> {
+            DefaultDialog(
+                text = stringResource(R.string.remove_participant_dialog_text, dialog.participant.fullName),
                 confirmText = stringResource(com.upsaclay.common.R.string.remove),
                 critical = true,
                 onConfirm = {
-                    showRemoveParticipantDialog = false
-                    onRemoveParticipantClick(it.id)
+                    activeDialog = null
+                    onRemoveParticipantClick(dialog.participant.id)
                 },
-                onCancel = { showRemoveParticipantDialog = false }
+                onCancel = { activeDialog = null }
             )
         }
+
+        else -> Unit
     }
 
     Scaffold(
@@ -219,7 +212,7 @@ private fun MissionDetailsScreen(
                         modifier = buttonModifier,
                         enabled = buttonState.enabled,
                         loading = loading,
-                        onClick = onRegisterClick
+                        onClick = onRegisterMissionClick
                     )
                 }
 
@@ -227,13 +220,11 @@ private fun MissionDetailsScreen(
                     RegisteredButton(
                         modifier = buttonModifier,
                         loading = loading,
-                        onClick = { showUnregisterDialog = true }
+                        onClick = { activeDialog = MissionDetailsScreenDialog.UnregisterDialog }
                     )
                 }
 
-                is MissionButtonState.Complete -> {
-                    CompleteButton(modifier = buttonModifier)
-                }
+                is MissionButtonState.Complete -> CompleteButton(modifier = buttonModifier)
 
                 else -> Unit
             }
@@ -247,7 +238,7 @@ private fun MissionDetailsScreen(
         Box(modifier = Modifier.padding(innerPadding)) {
             Column(
                 modifier = Modifier.verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.smallSpacing()
+                verticalArrangement = Arrangement.mediumSpacing()
             ) {
                 MissionImage(
                     modifier = Modifier.height(dimensionResource(R.dimen.mission_image_height)),
@@ -260,10 +251,7 @@ private fun MissionDetailsScreen(
                     defaultImageScale = 1.6f
                 )
 
-                Column(
-                    modifier = Modifier.padding(top  = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
-                    verticalArrangement = Arrangement.mediumSpacing()
-                ) {
+                Column(verticalArrangement = Arrangement.mediumSpacing()) {
                     MissionDetailsTitleAndDescriptionSection(
                         modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
                         mission = mission
@@ -294,13 +282,12 @@ private fun MissionDetailsScreen(
 
                     MissionDetailsParticipantSection(
                         modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
-                        users = mission.participants,
+                        participants = mission.participants,
                         onParticipantClick = onParticipantClick,
                         onLongParticipantClick = {
                             if (isManager) {
                                 hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                clickedParticipant = it
-                                showParticipantBottomSheet = true
+                                activeBottomSheet = MissionDetailsScreenBottomSheet.ParticipantBottomSheet(it)
                             }
                         }
                     )
@@ -312,7 +299,7 @@ private fun MissionDetailsScreen(
 
                         MissionDetailsTaskSection(
                             modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
-                            tasks = mission.tasks
+                            missionTasks = mission.tasks
                         )
                     }
 
@@ -322,40 +309,39 @@ private fun MissionDetailsScreen(
                 }
             }
 
-            MissionTopBar(
+            MissionDetailsTopBar(
                 modifier = Modifier.align(Alignment.TopStart),
-                scrollBehavior = scrollBehavior,
                 title = mission.title,
+                showTitleTopBar = scrollBehavior.state.contentOffset.dp <= dimensionResource(R.dimen.image_top_bar_offset),
                 onBackClick = onBackClick,
-                onOptionClick = { showMissionBottomSheet = true }
+                onOptionClick = { activeBottomSheet = null }
             )
         }
     }
 
-    if (showMissionBottomSheet) {
-        MissionBottomSheet(
-            mission = mission,
-            editable = mission.managers.any { it.id == user.id },
-            onEditClick = {
-                showMissionBottomSheet = false
-                onEditMissionClick(mission)
-            },
-            onReportClick = {
-                showMissionBottomSheet = false
-                showReportBottomSheet = true
-            },
-            onDeleteClick = {
-                showMissionBottomSheet = false
-                showDeleteMissionDialog = true
-            },
-            onDismiss = { showMissionBottomSheet = false }
-        )
-    }
+    when(val bottomSheet = activeBottomSheet) {
+        is MissionDetailsScreenBottomSheet.MissionBottomSheet -> {
+            MissionBottomSheet(
+                mission = mission,
+                editable = isManager,
+                onEditClick = {
+                    activeBottomSheet = null
+                    onEditMissionClick(mission)
+                },
+                onReportClick = {
+                    activeBottomSheet = MissionDetailsScreenBottomSheet.MissionReportBottomSheet
+                },
+                onDeleteClick = {
+                    activeBottomSheet = null
+                    activeDialog = MissionDetailsScreenDialog.DeleteMissionDialog
+                },
+                onDismiss = { activeBottomSheet = null }
+            )
+        }
 
-    if (showParticipantBottomSheet) {
-        clickedParticipant?.let {
+        is MissionDetailsScreenBottomSheet.ParticipantBottomSheet -> {
             ModalBottomSheet(
-                onDismissRequest = { showParticipantBottomSheet = false },
+                onDismissRequest = { activeBottomSheet = null },
             ) {
                 TextItem(
                     text = {
@@ -372,34 +358,36 @@ private fun MissionDetailsScreen(
                         )
                     },
                     onClick = {
-                        showParticipantBottomSheet = false
-                        showRemoveParticipantDialog = true
+                        activeBottomSheet = null
+                        activeDialog = MissionDetailsScreenDialog.RemoveParticipantDialog(bottomSheet.participant)
                     }
                 )
 
                 Spacer(Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.modal_bottom_sheet_bottom_space)))
             }
         }
-    }
 
-    if (showReportBottomSheet) {
-        ReportBottomSheet(
-            items = MissionReport.Reason.entries,
-            onDismiss = { showReportBottomSheet = false },
-            onReportClick = { reason ->
-                showReportBottomSheet = false
-                onReportMissionClick(
-                    MissionReport(
-                        missionId = mission.id,
-                        userInfo = MissionReport.UserInfo(
-                            fullName = user.fullName,
-                            email = user.email
-                        ),
-                        reason = reason
+        is MissionDetailsScreenBottomSheet.MissionReportBottomSheet -> {
+            ReportBottomSheet(
+                items = MissionReport.Reason.entries,
+                onDismiss = { activeBottomSheet = null },
+                onReportClick = { reason ->
+                    activeBottomSheet = null
+                    onReportMissionClick(
+                        MissionReport(
+                            missionId = mission.id,
+                            reporter = MissionReport.Reporter(
+                                fullName = user.fullName,
+                                email = user.email
+                            ),
+                            reason = reason
+                        )
                     )
-                )
-            }
-        )
+                }
+            )
+        }
+
+        else -> Unit
     }
 }
 
@@ -410,16 +398,13 @@ private fun RegisterButton(
     loading: Boolean,
     onClick: () -> Unit
 ) {
-    if (loading) {
-        LoadingButton(modifier = modifier)
-    } else {
-        PrimaryButton(
-            modifier = modifier,
-            text = stringResource(R.string.register_mission_button_text),
-            enabled = enabled,
-            onClick = onClick
-        )
-    }
+    LoadingButton(
+        modifier = modifier,
+        text = stringResource(R.string.register_mission_button_text),
+        loading = loading,
+        enabled = enabled,
+        onClick = onClick
+    )
 }
 
 @Composable
@@ -428,17 +413,13 @@ private fun RegisteredButton(
     loading: Boolean,
     onClick: () -> Unit
 ) {
-    if (loading) {
-        LoadingButton(modifier = modifier)
-    } else {
-        Button(
-            modifier = modifier,
-            colors = MaterialTheme.colorScheme.activatedButtonColors,
-            onClick = onClick
-        ) {
-            Text(text = stringResource(R.string.registered_mission_button_text))
-        }
-    }
+    LoadingButton(
+        modifier = modifier,
+        text = stringResource(R.string.registered_mission_button_text),
+        loading = loading,
+        onClick = onClick,
+        colors = MaterialTheme.colorScheme.activatedButtonColors
+    )
 }
 
 @Composable
@@ -449,6 +430,18 @@ private fun CompleteButton(modifier: Modifier = Modifier) {
         enabled = false,
         onClick = {}
     )
+}
+
+private sealed class MissionDetailsScreenBottomSheet {
+    data object MissionBottomSheet: MissionDetailsScreenBottomSheet()
+    data class ParticipantBottomSheet(val participant: User): MissionDetailsScreenBottomSheet()
+    data object MissionReportBottomSheet: MissionDetailsScreenBottomSheet()
+}
+
+private sealed class MissionDetailsScreenDialog {
+    data object DeleteMissionDialog: MissionDetailsScreenDialog()
+    data object UnregisterDialog: MissionDetailsScreenDialog()
+    data class RemoveParticipantDialog(val participant: User): MissionDetailsScreenDialog()
 }
 
 /*
@@ -469,8 +462,8 @@ private fun MissionDetailsScreenPreview() {
                 isManager = true,
                 buttonState = MissionButtonState.Register(),
                 snackbarHostState = SnackbarHostState(),
-                onRegisterClick = {},
-                onUnregisterClick = {},
+                onRegisterMissionClick = {},
+                onUnregisterMissionClick = {},
                 onBackClick = {},
                 onManagerClick = {},
                 onParticipantClick = {},

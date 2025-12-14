@@ -57,11 +57,11 @@ internal fun Message.toRemote() = RemoteMessage(
 internal fun MessageReport.toRemote() = RemoteMessageReport(
     conversationId = conversationId,
     messageId = messageId,
-    recipientInfo = recipientInfo.toRemote(),
+    recipient = recipient.toRemote(),
     reason = reason.toString()
 )
 
-internal fun MessageReport.UserInfo.toRemote() = RemoteMessageReport.RemoteUserInfo(
+internal fun MessageReport.Recipient.toRemote() = RemoteMessageReport.RemoteRecipient(
     fullName = fullName,
     email = email
 )

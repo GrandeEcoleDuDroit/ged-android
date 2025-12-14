@@ -1,5 +1,6 @@
 package com.upsaclay.common.domain.usecase
 
+import com.upsaclay.common.domain.UserUtils
 import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.common.domain.repository.UserRepository
 
@@ -9,6 +10,8 @@ class DeleteProfilePictureUseCase(
 ) {
     suspend operator fun invoke(userId: String, profilePictureUrl: String) {
         userRepository.deleteProfilePictureFileName(userId)
-        imageRepository.deleteRemoteImage(profilePictureUrl.substringAfterLast("/"))
+        UserUtils.ProfilePicture.getPath(profilePictureUrl)?.let {
+            imageRepository.deleteRemoteImage(it)
+        }
     }
 }

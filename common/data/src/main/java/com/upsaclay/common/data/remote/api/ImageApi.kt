@@ -6,7 +6,7 @@ import java.io.File
 interface ImageApi {
     suspend fun getImage(url: String): Response
 
-    suspend fun uploadImage(imageFile: File)
+    suspend fun uploadImage(imageFile: File, imagePath: String)
 
-    suspend fun deleteImage(fileName: String)
+    suspend fun deleteImage(imagePath: String)
 }

@@ -1,4 +1,5 @@
 import com.upsaclay.common.domain.repository.ImageRepository
+import com.upsaclay.mission.domain.MissionUtils
 import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.missionFixture
 import com.upsaclay.mission.domain.repository.MissionRepository
@@ -22,10 +23,12 @@ class UpdateMissionUseCaseTest {
 
     @Before
     fun setUp() {
+        coEvery { imageRepository.getFileExtension(any()) } returns ""
         coEvery { imageRepository.createCacheImage(any(), any()) } returns file
         coEvery { missionRepository.updateMission(any(), any()) } returns Unit
-        coEvery { imageRepository.deleteLocalImage(any(), any()) } returns Unit
+        coEvery { imageRepository.deleteLocalImage(any()) } returns Unit
         coEvery { imageRepository.deleteRemoteImage(any()) } returns Unit
+        coEvery { imageRepository.deleteCacheImage(any()) } returns Unit
 
         useCase = UpdateMissionUseCase(
             missionRepository = missionRepository,
@@ -45,11 +48,6 @@ class UpdateMissionUseCaseTest {
         coVerify {
             imageRepository.createCacheImage(any(), imageUri)
         }
-        coVerify {
-            missionRepository.updateMission(
-                mission.copy(state = MissionState.Published(file.name)), file
-            )
-        }
     }
 
     @Test
@@ -60,22 +58,12 @@ class UpdateMissionUseCaseTest {
         // When
         useCase(
             mission = mission,
-            newImageUri = imageUri,
-            oldMissionState = MissionState.Published(imageUrl))
+            imageUri = imageUri,
+            previousMissionState = MissionState.Published(imageUrl)
+        )
 
         // Then
-        coVerify { imageRepository.deleteRemoteImage(imageUrl) }
-    }
-
-    @Test
-    fun updateMissionUseCase_should_delete_local_mission_image_when_was_created() = runTest {
-        // Given
-        val mission = missionFixture.copy(state = MissionState.Published(imageUrl))
-
-        // When
-        useCase(mission, imageUri, MissionState.Published())
-
-        // Then
-        coVerify { imageRepository.deleteLocalImage(any(), file.name) }
+        coVerify { imageRepository.deleteRemoteImage(MissionUtils.Image.getPath(imageUrl)!!) }
+        coVerify { imageRepository.deleteCacheImage(any()) }
     }
 }

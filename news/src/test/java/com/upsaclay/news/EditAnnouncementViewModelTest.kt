@@ -1,6 +1,5 @@
 package com.upsaclay.news
 
-import androidx.compose.ui.text.input.TextFieldValue
 import com.upsaclay.common.domain.ConnectivityObserver
 import com.upsaclay.news.domain.announcementFixture
 import com.upsaclay.news.domain.repository.AnnouncementRepository
@@ -24,7 +23,7 @@ class EditAnnouncementViewModelTest {
     private lateinit var viewModel: EditAnnouncementViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
     private val title = "Title"
-    private val content = TextFieldValue(text = "Content")
+    private val content = "Content"
 
     @Before
     fun setUp() {
@@ -74,7 +73,7 @@ class EditAnnouncementViewModelTest {
     fun updateAnnouncement_should_not_update_when_content_is_empty() {
         // Given
         viewModel.onTitleChange("title")
-        viewModel.onContentChange(TextFieldValue())
+        viewModel.onContentChange("")
 
         // When
         viewModel.updateAnnouncement()
@@ -87,7 +86,7 @@ class EditAnnouncementViewModelTest {
     fun updateAnnouncement_should_not_update_when_title_and_content_are_same() {
         // Given
         viewModel.onTitleChange(announcementFixture.title!!)
-        viewModel.onContentChange(TextFieldValue(announcementFixture.content))
+        viewModel.onContentChange(announcementFixture.content)
 
         // When
         viewModel.updateAnnouncement()
@@ -102,7 +101,7 @@ class EditAnnouncementViewModelTest {
         val titleWithSpaces = "  ${announcementFixture.title}  "
         val contentWithSpaces = "  ${announcementFixture.content}  "
         viewModel.onTitleChange(titleWithSpaces)
-        viewModel.onContentChange(TextFieldValue(contentWithSpaces))
+        viewModel.onContentChange(contentWithSpaces)
 
         // When
         viewModel.updateAnnouncement()

@@ -34,7 +34,6 @@ import androidx.paging.compose.itemKey
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.extension.rootMediumPadding
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.previewText
 import com.upsaclay.common.utils.DateUtils
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.message.R
@@ -140,7 +139,7 @@ internal fun MessageFeed(
                             .fillMaxWidth(),
                         text = DateUtils.formatDayMonthYear(message.date),
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.previewText,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center
                     )
                 } else {

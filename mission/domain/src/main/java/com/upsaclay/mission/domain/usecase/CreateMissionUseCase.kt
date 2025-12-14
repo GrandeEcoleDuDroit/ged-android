@@ -15,30 +15,30 @@ class CreateMissionUseCase(
 ) {
     operator fun invoke(mission: Mission, imageUri: String?) {
         scope.launch {
-            val fileName = MissionUtils.formatImageFileName(mission.id)
+            var imagePath: String? = null
             val imageFile = imageUri?.let { uri ->
                 val extension = imageRepository.getFileExtension(uri)
-                imageRepository.createLocalImage(
-                    MissionUtils.FOLDER_NAME,
-                    "$fileName.$extension",
-                    uri
-                )
+                val fileName = "${MissionUtils.Image.generateFileName(mission.id)}.$extension"
+                imagePath = MissionUtils.Image.makeRelativePath(fileName)
+                imageRepository.createLocalImage(imagePath!!, uri)
             }
 
             try {
                 missionRepository.createMission(
-                    mission.copy(state = MissionState.Publishing(imageFile?.path)),
+                    mission.copy(state = MissionState.Publishing(imagePath)),
                     imageFile
                 )
+
                 missionRepository.upsertLocalMission(
-                    mission.copy(state = MissionState.Published(imageFile?.name))
+                    mission.copy(state = MissionState.Published(imagePath))
                 )
-                imageFile?.name?.let {
-                    imageRepository.deleteLocalImage(MissionUtils.FOLDER_NAME, it)
+
+                imagePath?.let {
+                    imageRepository.deleteLocalImage(it)
                 }
             } catch (e: Exception) {
                 missionRepository.upsertLocalMission(
-                    mission.copy(state = MissionState.Error(imageFile?.path))
+                    mission.copy(state = MissionState.Error(imagePath))
                 )
             }
         }

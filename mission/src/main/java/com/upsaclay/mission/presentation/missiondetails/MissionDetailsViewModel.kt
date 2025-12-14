@@ -38,18 +38,18 @@ class MissionDetailsViewModel(
     val event: SharedFlow<SingleUiEvent> = _event
 
     init {
-        listenUserMission()
+        listenUserAndMission()
     }
 
     fun registerToMission() {
-        val user = uiState.value.user ?: return
+        val currentUser = uiState.value.currentUser ?: return
         val mission = uiState.value.mission ?: return
         val addMissionParticipant = AddMissionParticipant(
             missionId = missionId,
             schoolLevels = mission.schoolLevels,
             maxParticipants = mission.maxParticipants,
             participantsNumber = mission.participants.size,
-            user = user
+            currentUser = currentUser
         )
        executeRequest {
            missionRepository.addParticipant(addMissionParticipant)
@@ -57,7 +57,7 @@ class MissionDetailsViewModel(
     }
 
     fun unregisterFromMission() {
-        val user = uiState.value.user ?: return
+        val user = uiState.value.currentUser ?: return
         executeRequest {
             missionRepository.removeParticipant(missionId, user.id)
         }
@@ -108,7 +108,7 @@ class MissionDetailsViewModel(
         }
     }
 
-    private fun listenUserMission() {
+    private fun listenUserAndMission() {
         combine(
             userRepository.user,
             missionRepository.getMissionFlow(missionId)
@@ -116,16 +116,16 @@ class MissionDetailsViewModel(
             val isManager = mission.managers.any { it.id == user.id }
             _uiState.update {
                 it.copy(
-                    user = user,
+                    currentUser = user,
                     mission = mission,
                     isManager = isManager,
-                    buttonState = updateMissionButtonState(user, mission, isManager)
+                    buttonState = updateButtonState(user, mission, isManager)
                 )
             }
         }.launchIn(viewModelScope)
     }
 
-    private fun updateMissionButtonState(
+    private fun updateButtonState(
         user: User,
         mission: Mission,
         isManager: Boolean
@@ -145,7 +145,7 @@ class MissionDetailsViewModel(
     }
 
     data class MissionDetailsUiState(
-        val user: User? = null,
+        val currentUser: User? = null,
         val mission: Mission? = null,
         val isManager: Boolean = false,
         val loading: Boolean = false,

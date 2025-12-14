@@ -12,6 +12,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -92,18 +93,26 @@ fun SimpleFloatingActionButton(
 @Composable
 fun LoadingButton(
     modifier: Modifier = Modifier,
+    text: String,
+    loading: Boolean,
+    enabled: Boolean = true,
+    onClick: () -> Unit,
     colors: ButtonColors = MaterialTheme.colorScheme.loadingButtonColors
 ) {
     Button(
         modifier = modifier,
-        onClick = {},
-        enabled = false,
+        onClick = onClick,
+        enabled = !loading && enabled,
         colors = colors
     ) {
-        CircularProgressBar(
-            color = MaterialTheme.colorScheme.white,
-            scale = 0.5f
-        )
+        if (loading) {
+            CircularProgressBar(
+                color = MaterialTheme.colorScheme.white,
+                scale = 0.5f
+            )
+        } else {
+            Text(text = text)
+        }
     }
 }
 
@@ -117,10 +126,13 @@ fun LoadingButton(
 @Composable
 private fun PrimaryButtonPreview() {
     GedoiseTheme {
-        PrimaryButton(
-            text = "Primary Button",
-            onClick = {}
-        )
+        Surface {
+            PrimaryButton(
+                text = "Primary Button",
+                onClick = {},
+                enabled = false
+            )
+        }
     }
 }
 
@@ -154,6 +166,10 @@ private fun SimpleFloatingActionButtonPreview() {
 @Composable
 private fun LoadingButtonPreview() {
     GedoiseTheme {
-        LoadingButton()
+        LoadingButton(
+            text = "Loading button",
+            onClick = {},
+            loading = false
+        )
     }
 }

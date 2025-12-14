@@ -28,7 +28,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardCapitalization
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import com.upsaclay.common.presentation.theme.GedoiseTheme
@@ -128,50 +127,6 @@ fun SimpleTextField(
 @Composable
 fun TransparentTextField(
     modifier: Modifier = Modifier,
-    value: TextFieldValue,
-    onValueChange: (TextFieldValue) -> Unit,
-    placeholder: @Composable (() -> Unit),
-    textStyle: TextStyle = TextStyle.Default,
-    minLines: Int = 1,
-    enabled: Boolean = true
-) {
-    val backgroundColor = MaterialTheme.colorScheme.background
-
-    BasicTextField(
-        modifier = modifier.background(backgroundColor),
-        enabled = enabled,
-        value = value,
-        onValueChange = onValueChange,
-        textStyle = textStyle.copy(color = MaterialTheme.colorScheme.onSurface),
-        keyboardOptions = KeyboardOptions(
-            capitalization = KeyboardCapitalization.Sentences
-        ),
-        minLines = minLines,
-        cursorBrush = SolidColor(TextFieldDefaults.colors().cursorColor)
-        ) { innerTextField ->
-        TextFieldDefaults.DecorationBox(
-            value = value.text,
-            innerTextField = innerTextField,
-            enabled = true,
-            singleLine = false,
-            visualTransformation = VisualTransformation.None,
-            interactionSource = remember { MutableInteractionSource() },
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = backgroundColor,
-                unfocusedContainerColor = backgroundColor,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent
-            ),
-            placeholder = placeholder,
-            contentPadding = PaddingValues()
-        )
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TransparentTextField(
-    modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
     placeholder: @Composable (() -> Unit),
@@ -255,11 +210,7 @@ private fun SimpleTextFieldPreview() {
 @Preview
 @Composable
 private fun TransparentTextFieldPreview() {
-    var value by remember {
-        mutableStateOf(
-            TextFieldValue(text = "")
-        )
-    }
+    var value by remember { mutableStateOf("") }
 
     GedoiseTheme {
         TransparentTextField(

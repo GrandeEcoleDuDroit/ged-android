@@ -15,31 +15,27 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import com.upsaclay.common.presentation.components.OptionButton
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.imageIconButtonColors
 import com.upsaclay.common.utils.PhonePreviews
-import com.upsaclay.mission.R
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun MissionTopBar(
+internal fun MissionDetailsTopBar(
     modifier: Modifier = Modifier,
-    scrollBehavior: TopAppBarScrollBehavior,
     title: String,
+    showTitleTopBar: Boolean,
     onBackClick: () -> Unit,
     onOptionClick: () -> Unit
 ) {
-    if (scrollBehavior.state.contentOffset.dp <= dimensionResource(R.dimen.image_top_bar_offset)) {
-        DefaultTopBar(
+    if (showTitleTopBar) {
+        TextTopBar(
             modifier = modifier,
             title = title,
             onBackClick = onBackClick,
@@ -91,7 +87,7 @@ private fun ImageTopBar(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DefaultTopBar(
+private fun TextTopBar(
     modifier: Modifier = Modifier,
     title: String,
     onBackClick: () -> Unit,
@@ -149,21 +145,19 @@ private fun DefaultTopBar(
 @Composable
 private fun ImageTopBarPreview() {
     GedoiseTheme {
-        Surface {
-            ImageTopBar(
-                onBackClick = {},
-                onOptionClick = {}
-            )
-        }
+         ImageTopBar(
+            onBackClick = {},
+            onOptionClick = {}
+        )
     }
 }
 
 @PhonePreviews
 @Composable
-private fun DefaultTopBarPreview() {
+private fun TextTopBarPreview() {
     GedoiseTheme {
         Surface {
-            DefaultTopBar(
+            TextTopBar(
                 title = "Mission",
                 onBackClick = {},
                 onOptionClick = {}

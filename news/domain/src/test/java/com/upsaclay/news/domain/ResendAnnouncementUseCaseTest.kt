@@ -6,11 +6,14 @@ import com.upsaclay.news.domain.usecase.ResendAnnouncementUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class ResendAnnouncementUseCaseTest {
     private val announcementRepository: AnnouncementRepository = mockk()
 
@@ -31,7 +34,7 @@ class ResendAnnouncementUseCaseTest {
     @Test
     fun resendAnnouncement_should_create_announcement_with_publishing_state() {
         // Given
-        val announcement = longAnnouncementFixture.copy(state = AnnouncementState.DRAFT)
+        val announcement = longAnnouncementFixture.copy(state = AnnouncementState.ERROR)
 
         // When
         useCase(announcement)
@@ -45,7 +48,7 @@ class ResendAnnouncementUseCaseTest {
     @Test
     fun resendAnnouncement_should_update_local_announcement_to_published_state_when_succeeds() {
         // Given
-        val announcement = announcementFixture.copy(state = AnnouncementState.DRAFT)
+        val announcement = announcementFixture.copy(state = AnnouncementState.ERROR)
 
         // When
         useCase(announcement)
@@ -59,7 +62,7 @@ class ResendAnnouncementUseCaseTest {
     @Test
     fun resendAnnouncement_should_update_local_announcement_to_error_state_when_fails() {
         // Given
-        val announcement = longAnnouncementFixture.copy(state = AnnouncementState.DRAFT)
+        val announcement = longAnnouncementFixture.copy(state = AnnouncementState.ERROR)
         coEvery { announcementRepository.createAnnouncement(any()) } throws Exception()
 
         // When

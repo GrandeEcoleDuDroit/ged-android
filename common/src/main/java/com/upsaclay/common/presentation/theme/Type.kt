@@ -40,7 +40,3 @@ val Typography = Typography(
 val Typography.topBarTitle: TextStyle
     @Composable
     get() = MaterialTheme.typography.titleLarge
-
-val Typography.sectionTitle: TextStyle
-    @Composable
-    get() = MaterialTheme.typography.titleMedium

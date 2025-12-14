@@ -11,11 +11,12 @@ import com.upsaclay.common.domain.usersFixture
 import com.upsaclay.mission.domain.entity.MissionTask
 import com.upsaclay.mission.domain.usecase.CreateMissionUseCase
 import com.upsaclay.mission.presentation.createmission.CreateMissionViewModel
-import com.upsaclay.mission.presentation.extension.managerSorting
+import com.upsaclay.mission.presentation.extension.missionManagerSorting
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.setMain
@@ -24,6 +25,7 @@ import org.junit.Test
 import java.time.LocalDate
 import kotlin.test.assertEquals
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class CreateMissionViewModelTest {
     private val userRepository: UserRepository = mockk()
     private val createMissionUseCase: CreateMissionUseCase = mockk()
@@ -62,8 +64,8 @@ class CreateMissionViewModelTest {
         assertEquals("", viewModel.uiState.value.duration)
         assertEquals(listOf(userFixture), viewModel.uiState.value.managers)
         assertEquals("", viewModel.uiState.value.maxParticipants)
-        assertEquals(emptyList(), viewModel.uiState.value.tasks)
-        assertEquals(usersFixture.managerSorting(), viewModel.uiState.value.users)
+        assertEquals(emptyList(), viewModel.uiState.value.missionTasks)
+        assertEquals(usersFixture.missionManagerSorting(), viewModel.uiState.value.users)
         assertEquals("", viewModel.uiState.value.userQuery)
         assertEquals(SchoolLevel.getSchoolLevels(), viewModel.uiState.value.allSchoolLevels)
     }
@@ -403,7 +405,7 @@ class CreateMissionViewModelTest {
         viewModel.onUserQueryChange("")
 
         // Then
-        assertEquals(usersFixture.managerSorting(), viewModel.uiState.value.users)
+        assertEquals(usersFixture.missionManagerSorting(), viewModel.uiState.value.users)
     }
 
     @Test
@@ -421,73 +423,73 @@ class CreateMissionViewModelTest {
         viewModel.onResetUserQuery()
 
         // Then
-        assertEquals(usersFixture.managerSorting(), viewModel.uiState.value.users)
+        assertEquals(usersFixture.missionManagerSorting(), viewModel.uiState.value.users)
     }
 
     @Test
-    fun onAddTask_should_add_task() {
+    fun onAddTask_should_add_Mission_task() {
         // Given
         val task = MissionTask(newId, "task")
 
         // When
-        viewModel.onAddTask(task.value)
+        viewModel.onAddMissionTask(task.value)
 
         // Then
-        assertEquals(listOf(task), viewModel.uiState.value.tasks)
+        assertEquals(listOf(task), viewModel.uiState.value.missionTasks)
     }
 
     @Test
-    fun onAddTask_should_trim_task() {
+    fun onAddTask_should_trim_Mission_task() {
         // Given
         val task = MissionTask(newId, " task ")
         val trimmedTask = task.copy(value = "task")
 
         // When
-        viewModel.onAddTask(task.value)
+        viewModel.onAddMissionTask(task.value)
 
         // Then
-        assertEquals(listOf(trimmedTask), viewModel.uiState.value.tasks)
+        assertEquals(listOf(trimmedTask), viewModel.uiState.value.missionTasks)
     }
 
     @Test
-    fun onEditTask_should_edit_task() {
+    fun onEditTask_should_edit_Mission_task() {
         // Given
         val task = MissionTask(newId, "task")
         val editedTask = task.copy(value = "editedTask")
 
         // When
-        viewModel.onAddTask(task.value)
-        viewModel.onEditTask(editedTask)
+        viewModel.onAddMissionTask(task.value)
+        viewModel.onEditMissionTask(editedTask)
 
         // Then
-        assertEquals(listOf(editedTask), viewModel.uiState.value.tasks)
+        assertEquals(listOf(editedTask), viewModel.uiState.value.missionTasks)
     }
 
     @Test
-    fun onEditTask_should_trimmed_task() {
+    fun onEditTask_should_trimmed_Mission_task() {
         // Given
         val task = MissionTask(newId, "task")
         val editedTask = task.copy(value = " editedTask ")
         val trimmedEditedTask = task.copy(value = "editedTask")
 
         // When
-        viewModel.onAddTask(task.value)
-        viewModel.onEditTask(editedTask)
+        viewModel.onAddMissionTask(task.value)
+        viewModel.onEditMissionTask(editedTask)
 
         // Then
-        assertEquals(listOf(trimmedEditedTask), viewModel.uiState.value.tasks)
+        assertEquals(listOf(trimmedEditedTask), viewModel.uiState.value.missionTasks)
     }
 
     @Test
-    fun onRemoveTask_should_remove_task() {
+    fun onRemoveTask_should_remove_Mission_task() {
         // Given
         val task = MissionTask(newId, "task")
 
         // When
-        viewModel.onAddTask(task.value)
-        viewModel.onRemoveTask(task)
+        viewModel.onAddMissionTask(task.value)
+        viewModel.onRemoveMissionTask(task)
 
         // Then
-        assertEquals(emptyList(), viewModel.uiState.value.tasks.map { it.value })
+        assertEquals(emptyList(), viewModel.uiState.value.missionTasks.map { it.value })
     }
 }

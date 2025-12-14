@@ -19,13 +19,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.presentation.components.TransparentTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.inputForeground
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
+import com.upsaclay.mission.presentation.MissionPresentationUtils.descriptionStyle
+import com.upsaclay.mission.presentation.MissionPresentationUtils.titleStyle
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -94,15 +95,6 @@ fun MissionFormTitleDescriptionSection(
         }
     }
 }
-
-private val titleStyle: TextStyle
-    @Composable
-    get() = MaterialTheme.typography.titleLarge
-
-private val descriptionStyle: TextStyle
-    @Composable
-    get() = MaterialTheme.typography.bodyLarge
-
 
 /*
  =====================================================================

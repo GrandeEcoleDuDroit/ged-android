@@ -11,12 +11,14 @@ class ResendAnnouncementUseCase(
     private val scope: CoroutineScope
 ) {
     operator fun invoke(announcement: Announcement) {
-        scope.launch {
-            try {
-                announcementRepository.createAnnouncement(announcement.copy(state = AnnouncementState.PUBLISHING))
-                announcementRepository.upsertLocalAnnouncement(announcement.copy(state = AnnouncementState.PUBLISHED))
-            } catch (_: Exception) {
-                announcementRepository.upsertLocalAnnouncement(announcement.copy(state = AnnouncementState.ERROR))
+        if (announcement.state == AnnouncementState.ERROR) {
+            scope.launch {
+                try {
+                    announcementRepository.createAnnouncement(announcement.copy(state = AnnouncementState.PUBLISHING))
+                    announcementRepository.upsertLocalAnnouncement(announcement.copy(state = AnnouncementState.PUBLISHED))
+                } catch (_: Exception) {
+                    announcementRepository.upsertLocalAnnouncement(announcement.copy(state = AnnouncementState.ERROR))
+                }
             }
         }
     }

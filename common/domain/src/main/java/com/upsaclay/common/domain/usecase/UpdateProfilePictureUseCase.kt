@@ -1,5 +1,6 @@
 package com.upsaclay.common.domain.usecase
 
+import com.upsaclay.common.domain.UserUtils
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.common.domain.repository.UserRepository
@@ -11,18 +12,18 @@ class UpdateProfilePictureUseCase(
 ) {
     suspend operator fun invoke(user: User, profilePictureUri: String) {
         withTimeout(15000) {
-            imageRepository.createCacheImage(formatProfilePictureFileName(user.id), profilePictureUri)?.let { file ->
-                imageRepository.uploadImage(file)
+            val fileName = UserUtils.ProfilePicture.generateFileName(user.id)
+            val imagePath = UserUtils.ProfilePicture.makeRelativePath(fileName)
+
+            imageRepository.createCacheImage(fileName, profilePictureUri)?.let { file ->
+                imageRepository.uploadImage(file, imagePath)
                 userRepository.updateProfilePictureFileName(user.id, file.name)
                 imageRepository.deleteCacheImage(file.name)
             }
 
-            user.profilePictureUrl?.let { url ->
-                imageRepository.deleteRemoteImage(url)
+            UserUtils.ProfilePicture.getPath(user.profilePictureUrl)?.let {
+                imageRepository.deleteRemoteImage(it)
             }
-
         }
     }
-
-    private fun formatProfilePictureFileName(userId: String) = "${userId}-profile-picture-${System.currentTimeMillis()}"
 }

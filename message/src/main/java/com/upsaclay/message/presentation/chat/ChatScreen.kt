@@ -71,11 +71,8 @@ fun ChatDestination(
         viewModel.event.collectLatest { event ->
             when (event) {
                 is MessageEvent.NewMessage -> newMessageEvent = event
-
                 is MessageEvent.MessageReported -> showSnackBar(context.getString(R.string.message_reported))
-
                 is MessageEvent.ConversationDeleted -> onBackClick()
-
                 is SingleUiEvent.Error -> showSnackBar(context.getString(event.messageId))
             }
         }
@@ -130,58 +127,54 @@ private fun ChatScreen(
     onDeleteConversationClick: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
-    val bottomSheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
-    )
-    var clickedMessage: Message? by remember { mutableStateOf(null) }
-    var showDeleteMessageDialog by remember { mutableStateOf(false) }
-    var showSentMessageBottomSheet by remember { mutableStateOf(false) }
-    var showReceivedMessageBottomSheet by remember { mutableStateOf(false) }
-    var showReportMessageBottomSheet by remember { mutableStateOf(false) }
-    var showDeleteConversationDialog by remember { mutableStateOf(false) }
-    var showUnblockUserDialog by remember { mutableStateOf(false) }
+    var activeBottomSheet by remember { mutableStateOf<ChatScreenBottomSheet?>(null) }
+    var activeDialog by remember { mutableStateOf<ChatDialog?>(null) }
+
+    when(val dialog = activeDialog) {
+        is ChatDialog.DeleteMessageDialog -> {
+            DefaultDialog(
+                text = stringResource(id = R.string.delete_message_dialog_message),
+                confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
+                critical = true,
+                onConfirm = {
+                    activeDialog = null
+                    onDeleteMessageClick(dialog.message)
+                },
+                onCancel = { activeDialog = null }
+            )
+        }
+
+        is ChatDialog.DeleteConversationDialog -> {
+            DefaultDialog(
+                title = stringResource(id = R.string.delete_conversation_dialog_title),
+                text = stringResource(id = R.string.delete_conversation_dialog_message),
+                confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
+                critical = true,
+                onConfirm = {
+                    activeDialog = null
+                    onDeleteConversationClick()
+                },
+                onCancel = { activeDialog = null }
+            )
+        }
+
+        is ChatDialog.UnblockUserDialog -> {
+            DefaultDialog(
+                text = stringResource(id = com.upsaclay.common.R.string.unblock_user_dialog_message),
+                confirmText = stringResource(id = com.upsaclay.common.R.string.unblock),
+                onConfirm = {
+                    activeDialog = null
+                    onUnblockUserClick(conversation.interlocutor.id)
+                },
+                onCancel = { activeDialog = null }
+            )
+        }
+
+        else -> Unit
+    }
 
     if (loading) {
         LoadingDialog()
-    }
-
-    if (showDeleteMessageDialog) {
-        DefaultDialog(
-            text = stringResource(id = R.string.delete_message_dialog_message),
-            confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
-            critical = true,
-            onConfirm = {
-                showDeleteMessageDialog = false
-                clickedMessage?.let(onDeleteMessageClick)
-            },
-            onCancel = { showDeleteMessageDialog  = false }
-        )
-    }
-
-    if (showDeleteConversationDialog) {
-        DefaultDialog(
-            title = stringResource(id = R.string.delete_conversation_dialog_title),
-            text = stringResource(id = R.string.delete_conversation_dialog_message),
-            confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
-            critical = true,
-            onConfirm = {
-                showDeleteConversationDialog = false
-                onDeleteConversationClick()
-            },
-            onCancel = { showDeleteConversationDialog  = false }
-        )
-    }
-
-    if (showUnblockUserDialog) {
-        DefaultDialog(
-            text = stringResource(id = com.upsaclay.common.R.string.unblock_user_dialog_message),
-            confirmText = stringResource(id = com.upsaclay.common.R.string.unblock),
-            onConfirm = {
-                showUnblockUserDialog = false
-                onUnblockUserClick(conversation.interlocutor.id)
-            },
-            onCancel = { showUnblockUserDialog = false }
-        )
     }
 
     ChatScaffold(
@@ -207,13 +200,11 @@ private fun ChatScreen(
                 newMessageEvent = newMessageEvent,
                 onErrorSentMessageClick = {
                     if (it.state == MessageState.ERROR) {
-                        clickedMessage = it
-                        showSentMessageBottomSheet = true
+                        activeBottomSheet = ChatScreenBottomSheet.SentMessageBottomSheet(it)
                     }
                 },
                 onReceivedMessageLongClick = {
-                    clickedMessage = it
-                    showReceivedMessageBottomSheet = true
+                    activeBottomSheet = ChatScreenBottomSheet.ReceivedMessageBottomSheet(it)
                 },
                 onInterlocutorClick = { onInterlocutorClick(conversation.interlocutor) }
             )
@@ -224,58 +215,59 @@ private fun ChatScreen(
                 messageText = messageText,
                 onMessageTextChange = onMessageTextChange,
                 onSendMessageClick = onSendMessageClick,
-                onDeleteConversationClick = { showDeleteConversationDialog = true },
-                onUnblockUserClick = { showUnblockUserDialog = true }
+                onDeleteConversationClick = { activeDialog = ChatDialog.DeleteConversationDialog },
+                onUnblockUserClick = { activeDialog = ChatDialog.UnblockUserDialog }
             )
         }
     }
 
-    if (showSentMessageBottomSheet) {
-        SentMessageBottomSheet(
-            onDismiss = { showSentMessageBottomSheet = false },
-            onResendMessageClick = {
-                showSentMessageBottomSheet = false
-                clickedMessage?.let(onResendMessageClick)
-            },
-            onDeleteMessageClick = {
-                showSentMessageBottomSheet = false
-                showDeleteMessageDialog = true
-            }
-        )
-    }
+    when(val bottomSheet = activeBottomSheet) {
+        is ChatScreenBottomSheet.SentMessageBottomSheet -> {
+            SentMessageBottomSheet(
+                onResendMessageClick = {
+                    activeBottomSheet = null
+                    onResendMessageClick(bottomSheet.message)
+                },
+                onDeleteMessageClick = {
+                    activeBottomSheet = null
+                    activeDialog = ChatDialog.DeleteMessageDialog(bottomSheet.message)
+                },
+                onDismiss = { activeBottomSheet = null },
+            )
+        }
 
-    if (showReceivedMessageBottomSheet) {
-        ReceivedMessageBottomSheet(
-            onDismiss = { showReceivedMessageBottomSheet = false },
-            onReportClick = {
-                showReceivedMessageBottomSheet = false
-                showReportMessageBottomSheet = true
-            }
-        )
-    }
+        is ChatScreenBottomSheet.ReceivedMessageBottomSheet -> {
+            ReceivedMessageBottomSheet(
+                onReportClick = {
+                    activeBottomSheet = ChatScreenBottomSheet.MessageReportBottomSheet(bottomSheet.message)
+                },
+                onDismiss = { activeBottomSheet = null }
+            )
+        }
 
-    if (showReportMessageBottomSheet) {
-        ReportBottomSheet(
-            sheetState = bottomSheetState,
-            items = MessageReport.Reason.entries,
-            onDismiss = { showReportMessageBottomSheet = false },
-            onReportClick = { reason ->
-                showReportMessageBottomSheet = false
-                clickedMessage?.let { message ->
+        is ChatScreenBottomSheet.MessageReportBottomSheet -> {
+            ReportBottomSheet(
+                sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+                items = MessageReport.Reason.entries,
+                onReportClick = { reason ->
+                    activeBottomSheet = null
                     onReportClick(
                         MessageReport(
                             conversationId = conversation.id,
-                            messageId = message.id,
-                            recipientInfo = MessageReport.UserInfo(
+                            messageId = bottomSheet.message.id,
+                            recipient = MessageReport.Recipient(
                                 fullName = conversation.interlocutor.fullName,
                                 email = conversation.interlocutor.email
                             ),
                             reason = reason
                         )
                     )
-                }
-            }
-        )
+                },
+                onDismiss = { activeBottomSheet = null },
+            )
+        }
+
+        else -> Unit
     }
 }
 
@@ -304,6 +296,18 @@ private fun MessageBottomSection(
             onSendClick = onSendMessageClick
         )
     }
+}
+
+private sealed class ChatScreenBottomSheet {
+    data class SentMessageBottomSheet(val message: Message): ChatScreenBottomSheet()
+    data class ReceivedMessageBottomSheet(val message: Message): ChatScreenBottomSheet()
+    data class MessageReportBottomSheet(val message: Message): ChatScreenBottomSheet()
+}
+
+private sealed class ChatDialog {
+    data class DeleteMessageDialog(val message: Message): ChatDialog()
+    data object DeleteConversationDialog: ChatDialog()
+    data object UnblockUserDialog: ChatDialog()
 }
 
 /*

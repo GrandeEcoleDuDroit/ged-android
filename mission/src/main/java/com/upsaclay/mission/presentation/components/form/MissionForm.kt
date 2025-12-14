@@ -103,6 +103,7 @@ fun MissionForm(
 }
 
 data class MissionFormValue(
+    val imageReference: String?,
     val title: String,
     val description: String,
     val startDate: LocalDate,
@@ -112,8 +113,7 @@ data class MissionFormValue(
     val duration: String,
     val maxParticipants: String,
     val managers: List<User>,
-    val missionTasks: List<MissionTask>,
-    val imageReference: String?
+    val missionTasks: List<MissionTask>
 )
 
 /*
@@ -127,7 +127,7 @@ data class MissionFormValue(
 private fun MissionFormPreview() {
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
-    val selectedSchoolLevels = listOf(SchoolLevel.GED_3)
+    val selectedSchoolLevels = emptyList<SchoolLevel>()
     var frequency by remember { mutableStateOf("") }
     var participantNumber by remember { mutableStateOf("") }
     var missionTasks by remember { mutableStateOf(listOf(missionTaskFixture)) }

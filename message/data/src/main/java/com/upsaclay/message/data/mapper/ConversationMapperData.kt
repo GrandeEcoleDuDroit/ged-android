@@ -1,8 +1,9 @@
 package com.upsaclay.message.data.mapper
 
-import com.upsaclay.common.data.UrlUtils
+import com.upsaclay.common.data.extensions.formatUrl
 import com.upsaclay.common.data.extensions.toLocalDateTime
 import com.upsaclay.common.data.extensions.toTimestamp
+import com.upsaclay.common.domain.UserUtils
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.entity.User.UserState
@@ -26,7 +27,7 @@ fun Conversation.toLocal() = LocalConversation(
     conversationInterlocutorEmail = interlocutor.email,
     conversationInterlocutorAdmin = interlocutor.admin,
     conversationInterlocutorSchoolLevel = interlocutor.schoolLevel.number,
-    conversationInterlocutorProfilePictureFileName = UrlUtils.extractFileNameFromUrl(interlocutor.profilePictureUrl),
+    conversationInterlocutorProfilePictureFileName = UserUtils.ProfilePicture.getFileName(interlocutor.profilePictureUrl),
     conversationInterlocutorState = interlocutor.state.toString(),
     conversationInterlocutorTester = interlocutor.tester,
     conversationCreatedAt = createdAt.toEpochMilliUTC(),
@@ -49,7 +50,7 @@ fun LocalConversation.toConversation(): Conversation {
         email = conversationInterlocutorEmail,
         schoolLevel = SchoolLevel.fromNumber(conversationInterlocutorSchoolLevel),
         admin = conversationInterlocutorAdmin,
-        profilePictureUrl = UrlUtils.formatOracleBucketUrl(conversationInterlocutorProfilePictureFileName),
+        profilePictureUrl = UserUtils.ProfilePicture.formatUrl(conversationInterlocutorProfilePictureFileName),
         state = UserState.fromString(conversationInterlocutorState),
         tester = conversationInterlocutorTester
     )

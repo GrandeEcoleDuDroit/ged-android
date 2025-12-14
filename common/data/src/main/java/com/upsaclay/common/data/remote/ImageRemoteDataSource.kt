@@ -11,15 +11,15 @@ internal class ImageRemoteDataSource(private val imageApi: ImageApi) {
         imageApi.getImage(fileName).body?.byteStream()
     }
 
-    suspend fun uploadImage(file: File) {
+    suspend fun uploadImage(file: File, imagePath: String) {
         withContext(Dispatchers.IO) {
-            imageApi.uploadImage(file)
+            imageApi.uploadImage(file, imagePath)
         }
     }
 
-    suspend fun deleteImage(fileName: String) {
+    suspend fun deleteImage(imagePath: String) {
         withContext(Dispatchers.IO) {
-            imageApi.deleteImage(fileName)
+            imageApi.deleteImage(imagePath)
         }
     }
 }

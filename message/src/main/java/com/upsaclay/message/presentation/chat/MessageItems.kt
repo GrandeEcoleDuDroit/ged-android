@@ -207,7 +207,7 @@ private fun MessageBubble(
 ) {
     FlowRow(
         modifier = modifier
-            .clip(RoundedCornerShape(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)))
+            .clip(RoundedCornerShape(16))
             .background(backgroundColor)
             .padding(
                 vertical = dimensionResource(com.upsaclay.common.R.dimen.small_padding),

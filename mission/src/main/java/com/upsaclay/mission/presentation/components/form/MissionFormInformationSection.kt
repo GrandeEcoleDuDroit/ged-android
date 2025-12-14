@@ -27,12 +27,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.extension.smallMediumSpacing
 import com.upsaclay.common.presentation.components.MultiSelectionDropDownMenu
+import com.upsaclay.common.presentation.components.SectionTitle
 import com.upsaclay.common.presentation.components.SimpleOutlinedTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.DateUtils
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
-import com.upsaclay.mission.presentation.components.items.SectionTitle
 import java.time.LocalDate
 
 @Composable
@@ -78,7 +78,7 @@ fun MissionFormInformationSection(
         )
 
         SimpleOutlinedTextField(
-            modifier = Modifier.fillMaxWidth(0.6f),
+            modifier = Modifier.fillMaxWidth(),
             value = participantNumber,
             onValueChange = onParticipantNumberChange,
             label = stringResource(R.string.mission_max_participants_field),

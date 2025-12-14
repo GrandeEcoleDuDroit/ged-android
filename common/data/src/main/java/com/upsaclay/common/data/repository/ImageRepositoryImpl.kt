@@ -1,6 +1,5 @@
 package com.upsaclay.common.data.repository
 
-import com.upsaclay.common.data.UrlUtils
 import com.upsaclay.common.data.local.ImageLocalDataSource
 import com.upsaclay.common.data.remote.ImageRemoteDataSource
 import com.upsaclay.common.domain.repository.ImageRepository
@@ -16,27 +15,25 @@ internal class ImageRepositoryImpl(
 
     override fun getFileExtension(uri: String): String = imageLocalDataSource.getFileExtension(uri)
 
-    override suspend fun createLocalImage(folderName: String, fileName: String, uri: String): File? =
-        imageLocalDataSource.createLocalImage(folderName, fileName, uri)
+    override suspend fun createLocalImage(imagePath: String, uri: String): File? =
+        imageLocalDataSource.createLocalImage(imagePath, uri)
 
     override suspend fun createCacheImage(fileName: String, uri: String): File? =
         imageLocalDataSource.createCacheImage(fileName, uri)
 
-    override suspend fun uploadImage(file: File) {
-        imageRemoteDataSource.uploadImage(file)
+    override suspend fun uploadImage(file: File, imagePath: String) {
+        imageRemoteDataSource.uploadImage(file, imagePath)
     }
 
-    override suspend fun deleteRemoteImage(url: String) {
-        UrlUtils.extractFileNameFromUrl(url)?.let {
-            imageRemoteDataSource.deleteImage(it)
-        }
+    override suspend fun deleteRemoteImage(imagePath: String) {
+        imageRemoteDataSource.deleteImage(imagePath)
     }
 
-    override suspend fun deleteLocalImage(folderName: String, fileName: String) {
-        imageLocalDataSource.deleteLocalImage(folderName, fileName)
+    override suspend fun deleteLocalImage(imagePath: String) {
+        imageLocalDataSource.deleteLocalImage(imagePath)
     }
 
-    override suspend fun deleteCacheImage(fileName: String) {
-        imageLocalDataSource.deleteCacheImage(fileName)
+    override suspend fun deleteCacheImage(imagePath: String) {
+        imageLocalDataSource.deleteCacheImage(imagePath)
     }
 }

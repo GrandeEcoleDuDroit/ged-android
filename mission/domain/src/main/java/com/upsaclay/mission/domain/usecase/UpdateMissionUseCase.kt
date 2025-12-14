@@ -10,32 +10,42 @@ class UpdateMissionUseCase(
     private val missionRepository: MissionRepository,
     private val imageRepository: ImageRepository
 ) {
-    suspend operator fun invoke(mission: Mission, newImageUri: String?, oldMissionState: MissionState) {
-        val fileName = MissionUtils.formatImageFileName(mission.id)
+    suspend operator fun invoke(mission: Mission, imageUri: String?, previousMissionState: MissionState) {
+        var newImagePath: String? = null
 
-        val newImage = newImageUri?.let {
-            imageRepository.createCacheImage(fileName, it)
+        val newImageFile = imageUri?.let { uri ->
+            val extension = imageRepository.getFileExtension(uri)
+            val fileName = "${MissionUtils.Image.generateFileName(mission.id)}.$extension"
+            newImagePath = MissionUtils.Image.makeRelativePath(fileName)
+            imageRepository.createCacheImage(newImagePath!!, uri)
         }
 
-        val newMission = newImage?.let {
-            mission.copy(state = MissionState.Published(it.name))
+        val missionToUpdate = newImagePath?.let {
+            mission.copy(state = MissionState.Published(it))
         } ?: mission
 
-        missionRepository.updateMission(newMission, newImage)
-        deleteUnusedImages(newImage?.name, newMission.state, oldMissionState)
+        missionRepository.updateMission(missionToUpdate, newImageFile)
+        runCatching {
+            deleteUnusedImages(newImagePath, missionToUpdate.state, previousMissionState)
+        }
     }
 
     private suspend fun deleteUnusedImages(
-        newImageName: String?,
-        newState: MissionState,
-        oldState: MissionState
+        newImagePath: String?,
+        missionState: MissionState,
+        previousMissionState: MissionState
     ) {
-        newImageName?.let { imageRepository.deleteCacheImage(it) }
+        newImagePath?.let {
+            imageRepository.deleteCacheImage(it)
+        }
 
-        (oldState as? MissionState.Published)
-            ?.takeIf { it.imageReference != newState.imageReference }
-            ?.imageUrl?.let {
-                imageRepository.deleteRemoteImage(it)
-            }
+        val previousImageUrl = (previousMissionState as? MissionState.Published)
+            ?.takeIf { it.imageReference != missionState.imageReference }
+            ?.imageUrl
+
+
+        MissionUtils.Image.getPath(previousImageUrl)?.let {
+            imageRepository.deleteRemoteImage(it)
+        }
     }
 }

@@ -22,51 +22,15 @@ import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.missionFixture
-import com.upsaclay.mission.presentation.MissionFormatter
+import com.upsaclay.mission.presentation.MissionPresentationUtils
 
 @Composable
-fun MissionInformationItem(
+fun MissionInformationValuesItem(
     modifier: Modifier = Modifier,
     mission: Mission,
     textStyle: TextStyle = MaterialTheme.typography.bodyMedium
 ) {
-    val missionInformationValues = mutableListOf(
-        MissionInformationValue(
-            iconRes = com.upsaclay.common.R.drawable.ic_outline_calendar,
-            value = MissionFormatter.formatDate(mission.startDate, mission.endDate)
-        ),
-        MissionInformationValue(
-            iconRes = R.drawable.ic_outline_school,
-            value = if (mission.schoolLevelRestricted) {
-                MissionFormatter.formatSchoolLevels(mission.schoolLevels)
-            } else {
-                stringResource(R.string.everyone)
-            }
-        ),
-        MissionInformationValue(
-            iconRes = com.upsaclay.common.R.drawable.ic_outline_group,
-            value = if (mission.full) {
-                stringResource(R.string.full)
-            } else {
-                stringResource(
-                    R.string.spot_remaining,
-                    MissionFormatter.formatRemainingParticipants(
-                        participantsCount = mission.participants.size,
-                        maxParticipants = mission.maxParticipants
-                    )
-                )
-            }
-        )
-    )
-
-    mission.duration?.let {
-        missionInformationValues.add(
-            MissionInformationValue(
-                iconRes = R.drawable.ic_outline_schedule,
-                value = it
-            )
-        )
-    }
+    val missionInformationValues = missionInformationValues(mission)
 
     Column(
         modifier = modifier,
@@ -82,19 +46,61 @@ fun MissionInformationItem(
                 },
                 text = {
                     Text(
-                        text = it.value,
+                        text = it.text,
                         style = textStyle
                     )
                 }
             )
         }
-
     }
 }
 
-data class MissionInformationValue(
+@Composable
+private fun missionInformationValues(mission: Mission): List<MissionInformationValue> {
+    val missionInformationValues = mutableListOf(
+        MissionInformationValue(
+            iconRes = com.upsaclay.common.R.drawable.ic_outline_calendar,
+            text = MissionPresentationUtils.formatDate(mission.startDate, mission.endDate)
+        ),
+        MissionInformationValue(
+            iconRes = R.drawable.ic_outline_school,
+            text = if (mission.schoolLevelRestricted) {
+                MissionPresentationUtils.formatSchoolLevels(mission.schoolLevels)
+            } else {
+                stringResource(R.string.everyone)
+            }
+        ),
+        MissionInformationValue(
+            iconRes = com.upsaclay.common.R.drawable.ic_outline_group,
+            text = if (mission.full) {
+                stringResource(R.string.full)
+            } else {
+                stringResource(
+                    R.string.remaining_spots,
+                    MissionPresentationUtils.formatRemainingParticipants(
+                        participantsCount = mission.participants.size,
+                        maxParticipants = mission.maxParticipants
+                    )
+                )
+            }
+        )
+    )
+
+    mission.duration?.let {
+        missionInformationValues.add(
+            MissionInformationValue(
+                iconRes = R.drawable.ic_outline_schedule,
+                text = it
+            )
+        )
+    }
+
+    return missionInformationValues
+}
+
+private data class MissionInformationValue(
     @DrawableRes val iconRes: Int,
-    val value: String
+    val text: String
 )
 
 /*
@@ -106,10 +112,10 @@ data class MissionInformationValue(
 @Preview
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun MissionInformationItemPreview() {
+private fun MissionInformationValuesItemPreview() {
     GedoiseTheme {
         Surface {
-            MissionInformationItem(
+            MissionInformationValuesItem(
                 modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
                 mission = missionFixture
             )

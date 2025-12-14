@@ -106,9 +106,9 @@ fun EditMissionDestination(
         onResetUserQuery = viewModel::onResetUserQuery,
         onImageUriChange = viewModel::onImageUriChange,
         onRemoveImageClick = viewModel::onRemoveImage,
-        onAddTaskClick = viewModel::onAddTask,
-        onEditTaskClick = viewModel::onEditTask,
-        onRemoveTaskClick = viewModel::onRemoveTask,
+        onAddTaskClick = viewModel::onAddMissionTask,
+        onEditTaskClick = viewModel::onEditMissionTask,
+        onRemoveTaskClick = viewModel::onRemoveMissionTask,
         onSaveMissionClick = viewModel::updateMission,
         onBackClick = onBackClick
     )
@@ -195,6 +195,7 @@ private fun EditMissionScreen(
                     )
                 },
             value = MissionFormValue(
+                imageReference = imageUri?.toString() ?: missionState.imageReference,
                 title = title,
                 description = description,
                 startDate = startDate,
@@ -204,8 +205,7 @@ private fun EditMissionScreen(
                 duration = duration,
                 maxParticipants = maxParticipants,
                 managers = managers,
-                missionTasks = missionTasks,
-                imageReference = imageUri?.toString() ?: missionState.imageReference
+                missionTasks = missionTasks
             ),
             onTitleChange = onTitleChange,
             onDescriptionChange = onDescriptionChange,

@@ -32,7 +32,7 @@ val missionFixture = Mission(
     ),
     date = LocalDateTime.now(),
     startDate = LocalDate.now(),
-    endDate = LocalDate.now().minusDays(1),
+    endDate = LocalDate.now().plusDays(1),
     duration = "Once a week",
     managers = listOf(userFixture),
     participants = listOf(userFixture2),

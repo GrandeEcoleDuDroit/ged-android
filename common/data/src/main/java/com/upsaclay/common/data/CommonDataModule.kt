@@ -41,6 +41,7 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 val GED_SERVER_QUALIFIER = named("server_qualifier")
 private val OKHTTP_CLIENT_QUALIFIER = named("okhttp_client_qualifier")

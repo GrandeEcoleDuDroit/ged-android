@@ -5,7 +5,7 @@
     <string name="mission_details">Mission details</string>
 
     <string name="no_mission">No mission</string>
-    <string name="spot_remaining">%s spots remaining</string>
+    <string name="remaining_spots">%s remaining spots</string>
     <string name="title">Title</string>
     <string name="description">Description</string>
     <string name="information">Information</string>
@@ -37,7 +37,7 @@
     <string name="mission_start_date_field">Start date</string>
     <string name="mission_max_participants_field">Max participants</string>
     <string name="mission_duration_field">Duration (optional)</string>
-    <string name="no_participants">No participant</string>
+    <string name="no_participant">No participant</string>
 
     <string name="delete_mission_dialog_text">Do you want to delete this mission?</string>
     <string name="mission_deleted">Mission deleted</string>

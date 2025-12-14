@@ -37,6 +37,6 @@ class DeleteProfilePictureUseCaseTest {
 
         // Then
         coVerify { userRepository.deleteProfilePictureFileName(userFixture.id) }
-        coVerify { imageRepository.deleteRemoteImage(url.substringAfterLast("/")) }
+        coVerify { imageRepository.deleteRemoteImage(UserUtils.ProfilePicture.getPath(url)!!) }
     }
 }

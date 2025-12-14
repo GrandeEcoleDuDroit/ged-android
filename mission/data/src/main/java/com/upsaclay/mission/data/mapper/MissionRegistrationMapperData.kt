@@ -8,6 +8,6 @@ fun AddMissionParticipant.toRemote() = RemoteAddMissionParticipant(
     missionSchoolLevels = schoolLevels.map { it.number },
     missionMaxParticipants = maxParticipants,
     missionParticipantsNumber = participantsNumber,
-    userId = user.id,
-    userSchoolLevel = user.schoolLevel.number
+    userId = currentUser.id,
+    userSchoolLevel = currentUser.schoolLevel.number
 )
