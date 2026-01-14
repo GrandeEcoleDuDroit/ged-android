@@ -12,6 +12,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
+import com.upsaclay.common.extension.displayName
 import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
@@ -35,7 +36,7 @@ fun ParticipantItem(
         )
 
         Text(
-            text = user.fullName,
+            text = user.displayName(),
             textAlign = TextAlign.Center,
             style = textStyle
         )

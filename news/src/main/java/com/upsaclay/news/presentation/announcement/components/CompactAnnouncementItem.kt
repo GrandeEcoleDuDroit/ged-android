@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import com.upsaclay.common.extension.displayName
 import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.components.OptionButton
 import com.upsaclay.common.presentation.components.ProfilePicture
@@ -54,7 +55,7 @@ internal fun CompactAnnouncementItem(
             ) {
                 Text(
                     modifier = Modifier.weight(fill = false, weight = 1f),
-                    text = announcement.author.fullName,
+                    text = announcement.author.displayName(),
                     style = MaterialTheme.typography.titleSmall,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis

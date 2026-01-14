@@ -36,6 +36,7 @@ import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.entity.UserReport
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.domain.userFixture2
+import com.upsaclay.common.extension.displayName
 import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.extension.rootMediumPadding
 import com.upsaclay.common.presentation.SingleUiEvent
@@ -109,11 +110,6 @@ private fun UserScreen(
 ) {
     var activeBottomSheet by remember { mutableStateOf<UserScreenBottomSheet?>(null) }
     var activeDialog by remember { mutableStateOf<UserScreenDialog?>(null) }
-    val userName = if (user.state != User.UserState.DELETED) {
-        user.fullName
-    } else {
-        stringResource(id = R.string.deleted_user)
-    }
 
     when(activeDialog) {
         is UserScreenDialog.BlockUserDialog -> {
@@ -153,7 +149,7 @@ private fun UserScreen(
         topBar = {
             BackTopBar(
                 onBackClick = onBackClick,
-                title = userName,
+                title = user.displayName(),
                 leadingIcon = {
                     if (user != currentUser) {
                         OptionButton(

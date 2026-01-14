@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.style.TextOverflow
+import com.upsaclay.common.extension.displayName
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.supportingText
@@ -41,7 +42,7 @@ fun AnnouncementHeader(
 
         Text(
             modifier = Modifier.weight(fill = false, weight = 1f),
-            text = announcement.author.fullName,
+            text = announcement.author.displayName(),
             style = MaterialTheme.typography.titleSmall,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis

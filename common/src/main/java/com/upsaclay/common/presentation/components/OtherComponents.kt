@@ -37,6 +37,7 @@ import androidx.compose.ui.zIndex
 import com.upsaclay.common.R
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
+import com.upsaclay.common.extension.displayName
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.PhonePreviews
 import kotlinx.coroutines.delay
@@ -102,12 +103,6 @@ fun UserItem(
     textStyle: TextStyle = LocalTextStyle.current,
     trailingContent: @Composable (() -> Unit)? = null
 ) {
-    val userName = if (user.state != User.UserState.DELETED) {
-        user.fullName
-    } else {
-        stringResource(R.string.deleted_user)
-    }
-
     ListItem(
         modifier = modifier.fillMaxWidth(),
         leadingContent = {
@@ -116,7 +111,7 @@ fun UserItem(
                 scale = imageScale
             )
         },
-        headlineContent = { Text(text = userName, style = textStyle) },
+        headlineContent = { Text(text = user.displayName(), style = textStyle) },
         trailingContent = trailingContent
     )
 }
