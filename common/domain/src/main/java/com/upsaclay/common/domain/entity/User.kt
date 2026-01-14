@@ -13,14 +13,12 @@ data class User(
 ) {
     val fullName: String = "$firstName $lastName"
 
-    enum class UserState {
-        ACTIVE,
-        DELETED;
+    enum class UserState(val number: Int) {
+        ACTIVE(1),
+        DELETED(2);
 
         companion object {
-            fun fromString(state: String): UserState =
-                entries.find { it.toString() == state.lowercase() } ?: ACTIVE
+            fun fromNumber(number: Int): UserState = entries.find { it.number == number } ?: ACTIVE
         }
-        override fun toString(): String = name.lowercase()
     }
 }

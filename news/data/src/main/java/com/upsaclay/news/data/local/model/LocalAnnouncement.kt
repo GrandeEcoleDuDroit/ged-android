@@ -47,7 +47,7 @@ data class LocalAnnouncement(
     @ColumnInfo(name = ANNOUNCEMENT_AUTHOR_PROFILE_PICTURE_FILE_NAME)
     val announcementAuthorProfilePictureFileName: String?,
     @ColumnInfo(name = ANNOUNCEMENT_AUTHOR_STATE)
-    val announcementAuthorState: String,
+    val announcementAuthorState: Int,
     @ColumnInfo(name = ANNOUNCEMENT_AUTHOR_TESTER)
     val announcementAuthorTester: Boolean
 )

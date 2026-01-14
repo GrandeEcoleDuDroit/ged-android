@@ -16,10 +16,10 @@ import com.upsaclay.common.data.formatHttpError
 import com.upsaclay.common.data.remote.model.FirestoreUser
 import com.upsaclay.common.data.remote.model.RemoteUserReport
 import com.upsaclay.common.data.remote.model.ServerResponse
-import com.upsaclay.common.data.remote.model.ServerUser
+import com.upsaclay.common.data.remote.model.OracleUser
 import com.upsaclay.common.data.toFirestoreUser
 import com.upsaclay.common.data.toRemote
-import com.upsaclay.common.data.toServerUser
+import com.upsaclay.common.data.toOracleUser
 import com.upsaclay.common.data.toUser
 import com.upsaclay.common.domain.entity.ForbiddenException
 import com.upsaclay.common.domain.entity.User
@@ -74,7 +74,7 @@ internal class UserApiImpl(
     override suspend fun createUser(user: User) {
         mapServerResponseException(
             message = "Failed to create user with Server",
-            block = { userServerApi.createUser(user.toServerUser()) },
+            block = { userServerApi.createUser(user.toOracleUser()) },
             specificMap = {
                 val errorMessage = formatHttpError(it)
                 if (it.code() == HttpURLConnection.HTTP_FORBIDDEN) {
@@ -93,7 +93,7 @@ internal class UserApiImpl(
     override suspend fun updateUser(user: User) {
         mapServerResponseException(
             message = "Failed to update user with Server",
-            block = { userServerApi.updateUser(user.id, user.toServerUser()) }
+            block = { userServerApi.updateUser(user.id, user.toOracleUser()) }
         )
         mapFirebaseException(
             message = "Failed to update user with Firestore",
@@ -138,7 +138,7 @@ internal class UserApiImpl(
 
 internal interface UserServerApi {
     @POST("users/create")
-    suspend fun createUser(@Body user: ServerUser): Response<ServerResponse>
+    suspend fun createUser(@Body user: OracleUser): Response<ServerResponse>
 
     @FormUrlEncoded
     @PATCH("users/profile-picture-file-name")
@@ -150,7 +150,7 @@ internal interface UserServerApi {
     @PUT("users/{userId}")
     suspend fun updateUser(
         @Path("userId") userId: String,
-        @Body serverUser: ServerUser
+        @Body oracleUser: OracleUser
     ): Response<ServerResponse>
 
     @DELETE("users/profile-picture-file-name/{userId}")

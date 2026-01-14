@@ -1,7 +1,7 @@
 package com.upsaclay.mission.data.remote.models
 
 import com.google.gson.annotations.SerializedName
-import com.upsaclay.common.data.remote.model.ServerUser
+import com.upsaclay.common.data.remote.model.OracleUser
 import com.upsaclay.mission.data.MissionField.Remote.Inbound.MISSION_MANAGERS
 import com.upsaclay.mission.data.MissionField.Remote.Inbound.MISSION_PARTICIPANTS
 import com.upsaclay.mission.data.MissionField.Remote.MISSION_DATE
@@ -65,9 +65,9 @@ data class InboundRemoteMission(
     @SerializedName(MISSION_DURATION)
     val missionDuration: String?,
     @SerializedName(MISSION_MANAGERS)
-    val missionManagers: List<ServerUser>,
+    val missionManagers: List<OracleUser>,
     @SerializedName(MISSION_PARTICIPANTS)
-    val missionParticipants: List<ServerUser>?,
+    val missionParticipants: List<OracleUser>?,
     @SerializedName(MISSION_MAX_PARTICIPANTS)
     val missionMaxParticipants: Int,
     @SerializedName(MISSION_TASKS)

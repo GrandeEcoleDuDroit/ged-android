@@ -27,7 +27,7 @@ data class LocalUser(
     @SerializedName(USER_PROFILE_PICTURE_FILE_NAME)
     val userProfilePictureFileName: String? = null,
     @SerializedName(USER_STATE)
-    val userState: String,
+    val userState: Int,
     @SerializedName(USER_TESTER)
     val userTester: Int = 0
 )
