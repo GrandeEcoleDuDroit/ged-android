@@ -2,7 +2,7 @@ package com.upsaclay.mission.data.mapper
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.upsaclay.common.data.remote.model.ServerUser
+import com.upsaclay.common.data.remote.model.OracleUser
 import com.upsaclay.common.data.toUser
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.entity.User
@@ -140,8 +140,8 @@ fun InboundRemoteMission.toMission(): Mission {
         startDate = missionStartDate.toLocalDateUTC(),
         endDate = missionEndDate.toLocalDateUTC(),
         duration = missionDuration,
-        managers = missionManagers.map(ServerUser::toUser),
-        participants = missionParticipants?.map(ServerUser::toUser) ?: emptyList(),
+        managers = missionManagers.map(OracleUser::toUser),
+        participants = missionParticipants?.map(OracleUser::toUser) ?: emptyList(),
         maxParticipants = missionMaxParticipants,
         tasks = missionTasks?.map(RemoteMissionTask::toMissionTask) ?: emptyList(),
         state = MissionState.Published(MissionUtils.Image.formatUrl(missionImageFileName))

@@ -29,7 +29,7 @@ fun Announcement.toLocal() = LocalAnnouncement(
     announcementAuthorSchoolLevel = author.schoolLevel.number,
     announcementAuthorAdmin = author.admin,
     announcementAuthorProfilePictureFileName = UserUtils.ProfilePicture.getFileName(author.profilePictureUrl),
-    announcementAuthorState = author.state.toString(),
+    announcementAuthorState = author.state.number,
     announcementAuthorTester = author.tester
 )
 
@@ -54,7 +54,7 @@ fun LocalAnnouncement.toAnnouncement() = Announcement(
         schoolLevel = SchoolLevel.fromNumber(announcementAuthorSchoolLevel),
         admin = announcementAuthorAdmin,
         profilePictureUrl = UserUtils.ProfilePicture.formatUrl(announcementAuthorProfilePictureFileName),
-        state = UserState.fromString(announcementAuthorState),
+        state = UserState.fromNumber(announcementAuthorState),
         tester = announcementAuthorTester
     ),
     state = AnnouncementState.valueOf(announcementState)
@@ -73,7 +73,7 @@ internal fun InboundRemoteAnnouncement.toAnnouncement() = Announcement(
         schoolLevel = SchoolLevel.fromNumber(userSchoolLevel),
         admin = userAdmin == 1,
         profilePictureUrl = UserUtils.ProfilePicture.formatUrl(userProfilePictureFileName),
-        state = UserState.fromString(userState),
+        state = UserState.fromNumber(userState),
         tester = userTester == 1
     ),
     state = AnnouncementState.PUBLISHED

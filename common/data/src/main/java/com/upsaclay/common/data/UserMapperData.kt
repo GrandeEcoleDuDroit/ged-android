@@ -4,7 +4,7 @@ import com.upsaclay.common.data.extensions.formatUrl
 import com.upsaclay.common.data.local.LocalUser
 import com.upsaclay.common.data.remote.model.FirestoreUser
 import com.upsaclay.common.data.remote.model.RemoteUserReport
-import com.upsaclay.common.data.remote.model.ServerUser
+import com.upsaclay.common.data.remote.model.OracleUser
 import com.upsaclay.common.domain.UserUtils
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.entity.User
@@ -19,11 +19,11 @@ fun User.toLocal() = LocalUser(
     userSchoolLevel = schoolLevel.number,
     userAdmin = if (admin) 1 else 0,
     userProfilePictureFileName = UserUtils.ProfilePicture.getFileName(profilePictureUrl),
-    userState = state.toString(),
+    userState = state.number,
     userTester = if (tester) 1 else 0
 )
 
-internal fun User.toServerUser() = ServerUser(
+internal fun User.toOracleUser() = OracleUser(
     userId = id,
     userFirstName = firstName.lowercase(),
     userLastName = lastName.lowercase(),
@@ -31,7 +31,7 @@ internal fun User.toServerUser() = ServerUser(
     userSchoolLevel = schoolLevel.number,
     userAdmin = if (admin) 1 else 0,
     userProfilePictureFileName = UserUtils.ProfilePicture.getFileName(profilePictureUrl),
-    userState = state.toString(),
+    userState = state.number,
     userTester = if (tester) 1 else 0
 )
 
@@ -43,7 +43,7 @@ internal fun User.toFirestoreUser() = FirestoreUser(
     schoolLevel = schoolLevel.number,
     admin = admin,
     profilePictureFileName = UserUtils.ProfilePicture.getFileName(profilePictureUrl),
-    state = state.toString(),
+    state = state.number,
     tester = tester
 )
 
@@ -55,7 +55,7 @@ internal fun LocalUser.toUser() = User(
     schoolLevel = SchoolLevel.fromNumber(userSchoolLevel),
     admin = userAdmin == 1,
     profilePictureUrl = UserUtils.ProfilePicture.formatUrl(userProfilePictureFileName),
-    state = User.UserState.fromString(userState),
+    state = User.UserState.fromNumber(userState),
     tester = userTester == 1
 )
 
@@ -67,11 +67,11 @@ internal fun FirestoreUser.toUser() = User(
     schoolLevel = SchoolLevel.fromNumber(schoolLevel),
     admin = admin,
     profilePictureUrl = UserUtils.ProfilePicture.formatUrl(profilePictureFileName),
-    state = User.UserState.fromString(state),
+    state = User.UserState.fromNumber(state),
     tester = tester
 )
 
-fun ServerUser.toUser() = User(
+fun OracleUser.toUser() = User(
     id = userId,
     firstName = userFirstName.uppercaseFirstLetter(),
     lastName = userLastName.uppercaseFirstLetter(),
@@ -79,7 +79,7 @@ fun ServerUser.toUser() = User(
     schoolLevel = SchoolLevel.fromNumber(userSchoolLevel),
     admin = userAdmin == 1,
     profilePictureUrl = UserUtils.ProfilePicture.formatUrl(userProfilePictureFileName),
-    state = User.UserState.fromString(userState),
+    state = User.UserState.fromNumber(userState),
     tester = userTester == 1
 )
 

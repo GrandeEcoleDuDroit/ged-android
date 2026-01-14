@@ -48,7 +48,7 @@ data class LocalMessageNotification(
     @ColumnInfo(name = CONVERSATION_INTERLOCUTOR_PROFILE_PICTURE_FILE_NAME)
     val conversationInterlocutorProfilePictureFileName: String?,
     @ColumnInfo(name = CONVERSATION_INTERLOCUTOR_STATE)
-    val conversationInterlocutorState: String,
+    val conversationInterlocutorState: Int,
     @ColumnInfo(name = CONVERSATION_INTERLOCUTOR_TESTER)
     val conversationInterlocutorTester: Boolean,
     @ColumnInfo(name = CONVERSATION_CREATED_AT)

@@ -35,7 +35,7 @@ fun MessageNotification.toLocal() = LocalMessageNotification(
     conversationInterlocutorSchoolLevel = conversation.interlocutor.schoolLevel.number,
     conversationInterlocutorAdmin = conversation.interlocutor.admin,
     conversationInterlocutorProfilePictureFileName = UserUtils.ProfilePicture.getFileName(conversation.interlocutor.profilePictureUrl),
-    conversationInterlocutorState = conversation.interlocutor.state.toString(),
+    conversationInterlocutorState = conversation.interlocutor.state.number,
     conversationInterlocutorTester = conversation.interlocutor.tester,
     conversationCreatedAt = conversation.createdAt.toEpochMilliUTC(),
     conversationState = conversation.state.name,
@@ -54,7 +54,7 @@ fun MessageNotification.toRemote(currentUser: User) = RemoteMessageNotification(
             schoolLevel = currentUser.schoolLevel.number,
             admin = currentUser.admin,
             profilePictureFileName = UserUtils.ProfilePicture.getFileName(currentUser.profilePictureUrl),
-            state = currentUser.state.toString(),
+            state = currentUser.state.number,
             tester = currentUser.tester
         ),
         createdAt = conversation.createdAt.toEpochMilliUTC(),
@@ -84,7 +84,7 @@ private fun LocalMessageNotification.toConversation() = Conversation(
         schoolLevel = SchoolLevel.fromNumber(conversationInterlocutorSchoolLevel),
         admin = conversationInterlocutorAdmin,
         profilePictureUrl = UserUtils.ProfilePicture.formatUrl(conversationInterlocutorProfilePictureFileName),
-        state = User.UserState.fromString(conversationInterlocutorState),
+        state = User.UserState.fromNumber(conversationInterlocutorState),
         tester = conversationInterlocutorTester
     ),
     createdAt = conversationCreatedAt.toLocalDateTimeUTC(),
@@ -103,7 +103,7 @@ fun RemoteMessageNotification.toMessageNotification() = MessageNotification(
             schoolLevel = SchoolLevel.fromNumber(conversation.interlocutor.schoolLevel),
             admin = conversation.interlocutor.admin,
             profilePictureUrl = UserUtils.ProfilePicture.formatUrl(conversation.interlocutor.profilePictureFileName),
-            state = User.UserState.fromString(conversation.interlocutor.state),
+            state = User.UserState.fromNumber(conversation.interlocutor.state),
             tester = conversation.interlocutor.tester
         ),
         createdAt = conversation.createdAt.toLocalDateTimeUTC(),

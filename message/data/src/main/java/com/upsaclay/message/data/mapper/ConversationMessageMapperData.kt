@@ -28,7 +28,7 @@ private fun LocalConversationMessage.toConversation() = Conversation(
         schoolLevel = SchoolLevel.fromNumber(conversationInterlocutorSchoolLevel),
         admin = conversationInterlocutorAdmin,
         profilePictureUrl = UserUtils.ProfilePicture.formatUrl(conversationInterlocutorProfilePictureFileName),
-        state = UserState.fromString(conversationInterlocutorState),
+        state = UserState.fromNumber(conversationInterlocutorState),
         tester = conversationInterlocutorTester
     ),
     createdAt = conversationCreatedAt.toLocalDateTimeUTC(),

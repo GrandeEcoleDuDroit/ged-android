@@ -42,7 +42,7 @@ internal data class FirestoreUser(
 
     @get:PropertyName(STATE)
     @set:PropertyName(STATE)
-    var state: String = "",
+    var state: Int = 0,
 
     @get:PropertyName(TESTER)
     @set:PropertyName(TESTER)

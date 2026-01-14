@@ -21,7 +21,7 @@ data class RemoteMessageNotification(
             val schoolLevel: Int,
             val admin: Boolean = false,
             val profilePictureFileName: String? = null,
-            val state: String,
+            val state: Int,
             val tester: Boolean = false
         )
     }

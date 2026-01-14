@@ -28,7 +28,7 @@ fun Conversation.toLocal() = LocalConversation(
     conversationInterlocutorAdmin = interlocutor.admin,
     conversationInterlocutorSchoolLevel = interlocutor.schoolLevel.number,
     conversationInterlocutorProfilePictureFileName = UserUtils.ProfilePicture.getFileName(interlocutor.profilePictureUrl),
-    conversationInterlocutorState = interlocutor.state.toString(),
+    conversationInterlocutorState = interlocutor.state.number,
     conversationInterlocutorTester = interlocutor.tester,
     conversationCreatedAt = createdAt.toEpochMilliUTC(),
     conversationState = state.name,
@@ -51,7 +51,7 @@ fun LocalConversation.toConversation(): Conversation {
         schoolLevel = SchoolLevel.fromNumber(conversationInterlocutorSchoolLevel),
         admin = conversationInterlocutorAdmin,
         profilePictureUrl = UserUtils.ProfilePicture.formatUrl(conversationInterlocutorProfilePictureFileName),
-        state = UserState.fromString(conversationInterlocutorState),
+        state = UserState.fromNumber(conversationInterlocutorState),
         tester = conversationInterlocutorTester
     )
 
