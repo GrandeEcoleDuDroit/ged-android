@@ -7,7 +7,6 @@ import com.upsaclay.common.domain.ConnectivityObserver
 import com.upsaclay.common.domain.entity.NoInternetConnectionException
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.UserRepository
-import com.upsaclay.common.domain.usecase.DeleteProfilePictureUseCase
 import com.upsaclay.common.domain.usecase.UpdateProfilePictureUseCase
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapNetworkErrorMessage
@@ -23,8 +22,7 @@ import kotlinx.coroutines.launch
 
 class AccountInformationViewModel(
     private val updateProfilePictureUseCase: UpdateProfilePictureUseCase,
-    private val deleteProfilePictureUseCase: DeleteProfilePictureUseCase,
-    userRepository: UserRepository,
+    private val userRepository: UserRepository,
     private val connectivityObserver: ConnectivityObserver
 ): ViewModel() {
     private val _uiState = MutableStateFlow(AccountInformationUiState())
@@ -74,7 +72,7 @@ class AccountInformationViewModel(
                 val user = requireNotNull(_uiState.value.user)
                 updateState(loading = true)
                 user.profilePictureUrl?.let {
-                    deleteProfilePictureUseCase(user.id, it)
+                    userRepository.deleteProfilePicture(user)
                 }
                 cancelEdit()
                 _event.emit(SingleUiEvent.Success(R.string.profile_picture_deleted))

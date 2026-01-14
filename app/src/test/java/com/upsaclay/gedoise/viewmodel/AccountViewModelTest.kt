@@ -3,7 +3,6 @@ package com.upsaclay.gedoise.viewmodel
 import android.net.Uri
 import com.upsaclay.common.domain.ConnectivityObserver
 import com.upsaclay.common.domain.repository.UserRepository
-import com.upsaclay.common.domain.usecase.DeleteProfilePictureUseCase
 import com.upsaclay.common.domain.usecase.UpdateProfilePictureUseCase
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.gedoise.presentation.profile.accountinformation.AccountInformationScreenState
@@ -25,7 +24,6 @@ import kotlin.test.assertEquals
 @OptIn(ExperimentalCoroutinesApi::class)
 class AccountViewModelTest {
     private val updateProfilePictureUseCase: UpdateProfilePictureUseCase = mockk()
-    private val deleteProfilePictureUseCase: DeleteProfilePictureUseCase = mockk()
     private val userRepository: UserRepository = mockk()
     private val connectivityObserver: ConnectivityObserver = mockk()
 
@@ -40,11 +38,10 @@ class AccountViewModelTest {
         every { connectivityObserver.isConnected } returns true
         every { userRepository.user } returns MutableStateFlow(userFixture)
         coEvery { updateProfilePictureUseCase(any(), any()) } returns Unit
-        coEvery { deleteProfilePictureUseCase(any(), any()) } returns Unit
+        coEvery { userRepository.deleteProfilePicture(any()) } returns Unit
 
         accountInformationViewModel = AccountInformationViewModel(
             updateProfilePictureUseCase = updateProfilePictureUseCase,
-            deleteProfilePictureUseCase = deleteProfilePictureUseCase,
             connectivityObserver = connectivityObserver,
             userRepository = userRepository
         )
@@ -118,6 +115,6 @@ class AccountViewModelTest {
         accountInformationViewModel.deleteProfilePicture()
 
         // Then
-        coVerify(exactly = 0) { deleteProfilePictureUseCase(any(), any()) }
+        coVerify(exactly = 0) { userRepository.deleteProfilePicture(any()) }
     }
 }

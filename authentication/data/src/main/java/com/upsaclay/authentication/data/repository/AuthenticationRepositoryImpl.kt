@@ -20,9 +20,8 @@ internal class AuthenticationRepositoryImpl(
         localAuthState && firebaseAuthState
     }
 
-    override suspend fun loginWithEmailAndPassword(email: String, password: String) {
+    override suspend fun loginWithEmailAndPassword(email: String, password: String): String? =
         firebaseAuthenticationRepository.loginWithEmailAndPassword(email, password)
-    }
 
     override suspend fun registerWithEmailAndPassword(email: String, password: String): String =
         firebaseAuthenticationRepository.registerWithEmailAndPassword(email, password)

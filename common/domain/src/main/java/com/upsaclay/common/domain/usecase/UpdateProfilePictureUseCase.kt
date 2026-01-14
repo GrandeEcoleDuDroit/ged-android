@@ -17,7 +17,7 @@ class UpdateProfilePictureUseCase(
 
             imageRepository.createCacheImage(fileName, profilePictureUri)?.let { file ->
                 imageRepository.uploadImage(file, imagePath)
-                userRepository.updateProfilePictureFileName(user.id, file.name)
+                userRepository.updateProfilePicture(user, file, file.name)
                 imageRepository.deleteCacheImage(file.name)
             }
 

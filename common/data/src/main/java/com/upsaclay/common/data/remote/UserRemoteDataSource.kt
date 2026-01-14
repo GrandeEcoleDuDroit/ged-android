@@ -1,24 +1,19 @@
 package com.upsaclay.common.data.remote
 
-import com.upsaclay.common.data.remote.api.UserApi
+import com.upsaclay.common.data.remote.api.user.UserApi
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.entity.UserReport
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import java.io.File
 
-internal class UserRemoteDataSource(
-    private val userApi: UserApi
-) {
+internal class UserRemoteDataSource(private val userApi: UserApi) {
     suspend fun getUser(userId: String): User? = withContext(Dispatchers.IO) {
         userApi.getUser(userId)
     }
 
-    fun getUserFlow(userId: String): Flow<User?> = userApi.getUserFlow(userId)
-
-    suspend fun getUserFirestoreWithEmail(userEmail: String): User? = withContext(Dispatchers.IO) {
-        userApi.getUserWithEmail(userEmail)
-    }
+    fun listenUser(userId: String): Flow<User?> = userApi.listenUser(userId)
 
     suspend fun getUsers(): List<User> = withContext(Dispatchers.IO) {
         userApi.getUsers()
@@ -30,21 +25,15 @@ internal class UserRemoteDataSource(
         }
     }
 
-    suspend fun updateUser(user: User) {
+    suspend fun updateProfilePicture(user: User, imageFile: File, fileName: String) {
         withContext(Dispatchers.IO) {
-            userApi.updateUser(user)
+            userApi.updateProfilePicture(user, imageFile, fileName)
         }
     }
 
-    suspend fun updateProfilePictureFileName(userId: String, fileName: String) {
+    suspend fun deleteProfilePicture(user: User) {
         withContext(Dispatchers.IO) {
-            userApi.updateProfilePictureFileName(userId, fileName)
-        }
-    }
-
-    suspend fun deleteProfilePictureFileName(userId: String) {
-        withContext(Dispatchers.IO) {
-            userApi.deleteProfilePictureFileName(userId)
+            userApi.deleteProfilePicture(user)
         }
     }
 

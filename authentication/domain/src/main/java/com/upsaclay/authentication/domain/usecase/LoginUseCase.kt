@@ -11,11 +11,12 @@ class LoginUseCase(
 ) {
     suspend operator fun invoke(email: String, password: String) {
         withTimeout(10000) {
-            authenticationRepository.loginWithEmailAndPassword(email, password)
-            userRepository.getUserWithEmail(email)?.let {
-                userRepository.storeUser(it)
-                authenticationRepository.setAuthenticated(true)
-            } ?: throw InvalidCredentialsException()
+            authenticationRepository.loginWithEmailAndPassword(email, password)?.let { userId  ->
+                userRepository.getUser(userId)?.let {
+                    userRepository.storeUser(it)
+                    authenticationRepository.setAuthenticated(true)
+                } ?: throw InvalidCredentialsException()
+            } ?: throw IllegalArgumentException()
         }
     }
 }

@@ -35,12 +35,10 @@ class FirebaseAuthenticationApiImpl: FirebaseAuthenticationApi {
     }
     override fun getIdToken(): String? = cachedIdToken
 
-    override suspend fun signIn(email: String, password: String) {
-        suspendCancellableCoroutine { continuation ->
-            firebaseAuth.signInWithEmailAndPassword(email, password)
-                .addOnSuccessListener { if (continuation.isActive) continuation.resume(Unit) }
-                .addOnFailureListener { if (continuation.isActive) continuation.resumeWithException(it) }
-        }
+    override suspend fun signIn(email: String, password: String): String? = suspendCancellableCoroutine { continuation ->
+        firebaseAuth.signInWithEmailAndPassword(email, password)
+            .addOnSuccessListener { if (continuation.isActive) continuation.resume(it.user?.uid) }
+            .addOnFailureListener { if (continuation.isActive) continuation.resumeWithException(it) }
     }
 
     override suspend fun signUp(email: String, password: String): String = suspendCancellableCoroutine { continuation ->

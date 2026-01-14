@@ -7,7 +7,7 @@ interface AuthenticationRepository {
 
     fun getAuthenticationState(): Flow<Boolean>
 
-    suspend fun loginWithEmailAndPassword(email: String, password: String)
+    suspend fun loginWithEmailAndPassword(email: String, password: String): String?
 
     suspend fun registerWithEmailAndPassword(email: String, password: String): String
 

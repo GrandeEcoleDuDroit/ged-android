@@ -10,7 +10,7 @@ class ListenRemoteUserUseCase(
 ) {
     suspend fun start() {
         userRepository.user.take(1).collect { currentUser ->
-            userRepository.getUserFlow(currentUser.id)
+            userRepository.listenUser(currentUser.id)
                 .filterNotNull()
                 .filter { it != currentUser }
                 .collect {
