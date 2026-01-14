@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.stateIn
+import java.io.File
 
 internal class UserRepositoryImpl(
     private val userRemoteDataSource: UserRemoteDataSource,
@@ -26,15 +27,13 @@ internal class UserRepositoryImpl(
     override val currentUser: User?
         get() = _user.value
 
+    override fun listenUser(userId: String): Flow<User?> = userRemoteDataSource.listenUser(userId)
+
     override suspend fun getUsers(): List<User> = userRemoteDataSource.getUsers()
 
     override suspend fun getUser(userId: String): User? = userRemoteDataSource.getUser(userId)
 
     override suspend fun getCurrentUser(): User? = userLocalDataSource.getUser()
-
-    override fun getUserFlow(userId: String): Flow<User?> = userRemoteDataSource.getUserFlow(userId)
-
-    override suspend fun getUserWithEmail(userEmail: String): User? = userRemoteDataSource.getUserFirestoreWithEmail(userEmail)
 
     override suspend fun createUser(user: User) {
         userRemoteDataSource.createUser(user)
@@ -45,21 +44,17 @@ internal class UserRepositoryImpl(
         userLocalDataSource.storeUser(user)
     }
 
+    override suspend fun updateProfilePicture(user: User, imageFile: File, fileName: String) {
+        userRemoteDataSource.updateProfilePicture(user, imageFile, fileName)
+        userLocalDataSource.updateProfilePictureFileName(fileName)
+    }
+
     override suspend fun deleteLocalUser() {
         userLocalDataSource.removeUser()
     }
 
-    override suspend fun updateRemoteUser(user: User) {
-        userRemoteDataSource.updateUser(user)
-    }
-
-    override suspend fun updateProfilePictureFileName(userId: String, fileName: String) {
-        userRemoteDataSource.updateProfilePictureFileName(userId, fileName)
-        userLocalDataSource.updateProfilePictureFileName(fileName)
-    }
-
-    override suspend fun deleteProfilePictureFileName(userId: String) {
-        userRemoteDataSource.deleteProfilePictureFileName(userId)
+    override suspend fun deleteProfilePicture(user: User) {
+        userRemoteDataSource.deleteProfilePicture(user)
         userLocalDataSource.updateProfilePictureFileName(null)
     }
 

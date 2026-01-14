@@ -24,8 +24,8 @@ class FirebaseAuthenticationRepositoryImpl(
 
     override fun getIdToken(): String? = firebaseAuthenticationApi.getIdToken()
 
-    override suspend fun loginWithEmailAndPassword(email: String, password: String) {
-        withContext(Dispatchers.IO) {
+    override suspend fun loginWithEmailAndPassword(email: String, password: String): String? {
+        return withContext(Dispatchers.IO) {
             mapFirebaseException(
                 message = "Failed to login with email and password",
                 block = { firebaseAuthenticationApi.signIn(email, password) },

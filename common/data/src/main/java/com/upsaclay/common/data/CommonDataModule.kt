@@ -14,10 +14,10 @@ import com.upsaclay.common.data.remote.api.BlockedUserFirestoreApi
 import com.upsaclay.common.data.remote.api.FcmApi
 import com.upsaclay.common.data.remote.api.ImageApi
 import com.upsaclay.common.data.remote.api.ImageApiImpl
-import com.upsaclay.common.data.remote.api.UserApi
-import com.upsaclay.common.data.remote.api.UserApiImpl
-import com.upsaclay.common.data.remote.api.UserFirestoreApi
-import com.upsaclay.common.data.remote.api.UserServerApi
+import com.upsaclay.common.data.remote.api.user.UserApi
+import com.upsaclay.common.data.remote.api.user.UserApiImpl
+import com.upsaclay.common.data.remote.api.user.UserFirestoreApi
+import com.upsaclay.common.data.remote.api.user.UserServerApi
 import com.upsaclay.common.data.remote.api.WhiteListApi
 import com.upsaclay.common.data.repository.BlockedUserRepositoryImpl
 import com.upsaclay.common.data.repository.FileRepositoryImpl
@@ -41,7 +41,6 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.TimeUnit
 
 val GED_SERVER_QUALIFIER = named("server_qualifier")
 private val OKHTTP_CLIENT_QUALIFIER = named("okhttp_client_qualifier")

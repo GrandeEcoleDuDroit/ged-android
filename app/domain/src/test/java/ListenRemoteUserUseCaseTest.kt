@@ -21,7 +21,7 @@ class ListenRemoteUserUseCaseTest {
     @Before
     fun setup() {
         every { userRepository.user } returns flowOf(userFixture)
-        every { userRepository.getUserFlow(any()) } returns flowOf(userFixture2)
+        every { userRepository.listenUser(any()) } returns flowOf(userFixture2)
         coEvery { userRepository.storeUser(any()) } returns Unit
 
         useCase = ListenRemoteUserUseCase(

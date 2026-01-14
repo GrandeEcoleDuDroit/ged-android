@@ -27,7 +27,7 @@ class DeleteAccountUseCase(
             state = User.UserState.DELETED
         )
 
-        userRepository.updateRemoteUser(deletedUser)
+        //TODO Delete user
         UserUtils.ProfilePicture.getPath(user.profilePictureUrl)?.let {
             imageRepository.deleteRemoteImage(it)
         }

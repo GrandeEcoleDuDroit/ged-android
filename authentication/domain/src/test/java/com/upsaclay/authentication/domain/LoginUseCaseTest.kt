@@ -19,13 +19,14 @@ class LoginUseCaseTest {
     private val userRepository: UserRepository = mockk()
 
     private lateinit var useCase: LoginUseCase
+    private val userId = "userId1234"
     private val email = "email@example.com"
     private val password = "password123"
 
     @Before
     fun setUp() {
-        coEvery { authenticationRepository.loginWithEmailAndPassword(any(), any()) } returns Unit
-        coEvery { userRepository.getUserWithEmail(any()) } returns userFixture
+        coEvery { authenticationRepository.loginWithEmailAndPassword(any(), any()) } returns userId
+        coEvery { userRepository.getUser(any()) } returns userFixture
         coEvery { userRepository.storeUser(any()) } returns Unit
         coEvery { authenticationRepository.setAuthenticated(any()) } returns Unit
 
@@ -41,7 +42,7 @@ class LoginUseCaseTest {
         useCase(email, password)
 
         // Then
-        coEvery { userRepository.getUserWithEmail(email) } returns userFixture
+        coEvery { userRepository.getUser(userId) } returns userFixture
         coEvery { userRepository.storeUser(userFixture) } returns Unit
         coEvery { authenticationRepository.setAuthenticated(true) } returns Unit
     }
@@ -49,7 +50,7 @@ class LoginUseCaseTest {
     @Test(expected = InvalidCredentialsException::class)
     fun login_should_throw_InvalidCredentialsException_when_user_not_found() = runTest {
         // Given
-        coEvery { userRepository.getUserWithEmail(email) } returns null
+        coEvery { userRepository.getUser(userId) } returns null
 
         // When
         useCase(email, password)

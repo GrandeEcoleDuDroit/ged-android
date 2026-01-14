@@ -9,7 +9,7 @@ interface FirebaseAuthenticationApi {
 
     fun getIdToken(): String?
 
-    suspend fun signIn(email: String, password: String)
+    suspend fun signIn(email: String, password: String): String?
 
     suspend fun signUp(email: String, password: String): String
 

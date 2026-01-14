@@ -28,7 +28,7 @@ class UpdateProfilePictureUseCaseTest {
         coEvery { imageRepository.deleteCacheImage(any()) } returns Unit
         coEvery { imageRepository.uploadImage(any(), any()) } returns Unit
         coEvery { imageRepository.deleteRemoteImage(any()) } returns Unit
-        coEvery { userRepository.updateProfilePictureFileName(any(), any()) } returns Unit
+        coEvery { userRepository.updateProfilePicture(any(), any(), any()) } returns Unit
 
         useCase = UpdateProfilePictureUseCase(
             userRepository = userRepository,
@@ -42,7 +42,7 @@ class UpdateProfilePictureUseCaseTest {
         useCase(userFixture, uri)
 
         // Then
-        coVerify { userRepository.updateProfilePictureFileName(userFixture.id, any()) }
+        coVerify { userRepository.updateProfilePicture(userFixture, any(), any()) }
         coVerify { imageRepository.uploadImage(any(), any()) }
     }
 
@@ -52,7 +52,7 @@ class UpdateProfilePictureUseCaseTest {
         useCase(userFixture, uri)
 
         // Then
-        coVerify { userRepository.updateProfilePictureFileName(userFixture.id, any()) }
+        coVerify { userRepository.updateProfilePicture(userFixture, any(), any()) }
         coVerify {
             imageRepository.deleteRemoteImage(
                 UserUtils.ProfilePicture.getPath(userFixture.profilePictureUrl!!)!!
