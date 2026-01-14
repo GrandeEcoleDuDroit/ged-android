@@ -36,6 +36,7 @@ import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
+import com.upsaclay.news.domain.announcementFixture
 import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.domain.entity.AnnouncementReport
 import com.upsaclay.news.domain.longAnnouncementFixture
@@ -252,8 +253,8 @@ private fun NonEditableAnnouncementScreenPreview() {
     GedoiseTheme {
         Surface {
             ReadAnnouncementScreen(
-                user = longAnnouncementFixture.author,
-                announcement = longAnnouncementFixture,
+                user = announcementFixture.author,
+                announcement = announcementFixture,
                 snackbarHostState = SnackbarHostState(),
                 onBackClick = {},
                 onAuthorClick = {},
@@ -271,8 +272,8 @@ private fun EditableAnnouncementScreenPreview() {
     GedoiseTheme {
         Surface {
             ReadAnnouncementScreen(
-                user = longAnnouncementFixture.author,
-                announcement = longAnnouncementFixture,
+                user = announcementFixture.author,
+                announcement = announcementFixture,
                 snackbarHostState = SnackbarHostState(),
                 onBackClick = {},
                 onAuthorClick = {},
