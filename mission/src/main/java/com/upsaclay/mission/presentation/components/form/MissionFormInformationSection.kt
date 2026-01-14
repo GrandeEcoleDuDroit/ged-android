@@ -43,12 +43,13 @@ fun MissionFormInformationSection(
     allSchoolLevels: List<SchoolLevel>,
     schoolLevels: List<SchoolLevel>,
     duration: String,
-    participantNumber: String,
+    maxParticipants: String,
+    maxParticipantsError: String? = null,
     onSchoolLevelChange: (SchoolLevel) -> Unit,
     onStartDateClick: () -> Unit,
     onEndDateClick: () -> Unit,
     onDurationChange: (String) -> Unit,
-    onParticipantNumberChange: (String) -> Unit
+    onMaxParticipantsChange: (String) -> Unit
 ) {
     Column(
         modifier = modifier,
@@ -79,8 +80,9 @@ fun MissionFormInformationSection(
 
         SimpleOutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
-            value = participantNumber,
-            onValueChange = onParticipantNumberChange,
+            value = maxParticipants,
+            onValueChange = onMaxParticipantsChange,
+            errorMessage = maxParticipantsError,
             label = stringResource(R.string.mission_max_participants_field),
             leadingIcon = {
                 Icon(
@@ -200,7 +202,7 @@ private fun MissionFormInformationSectionPreview() {
                 allSchoolLevels = SchoolLevel.getSchoolLevels(),
                 schoolLevels = schoolLevels,
                 duration = duration,
-                participantNumber = participantsNumber,
+                maxParticipants = participantsNumber,
                 onSchoolLevelChange = {
                     schoolLevels = if (schoolLevels.contains(it)) {
                         schoolLevels - it
@@ -211,7 +213,7 @@ private fun MissionFormInformationSectionPreview() {
                 onStartDateClick = {},
                 onEndDateClick = {},
                 onDurationChange = { duration = it },
-                onParticipantNumberChange = { participantsNumber = it }
+                onMaxParticipantsChange = { participantsNumber = it }
             )
         }
     }

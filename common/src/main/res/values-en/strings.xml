@@ -52,8 +52,8 @@
     <string name="hour_ago_medium">%d hours</string>
     <string name="day_ago_medium">%d days</string>
     <string name="week_ago_medium">%d weeks</string>
-    <string name="empty_fields_error">Please fill in all fields.</string>
-    <string name="empty_field_error">Please fill in the field.</string>
+    <string name="mandatory_field_error">Mandatory field.</string>
+    <string name="number_field_error">Please enter a valid number.</string>
     <string name="unknown_error">An unknown error occurred.</string>
     <string name="internal_server_error">An internal server error occurred.</string>
     <string name="server_connection_error">Unable to connect to the server.</string>

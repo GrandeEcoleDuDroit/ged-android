@@ -42,7 +42,7 @@ fun SimpleOutlinedTextField(
     onValueChange: (String) -> Unit,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    @StringRes errorMessage: Int? = null,
+    errorMessage: String? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
     enabled: Boolean = true,
@@ -53,7 +53,7 @@ fun SimpleOutlinedTextField(
     val errorText: (@Composable () -> Unit)? = errorMessage?.let {
         {
             Text(
-                text = stringResource(errorMessage),
+                text = errorMessage,
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodySmall
             )
