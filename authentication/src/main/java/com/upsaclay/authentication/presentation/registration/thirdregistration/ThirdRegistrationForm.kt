@@ -62,7 +62,7 @@ fun ThirdRegistrationForm(
                 enabled = !loading,
                 onValueChange = onEmailChange,
                 label = stringResource(com.upsaclay.common.R.string.email),
-                errorMessage = emailError
+                errorMessage = emailError?.let { stringResource(it) }
             )
 
             OutlinePasswordTextField(

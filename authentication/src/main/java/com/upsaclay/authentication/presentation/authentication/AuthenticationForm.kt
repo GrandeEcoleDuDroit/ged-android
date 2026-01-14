@@ -107,7 +107,7 @@ private fun CredentialsInputs(
             label = stringResource(com.upsaclay.common.R.string.email),
             onValueChange = onEmailChange,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            errorMessage = emailError
+            errorMessage = emailError?.let { stringResource(it) }
         )
 
         OutlinePasswordTextField(

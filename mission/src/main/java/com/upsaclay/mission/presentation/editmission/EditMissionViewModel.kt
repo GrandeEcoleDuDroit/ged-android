@@ -12,6 +12,7 @@ import com.upsaclay.common.domain.usecase.GenerateIdUseCase
 import com.upsaclay.common.domain.usecase.GetUsersUseCase
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapNetworkErrorMessage
+import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.entity.MissionTask
@@ -61,19 +62,32 @@ class EditMissionViewModel(
     }
 
     fun updateMission() {
-        if (!uiState.value.updateEnabled) return
+        val (
+            title,
+            description,
+            startDate,
+            endDate,
+            schoolLevels,
+            duration,
+            managers,
+            maxParticipants,
+            tasks,
+            state
+        ) = uiState.value
+
+        if (!validateInputs(maxParticipants = maxParticipants)) return
 
         val newMission = mission.copy(
-            title = uiState.value.title.trim(),
-            description = uiState.value.description.trim(),
-            startDate = uiState.value.startDate,
-            endDate = uiState.value.endDate,
-            schoolLevels = uiState.value.schoolLevels,
-            duration = uiState.value.duration.takeIf { it.isNotBlank() }?.trim(),
-            managers = uiState.value.managers,
-            maxParticipants = uiState.value.maxParticipants.trim().toInt(),
-            tasks = uiState.value.tasks,
-            state = uiState.value.state
+            title = title.trim(),
+            description = description.trim(),
+            startDate = startDate,
+            endDate = endDate,
+            schoolLevels = schoolLevels,
+            duration = duration.takeIf { it.isNotBlank() }?.trim(),
+            managers = managers,
+            maxParticipants = maxParticipants.trim().toInt(),
+            tasks = tasks,
+            state = state
         )
 
         viewModelScope.launch {
@@ -105,7 +119,7 @@ class EditMissionViewModel(
             it.copy(imageUri = uri)
         }
         missionUpdateState.update {
-            it.copy(imageReferenceUpdated = validateImageReference(uri?.toString()))
+            it.copy(imageReferenceUpdated = validateImageReferenceUpdate(uri?.toString()))
         }
     }
 
@@ -124,7 +138,7 @@ class EditMissionViewModel(
             )
         }
         missionUpdateState.update {
-            it.copy(imageReferenceUpdated = validateImageReference(null))
+            it.copy(imageReferenceUpdated = validateImageReferenceUpdate(null))
         }
     }
 
@@ -134,7 +148,7 @@ class EditMissionViewModel(
             it.copy(title = truncatedTitle)
         }
         missionUpdateState.update {
-            it.copy(titleUpdated = validateTitle(truncatedTitle))
+            it.copy(titleUpdated = validateTitleUpdate(truncatedTitle))
         }
     }
 
@@ -144,7 +158,7 @@ class EditMissionViewModel(
             it.copy(description = truncatedDescription)
         }
         missionUpdateState.update {
-            it.copy(descriptionUpdated = validateDescription(truncatedDescription))
+            it.copy(descriptionUpdated = validateDescriptionUpdate(truncatedDescription))
         }
     }
 
@@ -152,16 +166,16 @@ class EditMissionViewModel(
         _uiState.update {
             it.copy(
                 startDate = startDate,
-                endDate = if (!validateEndDate(startDate, it.endDate)) startDate else it.endDate
+                endDate = if (!validateEndDateUpdate(startDate, it.endDate)) startDate else it.endDate
             )
         }
         missionUpdateState.update {
-            it.copy(startDateUpdated = validateStartDate(startDate))
+            it.copy(startDateUpdated = validateStartDateUpdate(startDate))
         }
     }
 
     fun onEndDateChange(endDate: LocalDate) {
-        val endDateValid = validateEndDate(uiState.value.startDate, endDate)
+        val endDateValid = validateEndDateUpdate(uiState.value.startDate, endDate)
         _uiState.update {
             it.copy(
                 startDate = if (!endDateValid) endDate else it.startDate,
@@ -185,7 +199,7 @@ class EditMissionViewModel(
             it.copy(schoolLevels = schoolLevels)
         }
         missionUpdateState.update {
-            it.copy(schoolLevelsUpdated = validateSchoolLevels(schoolLevels))
+            it.copy(schoolLevelsUpdated = validateSchoolLevelsUpdate(schoolLevels))
         }
     }
 
@@ -200,7 +214,7 @@ class EditMissionViewModel(
             it.copy(maxParticipants = value)
         }
         missionUpdateState.update {
-            it.copy(maxParticipantsUpdated = validateMaxParticipants(value))
+            it.copy(maxParticipantsUpdated = validateMaxParticipantsUpdate(value))
         }
     }
 
@@ -210,7 +224,7 @@ class EditMissionViewModel(
             it.copy(duration = truncatedDuration)
         }
         missionUpdateState.update {
-            it.copy(durationUpdated = validateDuration(truncatedDuration))
+            it.copy(durationUpdated = validateDurationUpdate(truncatedDuration))
         }
     }
 
@@ -219,7 +233,7 @@ class EditMissionViewModel(
             it.copy(managers = managers)
         }
         missionUpdateState.update {
-            it.copy(managersUpdated = validateManagers(managers))
+            it.copy(managersUpdated = validateManagersUpdate(managers))
         }
     }
 
@@ -232,7 +246,7 @@ class EditMissionViewModel(
                 it.copy(managers = updatedManagers)
             }
             missionUpdateState.update {
-                it.copy(managersUpdated = validateManagers(updatedManagers))
+                it.copy(managersUpdated = validateManagersUpdate(updatedManagers))
             }
         }
     }
@@ -276,7 +290,7 @@ class EditMissionViewModel(
             it.copy(tasks = missionTasks)
         }
         missionUpdateState.update {
-            it.copy(missionTasksUpdated = validateMissionTasks(missionTasks))
+            it.copy(missionTasksUpdated = validateMissionTasksUpdate(missionTasks))
         }
     }
 
@@ -289,7 +303,7 @@ class EditMissionViewModel(
             it.copy(tasks = tasks)
         }
         missionUpdateState.update {
-            it.copy(missionTasksUpdated = validateMissionTasks(tasks))
+            it.copy(missionTasksUpdated = validateMissionTasksUpdate(tasks))
         }
     }
 
@@ -299,45 +313,62 @@ class EditMissionViewModel(
             state.copy(tasks = tasks)
         }
         missionUpdateState.update {
-            it.copy(missionTasksUpdated = validateMissionTasks(tasks))
+            it.copy(missionTasksUpdated = validateMissionTasksUpdate(tasks))
         }
     }
 
-    private fun validateImageReference(imageReference: String?): Boolean =
+    private fun validateInputs(maxParticipants: String): Boolean =
+        validateMaxParticipantsInput(maxParticipants)
+
+    private fun validateImageReferenceUpdate(imageReference: String?): Boolean =
         imageReference != mission.state.imageReference
 
-    private fun validateTitle(title: String): Boolean =
-        title != mission.title && title.isNotBlank()
+    private fun validateTitleUpdate(title: String): Boolean = title != mission.title && title.isNotBlank()
 
-    private fun validateDescription(description: String): Boolean =
+    private fun validateDescriptionUpdate(description: String): Boolean =
         description != mission.description && description.isNotBlank()
 
-    private fun validateSchoolLevels(schoolLevels: List<SchoolLevel>): Boolean =
+    private fun validateSchoolLevelsUpdate(schoolLevels: List<SchoolLevel>): Boolean =
         schoolLevels != mission.schoolLevels
 
-    private fun validateStartDate(startDate: LocalDate): Boolean =
+    private fun validateStartDateUpdate(startDate: LocalDate): Boolean =
         startDate != mission.startDate
 
-    private fun validateEndDate(startDate: LocalDate, endDate: LocalDate): Boolean =
-        endDate != mission.endDate &&
-                (endDate.isEqual(startDate) || endDate.isAfter(startDate))
+    private fun validateEndDateUpdate(startDate: LocalDate, endDate: LocalDate): Boolean =
+        endDate != mission.endDate && (endDate.isEqual(startDate) || endDate.isAfter(startDate))
 
-    private fun validateMaxParticipants(maxParticipants: String): Boolean =
+    private fun validateMaxParticipantsUpdate(maxParticipants: String): Boolean =
         maxParticipants != mission.maxParticipants.toString() && maxParticipants.isNotBlank()
 
-    private fun validateDuration(duration: String): Boolean =
+    private fun validateDurationUpdate(duration: String): Boolean =
         duration != mission.duration.orEmpty()
 
-    private fun validateManagers(managers: List<User>): Boolean =
+    private fun validateManagersUpdate(managers: List<User>): Boolean =
         managers != mission.managers
 
-    private fun validateMissionTasks(missionTasks: List<MissionTask>): Boolean =
+    private fun validateMissionTasksUpdate(missionTasks: List<MissionTask>): Boolean =
         missionTasks != mission.tasks
 
     private fun validateMandatoryFields(): Boolean =
         uiState.value.title.isNotBlank() &&
                 uiState.value.description.isNotBlank() &&
                 uiState.value.maxParticipants.isNotBlank()
+
+    private fun validateMaxParticipantsInput(maxParticipants: String): Boolean {
+        val maxParticipantsNumber = maxParticipants.toIntOrNull()
+        val maxParticipantsError = when {
+            maxParticipants.isBlank() -> com.upsaclay.common.R.string.mandatory_field_error
+            maxParticipantsNumber == null -> com.upsaclay.common.R.string.mandatory_field_error
+            maxParticipantsNumber < mission.participants.size -> R.string.max_participants_lower_than_current_error
+            else -> null
+        }
+
+        _uiState.update {
+            it.copy(maxParticipantsError = maxParticipantsError)
+        }
+
+        return uiState.value.maxParticipantsError == null
+    }
 
     private fun listenMissionUpdateState() {
         viewModelScope.launch {
@@ -375,7 +406,8 @@ class EditMissionViewModel(
         val userQuery: String = "",
         val imageUri: Uri? = null,
         val loading: Boolean = false,
-        val updateEnabled: Boolean = false
+        val updateEnabled: Boolean = false,
+        val maxParticipantsError: Int? = null
     ) {
         val allSchoolLevels: List<SchoolLevel> = SchoolLevel.getSchoolLevels()
     }

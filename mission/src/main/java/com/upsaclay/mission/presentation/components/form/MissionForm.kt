@@ -73,12 +73,13 @@ fun MissionForm(
             startDate = value.startDate,
             endDate = value.endDate,
             duration = value.duration,
-            participantNumber = value.maxParticipants,
+            maxParticipants = value.maxParticipants,
+            maxParticipantsError = value.maxParticipantsError,
             onSchoolLevelChange = onSchoolLevelChange,
             onStartDateClick = onStartDateClick,
             onEndDateClick = onEndDateClick,
             onDurationChange = onDurationChange,
-            onParticipantNumberChange = onMaxParticipantsChange
+            onMaxParticipantsChange = onMaxParticipantsChange
         )
 
         HorizontalDivider(modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)))
@@ -113,7 +114,8 @@ data class MissionFormValue(
     val duration: String,
     val maxParticipants: String,
     val managers: List<User>,
-    val missionTasks: List<MissionTask>
+    val missionTasks: List<MissionTask>,
+    val maxParticipantsError: String? = null
 )
 
 /*

@@ -48,6 +48,7 @@
 
     <string name="sending_error">Erreur d\'envoi</string>
     <string name="missions_refresh_error">Impossible de rafraîchir les missions</string>
+    <string name="max_participants_lower_than_current_error">Le nombre maximum de participants ne peut pas être inférieur au nombre actuel (%d).</string>
 
     <string name="no_mission_tag" translatable="false">No mission tag</string>
     <string name="missions_card_tag" translatable="false">Missions card tag</string>
