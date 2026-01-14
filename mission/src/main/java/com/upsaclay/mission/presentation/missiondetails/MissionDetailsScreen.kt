@@ -45,6 +45,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
+import com.upsaclay.common.extension.displayName
 import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.CircularProgressBar
@@ -189,7 +190,7 @@ private fun MissionDetailsScreen(
 
         is MissionDetailsScreenDialog.RemoveParticipantDialog -> {
             DefaultDialog(
-                text = stringResource(R.string.remove_participant_dialog_text, dialog.participant.fullName),
+                text = stringResource(R.string.remove_participant_dialog_text, dialog.participant.displayName()),
                 confirmText = stringResource(com.upsaclay.common.R.string.remove),
                 critical = true,
                 onConfirm = {

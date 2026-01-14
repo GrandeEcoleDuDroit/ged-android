@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
+import com.upsaclay.common.extension.displayName
 import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.components.CircularProgressBar
 import com.upsaclay.common.presentation.components.DefaultDialog
@@ -122,7 +123,7 @@ fun ProfileScreen(
                     ) {
                         Text(
                             modifier = Modifier.weight(1f, fill = false),
-                            text = user.fullName,
+                            text = user.displayName(),
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontSize = 18.sp
                             ),

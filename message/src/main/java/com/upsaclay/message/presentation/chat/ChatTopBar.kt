@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
+import com.upsaclay.common.extension.displayName
 import com.upsaclay.common.extension.smallMediumSpacing
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
@@ -34,12 +35,6 @@ fun ChatTopBar(
     onBackClick: () -> Unit,
     onInterlocutorClick: () -> Unit
 ) {
-    val interlocutorName = if (interlocutor.state != User.UserState.DELETED) {
-        interlocutor.fullName
-    } else {
-        stringResource(id = com.upsaclay.common.R.string.deleted_user)
-    }
-
     TopAppBar(
         title = {
             Row(
@@ -55,7 +50,7 @@ fun ChatTopBar(
                 )
 
                 Text(
-                    text = interlocutorName,
+                    text = interlocutor.displayName(),
                     style = MaterialTheme.typography.topBarTitle.copy(
                         fontSize = 18.sp
                     ),

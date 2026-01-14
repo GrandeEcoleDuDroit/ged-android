@@ -23,6 +23,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
+import com.upsaclay.common.extension.displayName
 import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
@@ -74,11 +75,6 @@ private fun SwitchConversationItem(
     onLongClick: () -> Unit
 ) {
     val loading = conversationState == ConversationState.CREATING || conversationState == ConversationState.DELETING
-    val interlocutorName = if (interlocutor.state != User.UserState.DELETED) {
-        interlocutor.fullName
-    } else {
-        stringResource(id = com.upsaclay.common.R.string.deleted_user)
-    }
     val fontWeight = if (unread) FontWeight.SemiBold else null
     val textColor = if (unread) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.supportingText
     val alpha = if (loading) 0.5f else 1f
@@ -103,7 +99,7 @@ private fun SwitchConversationItem(
             ) {
                 Text(
                     modifier = Modifier.weight(1f, fill = false),
-                    text = interlocutorName,
+                    text = interlocutor.displayName(),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = fontWeight,
                     maxLines = 1,
