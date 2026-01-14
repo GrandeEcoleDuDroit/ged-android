@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -25,8 +24,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.upsaclay.common.domain.entity.SchoolLevel
-import com.upsaclay.common.extension.mediumSpacing
-import com.upsaclay.common.extension.smallSpacing
+import com.upsaclay.common.extension.extraSmallSpacing
+import com.upsaclay.common.extension.smallMediumSpacing
 import com.upsaclay.common.presentation.components.OptionButton
 import com.upsaclay.common.presentation.components.TextIcon
 import com.upsaclay.common.presentation.theme.GedoiseTheme
@@ -104,12 +103,11 @@ private fun DefaultMissionCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
-            verticalArrangement = Arrangement.mediumSpacing()
+            verticalArrangement = Arrangement.smallMediumSpacing()
         ) {
-            CardHeader(
-                modifier = Modifier.fillMaxWidth(),
-                mission = mission
-            )
+            CardTitle(title = mission.title)
+
+            CardSubtitle(mission = mission)
 
             CardContent(mission = mission)
 
@@ -155,12 +153,11 @@ private fun ErrorMissionCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
-            verticalArrangement = Arrangement.mediumSpacing()
+            verticalArrangement = Arrangement.smallMediumSpacing()
         ) {
-            CardHeader(
-                modifier = Modifier.fillMaxWidth(),
-                mission = mission,
-            )
+            CardTitle(title = mission.title)
+
+            CardSubtitle(mission = mission)
 
             CardContent(mission = mission)
 
@@ -172,55 +169,73 @@ private fun ErrorMissionCard(
 }
 
 @Composable
-private fun CardHeader(
+private fun CardTitle(
     modifier: Modifier = Modifier,
-    mission: Mission,
+    title: String
+) {
+    Text(
+        modifier = modifier,
+        text = title,
+        style = titleStyle,
+        maxLines = 2,
+        overflow = TextOverflow.Ellipsis
+    )
+}
+
+@Composable
+private fun CardSubtitle(
+    modifier: Modifier = Modifier,
+    mission: Mission
 ) {
     Column(
-        verticalArrangement = Arrangement.smallSpacing()
+        modifier = modifier,
+        verticalArrangement = Arrangement.extraSmallSpacing()
     ) {
-        Row(
-            modifier = modifier,
-            verticalAlignment = Alignment.Top,
-            horizontalArrangement = Arrangement.smallSpacing()
-        ) {
-            Text(
-                modifier = Modifier.weight(1f),
-                text = mission.title,
-                style = titleStyle,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
+        TextIcon(
+            modifier = Modifier.padding(top = dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding)),
+            icon = {
+                Icon(
+                    modifier = Modifier.size(dimensionResource(com.upsaclay.common.R.dimen.icon_size)),
 
-            TextIcon(
-                modifier = Modifier.padding(top = dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding)),
-                icon = {
-                    Icon(
-                        modifier = Modifier.size(20.dp),
-                        painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_group),
-                        contentDescription = null
-                    )
-                },
-                text = {
-                    Text(
-                        text = stringResource(
-                            R.string.participant_number,
-                            mission.participants.size,
-                            mission.maxParticipants
-                        ),
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-            )
-        }
+                    painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_calendar),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.informationText
+                )
+            },
+            text = {
+                Text(
+                    text = MissionPresentationUtils.formatDate(mission.startDate, mission.endDate),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.informationText
+                )
+            }
+        )
 
-        Text(
-            text = MissionPresentationUtils.formatDate(mission.startDate, mission.endDate),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.informationText
+        TextIcon(
+            modifier = Modifier.padding(top = dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding)),
+            icon = {
+                Icon(
+                    modifier = Modifier.size(dimensionResource(com.upsaclay.common.R.dimen.icon_size)),
+                    painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_group),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.informationText
+                )
+            },
+            text = {
+                Text(
+                    text = stringResource(
+                        R.string.short_participant_number,
+                        mission.participants.size,
+                        mission.maxParticipants
+                    ),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.informationText
+                )
+            }
         )
     }
 }
+
 
 @Composable
 private fun CardContent(
