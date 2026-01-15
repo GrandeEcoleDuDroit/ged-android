@@ -9,7 +9,7 @@ interface UserRepository {
     val user: Flow<User>
     val currentUser: User?
 
-    fun listenUser(userId: String): Flow<User?>
+    fun getUserFlow(userId: String): Flow<User?>
 
     suspend fun getUsers(): List<User>
 

@@ -190,7 +190,7 @@ class MissionDetailsViewModelTest {
         )
 
         // Then
-        assertEquals(MissionDetailsViewModel.MissionButtonState.Complete, viewModel.uiState.value.buttonState )
+        assertEquals(MissionDetailsViewModel.MissionButtonState.Completed, viewModel.uiState.value.buttonState )
     }
 
     @Test

@@ -108,6 +108,10 @@ val ColorScheme.listDivider: Color
     @Composable
     get() = if (isSystemInDarkTheme()) Color(0xFF464646) else Color(0xFFBEBEBE)
 
+val ColorScheme.overlayContent: Color
+    @Composable
+    get() = Color(0xFF0F0F0F)
+
 
 val ColorScheme.activatedButtonColors: ButtonColors
     @Composable

@@ -4,6 +4,7 @@ import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.entity.User
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 data class Mission(
     val id: String,
@@ -27,11 +28,8 @@ data class Mission(
     val full: Boolean
         get() = participants.size >= maxParticipants
 
-    val complete: Boolean
-        get() = endDate.isBefore(LocalDate.now())
-
-    fun schoolLevelPermitted(schoolLevel: SchoolLevel): Boolean =
-        schoolLevels.isEmpty() || schoolLevels.contains(schoolLevel)
+    val completed: Boolean
+        get() = endDate.isBefore(LocalDate.now(ZoneOffset.UTC))
 
     sealed class MissionState {
         data object Draft: MissionState() {

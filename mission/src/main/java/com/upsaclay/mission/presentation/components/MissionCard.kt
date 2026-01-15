@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -30,13 +31,15 @@ import com.upsaclay.common.presentation.components.OptionButton
 import com.upsaclay.common.presentation.components.TextIcon
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.informationText
+import com.upsaclay.common.presentation.theme.overlayContent
+import com.upsaclay.common.presentation.theme.white
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.missionFixture
 import com.upsaclay.mission.presentation.MissionPresentationUtils
-import com.upsaclay.mission.presentation.MissionPresentationUtils.descriptionStyle
+import com.upsaclay.mission.presentation.MissionPresentationUtils.contentStyle
 import com.upsaclay.mission.presentation.MissionPresentationUtils.titleStyle
 
 @Composable
@@ -48,12 +51,20 @@ fun MissionCard(
 ) {
     when (val state = mission.state) {
         is MissionState.Published -> {
-            DefaultMissionCard(
-                modifier = modifier.clickable(onClick = onClick),
-                mission = mission,
-                imageModel = state.imageUrl,
-                onOptionClick = onOptionClick
-            )
+            if (mission.completed) {
+                CompletedMissionCard(
+                    modifier = modifier.clickable(onClick = onClick),
+                    mission = mission,
+                    imageModel = state.imageUrl
+                )
+            } else {
+                DefaultMissionCard(
+                    modifier = modifier.clickable(onClick = onClick),
+                    mission = mission,
+                    imageModel = state.imageUrl,
+                    onOptionClick = onOptionClick
+                )
+            }
         }
 
         is MissionState.Publishing -> {
@@ -96,6 +107,54 @@ private fun DefaultMissionCard(
                     .padding(dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding))
                     .align(Alignment.TopEnd),
                 onClick = onOptionClick
+            )
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+            verticalArrangement = Arrangement.smallMediumSpacing()
+        ) {
+            CardTitle(title = mission.title)
+
+            CardSubtitle(mission = mission)
+
+            CardContent(mission = mission)
+
+            if (mission.schoolLevelRestricted) {
+                CardFooter(schoolLevels = mission.schoolLevels)
+            }
+        }
+    }
+}
+
+@Composable
+private fun CompletedMissionCard(
+    modifier: Modifier = Modifier,
+    mission: Mission,
+    imageModel: Any?
+) {
+    OutlinedCard(modifier = modifier) {
+        Box(
+            modifier = Modifier.height(dimensionResource(R.dimen.mission_card_image_height)),
+            contentAlignment = Alignment.Center
+        ) {
+            MissionCardImage(
+                modifier = Modifier.align(Alignment.Center),
+                model = imageModel
+            )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.overlayContent.copy(alpha = 0.6f))
+            )
+
+            Text(
+                text = stringResource(R.string.completed),
+                color = MaterialTheme.colorScheme.white,
+                style = MaterialTheme.typography.titleMedium
             )
         }
 
@@ -245,7 +304,7 @@ private fun CardContent(
     Text(
         modifier = modifier,
         text = mission.description,
-        style = descriptionStyle,
+        style = contentStyle,
         maxLines = 3,
         overflow = TextOverflow.Ellipsis
     )
@@ -315,12 +374,11 @@ private fun MissionCardImage(
 @PhonePreviews
 @Composable
 private fun DefaultMissionCardPreview() {
-    val mission = missionFixture
 
     GedoiseTheme {
         Surface {
             DefaultMissionCard(
-                mission = mission,
+                mission = missionFixture,
                 imageModel = null,
                 onOptionClick = {}
             )
@@ -330,13 +388,24 @@ private fun DefaultMissionCardPreview() {
 
 @PhonePreviews
 @Composable
-private fun PublishingMissionCardPreview() {
-    val mission = missionFixture
+private fun CompletedMissionCardPreview() {
+    GedoiseTheme {
+        Surface {
+            CompletedMissionCard(
+                mission = missionFixture,
+                imageModel = null
+            )
+        }
+    }
+}
 
+@PhonePreviews
+@Composable
+private fun PublishingMissionCardPreview() {
     GedoiseTheme {
         Surface {
             PublishingMissionCard(
-                mission = mission,
+                mission = missionFixture,
                 imageModel = null,
                 onOptionClick = {}
             )
@@ -347,12 +416,10 @@ private fun PublishingMissionCardPreview() {
 @PhonePreviews
 @Composable
 private fun ErrorMissionCardPreview() {
-    val mission = missionFixture
-
     GedoiseTheme {
         Surface {
             ErrorMissionCard(
-                mission = mission,
+                mission = missionFixture,
                 imageModel = null
             )
         }

@@ -36,8 +36,7 @@ import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.MissionTask
 import com.upsaclay.mission.domain.missionFixture
-import com.upsaclay.mission.presentation.MissionPresentationUtils.descriptionStyle
-import com.upsaclay.mission.presentation.MissionPresentationUtils.detailsContentStyle
+import com.upsaclay.mission.presentation.MissionPresentationUtils.contentStyle
 import com.upsaclay.mission.presentation.MissionPresentationUtils.titleStyle
 import com.upsaclay.mission.presentation.components.items.MissionInformationValuesItem
 import com.upsaclay.mission.presentation.components.items.MissionUserItem
@@ -58,7 +57,7 @@ fun MissionDetailsTitleAndDescriptionSection(
 
         Text(
             text = mission.description,
-            style = descriptionStyle
+            style = contentStyle
         )
     }
 }
@@ -77,7 +76,7 @@ fun MissionDetailsInformationSection(
         MissionInformationValuesItem(
             modifier = Modifier.fillMaxWidth(),
             mission = mission,
-            textStyle = detailsContentStyle
+            textStyle = contentStyle
         )
     }
 }
@@ -103,7 +102,7 @@ fun MissionDetailsManagerSection(
                     user = it,
                     imageScale = 0.4f,
                     showAdminIndicator = false,
-                    textStyle = detailsContentStyle
+                    textStyle = contentStyle
                 )
             }
         }
@@ -133,7 +132,7 @@ fun MissionDetailsParticipantSection(
                 item {
                     EmptyText(
                         text = stringResource(R.string.no_participant),
-                        textStyle = detailsContentStyle
+                        textStyle = contentStyle
                     )
 
                     Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding)))
@@ -147,7 +146,7 @@ fun MissionDetailsParticipantSection(
                         ),
                         user = it,
                         imageScale = 0.4f,
-                        textStyle = detailsContentStyle
+                        textStyle = contentStyle
                     )
                 }
             }
@@ -175,7 +174,7 @@ fun MissionDetailsTaskSection(
                     horizontalArrangement = Arrangement.smallSpacing()
                 ) {
                     Text(text = "\u2022", fontSize = 20.sp)
-                    Text(text = it.value, style = detailsContentStyle)
+                    Text(text = it.value, style = contentStyle)
                 }
             }
         }
