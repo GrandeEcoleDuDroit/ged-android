@@ -5,10 +5,14 @@ import com.upsaclay.common.data.local.LocalUser
 import com.upsaclay.common.data.remote.model.FirestoreUser
 import com.upsaclay.common.data.remote.model.RemoteUserReport
 import com.upsaclay.common.data.remote.model.OracleUser
+import com.upsaclay.common.data.remote.model.RemoteBlockedUser
 import com.upsaclay.common.domain.UserUtils
+import com.upsaclay.common.domain.entity.BlockedUser
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.entity.UserReport
+import com.upsaclay.common.domain.extensions.toEpochMilliUTC
+import com.upsaclay.common.domain.extensions.toLocalDateTimeUTC
 import com.upsaclay.common.domain.extensions.uppercaseFirstLetter
 
 fun User.toLocal() = LocalUser(
@@ -23,7 +27,7 @@ fun User.toLocal() = LocalUser(
     userTester = if (tester) 1 else 0
 )
 
-internal fun User.toOracleUser() = OracleUser(
+fun User.toOracleUser() = OracleUser(
     userId = id,
     userFirstName = firstName.lowercase(),
     userLastName = lastName.lowercase(),
@@ -33,18 +37,6 @@ internal fun User.toOracleUser() = OracleUser(
     userProfilePictureFileName = UserUtils.ProfilePicture.getFileName(profilePictureUrl),
     userState = state.number,
     userTester = if (tester) 1 else 0
-)
-
-internal fun User.toFirestoreUser() = FirestoreUser(
-    userId = id,
-    firstName = firstName.lowercase(),
-    lastName = lastName.lowercase(),
-    email = email,
-    schoolLevel = schoolLevel.number,
-    admin = admin,
-    profilePictureFileName = UserUtils.ProfilePicture.getFileName(profilePictureUrl),
-    state = state.number,
-    tester = tester
 )
 
 internal fun LocalUser.toUser() = User(
@@ -98,4 +90,15 @@ private fun UserReport.ReportedUser.toRemote() = RemoteUserReport.RemoteReported
 private fun UserReport.Reporter.toRemote() = RemoteUserReport.RemoteReporter(
     fullName = fullName,
     email = email
+)
+
+internal fun BlockedUser.toRemote(currentUserId: String) = RemoteBlockedUser(
+    userId = currentUserId,
+    blockedUserId = userId,
+    blockedDate = blockedDate.toEpochMilliUTC()
+)
+
+internal fun RemoteBlockedUser.toBlockedUser() = BlockedUser(
+    userId = userId,
+    blockedDate = blockedDate.toLocalDateTimeUTC()
 )

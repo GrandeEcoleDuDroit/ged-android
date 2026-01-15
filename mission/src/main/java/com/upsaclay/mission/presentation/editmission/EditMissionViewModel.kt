@@ -100,8 +100,7 @@ class EditMissionViewModel(
                 }
                 updateMissionUseCase(
                     mission = newMission,
-                    imageUri = uiState.value.imageUri?.toString(),
-                    previousMissionState = mission.state
+                    imageUri = uiState.value.imageUri?.toString()
                 )
                 _event.emit(SingleUiEvent.Success())
             } catch (e: Exception) {

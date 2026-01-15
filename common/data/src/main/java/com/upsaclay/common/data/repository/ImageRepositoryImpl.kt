@@ -21,14 +21,6 @@ internal class ImageRepositoryImpl(
     override suspend fun createCacheImage(fileName: String, uri: String): File? =
         imageLocalDataSource.createCacheImage(fileName, uri)
 
-    override suspend fun uploadImage(file: File, imagePath: String) {
-        imageRemoteDataSource.uploadImage(file, imagePath)
-    }
-
-    override suspend fun deleteRemoteImage(imagePath: String) {
-        imageRemoteDataSource.deleteImage(imagePath)
-    }
-
     override suspend fun deleteLocalImage(imagePath: String) {
         imageLocalDataSource.deleteLocalImage(imagePath)
     }

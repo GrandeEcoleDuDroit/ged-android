@@ -1,7 +1,10 @@
 package com.upsaclay.mission.data.remote
 
+import com.upsaclay.common.data.toOracleUser
+import com.upsaclay.common.domain.entity.User
+import com.upsaclay.mission.data.mapper.toMission
+import com.upsaclay.mission.data.mapper.toRemote
 import com.upsaclay.mission.data.remote.api.MissionApi
-import com.upsaclay.mission.domain.entity.AddMissionParticipant
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.MissionReport
 import kotlinx.coroutines.Dispatchers
@@ -10,36 +13,36 @@ import java.io.File
 
 class MissionRemoteDataSource(private val missionApi: MissionApi) {
     suspend fun getMissions(): List<Mission> = withContext(Dispatchers.IO) {
-        missionApi.getMissions()
+        missionApi.getMissions()?.map { it.toMission() } ?: emptyList()
     }
 
     suspend fun createMission(mission: Mission, imageFile: File?) {
         withContext(Dispatchers.IO) {
-            missionApi.createMission(mission, imageFile)
+            missionApi.createMission(mission.toRemote(), imageFile)
         }
     }
 
     suspend fun updateMission(mission: Mission, imageFile: File?) {
         withContext(Dispatchers.IO) {
-            missionApi.updateMission(mission, imageFile)
+            missionApi.updateMission(mission.toRemote(), imageFile)
         }
     }
 
-    suspend fun deleteMission(missionId: String, imageFileName: String?) {
+    suspend fun deleteMission(mission: Mission) {
         withContext(Dispatchers.IO) {
-            missionApi.deleteMission(missionId, imageFileName)
+            missionApi.deleteMission(mission.toRemote())
         }
     }
 
     suspend fun reportMission(report: MissionReport) {
         withContext(Dispatchers.IO) {
-            missionApi.reportMission(report)
+            missionApi.reportMission(report.toRemote())
         }
     }
 
-    suspend fun addParticipant(addMissionParticipant: AddMissionParticipant) {
+    suspend fun addParticipant(missionId: String, user: User) {
         withContext(Dispatchers.IO) {
-            missionApi.addParticipant(addMissionParticipant)
+            missionApi.addParticipant(missionId, user.toOracleUser())
         }
     }
 

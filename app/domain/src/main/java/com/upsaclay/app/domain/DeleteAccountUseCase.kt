@@ -1,9 +1,7 @@
 package com.upsaclay.app.domain
 
 import com.upsaclay.authentication.domain.repository.AuthenticationRepository
-import com.upsaclay.common.domain.UserUtils
 import com.upsaclay.common.domain.entity.User
-import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.news.domain.repository.AnnouncementRepository
 
@@ -11,7 +9,6 @@ class DeleteAccountUseCase(
     private val userRepository: UserRepository,
     private val authenticationRepository: AuthenticationRepository,
     private val announcementRepository: AnnouncementRepository,
-    private val imageRepository: ImageRepository
 ) {
     suspend operator fun invoke(user: User, password: String) {
         authenticationRepository.loginWithEmailAndPassword(user.email, password)
@@ -28,9 +25,6 @@ class DeleteAccountUseCase(
         )
 
         //TODO Delete user
-        UserUtils.ProfilePicture.getPath(user.profilePictureUrl)?.let {
-            imageRepository.deleteRemoteImage(it)
-        }
         userRepository.deleteLocalUser()
     }
 }

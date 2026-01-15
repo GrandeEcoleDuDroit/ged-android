@@ -1,6 +1,6 @@
 package com.upsaclay.common.data.remote.api
 
-import com.upsaclay.common.data.UserField.Server.USER_EMAIL
+import com.upsaclay.common.data.UserField.Oracle.USER_EMAIL
 import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded

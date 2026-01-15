@@ -53,12 +53,12 @@ internal class AnnouncementRepositoryImpl(
     }
 
     override suspend fun deleteAnnouncements(userId: String) {
-        announcementRemoteDataSource.deleteAnnouncements(userId)
+//        announcementRemoteDataSource.deleteAnnouncements(userId)
         announcementLocalDataSource.deleteAnnouncements(userId)
     }
 
     override suspend fun deleteAnnouncement(announcement: Announcement) {
-        announcementRemoteDataSource.deleteAnnouncement(announcement.id)
+        announcementRemoteDataSource.deleteAnnouncement(announcement)
         announcementLocalDataSource.deleteAnnouncement(announcement)
     }
 

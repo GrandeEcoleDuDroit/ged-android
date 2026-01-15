@@ -10,7 +10,6 @@ import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapNetworkErrorMessage
 import com.upsaclay.mission.R
-import com.upsaclay.mission.domain.entity.AddMissionParticipant
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.MissionReport
 import com.upsaclay.mission.domain.repository.MissionRepository
@@ -43,16 +42,8 @@ class MissionDetailsViewModel(
 
     fun registerToMission() {
         val currentUser = uiState.value.currentUser ?: return
-        val mission = uiState.value.mission ?: return
-        val addMissionParticipant = AddMissionParticipant(
-            missionId = missionId,
-            schoolLevels = mission.schoolLevels,
-            maxParticipants = mission.maxParticipants,
-            participantsNumber = mission.participants.size,
-            currentUser = currentUser
-        )
        executeRequest {
-           missionRepository.addParticipant(addMissionParticipant)
+           missionRepository.addParticipant(missionId, currentUser)
        }
     }
 

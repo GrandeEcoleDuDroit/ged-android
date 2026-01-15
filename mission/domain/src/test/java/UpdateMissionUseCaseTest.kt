@@ -1,5 +1,4 @@
 import com.upsaclay.common.domain.repository.ImageRepository
-import com.upsaclay.mission.domain.MissionUtils
 import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.missionFixture
 import com.upsaclay.mission.domain.repository.MissionRepository
@@ -18,7 +17,6 @@ class UpdateMissionUseCaseTest {
 
     private lateinit var useCase: UpdateMissionUseCase
     private val imageUri = "imageUri"
-    private val imageUrl = "imageUrl"
     private val file = File("file")
 
     @Before
@@ -27,7 +25,6 @@ class UpdateMissionUseCaseTest {
         coEvery { imageRepository.createCacheImage(any(), any()) } returns file
         coEvery { missionRepository.updateMission(any(), any()) } returns Unit
         coEvery { imageRepository.deleteLocalImage(any()) } returns Unit
-        coEvery { imageRepository.deleteRemoteImage(any()) } returns Unit
         coEvery { imageRepository.deleteCacheImage(any()) } returns Unit
 
         useCase = UpdateMissionUseCase(
@@ -42,7 +39,7 @@ class UpdateMissionUseCaseTest {
         val mission = missionFixture.copy(state = MissionState.Published())
 
         // When
-        useCase(mission, imageUri, MissionState.Published())
+        useCase(mission, imageUri)
 
         // Then
         coVerify {
@@ -56,14 +53,9 @@ class UpdateMissionUseCaseTest {
         val mission = missionFixture.copy(state = MissionState.Published())
 
         // When
-        useCase(
-            mission = mission,
-            imageUri = imageUri,
-            previousMissionState = MissionState.Published(imageUrl)
-        )
+        useCase(mission, imageUri)
 
         // Then
-        coVerify { imageRepository.deleteRemoteImage(MissionUtils.Image.getPath(imageUrl)!!) }
         coVerify { imageRepository.deleteCacheImage(any()) }
     }
 }

@@ -42,7 +42,7 @@ class MissionDetailsViewModelTest {
         every { userRepository.user } returns flowOf(userFixture2)
         coEvery { missionRepository.removeParticipant(any(), any()) } returns Unit
         coEvery { missionRepository.reportMission(any()) } returns Unit
-        coEvery { missionRepository.addParticipant(any()) } returns Unit
+        coEvery { missionRepository.addParticipant(any(), any()) } returns Unit
         coEvery { deleteMissionUseCase(any()) } returns Unit
 
         viewModel = MissionDetailsViewModel(

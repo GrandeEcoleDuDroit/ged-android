@@ -13,16 +13,9 @@ class UpdateProfilePictureUseCase(
     suspend operator fun invoke(user: User, profilePictureUri: String) {
         withTimeout(15000) {
             val fileName = UserUtils.ProfilePicture.generateFileName(user.id)
-            val imagePath = UserUtils.ProfilePicture.makeRelativePath(fileName)
-
             imageRepository.createCacheImage(fileName, profilePictureUri)?.let { file ->
-                imageRepository.uploadImage(file, imagePath)
                 userRepository.updateProfilePicture(user, file, file.name)
                 imageRepository.deleteCacheImage(file.name)
-            }
-
-            UserUtils.ProfilePicture.getPath(user.profilePictureUrl)?.let {
-                imageRepository.deleteRemoteImage(it)
             }
         }
     }

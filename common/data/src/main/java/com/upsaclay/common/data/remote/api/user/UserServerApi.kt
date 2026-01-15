@@ -1,7 +1,7 @@
 package com.upsaclay.common.data.remote.api.user
 
-import com.upsaclay.common.data.UserField.Server.USER_ID
-import com.upsaclay.common.data.UserField.Server.USER_PROFILE_PICTURE_FILE_NAME
+import com.upsaclay.common.data.UserField.Oracle.USER_ID
+import com.upsaclay.common.data.UserField.Oracle.USER_PROFILE_PICTURE_FILE_NAME
 import com.upsaclay.common.data.remote.model.OracleUser
 import com.upsaclay.common.data.remote.model.RemoteUserReport
 import com.upsaclay.common.data.remote.model.ServerResponse

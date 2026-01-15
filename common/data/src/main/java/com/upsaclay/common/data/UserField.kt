@@ -13,7 +13,7 @@ object UserField {
         const val USER_TESTER = "user_tester"
     }
 
-    object Server {
+    object Oracle {
         const val USER_ID = "USER_ID"
         const val USER_FIRST_NAME = "USER_FIRST_NAME"
         const val USER_LAST_NAME = "USER_LAST_NAME"
@@ -36,5 +36,13 @@ object UserField {
         const val PROFILE_PICTURE_FILE_NAME = "profilePictureFileName"
         const val STATE = "state"
         const val TESTER = "tester"
+    }
+}
+
+object BlockedUserField {
+    internal object Remote {
+        const val USER_ID = "USER_ID"
+        const val BLOCKED_USER_ID = "BLOCKED_USER_ID"
+        const val BLOCKED_DATE = "BLOCKED_DATE"
     }
 }
