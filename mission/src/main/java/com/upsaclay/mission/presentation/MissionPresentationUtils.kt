@@ -18,9 +18,13 @@ object MissionPresentationUtils {
         @Composable
         get() = MaterialTheme.typography.titleLarge
 
-    val contentStyle: TextStyle
+    val descriptionStyle: TextStyle
         @Composable
         get() = MaterialTheme.typography.bodyLarge
+
+    val contentStyle: TextStyle
+        @Composable
+        get() = MaterialTheme.typography.bodyMedium
 
     fun formatSchoolLevels(schoolLevels: List<SchoolLevel>): String =
         schoolLevels.sortedBy { it.ordinal }.joinToString(separator = " - ")

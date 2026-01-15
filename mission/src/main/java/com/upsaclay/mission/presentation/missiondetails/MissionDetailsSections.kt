@@ -37,6 +37,7 @@ import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.MissionTask
 import com.upsaclay.mission.domain.missionFixture
 import com.upsaclay.mission.presentation.MissionPresentationUtils.contentStyle
+import com.upsaclay.mission.presentation.MissionPresentationUtils.descriptionStyle
 import com.upsaclay.mission.presentation.MissionPresentationUtils.titleStyle
 import com.upsaclay.mission.presentation.components.items.MissionInformationValuesItem
 import com.upsaclay.mission.presentation.components.items.MissionUserItem
@@ -57,7 +58,7 @@ fun MissionDetailsTitleAndDescriptionSection(
 
         Text(
             text = mission.description,
-            style = contentStyle
+            style = descriptionStyle
         )
     }
 }
