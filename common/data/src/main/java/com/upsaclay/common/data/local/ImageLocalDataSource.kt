@@ -39,14 +39,20 @@ class ImageLocalDataSource(private val context: Context) {
     }
 
     private fun writeImage(file: File, uri: Uri): File? {
-        val inputStream = contentResolver.openInputStream(uri) ?: return null
-        val compressFormat = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        file.parentFile?.mkdirs()
+
+        val format = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             Bitmap.CompressFormat.WEBP_LOSSY
         } else {
             Bitmap.CompressFormat.WEBP
         }
-        val bitmap = BitmapFactory.decodeStream(inputStream)
-        bitmap.compress(compressFormat, 70, file.outputStream())
+
+        contentResolver.openInputStream(uri)?.use { input ->
+            val bitmap = BitmapFactory.decodeStream(input) ?: return null
+            file.outputStream().use { output ->
+                bitmap.compress(format, 70, output)
+            }
+        } ?: return null
 
         return file
     }

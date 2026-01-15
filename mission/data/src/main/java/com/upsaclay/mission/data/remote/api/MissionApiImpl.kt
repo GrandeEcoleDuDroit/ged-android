@@ -1,19 +1,15 @@
 package com.upsaclay.mission.data.remote.api
 
 import com.google.gson.Gson
-import com.upsaclay.common.data.UserField.Server.USER_ID
+import com.upsaclay.common.data.UserField.Oracle.USER_ID
+import com.upsaclay.common.data.UserField.Oracle.USER_SCHOOL_LEVEL
 import com.upsaclay.common.data.exceptions.mapServerResponseException
+import com.upsaclay.common.data.remote.model.OracleUser
 import com.upsaclay.common.data.remote.model.ServerResponse
 import com.upsaclay.mission.data.MissionField.Remote.MISSION_ID
-import com.upsaclay.mission.data.mapper.toMission
-import com.upsaclay.mission.data.mapper.toRemote
 import com.upsaclay.mission.data.remote.models.InboundRemoteMission
-import com.upsaclay.mission.data.remote.models.RemoteAddMissionParticipant
+import com.upsaclay.mission.data.remote.models.OutboundRemoteMission
 import com.upsaclay.mission.data.remote.models.RemoteMissionReport
-import com.upsaclay.mission.domain.MissionUtils
-import com.upsaclay.mission.domain.entity.AddMissionParticipant
-import com.upsaclay.mission.domain.entity.Mission
-import com.upsaclay.mission.domain.entity.MissionReport
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -29,98 +25,68 @@ import retrofit2.http.POST
 import retrofit2.http.Part
 import java.io.File
 
-internal class MissionApiImpl(
-    private val serverMissionApi: ServerMissionApi
-): MissionApi {
+internal class MissionApiImpl(private val serverMissionApi: ServerMissionApi): MissionApi {
     private val gson = Gson()
 
-    override suspend fun getMissions(): List<Mission> {
+    override suspend fun getMissions(): List<InboundRemoteMission>? {
         return mapServerResponseException(
             message = "Failed to get missions",
             block = { serverMissionApi.getMissions() }
-        )?.map { it.toMission() } ?: emptyList()
+        )
     }
 
-    override suspend fun createMission(mission: Mission, imageFile: File?) {
+    override suspend fun createMission(remoteMission: OutboundRemoteMission, imageFile: File?) {
         var imagePart: MultipartBody.Part? = null
-        var imagePathPart: RequestBody? = null
 
-        val remoteMission = mission.toRemote()
         val missionPart = gson
             .toJson(remoteMission)
             .toRequestBody("application/json".toMediaType())
 
         if (imageFile != null && remoteMission.missionImageFileName != null) {
-            val requestFile = imageFile.asRequestBody("image/*".toMediaType())
-            imagePart = MultipartBody.Part.createFormData("image", remoteMission.missionImageFileName, requestFile)
-
-            imagePathPart = remoteMission.missionImageFileName
-                .let { MissionUtils.Image.makeRelativePath(it) }
-                .toRequestBody("text/plain".toMediaType())
+            imagePart = MultipartBody.Part.createFormData(
+                "image",
+                remoteMission.missionImageFileName,
+                imageFile.asRequestBody("image/*".toMediaType())
+            )
         }
 
         mapServerResponseException(
             message = "Failed to create mission",
-            block = {
-                serverMissionApi.createMission(
-                    image = imagePart,
-                    imagePath = imagePathPart,
-                    mission = missionPart
-                )
-            }
+            block = { serverMissionApi.createMission(imagePart, missionPart) }
         )
     }
 
-    override suspend fun updateMission(mission: Mission, imageFile: File?) {
+    override suspend fun updateMission(remoteMission: OutboundRemoteMission, imageFile: File?) {
         var imagePart: MultipartBody.Part? = null
-        var imagePathPart: RequestBody? = null
 
-        val remoteMission = mission.toRemote()
         val missionPart = gson
-            .toJson(mission.toRemote())
+            .toJson(remoteMission)
             .toRequestBody("application/json".toMediaType())
 
         if (imageFile != null && remoteMission.missionImageFileName != null) {
-            val requestFile = imageFile.asRequestBody("image/*".toMediaType())
-            imagePart = MultipartBody.Part.createFormData("image", remoteMission.missionImageFileName, requestFile)
-
-            imagePathPart = remoteMission.missionImageFileName
-                .let { MissionUtils.Image.makeRelativePath(it) }
-                .toRequestBody("text/plain".toMediaType())
+            imagePart = MultipartBody.Part.createFormData(
+                "image",
+                remoteMission.missionImageFileName,
+                imageFile.asRequestBody("image/*".toMediaType()))
         }
 
         mapServerResponseException(
             message = "Failed to update mission",
-            block = {
-                serverMissionApi.updateMission(
-                    image = imagePart,
-                    imagePath = imagePathPart,
-                    mission = missionPart
-                )
-            }
+            block = { serverMissionApi.updateMission(imagePart, missionPart) }
         )
     }
 
-    override suspend fun deleteMission(missionId: String, imageFileName: String?) {
-        val imagePath = imageFileName?.let { MissionUtils.Image.makeRelativePath(it) }
-
+    override suspend fun deleteMission(remoteMission: OutboundRemoteMission) {
         mapServerResponseException(
             message = "Failed to delete mission",
-            block = { serverMissionApi.deleteMission(missionId, imagePath) },
+            block = { serverMissionApi.deleteMission(remoteMission) },
         )
     }
 
-    override suspend fun reportMission(report: MissionReport) {
-        mapServerResponseException(
-            message = "Failed to report mission",
-            block = { serverMissionApi.reportMission(report.toRemote()) }
-        )
-    }
-
-    override suspend fun addParticipant(addMissionParticipant: AddMissionParticipant) {
+    override suspend fun addParticipant(missionId: String, oracleUser: OracleUser) {
         mapServerResponseException(
             message = "Failed to add participant to mission",
-            block = { serverMissionApi.addParticipant(addMissionParticipant.toRemote()) }
+            block = { serverMissionApi.addParticipant(missionId, oracleUser.userId, oracleUser.userSchoolLevel.toString()) }
         )
     }
 
@@ -128,6 +94,13 @@ internal class MissionApiImpl(
         mapServerResponseException(
             message = "Failed to remove participant from mission",
             block = { serverMissionApi.removeParticipant(missionId, userId) }
+        )
+    }
+
+    override suspend fun reportMission(remoteMissionReport: RemoteMissionReport) {
+        mapServerResponseException(
+            message = "Failed to report mission",
+            block = { serverMissionApi.reportMission(remoteMissionReport) }
         )
     }
 }
@@ -140,7 +113,6 @@ internal interface ServerMissionApi {
     @POST("missions/create")
     suspend fun createMission(
         @Part image: MultipartBody.Part?,
-        @Part("imagePath") imagePath: RequestBody?,
         @Part("mission") mission: RequestBody
     ): Response<ServerResponse>
 
@@ -148,23 +120,18 @@ internal interface ServerMissionApi {
     @POST("missions/update")
     suspend fun updateMission(
         @Part image: MultipartBody.Part?,
-        @Part("imagePath") imagePath: RequestBody?,
         @Part("mission") mission: RequestBody
     ): Response<ServerResponse>
 
-    @FormUrlEncoded
     @POST("missions/delete")
-    suspend fun deleteMission(
-        @Field(MISSION_ID) missionId: String,
-        @Field("imagePath") imagePath: String?
-    ): Response<ServerResponse>
+    suspend fun deleteMission(@Body remoteMission: OutboundRemoteMission): Response<ServerResponse>
 
-    @POST("missions/report")
-    suspend fun reportMission(@Body remoteMissionReport: RemoteMissionReport): Response<ServerResponse>
-
+    @FormUrlEncoded
     @POST("missions/add-participant")
     suspend fun addParticipant(
-        @Body remoteAddMissionParticipant: RemoteAddMissionParticipant
+        @Field(MISSION_ID) missionId: String,
+        @Field(USER_ID) userId: String,
+        @Field(USER_SCHOOL_LEVEL) userSchoolLevel: String
     ): Response<ServerResponse>
 
     @FormUrlEncoded
@@ -173,4 +140,7 @@ internal interface ServerMissionApi {
         @Field(MISSION_ID) missionId: String,
         @Field(USER_ID) userId: String
     ): Response<ServerResponse>
+
+    @POST("missions/report")
+    suspend fun reportMission(@Body remoteMissionReport: RemoteMissionReport): Response<ServerResponse>
 }

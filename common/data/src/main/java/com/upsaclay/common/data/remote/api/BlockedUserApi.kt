@@ -1,9 +1,11 @@
 package com.upsaclay.common.data.remote.api
 
+import com.upsaclay.common.data.remote.model.RemoteBlockedUser
+
 internal interface BlockedUserApi {
-    suspend fun getBlockedUserIds(currentUserId: String): Set<String>
+    suspend fun getBlockedUsers(currentUserId: String): List<RemoteBlockedUser>?
 
-    suspend fun blockUser(currentUserId: String, userId: String)
+    suspend fun blockUser(remoteBlockedUser: RemoteBlockedUser)
 
-    suspend fun unblockUser(currentUserId: String, userId: String)
+    suspend fun unblockUser(currentUserId: String, blockedUserId: String)
 }

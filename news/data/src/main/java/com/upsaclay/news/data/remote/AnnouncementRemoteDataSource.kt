@@ -26,24 +26,6 @@ internal class AnnouncementRemoteDataSource(private val announcementApi: Announc
         }
     }
 
-    suspend fun deleteAnnouncements(userId: String) {
-        withContext(Dispatchers.IO) {
-            mapServerResponseException(
-                message = "Failed to delete announcements",
-                block = { announcementApi.deleteAnnouncements(userId) }
-            )
-        }
-    }
-
-    suspend fun deleteAnnouncement(id: String) {
-        withContext(Dispatchers.IO) {
-            mapServerResponseException(
-                message = "Failed to delete announcement",
-                block = { announcementApi.deleteAnnouncement(id) }
-            )
-        }
-    }
-
     suspend fun updateAnnouncement(announcement: Announcement) {
         withContext(Dispatchers.IO) {
             mapServerResponseException(
@@ -53,13 +35,20 @@ internal class AnnouncementRemoteDataSource(private val announcementApi: Announc
         }
     }
 
+    suspend fun deleteAnnouncement(announcement: Announcement) {
+        withContext(Dispatchers.IO) {
+            mapServerResponseException(
+                message = "Failed to delete announcement",
+                block = { announcementApi.deleteAnnouncements(announcement.id, announcement.author.id) }
+            )
+        }
+    }
+
     suspend fun reportAnnouncement(report: AnnouncementReport) {
         withContext(Dispatchers.IO) {
             mapServerResponseException(
                 message = "Failed to report announcement",
-                block = {
-                    announcementApi.reportAnnouncement(report.toRemote())
-                }
+                block = { announcementApi.reportAnnouncement(report.toRemote()) }
             )
         }
     }

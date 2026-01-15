@@ -3,9 +3,12 @@ package com.upsaclay.common.data.repository
 import com.upsaclay.common.data.local.BlockedUserLocalDataSource
 import com.upsaclay.common.data.remote.BlockedUserRemoteDataSource
 import com.upsaclay.common.domain.entity.BlockUserEvent
+import com.upsaclay.common.domain.entity.BlockedUser
 import com.upsaclay.common.domain.repository.BlockedUserRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 internal class BlockedUserRepositoryImpl(
     private val blockedUserLocalDataSource: BlockedUserLocalDataSource,
@@ -19,10 +22,10 @@ internal class BlockedUserRepositoryImpl(
     override suspend fun getLocalBlockedUserIds(): Set<String> = blockedUserLocalDataSource.getBlockedUserIds()
 
     override suspend fun getRemoteBlockedUserIds(currentUserId: String): Set<String> =
-        blockedUserRemoteDataSource.getBlockedUserIds(currentUserId)
+        blockedUserRemoteDataSource.getBlockedUsers(currentUserId).map { it.userId }.toSet()
 
     override suspend fun blockUser(currentUserId: String, userId: String) {
-        blockedUserRemoteDataSource.blockUser(currentUserId, userId)
+        blockedUserRemoteDataSource.addBlockedUser(currentUserId, BlockedUser(userId, LocalDateTime.now(ZoneOffset.UTC)))
         blockedUserLocalDataSource.blockUser(userId)
         _blockUserEvent.emit(BlockUserEvent.Block(userId))
     }
@@ -33,7 +36,7 @@ internal class BlockedUserRepositoryImpl(
     }
 
     override suspend fun unblockUser(currentUserId: String, userId: String) {
-        blockedUserRemoteDataSource.unblockUser(currentUserId, userId)
+        blockedUserRemoteDataSource.removeBlockedUser(currentUserId, userId)
         blockedUserLocalDataSource.unblockUser(userId)
         _blockUserEvent.emit(BlockUserEvent.Unblock(userId))
     }

@@ -1,22 +1,23 @@
 package com.upsaclay.mission.data.remote.api
 
-import com.upsaclay.mission.domain.entity.AddMissionParticipant
-import com.upsaclay.mission.domain.entity.Mission
-import com.upsaclay.mission.domain.entity.MissionReport
+import com.upsaclay.common.data.remote.model.OracleUser
+import com.upsaclay.mission.data.remote.models.InboundRemoteMission
+import com.upsaclay.mission.data.remote.models.OutboundRemoteMission
+import com.upsaclay.mission.data.remote.models.RemoteMissionReport
 import java.io.File
 
 interface MissionApi {
-    suspend fun getMissions(): List<Mission>
+    suspend fun getMissions():  List<InboundRemoteMission>?
 
-    suspend fun createMission(mission: Mission, imageFile: File?)
+    suspend fun createMission(remoteMission: OutboundRemoteMission, imageFile: File?)
 
-    suspend fun updateMission(mission: Mission, imageFile: File?)
+    suspend fun updateMission(remoteMission: OutboundRemoteMission, imageFile: File?)
 
-    suspend fun deleteMission(missionId: String, imageFileName: String?)
+    suspend fun deleteMission(remoteMission: OutboundRemoteMission)
 
-    suspend fun reportMission(report: MissionReport)
+    suspend fun reportMission(remoteMissionReport: RemoteMissionReport)
 
-    suspend fun addParticipant(addMissionParticipant: AddMissionParticipant)
+    suspend fun addParticipant(missionId: String, oracleUser: OracleUser)
 
     suspend fun removeParticipant(missionId: String, userId: String)
 }
