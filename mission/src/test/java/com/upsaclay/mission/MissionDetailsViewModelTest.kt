@@ -1,6 +1,7 @@
 package com.upsaclay.mission
 
 import com.upsaclay.common.domain.ConnectivityObserver
+import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.domain.userFixture2
@@ -109,7 +110,7 @@ class MissionDetailsViewModelTest {
     }
 
     @Test
-    fun button_state_should_be_register_enabled_when_mission_is_not_full_and_user_is_not_registered() {
+    fun button_state_should_be_register_when_mission_is_not_full_and_user_is_not_registered() {
         // Given
         val mission = missionFixture.copy(
             participants = emptyList()
@@ -126,11 +127,11 @@ class MissionDetailsViewModelTest {
         )
 
         // Then
-        assertEquals(MissionDetailsViewModel.MissionButtonState.Register(), viewModel.uiState.value.buttonState)
+        assertEquals(MissionDetailsViewModel.MissionButtonState.Register, viewModel.uiState.value.buttonState)
     }
 
     @Test
-    fun button_state_should_be_register_disabled_when_mission_is_full_and_user_is_not_registered() {
+    fun button_state_should_be_registration_closed_when_mission_is_full_and_user_is_not_registered() {
         // Given
         val user = userFixture2.copy(id = "3")
         val mission = missionFixture.copy(
@@ -149,7 +150,31 @@ class MissionDetailsViewModelTest {
         )
 
         // Then
-        assertEquals(MissionDetailsViewModel.MissionButtonState.Register(false), viewModel.uiState.value.buttonState)
+        assert(viewModel.uiState.value.buttonState is MissionDetailsViewModel.MissionButtonState.RegistrationClosed)
+    }
+
+    @Test
+    fun button_state_should_be_unavailable_when_user_school_level_not_match() {
+        // Given
+        val user = userFixture2.copy(
+            id = "6",
+            schoolLevel = SchoolLevel.GED_3
+        )
+        val mission = missionFixture.copy(schoolLevels = listOf(SchoolLevel.GED_1))
+        every { missionRepository.getMissionFlow(any()) } returns flowOf(mission)
+        every { userRepository.user } returns flowOf(user)
+
+        // When
+        viewModel = MissionDetailsViewModel(
+            missionId = missionFixture.id,
+            missionRepository = missionRepository,
+            userRepository = userRepository,
+            deleteMissionUseCase = deleteMissionUseCase,
+            connectivityObserver = connectivityObserver
+        )
+
+        // Then
+        assert(viewModel.uiState.value.buttonState is MissionDetailsViewModel.MissionButtonState.Unavailable)
     }
 
     @Test
