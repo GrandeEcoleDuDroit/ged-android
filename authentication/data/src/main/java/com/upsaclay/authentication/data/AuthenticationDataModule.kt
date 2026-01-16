@@ -1,14 +1,13 @@
 package com.upsaclay.authentication.data
 
-import com.upsaclay.authentication.data.api.FirebaseAuthenticationApi
-import com.upsaclay.authentication.data.api.FirebaseAuthenticationApiImpl
 import com.upsaclay.authentication.data.local.AuthenticationLocalDataSource
+import com.upsaclay.authentication.data.remote.AuthenticationRemoteDataSource
+import com.upsaclay.authentication.data.remote.api.AuthenticationApi
+import com.upsaclay.authentication.data.remote.api.AuthenticationApiImpl
 import com.upsaclay.authentication.data.repository.AuthenticationRepositoryImpl
-import com.upsaclay.authentication.data.repository.firebase.FirebaseAuthenticationRepository
-import com.upsaclay.authentication.data.repository.firebase.FirebaseAuthenticationRepositoryImpl
 import com.upsaclay.authentication.domain.repository.AuthenticationRepository
 import com.upsaclay.common.data.TokenProvider
-import com.upsaclay.common.data.e
+import com.upsaclay.common.data.utils.e
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,9 +30,9 @@ val authenticationDataModule = module {
         )
     }
 
-    singleOf(::FirebaseAuthenticationRepositoryImpl) { bind<FirebaseAuthenticationRepository>() }
-    singleOf(::FirebaseAuthenticationApiImpl) { bind<FirebaseAuthenticationApi>() }
+    singleOf(::AuthenticationApiImpl) { bind<AuthenticationApi>() }
     singleOf(::AuthenticationRepositoryImpl) { bind<AuthenticationRepository>() }
+    singleOf(::AuthenticationRemoteDataSource)
     singleOf(::AuthenticationLocalDataSource)
     singleOf(::TokenProviderImpl) { bind<TokenProvider>() }
 }

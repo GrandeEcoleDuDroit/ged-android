@@ -1,22 +1,25 @@
 package com.upsaclay.common.data.remote.api.user
 
+import com.upsaclay.common.data.remote.model.FirestoreUser
+import com.upsaclay.common.data.remote.model.OracleUser
+import com.upsaclay.common.data.remote.model.RemoteUserReport
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.entity.UserReport
 import kotlinx.coroutines.flow.Flow
 import java.io.File
 
 internal interface UserApi {
-    suspend fun getUser(userId: String): User?
+    fun listenUser(userId: String): Flow<FirestoreUser?>
 
-    fun listenUser(userId: String): Flow<User?>
+    suspend fun getUsers(): List<OracleUser>?
 
-    suspend fun getUsers(): List<User>
+    suspend fun getUser(userId: String): OracleUser?
 
-    suspend fun createUser(user: User)
+    suspend fun createUser(oracleUser: OracleUser)
 
-    suspend fun updateProfilePicture(user: User, imageFile: File, fileName: String)
+    suspend fun updateProfilePicture(oracleUser: OracleUser, imageFile: File, fileName: String)
 
-    suspend fun deleteProfilePicture(user: User)
+    suspend fun deleteProfilePicture(oracleUser: OracleUser)
 
-    suspend fun reportUser(report: UserReport)
+    suspend fun reportUser(remoteUserReport: RemoteUserReport)
 }

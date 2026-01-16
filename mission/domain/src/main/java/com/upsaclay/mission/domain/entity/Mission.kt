@@ -22,7 +22,7 @@ data class Mission(
 ) {
     val schoolLevelRestricted: Boolean
         get() = schoolLevels.isNotEmpty() &&
-                schoolLevels.size < SchoolLevel.getSchoolLevels().size
+                schoolLevels.size < SchoolLevel.all.size
 
     val full: Boolean
         get() = participants.size >= maxParticipants

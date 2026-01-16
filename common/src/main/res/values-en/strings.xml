@@ -52,17 +52,7 @@
     <string name="hour_ago_medium">%d hours</string>
     <string name="day_ago_medium">%d days</string>
     <string name="week_ago_medium">%d weeks</string>
-    <string name="mandatory_field_error">Mandatory field.</string>
-    <string name="number_field_error">Please enter a valid number.</string>
-    <string name="unknown_error">An unknown error occurred.</string>
-    <string name="internal_server_error">An internal server error occurred.</string>
-    <string name="server_connection_error">Unable to connect to the server.</string>
-    <string name="unknown_network_error">A network error occurred.</string>
-    <string name="occurred_error">An error occurred.</string>
-    <string name="too_many_request_error">You have made too many requests. Please try again in a few minutes.</string>
-    <string name="user_not_found_title_dialog">User not found.</string>
-    <string name="current_user_not_found_error">User not found. Please log in again.</string>
-    <string name="timeout_error">The service took too long to respond. Please try again.</string>
+
     <string name="no_user">No users</string>
     <string name="no_internet_connection">No internet connection.</string>
     <string name="administrator">Administrator</string>
@@ -75,4 +65,22 @@
     <string name="unblock_user_dialog_message">Do you want to unblock this user?</string>
     <string name="deleted_user">Deleted user</string>
     <string name="confirm">Confirm</string>
+
+    <string name="mandatory_field_error">Mandatory field.</string>
+    <string name="number_field_error">Please enter a valid number.</string>
+    <string name="internal_server_error">An internal server error occurred.</string>
+    <string name="unknown_network_error">A network error occurred.</string>
+    <string name="occurred_error">An error occurred.</string>
+    <string name="too_many_request_error">You have made too many requests. Please try again in a few minutes.</string>
+    <string name="user_not_found_title_dialog">User not found.</string>
+    <string name="current_user_not_found_error">The current user was not found. Please try again.</string>
+    <string name="forbidden_error">You are not authorized to perform this action.</string>
+    <string name="bad_request_error">The request could not be successful.</string>
+    <string name="unauthorized_error">Your session has expired. Please log in again.</string>
+    <string name="resource_not_found_error">Resource was not found.</string>
+    <string name="timed_out_error">The service took too long to respond. Please try again.</string>
+    <string name="cannot_connect_to_host_error">Could not connect to the server.</string>
+    <string name="any_network_error">A network error has occurred.</string>
+    <string name="unknown_error">An unknown error occurred.</string>
+
 </resources>

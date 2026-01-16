@@ -2,12 +2,11 @@ package com.upsaclay.message.presentation.conversation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.upsaclay.common.domain.ConnectivityObserver
-import com.upsaclay.common.domain.entity.CurrentUserNotFoundException
-import com.upsaclay.common.domain.entity.NoInternetConnectionException
+import com.upsaclay.common.domain.entity.CustomException
+import com.upsaclay.common.domain.entity.CustomException.ExceptionType.CURRENT_USER_NOT_FOUND_EXCEPTION
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.presentation.SingleUiEvent
-import com.upsaclay.common.utils.mapNetworkErrorMessage
+import com.upsaclay.common.utils.mapException
 import com.upsaclay.message.R
 import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.ConversationUi
@@ -24,8 +23,7 @@ import kotlinx.coroutines.launch
 class ConversationViewModel(
     private val userRepository: UserRepository,
     private val getConversationsUiUseCase: GetConversationsUiUseCase,
-    private val deleteConversationUseCase: DeleteConversationUseCase,
-    private val connectivityObserver: ConnectivityObserver
+    private val deleteConversationUseCase: DeleteConversationUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ConversationUiState())
     val uiState: StateFlow<ConversationUiState> = _uiState
@@ -39,19 +37,15 @@ class ConversationViewModel(
     fun deleteConversation(conversation: Conversation) {
         viewModelScope.launch {
             try {
-                if (!connectivityObserver.isConnected) {
-                    throw NoInternetConnectionException()
-                }
-
                 _uiState.update {
                     it.copy(loading = true)
                 }
 
-                val user = userRepository.currentUser ?: throw CurrentUserNotFoundException()
+                val user = userRepository.currentUser ?: throw CustomException(CURRENT_USER_NOT_FOUND_EXCEPTION, Exception())
                 deleteConversationUseCase(conversation, user.id)
                 _event.emit(SingleUiEvent.Success(R.string.conversation_deleted))
             } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapToErrorMessage(e)))
+                _event.emit(SingleUiEvent.Error(mapException(e)))
             } finally {
                 _uiState.update {
                     it.copy(loading = false)
@@ -66,15 +60,6 @@ class ConversationViewModel(
                 _uiState.update {
                     it.copy(conversations = conversations)
                 }
-            }
-        }
-    }
-
-    private fun mapToErrorMessage(e: Throwable): Int {
-        return mapNetworkErrorMessage(e) {
-            when (e) {
-                is CurrentUserNotFoundException -> com.upsaclay.common.R.string.current_user_not_found_error
-                else -> com.upsaclay.common.R.string.unknown_error
             }
         }
     }

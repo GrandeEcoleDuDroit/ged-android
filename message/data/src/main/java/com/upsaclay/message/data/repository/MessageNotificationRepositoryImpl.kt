@@ -1,5 +1,6 @@
 package com.upsaclay.message.data.repository
 
+import com.upsaclay.common.data.utils.e
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.message.data.local.MessageNotificationLocalDataSource
 import com.upsaclay.message.data.remote.MessageNotificationRemoteDataSource
@@ -22,6 +23,11 @@ class MessageNotificationRepositoryImpl(
     }
 
     override suspend fun sendNotification(currentUser: User, messageNotification: MessageNotification) {
-        messageNotificationRemoteDataSource.sendNotification(currentUser, messageNotification)
+        try {
+            messageNotificationRemoteDataSource.sendNotification(currentUser, messageNotification)
+        } catch (e: Exception) {
+            e("Error sending notification for conversation ${messageNotification.conversation.id}", e)
+            throw e
+        }
     }
 }

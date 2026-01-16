@@ -1,7 +1,6 @@
 package com.upsaclay.mission
 
 import android.net.Uri
-import com.upsaclay.common.domain.ConnectivityObserver
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.usecase.GenerateIdUseCase
 import com.upsaclay.common.domain.usecase.GetUsersUseCase
@@ -28,7 +27,6 @@ import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class EditMissionViewModelTest {
-    private val connectivityObserver: ConnectivityObserver = mockk()
     private val getUsersUseCase: GetUsersUseCase = mockk()
     private val updateMissionUseCase: UpdateMissionUseCase = mockk()
     private val generateIdUseCase: GenerateIdUseCase = mockk()
@@ -46,7 +44,6 @@ class EditMissionViewModelTest {
 
         viewModel = EditMissionViewModel(
             mission = missionFixture,
-            connectivityObserver = connectivityObserver,
             getUsersUseCase = getUsersUseCase,
             updateMissionUseCase = updateMissionUseCase,
             generateIdUseCase = generateIdUseCase
@@ -67,7 +64,7 @@ class EditMissionViewModelTest {
         assertEquals(missionFixture.tasks, viewModel.uiState.value.tasks)
         assertEquals(usersFixture.missionManagerSorting(missionFixture), viewModel.uiState.value.users)
         assertEquals("", viewModel.uiState.value.userQuery)
-        assertEquals(SchoolLevel.getSchoolLevels(), viewModel.uiState.value.allSchoolLevels)
+        assertEquals(SchoolLevel.all, viewModel.uiState.value.allSchoolLevels)
     }
 
     @Test
@@ -224,7 +221,6 @@ class EditMissionViewModelTest {
         // When
         viewModel = EditMissionViewModel(
             mission = missionFixture.copy(schoolLevels = emptyList()),
-            connectivityObserver = connectivityObserver,
             getUsersUseCase = getUsersUseCase,
             updateMissionUseCase = updateMissionUseCase,
             generateIdUseCase = generateIdUseCase
@@ -243,7 +239,6 @@ class EditMissionViewModelTest {
         // When
         viewModel = EditMissionViewModel(
             mission = missionFixture.copy(schoolLevels = emptyList()),
-            connectivityObserver = connectivityObserver,
             getUsersUseCase = getUsersUseCase,
             updateMissionUseCase = updateMissionUseCase,
             generateIdUseCase = generateIdUseCase
@@ -263,7 +258,6 @@ class EditMissionViewModelTest {
         // When
         viewModel = EditMissionViewModel(
             mission = missionFixture.copy(schoolLevels = emptyList()),
-            connectivityObserver = connectivityObserver,
             getUsersUseCase = getUsersUseCase,
             updateMissionUseCase = updateMissionUseCase,
             generateIdUseCase = generateIdUseCase
@@ -419,7 +413,6 @@ class EditMissionViewModelTest {
         // When
         viewModel = EditMissionViewModel(
             mission = missionFixture,
-            connectivityObserver = connectivityObserver,
             getUsersUseCase = getUsersUseCase,
             updateMissionUseCase = updateMissionUseCase,
             generateIdUseCase = generateIdUseCase

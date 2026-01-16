@@ -5,14 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upsaclay.authentication.R
 import com.upsaclay.authentication.domain.usecase.RegisterUseCase
-import com.upsaclay.common.domain.ConnectivityObserver
-import com.upsaclay.common.domain.entity.DuplicateDataException
-import com.upsaclay.common.domain.entity.ForbiddenException
-import com.upsaclay.common.domain.entity.NoInternetConnectionException
+import com.upsaclay.authentication.mapAuthException
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.usecase.VerifyEmailFormatUseCase
 import com.upsaclay.common.presentation.SingleUiEvent
-import com.upsaclay.common.utils.mapNetworkErrorMessage
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -23,8 +19,7 @@ import kotlinx.coroutines.launch
 private const val MIN_PASSWORD_LENGTH = 8
 
 class ThirdRegistrationViewModel(
-    private val registerUseCase: RegisterUseCase,
-    private val connectivityObserver: ConnectivityObserver
+    private val registerUseCase: RegisterUseCase
 ): ViewModel() {
     private val _uiState = MutableStateFlow(ThirdRegistrationUiState())
     internal val uiState: StateFlow<ThirdRegistrationUiState> = _uiState
@@ -70,16 +65,11 @@ class ThirdRegistrationViewModel(
 
         viewModelScope.launch {
             try {
-                if (!connectivityObserver.isConnected) {
-                    throw NoInternetConnectionException()
-                }
                 registerUseCase(email, password, firstName, lastName, schoolLevel)
                 _event.emit(SingleUiEvent.Success())
-            } catch (e: NoInternetConnectionException) {
-                _event.emit(SingleUiEvent.Error(mapErrorMessage(e)))
             } catch (e: Exception) {
                 _uiState.update {
-                    it.copy(errorMessage = mapErrorMessage(e))
+                    it.copy(errorMessage = mapAuthException(e))
                 }
             } finally {
                 _uiState.update {
@@ -115,16 +105,6 @@ class ThirdRegistrationViewModel(
             email.isBlank() -> R.string.mandatory_field
             !VerifyEmailFormatUseCase(email) -> R.string.incorrect_email_format_error
             else -> null
-        }
-    }
-
-    private fun mapErrorMessage(e: Exception): Int {
-        return mapNetworkErrorMessage(e) {
-            when (e) {
-                is ForbiddenException -> R.string.user_not_white_listed
-                is DuplicateDataException -> R.string.email_already_associated
-                else -> com.upsaclay.common.R.string.unknown_error
-            }
         }
     }
 

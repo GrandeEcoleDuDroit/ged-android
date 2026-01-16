@@ -2,7 +2,7 @@ package com.upsaclay.gedoise
 
 import com.upsaclay.common.ConnectivityObserverImpl
 import com.upsaclay.common.IntentHelper
-import com.upsaclay.common.data.e
+import com.upsaclay.common.data.utils.e
 import com.upsaclay.common.domain.ConnectivityObserver
 import com.upsaclay.gedoise.presentation.MainViewModel
 import com.upsaclay.gedoise.presentation.navigation.NavigationViewModel

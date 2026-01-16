@@ -1,11 +1,9 @@
 package com.upsaclay.news
 
-import com.upsaclay.common.domain.ConnectivityObserver
 import com.upsaclay.news.domain.announcementFixture
 import com.upsaclay.news.domain.repository.AnnouncementRepository
 import com.upsaclay.news.presentation.announcement.editannouncement.EditAnnouncementViewModel
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,7 +16,6 @@ import kotlin.test.assertEquals
 @OptIn(ExperimentalCoroutinesApi::class)
 class EditAnnouncementViewModelTest {
     private val announcementRepository: AnnouncementRepository = mockk()
-    private val connectivityObserver: ConnectivityObserver = mockk()
 
     private lateinit var viewModel: EditAnnouncementViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
@@ -29,12 +26,9 @@ class EditAnnouncementViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
 
-        every { connectivityObserver.isConnected } returns true
-
         viewModel = EditAnnouncementViewModel(
             announcement = announcementFixture,
-            announcementRepository = announcementRepository,
-            connectivityObserver = connectivityObserver
+            announcementRepository = announcementRepository
         )
     }
 

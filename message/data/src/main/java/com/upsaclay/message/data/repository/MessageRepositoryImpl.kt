@@ -1,7 +1,7 @@
 package com.upsaclay.message.data.repository
 
 import androidx.paging.PagingData
-import com.upsaclay.common.data.e
+import com.upsaclay.common.data.utils.e
 import com.upsaclay.message.data.local.MessageLocalDataSource
 import com.upsaclay.message.data.remote.MessageRemoteDataSource
 import com.upsaclay.message.domain.entity.Message
@@ -29,7 +29,7 @@ internal class MessageRepositoryImpl(
     override fun fetchRemoteMessages(conversationId: String, interlocutorId: String, offsetTime: LocalDateTime?): Flow<Message> =
         messageRemoteDataSource.listenMessages(conversationId, interlocutorId, offsetTime)
             .catch {
-                e("Failed to fetch remote messages: ${it.message}", it)
+                e("Error fetching remote messages for conversation $conversationId", it)
             }
 
     override suspend fun createLocalMessage(message: Message) {
@@ -37,18 +37,33 @@ internal class MessageRepositoryImpl(
     }
 
     override suspend fun createRemoteMessage(message: Message) {
-        messageRemoteDataSource.createMessage(message)
+        try {
+            messageRemoteDataSource.createMessage(message)
+        } catch (e: Exception) {
+            e("Error creating remote message ${message.id} for conversation ${message.conversationId}", e)
+            throw e
+        }
     }
     override suspend fun updateSeenMessages(conversationId: String, userId: String) {
-        messageLocalDataSource.getUnreadMessagesByUser(conversationId, userId).forEach { message ->
-            messageRemoteDataSource.updateSeenMessage(message.copy(seen = true))
+        try {
+            messageLocalDataSource.getUnreadMessagesByUser(conversationId, userId).forEach { message ->
+                messageRemoteDataSource.updateSeenMessage(message.copy(seen = true))
+            }
+            messageLocalDataSource.updateSeenMessages(conversationId, userId)
+        } catch (e: Exception) {
+            e("Error updating seen messages for conversation $conversationId", e)
+            throw e
         }
-        messageLocalDataSource.updateSeenMessages(conversationId, userId)
     }
 
     override suspend fun updateSeenMessage(message: Message) {
-        messageLocalDataSource.updateMessage(message.copy(seen = true))
-        messageRemoteDataSource.updateSeenMessage(message.copy(seen = true))
+        try {
+            messageLocalDataSource.updateMessage(message.copy(seen = true))
+            messageRemoteDataSource.updateSeenMessage(message.copy(seen = true))
+        } catch (e: Exception) {
+            e("Error updating seen message ${message.id} for conversation ${message.conversationId}", e)
+            throw e
+        }
     }
 
     override suspend fun updateLocalMessage(message: Message) {
@@ -72,6 +87,11 @@ internal class MessageRepositoryImpl(
     }
 
     override suspend fun reportMessage(messageReport: MessageReport) {
-        messageRemoteDataSource.reportMessage(messageReport)
+        try {
+            messageRemoteDataSource.reportMessage(messageReport)
+        } catch (e: Exception) {
+            e("Error reporting message ${messageReport.messageId} for conversation ${messageReport.conversationId}", e)
+            throw e
+        }
     }
 }

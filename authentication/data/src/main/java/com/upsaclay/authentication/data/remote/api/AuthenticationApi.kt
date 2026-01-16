@@ -1,8 +1,8 @@
-package com.upsaclay.authentication.data.api
+package com.upsaclay.authentication.data.remote.api
 
 import kotlinx.coroutines.flow.Flow
 
-interface FirebaseAuthenticationApi {
+interface AuthenticationApi {
     fun isAuthenticated(): Boolean
 
     fun listenAuthenticationState(): Flow<Boolean>

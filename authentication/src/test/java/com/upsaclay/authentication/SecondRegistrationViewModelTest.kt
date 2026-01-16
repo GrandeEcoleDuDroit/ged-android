@@ -15,7 +15,7 @@ class SecondRegistrationViewModelTest {
     private lateinit var secondRegistrationViewModel: SecondRegistrationViewModel
 
     private val testDispatcher = UnconfinedTestDispatcher()
-    private val schoolLevels = SchoolLevel.getSchoolLevels()
+    private val schoolLevels = SchoolLevel.all
     private val schoolLevel = SchoolLevel.GED_1
 
     @Before

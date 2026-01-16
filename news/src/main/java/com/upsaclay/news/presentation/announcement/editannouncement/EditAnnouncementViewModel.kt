@@ -2,10 +2,8 @@ package com.upsaclay.news.presentation.announcement.editannouncement
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.upsaclay.common.domain.ConnectivityObserver
-import com.upsaclay.common.domain.entity.NoInternetConnectionException
 import com.upsaclay.common.presentation.SingleUiEvent
-import com.upsaclay.common.utils.mapNetworkErrorMessage
+import com.upsaclay.common.utils.mapException
 import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.domain.entity.Announcement.Companion.CONTENT_MAX_LENGTH
 import com.upsaclay.news.domain.entity.Announcement.Companion.TITLE_MAX_LENGTH
@@ -19,8 +17,7 @@ import kotlinx.coroutines.launch
 
 class EditAnnouncementViewModel(
     private val announcement: Announcement,
-    private val announcementRepository: AnnouncementRepository,
-    private val connectivityObserver: ConnectivityObserver
+    private val announcementRepository: AnnouncementRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(
         EditAnnouncementUiState(
@@ -64,16 +61,13 @@ class EditAnnouncementViewModel(
 
         viewModelScope.launch {
             try {
-                if (!connectivityObserver.isConnected) {
-                    throw NoInternetConnectionException()
-                }
                 _uiState.update {
                     it.copy(loading = true)
                 }
                 announcementRepository.updateAnnouncement(trimmedAnnouncement)
                 _event.emit(SingleUiEvent.Success())
             } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
+                _event.emit(SingleUiEvent.Error(mapException(e)))
             } finally {
                 _uiState.update {
                     it.copy(loading = false)

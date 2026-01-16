@@ -1,12 +1,12 @@
 package com.upsaclay.mission.data
 
 import com.upsaclay.common.data.GED_SERVER_QUALIFIER
-import com.upsaclay.common.data.e
+import com.upsaclay.common.data.utils.e
 import com.upsaclay.mission.data.local.MissionLocalDataSource
 import com.upsaclay.mission.data.remote.MissionRemoteDataSource
 import com.upsaclay.mission.data.remote.api.MissionApi
 import com.upsaclay.mission.data.remote.api.MissionApiImpl
-import com.upsaclay.mission.data.remote.api.ServerMissionApi
+import com.upsaclay.mission.data.remote.api.MissionServerApi
 import com.upsaclay.mission.data.repositories.MissionRepositoryImpl
 import com.upsaclay.mission.domain.repository.MissionRepository
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -34,7 +34,7 @@ val missionDataModule = module {
 
     single {
         get<Retrofit>(GED_SERVER_QUALIFIER)
-            .create(ServerMissionApi::class.java)
+            .create(MissionServerApi::class.java)
     }
     singleOf(::MissionApiImpl) { bind<MissionApi>() }
     singleOf(::MissionLocalDataSource)
