@@ -28,7 +28,7 @@ internal class UserRepositoryImpl(
     override val currentUser: User?
         get() = _user.value
 
-    override fun listenUser(userId: String): Flow<User?> = userRemoteDataSource.listenUser(userId)
+    override fun getUserFlow(userId: String): Flow<User?> = userRemoteDataSource.listenUser(userId)
 
     override suspend fun getUsers(): List<User> {
         return try {

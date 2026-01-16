@@ -1,6 +1,5 @@
 package com.upsaclay.mission.presentation.missiondetails
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,8 +40,10 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.fromHtml
 import androidx.compose.ui.unit.dp
+import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.extension.displayName
@@ -56,6 +57,7 @@ import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.components.TextItem
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.activatedButtonColors
+import com.upsaclay.common.presentation.theme.informationText
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
@@ -153,13 +155,6 @@ private fun MissionDetailsScreen(
     var activeBottomSheet by remember { mutableStateOf<MissionDetailsScreenBottomSheet?>(null) }
     var activeDialog by remember { mutableStateOf<MissionDetailsScreenDialog?>(null) }
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-    val buttonModifier = Modifier
-        .windowInsetsPadding(BottomAppBarDefaults.windowInsets)
-        .padding(
-            vertical = dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding),
-            horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)
-        )
-        .fillMaxWidth()
     val hapticFeedback = LocalHapticFeedback.current
 
     when(val dialog = activeDialog) {
@@ -207,28 +202,21 @@ private fun MissionDetailsScreen(
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         bottomBar = {
-            when (buttonState) {
-                is MissionButtonState.Register -> {
-                    RegisterButton(
-                        modifier = buttonModifier,
-                        enabled = buttonState.enabled,
-                        loading = loading,
-                        onClick = onRegisterMissionClick
-                    )
-                }
-
-                is MissionButtonState.Registered -> {
-                    RegisteredButton(
-                        modifier = buttonModifier,
-                        loading = loading,
-                        onClick = { activeDialog = MissionDetailsScreenDialog.UnregisterDialog }
-                    )
-                }
-
-                is MissionButtonState.Complete -> CompleteButton(modifier = buttonModifier)
-
-                else -> Unit
-            }
+           if (buttonState !is MissionButtonState.Hidden) {
+               BottomSection(
+                   modifier = Modifier
+                       .windowInsetsPadding(BottomAppBarDefaults.windowInsets)
+                       .padding(vertical = dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding), horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+                       .fillMaxWidth(),
+                   buttonState = buttonState,
+                   loading = loading,
+                   schoolLevels = mission.schoolLevels,
+                   onRegisterMissionClick = onRegisterMissionClick,
+                   onUnregisterMissionClick = {
+                       activeDialog = MissionDetailsScreenDialog.UnregisterDialog
+                   }
+               )
+           }
         },
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState) {
@@ -315,7 +303,7 @@ private fun MissionDetailsScreen(
                 title = mission.title,
                 showTitleTopBar = scrollBehavior.state.contentOffset.dp <= dimensionResource(R.dimen.image_top_bar_offset),
                 onBackClick = onBackClick,
-                onOptionClick = { activeBottomSheet = null }
+                onOptionClick = { activeBottomSheet = MissionDetailsScreenBottomSheet.MissionBottomSheet }
             )
         }
     }
@@ -395,7 +383,6 @@ private fun MissionDetailsScreen(
 @Composable
 private fun RegisterButton(
     modifier: Modifier = Modifier,
-    enabled: Boolean,
     loading: Boolean,
     onClick: () -> Unit
 ) {
@@ -403,34 +390,95 @@ private fun RegisterButton(
         modifier = modifier,
         text = stringResource(R.string.register_mission_button_text),
         loading = loading,
-        enabled = enabled,
         onClick = onClick
     )
 }
 
-@Composable
-private fun RegisteredButton(
-    modifier: Modifier = Modifier,
-    loading: Boolean,
-    onClick: () -> Unit
-) {
-    LoadingButton(
-        modifier = modifier,
-        text = stringResource(R.string.registered_mission_button_text),
-        loading = loading,
-        onClick = onClick,
-        colors = MaterialTheme.colorScheme.activatedButtonColors
-    )
-}
 
 @Composable
-private fun CompleteButton(modifier: Modifier = Modifier) {
-    PrimaryButton(
-        modifier = modifier,
-        text = stringResource(R.string.complete_mission_button_text),
-        enabled = false,
-        onClick = {}
-    )
+private fun BottomSection(
+    modifier: Modifier,
+    buttonState: MissionButtonState,
+    loading: Boolean,
+    schoolLevels: List<SchoolLevel>,
+    onRegisterMissionClick: () -> Unit,
+    onUnregisterMissionClick: () -> Unit
+) {
+    when (val state = buttonState) {
+        is MissionButtonState.Register -> {
+            LoadingButton(
+                modifier = modifier,
+                text = stringResource(R.string.register_mission_button_text),
+                loading = loading,
+                onClick = onRegisterMissionClick
+            )
+        }
+
+        is MissionButtonState.Registered -> {
+            LoadingButton(
+                modifier = modifier,
+                text = stringResource(R.string.registered_mission_button_text),
+                loading = loading,
+                onClick = onUnregisterMissionClick,
+                colors = MaterialTheme.colorScheme.activatedButtonColors
+            )
+        }
+
+        is MissionButtonState.Completed -> {
+            PrimaryButton(
+                modifier = modifier,
+                text = stringResource(R.string.completed_mission_button_text),
+                enabled = false,
+                onClick = {}
+            )
+        }
+
+        is MissionButtonState.RegistrationClosed -> {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = stringResource(state.reason),
+                    color = MaterialTheme.colorScheme.informationText,
+                    style = MaterialTheme.typography.bodySmall
+                )
+
+                PrimaryButton(
+                    modifier = modifier,
+                    text = stringResource(R.string.registration_closed_mission_button_text),
+                    enabled = false,
+                    onClick = {}
+                )
+            }
+        }
+
+        is MissionButtonState.Unavailable -> {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                val formattedSchoolLevel = schoolLevels.sorted().joinToString(
+                    prefix = "<b>",
+                    postfix = "</b>",
+                    transform = { it.value }
+                )
+
+                Text(
+                    text = AnnotatedString.fromHtml(stringResource(state.reason, formattedSchoolLevel)),
+                    color = MaterialTheme.colorScheme.informationText,
+                    style = MaterialTheme.typography.bodySmall
+                )
+
+                PrimaryButton(
+                    modifier = modifier,
+                    text = stringResource(R.string.unavailable_mission_button_text),
+                    enabled = false,
+                    onClick = {}
+                )
+            }
+        }
+
+        is MissionButtonState.Hidden -> Unit
+    }
 }
 
 private sealed class MissionDetailsScreenBottomSheet {
@@ -461,7 +509,7 @@ private fun MissionDetailsScreenPreview() {
                 mission = missionFixture,
                 loading = false,
                 isManager = true,
-                buttonState = MissionButtonState.Register(),
+                buttonState = MissionButtonState.Register,
                 snackbarHostState = SnackbarHostState(),
                 onRegisterMissionClick = {},
                 onUnregisterMissionClick = {},
@@ -474,41 +522,5 @@ private fun MissionDetailsScreenPreview() {
                 onDeleteMissionClick = {}
             )
         }
-    }
-}
-
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun RegisterButtonPreview() {
-    GedoiseTheme {
-        RegisterButton(
-            modifier = Modifier.fillMaxWidth(),
-            enabled = true,
-            loading = false,
-            onClick = {}
-        )
-    }
-}
-
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun RegisteredButtonPreview() {
-    GedoiseTheme {
-        RegisteredButton(
-            modifier = Modifier.fillMaxWidth(),
-            loading = false,
-            onClick = {}
-        )
-    }
-}
-
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun CompleteButtonPreview() {
-    GedoiseTheme {
-        CompleteButton(modifier = Modifier.fillMaxWidth())
     }
 }

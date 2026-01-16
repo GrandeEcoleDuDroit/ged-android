@@ -159,9 +159,7 @@ private fun MissionScreen(
                     verticalArrangement = Arrangement.mediumSpacing()
                 ) {
                     if (missions.isEmpty()) {
-                        item {
-                            EmptyText(text = stringResource(R.string.no_mission))
-                        }
+                        item { EmptyText(text = stringResource(R.string.no_mission)) }
                     } else {
                         items(missions) { mission ->
                             MissionCard(

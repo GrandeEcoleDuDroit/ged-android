@@ -22,7 +22,7 @@ object MissionPresentationUtils {
         @Composable
         get() = MaterialTheme.typography.bodyLarge
 
-    val detailsContentStyle: TextStyle
+    val contentStyle: TextStyle
         @Composable
         get() = MaterialTheme.typography.bodyMedium
 

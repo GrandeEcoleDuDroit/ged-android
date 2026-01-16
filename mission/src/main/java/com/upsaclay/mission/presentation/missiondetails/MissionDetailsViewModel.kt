@@ -1,5 +1,6 @@
 package com.upsaclay.mission.presentation.missiondetails
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upsaclay.common.domain.entity.User
@@ -39,22 +40,15 @@ class MissionDetailsViewModel(
 
     fun registerToMission() {
         val currentUser = uiState.value.currentUser ?: return
-       executeRequest {
-           missionRepository.addParticipant(missionId, currentUser)
-       }
+        executeRequest {
+            missionRepository.addParticipant(missionId, currentUser)
+        }
     }
 
     fun unregisterFromMission() {
         val user = uiState.value.currentUser ?: return
         executeRequest {
             missionRepository.removeParticipant(missionId, user.id)
-        }
-    }
-
-    fun reportMission(report: MissionReport) {
-        executeRequest {
-            missionRepository.reportMission(report)
-            _event.emit(SingleUiEvent.Success(R.string.mission_reported))
         }
     }
 
@@ -70,6 +64,13 @@ class MissionDetailsViewModel(
         val missionId = uiState.value.mission?.id ?: return
         executeRequest {
             missionRepository.removeParticipant(missionId, userId)
+        }
+    }
+
+    fun reportMission(report: MissionReport) {
+        executeRequest {
+            missionRepository.reportMission(report)
+            _event.emit(SingleUiEvent.Success(R.string.mission_reported))
         }
     }
 
@@ -109,22 +110,20 @@ class MissionDetailsViewModel(
         }.launchIn(viewModelScope)
     }
 
-    private fun updateButtonState(
-        user: User,
-        mission: Mission,
-        isManager: Boolean
-    ): MissionButtonState {
+    private fun updateButtonState(user: User, mission: Mission, isManager: Boolean): MissionButtonState {
         return when {
             isManager -> MissionButtonState.Hidden
 
-            mission.complete -> MissionButtonState.Complete
+            mission.completed -> MissionButtonState.Completed
 
             mission.participants.any { it.id == user.id } -> MissionButtonState.Registered
 
-            else -> {
-                val enabled = !mission.full && mission.schoolLevelPermitted(user.schoolLevel)
-                MissionButtonState.Register(enabled)
-            }
+            !mission.schoolLevels.contains(user.schoolLevel) ->
+                MissionButtonState.Unavailable(R.string.non_matching_school_level_information_text)
+
+            mission.full -> MissionButtonState.RegistrationClosed(R.string.full_mission_information_text)
+
+            else -> MissionButtonState.Register
         }
     }
 
@@ -141,9 +140,11 @@ class MissionDetailsViewModel(
     }
 
     sealed class MissionButtonState {
-        data class Register(val enabled: Boolean = true): MissionButtonState()
+        data object Register: MissionButtonState()
         data object Registered: MissionButtonState()
-        data object Complete: MissionButtonState()
+        data object Completed: MissionButtonState()
+        data class RegistrationClosed(@StringRes val reason: Int): MissionButtonState()
+        data class Unavailable(@StringRes val reason: Int): MissionButtonState()
         data object Hidden: MissionButtonState()
     }
 }

@@ -13,6 +13,7 @@ import com.upsaclay.mission.domain.repository.MissionRepository
 import com.upsaclay.mission.domain.usecase.DeleteMissionUseCase
 import com.upsaclay.mission.domain.usecase.RefreshMissionsUseCase
 import com.upsaclay.mission.domain.usecase.ResendMissionUseCase
+import com.upsaclay.mission.presentation.extension.missionSorting
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -112,7 +113,7 @@ class MissionViewModel(
         viewModelScope.launch {
             missionRepository.missions.collect { missions ->
                 _uiState.update {
-                    it.copy(missions = missions)
+                    it.copy(missions = missions.missionSorting())
                 }
             }
         }

@@ -29,9 +29,12 @@
     <string name="enter_task">Entrer tâche</string>
     <string name="new_image">Nouvelle image</string>
     <string name="full">Complet</string>
+    <string name="completed">Terminée</string>
     <string name="register_mission_button_text">S\'inscrire</string>
     <string name="registered_mission_button_text">Inscrit</string>
-    <string name="complete_mission_button_text">Terminée</string>
+    <string name="completed_mission_button_text">Terminée</string>
+    <string name="registration_closed_mission_button_text">Inscription fermée</string>
+    <string name="unavailable_mission_button_text">Non disponible</string>
 
     <string name="mission_school_level_field">Niveau scolaire</string>
     <string name="mission_end_date_field">Date de fin</string>
@@ -39,6 +42,8 @@
     <string name="mission_max_participants_field">Participants max</string>
     <string name="mission_duration_field">Durée (optionnel)</string>
     <string name="no_participant">Aucun participant</string>
+    <string name="non_matching_school_level_information_text">Reservé aux %s.</string>
+    <string name="full_mission_information_text">Nombre maximal de participant atteint.</string>
 
     <string name="mission_reported">Mission signalé</string>
     <string name="mission_deleted">Mission supprimé</string>
