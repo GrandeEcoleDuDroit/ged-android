@@ -323,7 +323,7 @@ private fun CreateMissionScreenPreview() {
             description = mission.description,
             startDate = mission.startDate,
             endDate = mission.endDate,
-            allSchoolLevels = SchoolLevel.entries,
+            allSchoolLevels = SchoolLevel.all,
             schoolLevels = mission.schoolLevels,
             duration = mission.duration.toString(),
             maxParticipants = mission.maxParticipants.toString(),

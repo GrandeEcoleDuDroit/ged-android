@@ -3,15 +3,13 @@ package com.upsaclay.mission.presentation.editmission
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.upsaclay.common.domain.ConnectivityObserver
-import com.upsaclay.common.domain.entity.NoInternetConnectionException
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.extensions.replace
 import com.upsaclay.common.domain.usecase.GenerateIdUseCase
 import com.upsaclay.common.domain.usecase.GetUsersUseCase
 import com.upsaclay.common.presentation.SingleUiEvent
-import com.upsaclay.common.utils.mapNetworkErrorMessage
+import com.upsaclay.common.utils.mapException
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.Mission.MissionState
@@ -31,7 +29,6 @@ import java.time.LocalDate
 
 class EditMissionViewModel(
     private val mission: Mission,
-    private val connectivityObserver: ConnectivityObserver,
     private val getUsersUseCase: GetUsersUseCase,
     private val updateMissionUseCase: UpdateMissionUseCase,
     private val generateIdUseCase: GenerateIdUseCase
@@ -92,9 +89,6 @@ class EditMissionViewModel(
 
         viewModelScope.launch {
             try {
-                if (!connectivityObserver.isConnected) {
-                    throw NoInternetConnectionException()
-                }
                 _uiState.update {
                     it.copy(loading = true)
                 }
@@ -104,7 +98,7 @@ class EditMissionViewModel(
                 )
                 _event.emit(SingleUiEvent.Success())
             } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
+                _event.emit(SingleUiEvent.Error(mapException(e)))
             } finally {
                 _uiState.update {
                     it.copy(loading = false)
@@ -408,7 +402,7 @@ class EditMissionViewModel(
         val updateEnabled: Boolean = false,
         val maxParticipantsError: Int? = null
     ) {
-        val allSchoolLevels: List<SchoolLevel> = SchoolLevel.getSchoolLevels()
+        val allSchoolLevels: List<SchoolLevel> = SchoolLevel.all
     }
 
     private data class MissionUpdateState(

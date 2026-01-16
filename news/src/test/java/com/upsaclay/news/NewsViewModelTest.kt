@@ -1,6 +1,5 @@
 package com.upsaclay.news
 
-import com.upsaclay.common.domain.ConnectivityObserver
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.news.domain.announcementsFixture
@@ -28,7 +27,6 @@ class NewsViewModelTest {
     private val resendAnnouncementUseCase: ResendAnnouncementUseCase = mockk()
     private val deleteAnnouncementUseCase: DeleteAnnouncementUseCase = mockk()
     private val refreshAnnouncementsUseCase: RefreshAnnouncementsUseCase = mockk()
-    private val connectivityObserver: ConnectivityObserver = mockk()
     private val userRepository: UserRepository = mockk()
     private val announcementRepository: AnnouncementRepository = mockk()
 
@@ -39,7 +37,6 @@ class NewsViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
 
-        every { connectivityObserver.isConnected } returns true
         every { announcementRepository.announcements } returns flowOf(announcementsFixture)
         every { userRepository.user } returns MutableStateFlow(userFixture)
         every { resendAnnouncementUseCase(any()) } returns Unit
@@ -51,8 +48,7 @@ class NewsViewModelTest {
             deleteAnnouncementUseCase = deleteAnnouncementUseCase,
             refreshAnnouncementsUseCase = refreshAnnouncementsUseCase,
             announcementRepository = announcementRepository,
-            userRepository = userRepository,
-            connectivityObserver = connectivityObserver
+            userRepository = userRepository
         )
     }
 

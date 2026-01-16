@@ -2,11 +2,9 @@ package com.upsaclay.authentication
 
 import com.upsaclay.authentication.domain.usecase.RegisterUseCase
 import com.upsaclay.authentication.presentation.registration.thirdregistration.ThirdRegistrationViewModel
-import com.upsaclay.common.domain.ConnectivityObserver
 import com.upsaclay.common.domain.entity.SchoolLevel
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -21,7 +19,6 @@ import kotlin.test.assertNotNull
 @OptIn(ExperimentalCoroutinesApi::class)
 class ThirdRegistrationViewModelTest {
     private val registerUseCase: RegisterUseCase = mockk()
-    private val connectivityObserver: ConnectivityObserver = mockk()
 
     private lateinit var viewModel: ThirdRegistrationViewModel
     
@@ -36,21 +33,11 @@ class ThirdRegistrationViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
 
-        every { connectivityObserver.isConnected } returns true
-        coEvery {
-            registerUseCase(
-                any(),
-                any(),
-                any(),
-                any(),
-                any())
-        } returns Unit
+        coEvery { registerUseCase(any(), any(), any(), any(), any()) } returns Unit
 
         viewModel = ThirdRegistrationViewModel(
-            registerUseCase = registerUseCase,
-            connectivityObserver = connectivityObserver
+            registerUseCase = registerUseCase
         )
-
     }
 
     @Test

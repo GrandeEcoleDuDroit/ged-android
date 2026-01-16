@@ -16,22 +16,20 @@ internal class ConversationRemoteDataSource(private val conversationApi: Convers
         conversationApi.listenConversations(userId)
 
     suspend fun createConversation(conversation: Conversation, userId: String) {
-        mapFirebaseException(
-            message = "Failed to create conversation",
-            block = {
-                val data = conversation.toRemote(userId).toMap()
-                conversationApi.createConversation(conversation.id, data)
-            }
-        )
+        try {
+            val data = conversation.toRemote(userId).toMap()
+            conversationApi.createConversation(conversation.id, data)
+        } catch (e: Exception) {
+            throw mapFirebaseException(e)
+        }
     }
 
     suspend fun updateConversationDeleteTime(conversationId: String, currentUserId: String, deleteTIme: LocalDateTime) {
-        mapFirebaseException(
-            message = "Failed to delete conversation",
-            block = {
-                val data = mapOf("$CONVERSATION_DELETE_TIME.$currentUserId" to deleteTIme.toTimestamp())
-                conversationApi.updateConversation(conversationId, data)
-            }
-        )
+        try {
+            val data = mapOf("$CONVERSATION_DELETE_TIME.$currentUserId" to deleteTIme.toTimestamp())
+            conversationApi.updateConversation(conversationId, data)
+        } catch (e: Exception) {
+            throw mapFirebaseException(e)
+        }
     }
 }

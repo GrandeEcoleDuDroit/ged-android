@@ -67,7 +67,7 @@ class CreateMissionViewModelTest {
         assertEquals(emptyList(), viewModel.uiState.value.missionTasks)
         assertEquals(usersFixture.missionManagerSorting(), viewModel.uiState.value.users)
         assertEquals("", viewModel.uiState.value.userQuery)
-        assertEquals(SchoolLevel.getSchoolLevels(), viewModel.uiState.value.allSchoolLevels)
+        assertEquals(SchoolLevel.all, viewModel.uiState.value.allSchoolLevels)
     }
 
     @Test

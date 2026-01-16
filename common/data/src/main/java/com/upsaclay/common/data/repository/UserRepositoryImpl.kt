@@ -1,5 +1,6 @@
 package com.upsaclay.common.data.repository
 
+import com.upsaclay.common.data.utils.e
 import com.upsaclay.common.data.local.UserLocalDataSource
 import com.upsaclay.common.data.remote.UserRemoteDataSource
 import com.upsaclay.common.domain.entity.User
@@ -29,15 +30,34 @@ internal class UserRepositoryImpl(
 
     override fun getUserFlow(userId: String): Flow<User?> = userRemoteDataSource.listenUser(userId)
 
-    override suspend fun getUsers(): List<User> = userRemoteDataSource.getUsers()
+    override suspend fun getUsers(): List<User> {
+        return try {
+            userRemoteDataSource.getUsers()
+        } catch (e: Exception) {
+            e("Error getting remote users", e)
+            throw e
+        }
+    }
 
-    override suspend fun getUser(userId: String): User? = userRemoteDataSource.getUser(userId)
+    override suspend fun getUser(userId: String): User? {
+        return try {
+            userRemoteDataSource.getUser(userId)
+        } catch (e: Exception) {
+            e("Error getting remote user $userId", e)
+            throw e
+        }
+    }
 
     override suspend fun getCurrentUser(): User? = userLocalDataSource.getUser()
 
     override suspend fun createUser(user: User) {
-        userRemoteDataSource.createUser(user)
-        userLocalDataSource.storeUser(user)
+        try {
+            userRemoteDataSource.createUser(user)
+            userLocalDataSource.storeUser(user)
+        } catch (e: Exception) {
+            e("Error creating user ${user.id}", e)
+            throw e
+        }
     }
 
     override suspend fun storeUser(user: User) {
@@ -45,8 +65,13 @@ internal class UserRepositoryImpl(
     }
 
     override suspend fun updateProfilePicture(user: User, imageFile: File, fileName: String) {
-        userRemoteDataSource.updateProfilePicture(user, imageFile, fileName)
-        userLocalDataSource.updateProfilePictureFileName(fileName)
+        try {
+            userRemoteDataSource.updateProfilePicture(user, imageFile, fileName)
+            userLocalDataSource.updateProfilePictureFileName(fileName)
+        } catch (e: Exception) {
+            e("Error updating profile picture for user ${user.id}", e)
+            throw e
+        }
     }
 
     override suspend fun deleteLocalUser() {
@@ -54,11 +79,21 @@ internal class UserRepositoryImpl(
     }
 
     override suspend fun deleteProfilePicture(user: User) {
-        userRemoteDataSource.deleteProfilePicture(user)
-        userLocalDataSource.updateProfilePictureFileName(null)
+        try {
+            userRemoteDataSource.deleteProfilePicture(user)
+            userLocalDataSource.updateProfilePictureFileName(null)
+        } catch (e: Exception) {
+            e("Error deleting profile picture for user ${user.id}", e)
+            throw e
+        }
     }
 
     override suspend fun reportUser(report: UserReport) {
-        userRemoteDataSource.reportUser(report)
+        try {
+            userRemoteDataSource.reportUser(report)
+        } catch (e: Exception) {
+            e("Error reporting user ${report.reportedUser.id}", e)
+            throw e
+        }
     }
 }

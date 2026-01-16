@@ -8,14 +8,12 @@ enum class SchoolLevel(val number: Int, val value: String) {
     UNKNOWN(0, "Unknown");
 
     companion object {
+        val all: List<SchoolLevel> = listOf(GED_1, GED_2, GED_3, GED_4)
+
         fun fromNumber(number: Int): SchoolLevel =
             SchoolLevel.entries.find { it.number == number } ?: UNKNOWN
 
         fun fromValue(value: String): SchoolLevel =
             SchoolLevel.entries.find { it.value == value } ?: UNKNOWN
-
-        fun getSchoolLevels() = SchoolLevel.entries.filter { it != UNKNOWN }
     }
-
-    override fun toString(): String = value
 }

@@ -1,7 +1,7 @@
 package com.upsaclay.message.data
 
 import com.upsaclay.common.data.GED_SERVER_QUALIFIER
-import com.upsaclay.common.data.e
+import com.upsaclay.common.data.utils.e
 import com.upsaclay.message.data.local.ConversationLocalDataSource
 import com.upsaclay.message.data.local.ConversationMessageLocalDataSource
 import com.upsaclay.message.data.local.MessageLocalDataSource

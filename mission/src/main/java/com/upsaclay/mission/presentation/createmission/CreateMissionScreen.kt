@@ -272,7 +272,7 @@ private fun CreateMissionScreenPreview() {
             description = "",
             startDate = mission.startDate,
             endDate = mission.endDate,
-            allSchoolLevels = SchoolLevel.entries,
+            allSchoolLevels = SchoolLevel.all,
             schoolLevels = emptyList(),
             duration = "",
             maxParticipants = "",

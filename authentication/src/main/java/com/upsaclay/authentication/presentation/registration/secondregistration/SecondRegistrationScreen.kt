@@ -115,7 +115,7 @@ private fun SecondRegistrationScreenPreview() {
     GedoiseTheme {
         SecondRegistrationScreen(
             schoolLevel = selectedItem,
-            schoolLevels = SchoolLevel.getSchoolLevels(),
+            schoolLevels = SchoolLevel.all,
             onItemClick = { selectedItem = it },
             onNextClick = {},
             onBackClick = {}

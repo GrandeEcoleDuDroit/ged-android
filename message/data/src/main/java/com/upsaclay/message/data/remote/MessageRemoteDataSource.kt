@@ -1,7 +1,7 @@
 package com.upsaclay.message.data.remote
 
 import com.upsaclay.common.data.exceptions.mapFirebaseException
-import com.upsaclay.common.data.exceptions.mapServerResponseException
+import com.upsaclay.common.data.exceptions.mapServerException
 import com.upsaclay.common.data.extensions.toTimestamp
 import com.upsaclay.message.data.mapper.toMessage
 import com.upsaclay.message.data.mapper.toRemote
@@ -31,28 +31,31 @@ internal class MessageRemoteDataSource(
 
     suspend fun createMessage(message: Message) {
         withContext(Dispatchers.IO) {
-            mapFirebaseException(
-                message = "Failed to create message",
-                block = { messageApi.createMessage(message.toRemote()) }
-            )
+            try {
+                messageApi.createMessage(message.toRemote())
+            } catch (e: Exception) {
+                throw mapFirebaseException(e)
+            }
         }
     }
 
     suspend fun updateSeenMessage(message: Message) {
         withContext(Dispatchers.IO) {
-            mapFirebaseException(
-                message = "Failed to update seen message",
-                block = { messageApi.updateSeenMessage(message.toRemote()) }
-            )
+            try {
+                messageApi.updateSeenMessage(message.toRemote())
+            } catch (e: Exception) {
+                throw mapFirebaseException(e)
+            }
         }
     }
 
     suspend fun reportMessage(report: MessageReport) {
         withContext(Dispatchers.IO) {
-            mapServerResponseException(
-                message = "Failed to report message",
-                block = { messageApi.reportMessage(report.toRemote()) }
-            )
+            try {
+                messageApi.reportMessage(report.toRemote())
+            } catch (e: Exception) {
+                throw mapServerException(e)
+            }
         }
     }
 }

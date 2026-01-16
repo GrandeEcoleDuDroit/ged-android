@@ -4,14 +4,10 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upsaclay.authentication.R
-import com.upsaclay.authentication.domain.entity.exception.InvalidCredentialsException
-import com.upsaclay.authentication.domain.entity.exception.UserDisabledException
 import com.upsaclay.authentication.domain.usecase.LoginUseCase
-import com.upsaclay.common.domain.ConnectivityObserver
-import com.upsaclay.common.domain.entity.NoInternetConnectionException
+import com.upsaclay.authentication.mapAuthException
 import com.upsaclay.common.domain.usecase.VerifyEmailFormatUseCase
 import com.upsaclay.common.presentation.SingleUiEvent
-import com.upsaclay.common.utils.mapNetworkErrorMessage
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -19,10 +15,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class AuthenticationViewModel(
-    private val loginUseCase: LoginUseCase,
-    private val connectivityObserver: ConnectivityObserver
-): ViewModel() {
+class AuthenticationViewModel(private val loginUseCase: LoginUseCase): ViewModel() {
     private val _uiState = MutableStateFlow(AuthenticationUiState())
     internal val uiState: StateFlow<AuthenticationUiState> = _uiState
 
@@ -47,18 +40,13 @@ class AuthenticationViewModel(
 
         viewModelScope.launch {
             try {
-                if (!connectivityObserver.isConnected) {
-                    throw NoInternetConnectionException()
-                }
                 _uiState.update {
                     it.copy(loading = true)
                 }
                 loginUseCase(email, password)
-            } catch (e: NoInternetConnectionException) {
-                _event.emit(SingleUiEvent.Error(mapErrorMessage(e)))
             } catch (e: Exception)  {
                 _uiState.update {
-                    it.copy(errorMessage = mapErrorMessage(e))
+                    it.copy(errorMessage = mapAuthException(e))
                 }
                 resetPassword()
             } finally {
@@ -111,16 +99,6 @@ class AuthenticationViewModel(
         return when {
             password.isBlank() -> R.string.mandatory_field
             else -> null
-        }
-    }
-
-    private fun mapErrorMessage(e: Throwable): Int {
-        return mapNetworkErrorMessage(e) {
-            when (e) {
-                is InvalidCredentialsException -> R.string.invalid_credentials_error
-                is UserDisabledException -> R.string.user_disabled_error
-                else -> com.upsaclay.common.R.string.unknown_error
-            }
         }
     }
 

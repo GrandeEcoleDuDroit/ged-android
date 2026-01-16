@@ -278,6 +278,6 @@ class CreateMissionViewModel(
         val user: User? = null,
         val createEnabled: Boolean = false
     ) {
-        val allSchoolLevels: List<SchoolLevel> = SchoolLevel.getSchoolLevels()
+        val allSchoolLevels: List<SchoolLevel> = SchoolLevel.all
     }
 }

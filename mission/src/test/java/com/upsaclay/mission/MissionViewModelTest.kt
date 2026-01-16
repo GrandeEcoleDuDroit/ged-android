@@ -1,6 +1,5 @@
 package com.upsaclay.mission
 
-import com.upsaclay.common.domain.ConnectivityObserver
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.mission.domain.missionFixture
@@ -31,7 +30,6 @@ class MissionViewModelTest {
     private val resendMissionUseCase: ResendMissionUseCase = mockk()
     private val deleteMissionUseCase: DeleteMissionUseCase = mockk()
     private val refreshMissionsUseCase: RefreshMissionsUseCase = mockk()
-    private val connectivityObserver: ConnectivityObserver = mockk()
 
     private lateinit var viewModel: MissionViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
@@ -40,7 +38,6 @@ class MissionViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
 
-        every { connectivityObserver.isConnected } returns true
         every { missionRepository.missions } returns flowOf(missionsFixture)
         every { userRepository.user } returns MutableStateFlow(userFixture)
         every { resendMissionUseCase(any()) } returns Unit
@@ -52,8 +49,7 @@ class MissionViewModelTest {
             userRepository = userRepository,
             resendMissionUseCase = resendMissionUseCase,
             deleteMissionUseCase = deleteMissionUseCase,
-            refreshMissionsUseCase = refreshMissionsUseCase,
-            connectivityObserver = connectivityObserver
+            refreshMissionsUseCase = refreshMissionsUseCase
         )
     }
 

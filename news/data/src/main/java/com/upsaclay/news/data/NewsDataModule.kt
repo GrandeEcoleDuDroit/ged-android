@@ -1,7 +1,7 @@
 package com.upsaclay.news.data
 
 import com.upsaclay.common.data.GED_SERVER_QUALIFIER
-import com.upsaclay.common.data.e
+import com.upsaclay.common.data.utils.e
 import com.upsaclay.news.data.local.AnnouncementLocalDataSource
 import com.upsaclay.news.data.remote.AnnouncementRemoteDataSource
 import com.upsaclay.news.data.remote.api.AnnouncementApi

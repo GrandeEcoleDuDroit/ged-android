@@ -199,7 +199,7 @@ private fun MissionFormInformationSectionPreview() {
             MissionFormInformationSection(
                 startDate = LocalDate.now(),
                 endDate = LocalDate.now().plusDays(7),
-                allSchoolLevels = SchoolLevel.getSchoolLevels(),
+                allSchoolLevels = SchoolLevel.all,
                 schoolLevels = schoolLevels,
                 duration = duration,
                 maxParticipants = participantsNumber,
@@ -227,7 +227,7 @@ private fun SchoolLevelDropDownPreview() {
         Surface {
             OutlinedSchoolLevelDropDownMenu(
                 modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.small_padding)),
-                allSchoolLevels = SchoolLevel.entries,
+                allSchoolLevels = SchoolLevel.all,
                 schoolLevels = emptyList() ,
                 onSchoolLevelChange = {
                     selectedSchoolLevels = if (selectedSchoolLevels.contains(it)) {

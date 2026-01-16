@@ -3,13 +3,11 @@ package com.upsaclay.mission.presentation.missiondetails
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.upsaclay.common.domain.ConnectivityObserver
-import com.upsaclay.common.domain.entity.NoInternetConnectionException
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.extensions.launchDelayed
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.presentation.SingleUiEvent
-import com.upsaclay.common.utils.mapNetworkErrorMessage
+import com.upsaclay.common.utils.mapException
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.MissionReport
@@ -29,7 +27,6 @@ class MissionDetailsViewModel(
     private val missionId: String,
     private val missionRepository: MissionRepository,
     private val userRepository: UserRepository,
-    private val connectivityObserver: ConnectivityObserver,
     private val deleteMissionUseCase: DeleteMissionUseCase
 ): ViewModel() {
     private val _uiState = MutableStateFlow(MissionDetailsUiState())
@@ -82,17 +79,13 @@ class MissionDetailsViewModel(
 
         viewModelScope.launch {
             try {
-                if (!connectivityObserver.isConnected) {
-                    throw NoInternetConnectionException()
-                }
-
                 loadingJob = launchDelayed(300) {
                     _uiState.update { it.copy(loading = true) }
                 }
 
                 block()
             } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
+                _event.emit(SingleUiEvent.Error(mapException(e)))
             } finally {
                 loadingJob?.cancel()
                 _uiState.update { it.copy(loading = false) }

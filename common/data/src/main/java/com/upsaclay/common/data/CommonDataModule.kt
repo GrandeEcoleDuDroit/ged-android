@@ -9,21 +9,20 @@ import com.upsaclay.common.data.remote.BlockedUserRemoteDataSource
 import com.upsaclay.common.data.remote.ImageRemoteDataSource
 import com.upsaclay.common.data.remote.UserRemoteDataSource
 import com.upsaclay.common.data.remote.api.BlockedUserApi
-import com.upsaclay.common.data.remote.api.BlockedUserApiImpl
-import com.upsaclay.common.data.remote.api.BlockedUserServerApi
 import com.upsaclay.common.data.remote.api.FcmApi
 import com.upsaclay.common.data.remote.api.ImageApi
 import com.upsaclay.common.data.remote.api.ImageApiImpl
+import com.upsaclay.common.data.remote.api.WhiteListApi
 import com.upsaclay.common.data.remote.api.user.UserApi
 import com.upsaclay.common.data.remote.api.user.UserApiImpl
 import com.upsaclay.common.data.remote.api.user.UserFirestoreApi
 import com.upsaclay.common.data.remote.api.user.UserServerApi
-import com.upsaclay.common.data.remote.api.WhiteListApi
 import com.upsaclay.common.data.repository.BlockedUserRepositoryImpl
 import com.upsaclay.common.data.repository.FileRepositoryImpl
 import com.upsaclay.common.data.repository.ImageRepositoryImpl
 import com.upsaclay.common.data.repository.UserRepositoryImpl
 import com.upsaclay.common.data.repository.WhiteListRepositoryImpl
+import com.upsaclay.common.data.utils.e
 import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.repository.FileRepository
 import com.upsaclay.common.domain.repository.ImageRepository
@@ -90,7 +89,7 @@ val commonDataModule = module {
 
     single {
         get<Retrofit>(GED_SERVER_QUALIFIER)
-            .create(BlockedUserServerApi::class.java)
+            .create(BlockedUserApi::class.java)
     }
 
     singleOf(::ImageApiImpl) { bind<ImageApi>() }
@@ -113,7 +112,6 @@ val commonDataModule = module {
         )
     }
 
-    singleOf(::BlockedUserApiImpl) { bind<BlockedUserApi>() }
     singleOf(::BlockedUserRemoteDataSource)
     singleOf(::BlockedUserDataStore)
     singleOf(::BlockedUserLocalDataSource)

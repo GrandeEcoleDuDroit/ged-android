@@ -1,11 +1,9 @@
 package com.upsaclay.message.data.remote.api
 
 import com.google.firebase.Timestamp
-import com.upsaclay.common.data.remote.model.ServerResponse
 import com.upsaclay.message.data.remote.model.RemoteMessage
 import com.upsaclay.message.data.remote.model.RemoteMessageReport
 import kotlinx.coroutines.flow.Flow
-import retrofit2.Response
 
 internal interface MessageApi {
     fun listenMessages(conversationId: String, interlocutorId: String, offsetTime: Timestamp?): Flow<RemoteMessage>
@@ -14,5 +12,5 @@ internal interface MessageApi {
 
     suspend fun updateSeenMessage(remoteMessage: RemoteMessage)
 
-    suspend fun reportMessage(report: RemoteMessageReport): Response<ServerResponse>
+    suspend fun reportMessage(report: RemoteMessageReport)
 }

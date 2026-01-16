@@ -1,7 +1,5 @@
 package com.upsaclay.mission
 
-import com.upsaclay.common.domain.ConnectivityObserver
-import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.domain.userFixture2
@@ -28,7 +26,6 @@ import kotlin.test.assertEquals
 class MissionDetailsViewModelTest {
     private val missionRepository: MissionRepository = mockk()
     private val userRepository: UserRepository = mockk()
-    private val connectivityObserver: ConnectivityObserver = mockk()
     private val deleteMissionUseCase: DeleteMissionUseCase = mockk()
 
     private lateinit var viewModel: MissionDetailsViewModel
@@ -38,7 +35,6 @@ class MissionDetailsViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
 
-        every { connectivityObserver.isConnected } returns true
         every { missionRepository.getMissionFlow(any()) } returns flowOf(missionFixture)
         every { userRepository.user } returns flowOf(userFixture2)
         coEvery { missionRepository.removeParticipant(any(), any()) } returns Unit
@@ -50,7 +46,6 @@ class MissionDetailsViewModelTest {
             missionId = missionFixture.id,
             missionRepository = missionRepository,
             userRepository = userRepository,
-            connectivityObserver = connectivityObserver,
             deleteMissionUseCase = deleteMissionUseCase
         )
     }
@@ -122,8 +117,7 @@ class MissionDetailsViewModelTest {
             missionId = missionFixture.id,
             missionRepository = missionRepository,
             userRepository = userRepository,
-            deleteMissionUseCase = deleteMissionUseCase,
-            connectivityObserver = connectivityObserver
+            deleteMissionUseCase = deleteMissionUseCase
         )
 
         // Then
@@ -145,8 +139,7 @@ class MissionDetailsViewModelTest {
             missionId = missionFixture.id,
             missionRepository = missionRepository,
             userRepository = userRepository,
-            deleteMissionUseCase = deleteMissionUseCase,
-            connectivityObserver = connectivityObserver
+            deleteMissionUseCase = deleteMissionUseCase
         )
 
         // Then
@@ -191,8 +184,7 @@ class MissionDetailsViewModelTest {
             missionId = missionFixture.id,
             missionRepository = missionRepository,
             userRepository = userRepository,
-            deleteMissionUseCase = deleteMissionUseCase,
-            connectivityObserver = connectivityObserver
+            deleteMissionUseCase = deleteMissionUseCase
         )
 
         // Then
@@ -210,8 +202,7 @@ class MissionDetailsViewModelTest {
             missionId = missionFixture.id,
             missionRepository = missionRepository,
             userRepository = userRepository,
-            deleteMissionUseCase = deleteMissionUseCase,
-            connectivityObserver = connectivityObserver
+            deleteMissionUseCase = deleteMissionUseCase
         )
 
         // Then
@@ -228,8 +219,7 @@ class MissionDetailsViewModelTest {
             missionId = missionFixture.id,
             missionRepository = missionRepository,
             userRepository = userRepository,
-            deleteMissionUseCase = deleteMissionUseCase,
-            connectivityObserver = connectivityObserver
+            deleteMissionUseCase = deleteMissionUseCase
         )
 
         // Then
