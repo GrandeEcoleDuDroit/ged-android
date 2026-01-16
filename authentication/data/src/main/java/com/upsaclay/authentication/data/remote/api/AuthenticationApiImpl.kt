@@ -3,24 +3,16 @@ package com.upsaclay.authentication.data.remote.api
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.upsaclay.authentication.data.model.AuthTokenState
 import com.upsaclay.common.domain.entity.CustomException
-import com.upsaclay.common.domain.entity.CustomException.ExceptionType.CURRENT_USER_NOT_FOUND_EXCEPTION
+import com.upsaclay.common.domain.entity.CustomException.CustomError.CURRENT_USER_NOT_FOUND
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
+import kotlinx.coroutines.tasks.await
 
 class AuthenticationApiImpl: AuthenticationApi {
     private val firebaseAuth = Firebase.auth
-    private var cachedIdToken: String? = null
-
-    init {
-        refreshAndCacheToken()
-    }
-
-    override fun isAuthenticated(): Boolean = firebaseAuth.currentUser != null
 
     override fun listenAuthenticationState(): Flow<Boolean> = callbackFlow {
         val listener = FirebaseAuth.AuthStateListener { auth ->
@@ -33,33 +25,47 @@ class AuthenticationApiImpl: AuthenticationApi {
             firebaseAuth.removeAuthStateListener(listener)
         }
     }
-    override fun getIdToken(): String? = cachedIdToken
 
-    override suspend fun signIn(email: String, password: String): String? = suspendCancellableCoroutine { continuation ->
-        firebaseAuth.signInWithEmailAndPassword(email, password)
-            .addOnSuccessListener { if (continuation.isActive) continuation.resume(it.user?.uid) }
-            .addOnFailureListener { if (continuation.isActive) continuation.resumeWithException(it) }
+    override fun listenAuthTokenState(): Flow<AuthTokenState> = callbackFlow {
+        val listener = FirebaseAuth.IdTokenListener { auth ->
+            val user = auth.currentUser
+
+            if (user == null) {
+                trySend(AuthTokenState.Unauthenticated)
+                return@IdTokenListener
+            }
+
+            user.getIdToken(true)
+                .addOnSuccessListener { result ->
+                    result.token?.let {
+                        trySend(AuthTokenState.Valid(it))
+                    } ?: run {
+                        trySend(AuthTokenState.Error(null))
+                    }
+                }
+                .addOnFailureListener {
+                    trySend(AuthTokenState.Error(it))
+                }
+        }
+
+        firebaseAuth.addIdTokenListener(listener)
+
+        awaitClose {
+            firebaseAuth.removeIdTokenListener(listener)
+        }
     }
 
-    override suspend fun signUp(email: String, password: String): String = suspendCancellableCoroutine { continuation ->
-        firebaseAuth.createUserWithEmailAndPassword(email, password)
-            .addOnSuccessListener { continuation.resume(it.user!!.uid) }
-            .addOnFailureListener { continuation.resumeWithException(it) }
-    }
+    override suspend fun signIn(email: String, password: String): String? =
+        firebaseAuth.signInWithEmailAndPassword(email, password).await().user?.uid
+
+    override suspend fun signUp(email: String, password: String): String? =
+        firebaseAuth.createUserWithEmailAndPassword(email, password).await().user?.uid
 
     override fun signOut() {
         firebaseAuth.signOut()
     }
 
     override suspend fun deleteAuthUser() {
-        firebaseAuth.currentUser?.delete() ?: throw CustomException(CURRENT_USER_NOT_FOUND_EXCEPTION, Exception())
-    }
-
-    private fun refreshAndCacheToken() {
-        firebaseAuth.addIdTokenListener(FirebaseAuth.IdTokenListener { auth ->
-            auth.currentUser?.getIdToken(false)?.addOnSuccessListener { result ->
-                cachedIdToken = result.token
-            }
-        })
+        firebaseAuth.currentUser?.delete() ?: throw CustomException(CURRENT_USER_NOT_FOUND, Exception())
     }
 }

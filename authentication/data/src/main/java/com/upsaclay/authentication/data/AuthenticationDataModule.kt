@@ -31,7 +31,13 @@ val authenticationDataModule = module {
     }
 
     singleOf(::AuthenticationApiImpl) { bind<AuthenticationApi>() }
-    singleOf(::AuthenticationRepositoryImpl) { bind<AuthenticationRepository>() }
+    single<AuthenticationRepository> {
+        AuthenticationRepositoryImpl(
+            authenticationLocalDataSource = get(),
+            authenticationRemoteDataSource = get(),
+            scope = get(BACKGROUND_SCOPE)
+        )
+    }
     singleOf(::AuthenticationRemoteDataSource)
     singleOf(::AuthenticationLocalDataSource)
     singleOf(::TokenProviderImpl) { bind<TokenProvider>() }

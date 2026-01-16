@@ -1,7 +1,8 @@
 package com.upsaclay.authentication.domain.usecase
 
-import com.upsaclay.authentication.domain.entity.exception.AuthenticationException
-import com.upsaclay.authentication.domain.entity.exception.AuthenticationException.AuthExceptionType.USER_NOT_WHITE_LISTED_EXCEPTION
+import com.upsaclay.authentication.domain.entity.AuthenticationException
+import com.upsaclay.authentication.domain.entity.AuthenticationException.AuthenticationError.USER_NOT_WHITE_LISTED
+import com.upsaclay.authentication.domain.entity.AuthenticationException.AuthenticationError.REGISTRATION_FAILED
 import com.upsaclay.authentication.domain.repository.AuthenticationRepository
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.entity.User
@@ -21,19 +22,18 @@ class RegisterUseCase(
         schoolLevel: SchoolLevel
     ) {
         if (!whiteListRepository.isUserWhiteListed(email)) {
-            throw AuthenticationException(USER_NOT_WHITE_LISTED_EXCEPTION, Exception())
+            throw AuthenticationException(USER_NOT_WHITE_LISTED)
         }
 
         val userId = authenticationRepository.registerWithEmailAndPassword(email, password)
+            ?: throw AuthenticationException(REGISTRATION_FAILED)
+
         val user = User(
             id = userId,
             firstName = firstName,
             lastName = lastName,
             email = email,
-            schoolLevel = schoolLevel,
-            admin = false,
-            profilePictureUrl = null,
-            tester = false
+            schoolLevel = schoolLevel
         )
         userRepository.createUser(user)
         authenticationRepository.setAuthenticated(true)

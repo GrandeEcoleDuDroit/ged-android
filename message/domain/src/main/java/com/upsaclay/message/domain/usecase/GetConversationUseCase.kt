@@ -1,7 +1,7 @@
 package com.upsaclay.message.domain.usecase
 
 import com.upsaclay.common.domain.entity.CustomException
-import com.upsaclay.common.domain.entity.CustomException.ExceptionType.CURRENT_USER_NOT_FOUND_EXCEPTION
+import com.upsaclay.common.domain.entity.CustomException.CustomError.CURRENT_USER_NOT_FOUND
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.message.domain.entity.Conversation
@@ -15,7 +15,7 @@ class GetConversationUseCase(
 ) {
     suspend operator fun invoke(interlocutor: User): Conversation {
         return conversationRepository.getConversation(interlocutor.id) ?: run {
-            val user = userRepository.currentUser ?: throw CustomException(CURRENT_USER_NOT_FOUND_EXCEPTION, Exception())
+            val user = userRepository.currentUser ?: throw CustomException(CURRENT_USER_NOT_FOUND)
             generateNewConversation(user.id, interlocutor)
         }
     }

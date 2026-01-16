@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.presentation.SingleUiEvent
-import com.upsaclay.common.utils.mapException
+import com.upsaclay.common.utils.mapExceptionErrorMessage
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.domain.entity.AnnouncementReport
@@ -67,7 +67,7 @@ class AllAnnouncementsViewModel(
                 deleteAnnouncementUseCase(announcement)
                 _event.emit(SingleUiEvent.Success(R.string.announcement_deleted))
             } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapException(e)))
+                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
             } finally {
                 _uiState.update {
                     it.copy(loading = false)
@@ -83,7 +83,7 @@ class AllAnnouncementsViewModel(
                 announcementRepository.reportAnnouncement(report)
                 _event.emit(SingleUiEvent.Success(R.string.announcement_reported))
             } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapException(e)))
+                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
             } finally {
                 _uiState.update { it.copy(loading = false) }
             }

@@ -39,6 +39,7 @@ dependencies {
     implementation(libs.koin.android)
     implementation(libs.koin.core)
     implementation(libs.firebase.auth)
+    implementation(libs.jakewharton.timber)
 
     testImplementation(libs.junit)
 
