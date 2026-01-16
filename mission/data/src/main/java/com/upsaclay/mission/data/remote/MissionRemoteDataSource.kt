@@ -1,5 +1,6 @@
 package com.upsaclay.mission.data.remote
 
+import com.upsaclay.common.data.exceptions.mapServerException
 import com.upsaclay.common.data.toOracleUser
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.mission.data.mapper.toMission
@@ -13,42 +14,70 @@ import java.io.File
 
 class MissionRemoteDataSource(private val missionApi: MissionApi) {
     suspend fun getMissions(): List<Mission> = withContext(Dispatchers.IO) {
-        missionApi.getMissions()?.map { it.toMission() } ?: emptyList()
+        try {
+            missionApi.getMissions()?.map { it.toMission() } ?: emptyList()
+        } catch (e: Exception) {
+            throw mapServerException(e)
+        }
     }
 
     suspend fun createMission(mission: Mission, imageFile: File?) {
         withContext(Dispatchers.IO) {
-            missionApi.createMission(mission.toRemote(), imageFile)
+            try {
+                missionApi.createMission(mission.toRemote(), imageFile)
+            } catch (e: Exception) {
+                throw mapServerException(e)
+            }
         }
     }
 
     suspend fun updateMission(mission: Mission, imageFile: File?) {
         withContext(Dispatchers.IO) {
-            missionApi.updateMission(mission.toRemote(), imageFile)
+            try {
+                missionApi.updateMission(mission.toRemote(), imageFile)
+            } catch (e: Exception) {
+                throw mapServerException(e)
+            }
         }
     }
 
     suspend fun deleteMission(mission: Mission) {
         withContext(Dispatchers.IO) {
-            missionApi.deleteMission(mission.toRemote())
+            try {
+                missionApi.deleteMission(mission.toRemote())
+            } catch (e: Exception) {
+                throw mapServerException(e)
+            }
         }
     }
 
     suspend fun reportMission(report: MissionReport) {
         withContext(Dispatchers.IO) {
-            missionApi.reportMission(report.toRemote())
+            try {
+                missionApi.reportMission(report.toRemote())
+            } catch (e: Exception) {
+                throw mapServerException(e)
+            }
         }
     }
 
     suspend fun addParticipant(missionId: String, user: User) {
         withContext(Dispatchers.IO) {
-            missionApi.addParticipant(missionId, user.toOracleUser())
+            try {
+                missionApi.addParticipant(missionId, user.toOracleUser())
+            } catch (e: Exception) {
+                throw mapServerException(e)
+            }
         }
     }
 
     suspend fun removeParticipant(missionId: String, userId: String) {
         withContext(Dispatchers.IO) {
-            missionApi.removeParticipant(missionId, userId)
+            try {
+                missionApi.removeParticipant(missionId, userId)
+            } catch (e: Exception) {
+                throw mapServerException(e)
+            }
         }
     }
 }

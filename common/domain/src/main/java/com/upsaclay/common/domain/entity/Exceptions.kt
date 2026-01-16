@@ -5,32 +5,12 @@ class InternalServerException(
     override val cause: Throwable? = null
 ) : Exception()
 
-class TooManyRequestException(
-    override val message: String? = null,
-    override val cause: Throwable? = null
-): Exception()
-
 class DuplicateDataException(
     override val message: String? = null,
     override val cause: Throwable? = null,
 ) : Exception()
 
-class ForbiddenException(
-    override val message: String? = null,
-    override val cause: Throwable? = null
-): Exception()
-
-class NoInternetConnectionException(
-    override val message: String? = null,
-    override val cause: Throwable? = null
-): Exception()
-
 class ConnectionClosedException(
-    override val message: String? = null,
-    override val cause: Throwable? = null
-): Exception()
-
-class CurrentUserNotFoundException(
     override val message: String? = null,
     override val cause: Throwable? = null
 ): Exception()

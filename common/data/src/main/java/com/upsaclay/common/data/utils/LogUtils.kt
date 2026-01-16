@@ -1,13 +1,14 @@
-package com.upsaclay.common.data
+package com.upsaclay.common.data.utils
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.upsaclay.common.data.BuildConfig
 import timber.log.Timber
 
 fun Any.d(message: String) {
     Timber.tag(javaClass.simpleName).d(message)
 }
 
-fun Any.e(message: String, throwable: Throwable? = null) {
+fun Any.e(message: String?, throwable: Throwable? = null) {
     if (BuildConfig.DEBUG) {
         Timber.tag(javaClass.simpleName).e(throwable, message)
     } else {

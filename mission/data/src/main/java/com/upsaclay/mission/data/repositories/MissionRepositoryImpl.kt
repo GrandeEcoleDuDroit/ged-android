@@ -1,5 +1,6 @@
 package com.upsaclay.mission.data.repositories
 
+import com.upsaclay.common.data.utils.e
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.mission.data.local.MissionLocalDataSource
 import com.upsaclay.mission.data.remote.MissionRemoteDataSource
@@ -31,16 +32,33 @@ class MissionRepositoryImpl(
     override fun getMissionFlow(missionId: String): Flow<Mission> =
         missionLocalDataSource.getMissionFlow(missionId)
 
-    override suspend fun getRemoteMissions(): List<Mission> = missionRemoteDataSource.getMissions()
+    override suspend fun getRemoteMissions(): List<Mission> {
+        return try {
+            missionRemoteDataSource.getMissions()
+        } catch (e: Exception) {
+            e("Error getting remote missions", e)
+            throw e
+        }
+    }
 
     override suspend fun createMission(mission: Mission, imageFile: File?) {
-        missionLocalDataSource.upsertMission(mission)
-        missionRemoteDataSource.createMission(mission, imageFile)
+        try {
+            missionLocalDataSource.upsertMission(mission)
+            missionRemoteDataSource.createMission(mission, imageFile)
+        } catch (e: Exception) {
+            e("Error creating mission ${mission.id}", e)
+            throw e
+        }
     }
 
     override suspend fun updateMission(mission: Mission, imageFile: File?) {
-        missionRemoteDataSource.updateMission(mission, imageFile)
-        missionLocalDataSource.upsertMission(mission)
+        try {
+            missionRemoteDataSource.updateMission(mission, imageFile)
+            missionLocalDataSource.upsertMission(mission)
+        } catch (e: Exception) {
+            e("Error updating mission ${mission.id}", e)
+            throw e
+        }
     }
 
     override suspend fun upsertLocalMission(mission: Mission) {
@@ -48,8 +66,13 @@ class MissionRepositoryImpl(
     }
 
     override suspend fun deleteMission(mission: Mission, imageUrl: String?) {
-        missionRemoteDataSource.deleteMission(mission)
-        missionLocalDataSource.deleteMission(mission)
+        try {
+            missionRemoteDataSource.deleteMission(mission)
+            missionLocalDataSource.deleteMission(mission)
+        } catch (e: Exception) {
+            e("Error deleting mission ${mission.id}", e)
+            throw e
+        }
     }
 
     override suspend fun deleteLocalMission(mission: Mission) {
@@ -57,16 +80,31 @@ class MissionRepositoryImpl(
     }
 
     override suspend fun reportMission(report: MissionReport) {
-        missionRemoteDataSource.reportMission(report)
+        try {
+            missionRemoteDataSource.reportMission(report)
+        } catch (e: Exception) {
+            e("Error reporting mission ${report.missionId}", e)
+            throw e
+        }
     }
 
     override suspend fun addParticipant(missionId: String, user: User) {
-        missionRemoteDataSource.addParticipant(missionId, user)
-        missionLocalDataSource.addParticipant(missionId, user)
+        try {
+            missionRemoteDataSource.addParticipant(missionId, user)
+            missionLocalDataSource.addParticipant(missionId, user)
+        } catch (e: Exception) {
+            e("Error adding participant to mission $missionId", e)
+            throw e
+        }
     }
 
     override suspend fun removeParticipant(missionId: String, userId: String) {
-        missionRemoteDataSource.removeParticipant(missionId, userId)
-        missionLocalDataSource.removeParticipant(missionId, userId)
+        try {
+            missionRemoteDataSource.removeParticipant(missionId, userId)
+            missionLocalDataSource.removeParticipant(missionId, userId)
+        } catch (e: Exception) {
+            e("Error removing participant from mission $missionId", e)
+            throw e
+        }
     }
 }

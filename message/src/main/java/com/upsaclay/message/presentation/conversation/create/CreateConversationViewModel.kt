@@ -2,13 +2,12 @@ package com.upsaclay.message.presentation.conversation.create
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.upsaclay.common.domain.entity.CurrentUserNotFoundException
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.GetUsersUseCase
 import com.upsaclay.common.presentation.SingleUiEvent
-import com.upsaclay.common.utils.mapNetworkErrorMessage
+import com.upsaclay.common.utils.mapException
 import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.usecase.GetConversationUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -56,7 +55,7 @@ class CreateConversationViewModel(
                         }
                     }
             } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapErrorMessage(e)))
+                _event.emit(SingleUiEvent.Error(mapException(e)))
             } finally {
                 _uiState.update { it.copy(loading = false) }
             }
@@ -67,7 +66,7 @@ class CreateConversationViewModel(
         return try {
             getConversationUseCase(interlocutor)
         } catch (e: Exception) {
-            _event.emit(SingleUiEvent.Error(mapErrorMessage(e)))
+            _event.emit(SingleUiEvent.Error(mapException(e)))
             null
         }
     }
@@ -99,15 +98,6 @@ class CreateConversationViewModel(
         }
         _uiState.update {
             it.copy(users = users)
-        }
-    }
-
-    private fun mapErrorMessage(e: Throwable): Int {
-        return mapNetworkErrorMessage(e) {
-            when (e) {
-                is CurrentUserNotFoundException -> com.upsaclay.common.R.string.current_user_not_found_error
-                else -> com.upsaclay.common.R.string.unknown_error
-            }
         }
     }
 

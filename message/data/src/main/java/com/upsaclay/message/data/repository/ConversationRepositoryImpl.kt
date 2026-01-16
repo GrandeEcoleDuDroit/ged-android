@@ -1,6 +1,6 @@
 package com.upsaclay.message.data.repository
 
-import com.upsaclay.common.data.e
+import com.upsaclay.common.data.utils.e
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.message.data.local.ConversationLocalDataSource
@@ -62,7 +62,7 @@ internal class ConversationRepositoryImpl(
                 }
             }
             .catch {
-                e("Failed to fetch remote conversation: ${it.message}", it)
+                e("Error fetching remote conversation for user $userId", it)
             }
     }
 
@@ -71,16 +71,22 @@ internal class ConversationRepositoryImpl(
     }
 
     override suspend fun createRemoteConversation(conversation: Conversation, userId: String) {
-        conversationRemoteDataSource.createConversation(conversation, userId)
+        try {
+            conversationRemoteDataSource.createConversation(conversation, userId)
+        } catch (e: Exception) {
+            e("Error creating remote conversation ${conversation.id}", e)
+            throw e
+        }
     }
 
     override suspend fun updateConversationDeleteTime(conversation: Conversation, currentUserId: String, deleteTime: LocalDateTime) {
-        conversationRemoteDataSource.updateConversationDeleteTime(
-            conversation.id,
-            currentUserId,
-            deleteTime
-        )
-        conversationLocalDataSource.updateConversation(conversation)
+        try {
+            conversationRemoteDataSource.updateConversationDeleteTime(conversation.id, currentUserId, deleteTime)
+            conversationLocalDataSource.updateConversation(conversation)
+        } catch (e: Exception) {
+            e("Error updating remote conversation ${conversation.id}", e)
+            throw e
+        }
     }
 
     override suspend fun updateLocalConversation(conversation: Conversation) {
@@ -92,8 +98,13 @@ internal class ConversationRepositoryImpl(
     }
 
     override suspend fun deleteConversation(conversationId: String, currentUserId: String, deleteTime: LocalDateTime) {
-        conversationRemoteDataSource.updateConversationDeleteTime(conversationId, currentUserId, deleteTime)
-        conversationLocalDataSource.deleteConversation(conversationId)
+        try {
+            conversationRemoteDataSource.updateConversationDeleteTime(conversationId, currentUserId, deleteTime)
+            conversationLocalDataSource.deleteConversation(conversationId)
+        } catch (e: Exception) {
+            e("Error deleting remote conversation $conversationId", e)
+            throw e
+        }
     }
 
     override suspend fun deleteLocalConversations() {

@@ -1,5 +1,6 @@
 package com.upsaclay.common.data.repository
 
+import com.upsaclay.common.data.utils.e
 import com.upsaclay.common.data.local.BlockedUserLocalDataSource
 import com.upsaclay.common.data.remote.BlockedUserRemoteDataSource
 import com.upsaclay.common.domain.entity.BlockUserEvent
@@ -21,13 +22,24 @@ internal class BlockedUserRepositoryImpl(
 
     override suspend fun getLocalBlockedUserIds(): Set<String> = blockedUserLocalDataSource.getBlockedUserIds()
 
-    override suspend fun getRemoteBlockedUserIds(currentUserId: String): Set<String> =
-        blockedUserRemoteDataSource.getBlockedUsers(currentUserId).map { it.userId }.toSet()
+    override suspend fun getRemoteBlockedUserIds(currentUserId: String): Set<String> {
+        return try {
+            blockedUserRemoteDataSource.getBlockedUsers(currentUserId).map { it.userId }.toSet()
+        } catch (e: Exception) {
+            e("Error getting remote blocked users for user $currentUserId", e)
+            throw e
+        }
+    }
 
     override suspend fun blockUser(currentUserId: String, userId: String) {
-        blockedUserRemoteDataSource.addBlockedUser(currentUserId, BlockedUser(userId, LocalDateTime.now(ZoneOffset.UTC)))
-        blockedUserLocalDataSource.blockUser(userId)
-        _blockUserEvent.emit(BlockUserEvent.Block(userId))
+        try {
+            blockedUserRemoteDataSource.addBlockedUser(currentUserId, BlockedUser(userId, LocalDateTime.now(ZoneOffset.UTC)))
+            blockedUserLocalDataSource.blockUser(userId)
+            _blockUserEvent.emit(BlockUserEvent.Block(userId))
+        } catch (e: Exception) {
+            e("Error blocking user $userId for user $currentUserId", e)
+            throw e
+        }
     }
 
     override suspend fun blockLocalUser(userId: String) {
@@ -36,9 +48,14 @@ internal class BlockedUserRepositoryImpl(
     }
 
     override suspend fun unblockUser(currentUserId: String, userId: String) {
-        blockedUserRemoteDataSource.removeBlockedUser(currentUserId, userId)
-        blockedUserLocalDataSource.unblockUser(userId)
-        _blockUserEvent.emit(BlockUserEvent.Unblock(userId))
+        try {
+            blockedUserRemoteDataSource.removeBlockedUser(currentUserId, userId)
+            blockedUserLocalDataSource.unblockUser(userId)
+            _blockUserEvent.emit(BlockUserEvent.Unblock(userId))
+        } catch (e: Exception) {
+            e("Error unblocking user $userId for user $currentUserId", e)
+            throw e
+        }
     }
 
     override suspend fun unblockLocalUser(userId: String) {

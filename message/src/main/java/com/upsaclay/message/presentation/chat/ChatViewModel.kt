@@ -8,7 +8,7 @@ import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.GenerateIdUseCase
 import com.upsaclay.common.presentation.SingleUiEvent
-import com.upsaclay.common.utils.mapNetworkErrorMessage
+import com.upsaclay.common.utils.mapException
 import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.Message
 import com.upsaclay.message.domain.entity.Message.MessageState
@@ -130,7 +130,7 @@ class ChatViewModel(
                 messageRepository.reportMessage(report)
                 _event.emit(MessageEvent.MessageReported)
             } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
+                _event.emit(SingleUiEvent.Error(mapException(e)))
             } finally {
                 _uiState.update { it.copy(loading = false) }
             }
@@ -145,7 +145,7 @@ class ChatViewModel(
             try {
                 blockedUserRepository.unblockUser(currentUserId, userId)
             } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
+                _event.emit(SingleUiEvent.Error(mapException(e)))
             } finally {
                 _uiState.update { it.copy(loading = false) }
             }
@@ -161,7 +161,7 @@ class ChatViewModel(
                 deleteConversationUseCase(conversation, currentUserId)
                 _event.emit(MessageEvent.ConversationDeleted)
             } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
+                _event.emit(SingleUiEvent.Error(mapException(e)))
             } finally {
                 _uiState.update { it.copy(loading = false) }
             }

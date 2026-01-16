@@ -3,7 +3,8 @@ package com.upsaclay.mission.data.remote.api
 import com.google.gson.Gson
 import com.upsaclay.common.data.UserField.Oracle.USER_ID
 import com.upsaclay.common.data.UserField.Oracle.USER_SCHOOL_LEVEL
-import com.upsaclay.common.data.exceptions.mapServerResponseException
+import com.upsaclay.common.data.utils.sendDataServerRequest
+import com.upsaclay.common.data.utils.sendServerRequest
 import com.upsaclay.common.data.remote.model.OracleUser
 import com.upsaclay.common.data.remote.model.ServerResponse
 import com.upsaclay.mission.data.MissionField.Remote.MISSION_ID
@@ -25,14 +26,13 @@ import retrofit2.http.POST
 import retrofit2.http.Part
 import java.io.File
 
-internal class MissionApiImpl(private val serverMissionApi: ServerMissionApi): MissionApi {
+internal class MissionApiImpl(private val missionServerApi: MissionServerApi): MissionApi {
     private val gson = Gson()
 
     override suspend fun getMissions(): List<InboundRemoteMission>? {
-        return mapServerResponseException(
-            message = "Failed to get missions",
-            block = { serverMissionApi.getMissions() }
-        )
+        return sendDataServerRequest {
+            missionServerApi.getMissions()
+        }
     }
 
     override suspend fun createMission(remoteMission: OutboundRemoteMission, imageFile: File?) {
@@ -50,10 +50,9 @@ internal class MissionApiImpl(private val serverMissionApi: ServerMissionApi): M
             )
         }
 
-        mapServerResponseException(
-            message = "Failed to create mission",
-            block = { serverMissionApi.createMission(imagePart, missionPart) }
-        )
+        sendServerRequest {
+            missionServerApi.createMission(imagePart, missionPart)
+        }
     }
 
     override suspend fun updateMission(remoteMission: OutboundRemoteMission, imageFile: File?) {
@@ -70,42 +69,41 @@ internal class MissionApiImpl(private val serverMissionApi: ServerMissionApi): M
                 imageFile.asRequestBody("image/*".toMediaType()))
         }
 
-        mapServerResponseException(
-            message = "Failed to update mission",
-            block = { serverMissionApi.updateMission(imagePart, missionPart) }
-        )
+        sendServerRequest {
+            missionServerApi.updateMission(imagePart, missionPart)
+        }
     }
 
     override suspend fun deleteMission(remoteMission: OutboundRemoteMission) {
-        mapServerResponseException(
-            message = "Failed to delete mission",
-            block = { serverMissionApi.deleteMission(remoteMission) },
-        )
+        sendServerRequest {
+            missionServerApi.deleteMission(remoteMission)
+        }
     }
 
     override suspend fun addParticipant(missionId: String, oracleUser: OracleUser) {
-        mapServerResponseException(
-            message = "Failed to add participant to mission",
-            block = { serverMissionApi.addParticipant(missionId, oracleUser.userId, oracleUser.userSchoolLevel.toString()) }
-        )
+        sendServerRequest {
+            missionServerApi.addParticipant(
+                missionId,
+                oracleUser.userId,
+                oracleUser.userSchoolLevel.toString()
+            )
+        }
     }
 
     override suspend fun removeParticipant(missionId: String, userId: String) {
-        mapServerResponseException(
-            message = "Failed to remove participant from mission",
-            block = { serverMissionApi.removeParticipant(missionId, userId) }
-        )
+        sendServerRequest {
+            missionServerApi.removeParticipant(missionId, userId)
+        }
     }
 
     override suspend fun reportMission(remoteMissionReport: RemoteMissionReport) {
-        mapServerResponseException(
-            message = "Failed to report mission",
-            block = { serverMissionApi.reportMission(remoteMissionReport) }
-        )
+        sendServerRequest {
+            missionServerApi.reportMission(remoteMissionReport)
+        }
     }
 }
 
-internal interface ServerMissionApi {
+internal interface MissionServerApi {
     @GET("missions")
     suspend fun getMissions(): Response<List<InboundRemoteMission>>
 

@@ -1,6 +1,8 @@
 package com.upsaclay.news.data.remote
 
-import com.upsaclay.common.data.exceptions.mapServerResponseException
+import com.upsaclay.common.data.exceptions.mapServerException
+import com.upsaclay.common.data.utils.sendDataServerRequest
+import com.upsaclay.common.data.utils.sendServerRequest
 import com.upsaclay.news.data.remote.api.AnnouncementApi
 import com.upsaclay.news.data.toAnnouncement
 import com.upsaclay.news.data.toRemote
@@ -11,45 +13,54 @@ import kotlinx.coroutines.withContext
 
 internal class AnnouncementRemoteDataSource(private val announcementApi: AnnouncementApi) {
     suspend fun getAnnouncement(): List<Announcement> = withContext(Dispatchers.IO) {
-        mapServerResponseException(
-            message = "Failed to fetch announcements",
-            block = { announcementApi.getAnnouncements() }
-        )?.map { it.toAnnouncement() } ?: emptyList()
+        try {
+            sendDataServerRequest {
+                announcementApi.getAnnouncements()
+            }?.map { it.toAnnouncement() } ?: emptyList()
+        } catch (e: Exception) {
+            throw mapServerException(e)
+        }
     }
 
     suspend fun createAnnouncement(announcement: Announcement) {
         withContext(Dispatchers.IO) {
-            mapServerResponseException(
-                message = "Failed to create announcement",
-                block = { announcementApi.createAnnouncement(announcement.toRemote()) }
-            )
+            try {
+                sendServerRequest { announcementApi.createAnnouncement(announcement.toRemote()) }
+            } catch (e: Exception) {
+                throw mapServerException(e)
+            }
         }
     }
 
     suspend fun updateAnnouncement(announcement: Announcement) {
         withContext(Dispatchers.IO) {
-            mapServerResponseException(
-                message = "Failed to update announcement",
-                block = { announcementApi.updateAnnouncement(announcement.toRemote()) }
-            )
+            try {
+                sendServerRequest { announcementApi.updateAnnouncement(announcement.toRemote()) }
+            } catch (e: Exception) {
+                throw mapServerException(e)
+            }
         }
     }
 
     suspend fun deleteAnnouncement(announcement: Announcement) {
         withContext(Dispatchers.IO) {
-            mapServerResponseException(
-                message = "Failed to delete announcement",
-                block = { announcementApi.deleteAnnouncements(announcement.id, announcement.author.id) }
-            )
+            try {
+                sendServerRequest {
+                    announcementApi.deleteAnnouncements(announcement.id, announcement.author.id)
+                }
+            } catch (e: Exception) {
+                throw mapServerException(e)
+            }
         }
     }
 
     suspend fun reportAnnouncement(report: AnnouncementReport) {
         withContext(Dispatchers.IO) {
-            mapServerResponseException(
-                message = "Failed to report announcement",
-                block = { announcementApi.reportAnnouncement(report.toRemote()) }
-            )
+            try {
+                sendServerRequest { announcementApi.reportAnnouncement(report.toRemote()) }
+            } catch (e: Exception) {
+                throw mapServerException(e)
+            }
         }
     }
 }

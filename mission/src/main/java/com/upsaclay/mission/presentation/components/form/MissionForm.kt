@@ -141,7 +141,7 @@ private fun MissionFormPreview() {
                 value = MissionFormValue(
                     title = title,
                     description = description,
-                    allSchoolLevels = SchoolLevel.getSchoolLevels(),
+                    allSchoolLevels = SchoolLevel.all,
                     schoolLevels = selectedSchoolLevels,
                     startDate = LocalDate.now(),
                     endDate = LocalDate.now(),

@@ -3,13 +3,11 @@ package com.upsaclay.gedoise.presentation.profile.blockedusers
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upsaclay.common.R
-import com.upsaclay.common.domain.ConnectivityObserver
-import com.upsaclay.common.domain.entity.NoInternetConnectionException
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.presentation.SingleUiEvent
-import com.upsaclay.common.utils.mapNetworkErrorMessage
+import com.upsaclay.common.utils.mapException
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -19,8 +17,7 @@ import kotlinx.coroutines.launch
 
 class BlockedUsersViewModel(
     private val blockedUserRepository: BlockedUserRepository,
-    private val userRepository: UserRepository,
-    private val connectivityObserver: ConnectivityObserver
+    private val userRepository: UserRepository
 ): ViewModel() {
     private val _uiState = MutableStateFlow(BlockedUserUiState())
     val uiState: StateFlow<BlockedUserUiState> = _uiState
@@ -36,10 +33,6 @@ class BlockedUsersViewModel(
 
         viewModelScope.launch {
             try {
-                if (!connectivityObserver.isConnected) {
-                    throw NoInternetConnectionException()
-                }
-
                 _uiState.update {
                     it.copy(loading = true)
                 }
@@ -51,7 +44,7 @@ class BlockedUsersViewModel(
                 }
                 _event.emit(SingleUiEvent.Success(R.string.unblocked_user))
             } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
+                _event.emit(SingleUiEvent.Error(mapException(e)))
             } finally {
                 _uiState.update { it.copy(loading = false) }
             }

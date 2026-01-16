@@ -3,15 +3,13 @@ package com.upsaclay.gedoise.presentation.profile.account.deleteaccount
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.upsaclay.app.domain.DeleteAccountUseCase
 import com.upsaclay.authentication.R
-import com.upsaclay.authentication.domain.entity.exception.InvalidCredentialsException
-import com.upsaclay.authentication.domain.entity.exception.UserDisabledException
-import com.upsaclay.common.domain.ConnectivityObserver
-import com.upsaclay.common.domain.entity.CurrentUserNotFoundException
-import com.upsaclay.common.domain.entity.NoInternetConnectionException
+import com.upsaclay.authentication.mapAuthException
+import com.upsaclay.common.domain.entity.CustomException
+import com.upsaclay.common.domain.entity.CustomException.ExceptionType.CURRENT_USER_NOT_FOUND_EXCEPTION
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.presentation.SingleUiEvent
-import com.upsaclay.common.utils.mapNetworkErrorMessage
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -21,8 +19,7 @@ import kotlinx.coroutines.launch
 
 class DeleteAccountViewModel(
     private val userRepository: UserRepository,
-    private val deleteAccountUseCase: com.upsaclay.app.domain.DeleteAccountUseCase,
-    private val connectivityObserver: ConnectivityObserver
+    private val deleteAccountUseCase: DeleteAccountUseCase,
 ): ViewModel() {
     private val _uiState = MutableStateFlow(DeleteAccountUiState())
     val uiState: StateFlow<DeleteAccountUiState> = _uiState
@@ -41,10 +38,7 @@ class DeleteAccountViewModel(
 
         viewModelScope.launch {
             try {
-                val currentUser = userRepository.currentUser ?: throw CurrentUserNotFoundException()
-                if (!connectivityObserver.isConnected) {
-                    throw NoInternetConnectionException()
-                }
+                val currentUser = userRepository.currentUser ?: throw CustomException(CURRENT_USER_NOT_FOUND_EXCEPTION, Exception())
 
                 _uiState.update {
                     it.copy(loading = true)
@@ -52,7 +46,7 @@ class DeleteAccountViewModel(
                 deleteAccountUseCase(currentUser, password)
             } catch (e: Exception) {
                 _uiState.update {
-                    it.copy(errorMessage = mapErrorMessage(e))
+                    it.copy(errorMessage = mapAuthException(e))
                 }
             } finally {
                 _uiState.update {
@@ -79,17 +73,6 @@ class DeleteAccountViewModel(
         return when {
             password.isBlank() -> R.string.mandatory_field
             else -> null
-        }
-    }
-
-    private fun mapErrorMessage(e: Throwable): Int {
-        return mapNetworkErrorMessage(e) {
-            when (e) {
-                is InvalidCredentialsException -> R.string.invalid_credentials_error
-                is UserDisabledException -> R.string.user_disabled_error
-                is CurrentUserNotFoundException -> com.upsaclay.common.R.string.current_user_not_found_error
-                else -> com.upsaclay.common.R.string.unknown_error
-            }
         }
     }
 

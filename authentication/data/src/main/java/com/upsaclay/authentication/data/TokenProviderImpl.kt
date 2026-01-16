@@ -1,10 +1,10 @@
 package com.upsaclay.authentication.data
 
-import com.upsaclay.authentication.data.repository.firebase.FirebaseAuthenticationRepository
+import com.upsaclay.authentication.domain.repository.AuthenticationRepository
 import com.upsaclay.common.data.TokenProvider
 
 class TokenProviderImpl(
-    private val firebaseAuthenticationRepository: FirebaseAuthenticationRepository
+    private val authenticationRepository: AuthenticationRepository
 ): TokenProvider {
-    override fun getAuthIdToken(): String? = firebaseAuthenticationRepository.getIdToken()
+    override fun getAuthIdToken(): String? = authenticationRepository.getAuthToken()
 }

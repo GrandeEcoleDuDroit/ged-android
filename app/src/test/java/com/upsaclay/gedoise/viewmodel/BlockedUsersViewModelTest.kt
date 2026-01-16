@@ -1,6 +1,5 @@
 package com.upsaclay.gedoise.viewmodel
 
-import com.upsaclay.common.domain.ConnectivityObserver
 import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.userFixture
@@ -20,7 +19,6 @@ import org.junit.Test
 class BlockedUsersViewModelTest {
     private val blockedUserRepository: BlockedUserRepository = mockk()
     private val userRepository: UserRepository = mockk()
-    private val connectivityObserver: ConnectivityObserver = mockk()
 
     private lateinit var viewModel: BlockedUsersViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
@@ -29,7 +27,6 @@ class BlockedUsersViewModelTest {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
 
-        every { connectivityObserver.isConnected } returns true
         every { userRepository.currentUser } returns userFixture
         coEvery { blockedUserRepository.unblockUser(any(), any()) } returns Unit
         coEvery { blockedUserRepository.getLocalBlockedUserIds() } returns emptySet()
@@ -37,8 +34,7 @@ class BlockedUsersViewModelTest {
 
         viewModel = BlockedUsersViewModel(
             blockedUserRepository = blockedUserRepository,
-            userRepository = userRepository,
-            connectivityObserver = connectivityObserver
+            userRepository = userRepository
         )
     }
 

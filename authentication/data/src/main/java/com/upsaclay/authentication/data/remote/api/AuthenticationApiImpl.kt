@@ -1,9 +1,10 @@
-package com.upsaclay.authentication.data.api
+package com.upsaclay.authentication.data.remote.api
 
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
-import com.upsaclay.common.domain.entity.CurrentUserNotFoundException
+import com.upsaclay.common.domain.entity.CustomException
+import com.upsaclay.common.domain.entity.CustomException.ExceptionType.CURRENT_USER_NOT_FOUND_EXCEPTION
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -11,7 +12,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-class FirebaseAuthenticationApiImpl: FirebaseAuthenticationApi {
+class AuthenticationApiImpl: AuthenticationApi {
     private val firebaseAuth = Firebase.auth
     private var cachedIdToken: String? = null
 
@@ -19,8 +20,7 @@ class FirebaseAuthenticationApiImpl: FirebaseAuthenticationApi {
         refreshAndCacheToken()
     }
 
-    override fun isAuthenticated(): Boolean =
-        firebaseAuth.currentUser != null
+    override fun isAuthenticated(): Boolean = firebaseAuth.currentUser != null
 
     override fun listenAuthenticationState(): Flow<Boolean> = callbackFlow {
         val listener = FirebaseAuth.AuthStateListener { auth ->
@@ -52,7 +52,7 @@ class FirebaseAuthenticationApiImpl: FirebaseAuthenticationApi {
     }
 
     override suspend fun deleteAuthUser() {
-        firebaseAuth.currentUser?.delete() ?: throw CurrentUserNotFoundException()
+        firebaseAuth.currentUser?.delete() ?: throw CustomException(CURRENT_USER_NOT_FOUND_EXCEPTION, Exception())
     }
 
     private fun refreshAndCacheToken() {
