@@ -25,4 +25,6 @@
     <string name="password_length_error">Password must be at least 8 characters long.</string>
     <string name="email_already_in_use_error">This email address is already in use.</string>
     <string name="user_not_white_listed_error">Registration is currently limited to authorized users.</string>
+    <string name="auth_user_not_found_error">No user found.</string>
+    <string name="registration_failed">The registration could not be completed.</string>
 </resources>

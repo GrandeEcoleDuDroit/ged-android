@@ -1,6 +1,6 @@
 package com.upsaclay.authentication.domain
 
-import com.upsaclay.authentication.domain.entity.exception.InvalidCredentialsException
+import com.upsaclay.authentication.domain.entity.AuthenticationException
 import com.upsaclay.authentication.domain.repository.AuthenticationRepository
 import com.upsaclay.authentication.domain.usecase.LoginUseCase
 import com.upsaclay.common.domain.repository.UserRepository
@@ -47,7 +47,7 @@ class LoginUseCaseTest {
         coEvery { authenticationRepository.setAuthenticated(true) } returns Unit
     }
 
-    @Test(expected = InvalidCredentialsException::class)
+    @Test(expected = AuthenticationException::class)
     fun login_should_throw_InvalidCredentialsException_when_user_not_found() = runTest {
         // Given
         coEvery { userRepository.getUser(userId) } returns null

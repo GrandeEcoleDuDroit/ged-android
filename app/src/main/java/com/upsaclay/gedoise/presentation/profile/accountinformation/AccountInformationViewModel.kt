@@ -4,12 +4,12 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upsaclay.common.domain.entity.CustomException
-import com.upsaclay.common.domain.entity.CustomException.ExceptionType.CURRENT_USER_NOT_FOUND_EXCEPTION
+import com.upsaclay.common.domain.entity.CustomException.CustomError.CURRENT_USER_NOT_FOUND
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.UpdateProfilePictureUseCase
 import com.upsaclay.common.presentation.SingleUiEvent
-import com.upsaclay.common.utils.mapException
+import com.upsaclay.common.utils.mapExceptionErrorMessage
 import com.upsaclay.gedoise.R
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,7 +39,7 @@ class AccountInformationViewModel(
     fun updateProfilePicture() {
         viewModelScope.launch {
             try {
-                val user = uiState.value.user ?: throw CustomException(CURRENT_USER_NOT_FOUND_EXCEPTION, Exception())
+                val user = uiState.value.user ?: throw CustomException(CURRENT_USER_NOT_FOUND, Exception())
                 _uiState.value.profilePictureUri?.let { uri ->
                     updateState(loading = true)
                     updateProfilePictureUseCase(user, uri.toString())
@@ -48,7 +48,7 @@ class AccountInformationViewModel(
                 }
             } catch (e: Exception) {
                 cancelEdit()
-                _event.emit(SingleUiEvent.Error(mapException(e)))
+                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
             } finally {
                 _uiState.update {
                     it.copy(loading = false)
@@ -60,7 +60,7 @@ class AccountInformationViewModel(
     fun deleteProfilePicture() {
         viewModelScope.launch {
             try {
-                val user = uiState.value.user ?: throw CustomException(CURRENT_USER_NOT_FOUND_EXCEPTION, Exception())
+                val user = uiState.value.user ?: throw CustomException(CURRENT_USER_NOT_FOUND, Exception())
                 updateState(loading = true)
                 user.profilePictureUrl?.let {
                     userRepository.deleteProfilePicture(user)
@@ -69,7 +69,7 @@ class AccountInformationViewModel(
                 _event.emit(SingleUiEvent.Success(R.string.profile_picture_deleted))
             } catch (e: Exception) {
                 cancelEdit()
-                _event.emit(SingleUiEvent.Error(mapException(e)))
+                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
             }
         }
     }

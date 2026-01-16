@@ -1,6 +1,5 @@
 package com.upsaclay.authentication.domain
 
-import com.upsaclay.authentication.domain.usecase.ListenAuthenticationStateUseCase
 import com.upsaclay.authentication.domain.usecase.LoginUseCase
 import com.upsaclay.authentication.domain.usecase.RegisterUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -26,5 +25,4 @@ val authenticationDomainModule = module {
 
     singleOf(::LoginUseCase)
     singleOf(::RegisterUseCase)
-    singleOf(::ListenAuthenticationStateUseCase)
 }

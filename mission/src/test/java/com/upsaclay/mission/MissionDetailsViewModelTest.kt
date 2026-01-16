@@ -1,5 +1,6 @@
 package com.upsaclay.mission
 
+import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.domain.userFixture2
@@ -162,8 +163,7 @@ class MissionDetailsViewModelTest {
             missionId = missionFixture.id,
             missionRepository = missionRepository,
             userRepository = userRepository,
-            deleteMissionUseCase = deleteMissionUseCase,
-            connectivityObserver = connectivityObserver
+            deleteMissionUseCase = deleteMissionUseCase
         )
 
         // Then

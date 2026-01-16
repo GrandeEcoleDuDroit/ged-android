@@ -7,7 +7,7 @@ import com.upsaclay.app.domain.DeleteAccountUseCase
 import com.upsaclay.authentication.R
 import com.upsaclay.authentication.mapAuthException
 import com.upsaclay.common.domain.entity.CustomException
-import com.upsaclay.common.domain.entity.CustomException.ExceptionType.CURRENT_USER_NOT_FOUND_EXCEPTION
+import com.upsaclay.common.domain.entity.CustomException.CustomError.CURRENT_USER_NOT_FOUND
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.presentation.SingleUiEvent
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -38,7 +38,7 @@ class DeleteAccountViewModel(
 
         viewModelScope.launch {
             try {
-                val currentUser = userRepository.currentUser ?: throw CustomException(CURRENT_USER_NOT_FOUND_EXCEPTION, Exception())
+                val currentUser = userRepository.currentUser ?: throw CustomException(CURRENT_USER_NOT_FOUND)
 
                 _uiState.update {
                     it.copy(loading = true)

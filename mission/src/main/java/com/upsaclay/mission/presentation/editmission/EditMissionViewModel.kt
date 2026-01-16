@@ -9,7 +9,7 @@ import com.upsaclay.common.domain.extensions.replace
 import com.upsaclay.common.domain.usecase.GenerateIdUseCase
 import com.upsaclay.common.domain.usecase.GetUsersUseCase
 import com.upsaclay.common.presentation.SingleUiEvent
-import com.upsaclay.common.utils.mapException
+import com.upsaclay.common.utils.mapExceptionErrorMessage
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.Mission.MissionState
@@ -98,7 +98,7 @@ class EditMissionViewModel(
                 )
                 _event.emit(SingleUiEvent.Success())
             } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapException(e)))
+                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
             } finally {
                 _uiState.update {
                     it.copy(loading = false)

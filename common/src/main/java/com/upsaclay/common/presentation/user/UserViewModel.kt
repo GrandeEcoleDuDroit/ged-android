@@ -8,7 +8,7 @@ import com.upsaclay.common.domain.entity.UserReport
 import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.presentation.SingleUiEvent
-import com.upsaclay.common.utils.mapException
+import com.upsaclay.common.utils.mapExceptionErrorMessage
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -39,7 +39,7 @@ class UserViewModel(
                 userRepository.reportUser(report)
                 _event.emit(SingleUiEvent.Success(R.string.reported_user))
             } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapException(e)))
+                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
             } finally {
                 _uiState.update { it.copy(loading = false) }
             }
@@ -55,7 +55,7 @@ class UserViewModel(
                 blockedUserRepository.blockUser(currentUserId,userId)
                 _event.emit(SingleUiEvent.Success(R.string.blocked_user))
             } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapException(e)))
+                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
             } finally {
                 _uiState.update { it.copy(loading = false) }
             }
@@ -71,7 +71,7 @@ class UserViewModel(
                 blockedUserRepository.unblockUser(currentUserId, userId)
                 _event.emit(SingleUiEvent.Success(R.string.unblocked_user))
             } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapException(e)))
+                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
             } finally {
                 _uiState.update { it.copy(loading = false) }
             }

@@ -7,7 +7,7 @@ import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.extensions.launchDelayed
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.presentation.SingleUiEvent
-import com.upsaclay.common.utils.mapException
+import com.upsaclay.common.utils.mapExceptionErrorMessage
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.MissionReport
@@ -85,7 +85,7 @@ class MissionDetailsViewModel(
 
                 block()
             } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapException(e)))
+                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
             } finally {
                 loadingJob?.cancel()
                 _uiState.update { it.copy(loading = false) }

@@ -4,38 +4,37 @@ import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.upsaclay.authentication.data.model.AuthTokenState
 import com.upsaclay.authentication.data.remote.api.AuthenticationApi
-import com.upsaclay.authentication.domain.entity.exception.AuthenticationException
-import com.upsaclay.authentication.domain.entity.exception.AuthenticationException.AuthExceptionType.EMAIL_ALREADY_IN_USE_EXCEPTION
-import com.upsaclay.authentication.domain.entity.exception.AuthenticationException.AuthExceptionType.INVALID_CREDENTIALS_EXCEPTION
-import com.upsaclay.authentication.domain.entity.exception.AuthenticationException.AuthExceptionType.USER_DISABLED_EXCEPTION
+import com.upsaclay.authentication.domain.entity.AuthenticationException
+import com.upsaclay.authentication.domain.entity.AuthenticationException.AuthenticationError.EMAIL_ALREADY_IN_USE
+import com.upsaclay.authentication.domain.entity.AuthenticationException.AuthenticationError.INVALID_CREDENTIALS
+import com.upsaclay.authentication.domain.entity.AuthenticationException.AuthenticationError.USER_DISABLED
 import com.upsaclay.common.data.exceptions.mapFirebaseException
 import com.upsaclay.common.domain.entity.CustomException
-import com.upsaclay.common.domain.entity.CustomException.ExceptionType.FORBIDDEN_EXCEPTION
+import com.upsaclay.common.domain.entity.CustomException.CustomError.FORBIDDEN
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 class AuthenticationRemoteDataSource(private val authenticationApi: AuthenticationApi) {
-    fun isAuthenticated(): Boolean = authenticationApi.isAuthenticated()
-
     fun listenAuthenticationState(): Flow<Boolean> = authenticationApi.listenAuthenticationState()
 
-    fun getAuthToken(): String? = authenticationApi.getIdToken()
+    fun listenAuthTokenState(): Flow<AuthTokenState> = authenticationApi.listenAuthTokenState()
 
     suspend fun loginWithEmailAndPassword(email: String, password: String): String? = withContext(Dispatchers.IO) {
         try {
             authenticationApi.signIn(email, password)
         } catch (e: Exception) {
-            throw mapException(e)
+            throw mapFirebaseAuthException(e)
         }
     }
 
-    suspend fun registerWithEmailAndPassword(email: String, password: String): String = withContext(Dispatchers.IO) {
+    suspend fun registerWithEmailAndPassword(email: String, password: String): String? = withContext(Dispatchers.IO) {
         try {
             authenticationApi.signUp(email, password)
         } catch (e: Exception) {
-            throw mapException(e)
+            throw mapFirebaseAuthException(e)
         }
     }
 
@@ -48,27 +47,27 @@ class AuthenticationRemoteDataSource(private val authenticationApi: Authenticati
             try {
                 authenticationApi.deleteAuthUser()
             } catch (e: Exception) {
-                throw mapException(e)
+                throw mapFirebaseAuthException(e)
             }
         }
     }
 
-    private fun mapException(e: Exception): Exception {
+    private fun mapFirebaseAuthException(e: Exception): Exception {
         return when(e) {
-            is FirebaseAuthInvalidCredentialsException -> AuthenticationException(INVALID_CREDENTIALS_EXCEPTION, e)
-            is FirebaseAuthInvalidUserException -> mapErrorCode(e)
-            is FirebaseAuthUserCollisionException -> AuthenticationException(EMAIL_ALREADY_IN_USE_EXCEPTION, e)
-            is FirebaseAuthException -> mapErrorCode(e)
+            is FirebaseAuthInvalidCredentialsException -> AuthenticationException(INVALID_CREDENTIALS, e)
+            is FirebaseAuthInvalidUserException -> mapFirebaseAuthErrorCode(e)
+            is FirebaseAuthUserCollisionException -> AuthenticationException(EMAIL_ALREADY_IN_USE, e)
+            is FirebaseAuthException -> mapFirebaseAuthErrorCode(e)
             else -> mapFirebaseException(e)
         }
     }
 
-    private fun mapErrorCode(e: FirebaseAuthException): Exception {
+    private fun mapFirebaseAuthErrorCode(e: FirebaseAuthException): Exception {
         return when (e.errorCode) {
-            "ERROR_EMAIL_ALREADY_IN_USE" -> AuthenticationException(EMAIL_ALREADY_IN_USE_EXCEPTION, e)
-            "ERROR_USER_NOT_FOUND" -> AuthenticationException(INVALID_CREDENTIALS_EXCEPTION, e)
-            "ERROR_USER_DISABLED" -> AuthenticationException(USER_DISABLED_EXCEPTION, e)
-            "ERROR_ADMIN_RESTRICTED_OPERATION" -> CustomException(FORBIDDEN_EXCEPTION, e)
+            "ERROR_EMAIL_ALREADY_IN_USE" -> AuthenticationException(EMAIL_ALREADY_IN_USE, e)
+            "ERROR_USER_NOT_FOUND" -> AuthenticationException(INVALID_CREDENTIALS, e)
+            "ERROR_USER_DISABLED" -> AuthenticationException(USER_DISABLED, e)
+            "ERROR_ADMIN_RESTRICTED_OPERATION" -> CustomException(FORBIDDEN, e)
             else -> mapFirebaseException(e)
         }
     }
