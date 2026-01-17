@@ -2,10 +2,13 @@ package com.upsaclay.gedoise.viewmodel
 
 import com.upsaclay.app.domain.usecase.ClearDataUseCase
 import com.upsaclay.app.domain.usecase.FcmTokenUseCase
-import com.upsaclay.app.domain.usecase.ListenDataUseCase
+import com.upsaclay.app.domain.usecase.ListenBlockedUserEventsUseCase
+import com.upsaclay.app.domain.usecase.ListenRemoteUserUseCase
 import com.upsaclay.app.domain.usecase.SynchronizeDataUseCase
 import com.upsaclay.authentication.domain.repository.AuthenticationRepository
 import com.upsaclay.gedoise.presentation.MainViewModel
+import com.upsaclay.message.domain.usecase.ListenRemoteConversationsUseCase
+import com.upsaclay.message.domain.usecase.ListenRemoteMessagesUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -22,13 +25,16 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MainViewModelTest {
-    private val listenDataUseCase: ListenDataUseCase = mockk()
+    private val authenticationRepository: AuthenticationRepository = mockk()
     private val clearDataUseCase: ClearDataUseCase = mockk()
     private val synchronizeDataUseCase: SynchronizeDataUseCase = mockk()
     private val fcmTokenUseCase: FcmTokenUseCase = mockk()
-    private val authenticationRepository: AuthenticationRepository = mockk()
+    private val listenRemoteConversationsUseCase: ListenRemoteConversationsUseCase = mockk()
+    private val listenRemoteMessagesUseCase: ListenRemoteMessagesUseCase = mockk()
+    private val listenRemoteUserUseCase: ListenRemoteUserUseCase = mockk()
+    private val listenBlockedUserEventsUseCase: ListenBlockedUserEventsUseCase = mockk()
 
-    private lateinit var mainViewModel: MainViewModel
+    private lateinit var viewModel: MainViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
 
     @Before
@@ -36,33 +42,41 @@ class MainViewModelTest {
         Dispatchers.setMain(testDispatcher)
 
         every { authenticationRepository.authenticationState } returns flowOf(true)
-        every { listenDataUseCase.start() } returns Unit
-        every { listenDataUseCase.stop() } returns Unit
         coEvery { clearDataUseCase() } returns Unit
+        coEvery { listenRemoteUserUseCase.start() } returns Unit
+        coEvery { listenRemoteConversationsUseCase.start() } returns Unit
+        coEvery { listenBlockedUserEventsUseCase.start() } returns Unit
+        coEvery { listenRemoteMessagesUseCase.stopAll() } returns Unit
         coEvery { synchronizeDataUseCase() } returns Unit
 
-        mainViewModel = MainViewModel(
+        viewModel = MainViewModel(
             authenticationRepository = authenticationRepository,
             clearDataUseCase = clearDataUseCase,
             synchronizeDataUseCase = synchronizeDataUseCase,
             fcmTokenUseCase = fcmTokenUseCase,
-            listenDataUseCase = listenDataUseCase
+            listenRemoteUserUseCase = listenRemoteUserUseCase,
+            listenRemoteConversationsUseCase = listenRemoteConversationsUseCase,
+            listenRemoteMessagesUseCase = listenRemoteMessagesUseCase,
+            listenBlockedUserEventsUseCase = listenBlockedUserEventsUseCase
         )
     }
 
     @Test
-    fun data_should_be_listened_when_user_is_authenticated() {
+    fun data_should_be_listened_when_user_is_authenticated() = runTest(testDispatcher) {
         // When
-        mainViewModel.updateDataOnAuthChange()
+        viewModel.updateDataOnAuthChange()
 
         // Then
-        coVerify { listenDataUseCase.start() }
+        coVerify { listenRemoteUserUseCase.start() }
+        coVerify { listenRemoteConversationsUseCase.start() }
+        coVerify { listenBlockedUserEventsUseCase.start() }
+        assert(viewModel.dataListeningJob?.isActive ?: false)
     }
 
     @Test
     fun data_should_be_synchronized_when_user_is_authenticated() {
         // When
-        mainViewModel.updateDataOnAuthChange()
+        viewModel.updateDataOnAuthChange()
 
         // Then
         coVerify { synchronizeDataUseCase() }
@@ -74,10 +88,11 @@ class MainViewModelTest {
         every { authenticationRepository.authenticationState } returns flowOf(false)
 
         // When
-        mainViewModel.updateDataOnAuthChange()
+        viewModel.updateDataOnAuthChange()
 
         // Then
-        coVerify { listenDataUseCase.stop() }
+        coVerify { listenRemoteMessagesUseCase.stopAll() }
+        assert(viewModel.dataListeningJob?.isCancelled ?: true)
     }
 
     @Test
@@ -86,7 +101,7 @@ class MainViewModelTest {
         every { authenticationRepository.authenticationState } returns flowOf(false)
 
         // When
-        mainViewModel.updateDataOnAuthChange()
+        viewModel.updateDataOnAuthChange()
         advanceUntilIdle()
 
         // Then

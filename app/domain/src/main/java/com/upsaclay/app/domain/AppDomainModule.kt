@@ -4,7 +4,6 @@ import com.upsaclay.app.domain.usecase.ClearDataUseCase
 import com.upsaclay.app.domain.usecase.DeleteAccountUseCase
 import com.upsaclay.app.domain.usecase.FcmTokenUseCase
 import com.upsaclay.app.domain.usecase.ListenBlockedUserEventsUseCase
-import com.upsaclay.app.domain.usecase.ListenDataUseCase
 import com.upsaclay.app.domain.usecase.ListenRemoteUserUseCase
 import com.upsaclay.app.domain.usecase.SynchronizeDataUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -35,13 +34,4 @@ val appDomainModule = module {
     singleOf(::FcmTokenUseCase)
     singleOf(::ListenRemoteUserUseCase)
     singleOf(::ListenBlockedUserEventsUseCase)
-    single {
-        ListenDataUseCase(
-            listenRemoteConversationsUseCase = get(),
-            listenRemoteMessagesUseCase = get(),
-            listenRemoteUserUseCase = get(),
-            listenBlockedUserEventsUseCase = get(),
-            scope = get(BACKGROUND_SCOPE)
-        )
-    }
 }

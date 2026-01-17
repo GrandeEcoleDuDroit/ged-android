@@ -13,6 +13,7 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -34,9 +35,9 @@ class ConversationViewModelTest {
         Dispatchers.setMain(testDispatcher)
 
         every { userRepository.currentUser } returns userFixture
-        every { getConversationUiUseCase() } returns mockk()
+        every { getConversationUiUseCase() } returns emptyFlow()
+        coEvery { recreateConversationUseCase(any(), any()) } returns Unit
         coEvery { deleteConversationUseCase(any(), any()) } returns Unit
-        every { recreateConversationUseCase(any(), any()) } returns Unit
 
         conversationViewModel = ConversationViewModel(
             userRepository = userRepository,

@@ -57,11 +57,11 @@ class ConversationViewModel(
     }
 
     fun recreateConversation(conversation: Conversation) {
-        try {
-            val userId = userRepository.currentUser?.id ?: throw CustomException(CURRENT_USER_NOT_FOUND)
-            recreateConversationUseCase(conversation, userId)
-        } catch (e: Exception) {
-            viewModelScope.launch {
+        viewModelScope.launch {
+            try {
+                val userId = userRepository.currentUser?.id ?: throw CustomException(CURRENT_USER_NOT_FOUND)
+                recreateConversationUseCase(conversation, userId)
+            } catch (e: Exception) {
                 _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
             }
         }

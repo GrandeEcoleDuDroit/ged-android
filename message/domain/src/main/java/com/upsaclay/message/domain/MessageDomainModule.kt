@@ -46,10 +46,5 @@ val messageDomainModule = module {
         )
     }
     singleOf(::UpdateConversationDeleteTimeUseCase)
-    single {
-        RecreateConversationUseCase(
-            conversationRepository = get(),
-            scope = get(BACKGROUND_SCOPE)
-        )
-    }
+    singleOf(::RecreateConversationUseCase)
 }
