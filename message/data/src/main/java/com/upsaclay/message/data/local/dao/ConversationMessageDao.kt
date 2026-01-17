@@ -6,7 +6,7 @@ import androidx.room.Transaction
 import com.upsaclay.message.data.local.model.LocalConversationMessage
 import com.upsaclay.message.data.model.ConversationField.CONVERSATION_TABLE_NAME
 import com.upsaclay.message.data.model.ConversationField.Local.CONVERSATION_CREATED_AT
-import com.upsaclay.message.data.model.ConversationField.Local.CONVERSATION_DELETE_TIME
+import com.upsaclay.message.data.model.ConversationField.Local.CONVERSATION_EFFECTIVE_FROM
 import com.upsaclay.message.data.model.ConversationField.Local.CONVERSATION_ID
 import com.upsaclay.message.data.model.ConversationField.Local.CONVERSATION_INTERLOCUTOR_ADMIN
 import com.upsaclay.message.data.model.ConversationField.Local.CONVERSATION_INTERLOCUTOR_EMAIL
@@ -45,7 +45,7 @@ interface ConversationMessageDao {
             C.$CONVERSATION_INTERLOCUTOR_TESTER,
             C.$CONVERSATION_CREATED_AT,
             C.$CONVERSATION_STATE, 
-            C.$CONVERSATION_DELETE_TIME,
+            C.$CONVERSATION_EFFECTIVE_FROM,
             M.$MESSAGE_ID, 
             M.$MESSAGE_SENDER_ID,
             M.$MESSAGE_RECIPIENT_ID,

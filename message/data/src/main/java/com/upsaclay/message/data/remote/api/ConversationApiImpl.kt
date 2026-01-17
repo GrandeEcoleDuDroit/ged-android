@@ -4,6 +4,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.firestore.MetadataChanges
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.firestore
+import com.upsaclay.message.data.mapper.toMap
 import com.upsaclay.message.data.model.ConversationField
 import com.upsaclay.message.data.model.ConversationField.CONVERSATION_TABLE_NAME
 import com.upsaclay.message.data.remote.model.RemoteConversation
@@ -25,7 +26,7 @@ internal class ConversationApiImpl: ConversationApi {
                 }
 
                 snapshot?.documents
-                    ?.filterNot { it.metadata.isFromCache || it.metadata.hasPendingWrites() }
+                    ?.filter { !it.metadata.isFromCache && !it.metadata.hasPendingWrites() }
                     ?.forEach { document ->
                         document.toObject(RemoteConversation::class.java)?.let {
                             trySend(it)
@@ -36,14 +37,11 @@ internal class ConversationApiImpl: ConversationApi {
         awaitClose { listener.remove() }
     }
 
-    override suspend fun createConversation(conversationId: String, data: Map<String, Any>) {
-        val conversationExist = conversationsCollection.document(conversationId).get().await().exists()
-        if (!conversationExist) {
-            conversationsCollection
-                .document(conversationId)
-                .set(data, SetOptions.merge())
-                .await()
-        }
+    override suspend fun createConversation(remoteConversation: RemoteConversation) {
+        conversationsCollection
+            .document(remoteConversation.conversationId)
+            .set(remoteConversation.toMap(), SetOptions.merge())
+            .await()
     }
 
     override suspend fun updateConversation(conversationId: String, data: Map<String, Any>) {

@@ -22,6 +22,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.automirrored.outlined.Send
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -83,7 +84,7 @@ fun SentMessageItem(
 
     Row(
         modifier = modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.End
     ) {
         Spacer(modifier = Modifier.weight(0.2f))
@@ -104,9 +105,7 @@ fun SentMessageItem(
                 dateTimeTextColor = dateTimeTextColor,
             )
 
-            if (showSeen) {
-                val seenColor = if (isSystemInDarkTheme()) Color.Gray else Color.DarkGray
-
+            AnimatedVisibility(showSeen) {
                 Text(
                     modifier = Modifier.padding(
                         top = dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding),
@@ -114,17 +113,20 @@ fun SentMessageItem(
                     ),
                     text = stringResource(id = R.string.message_seen),
                     style = MaterialTheme.typography.bodySmall,
-                    color = seenColor
+                    color = if (isSystemInDarkTheme()) Color.Gray else Color.DarkGray
                 )
             }
         }
 
-        if (message.state == MessageState.SENDING) {
+        AnimatedVisibility(
+            modifier = Modifier.weight(0.1f),
+            visible = message.state == MessageState.SENDING
+        ) {
             Icon(
-                imageVector = Icons.AutoMirrored.Filled.Send,
-                contentDescription = stringResource(id = R.string.send_message_icon_description),
-                tint = if (isSystemInDarkTheme()) Color.Gray else Color.LightGray,
-                modifier = Modifier.size(20.dp).weight(0.1f)
+                imageVector = Icons.AutoMirrored.Outlined.Send,
+                contentDescription = null,
+                tint = Color.Gray,
+                modifier = Modifier.size(20.dp)
             )
         }
 
@@ -207,7 +209,7 @@ private fun MessageBubble(
 ) {
     FlowRow(
         modifier = modifier
-            .clip(RoundedCornerShape(16))
+            .clip(RoundedCornerShape(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)))
             .background(backgroundColor)
             .padding(
                 vertical = dimensionResource(com.upsaclay.common.R.dimen.small_padding),
@@ -251,7 +253,7 @@ fun MessageInput(
         verticalAlignment = Alignment.CenterVertically
     ) {
         BasicTextField(
-            modifier = modifier.weight(1f),
+            modifier = Modifier.weight(1f),
             value = value,
             onValueChange = onValueChange,
             textStyle = TextStyle.Default.copy(color = MaterialTheme.colorScheme.onSurface),
@@ -399,7 +401,7 @@ fun MessageBlockedUserIndicator(
 private fun SeenSentMessageItemPreview() {
     GedoiseTheme {
         SentMessageItem(
-            message = messageFixture,
+            message = messageFixture.copy(content = "Hahaha"),
             showSeen = true,
             clickEnabled = false,
             onClick = {}

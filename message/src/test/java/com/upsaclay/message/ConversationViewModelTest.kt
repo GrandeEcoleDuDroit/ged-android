@@ -5,6 +5,7 @@ import com.upsaclay.common.domain.userFixture
 import com.upsaclay.message.domain.conversationFixture
 import com.upsaclay.message.domain.usecase.DeleteConversationUseCase
 import com.upsaclay.message.domain.usecase.GetConversationsUiUseCase
+import com.upsaclay.message.domain.usecase.RecreateConversationUseCase
 import com.upsaclay.message.presentation.conversation.ConversationViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -23,6 +24,7 @@ class ConversationViewModelTest {
     private val userRepository: UserRepository = mockk()
     private val getConversationUiUseCase: GetConversationsUiUseCase = mockk()
     private val deleteConversationUseCase: DeleteConversationUseCase = mockk()
+    private val recreateConversationUseCase: RecreateConversationUseCase = mockk()
 
     private lateinit var conversationViewModel: ConversationViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
@@ -34,11 +36,13 @@ class ConversationViewModelTest {
         every { userRepository.currentUser } returns userFixture
         every { getConversationUiUseCase() } returns mockk()
         coEvery { deleteConversationUseCase(any(), any()) } returns Unit
+        every { recreateConversationUseCase(any(), any()) } returns Unit
 
         conversationViewModel = ConversationViewModel(
             userRepository = userRepository,
             getConversationsUiUseCase = getConversationUiUseCase,
-            deleteConversationUseCase = deleteConversationUseCase
+            deleteConversationUseCase = deleteConversationUseCase,
+            recreateConversationUseCase = recreateConversationUseCase
         )
     }
 
@@ -49,5 +53,14 @@ class ConversationViewModelTest {
 
         // Then
         coVerify { deleteConversationUseCase(conversationFixture, userFixture.id) }
+    }
+
+    @Test
+    fun recreateConversation_should_recreate_conversation() = runTest {
+        // When
+        conversationViewModel.recreateConversation(conversationFixture)
+
+        // Then
+        coVerify { recreateConversationUseCase(conversationFixture, userFixture.id) }
     }
 }

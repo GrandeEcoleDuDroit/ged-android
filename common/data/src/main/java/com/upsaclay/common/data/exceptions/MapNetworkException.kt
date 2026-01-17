@@ -17,7 +17,7 @@ import com.upsaclay.common.domain.entity.CustomException.CustomError.UNKNOWN
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 
-fun mapFirebaseException(exception: Exception): CustomException {
+fun mapFirebaseException(exception: Exception): Exception {
     return when (exception) {
         is FirebaseNetworkException -> CustomException(NETWORK, exception)
         is FirebaseTooManyRequestsException -> CustomException(TOO_MANY_REQUEST, exception)
@@ -30,11 +30,11 @@ fun mapFirebaseException(exception: Exception): CustomException {
                 else -> CustomException(UNKNOWN, exception)
             }
         }
-        else -> CustomException(UNKNOWN, exception)
+        else -> exception
     }
 }
 
-fun mapServerException(exception: Exception): CustomException {
+fun mapServerException(exception: Exception): Exception {
     return when (exception) {
         is ConnectException -> CustomException(CANNOT_CONNECT_TO_HOST, exception)
         is SocketTimeoutException -> CustomException(TIMED_OUT, exception)
@@ -47,6 +47,6 @@ fun mapServerException(exception: Exception): CustomException {
                 else -> CustomException(INTERNAL_SERVER, exception)
             }
         }
-        else -> CustomException(UNKNOWN, exception)
+        else -> exception
     }
 }

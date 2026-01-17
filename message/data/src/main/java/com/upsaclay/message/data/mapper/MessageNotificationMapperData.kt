@@ -39,7 +39,7 @@ fun MessageNotification.toLocal() = LocalMessageNotification(
     conversationInterlocutorTester = conversation.interlocutor.tester,
     conversationCreatedAt = conversation.createdAt.toEpochMilliUTC(),
     conversationState = conversation.state.name,
-    conversationDeleteTime = conversation.deleteTime?.toEpochMilliUTC()
+    conversationDeleteTime = conversation.effectiveFrom?.toEpochMilliUTC()
 )
 
 fun MessageNotification.toRemote(currentUser: User) = RemoteMessageNotification(
@@ -58,7 +58,7 @@ fun MessageNotification.toRemote(currentUser: User) = RemoteMessageNotification(
             tester = currentUser.tester
         ),
         createdAt = conversation.createdAt.toEpochMilliUTC(),
-        deleteTime = conversation.deleteTime?.toEpochMilliUTC()
+        deleteTime = conversation.effectiveFrom?.toEpochMilliUTC()
     ),
     messageId = message.messageId,
     content = message.content,
@@ -89,7 +89,7 @@ private fun LocalMessageNotification.toConversation() = Conversation(
     ),
     createdAt = conversationCreatedAt.toLocalDateTimeUTC(),
     state = Conversation.ConversationState.valueOf(conversationState),
-    deleteTime = conversationDeleteTime?.toLocalDateTimeUTC()
+    effectiveFrom = conversationDeleteTime?.toLocalDateTimeUTC()
 )
 
 fun RemoteMessageNotification.toMessageNotification() = MessageNotification(
@@ -108,7 +108,7 @@ fun RemoteMessageNotification.toMessageNotification() = MessageNotification(
         ),
         createdAt = conversation.createdAt.toLocalDateTimeUTC(),
         state = Conversation.ConversationState.CREATED,
-        deleteTime = conversation.deleteTime?.toLocalDateTimeUTC()
+        effectiveFrom = conversation.deleteTime?.toLocalDateTimeUTC()
     ),
     message = MessageNotification.Message(
         messageId = messageId,

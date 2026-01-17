@@ -5,64 +5,102 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.upsaclay.common.presentation.components.TextItem
-import kotlinx.coroutines.launch
+import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.message.domain.entity.Conversation
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConversationBottomSheet(
+    conversationState: Conversation.ConversationState,
+    onRecreateClick: () -> Unit,
+    onDeleteClick: () -> Unit,
     onDismiss: () -> Unit,
-    onDeleteClick: () -> Unit
 ) {
-    val scope = rememberCoroutineScope()
-    val sheetState = rememberModalBottomSheetState()
-    val hideBottomSheet = {
-        scope.launch { sheetState.hide() }.invokeOnCompletion {
-            if (!sheetState.isVisible) {
-                onDismiss()
-            }
+    ModalBottomSheet(onDismissRequest = onDismiss) {
+        if (conversationState == Conversation.ConversationState.ERROR) {
+            ErrorConversationBottomSheetContent(
+                onRecreateClick = onRecreateClick,
+                onDeleteClick = onDeleteClick
+            )
+        } else {
+            DefaultConversationBottomSheetContent(
+                onDeleteClick = onDeleteClick
+            )
         }
-    }
-
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = sheetState,
-    ) {
-        TextItem(
-            modifier = Modifier.fillMaxWidth(),
-            text = {
-                Text(
-                    text = stringResource(id = com.upsaclay.common.R.string.delete),
-                    color = MaterialTheme.colorScheme.error
-                )
-            },
-            icon = {
-                Icon(
-                    imageVector = Icons.Outlined.Delete,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.error
-                )
-            },
-            onClick = {
-                hideBottomSheet()
-                onDeleteClick()
-            }
-        )
 
         Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.modal_bottom_sheet_bottom_space)))
     }
+}
+
+@Composable
+private fun DefaultConversationBottomSheetContent(onDeleteClick: () -> Unit) {
+    TextItem(
+        modifier = Modifier.fillMaxWidth(),
+        text = {
+            Text(
+                text = stringResource(id = com.upsaclay.common.R.string.delete),
+                color = MaterialTheme.colorScheme.error
+            )
+        },
+        icon = {
+            Icon(
+                imageVector = Icons.Outlined.Delete,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.error
+            )
+        },
+        onClick = onDeleteClick
+    )
+}
+
+@Composable
+private fun ErrorConversationBottomSheetContent(
+    onRecreateClick: () -> Unit,
+    onDeleteClick: () -> Unit
+) {
+    TextItem(
+        modifier = Modifier.fillMaxWidth(),
+        text = {
+            Text(text = stringResource(id = com.upsaclay.common.R.string.retry))
+        },
+        icon = {
+            Icon(
+                imageVector = Icons.Outlined.Refresh,
+                contentDescription = null
+            )
+        },
+        onClick = onRecreateClick
+    )
+
+    TextItem(
+        modifier = Modifier.fillMaxWidth(),
+        text = {
+            Text(
+                text = stringResource(id = com.upsaclay.common.R.string.delete),
+                color = MaterialTheme.colorScheme.error
+            )
+        },
+        icon = {
+            Icon(
+                imageVector = Icons.Outlined.Delete,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.error
+            )
+        },
+        onClick = onDeleteClick
+    )
 }
 
 /*
@@ -74,8 +112,12 @@ fun ConversationBottomSheet(
 @Preview(heightDp = 400)
 @Composable
 private fun ConversationBottomSheetPreview() {
-    ConversationBottomSheet(
-        onDismiss = {},
-        onDeleteClick = {}
-    )
+    GedoiseTheme {
+        ConversationBottomSheet(
+            conversationState = Conversation.ConversationState.CREATED,
+            onRecreateClick = {},
+            onDeleteClick = {},
+            onDismiss = {},
+        )
+    }
 }

@@ -90,7 +90,7 @@ class SendMessageUseCaseTest {
     }
 
     @Test
-    fun sendMessageUseCase_should_update_local_message_state_to_error_state_when_fails() {
+    fun sendMessageUseCase_should_upsert_local_message_state_to_error_state_when_fails() {
         // Given
         val message = messageFixture.copy(state = MessageState.SENDING)
         coEvery { messageRepository.createRemoteMessage(any()) } throws Exception()
@@ -99,7 +99,7 @@ class SendMessageUseCaseTest {
         useCase(conversationFixture, message, userFixture.id)
 
         // Then
-        coVerify { messageRepository.updateLocalMessage(message.copy(state = MessageState.ERROR)) }
+        coVerify { messageRepository.upsertLocalMessage(message.copy(state = MessageState.ERROR)) }
     }
 
     @Test

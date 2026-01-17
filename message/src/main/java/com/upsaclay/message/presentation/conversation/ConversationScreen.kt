@@ -64,8 +64,9 @@ fun ConversationDestination(
         conversations = uiState.conversations,
         loading = uiState.loading,
         onConversationClick = onConversationClick,
-        onDeleteConversation = viewModel::deleteConversation,
-        onCreateConversation = onCreateConversation,
+        onDeleteConversationClick = viewModel::deleteConversation,
+        onCreateConversationClick = onCreateConversation,
+        onRecreateConversationClick = viewModel::recreateConversation,
         snackbarHostState = snackbarHostState,
         bottomBar = bottomBar
     )
@@ -76,8 +77,9 @@ private fun ConversationScreen(
     conversations: List<ConversationUi>?,
     loading: Boolean,
     onConversationClick: (Conversation) -> Unit,
-    onDeleteConversation: (Conversation) -> Unit,
-    onCreateConversation: () -> Unit,
+    onDeleteConversationClick: (Conversation) -> Unit,
+    onCreateConversationClick: () -> Unit,
+    onRecreateConversationClick: (Conversation) -> Unit,
     snackbarHostState: SnackbarHostState = SnackbarHostState(),
     bottomBar: @Composable () -> Unit
 ) {
@@ -93,7 +95,7 @@ private fun ConversationScreen(
                 critical = true,
                 onConfirm = {
                     activeDialog = null
-                    onDeleteConversation(dialog.conversationUi.toConversation())
+                    onDeleteConversationClick(dialog.conversation)
                 },
                 onCancel = { activeDialog = null }
             )
@@ -107,19 +109,25 @@ private fun ConversationScreen(
     }
 
     ConversationScaffold(
-        onCreateConversation = onCreateConversation,
+        onCreateConversation = onCreateConversationClick,
         snackbarHostState = snackbarHostState,
         bottomBar = bottomBar
     ) { paddingValues ->
         conversations?.let { conversations ->
             ConversationFeed(
                 modifier = Modifier.padding(paddingValues),
-                conversations = conversations,
-                onClick = { onConversationClick(it.toConversation()) },
-                onLongClick = {
-                    activeBottomSheet = ConversationScreenBottomSheet.ConversationBottomSheet(it)
+                conversationsUi = conversations,
+                onClick = {
+                    if (it.state == Conversation.ConversationState.CREATED) {
+                        onConversationClick(it.toConversation())
+                    } else {
+                        activeBottomSheet = ConversationScreenBottomSheet.ConversationBottomSheet(it.toConversation())
+                    }
                 },
-                onCreateClick = onCreateConversation
+                onLongClick = {
+                    activeBottomSheet = ConversationScreenBottomSheet.ConversationBottomSheet(it.toConversation())
+                },
+                onCreateClick = onCreateConversationClick
             )
         } ?: run {
             Box(
@@ -138,11 +146,15 @@ private fun ConversationScreen(
     when(val bottomSheetType = activeBottomSheet)  {
         is ConversationScreenBottomSheet.ConversationBottomSheet -> {
             ConversationBottomSheet(
-                onDismiss = { activeBottomSheet = null },
+                conversationState = bottomSheetType.conversation.state,
+                onRecreateClick = {
+                    onRecreateConversationClick(bottomSheetType.conversation)
+                },
                 onDeleteClick = {
                     activeBottomSheet = null
-                    activeDialog = ConversationScreenDialog.DeleteConversationDialog(bottomSheetType.conversationUi)
-                }
+                    activeDialog = ConversationScreenDialog.DeleteConversationDialog(bottomSheetType.conversation)
+                },
+                onDismiss = { activeBottomSheet = null }
             )
         }
 
@@ -151,11 +163,11 @@ private fun ConversationScreen(
 }
 
 private sealed class ConversationScreenBottomSheet {
-    data class ConversationBottomSheet(val conversationUi: ConversationUi): ConversationScreenBottomSheet()
+    data class ConversationBottomSheet(val conversation: Conversation): ConversationScreenBottomSheet()
 }
 
 private sealed class ConversationScreenDialog {
-    data class DeleteConversationDialog(val conversationUi: ConversationUi): ConversationScreenDialog()
+    data class DeleteConversationDialog(val conversation: Conversation): ConversationScreenDialog()
 }
 
 /*
@@ -175,8 +187,9 @@ private fun ConversationsScreenPreview() {
                 conversations = conversations,
                 loading = false,
                 onConversationClick = {},
-                onDeleteConversation = {},
-                onCreateConversation = {},
+                onDeleteConversationClick = {},
+                onCreateConversationClick = {},
+                onRecreateConversationClick = {},
                 bottomBar = {}
             )
         }

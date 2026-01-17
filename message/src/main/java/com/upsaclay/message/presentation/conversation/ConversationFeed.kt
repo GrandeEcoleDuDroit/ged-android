@@ -1,5 +1,7 @@
 package com.upsaclay.message.presentation.conversation
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,6 +17,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -28,27 +32,35 @@ import com.upsaclay.message.R
 import com.upsaclay.message.domain.conversationsUIFixture
 import com.upsaclay.message.domain.entity.ConversationUi
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ConversationFeed(
     modifier: Modifier = Modifier,
-    conversations: List<ConversationUi>,
+    conversationsUi: List<ConversationUi>,
     onClick: (ConversationUi) -> Unit,
     onLongClick: (ConversationUi) -> Unit,
     onCreateClick: () -> Unit
 ) {
+    val haptic = LocalHapticFeedback.current
+
     LazyColumn(modifier = modifier) {
-        if (conversations.isEmpty()) {
+        if (conversationsUi.isEmpty()) {
             item { EmptyConversationText(onCreateClick) }
         } else {
-            items(conversations.size) { index ->
-                val conversation = conversations[index]
+            items(conversationsUi.size) { index ->
+                val conversationUi = conversationsUi[index]
                 ConversationItem(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .combinedClickable(
+                            onClick = { onClick(conversationUi) },
+                            onLongClick = {
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                onLongClick(conversationUi)
+                            }
+                        )
                         .testTag(stringResource(id = R.string.conversation_screen_conversation_item_tag)),
-                    conversationUi = conversation,
-                    onClick = { onClick(conversation) },
-                    onLongClick = { onLongClick(conversation) }
+                    conversationUi = conversationUi
                 )
             }
         }
@@ -100,7 +112,7 @@ private fun ConversationFeedPreview() {
     GedoiseTheme {
         Surface {
             ConversationFeed(
-                conversations = conversationsUIFixture,
+                conversationsUi = conversationsUIFixture,
                 onClick = {},
                 onLongClick = {},
                 onCreateClick = {}

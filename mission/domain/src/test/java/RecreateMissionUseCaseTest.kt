@@ -3,7 +3,7 @@ import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.missionFixture
 import com.upsaclay.mission.domain.repository.MissionRepository
-import com.upsaclay.mission.domain.usecase.ResendMissionUseCase
+import com.upsaclay.mission.domain.usecase.RecreateMissionUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -15,12 +15,12 @@ import org.junit.Test
 import java.io.File
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class ResendMissionUseCaseTest {
+class RecreateMissionUseCaseTest {
     private val missionRepository: MissionRepository = mockk()
     private val fileRepository: FileRepository = mockk()
     private val imageRepository: ImageRepository = mockk()
 
-    private lateinit var useCase: ResendMissionUseCase
+    private lateinit var useCase: RecreateMissionUseCase
     private val testScope = TestScope(UnconfinedTestDispatcher())
     private val file = File("file")
 
@@ -31,7 +31,7 @@ class ResendMissionUseCaseTest {
         coEvery { fileRepository.getFile(any()) } returns file
         coEvery { imageRepository.deleteLocalImage(any()) } returns Unit
 
-        useCase = ResendMissionUseCase(
+        useCase = RecreateMissionUseCase(
             missionRepository = missionRepository,
             fileRepository = fileRepository,
             imageRepository = imageRepository,

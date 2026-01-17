@@ -4,8 +4,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Send
 import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -18,6 +18,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.upsaclay.common.presentation.components.TextItem
+import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.message.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,11 +34,11 @@ fun SentMessageBottomSheet(
         TextItem(
             modifier = Modifier.fillMaxWidth(),
             text = {
-                Text(text = stringResource(id = com.upsaclay.common.R.string.resend))
+                Text(text = stringResource(id = R.string.resend))
             },
             icon = {
                 Icon(
-                    imageVector = Icons.Outlined.Refresh,
+                    imageVector = Icons.AutoMirrored.Outlined.Send,
                     contentDescription = null
                 )
             },
@@ -105,18 +107,22 @@ fun ReceivedMessageBottomSheet(
 @Preview(heightDp = 400)
 @Composable
 private fun SentMessageBottomSheetPreview() {
-    SentMessageBottomSheet(
-        onResendMessageClick = {},
-        onDeleteMessageClick = {},
-        onDismiss = {}
-    )
+    GedoiseTheme {
+        SentMessageBottomSheet(
+            onResendMessageClick = {},
+            onDeleteMessageClick = {},
+            onDismiss = {}
+        )
+    }
 }
 
 @Preview(heightDp = 400)
 @Composable
 private fun ReceivedMessageBottomSheetPreview() {
-    ReceivedMessageBottomSheet(
-        onReportClick = {},
-        onDismiss = {}
-    )
+    GedoiseTheme {
+        ReceivedMessageBottomSheet(
+            onReportClick = {},
+            onDismiss = {}
+        )
+    }
 }

@@ -39,9 +39,9 @@ import com.upsaclay.message.presentation.chat.navigateToChat
 import com.upsaclay.message.presentation.conversation.ConversationBaseRoute
 import com.upsaclay.message.presentation.conversation.ConversationRoute
 import com.upsaclay.message.presentation.conversation.conversationSection
-import com.upsaclay.message.presentation.conversation.create.CreateConversationRoute
-import com.upsaclay.message.presentation.conversation.create.createConversationScreen
-import com.upsaclay.message.presentation.conversation.create.navigateToCreateConversation
+import com.upsaclay.message.presentation.conversation.createconversation.CreateConversationRoute
+import com.upsaclay.message.presentation.conversation.createconversation.createConversationScreen
+import com.upsaclay.message.presentation.conversation.createconversation.navigateToCreateConversation
 import com.upsaclay.message.presentation.conversation.navigateToConversation
 import com.upsaclay.mission.presentation.createmission.createMissionScreen
 import com.upsaclay.mission.presentation.createmission.navigateToCreateMission

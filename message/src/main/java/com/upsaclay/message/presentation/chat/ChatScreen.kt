@@ -1,10 +1,9 @@
 package com.upsaclay.message.presentation.chat
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -20,12 +19,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.paging.PagingData
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.extension.rootMediumPadding
-import com.upsaclay.common.extension.smallMediumSpacing
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.LoadingDialog
@@ -72,14 +71,14 @@ fun ChatDestination(
             when (event) {
                 is MessageEvent.NewMessage -> newMessageEvent = event
                 is MessageEvent.MessageReported -> showSnackBar(context.getString(R.string.message_reported))
-                is MessageEvent.ConversationDeleted -> onBackClick()
+                is MessageEvent.ChatDeleted -> onBackClick()
                 is SingleUiEvent.Error -> showSnackBar(context.getString(event.messageId))
             }
         }
     }
 
     LifecycleResumeEffect(Unit) {
-        viewModel.seeMessages()
+        viewModel.startSeeingMessages()
 
         onPauseOrDispose {
             viewModel.stopSeeingMessages()
@@ -91,18 +90,18 @@ fun ChatDestination(
         messages = viewModel.messages,
         messageText = uiState.messageText,
         loading = uiState.loading,
-        userBlocked = uiState.userBlocked,
+        isUserBlocked = uiState.isUserBlocked,
         snackbarHostState = snackbarHostState,
         newMessageEvent = newMessageEvent,
         onBackClick = onBackClick,
         onInterlocutorClick = onInterlocutorClick,
         onMessageTextChange = viewModel::onMessageTextChange,
         onSendMessageClick = viewModel::sendMessage,
-        onResendMessageClick = viewModel::resendMessage,
-        onDeleteMessageClick = viewModel::deleteMessage,
+        onResendMessageClick = viewModel::resendErrorMessage,
+        onDeleteMessageClick = viewModel::deleteErrorMessage,
         onReportClick = viewModel::reportMessage,
         onUnblockUserClick = viewModel::unblockUser,
-        onDeleteConversationClick = viewModel::deleteConversation
+        onDeleteConversationClick = viewModel::deleteChat
     )
 }
 
@@ -113,7 +112,7 @@ private fun ChatScreen(
     messages: Flow<PagingData<Message>>,
     messageText: String,
     loading: Boolean,
-    userBlocked: Boolean,
+    isUserBlocked: Boolean,
     snackbarHostState: SnackbarHostState = SnackbarHostState(),
     newMessageEvent: MessageEvent.NewMessage?,
     onBackClick: () -> Unit,
@@ -181,44 +180,43 @@ private fun ChatScreen(
         modifier = Modifier.imePadding(),
         interlocutor = conversation.interlocutor,
         snackbarHostState = snackbarHostState,
-        onBackClick = {
-            focusManager.clearFocus()
-            onBackClick()
-        },
-        onInterlocutorClick = { onInterlocutorClick(conversation.interlocutor) }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .rootMediumPadding(innerPadding)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.smallMediumSpacing()
-        ) {
-            MessageFeed(
-                modifier = Modifier.weight(1f),
-                messages = messages,
-                interlocutor = conversation.interlocutor,
-                newMessageEvent = newMessageEvent,
-                onErrorSentMessageClick = {
-                    if (it.state == MessageState.ERROR) {
-                        activeBottomSheet = ChatScreenBottomSheet.SentMessageBottomSheet(it)
-                    }
-                },
-                onReceivedMessageLongClick = {
-                    activeBottomSheet = ChatScreenBottomSheet.ReceivedMessageBottomSheet(it)
-                },
-                onInterlocutorClick = { onInterlocutorClick(conversation.interlocutor) }
-            )
-
+        bottomBar = {
             MessageBottomSection(
-                modifier = Modifier.fillMaxWidth(),
-                userBlocked = userBlocked,
+                modifier = Modifier
+                    .padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+                    .padding(bottom = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+                    .fillMaxWidth(),
+                isUserBlocked = isUserBlocked,
                 messageText = messageText,
                 onMessageTextChange = onMessageTextChange,
                 onSendMessageClick = onSendMessageClick,
                 onDeleteConversationClick = { activeDialog = ChatDialog.DeleteConversationDialog },
                 onUnblockUserClick = { activeDialog = ChatDialog.UnblockUserDialog }
             )
-        }
+        },
+        onBackClick = {
+            focusManager.clearFocus()
+            onBackClick()
+        },
+        onInterlocutorClick = { onInterlocutorClick(conversation.interlocutor) }
+    ) { innerPadding ->
+        MessageFeed(
+            modifier = Modifier
+                .rootMediumPadding(innerPadding)
+                .fillMaxSize(),
+            messages = messages,
+            interlocutor = conversation.interlocutor,
+            newMessageEvent = newMessageEvent,
+            onErrorSentMessageClick = {
+                if (it.state == MessageState.ERROR) {
+                    activeBottomSheet = ChatScreenBottomSheet.SentMessageBottomSheet(it)
+                }
+            },
+            onReceivedMessageLongClick = {
+                activeBottomSheet = ChatScreenBottomSheet.ReceivedMessageBottomSheet(it)
+            },
+            onInterlocutorClick = { onInterlocutorClick(conversation.interlocutor) }
+        )
     }
 
     when(val bottomSheet = activeBottomSheet) {
@@ -274,23 +272,22 @@ private fun ChatScreen(
 @Composable
 private fun MessageBottomSection(
     modifier: Modifier = Modifier,
-    userBlocked: Boolean,
+    isUserBlocked: Boolean,
     messageText: String,
     onMessageTextChange: (String) -> Unit,
     onSendMessageClick: () -> Unit,
     onDeleteConversationClick: () -> Unit,
     onUnblockUserClick: () -> Unit
 ) {
-    if (userBlocked) {
+    if (isUserBlocked) {
         MessageBlockedUserIndicator(
-            modifier = modifier
-                .testTag(stringResource(R.string.chat_screen_blocked_user_indicator_tag)),
+            modifier = modifier.testTag(stringResource(R.string.chat_screen_blocked_user_indicator_tag)),
             onDeleteChatClick = onDeleteConversationClick,
             onUnblockUserClick = onUnblockUserClick
         )
     } else {
         MessageInput(
-            modifier = Modifier.testTag(stringResource(R.string.chat_screen_message_input_tag)),
+            modifier = modifier.testTag(stringResource(R.string.chat_screen_message_input_tag)),
             value = messageText,
             onValueChange = onMessageTextChange,
             onSendClick = onSendMessageClick
@@ -327,7 +324,7 @@ private fun ChatScreenPreview() {
             messages = flowOf(PagingData.from(messagesFixture)),
             messageText = text,
             loading = false,
-            userBlocked = false,
+            isUserBlocked = false,
             newMessageEvent = null,
             onBackClick = {},
             onInterlocutorClick = {},

@@ -18,8 +18,8 @@ internal class MessageRepositoryImpl(
     override fun getPagingMessages(conversationId: String): Flow<PagingData<Message>> =
         messageLocalDataSource.getMessages(conversationId)
 
-    override fun getLastMessageFlow(conversationId: String): Flow<Message?> =
-        messageLocalDataSource.getLastMessageFlow(conversationId)
+    override fun getNewMessagesFlow(conversationId: String, date: LocalDateTime): Flow<Message?> =
+        messageLocalDataSource.getNewMessagesFlow(conversationId, date)
 
     override suspend fun getLastMessage(conversationId: String): Message? =
         messageLocalDataSource.getLastMessage(conversationId)
@@ -44,24 +44,25 @@ internal class MessageRepositoryImpl(
             throw e
         }
     }
-    override suspend fun updateSeenMessages(conversationId: String, userId: String) {
+
+    override suspend fun setMessagesSeen(conversationId: String, currentUserId: String) {
         try {
-            messageLocalDataSource.getUnreadMessagesByUser(conversationId, userId).forEach { message ->
-                messageRemoteDataSource.updateSeenMessage(message.copy(seen = true))
+            messageLocalDataSource.getUserUnseenMessages(conversationId, currentUserId).forEach { message ->
+                messageRemoteDataSource.setMessageSeen(message)
             }
-            messageLocalDataSource.updateSeenMessages(conversationId, userId)
+            messageLocalDataSource.setMessagesSeen(conversationId, currentUserId)
         } catch (e: Exception) {
-            e("Error updating seen messages for conversation $conversationId", e)
+            e("Error set messages seen for conversation $conversationId", e)
             throw e
         }
     }
 
-    override suspend fun updateSeenMessage(message: Message) {
+    override suspend fun setMessageSeen(message: Message) {
         try {
-            messageLocalDataSource.updateMessage(message.copy(seen = true))
-            messageRemoteDataSource.updateSeenMessage(message.copy(seen = true))
+            messageRemoteDataSource.setMessageSeen(message)
+            messageLocalDataSource.setMessageSeen(message.id)
         } catch (e: Exception) {
-            e("Error updating seen message ${message.id} for conversation ${message.conversationId}", e)
+            e("Error set message seen ${message.id} for conversation ${message.conversationId}", e)
             throw e
         }
     }

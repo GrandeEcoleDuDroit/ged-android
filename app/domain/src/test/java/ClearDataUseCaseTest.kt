@@ -1,6 +1,6 @@
 package com.upsaclay.gedoise.usecase
 
-import com.upsaclay.app.domain.ClearDataUseCase
+import com.upsaclay.app.domain.usecase.ClearDataUseCase
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository

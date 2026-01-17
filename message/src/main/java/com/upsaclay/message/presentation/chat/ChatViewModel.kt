@@ -3,6 +3,8 @@ package com.upsaclay.message.presentation.chat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import com.upsaclay.common.domain.entity.CustomException
+import com.upsaclay.common.domain.entity.CustomException.CustomError.CURRENT_USER_NOT_FOUND
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.repository.UserRepository
@@ -25,9 +27,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.Duration
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
@@ -47,7 +49,7 @@ class ChatViewModel(
         ChatUiState(
             messageText = "",
             loading = false,
-            userBlocked = false,
+            isUserBlocked = false,
             currentUser = userRepository.currentUser
         )
     )
@@ -75,12 +77,13 @@ class ChatViewModel(
     fun sendMessage() {
         try {
             val text = uiState.value.messageText.takeUnless { it.isEmpty() } ?: return
-            val user = requireNotNull(user)
+            val user = user ?: throw CustomException(CURRENT_USER_NOT_FOUND)
+
             val message = Message(
                 id = generateIdUseCase(),
-                conversationId = conversation.id,
                 senderId = user.id,
                 recipientId = conversation.interlocutor.id,
+                conversationId = conversation.id,
                 content = text,
                 date = LocalDateTime.now(ZoneOffset.UTC),
                 state = MessageState.DRAFT
@@ -91,17 +94,18 @@ class ChatViewModel(
                 message = message,
                 userId = user.id
             )
+
             _uiState.update { it.copy(messageText = "") }
-        } catch (_: IllegalArgumentException) {
+        } catch (e: Exception) {
             viewModelScope.launch {
-                _event.emit(SingleUiEvent.Error(com.upsaclay.common.R.string.current_user_not_found_error))
+                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
             }
         }
     }
 
-    fun resendMessage(message: Message) {
+    fun resendErrorMessage(message: Message) {
         try {
-            val user = requireNotNull(user)
+            val user = user ?: throw CustomException(CURRENT_USER_NOT_FOUND)
             viewModelScope.launch {
                 sendMessageUseCase(
                     conversation = conversation,
@@ -109,14 +113,14 @@ class ChatViewModel(
                     userId = user.id
                 )
             }
-        } catch (_: IllegalArgumentException) {
+        } catch (e: Exception) {
             viewModelScope.launch {
-                _event.emit(SingleUiEvent.Error(com.upsaclay.common.R.string.current_user_not_found_error))
+                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
             }
         }
     }
 
-    fun deleteMessage(message: Message) {
+    fun deleteErrorMessage(message: Message) {
         viewModelScope.launch {
             messageRepository.deleteLocalMessage(message)
         }
@@ -152,14 +156,14 @@ class ChatViewModel(
         }
     }
 
-    fun deleteConversation() {
-        val currentUserId = uiState.value.currentUser?.id ?: return
-        _uiState.update { it.copy(loading = true) }
-
+    fun deleteChat() {
         viewModelScope.launch {
+            val currentUserId = uiState.value.currentUser?.id ?: throw CustomException(CURRENT_USER_NOT_FOUND)
+            _uiState.update { it.copy(loading = true) }
+
             try {
                 deleteConversationUseCase(conversation, currentUserId)
-                _event.emit(MessageEvent.ConversationDeleted)
+                _event.emit(MessageEvent.ChatDeleted)
             } catch (e: Exception) {
                 _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
             } finally {
@@ -168,21 +172,20 @@ class ChatViewModel(
         }
     }
 
-    fun seeMessages() {
+    fun startSeeingMessages() {
         seeMessagesJob = viewModelScope.launch {
             launch {
                 user?.let {
-                    messageRepository.updateSeenMessages(conversation.id, it.id)
+                    messageRepository.setMessagesSeen(conversation.id, it.id)
                 }
             }
 
             launch {
-                messageRepository.getLastMessageFlow(conversation.id)
-                    .filterNotNull()
-                    .filter { it.senderId != user?.id }
-                    .filter { !it.seen }
+                event
+                    .mapNotNull { it as? MessageEvent.NewMessage }
+                    .filter { it.message.senderId != user?.id && !it.message.seen }
                     .collect {
-                        messageRepository.updateSeenMessage(it)
+                        messageRepository.setMessageSeen(it.message)
                     }
             }
         }
@@ -195,9 +198,8 @@ class ChatViewModel(
 
     private fun emitNewMessageReceived() {
         viewModelScope.launch {
-            messageRepository.getLastMessageFlow(conversation.id)
+            messageRepository.getNewMessagesFlow(conversation.id, LocalDateTime.now(ZoneOffset.UTC))
                 .filterNotNull()
-                .filter { Duration.between(it.date, LocalDateTime.now(ZoneOffset.UTC)).toMinutes() < 1L }
                 .collect {
                     _event.emit(MessageEvent.NewMessage(it))
                 }
@@ -232,7 +234,7 @@ class ChatViewModel(
             val interlocutorId = conversation.interlocutor.id
             blockedUserRepository.blockedUserIds.collect { blockedUserIds ->
                 _uiState.update {
-                    it.copy(userBlocked = blockedUserIds.contains(interlocutorId))
+                    it.copy(isUserBlocked = blockedUserIds.contains(interlocutorId))
                 }
             }
         }
@@ -241,13 +243,13 @@ class ChatViewModel(
     internal data class ChatUiState(
         val messageText: String,
         val loading: Boolean,
-        val userBlocked: Boolean,
+        val isUserBlocked: Boolean,
         val currentUser: User?
     )
 
     internal sealed class MessageEvent: SingleUiEvent {
         data class NewMessage(val message: Message): MessageEvent()
         data object MessageReported: MessageEvent()
-        data object ConversationDeleted: MessageEvent()
+        data object ChatDeleted: MessageEvent()
     }
 }

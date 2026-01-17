@@ -39,10 +39,10 @@ internal class MessageRemoteDataSource(
         }
     }
 
-    suspend fun updateSeenMessage(message: Message) {
+    suspend fun setMessageSeen(message: Message) {
         withContext(Dispatchers.IO) {
             try {
-                messageApi.updateSeenMessage(message.toRemote())
+                messageApi.setMessageSeen(message.conversationId, message.id)
             } catch (e: Exception) {
                 throw mapFirebaseException(e)
             }

@@ -12,7 +12,7 @@ import com.upsaclay.mission.domain.entity.MissionReport
 import com.upsaclay.mission.domain.repository.MissionRepository
 import com.upsaclay.mission.domain.usecase.DeleteMissionUseCase
 import com.upsaclay.mission.domain.usecase.RefreshMissionsUseCase
-import com.upsaclay.mission.domain.usecase.ResendMissionUseCase
+import com.upsaclay.mission.domain.usecase.RecreateMissionUseCase
 import com.upsaclay.mission.presentation.extension.missionSorting
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 class MissionViewModel(
     private val missionRepository: MissionRepository,
     private val userRepository: UserRepository,
-    private val resendMissionUseCase: ResendMissionUseCase,
+    private val recreateMissionUseCase: RecreateMissionUseCase,
     private val deleteMissionUseCase: DeleteMissionUseCase,
     private val refreshMissionsUseCase: RefreshMissionsUseCase
 ): ViewModel() {
@@ -73,14 +73,14 @@ class MissionViewModel(
         }
     }
 
-    fun resendMission(mission: Mission) {
+    fun recreateMission(mission: Mission) {
         viewModelScope.launch {
             try {
                 _uiState.update {
                     it.copy(loading = true)
                 }
 
-                resendMissionUseCase(mission)
+                recreateMissionUseCase(mission)
             } catch (e: Exception) {
                 _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
             } finally {

@@ -2,42 +2,33 @@ package com.upsaclay.gedoise.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.upsaclay.app.domain.ClearDataUseCase
-import com.upsaclay.app.domain.FcmTokenUseCase
-import com.upsaclay.app.domain.ListenBlockedUserEvents
-import com.upsaclay.app.domain.ListenRemoteUserUseCase
-import com.upsaclay.app.domain.SynchronizeDataUseCase
+import com.upsaclay.app.domain.usecase.ClearDataUseCase
+import com.upsaclay.app.domain.usecase.FcmTokenUseCase
+import com.upsaclay.app.domain.usecase.ListenDataUseCase
+import com.upsaclay.app.domain.usecase.SynchronizeDataUseCase
 import com.upsaclay.authentication.domain.repository.AuthenticationRepository
-import com.upsaclay.message.domain.usecase.ListenRemoteConversationsUseCase
-import com.upsaclay.message.domain.usecase.ListenRemoteMessagesUseCase
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class MainViewModel(
-    private val listenRemoteConversationsUseCase: ListenRemoteConversationsUseCase,
-    private val listenRemoteMessagesUseCase: ListenRemoteMessagesUseCase,
-    private val listenRemoteUserUseCase: ListenRemoteUserUseCase,
-    private val listenBlockedUserEvents: ListenBlockedUserEvents,
+    private val authenticationRepository: AuthenticationRepository,
     private val synchronizeDataUseCase: SynchronizeDataUseCase,
     private val clearDataUseCase: ClearDataUseCase,
     private val fcmTokenUseCase: FcmTokenUseCase,
-    private val authenticationRepository: AuthenticationRepository
+    private val listenDataUseCase: ListenDataUseCase
 ): ViewModel() {
-    private var listeningJob: Job? = null
-
-    fun listenAuthenticationChanges() {
+    fun updateDataOnAuthChange() {
         viewModelScope.launch {
             authenticationRepository.authenticationState.collectLatest { authenticated ->
                 try {
                     if (authenticated) {
-                        listenData()
+                        listenDataUseCase.start()
                         synchronizeDataUseCase()
                         fcmTokenUseCase.sendUnsetToken()
                     } else {
-                        stopListenData()
+                        listenDataUseCase.stop()
                         delay(2000)
                         clearDataUseCase()
                         fcmTokenUseCase.generateNewToken()
@@ -47,19 +38,5 @@ class MainViewModel(
                 }
             }
         }
-    }
-
-    private fun listenData() {
-        listeningJob?.cancel()
-        listeningJob = viewModelScope.launch {
-            launch { listenRemoteConversationsUseCase.start() }
-            launch { listenRemoteUserUseCase.start() }
-            launch { listenBlockedUserEvents.start() }
-        }
-    }
-
-    private suspend fun stopListenData() {
-        listenRemoteMessagesUseCase.stopAll()
-        listeningJob?.cancel()
     }
 }

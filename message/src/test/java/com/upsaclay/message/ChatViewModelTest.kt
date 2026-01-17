@@ -52,11 +52,11 @@ class ChatViewModelTest {
         every { userRepository.user } returns MutableStateFlow(userFixture)
         every { userRepository.currentUser } returns userFixture
         every { messageRepository.getPagingMessages(any()) } returns flowOf(PagingData.from(messagesFixture))
-        every { messageRepository.getLastMessageFlow(any()) } returns flowOf(messageFixture)
+        every { messageRepository.getNewMessagesFlow(any(), any()) } returns flowOf(messageFixture)
         every { sendMessageUseCase(any(), any(), any()) } returns Unit
         every { blockedUserRepository.blockedUserIds } returns flowOf(emptySet())
         coEvery { deleteConversationUseCase(any(), any()) } returns Unit
-        coEvery { messageRepository.updateSeenMessages(any(), any()) } returns Unit
+        coEvery { messageRepository.setMessagesSeen(any(), any()) } returns Unit
         coEvery { messageNotificationManager.clearNotifications(any()) } returns Unit
         coEvery { messageRepository.deleteLocalMessages(any()) } returns Unit
 

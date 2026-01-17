@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.upsaclay.message.data.model.ConversationField.Local.CONVERSATION_CREATED_AT
-import com.upsaclay.message.data.model.ConversationField.Local.CONVERSATION_DELETE_TIME
+import com.upsaclay.message.data.model.ConversationField.Local.CONVERSATION_EFFECTIVE_FROM
 import com.upsaclay.message.data.model.ConversationField.Local.CONVERSATION_INTERLOCUTOR_ADMIN
 import com.upsaclay.message.data.model.ConversationField.Local.CONVERSATION_INTERLOCUTOR_EMAIL
 import com.upsaclay.message.data.model.ConversationField.Local.CONVERSATION_INTERLOCUTOR_FIRST_NAME
@@ -55,6 +55,6 @@ data class LocalMessageNotification(
     val conversationCreatedAt: Long,
     @ColumnInfo(name = CONVERSATION_STATE)
     val conversationState: String,
-    @ColumnInfo(name = CONVERSATION_DELETE_TIME)
+    @ColumnInfo(name = CONVERSATION_EFFECTIVE_FROM)
     val conversationDeleteTime: Long?
 )

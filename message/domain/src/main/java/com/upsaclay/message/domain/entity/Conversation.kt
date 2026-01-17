@@ -8,13 +8,8 @@ data class Conversation(
     val interlocutor: User,
     val createdAt: LocalDateTime,
     val state: ConversationState,
-    val deleteTime: LocalDateTime? = null
+    val effectiveFrom: LocalDateTime? = null
 ) {
-    val shouldBeCreated: Boolean
-        get() = state == ConversationState.DRAFT ||
-                state == ConversationState.ERROR ||
-                state == ConversationState.DELETING
-
     enum class ConversationState {
         DRAFT,
         CREATING,

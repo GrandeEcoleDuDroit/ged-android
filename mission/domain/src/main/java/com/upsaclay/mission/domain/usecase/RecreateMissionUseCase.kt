@@ -8,7 +8,7 @@ import com.upsaclay.mission.domain.repository.MissionRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-class ResendMissionUseCase(
+class RecreateMissionUseCase(
     private val missionRepository: MissionRepository,
     private val fileRepository: FileRepository,
     private val imageRepository: ImageRepository,

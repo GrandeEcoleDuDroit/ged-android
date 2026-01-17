@@ -22,5 +22,6 @@ internal object MessageField {
         const val CONTENT = "content"
         const val TIMESTAMP = "timestamp"
         const val SEEN = "seen"
+        const val NOT_VISIBLE_FOR = "notVisibleFor"
     }
 }

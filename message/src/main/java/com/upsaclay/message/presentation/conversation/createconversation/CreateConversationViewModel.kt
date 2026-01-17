@@ -1,4 +1,4 @@
-package com.upsaclay.message.presentation.conversation.create
+package com.upsaclay.message.presentation.conversation.createconversation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -34,30 +34,23 @@ class CreateConversationViewModel(
     }
 
     private fun fetchUsers() {
-        _uiState.update { it.copy(loading = true) }
-
         viewModelScope.launch {
             val blockedUserIds = blockedUserRepository.getLocalBlockedUserIds()
             try {
                 getUsersUseCase()
-                    .filter {
-                        it.id != userRepository.currentUser?.id
-                                && it.id !in blockedUserIds
-                    }
+                    .filter { it.id != userRepository.currentUser?.id && it.id !in blockedUserIds }
                     .sortedBy { it.fullName }
                     .also { users ->
                         defaultUsers = users
                         _uiState.update {
-                            it.copy(
-                                users = users,
-                                loading = false
-                            )
+                            it.copy(users = users)
                         }
                     }
             } catch (e: Exception) {
                 _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
-            } finally {
-                _uiState.update { it.copy(loading = false) }
+                _uiState.update {
+                    it.copy(users = emptyList())
+                }
             }
         }
     }
@@ -71,39 +64,35 @@ class CreateConversationViewModel(
         }
     }
 
-    fun onQueryChange(userName: String) {
+    fun onQueryChange(query: String) {
         _uiState.update {
-            it.copy(query = userName)
+            it.copy(query = query)
         }
-        filterUserByName(userName)
-    }
 
-    fun resetQuery() {
-        _uiState.update {
-            it.copy(
-                query = "",
-                users = defaultUsers
-            )
-        }
-    }
-
-    private fun filterUserByName(query: String) {
-        val users = if (query.isNotBlank()) {
-            defaultUsers.filter { user ->
-                user.firstName.contains(query, ignoreCase = true) ||
-                        user.lastName.contains(query, ignoreCase = true)
-            }
-        } else {
+        val users = if (query.isBlank()) {
             defaultUsers
+        } else {
+            defaultUsers.filter { user ->
+                user.fullName.contains(query, ignoreCase = true)
+            }
         }
+
         _uiState.update {
             it.copy(users = users)
         }
     }
 
+    fun resetQuery() {
+        _uiState.update {
+            it.copy(
+                users = defaultUsers,
+                query = ""
+            )
+        }
+    }
+
     data class CreateConversationUiState(
-        val users: List<User> = emptyList(),
-        val query: String = "",
-        val loading: Boolean = true
+        val users: List<User>? = null,
+        val query: String = ""
     )
 }

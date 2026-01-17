@@ -1,6 +1,6 @@
 package com.upsaclay.gedoise.usecase
 
-import com.upsaclay.app.domain.FcmTokenUseCase
+import com.upsaclay.app.domain.usecase.FcmTokenUseCase
 import com.upsaclay.app.domain.fcmTokenFixture
 import com.upsaclay.app.domain.repository.FcmTokenRepository
 import com.upsaclay.common.domain.repository.UserRepository

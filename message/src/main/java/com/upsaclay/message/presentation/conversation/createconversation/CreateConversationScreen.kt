@@ -1,4 +1,4 @@
-package com.upsaclay.message.presentation.conversation.create
+package com.upsaclay.message.presentation.conversation.createconversation
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -30,7 +31,6 @@ import androidx.compose.ui.text.style.TextAlign
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.usersFixture
 import com.upsaclay.common.presentation.SingleUiEvent
-import com.upsaclay.common.presentation.components.CircularProgressBar
 import com.upsaclay.common.presentation.components.UserItem
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.supportingText
@@ -66,7 +66,6 @@ fun CreateConversationDestination(
     CreateConversationScreen(
         users = uiState.users,
         query = uiState.query,
-        loading = uiState.loading,
         snackbarHostState = snackbarHostState,
         onQueryChange = viewModel::onQueryChange,
         onResetQuery = viewModel::resetQuery,
@@ -81,9 +80,8 @@ fun CreateConversationDestination(
 
 @Composable
 fun CreateConversationScreen(
-    users: List<User>,
+    users: List<User>?,
     query: String,
-    loading: Boolean,
     snackbarHostState: SnackbarHostState = SnackbarHostState(),
     onQueryChange: (String) -> Unit,
     onResetQuery: () -> Unit,
@@ -110,23 +108,14 @@ fun CreateConversationScreen(
             onBackClick()
         },
         onSearchClick = { search = true },
-        onClearClick = { onQueryChange("") },
+        onClearClick = onResetQuery,
         snackbarHostState = snackbarHostState
     ) { innerPadding ->
         Column(
             modifier = Modifier.padding(innerPadding),
             verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.small_padding))
         ) {
-            if (loading) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
-                    contentAlignment = Alignment.TopCenter
-                ) {
-                    CircularProgressBar()
-                }
-            } else {
+            users?.let {
                 UsersFeed(
                     users = users,
                     onUserClick = {
@@ -134,6 +123,15 @@ fun CreateConversationScreen(
                         onUserClick(it)
                     }
                 )
+            } ?: run {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                    contentAlignment = Alignment.TopCenter
+                ) {
+                    CircularProgressIndicator()
+                }
             }
         }
     }
@@ -176,15 +174,12 @@ private fun UsersFeed(
 @PhonePreviews
 @Composable
 private fun CreateConversationScreenPreview() {
-    val users: List<User> = usersFixture + usersFixture
-    val loading by remember { mutableStateOf(true) }
     var query by remember { mutableStateOf("") }
 
     GedoiseTheme {
         CreateConversationScreen(
-            users = users,
+            users = usersFixture,
             query = query,
-            loading = loading,
             onQueryChange = { query = it },
             onResetQuery = { query = "" },
             onUserClick = {},

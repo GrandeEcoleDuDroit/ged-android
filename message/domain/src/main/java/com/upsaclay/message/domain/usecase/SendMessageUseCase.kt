@@ -29,7 +29,7 @@ class SendMessageUseCase(
                 if (conversation.state == Conversation.ConversationState.DRAFT) {
                     conversationRepository.updateLocalConversation(conversation.copy(state = Conversation.ConversationState.ERROR))
                 }
-                messageRepository.updateLocalMessage(message.copy(state = MessageState.ERROR))
+                messageRepository.upsertLocalMessage(message.copy(state = MessageState.ERROR))
             }
         }
     }
@@ -38,16 +38,22 @@ class SendMessageUseCase(
         if (conversation.state == Conversation.ConversationState.DRAFT) {
             conversationRepository.createLocalConversation(conversation.copy(state = Conversation.ConversationState.CREATING))
         }
-        if (message.state == MessageState.DRAFT) {
-            messageRepository.createLocalMessage(message.copy(state = MessageState.SENDING))
+
+        when (message.state) {
+            MessageState.DRAFT -> messageRepository.createLocalMessage(message.copy(state = MessageState.SENDING))
+            MessageState.ERROR -> messageRepository.updateLocalMessage(message.copy(state = MessageState.SENDING))
+            else -> Unit
         }
     }
 
     private suspend fun createDataRemotely(conversation: Conversation, message: Message, userId: String) {
-        if (conversation.shouldBeCreated) {
+        if (conversation.state == Conversation.ConversationState.DRAFT) {
             conversationRepository.createRemoteConversation(conversation, userId)
+            conversationRepository.updateLocalConversation(conversation.copy(state = Conversation.ConversationState.CREATED))
         }
+
         messageRepository.createRemoteMessage(message)
+        messageRepository.updateLocalMessage(message.copy(state = MessageState.SENT))
     }
 
     private suspend fun sendNotification(conversation: Conversation, message: Message) {

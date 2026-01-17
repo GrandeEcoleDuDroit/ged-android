@@ -5,6 +5,13 @@ import com.upsaclay.common.data.extensions.toTimestamp
 import com.upsaclay.common.domain.extensions.toEpochMilliUTC
 import com.upsaclay.common.domain.extensions.toLocalDateTimeUTC
 import com.upsaclay.message.data.local.model.LocalMessage
+import com.upsaclay.message.data.model.MessageField.Remote.CONTENT
+import com.upsaclay.message.data.model.MessageField.Remote.CONVERSATION_ID
+import com.upsaclay.message.data.model.MessageField.Remote.MESSAGE_ID
+import com.upsaclay.message.data.model.MessageField.Remote.RECIPIENT_ID
+import com.upsaclay.message.data.model.MessageField.Remote.SEEN
+import com.upsaclay.message.data.model.MessageField.Remote.SENDER_ID
+import com.upsaclay.message.data.model.MessageField.Remote.TIMESTAMP
 import com.upsaclay.message.data.remote.model.RemoteMessage
 import com.upsaclay.message.data.remote.model.RemoteMessageReport
 import com.upsaclay.message.domain.entity.Message
@@ -21,6 +28,18 @@ internal fun RemoteMessage.toMessage() = Message(
     seen = seen,
     state = MessageState.SENT
 )
+
+internal fun RemoteMessage.toMap(): Map<String, Any> {
+    val data = mutableMapOf<String, Any>()
+    data[MESSAGE_ID] = messageId
+    data[CONVERSATION_ID] = conversationId
+    data[SENDER_ID] = senderId
+    data[RECIPIENT_ID] = recipientId
+    data[CONTENT] = content
+    data[TIMESTAMP] = timestamp
+    data[SEEN] = seen
+    return data
+}
 
 fun LocalMessage.toMessage() = Message(
     id = messageId,

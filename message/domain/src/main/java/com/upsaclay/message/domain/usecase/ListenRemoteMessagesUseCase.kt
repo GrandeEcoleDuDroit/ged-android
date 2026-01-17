@@ -18,17 +18,19 @@ class ListenRemoteMessagesUseCase(
     private val blockedUserRepository: BlockedUserRepository
 ) {
     internal var jobs = mutableMapOf<String, Job>()
+        private set
     private val mutex = Mutex()
 
     suspend fun start(conversation: Conversation) {
         mutex.withLock {
             jobs[conversation.interlocutor.id]?.job?.cancel()
+            jobs.remove(conversation.interlocutor.id)
         }
 
         val job = CoroutineScope(Dispatchers.IO).launch {
             val blockedUserIds = blockedUserRepository.getLocalBlockedUserIds()
             if (conversation.interlocutor.id !in blockedUserIds) {
-                listenMessages(conversation)
+                listenRemoteMessages(conversation)
             }
         }
 
@@ -51,7 +53,7 @@ class ListenRemoteMessagesUseCase(
         }
     }
 
-    internal suspend fun listenMessages(conversation: Conversation) {
+    internal suspend fun listenRemoteMessages(conversation: Conversation) {
         val lastMessage = messageRepository.getLastMessage(conversation.id)
         val offsetTime = getOffsetTime(conversation, lastMessage)
 
@@ -64,21 +66,7 @@ class ListenRemoteMessagesUseCase(
         }
     }
 
-    private fun getOffsetTime(conversation: Conversation, lastMessage: Message?): LocalDateTime {
-        return when {
-            conversation.deleteTime != null && lastMessage?.date != null -> {
-                if (conversation.deleteTime > lastMessage.date) {
-                    conversation.deleteTime
-                } else {
-                    lastMessage.date
-                }
-            }
+    private fun getOffsetTime(conversation: Conversation, lastMessage: Message?): LocalDateTime? =
+        listOfNotNull(conversation.effectiveFrom, lastMessage?.date).maxByOrNull { it }
 
-            conversation.deleteTime != null -> conversation.deleteTime
-
-            lastMessage?.date != null -> lastMessage.date
-
-            else -> conversation.createdAt
-        }
-    }
 }

@@ -1,4 +1,4 @@
-package com.upsaclay.app.domain
+package com.upsaclay.app.domain.usecase
 
 import com.upsaclay.app.domain.entity.FcmToken
 import com.upsaclay.app.domain.repository.FcmTokenRepository

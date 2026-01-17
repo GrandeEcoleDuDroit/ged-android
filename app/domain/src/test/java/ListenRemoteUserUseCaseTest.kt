@@ -1,6 +1,6 @@
 package com.upsaclay.gedoise.usecase
 
-import com.upsaclay.app.domain.ListenRemoteUserUseCase
+import com.upsaclay.app.domain.usecase.ListenRemoteUserUseCase
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.domain.userFixture2

@@ -9,7 +9,7 @@ import java.time.LocalDateTime
 interface MessageRepository {
     fun getPagingMessages(conversationId: String): Flow<PagingData<Message>>
 
-    fun getLastMessageFlow(conversationId: String): Flow<Message?>
+    fun getNewMessagesFlow(conversationId: String, date: LocalDateTime): Flow<Message?>
 
     suspend fun getLastMessage(conversationId: String): Message?
 
@@ -23,9 +23,9 @@ interface MessageRepository {
 
     suspend fun updateLocalMessage(message: Message)
 
-    suspend fun updateSeenMessages(conversationId: String, userId: String)
+    suspend fun setMessagesSeen(conversationId: String, currentUserId: String)
 
-    suspend fun updateSeenMessage(message: Message)
+    suspend fun setMessageSeen(message: Message)
 
     suspend fun upsertLocalMessage(message: Message)
 

@@ -5,7 +5,7 @@ import com.upsaclay.message.notification.MessageNotificationManager
 import com.upsaclay.message.notification.MessageNotificationPresenter
 import com.upsaclay.message.presentation.chat.ChatViewModel
 import com.upsaclay.message.presentation.conversation.ConversationViewModel
-import com.upsaclay.message.presentation.conversation.create.CreateConversationViewModel
+import com.upsaclay.message.presentation.conversation.createconversation.CreateConversationViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.singleOf

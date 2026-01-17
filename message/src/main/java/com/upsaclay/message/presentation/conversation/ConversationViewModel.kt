@@ -12,6 +12,7 @@ import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.ConversationUi
 import com.upsaclay.message.domain.usecase.DeleteConversationUseCase
 import com.upsaclay.message.domain.usecase.GetConversationsUiUseCase
+import com.upsaclay.message.domain.usecase.RecreateConversationUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -23,7 +24,8 @@ import kotlinx.coroutines.launch
 class ConversationViewModel(
     private val userRepository: UserRepository,
     private val getConversationsUiUseCase: GetConversationsUiUseCase,
-    private val deleteConversationUseCase: DeleteConversationUseCase
+    private val deleteConversationUseCase: DeleteConversationUseCase,
+    private val recreateConversationUseCase: RecreateConversationUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ConversationUiState())
     val uiState: StateFlow<ConversationUiState> = _uiState
@@ -37,11 +39,11 @@ class ConversationViewModel(
     fun deleteConversation(conversation: Conversation) {
         viewModelScope.launch {
             try {
+                val user = userRepository.currentUser ?: throw CustomException(CURRENT_USER_NOT_FOUND, Exception())
                 _uiState.update {
                     it.copy(loading = true)
                 }
 
-                val user = userRepository.currentUser ?: throw CustomException(CURRENT_USER_NOT_FOUND, Exception())
                 deleteConversationUseCase(conversation, user.id)
                 _event.emit(SingleUiEvent.Success(R.string.conversation_deleted))
             } catch (e: Exception) {
@@ -50,6 +52,17 @@ class ConversationViewModel(
                 _uiState.update {
                     it.copy(loading = false)
                 }
+            }
+        }
+    }
+
+    fun recreateConversation(conversation: Conversation) {
+        try {
+            val userId = userRepository.currentUser?.id ?: throw CustomException(CURRENT_USER_NOT_FOUND)
+            recreateConversationUseCase(conversation, userId)
+        } catch (e: Exception) {
+            viewModelScope.launch {
+                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
             }
         }
     }

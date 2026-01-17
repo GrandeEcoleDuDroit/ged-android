@@ -32,7 +32,7 @@ fun MissionBottomSheet(
     mission: Mission,
     editable: Boolean,
     onEditClick: () -> Unit,
-    onResendClick: () -> Unit = {},
+    onRecreateClick: () -> Unit = {},
     onDeleteClick: () -> Unit,
     onReportClick: () -> Unit,
     onDismiss: () -> Unit
@@ -44,7 +44,7 @@ fun MissionBottomSheet(
             is MissionState.Error -> {
                 ErrorMissionBottomSheetContent(
                     onDeleteClick = onDeleteClick,
-                    onResendClick = onResendClick
+                    onRecreateClick = onRecreateClick
                 )
             }
 
@@ -125,19 +125,19 @@ private fun NonEditableMissionBottomSheetContent(
 
 @Composable
 private fun ErrorMissionBottomSheetContent(
-    onResendClick: () -> Unit,
+    onRecreateClick: () -> Unit,
     onDeleteClick: () -> Unit
 ) {
     TextItem(
         modifier = Modifier.fillMaxWidth(),
-        text = { Text(text = stringResource(id = com.upsaclay.common.R.string.resend)) },
+        text = { Text(text = stringResource(id = com.upsaclay.common.R.string.retry)) },
         icon = {
             Icon(
                 imageVector = Icons.Default.Refresh,
                 contentDescription = null
             )
         },
-        onClick = onResendClick
+        onClick = onRecreateClick
     )
 
     TextItem(
@@ -174,7 +174,7 @@ fun EditableMissionBottomSheetPreview() {
                 mission = missionFixture,
                 editable = true,
                 onEditClick = {},
-                onResendClick = {},
+                onRecreateClick = {},
                 onReportClick = {},
                 onDeleteClick = {},
                 onDismiss = {}
@@ -192,7 +192,7 @@ fun NonEditableMissionBottomSheetPreview() {
                 mission = missionFixture,
                 editable = false,
                 onEditClick = {},
-                onResendClick = {},
+                onRecreateClick = {},
                 onReportClick = {},
                 onDeleteClick = {},
                 onDismiss = {}
@@ -207,7 +207,7 @@ fun ErrorMissionBottomSheetContentPreview() {
     GedoiseTheme {
         Surface {
             ErrorMissionBottomSheetContent(
-                onResendClick = {},
+                onRecreateClick = {},
                 onDeleteClick = {}
             )
         }

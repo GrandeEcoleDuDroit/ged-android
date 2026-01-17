@@ -27,14 +27,18 @@ object MissionPresentationUtils {
         get() = MaterialTheme.typography.bodyMedium
 
     fun formatSchoolLevels(schoolLevels: List<SchoolLevel>): String =
-        schoolLevels.sortedBy { it.ordinal }.joinToString(separator = " - ")
+        schoolLevels
+            .sortedBy { it.number }
+            .joinToString(
+                separator = " - ",
+                transform = { it.value }
+            )
 
     fun formatDate(startDate: LocalDate, endDate: LocalDate): String {
         return if(startDate == endDate) {
             DateUtils.formatDayMonthYear(startDate)
         } else {
-            DateUtils.formatDayMonthYear(startDate) + " - " +
-                    DateUtils.formatDayMonthYear(endDate)
+            DateUtils.formatDayMonthYear(startDate) + " - " + DateUtils.formatDayMonthYear(endDate)
         }
     }
 

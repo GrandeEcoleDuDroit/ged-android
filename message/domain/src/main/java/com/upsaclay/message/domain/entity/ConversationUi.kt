@@ -8,5 +8,5 @@ data class ConversationUi(
     val interlocutor: User,
     val lastMessage: Message,
     val createdAt: LocalDateTime,
-    val conversationState: Conversation.ConversationState
+    val state: Conversation.ConversationState
 )

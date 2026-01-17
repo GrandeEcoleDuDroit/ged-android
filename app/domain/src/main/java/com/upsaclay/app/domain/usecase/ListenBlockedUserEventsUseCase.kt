@@ -1,4 +1,4 @@
-package com.upsaclay.app.domain
+package com.upsaclay.app.domain.usecase
 
 import com.upsaclay.common.domain.entity.BlockUserEvent
 import com.upsaclay.common.domain.repository.BlockedUserRepository
@@ -6,7 +6,7 @@ import com.upsaclay.message.domain.usecase.ListenRemoteMessagesUseCase
 import com.upsaclay.message.domain.usecase.UpdateConversationDeleteTimeUseCase
 import com.upsaclay.news.domain.repository.AnnouncementRepository
 
-class ListenBlockedUserEvents(
+class ListenBlockedUserEventsUseCase(
     private val blockedUserRepository: BlockedUserRepository,
     private val announcementRepository: AnnouncementRepository,
     private val listenRemoteMessagesUseCase: ListenRemoteMessagesUseCase,
