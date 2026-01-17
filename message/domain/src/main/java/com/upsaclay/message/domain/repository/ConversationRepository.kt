@@ -1,6 +1,7 @@
 package com.upsaclay.message.domain.repository
 
 import com.upsaclay.message.domain.entity.Conversation
+import com.upsaclay.message.domain.entity.ConversationDTO
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDateTime
 
@@ -11,13 +12,13 @@ interface ConversationRepository {
 
     suspend fun getConversation(interlocutorId: String): Conversation?
 
-    suspend fun fetchRemoteConversations(userId: String): Flow<Conversation>
+    suspend fun getRemoteConversationsFlow(userId: String): Flow<ConversationDTO>
 
     suspend fun createLocalConversation(conversation: Conversation)
 
     suspend fun createRemoteConversation(conversation: Conversation, userId: String)
 
-    suspend fun updateConversationDeleteTime(conversation: Conversation, currentUserId: String, deleteTime: LocalDateTime)
+    suspend fun updateConversationEffectiveFrom(conversation: Conversation, currentUserId: String, effectiveFrom: LocalDateTime)
 
     suspend fun updateLocalConversation(conversation: Conversation)
 

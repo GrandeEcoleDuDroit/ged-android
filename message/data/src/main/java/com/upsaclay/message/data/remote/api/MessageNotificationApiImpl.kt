@@ -1,8 +1,8 @@
 package com.upsaclay.message.data.remote.api
 
 import com.google.gson.Gson
-import com.upsaclay.common.data.utils.sendServerRequest
 import com.upsaclay.common.data.remote.api.FcmApi
+import com.upsaclay.common.data.utils.sendServerRequest
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.message.data.mapper.toFcm
 import com.upsaclay.message.data.mapper.toRemote

@@ -3,7 +3,7 @@ package com.upsaclay.gedoise.presentation.profile.account.deleteaccount
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.upsaclay.app.domain.DeleteAccountUseCase
+import com.upsaclay.app.domain.usecase.DeleteAccountUseCase
 import com.upsaclay.authentication.R
 import com.upsaclay.authentication.mapAuthException
 import com.upsaclay.common.domain.entity.CustomException

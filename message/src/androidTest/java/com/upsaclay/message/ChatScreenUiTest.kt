@@ -29,7 +29,7 @@ class ChatScreenUiTest {
     private val uiState = ChatViewModel.ChatUiState(
         messageText = "",
         loading = false,
-        userBlocked = false,
+        isUserBlocked = false,
         currentUser = userFixture
     )
 
@@ -85,7 +85,7 @@ class ChatScreenUiTest {
     @Test
     fun messageBlockedUserIndicator_should_be_displayed_when_user_is_blocked() {
         // Given
-        every { chatViewModel.uiState } returns MutableStateFlow(uiState.copy(userBlocked = true))
+        every { chatViewModel.uiState } returns MutableStateFlow(uiState.copy(isUserBlocked = true))
 
         // When
         rule.setContent {

@@ -90,7 +90,7 @@ fun MissionDestination(
             onMissionClick = onMissionClick,
             onCreateMissionClick = onCreateMissionClick,
             onEditMissionClick = onEditMissionClick,
-            onResendMissionClick = viewModel::resendMission,
+            onRecreateMissionClick = viewModel::recreateMission,
             onDeleteMissionClick = viewModel::deleteMission,
             onReportMissionClick = viewModel::reportMission,
             onRefresh = viewModel::refreshMissions,
@@ -110,7 +110,7 @@ private fun MissionScreen(
     onMissionClick: (String) -> Unit,
     onCreateMissionClick: () -> Unit,
     onEditMissionClick: (Mission) -> Unit,
-    onResendMissionClick: (Mission) -> Unit,
+    onRecreateMissionClick: (Mission) -> Unit,
     onDeleteMissionClick: (Mission) -> Unit,
     onReportMissionClick: (MissionReport) -> Unit,
     onRefresh: () -> Unit,
@@ -196,9 +196,9 @@ private fun MissionScreen(
                 MissionBottomSheet(
                     mission = bottomSheet.mission,
                     editable = bottomSheet.mission.managers.contains(user),
-                    onResendClick = {
+                    onRecreateClick = {
                         activeBottomSheet = null
-                        onResendMissionClick(bottomSheet.mission)
+                        onRecreateMissionClick(bottomSheet.mission)
                     },
                     onEditClick = {
                         activeBottomSheet = null
@@ -303,7 +303,7 @@ private fun MissionScreenPreview() {
             onMissionClick = {},
             onCreateMissionClick = {},
             onEditMissionClick = {},
-            onResendMissionClick = {},
+            onRecreateMissionClick = {},
             onDeleteMissionClick = {},
             onReportMissionClick = {},
             onRefresh = {},

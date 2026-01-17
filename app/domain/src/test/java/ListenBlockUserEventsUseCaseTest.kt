@@ -1,6 +1,6 @@
 package com.upsaclay.gedoise.usecase
 
-import com.upsaclay.app.domain.ListenBlockedUserEvents
+import com.upsaclay.app.domain.usecase.ListenBlockedUserEventsUseCase
 import com.upsaclay.common.domain.entity.BlockUserEvent
 import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.userFixture
@@ -22,7 +22,7 @@ class ListenBlockUserEventsUseCaseTest {
     private val announcementRepository: AnnouncementRepository = mockk()
     private val listenRemoteMessagesUseCase: ListenRemoteMessagesUseCase = mockk()
     private val updateConversationDeleteTimeUseCase: UpdateConversationDeleteTimeUseCase = mockk()
-    private lateinit var useCase: ListenBlockedUserEvents
+    private lateinit var useCase: ListenBlockedUserEventsUseCase
 
     @Before
     fun setUp() {
@@ -31,7 +31,7 @@ class ListenBlockUserEventsUseCaseTest {
         coEvery { updateConversationDeleteTimeUseCase.execute(any(), any()) } returns Unit
         coEvery { announcementRepository.deleteLocalAnnouncements(any()) } returns Unit
 
-        useCase = ListenBlockedUserEvents(
+        useCase = ListenBlockedUserEventsUseCase(
             blockedUserRepository = blockedUserRepository,
             announcementRepository = announcementRepository,
             listenRemoteMessagesUseCase = listenRemoteMessagesUseCase,

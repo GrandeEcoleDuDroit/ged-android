@@ -1,4 +1,4 @@
-package com.upsaclay.message.presentation.conversation.create
+package com.upsaclay.message.presentation.conversation.createconversation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder

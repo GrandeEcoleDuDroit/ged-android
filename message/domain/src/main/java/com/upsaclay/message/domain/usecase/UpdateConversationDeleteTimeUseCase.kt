@@ -11,8 +11,8 @@ class UpdateConversationDeleteTimeUseCase(
     suspend fun execute(userId: String, deleteTime: LocalDateTime) {
         val currentUserId = userRepository.currentUser?.id ?: return
         val conversation = conversationRepository.getConversation(userId)?.apply {
-            copy(deleteTime = deleteTime)
+            copy(effectiveFrom = deleteTime)
         } ?: return
-        conversationRepository.updateConversationDeleteTime(conversation, currentUserId, deleteTime)
+        conversationRepository.updateConversationEffectiveFrom(conversation, currentUserId, deleteTime)
     }
 }

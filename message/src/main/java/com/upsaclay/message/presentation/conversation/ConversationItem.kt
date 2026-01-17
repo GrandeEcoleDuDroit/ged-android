@@ -1,13 +1,12 @@
 package com.upsaclay.message.presentation.conversation
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -17,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -39,30 +39,24 @@ import com.upsaclay.message.domain.messageFixture
 @Composable
 fun ConversationItem(
     modifier: Modifier = Modifier,
-    conversationUi: ConversationUi,
-    onClick: () -> Unit,
-    onLongClick: () -> Unit
+    conversationUi: ConversationUi
 ) {
-    val text = if (conversationUi.lastMessage.state == MessageState.SENDING) {
-        stringResource(R.string.sending)
-    } else {
-        conversationUi.lastMessage.content
+    val text = when (conversationUi.lastMessage.state) {
+        MessageState.SENDING -> stringResource(R.string.sending)
+        MessageState.ERROR -> stringResource(R.string.message_failed_to_send_error)
+        else -> conversationUi.lastMessage.content
     }
-    val isNotSender = conversationUi.lastMessage.senderId == conversationUi.interlocutor.id
 
     SwitchConversationItem(
         modifier = modifier,
         interlocutor = conversationUi.interlocutor,
-        conversationState = conversationUi.conversationState,
+        conversationState = conversationUi.state,
         text = text,
-        unread = isNotSender && !conversationUi.lastMessage.seen,
-        elapsedTime = getElapsedTimeValue(conversationUi.lastMessage.date),
-        onClick = onClick,
-        onLongClick = onLongClick
+        unread = conversationUi.lastMessage.senderId == conversationUi.interlocutor.id && !conversationUi.lastMessage.seen,
+        elapsedTimeText = getElapsedTimeValue(conversationUi.lastMessage.date)
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun SwitchConversationItem(
     modifier: Modifier = Modifier,
@@ -70,22 +64,56 @@ private fun SwitchConversationItem(
     conversationState: ConversationState,
     unread: Boolean,
     text: String,
-    elapsedTime: String,
-    onClick: () -> Unit,
-    onLongClick: () -> Unit
+    elapsedTimeText: String
 ) {
-    val loading = conversationState == ConversationState.CREATING || conversationState == ConversationState.DELETING
-    val fontWeight = if (unread) FontWeight.SemiBold else null
-    val textColor = if (unread) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.supportingText
-    val alpha = if (loading) 0.5f else 1f
-
-    ListItem(
-        modifier = modifier
-            .combinedClickable(
-                onClick = onClick,
-                onLongClick = onLongClick
+    when (conversationState) {
+        ConversationState.DRAFT, ConversationState.CREATING, ConversationState.DELETING -> {
+            LoadingConversationItem(
+                modifier = modifier,
+                interlocutor = interlocutor,
+                text = text,
+                elapsedTimeText = elapsedTimeText
             )
-            .alpha(alpha),
+        }
+
+        ConversationState.CREATED -> {
+            if (unread) {
+                UnreadConversationItem(
+                    modifier = modifier,
+                    interlocutor = interlocutor,
+                    text = text,
+                    elapsedTimeText = elapsedTimeText
+                )
+            } else {
+                DefaultConversationItem(
+                    modifier = modifier,
+                    interlocutor = interlocutor,
+                    text = text,
+                    elapsedTimeText = elapsedTimeText
+                )
+            }
+        }
+
+        ConversationState.ERROR -> {
+            ErrorConversationItem(
+                modifier = modifier,
+                interlocutor = interlocutor,
+                text = text,
+                elapsedTimeText = elapsedTimeText
+            )
+        }
+    }
+}
+
+@Composable
+private fun DefaultConversationItem(
+    modifier: Modifier = Modifier,
+    interlocutor: User,
+    text: String,
+    elapsedTimeText: String
+) {
+    ListItem(
+        modifier = modifier,
         leadingContent = {
             ProfilePicture(
                 url = interlocutor.profilePictureUrl,
@@ -101,16 +129,14 @@ private fun SwitchConversationItem(
                     modifier = Modifier.weight(1f, fill = false),
                     text = interlocutor.displayName(),
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = fontWeight,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
 
                 Text(
-                    text = elapsedTime,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = textColor,
-                    fontWeight = fontWeight
+                    text = elapsedTimeText,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.supportingText
                 )
             }
         },
@@ -118,22 +144,142 @@ private fun SwitchConversationItem(
             Text(
                 text = text,
                 style = MaterialTheme.typography.bodyMedium,
-                color = textColor,
-                fontWeight = fontWeight,
+                color = MaterialTheme.colorScheme.supportingText,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+    )
+}
+
+@Composable
+private fun UnreadConversationItem(
+    modifier: Modifier = Modifier,
+    interlocutor: User,
+    text: String,
+    elapsedTimeText: String
+) {
+    ListItem(
+        modifier = modifier,
+        leadingContent = {
+            ProfilePicture(
+                url = interlocutor.profilePictureUrl,
+                scale = 0.5f
+            )
+        },
+        headlineContent = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.smallSpacing()
+            ) {
+                Text(
+                    modifier = Modifier.weight(1f, fill = false),
+                    text = interlocutor.displayName(),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                Text(
+                    text = elapsedTimeText,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+        },
+        supportingContent = {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+                fontWeight = FontWeight.SemiBold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
         },
-        trailingContent = if (unread) {
-            {
-                Box(
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.error)
-                        .size(10.dp)
+        trailingContent = {
+            Box(
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.error)
+                    .size(10.dp)
+            )
+        }
+    )
+}
+
+@Composable
+private fun LoadingConversationItem(
+    modifier: Modifier = Modifier,
+    interlocutor: User,
+    text: String,
+    elapsedTimeText: String
+) {
+    DefaultConversationItem(
+        modifier = modifier.alpha(0.5f),
+        interlocutor = interlocutor,
+        text = text,
+        elapsedTimeText = elapsedTimeText
+    )
+}
+
+@Composable
+private fun ErrorConversationItem(
+    modifier: Modifier = Modifier,
+    interlocutor: User,
+    text: String,
+    elapsedTimeText: String
+) {
+    ListItem(
+        modifier = modifier,
+        leadingContent = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.smallSpacing()
+            ) {
+                Icon(
+                    painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_error),
+                    tint = MaterialTheme.colorScheme.error,
+                    contentDescription = null
+                )
+
+                ProfilePicture(
+                    url = interlocutor.profilePictureUrl,
+                    scale = 0.5f
                 )
             }
-        } else null
+        },
+        headlineContent = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.smallSpacing()
+            ) {
+                Text(
+                    modifier = Modifier.weight(1f, fill = false),
+                    text = interlocutor.displayName(),
+                    style = MaterialTheme.typography.titleMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                Text(
+                    text = elapsedTimeText,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.supportingText
+                )
+            }
+        },
+        supportingContent = {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.supportingText,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
     )
 }
 
@@ -145,17 +291,13 @@ private fun SwitchConversationItem(
 
 @PhonePreviews
 @Composable
-private fun ReadConversationItemPreview() {
+private fun DefaultConversationItemPreview() {
     GedoiseTheme {
         Surface {
-            SwitchConversationItem(
+            DefaultConversationItem(
                 interlocutor = userFixture,
-                conversationState = ConversationState.CREATED,
-                unread = false,
                 text = messageFixture.content,
-                elapsedTime = "1 min",
-                onClick = {},
-                onLongClick = {}
+                elapsedTimeText = "1 min"
             )
         }
     }
@@ -166,14 +308,10 @@ private fun ReadConversationItemPreview() {
 private fun UnreadConversationItemPreview() {
     GedoiseTheme {
         Surface {
-            SwitchConversationItem(
+            UnreadConversationItem(
                 interlocutor = userFixture,
-                conversationState = ConversationState.CREATED,
-                unread = true,
                 text = messageFixture.content,
-                elapsedTime = "1 min",
-                onClick = {},
-                onLongClick = {}
+                elapsedTimeText = "1 min"
             )
         }
     }
@@ -181,20 +319,28 @@ private fun UnreadConversationItemPreview() {
 
 @PhonePreviews
 @Composable
-private fun SendingConversationItemPreview() {
+private fun LoadingConversationItemPreview() {
     GedoiseTheme {
         Surface {
-            SwitchConversationItem(
+            LoadingConversationItem(
                 interlocutor = userFixture,
-                conversationState = ConversationState.CREATING,
-                unread = false,
                 text = messageFixture.content,
-                elapsedTime = "1 min",
-                onClick = {},
-                onLongClick = {}
+                elapsedTimeText = "1 min"
             )
         }
     }
 }
 
-
+@PhonePreviews
+@Composable
+private fun ErrorConversationItemPreview() {
+    GedoiseTheme {
+        Surface {
+            ErrorConversationItem(
+                interlocutor = userFixture,
+                text = messageFixture.content,
+                elapsedTimeText = "1 min"
+            )
+        }
+    }
+}

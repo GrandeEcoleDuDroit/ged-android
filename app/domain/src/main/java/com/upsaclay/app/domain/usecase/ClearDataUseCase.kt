@@ -1,4 +1,4 @@
-package com.upsaclay.app.domain
+package com.upsaclay.app.domain.usecase
 
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.message.domain.repository.ConversationRepository

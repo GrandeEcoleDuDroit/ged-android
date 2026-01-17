@@ -33,7 +33,7 @@ private fun LocalConversationMessage.toConversation() = Conversation(
     ),
     createdAt = conversationCreatedAt.toLocalDateTimeUTC(),
     state = Conversation.ConversationState.valueOf(conversationState),
-    deleteTime = conversationDeleteTime?.toLocalDateTimeUTC()
+    effectiveFrom = conversationDeleteTime?.toLocalDateTimeUTC()
 )
 
 private fun LocalConversationMessage.toMessage() = Message(

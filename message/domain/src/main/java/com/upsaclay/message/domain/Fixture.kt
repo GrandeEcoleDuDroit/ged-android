@@ -4,6 +4,7 @@ import com.upsaclay.common.domain.extensions.toEpochMilliUTC
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.domain.userFixture2
 import com.upsaclay.message.domain.entity.Conversation
+import com.upsaclay.message.domain.entity.ConversationDTO
 import com.upsaclay.message.domain.entity.ConversationMessage
 import com.upsaclay.message.domain.entity.ConversationUi
 import com.upsaclay.message.domain.entity.Message
@@ -35,22 +36,14 @@ val messageFixture2 = Message(
 )
 
 val messagesFixture = listOf(
-    messageFixture.copy(id = "1"),
-    messageFixture2.copy(id = "2", date = LocalDateTime.now(ZoneOffset.UTC).minusDays(2)),
-    messageFixture.copy(id = "3", date = LocalDateTime.now(ZoneOffset.UTC).minusDays(1)),
-    messageFixture2.copy(id = "4", date = LocalDateTime.now(ZoneOffset.UTC)),
-    messageFixture2.copy(id = "5", date = LocalDateTime.now(ZoneOffset.UTC)),
-    messageFixture2.copy(id = "6", date = LocalDateTime.now(ZoneOffset.UTC)),
-    messageFixture2.copy(id = "7", date = LocalDateTime.now(ZoneOffset.UTC)),
-    messageFixture2.copy(id = "8", date = LocalDateTime.now(ZoneOffset.UTC)),
-    messageFixture2.copy(id = "9", date = LocalDateTime.now(ZoneOffset.UTC)),
-    messageFixture2.copy(id = "10", date = LocalDateTime.now(ZoneOffset.UTC)),
-    messageFixture2.copy(id = "11", date = LocalDateTime.now(ZoneOffset.UTC)),
-    messageFixture2.copy(id = "12", date = LocalDateTime.now(ZoneOffset.UTC)),
-    messageFixture2.copy(id = "13", date = LocalDateTime.now(ZoneOffset.UTC)),
-    messageFixture2.copy(id = "14", date = LocalDateTime.now(ZoneOffset.UTC)),
-    messageFixture2.copy(id = "15", date = LocalDateTime.now(ZoneOffset.UTC)),
-    messageFixture2.copy(id = "16", date = LocalDateTime.now(ZoneOffset.UTC)),
+    messageFixture.copy(id = "1", date = LocalDateTime.now(ZoneOffset.UTC).minusDays(1)),
+    messageFixture2.copy(id = "2", date = LocalDateTime.now(ZoneOffset.UTC).minusWeeks(1)),
+    messageFixture.copy(id = "3", date = LocalDateTime.now(ZoneOffset.UTC).minusWeeks(2)),
+    messageFixture2.copy(id = "4", date = LocalDateTime.now(ZoneOffset.UTC).minusWeeks(3)),
+    messageFixture.copy(id = "5", date = LocalDateTime.now(ZoneOffset.UTC).minusWeeks(3)),
+    messageFixture.copy(id = "6", date = LocalDateTime.now(ZoneOffset.UTC).minusWeeks(3)),
+    messageFixture.copy(id = "7", date = LocalDateTime.now(ZoneOffset.UTC).minusWeeks(3)),
+    messageFixture2.copy(id = "8", date = LocalDateTime.now(ZoneOffset.UTC).minusWeeks(4)),
 )
 
 val conversationUiFixture = ConversationUi(
@@ -58,7 +51,7 @@ val conversationUiFixture = ConversationUi(
     interlocutor = userFixture2,
     lastMessage = messageFixture,
     createdAt = LocalDateTime.of(2024, 7, 20, 10, 0),
-    conversationState = Conversation.ConversationState.CREATED,
+    state = Conversation.ConversationState.CREATED,
 )
 
 val conversationFixture = Conversation(
@@ -66,6 +59,13 @@ val conversationFixture = Conversation(
     interlocutor = userFixture2,
     createdAt = LocalDateTime.of(2024, 7, 20, 10, 0),
     state = Conversation.ConversationState.CREATED
+)
+
+val conversationDTOFixture = ConversationDTO(
+    conversationId = "1",
+    participants = listOf(userFixture.id, userFixture2.id),
+    createdAt = LocalDateTime.of(2024, 7, 20, 10, 0),
+    effectiveFrom = null
 )
 
 val conversationMessageFixture = ConversationMessage(

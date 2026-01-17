@@ -7,7 +7,7 @@ import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.domain.usersFixture
 import com.upsaclay.message.domain.conversationFixture
 import com.upsaclay.message.domain.usecase.GetConversationUseCase
-import com.upsaclay.message.presentation.conversation.create.CreateConversationViewModel
+import com.upsaclay.message.presentation.conversation.createconversation.CreateConversationViewModel
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -79,7 +79,7 @@ class CreateConversationViewModelTest {
     }
 
     @Test
-    fun all_users_should_be_fetched_except_blocked() = runTest {
+    fun all_users_should_be_fetched_except_blocked_ones() = runTest {
         // Given
         val blockedUserId = "userId"
         coEvery { blockedUserRepository.getLocalBlockedUserIds() } returns setOf(blockedUserId)
@@ -94,7 +94,7 @@ class CreateConversationViewModelTest {
         )
 
         // Then
-        assert(createConversationViewModel.uiState.value.users.isEmpty())
+        assert(createConversationViewModel.uiState.value.users?.isEmpty() ?: false)
     }
 
             @Test
@@ -123,7 +123,7 @@ class CreateConversationViewModelTest {
     }
 
     @Test
-    fun resetQuery_should_reset_query_and_users() = runTest {
+    fun resetQuery_should_reset_query() = runTest {
         // Given
         createConversationViewModel.onQueryChange("test")
 

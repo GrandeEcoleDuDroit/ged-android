@@ -5,6 +5,7 @@ import com.google.firebase.firestore.PropertyName
 import com.upsaclay.message.data.model.MessageField.Remote.CONTENT
 import com.upsaclay.message.data.model.MessageField.Remote.CONVERSATION_ID
 import com.upsaclay.message.data.model.MessageField.Remote.MESSAGE_ID
+import com.upsaclay.message.data.model.MessageField.Remote.NOT_VISIBLE_FOR
 import com.upsaclay.message.data.model.MessageField.Remote.RECIPIENT_ID
 import com.upsaclay.message.data.model.MessageField.Remote.SEEN
 import com.upsaclay.message.data.model.MessageField.Remote.SENDER_ID
@@ -37,5 +38,9 @@ internal data class RemoteMessage(
 
     @get:PropertyName(SEEN)
     @set:PropertyName(SEEN)
-    var seen: Boolean = false
+    var seen: Boolean = false,
+
+    @get:PropertyName(NOT_VISIBLE_FOR)
+    @set:PropertyName(NOT_VISIBLE_FOR)
+    var notVisibleFor: Map<String, Boolean>? = null
 )

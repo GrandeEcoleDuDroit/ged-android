@@ -22,6 +22,7 @@ fun ChatScaffold(
     modifier: Modifier = Modifier,
     interlocutor: User,
     snackbarHostState: SnackbarHostState,
+    bottomBar: @Composable () -> Unit = {},
     onBackClick: () -> Unit,
     onInterlocutorClick: () -> Unit,
     content: @Composable (PaddingValues) -> Unit
@@ -35,6 +36,7 @@ fun ChatScaffold(
                 onInterlocutorClick = onInterlocutorClick
             )
         },
+        bottomBar = bottomBar,
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState) {
                 Snackbar(it)

@@ -8,6 +8,7 @@ import androidx.room.Update
 import androidx.room.Upsert
 import com.upsaclay.message.data.local.model.LocalMessage
 import com.upsaclay.message.data.model.MessageField.Local.MESSAGE_CONVERSATION_ID
+import com.upsaclay.message.data.model.MessageField.Local.MESSAGE_ID
 import com.upsaclay.message.data.model.MessageField.Local.MESSAGE_RECIPIENT_ID
 import com.upsaclay.message.data.model.MessageField.Local.MESSAGE_SEEN
 import com.upsaclay.message.data.model.MessageField.Local.MESSAGE_STATE
@@ -26,11 +27,11 @@ interface MessageDao {
 
     @Query("""
         SELECT * FROM $MESSAGE_TABLE_NAME
-        WHERE $MESSAGE_CONVERSATION_ID = :conversationId 
+        WHERE $MESSAGE_CONVERSATION_ID = :conversationId AND $MESSAGE_TIMESTAMP > :timestamp
         ORDER BY $MESSAGE_TIMESTAMP DESC
         LIMIT 1
     """)
-    fun getLastMessageFlow(conversationId: String): Flow<LocalMessage?>
+    fun getNewMessagesFlow(conversationId: String, timestamp: Long): Flow<LocalMessage?>
 
     @Query("""
         SELECT * FROM $MESSAGE_TABLE_NAME
@@ -60,11 +61,18 @@ interface MessageDao {
     @Query("""
         UPDATE $MESSAGE_TABLE_NAME
         SET $MESSAGE_SEEN = 1
-        WHERE $MESSAGE_CONVERSATION_ID = :conversationId
-        AND $MESSAGE_RECIPIENT_ID = :userId
-        AND $MESSAGE_SEEN = 0
+        WHERE $MESSAGE_ID = :messageId
     """)
-    suspend fun updateSeenMessages(conversationId: String, userId: String)
+    suspend fun setMessageSeen(messageId: String)
+
+    @Query("""
+        UPDATE $MESSAGE_TABLE_NAME
+        SET $MESSAGE_SEEN = 1
+        WHERE $MESSAGE_CONVERSATION_ID = :conversationId
+            AND $MESSAGE_RECIPIENT_ID = :userId
+            AND $MESSAGE_SEEN = 0
+    """)
+    suspend fun setMessagesSeen(conversationId: String, userId: String)
 
     @Upsert
     suspend fun upsertMessage(localMessage: LocalMessage)

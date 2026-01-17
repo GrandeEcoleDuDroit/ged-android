@@ -7,7 +7,7 @@ import com.upsaclay.mission.domain.missionsFixture
 import com.upsaclay.mission.domain.repository.MissionRepository
 import com.upsaclay.mission.domain.usecase.DeleteMissionUseCase
 import com.upsaclay.mission.domain.usecase.RefreshMissionsUseCase
-import com.upsaclay.mission.domain.usecase.ResendMissionUseCase
+import com.upsaclay.mission.domain.usecase.RecreateMissionUseCase
 import com.upsaclay.mission.presentation.MissionViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -27,7 +27,7 @@ import org.junit.Test
 class MissionViewModelTest {
     private val missionRepository: MissionRepository = mockk()
     private val userRepository: UserRepository = mockk()
-    private val resendMissionUseCase: ResendMissionUseCase = mockk()
+    private val recreateMissionUseCase: RecreateMissionUseCase = mockk()
     private val deleteMissionUseCase: DeleteMissionUseCase = mockk()
     private val refreshMissionsUseCase: RefreshMissionsUseCase = mockk()
 
@@ -40,14 +40,14 @@ class MissionViewModelTest {
 
         every { missionRepository.missions } returns flowOf(missionsFixture)
         every { userRepository.user } returns MutableStateFlow(userFixture)
-        every { resendMissionUseCase(any()) } returns Unit
+        every { recreateMissionUseCase(any()) } returns Unit
         coEvery { deleteMissionUseCase(any()) } returns Unit
         coEvery { refreshMissionsUseCase() } returns Unit
 
         viewModel = MissionViewModel(
             missionRepository = missionRepository,
             userRepository = userRepository,
-            resendMissionUseCase = resendMissionUseCase,
+            recreateMissionUseCase = recreateMissionUseCase,
             deleteMissionUseCase = deleteMissionUseCase,
             refreshMissionsUseCase = refreshMissionsUseCase
         )
@@ -63,12 +63,12 @@ class MissionViewModelTest {
     }
 
     @Test
-    fun resendMission_should_resend_mission() = runTest {
+    fun resendMission_should_recreate_mission() = runTest {
         // When
-        viewModel.resendMission(missionFixture)
+        viewModel.recreateMission(missionFixture)
 
         // Then
-        coVerify { resendMissionUseCase(missionFixture) }
+        coVerify { recreateMissionUseCase(missionFixture) }
     }
 
     @Test

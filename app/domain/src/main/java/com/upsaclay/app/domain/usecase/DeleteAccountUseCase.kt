@@ -1,4 +1,4 @@
-package com.upsaclay.app.domain
+package com.upsaclay.app.domain.usecase
 
 import com.upsaclay.authentication.domain.repository.AuthenticationRepository
 import com.upsaclay.common.domain.entity.User

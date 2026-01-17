@@ -76,7 +76,7 @@ private fun ErrorAnnouncementBottomSheet(
     TextItem(
         modifier = Modifier.fillMaxWidth(),
         text = {
-            Text(text = stringResource(id = com.upsaclay.common.R.string.resend))
+            Text(text = stringResource(id = com.upsaclay.common.R.string.retry))
         },
         icon = {
             Icon(

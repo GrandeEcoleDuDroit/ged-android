@@ -27,7 +27,7 @@
     <string name="search">Search</string>
     <string name="search_ellipsis">Search</string>
     <string name="edit">Edit</string>
-    <string name="resend">Resend</string>
+    <string name="retry">Retry</string>
     <string name="ok">OK</string>
     <string name="see">See</string>
     <string name="see_all">See all</string>

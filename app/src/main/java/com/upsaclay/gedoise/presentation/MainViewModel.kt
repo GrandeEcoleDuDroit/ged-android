@@ -2,42 +2,44 @@ package com.upsaclay.gedoise.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.upsaclay.app.domain.ClearDataUseCase
-import com.upsaclay.app.domain.FcmTokenUseCase
-import com.upsaclay.app.domain.ListenBlockedUserEvents
-import com.upsaclay.app.domain.ListenRemoteUserUseCase
-import com.upsaclay.app.domain.SynchronizeDataUseCase
+import com.upsaclay.app.domain.usecase.ClearDataUseCase
+import com.upsaclay.app.domain.usecase.FcmTokenUseCase
+import com.upsaclay.app.domain.usecase.ListenBlockedUserEventsUseCase
+import com.upsaclay.app.domain.usecase.ListenRemoteUserUseCase
+import com.upsaclay.app.domain.usecase.SynchronizeDataUseCase
 import com.upsaclay.authentication.domain.repository.AuthenticationRepository
 import com.upsaclay.message.domain.usecase.ListenRemoteConversationsUseCase
 import com.upsaclay.message.domain.usecase.ListenRemoteMessagesUseCase
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class MainViewModel(
-    private val listenRemoteConversationsUseCase: ListenRemoteConversationsUseCase,
-    private val listenRemoteMessagesUseCase: ListenRemoteMessagesUseCase,
-    private val listenRemoteUserUseCase: ListenRemoteUserUseCase,
-    private val listenBlockedUserEvents: ListenBlockedUserEvents,
+    private val authenticationRepository: AuthenticationRepository,
     private val synchronizeDataUseCase: SynchronizeDataUseCase,
     private val clearDataUseCase: ClearDataUseCase,
     private val fcmTokenUseCase: FcmTokenUseCase,
-    private val authenticationRepository: AuthenticationRepository
+    private val listenRemoteConversationsUseCase: ListenRemoteConversationsUseCase,
+    private val listenRemoteMessagesUseCase: ListenRemoteMessagesUseCase,
+    private val listenRemoteUserUseCase: ListenRemoteUserUseCase,
+    private val listenBlockedUserEventsUseCase: ListenBlockedUserEventsUseCase
 ): ViewModel() {
-    private var listeningJob: Job? = null
+    internal var dataListeningJob: Job? = null
+        private set
 
-    fun listenAuthenticationChanges() {
+    fun updateDataOnAuthChange() {
         viewModelScope.launch {
             authenticationRepository.authenticationState.collectLatest { authenticated ->
                 try {
                     if (authenticated) {
-                        listenData()
+                        startDataListening()
                         synchronizeDataUseCase()
                         fcmTokenUseCase.sendUnsetToken()
                     } else {
-                        stopListenData()
+                        stopDataListening()
                         delay(2000)
                         clearDataUseCase()
                         fcmTokenUseCase.generateNewToken()
@@ -49,17 +51,21 @@ class MainViewModel(
         }
     }
 
-    private fun listenData() {
-        listeningJob?.cancel()
-        listeningJob = viewModelScope.launch {
-            launch { listenRemoteConversationsUseCase.start() }
+    private fun startDataListening() {
+        dataListeningJob?.cancel()
+        dataListeningJob = viewModelScope.launch {
             launch { listenRemoteUserUseCase.start() }
-            launch { listenBlockedUserEvents.start() }
+            launch { listenRemoteConversationsUseCase.start() }
+            launch { listenBlockedUserEventsUseCase.start() }
+            awaitCancellation()
         }
     }
 
-    private suspend fun stopListenData() {
-        listenRemoteMessagesUseCase.stopAll()
-        listeningJob?.cancel()
+    private fun stopDataListening() {
+        viewModelScope.launch {
+            listenRemoteMessagesUseCase.stopAll()
+        }
+        dataListeningJob?.cancel()
+        dataListeningJob = null
     }
 }
