@@ -2,9 +2,9 @@ package com.upsaclay.gedoise.viewmodel
 
 import com.upsaclay.app.domain.usecase.ClearDataUseCase
 import com.upsaclay.app.domain.usecase.FcmTokenUseCase
+import com.upsaclay.app.domain.usecase.FetchDataUseCase
 import com.upsaclay.app.domain.usecase.ListenBlockedUserEventsUseCase
 import com.upsaclay.app.domain.usecase.ListenRemoteUserUseCase
-import com.upsaclay.app.domain.usecase.FetchDataUseCase
 import com.upsaclay.authentication.domain.repository.AuthenticationRepository
 import com.upsaclay.gedoise.presentation.MainViewModel
 import com.upsaclay.message.domain.usecase.ListenRemoteConversationsUseCase

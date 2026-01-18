@@ -3,9 +3,10 @@ package com.upsaclay.app.domain
 import com.upsaclay.app.domain.usecase.ClearDataUseCase
 import com.upsaclay.app.domain.usecase.DeleteAccountUseCase
 import com.upsaclay.app.domain.usecase.FcmTokenUseCase
+import com.upsaclay.app.domain.usecase.FetchDataUseCase
 import com.upsaclay.app.domain.usecase.ListenBlockedUserEventsUseCase
 import com.upsaclay.app.domain.usecase.ListenRemoteUserUseCase
-import com.upsaclay.app.domain.usecase.FetchDataUseCase
+import com.upsaclay.app.domain.usecase.LogoutUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -40,4 +41,5 @@ val appDomainModule = module {
     }
     singleOf(::ListenRemoteUserUseCase)
     singleOf(::ListenBlockedUserEventsUseCase)
+    singleOf(::LogoutUseCase)
 }

@@ -10,6 +10,7 @@ import com.upsaclay.message.presentation.chat.ChatRoute
 import com.upsaclay.message.presentation.conversation.ConversationRoute
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class MessageNotificationManager(
     private val messageNotificationRepository: MessageNotificationRepository,
@@ -51,7 +52,9 @@ class MessageNotificationManager(
 
     private fun parseMessageNotification(extra: Bundle): MessageNotification? {
         return extra.getString("value")?.let { value  ->
-            runCatching { messageNotificationRepository.parseNotification(value) }.getOrNull()
+            runCatching { messageNotificationRepository.parseNotification(value) }
+                .onFailure { Timber.e(it) }
+                .getOrNull()
         }
     }
 }

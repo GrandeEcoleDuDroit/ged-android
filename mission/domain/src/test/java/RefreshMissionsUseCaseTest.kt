@@ -1,5 +1,5 @@
-import com.upsaclay.mission.domain.usecase.RefreshMissionsUseCase
 import com.upsaclay.mission.domain.usecase.FetchMissionsUseCase
+import com.upsaclay.mission.domain.usecase.RefreshMissionsUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk

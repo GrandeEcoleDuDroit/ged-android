@@ -27,7 +27,6 @@ class RecreateConversationUseCaseTest {
 
         useCase = RecreateConversationUseCase(
             conversationRepository = conversationRepository,
-            scope = testScope
         )
     }
 

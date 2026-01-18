@@ -1,7 +1,7 @@
 package com.upsaclay.app.domain.usecase
 
-import com.upsaclay.app.domain.entity.FcmToken
-import com.upsaclay.app.domain.repository.FcmTokenRepository
+import com.upsaclay.common.domain.entity.FcmToken
+import com.upsaclay.common.domain.repository.FcmTokenRepository
 import com.upsaclay.common.domain.repository.UserRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -37,7 +37,7 @@ class FcmTokenUseCase(
 
     private suspend fun addFcmToken(userId: String, fcmToken: FcmToken) {
         try {
-            fcmTokenRepository.sendFcmToken(userId, fcmToken.token)
+            fcmTokenRepository.sendFcmToken(userId, fcmToken.token!!)
             fcmTokenRepository.storeFcmToken(fcmToken.copy(sent = true))
         } catch (e: Exception) {
             fcmTokenRepository.storeFcmToken(fcmToken.copy(sent = false))

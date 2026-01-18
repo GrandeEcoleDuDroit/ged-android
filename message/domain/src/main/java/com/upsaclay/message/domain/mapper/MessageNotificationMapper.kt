@@ -10,8 +10,8 @@ fun List<MessageNotification>.toMessageNotificationsUi(): List<MessageNotificati
                conversation = conversation,
                messages = messages.map {
                    MessageNotificationUi.Message(
-                       text = it.message.content,
-                       timestamp = it.message.timestamp
+                       text = it.messageContent.content,
+                       timestamp = it.messageContent.timestamp
                    )
                }
            )

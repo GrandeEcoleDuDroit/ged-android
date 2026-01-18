@@ -1,28 +1,17 @@
 package com.upsaclay.message.data.remote.model
 
+import com.upsaclay.common.data.remote.model.OracleUser
+
 data class RemoteMessageNotification(
-    val conversation: Conversation,
+    val conversation: RemoteMessageNotification.NotificationConversation,
     val messageId: String,
     val content: String,
     val timestamp: Long
 ) {
-    data class Conversation(
+    data class NotificationConversation(
         val id: String,
-        val interlocutor: Interlocutor,
+        val interlocutor: OracleUser,
         val createdAt: Long,
-        val deleteTime: Long? = null
-    ) {
-        data class Interlocutor(
-            val id: String,
-            val firstName: String,
-            val lastName: String,
-            val fullName: String,
-            val email: String,
-            val schoolLevel: Int,
-            val admin: Boolean = false,
-            val profilePictureFileName: String? = null,
-            val state: Int,
-            val tester: Boolean = false
-        )
-    }
+        val effectiveFrom: Long? = null
+    )
 }

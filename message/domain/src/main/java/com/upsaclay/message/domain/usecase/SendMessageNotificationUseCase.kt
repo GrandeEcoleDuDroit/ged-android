@@ -14,15 +14,15 @@ class SendMessageNotificationUseCase(
     suspend operator fun invoke(conversation: Conversation, message: Message) {
         runCatching {
             val currentUser = userRepository.currentUser ?: return
-            val messageNotification = MessageNotification(
+            val messageContentNotification = MessageNotification(
                 conversation = conversation,
-                message = MessageNotification.Message(
+                messageContent = MessageNotification.MessageContent(
                     messageId = message.id,
                     content = message.content,
                     timestamp = message.date.toEpochMilliUTC()
                 )
             )
-            messageNotificationRepository.sendNotification(currentUser, messageNotification)
+            messageNotificationRepository.sendNotification(currentUser, messageContentNotification)
         }
     }
 }

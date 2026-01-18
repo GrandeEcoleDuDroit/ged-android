@@ -1,8 +1,8 @@
 package com.upsaclay.common.data.repository
 
-import com.upsaclay.common.data.utils.e
 import com.upsaclay.common.data.exceptions.mapServerException
 import com.upsaclay.common.data.remote.api.WhiteListApi
+import com.upsaclay.common.data.utils.e
 import com.upsaclay.common.data.utils.sendDataServerRequest
 import com.upsaclay.common.domain.repository.WhiteListRepository
 import kotlinx.coroutines.Dispatchers

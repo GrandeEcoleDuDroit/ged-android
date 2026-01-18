@@ -2,9 +2,9 @@ package com.upsaclay.message.domain.entity
 
 data class MessageNotification(
     val conversation: Conversation,
-    val message: MessageNotification.Message
+    val messageContent: MessageNotification.MessageContent
 ) {
-    data class Message(
+    data class MessageContent(
         val messageId: String,
         val content: String,
         val timestamp: Long

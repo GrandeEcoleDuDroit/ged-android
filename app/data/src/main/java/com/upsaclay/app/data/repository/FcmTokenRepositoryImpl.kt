@@ -2,12 +2,12 @@ package com.upsaclay.app.data.repository
 
 import com.google.firebase.messaging.FirebaseMessaging
 import com.upsaclay.app.data.local.FcmLocalDataSource
-import com.upsaclay.app.domain.entity.FcmToken
-import com.upsaclay.app.domain.repository.FcmTokenRepository
 import com.upsaclay.common.data.exceptions.mapServerException
 import com.upsaclay.common.data.remote.api.FcmApi
 import com.upsaclay.common.data.utils.e
 import com.upsaclay.common.data.utils.sendServerRequest
+import com.upsaclay.common.domain.entity.FcmToken
+import com.upsaclay.common.domain.repository.FcmTokenRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -33,5 +33,18 @@ class FcmTokenRepositoryImpl(
 
     override suspend fun storeFcmToken(fcmToken: FcmToken) {
         fcmLocalDataSource.storeFcmToken(fcmToken)
+    }
+
+    override suspend fun deleteToken(userId: String) {
+        withContext(Dispatchers.IO) {
+            try {
+                val token = getFcmToken()?.token ?: return@withContext
+                sendServerRequest { fcmApi.deleteToken(userId, token) }
+                fcmLocalDataSource.deleteFcmToken()
+            } catch (e: Exception) {
+                e("Error deleting FCM token for user $userId", e)
+                throw mapServerException(e)
+            }
+        }
     }
 }

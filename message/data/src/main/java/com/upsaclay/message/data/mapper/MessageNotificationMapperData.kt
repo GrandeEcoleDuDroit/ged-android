@@ -1,6 +1,8 @@
 package com.upsaclay.message.data.mapper
 
 import com.upsaclay.common.data.extensions.formatUrl
+import com.upsaclay.common.data.toOracleUser
+import com.upsaclay.common.data.toUser
 import com.upsaclay.common.domain.UserUtils
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.entity.User
@@ -22,9 +24,9 @@ import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.MessageNotification
 
 fun MessageNotification.toLocal() = LocalMessageNotification(
-    messageId = message.messageId,
-    messageContent = message.content,
-    messageTimestamp = message.timestamp,
+    messageId = messageContent.messageId,
+    messageContent = messageContent.content,
+    messageTimestamp = messageContent.timestamp,
     conversationId = conversation.id,
     conversationInterlocutorId = conversation.interlocutor.id,
     conversationInterlocutorFirstName = conversation.interlocutor.firstName,
@@ -42,31 +44,20 @@ fun MessageNotification.toLocal() = LocalMessageNotification(
 
 fun MessageNotification.toRemote(currentUser: User) =
     RemoteMessageNotification(
-        conversation = RemoteMessageNotification.Conversation(
+        conversation = RemoteMessageNotification.NotificationConversation(
             id = conversation.id,
-            interlocutor = RemoteMessageNotification.Conversation.Interlocutor(
-                id = currentUser.id,
-                firstName = currentUser.firstName,
-                lastName = currentUser.lastName,
-                fullName = currentUser.fullName,
-                email = currentUser.email,
-                schoolLevel = currentUser.schoolLevel.number,
-                admin = currentUser.admin,
-                profilePictureFileName = UserUtils.ProfilePicture.getFileName(currentUser.profilePictureUrl),
-                state = currentUser.state.number,
-                tester = currentUser.tester
-            ),
+            interlocutor = currentUser.toOracleUser(),
             createdAt = conversation.createdAt.toEpochMilliUTC(),
-            deleteTime = conversation.effectiveFrom?.toEpochMilliUTC()
+            effectiveFrom = conversation.effectiveFrom?.toEpochMilliUTC()
         ),
-        messageId = message.messageId,
-        content = message.content,
-        timestamp = message.timestamp
+        messageId = messageContent.messageId,
+        content = messageContent.content,
+        timestamp = messageContent.timestamp
     )
 
 fun LocalMessageNotification.toMessageNotification() = MessageNotification(
     conversation = toConversation(),
-    message = MessageNotification.Message(
+    messageContent = MessageNotification.MessageContent(
         messageId = messageId,
         content = messageContent,
         timestamp = messageTimestamp
@@ -94,22 +85,12 @@ private fun LocalMessageNotification.toConversation() = Conversation(
 fun RemoteMessageNotification.toMessageNotification() = MessageNotification(
     conversation = Conversation(
         id = conversation.id,
-        interlocutor = User(
-            id = conversation.interlocutor.id,
-            firstName = conversation.interlocutor.firstName,
-            lastName = conversation.interlocutor.lastName,
-            email = conversation.interlocutor.email,
-            schoolLevel = SchoolLevel.fromNumber(conversation.interlocutor.schoolLevel),
-            admin = conversation.interlocutor.admin,
-            profilePictureUrl = UserUtils.ProfilePicture.formatUrl(conversation.interlocutor.profilePictureFileName),
-            state = User.UserState.fromNumber(conversation.interlocutor.state),
-            tester = conversation.interlocutor.tester
-        ),
+        interlocutor = conversation.interlocutor.toUser(),
         createdAt = conversation.createdAt.toLocalDateTimeUTC(),
         state = Conversation.ConversationState.CREATED,
-        effectiveFrom = conversation.deleteTime?.toLocalDateTimeUTC()
+        effectiveFrom = conversation.effectiveFrom?.toLocalDateTimeUTC()
     ),
-    message = MessageNotification.Message(
+    messageContent = MessageNotification.MessageContent(
         messageId = messageId,
         content = content,
         timestamp = timestamp
@@ -129,7 +110,7 @@ fun RemoteMessageNotification.toFcm() = FcmMessage(
         payload = ApnsPayload(
             aps = Aps(
                 alert = Alert(
-                    title = conversation.interlocutor.fullName,
+                    title = conversation.interlocutor.toUser().fullName,
                     body = content
                 )
             )

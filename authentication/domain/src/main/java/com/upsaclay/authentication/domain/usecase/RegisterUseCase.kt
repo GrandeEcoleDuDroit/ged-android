@@ -1,8 +1,8 @@
 package com.upsaclay.authentication.domain.usecase
 
 import com.upsaclay.authentication.domain.entity.AuthenticationException
-import com.upsaclay.authentication.domain.entity.AuthenticationException.AuthenticationError.USER_NOT_WHITE_LISTED
 import com.upsaclay.authentication.domain.entity.AuthenticationException.AuthenticationError.REGISTRATION_FAILED
+import com.upsaclay.authentication.domain.entity.AuthenticationException.AuthenticationError.USER_NOT_WHITE_LISTED
 import com.upsaclay.authentication.domain.repository.AuthenticationRepository
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.entity.User

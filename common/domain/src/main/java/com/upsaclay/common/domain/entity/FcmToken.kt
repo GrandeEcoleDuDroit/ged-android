@@ -1,4 +1,4 @@
-package com.upsaclay.app.domain.entity
+package com.upsaclay.common.domain.entity
 
 data class FcmToken(
     val token: String,

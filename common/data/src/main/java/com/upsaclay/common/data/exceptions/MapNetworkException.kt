@@ -4,11 +4,11 @@ import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.upsaclay.common.domain.entity.CustomException
-import com.upsaclay.common.domain.entity.CustomException.CustomError.NETWORK
 import com.upsaclay.common.domain.entity.CustomException.CustomError.BAD_REQUEST
 import com.upsaclay.common.domain.entity.CustomException.CustomError.CANNOT_CONNECT_TO_HOST
 import com.upsaclay.common.domain.entity.CustomException.CustomError.FORBIDDEN
 import com.upsaclay.common.domain.entity.CustomException.CustomError.INTERNAL_SERVER
+import com.upsaclay.common.domain.entity.CustomException.CustomError.NETWORK
 import com.upsaclay.common.domain.entity.CustomException.CustomError.RESOURCE_NOT_FOUND
 import com.upsaclay.common.domain.entity.CustomException.CustomError.TIMED_OUT
 import com.upsaclay.common.domain.entity.CustomException.CustomError.TOO_MANY_REQUEST

@@ -1,10 +1,10 @@
 package com.upsaclay.common.data.remote.api.user
 
-import com.upsaclay.common.data.utils.sendDataServerRequest
-import com.upsaclay.common.data.utils.sendServerRequest
 import com.upsaclay.common.data.remote.model.FirestoreUser
 import com.upsaclay.common.data.remote.model.OracleUser
 import com.upsaclay.common.data.remote.model.RemoteUserReport
+import com.upsaclay.common.data.utils.sendDataServerRequest
+import com.upsaclay.common.data.utils.sendServerRequest
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody

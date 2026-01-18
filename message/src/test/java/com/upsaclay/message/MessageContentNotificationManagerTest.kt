@@ -4,8 +4,8 @@ import com.upsaclay.common.domain.repository.RouteRepository
 import com.upsaclay.message.domain.converter.ConversationJsonParser
 import com.upsaclay.message.domain.entity.MessageNotificationUi
 import com.upsaclay.message.domain.mapper.toMessageNotificationsUi
-import com.upsaclay.message.domain.messageNotificationFixture
-import com.upsaclay.message.domain.messageNotificationsFixture
+import com.upsaclay.message.domain.messageContentNotificationFixture
+import com.upsaclay.message.domain.messageContentNotificationsFixture
 import com.upsaclay.message.domain.repository.MessageNotificationRepository
 import com.upsaclay.message.notification.MessageNotificationManager
 import com.upsaclay.message.notification.MessageNotificationPresenter
@@ -19,18 +19,18 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 
-class MessageNotificationManagerTest {
+class MessageContentNotificationManagerTest {
     private val routeRepository: RouteRepository = mockk()
     private val messageNotificationRepository: MessageNotificationRepository = mockk()
     private val messageNotificationPresenter: MessageNotificationPresenter = mockk()
 
     private lateinit var manager: MessageNotificationManager
     private val messageNotificationUi = MessageNotificationUi(
-        conversation = messageNotificationFixture.conversation,
+        conversation = messageContentNotificationFixture.conversation,
         messages = listOf(
             MessageNotificationUi.Message(
-                text = messageNotificationFixture.message.content,
-                timestamp = messageNotificationFixture.message.timestamp
+                text = messageContentNotificationFixture.messageContent.content,
+                timestamp = messageContentNotificationFixture.messageContent.timestamp
             )
         )
     )
@@ -41,7 +41,7 @@ class MessageNotificationManagerTest {
         every { messageNotificationPresenter.createNotificationChannel() } returns Unit
         every { messageNotificationPresenter.clearNotification(any()) } returns Unit
         coEvery { messageNotificationRepository.storeMessageNotification(any()) } returns Unit
-        coEvery { messageNotificationRepository.getMessageNotifications(any()) } returns listOf(messageNotificationFixture)
+        coEvery { messageNotificationRepository.getMessageNotifications(any()) } returns listOf(messageContentNotificationFixture)
         coEvery { messageNotificationRepository.deleteMessageNotifications(any()) } returns Unit
         coEvery { messageNotificationPresenter.showNotification(any()) } returns Unit
 
@@ -64,7 +64,7 @@ class MessageNotificationManagerTest {
     @Test
     fun showNotification_should_store_notification() = runTest {
         // Given
-        val messageNotification = messageNotificationsFixture.first()
+        val messageNotification = messageContentNotificationsFixture.first()
 
         // When
         manager.showNotification(messageNotification)
@@ -77,11 +77,11 @@ class MessageNotificationManagerTest {
     fun showNotification_should_not_show_notification_when_current_screen_is_message() = runTest {
         // Given
         every { routeRepository.currentRoute } returns ChatRoute(
-            conversationJson = ConversationJsonParser.toJson(messageNotificationFixture.conversation)
+            conversationJson = ConversationJsonParser.toJson(messageContentNotificationFixture.conversation)
         )
 
         // When
-        manager.showNotification(messageNotificationFixture)
+        manager.showNotification(messageContentNotificationFixture)
 
         // Then
         coVerify(exactly = 0) { messageNotificationPresenter.showNotification(messageNotificationUi) }
@@ -90,7 +90,7 @@ class MessageNotificationManagerTest {
     @Test
     fun showNotification_should_show_notification_when_current_screen_is_not_message() = runTest {
         // When
-        manager.showNotification(messageNotificationFixture)
+        manager.showNotification(messageContentNotificationFixture)
 
         // Then
         coVerify { messageNotificationPresenter.showNotification(messageNotificationUi) }
@@ -99,20 +99,20 @@ class MessageNotificationManagerTest {
     @Test
     fun showNotification_should_show_stored_message_notifications() = runTest {
         // Given
-        val messageNotificationsUi = listOf(messageNotificationFixture).toMessageNotificationsUi()
+        val messageNotificationsUi = listOf(messageContentNotificationFixture).toMessageNotificationsUi()
 
         // When
-        manager.showNotification(messageNotificationFixture)
+        manager.showNotification(messageContentNotificationFixture)
 
         // Then
-        coVerify { messageNotificationRepository.getMessageNotifications(messageNotificationFixture.conversation.id) }
+        coVerify { messageNotificationRepository.getMessageNotifications(messageContentNotificationFixture.conversation.id) }
         coVerify { messageNotificationPresenter.showNotification(messageNotificationsUi[0]) }
     }
 
     @Test
     fun clearNotifications_should_delete_local_message_notifications() = runTest {
         // Given
-        val conversationId = messageNotificationFixture.conversation.id
+        val conversationId = messageContentNotificationFixture.conversation.id
 
         // When
         manager.clearNotifications(conversationId)
@@ -125,7 +125,7 @@ class MessageNotificationManagerTest {
     @Test
     fun clearNotifications_should_clear_notifications() = runTest {
         // Given
-        val conversationId = messageNotificationFixture.conversation.id
+        val conversationId = messageContentNotificationFixture.conversation.id
 
         // When
         manager.clearNotifications(conversationId)

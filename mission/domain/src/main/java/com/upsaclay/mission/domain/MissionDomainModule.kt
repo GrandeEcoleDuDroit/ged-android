@@ -2,9 +2,9 @@ package com.upsaclay.mission.domain
 
 import com.upsaclay.mission.domain.usecase.CreateMissionUseCase
 import com.upsaclay.mission.domain.usecase.DeleteMissionUseCase
-import com.upsaclay.mission.domain.usecase.RefreshMissionsUseCase
-import com.upsaclay.mission.domain.usecase.RecreateMissionUseCase
 import com.upsaclay.mission.domain.usecase.FetchMissionsUseCase
+import com.upsaclay.mission.domain.usecase.RecreateMissionUseCase
+import com.upsaclay.mission.domain.usecase.RefreshMissionsUseCase
 import com.upsaclay.mission.domain.usecase.UpdateMissionUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
