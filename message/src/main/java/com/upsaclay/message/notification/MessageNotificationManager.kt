@@ -30,11 +30,12 @@ class MessageNotificationManager(
     }
 
     override fun onNotificationClick(extra: Bundle) {
-        val extraConversationJson = extra.getString(CONVERSATION_ID_EXTRA)
+        val conversationJsonExtra = extra.getString(CONVERSATION_ID_EXTRA)
         val messageNotification = parseMessageNotification(extra)
 
         when {
-            extraConversationJson != null -> navigationRequestUseCase.navigate(listOf(ConversationRoute, ChatRoute(extraConversationJson)))
+            conversationJsonExtra != null ->
+                navigationRequestUseCase.navigate(listOf(ConversationRoute, ChatRoute(conversationJsonExtra)))
 
             messageNotification != null -> {
                 val conversationJson = ConversationJsonParser.toJson(messageNotification.conversation)
