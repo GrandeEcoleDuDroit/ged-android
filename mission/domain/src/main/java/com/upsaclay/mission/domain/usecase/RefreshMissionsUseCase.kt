@@ -4,7 +4,7 @@ import kotlinx.coroutines.delay
 
 
 class RefreshMissionsUseCase(
-    private val synchronizeMissionsUseCase: SynchronizeMissionsUseCase
+    private val fetchMissionsUseCase: FetchMissionsUseCase
 ) {
     internal var lastRequestTime: Long = 0
     companion object {
@@ -15,7 +15,7 @@ class RefreshMissionsUseCase(
         delay(500)
         val currentTime = System.currentTimeMillis()
         if (currentTime - lastRequestTime > DEBOUNCE_INTERVAL) {
-            synchronizeMissionsUseCase()
+            fetchMissionsUseCase()
             lastRequestTime = currentTime
         }
     }

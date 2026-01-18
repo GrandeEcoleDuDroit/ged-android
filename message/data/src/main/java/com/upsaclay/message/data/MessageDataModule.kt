@@ -13,8 +13,6 @@ import com.upsaclay.message.data.remote.api.ConversationApi
 import com.upsaclay.message.data.remote.api.ConversationApiImpl
 import com.upsaclay.message.data.remote.api.MessageApi
 import com.upsaclay.message.data.remote.api.MessageApiImpl
-import com.upsaclay.message.data.remote.api.MessageNotificationApi
-import com.upsaclay.message.data.remote.api.MessageNotificationApiImpl
 import com.upsaclay.message.data.remote.api.MessageServerApi
 import com.upsaclay.message.data.repository.ConversationMessageRepositoryImpl
 import com.upsaclay.message.data.repository.ConversationRepositoryImpl
@@ -49,6 +47,11 @@ val messageDataModule = module {
         )
     }
 
+    single {
+        get<Retrofit>(GED_SERVER_QUALIFIER)
+            .create(MessageServerApi::class.java)
+    }
+
     singleOf(::ConversationApiImpl) { bind<ConversationApi>() }
     singleOf(::ConversationRemoteDataSource)
     singleOf(::ConversationLocalDataSource)
@@ -62,10 +65,6 @@ val messageDataModule = module {
     }
 
     singleOf(::MessageApiImpl) { bind<MessageApi>() }
-    single {
-        get<Retrofit>(GED_SERVER_QUALIFIER)
-            .create(MessageServerApi::class.java)
-    }
     singleOf(::MessageRemoteDataSource)
     singleOf(::MessageLocalDataSource)
     singleOf(::MessageRepositoryImpl) { bind<MessageRepository>() }
@@ -73,7 +72,6 @@ val messageDataModule = module {
         StartupMessageWorker(context = androidContext())
     }
 
-    singleOf(::MessageNotificationApiImpl) { bind<MessageNotificationApi>() }
     singleOf(::MessageNotificationRemoteDataSource)
     singleOf(::MessageNotificationLocalDataSource)
     singleOf(::MessageNotificationRepositoryImpl) { bind<MessageNotificationRepository>() }

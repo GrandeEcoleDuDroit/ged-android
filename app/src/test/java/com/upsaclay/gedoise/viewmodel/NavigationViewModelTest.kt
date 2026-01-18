@@ -35,8 +35,8 @@ class NavigationViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
 
-        every { authenticationRepository.authenticationState } returns flowOf(true)
-        every { authenticationRepository.currentAuthenticationState } returns true
+        every { authenticationRepository.authenticated } returns flowOf(true)
+        every { authenticationRepository.isAuthenticated } returns true
         every { routeRepository.currentRoute } returns null
         every { routeRepository.setCurrentRoute(any()) } returns Unit
         every { getUnreadConversationsCountUseCase() } returns flowOf(0)
@@ -60,7 +60,7 @@ class NavigationViewModelTest {
     @Test
     fun startDestination_should_be_AuthenticationRoute_when_unauthenticated() = runTest {
         // Given
-        every { authenticationRepository.authenticationState } returns flowOf(false)
+        every { authenticationRepository.authenticated } returns flowOf(false)
 
         // When
         navigationViewModel = NavigationViewModel(
@@ -78,7 +78,7 @@ class NavigationViewModelTest {
     @Test
     fun intentToNavigate_should_navigate_to_screen_when_authenticated() = runTest {
         // Given
-        every { authenticationRepository.currentAuthenticationState } returns true
+        every { authenticationRepository.isAuthenticated } returns true
         val route = ChatRoute(ConversationJsonParser.toJson(conversationFixture))
 
         // When
@@ -98,7 +98,7 @@ class NavigationViewModelTest {
     @Test
     fun intentToNavigate_should_not_navigate_when_unauthenticated() = runTest {
         // Given
-        every { authenticationRepository.currentAuthenticationState } returns false
+        every { authenticationRepository.isAuthenticated } returns false
         val route = ChatRoute(ConversationJsonParser.toJson(conversationFixture))
 
         // When

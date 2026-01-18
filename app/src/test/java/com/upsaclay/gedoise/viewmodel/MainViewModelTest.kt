@@ -4,7 +4,7 @@ import com.upsaclay.app.domain.usecase.ClearDataUseCase
 import com.upsaclay.app.domain.usecase.FcmTokenUseCase
 import com.upsaclay.app.domain.usecase.ListenBlockedUserEventsUseCase
 import com.upsaclay.app.domain.usecase.ListenRemoteUserUseCase
-import com.upsaclay.app.domain.usecase.SynchronizeDataUseCase
+import com.upsaclay.app.domain.usecase.FetchDataUseCase
 import com.upsaclay.authentication.domain.repository.AuthenticationRepository
 import com.upsaclay.gedoise.presentation.MainViewModel
 import com.upsaclay.message.domain.usecase.ListenRemoteConversationsUseCase
@@ -27,7 +27,7 @@ import org.junit.Test
 class MainViewModelTest {
     private val authenticationRepository: AuthenticationRepository = mockk()
     private val clearDataUseCase: ClearDataUseCase = mockk()
-    private val synchronizeDataUseCase: SynchronizeDataUseCase = mockk()
+    private val fetchDataUseCase: FetchDataUseCase = mockk()
     private val fcmTokenUseCase: FcmTokenUseCase = mockk()
     private val listenRemoteConversationsUseCase: ListenRemoteConversationsUseCase = mockk()
     private val listenRemoteMessagesUseCase: ListenRemoteMessagesUseCase = mockk()
@@ -41,18 +41,18 @@ class MainViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
 
-        every { authenticationRepository.authenticationState } returns flowOf(true)
+        every { authenticationRepository.authenticated } returns flowOf(true)
         coEvery { clearDataUseCase() } returns Unit
         coEvery { listenRemoteUserUseCase.start() } returns Unit
         coEvery { listenRemoteConversationsUseCase.start() } returns Unit
         coEvery { listenBlockedUserEventsUseCase.start() } returns Unit
         coEvery { listenRemoteMessagesUseCase.stopAll() } returns Unit
-        coEvery { synchronizeDataUseCase() } returns Unit
+        coEvery { fetchDataUseCase() } returns Unit
 
         viewModel = MainViewModel(
             authenticationRepository = authenticationRepository,
             clearDataUseCase = clearDataUseCase,
-            synchronizeDataUseCase = synchronizeDataUseCase,
+            fetchDataUseCase = fetchDataUseCase,
             fcmTokenUseCase = fcmTokenUseCase,
             listenRemoteUserUseCase = listenRemoteUserUseCase,
             listenRemoteConversationsUseCase = listenRemoteConversationsUseCase,
@@ -79,13 +79,13 @@ class MainViewModelTest {
         viewModel.updateDataOnAuthChange()
 
         // Then
-        coVerify { synchronizeDataUseCase() }
+        coVerify { fetchDataUseCase() }
     }
 
     @Test
     fun data_should_stop_be_listened_when_user_is_unauthenticated() {
         // Given
-        every { authenticationRepository.authenticationState } returns flowOf(false)
+        every { authenticationRepository.authenticated } returns flowOf(false)
 
         // When
         viewModel.updateDataOnAuthChange()
@@ -98,7 +98,7 @@ class MainViewModelTest {
     @Test
     fun data_should_be_deleted_when_user_is_unauthenticated() = runTest {
         // Given
-        every { authenticationRepository.authenticationState } returns flowOf(false)
+        every { authenticationRepository.authenticated } returns flowOf(false)
 
         // When
         viewModel.updateDataOnAuthChange()

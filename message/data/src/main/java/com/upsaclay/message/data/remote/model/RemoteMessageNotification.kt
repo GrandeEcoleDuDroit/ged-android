@@ -1,4 +1,4 @@
-package com.upsaclay.message.data.remote
+package com.upsaclay.message.data.remote.model
 
 data class RemoteMessageNotification(
     val conversation: Conversation,

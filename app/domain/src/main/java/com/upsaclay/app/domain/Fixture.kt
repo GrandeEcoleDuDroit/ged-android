@@ -3,4 +3,4 @@ package com.upsaclay.app.domain
 import com.upsaclay.app.domain.entity.FcmToken
 import com.upsaclay.common.domain.userFixture
 
-val fcmTokenFixture = FcmToken(userFixture.id, "token")
+val fcmTokenFixture = FcmToken(userFixture.id, true)

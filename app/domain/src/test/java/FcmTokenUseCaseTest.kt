@@ -19,11 +19,11 @@ class FcmTokenUseCaseTest {
 
     @Before
     fun setUp() {
-        coEvery { fcmTokenRepository.getUnsentFcmToken() } returns fcmTokenFixture
+        coEvery { fcmTokenRepository.getFcmToken() } returns fcmTokenFixture
         coEvery { fcmTokenRepository.removeUnsentFcmToken() } returns Unit
-        coEvery { fcmTokenRepository.storeUnsentFcmToken(any()) } returns Unit
+        coEvery { fcmTokenRepository.storeFcmToken(any()) } returns Unit
         coEvery { fcmTokenRepository.sendFcmToken(any()) } returns Unit
-        coEvery { fcmTokenRepository.generateToken() } returns fcmTokenFixture.value
+        coEvery { fcmTokenRepository.generateToken() } returns fcmTokenFixture.token
 
         useCase = FcmTokenUseCase(
             userRepository = userRepository,
@@ -69,7 +69,7 @@ class FcmTokenUseCaseTest {
         useCase.sendFcmToken(fcmTokenFixture)
 
         // Then
-        coVerify { fcmTokenRepository.storeUnsentFcmToken(fcmTokenFixture) }
+        coVerify { fcmTokenRepository.storeFcmToken(fcmTokenFixture) }
     }
 
     @Test
@@ -78,6 +78,6 @@ class FcmTokenUseCaseTest {
         useCase.storeToken(fcmTokenFixture)
 
         // Then
-        coVerify { fcmTokenRepository.storeUnsentFcmToken(fcmTokenFixture) }
+        coVerify { fcmTokenRepository.storeFcmToken(fcmTokenFixture) }
     }
 }

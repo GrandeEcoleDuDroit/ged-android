@@ -6,6 +6,7 @@ data class ApnsConfig(
 )
 
 data class ApnsHeaders(
+    val apnsPushType: String = "alert",
     val apnsPriority: String = "10",
     val apnsCollapseId: String
 )

@@ -6,7 +6,6 @@ import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.entity.fcm.Alert
 import com.upsaclay.common.domain.entity.fcm.AndroidConfig
-import com.upsaclay.common.domain.entity.fcm.AndroidNotification
 import com.upsaclay.common.domain.entity.fcm.ApnsConfig
 import com.upsaclay.common.domain.entity.fcm.ApnsHeaders
 import com.upsaclay.common.domain.entity.fcm.ApnsPayload
@@ -14,11 +13,10 @@ import com.upsaclay.common.domain.entity.fcm.Aps
 import com.upsaclay.common.domain.entity.fcm.FcmData
 import com.upsaclay.common.domain.entity.fcm.FcmDataType
 import com.upsaclay.common.domain.entity.fcm.FcmMessage
-import com.upsaclay.common.domain.entity.fcm.FcmNotification
 import com.upsaclay.common.domain.extensions.toEpochMilliUTC
 import com.upsaclay.common.domain.extensions.toLocalDateTimeUTC
 import com.upsaclay.message.data.local.model.LocalMessageNotification
-import com.upsaclay.message.data.remote.RemoteMessageNotification
+import com.upsaclay.message.data.remote.model.RemoteMessageNotification
 import com.upsaclay.message.domain.MessageNotificationUtils
 import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.MessageNotification
@@ -42,28 +40,29 @@ fun MessageNotification.toLocal() = LocalMessageNotification(
     conversationDeleteTime = conversation.effectiveFrom?.toEpochMilliUTC()
 )
 
-fun MessageNotification.toRemote(currentUser: User) = RemoteMessageNotification(
-    conversation = RemoteMessageNotification.Conversation(
-        id = conversation.id,
-        interlocutor = RemoteMessageNotification.Conversation.Interlocutor(
-            id = currentUser.id,
-            firstName = currentUser.firstName,
-            lastName = currentUser.lastName,
-            fullName = currentUser.fullName,
-            email = currentUser.email,
-            schoolLevel = currentUser.schoolLevel.number,
-            admin = currentUser.admin,
-            profilePictureFileName = UserUtils.ProfilePicture.getFileName(currentUser.profilePictureUrl),
-            state = currentUser.state.number,
-            tester = currentUser.tester
+fun MessageNotification.toRemote(currentUser: User) =
+    RemoteMessageNotification(
+        conversation = RemoteMessageNotification.Conversation(
+            id = conversation.id,
+            interlocutor = RemoteMessageNotification.Conversation.Interlocutor(
+                id = currentUser.id,
+                firstName = currentUser.firstName,
+                lastName = currentUser.lastName,
+                fullName = currentUser.fullName,
+                email = currentUser.email,
+                schoolLevel = currentUser.schoolLevel.number,
+                admin = currentUser.admin,
+                profilePictureFileName = UserUtils.ProfilePicture.getFileName(currentUser.profilePictureUrl),
+                state = currentUser.state.number,
+                tester = currentUser.tester
+            ),
+            createdAt = conversation.createdAt.toEpochMilliUTC(),
+            deleteTime = conversation.effectiveFrom?.toEpochMilliUTC()
         ),
-        createdAt = conversation.createdAt.toEpochMilliUTC(),
-        deleteTime = conversation.effectiveFrom?.toEpochMilliUTC()
-    ),
-    messageId = message.messageId,
-    content = message.content,
-    timestamp = message.timestamp
-)
+        messageId = message.messageId,
+        content = message.content,
+        timestamp = message.timestamp
+    )
 
 fun LocalMessageNotification.toMessageNotification() = MessageNotification(
     conversation = toConversation(),
@@ -118,19 +117,11 @@ fun RemoteMessageNotification.toMessageNotification() = MessageNotification(
 )
 
 fun RemoteMessageNotification.toFcm() = FcmMessage(
-    notification = FcmNotification(
-        title = conversation.interlocutor.fullName,
-        body = content
-    ),
     data = FcmData(
         type = FcmDataType.MESSAGE,
         value = this
     ),
-    android = AndroidConfig(
-        notification = AndroidNotification(
-            channelId = MessageNotificationUtils.CHANNEL_ID,
-        )
-    ),
+    android = AndroidConfig(),
     apns = ApnsConfig(
         headers = ApnsHeaders(
             apnsCollapseId = MessageNotificationUtils.formatNotificationId(conversation.id)

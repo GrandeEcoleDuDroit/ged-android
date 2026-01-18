@@ -3,7 +3,7 @@ package com.upsaclay.message
 import com.upsaclay.common.domain.repository.RouteRepository
 import com.upsaclay.message.domain.converter.ConversationJsonParser
 import com.upsaclay.message.domain.entity.MessageNotificationUi
-import com.upsaclay.message.domain.mapper.toNotificationsUi
+import com.upsaclay.message.domain.mapper.toMessageNotificationsUi
 import com.upsaclay.message.domain.messageNotificationFixture
 import com.upsaclay.message.domain.messageNotificationsFixture
 import com.upsaclay.message.domain.repository.MessageNotificationRepository
@@ -38,7 +38,7 @@ class MessageNotificationManagerTest {
     @Before
     fun setUp() {
         every { routeRepository.currentRoute } returns ConversationRoute
-        every { messageNotificationPresenter.start() } returns Unit
+        every { messageNotificationPresenter.createNotificationChannel() } returns Unit
         every { messageNotificationPresenter.clearNotification(any()) } returns Unit
         coEvery { messageNotificationRepository.storeMessageNotification(any()) } returns Unit
         coEvery { messageNotificationRepository.getMessageNotifications(any()) } returns listOf(messageNotificationFixture)
@@ -53,12 +53,12 @@ class MessageNotificationManagerTest {
     }
 
     @Test
-    fun start_should_start_notification_presenter() {
+    fun start_should_createNotificationChannel_notification_presenter() {
         // When
-        manager.start()
+        manager.createNotificationChannel()
 
         // Then
-        coVerify { messageNotificationPresenter.start() }
+        coVerify { messageNotificationPresenter.createNotificationChannel() }
     }
 
     @Test
@@ -99,7 +99,7 @@ class MessageNotificationManagerTest {
     @Test
     fun showNotification_should_show_stored_message_notifications() = runTest {
         // Given
-        val messageNotificationsUi = listOf(messageNotificationFixture).toNotificationsUi()
+        val messageNotificationsUi = listOf(messageNotificationFixture).toMessageNotificationsUi()
 
         // When
         manager.showNotification(messageNotificationFixture)

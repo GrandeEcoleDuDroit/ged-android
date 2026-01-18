@@ -9,72 +9,61 @@ import com.upsaclay.authentication.AuthenticationRoute
 import com.upsaclay.authentication.domain.repository.AuthenticationRepository
 import com.upsaclay.common.domain.entity.Route
 import com.upsaclay.common.domain.repository.RouteRepository
+import com.upsaclay.common.domain.usecase.NavigationRequestUseCase
 import com.upsaclay.message.domain.usecase.GetUnreadConversationsCountUseCase
 import com.upsaclay.message.presentation.chat.ChatRoute
-import com.upsaclay.message.presentation.conversation.ConversationRoute
 import com.upsaclay.news.presentation.NewsBaseRoute
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class NavigationViewModel(
-    private val getUnreadConversationsCountUseCase: GetUnreadConversationsCountUseCase,
     private val authenticationRepository: AuthenticationRepository,
-    private val routeRepository: RouteRepository
+    private val routeRepository: RouteRepository,
+    private val getUnreadConversationsCountUseCase: GetUnreadConversationsCountUseCase,
+    navigationRequestUseCase: NavigationRequestUseCase
 ): ViewModel() {
     private val _uiState = MutableStateFlow(NavigationState())
     val uiState: StateFlow<NavigationState> = _uiState
-    private val _routesToNavigate = MutableSharedFlow<List<Route>>(replay = 1)
-    val routesToNavigate: SharedFlow<List<Route>> = _routesToNavigate
+    val routeToNavigate: Flow<List<Route>> = navigationRequestUseCase.routesToNavigate.map {
+        if (authenticationRepository.isAuthenticated) {
+            it
+        } else {
+            listOf(AuthenticationRoute)
+        }
+    }.onEach {
+        navigationRequestUseCase.resetRoute()
+    }
 
     init {
         updateStartDestination()
         updateMessageBadges()
     }
 
-    fun intentToNavigate(route: Route) {
-        if (authenticationRepository.currentAuthenticationState) {
-            navigate(route)
-        }
-    }
-
-    private fun navigate(route: Route) {
-        val routes = when(route) {
-            is ChatRoute -> listOf(ConversationRoute, route)
-            AuthenticationRoute -> listOf(route)
-            else -> return
-        }
-
-        viewModelScope.launch {
-            _routesToNavigate.emit(routes)
-        }
-    }
-
     fun setCurrentRoute(destination: NavDestination, arguments: Bundle?) {
-        val route = resolveCurrentRoute(destination, arguments)
+        val route = resolveRoute(destination, arguments)
         viewModelScope.launch {
             routeRepository.setCurrentRoute(route)
         }
     }
 
-    private fun resolveCurrentRoute(destination: NavDestination, arguments: Bundle?): Route? {
+    private fun resolveRoute(destination: NavDestination, arguments: Bundle?): Route? {
         val routeName = destination.route?.split('.')?.last() ?: return null
         return when {
-            routeName.startsWith(ChatRoute.NAME) -> {
-                arguments?.getString(ChatRoute.CONVERSATION_JSON_ARGUMENT)
-                    ?.let { ChatRoute(conversationJson = it) }
-            }
+            routeName.startsWith(ChatRoute.NAME) ->
+                arguments?.getString(ChatRoute.CONVERSATION_JSON_ARGUMENT)?.let { ChatRoute(conversationJson = it) }
+
             else -> null
         }
     }
 
     private fun updateStartDestination() {
         viewModelScope.launch {
-            authenticationRepository.authenticationState.map {
+            authenticationRepository.authenticated.map {
                 if (it) NewsBaseRoute else AuthenticationBaseRoute
             }.collect { route ->
                 _uiState.update {

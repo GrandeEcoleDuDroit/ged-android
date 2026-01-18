@@ -22,11 +22,19 @@ import androidx.core.graphics.drawable.IconCompat
 import com.upsaclay.common.IntentHelper
 import com.upsaclay.common.R
 import com.upsaclay.common.domain.entity.User
+import com.upsaclay.common.domain.entity.fcm.FcmDataType
 import com.upsaclay.common.domain.repository.ImageRepository
+import com.upsaclay.common.domain.repository.RouteRepository
 import com.upsaclay.message.domain.MessageNotificationUtils
 import com.upsaclay.message.domain.converter.ConversationJsonParser
 import com.upsaclay.message.domain.entity.Conversation
+import com.upsaclay.message.domain.entity.MessageNotification
 import com.upsaclay.message.domain.entity.MessageNotificationUi
+import com.upsaclay.message.domain.mapper.toMessageNotificationsUi
+import com.upsaclay.message.domain.repository.MessageNotificationRepository
+import com.upsaclay.message.presentation.chat.ChatRoute
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.InputStream
 
 const val CONVERSATION_ID_EXTRA = "conversation_id_extra"
@@ -35,16 +43,38 @@ const val CONVERSATION_ID_EXTRA = "conversation_id_extra"
 class MessageNotificationPresenter (
     private val context: Context,
     private val imageRepository: ImageRepository,
-    private val intentHelper: IntentHelper
+    private val intentHelper: IntentHelper,
+    private val messageNotificationRepository: MessageNotificationRepository,
+    private val routeRepository: RouteRepository
 ) {
-    private val notificationManager = NotificationManagerCompat.from(context)
+    private val notificationManagerCompat = NotificationManagerCompat.from(context)
 
-    fun start() {
-        createNotificationChannel()
+    fun createNotificationChannel() {
+        val channel = NotificationChannel(
+            MessageNotificationUtils.CHANNEL_ID,
+            "Message",
+            NotificationManager.IMPORTANCE_HIGH
+        ).apply {
+            description = "Message notification"
+        }
+
+        notificationManagerCompat.createNotificationChannel(channel)
+    }
+
+    suspend fun presentNotification(messageNotification: MessageNotification) {
+        val messageNotificationsUi = messageNotificationRepository
+            .getMessageNotifications(messageNotification.conversation.id)
+            .toMessageNotificationsUi()
+
+        if (!isCurrentMessageScreen(messageNotification.conversation.id)) {
+            messageNotificationsUi.forEach {
+                showNotification(it)
+            }
+        }
     }
 
     suspend fun showNotification(messageNotificationUi: MessageNotificationUi) {
-        if (!notificationManager.areNotificationsEnabled()) {
+        if (!notificationManagerCompat.areNotificationsEnabled()) {
             return
         }
 
@@ -61,27 +91,18 @@ class MessageNotificationPresenter (
             intent = intent
         )
 
-        notificationManager.notify(messageNotificationUi.conversation.id.hashCode(), notification)
+        withContext(Dispatchers.Main) {
+            notificationManagerCompat.notify(messageNotificationUi.conversation.id.hashCode(), notification)
+        }
     }
 
     fun clearNotification(conversationId: String) {
-        notificationManager.cancel(conversationId.hashCode())
-    }
-
-    private fun createNotificationChannel() {
-        val channel = NotificationChannel(
-            MessageNotificationUtils.CHANNEL_ID,
-            "Message",
-            NotificationManager.IMPORTANCE_HIGH
-        ).apply {
-            description = "Message notification"
-        }
-
-        notificationManager.createNotificationChannel(channel)
+        notificationManagerCompat.cancel(conversationId.hashCode())
     }
 
     private fun buildConversationIntent(conversation: Conversation): PendingIntent {
         val intent = intentHelper.getMainActivityIntent(context).apply {
+            putExtra("type", FcmDataType.MESSAGE.toString())
             putExtra(CONVERSATION_ID_EXTRA, ConversationJsonParser.toJson(conversation))
             addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
         }
@@ -150,15 +171,21 @@ class MessageNotificationPresenter (
             }
 
 
-        val notificationBuilder = NotificationCompat.Builder(context, MessageNotificationUtils.CHANNEL_ID)
-            .setContentTitle(interlocutor.fullName)
-            .setSmallIcon(R.drawable.ic_notification)
-            .setColor(context.getColor(R.color.icon_background_color))
-            .setCategory(Notification.CATEGORY_MESSAGE)
-            .setContentIntent(intent)
-            .setAutoCancel(true)
-            .setStyle(messageStyle)
+        val notificationBuilder =
+            NotificationCompat.Builder(context, MessageNotificationUtils.CHANNEL_ID)
+                .setContentTitle(interlocutor.fullName)
+                .setSmallIcon(R.drawable.ic_notification)
+                .setColor(context.getColor(R.color.icon_background_color))
+                .setCategory(Notification.CATEGORY_MESSAGE)
+                .setContentIntent(intent)
+                .setAutoCancel(true)
+                .setStyle(messageStyle)
 
         return notificationBuilder.build()
+    }
+
+    private fun isCurrentMessageScreen(conversationId: String): Boolean {
+        val messageScreen = routeRepository.currentRoute as? ChatRoute ?: return false
+        return messageScreen.conversationJson.let(ConversationJsonParser::toConversation)?.id == conversationId
     }
 }

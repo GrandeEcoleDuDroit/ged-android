@@ -12,6 +12,8 @@ import com.upsaclay.common.data.remote.api.BlockedUserApi
 import com.upsaclay.common.data.remote.api.FcmApi
 import com.upsaclay.common.data.remote.api.ImageApi
 import com.upsaclay.common.data.remote.api.ImageApiImpl
+import com.upsaclay.common.data.remote.api.NotificationApi
+import com.upsaclay.common.data.remote.api.NotificationApiImpl
 import com.upsaclay.common.data.remote.api.WhiteListApi
 import com.upsaclay.common.data.remote.api.user.UserApi
 import com.upsaclay.common.data.remote.api.user.UserApiImpl
@@ -91,6 +93,8 @@ val commonDataModule = module {
         get<Retrofit>(GED_SERVER_QUALIFIER)
             .create(BlockedUserApi::class.java)
     }
+
+    singleOf(::NotificationApiImpl) { bind<NotificationApi>() }
 
     singleOf(::ImageApiImpl) { bind<ImageApi>() }
     singleOf(::ImageRemoteDataSource)

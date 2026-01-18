@@ -3,9 +3,9 @@ package com.upsaclay.authentication.domain.repository
 import kotlinx.coroutines.flow.Flow
 
 interface AuthenticationRepository {
-    val authenticationState: Flow<Boolean>
+    val authenticated: Flow<Boolean>
 
-    val currentAuthenticationState: Boolean
+    val isAuthenticated: Boolean
 
     fun getAuthToken(): String?
 

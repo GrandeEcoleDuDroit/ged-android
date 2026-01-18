@@ -1,7 +1,7 @@
 import com.upsaclay.mission.domain.missionFixture
 import com.upsaclay.mission.domain.missionsFixture
 import com.upsaclay.mission.domain.repository.MissionRepository
-import com.upsaclay.mission.domain.usecase.SynchronizeMissionsUseCase
+import com.upsaclay.mission.domain.usecase.FetchMissionsUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -11,10 +11,10 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 
-class SynchronizeMissionsUseCaseTest {
+class FetchMissionsUseCaseTest {
     private val missionRepository: MissionRepository = mockk()
 
-    private lateinit var useCase: SynchronizeMissionsUseCase
+    private lateinit var useCase: FetchMissionsUseCase
 
     @Before
     fun setUp() {
@@ -24,7 +24,7 @@ class SynchronizeMissionsUseCaseTest {
         coEvery { missionRepository.deleteLocalMission(any()) } returns Unit
         coEvery { missionRepository.getRemoteMissions() } returns missionsFixture
 
-        useCase = SynchronizeMissionsUseCase(
+        useCase = FetchMissionsUseCase(
             missionRepository = missionRepository
         )
     }

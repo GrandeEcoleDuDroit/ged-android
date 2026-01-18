@@ -11,12 +11,13 @@ interface FcmApi {
     @POST("fcm/add-token")
     suspend fun addToken(
         @Field("userId") userId: String,
-        @Field("token") value: String
+        @Field("token") token: String
     ): Response<ServerResponse>
 
     @FormUrlEncoded
     @POST("fcm/send-notification")
     suspend fun sendNotification(
+        @Field("userId") userId: String,
         @Field("recipientId") recipientId: String,
         @Field("fcmMessage") fcmMessage: String
     ): Response<ServerResponse>
