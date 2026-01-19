@@ -128,14 +128,13 @@ private fun DefaultConversationItem(
                 Text(
                     modifier = Modifier.weight(1f, fill = false),
                     text = interlocutor.displayName(),
-                    style = MaterialTheme.typography.titleMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
 
                 Text(
                     text = elapsedTimeText,
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.supportingText
                 )
             }
@@ -143,8 +142,8 @@ private fun DefaultConversationItem(
         supportingContent = {
             Text(
                 text = text,
-                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.supportingText,
+                style = MaterialTheme.typography.bodyMedium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -175,8 +174,7 @@ private fun UnreadConversationItem(
                 Text(
                     modifier = Modifier.weight(1f, fill = false),
                     text = interlocutor.displayName(),
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
+                    fontWeight = FontWeight.Medium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -185,16 +183,16 @@ private fun UnreadConversationItem(
                     text = elapsedTimeText,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.Medium
                 )
             }
         },
         supportingContent = {
             Text(
                 text = text,
-                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface,
-                fontWeight = FontWeight.SemiBold,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Medium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -259,14 +257,13 @@ private fun ErrorConversationItem(
                 Text(
                     modifier = Modifier.weight(1f, fill = false),
                     text = interlocutor.displayName(),
-                    style = MaterialTheme.typography.titleMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
 
                 Text(
                     text = elapsedTimeText,
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.supportingText
                 )
             }
