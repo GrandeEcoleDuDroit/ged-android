@@ -1,8 +1,10 @@
 package com.upsaclay.gedoise.viewmodel
 
 import com.upsaclay.authentication.AuthenticationBaseRoute
+import com.upsaclay.authentication.AuthenticationRoute
 import com.upsaclay.authentication.domain.repository.AuthenticationRepository
 import com.upsaclay.common.domain.repository.RouteRepository
+import com.upsaclay.common.domain.usecase.NavigationRequestUseCase
 import com.upsaclay.gedoise.presentation.navigation.NavigationViewModel
 import com.upsaclay.gedoise.presentation.navigation.TopLevelDestination
 import com.upsaclay.message.domain.conversationFixture
@@ -12,8 +14,10 @@ import com.upsaclay.message.presentation.chat.ChatRoute
 import com.upsaclay.news.presentation.NewsBaseRoute
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -27,14 +31,17 @@ class NavigationViewModelTest {
     private val routeRepository: RouteRepository = mockk()
     private val getUnreadConversationsCountUseCase: GetUnreadConversationsCountUseCase = mockk()
     private val authenticationRepository: AuthenticationRepository = mockk()
+    private val navigationRequestUseCase: NavigationRequestUseCase = mockk()
 
-    private lateinit var navigationViewModel: NavigationViewModel
+    private lateinit var viewModel: NavigationViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
 
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
 
+        every { navigationRequestUseCase.routesToNavigate } returns flowOf()
+        every { navigationRequestUseCase.resetRoute() } returns Unit
         every { authenticationRepository.authenticated } returns flowOf(true)
         every { authenticationRepository.isAuthenticated } returns true
         every { routeRepository.currentRoute } returns null
@@ -45,14 +52,15 @@ class NavigationViewModelTest {
     @Test
     fun startDestination_should_be_NewsRoute_when_authenticated() = runTest {
         // When
-        navigationViewModel = NavigationViewModel(
+        viewModel = NavigationViewModel(
             getUnreadConversationsCountUseCase = getUnreadConversationsCountUseCase,
             routeRepository = routeRepository,
-            authenticationRepository = authenticationRepository
+            authenticationRepository = authenticationRepository,
+            navigationRequestUseCase = navigationRequestUseCase
         )
 
         // Then
-        val result = navigationViewModel.uiState.value.startDestination
+        val result = viewModel.uiState.value.startDestination
 
         assertEquals(NewsBaseRoute, result)
     }
@@ -63,56 +71,77 @@ class NavigationViewModelTest {
         every { authenticationRepository.authenticated } returns flowOf(false)
 
         // When
-        navigationViewModel = NavigationViewModel(
+        viewModel = NavigationViewModel(
             getUnreadConversationsCountUseCase = getUnreadConversationsCountUseCase,
             routeRepository = routeRepository,
-            authenticationRepository = authenticationRepository
+            authenticationRepository = authenticationRepository,
+            navigationRequestUseCase = navigationRequestUseCase
         )
 
         // Then
-        val result = navigationViewModel.uiState.value.startDestination
+        val result = viewModel.uiState.value.startDestination
 
         assertEquals(AuthenticationBaseRoute, result)
     }
 
     @Test
-    fun intentToNavigate_should_navigate_to_screen_when_authenticated() = runTest {
+    fun routeToNavigate_should_be_received_one_route_when_authenticated() = runTest {
         // Given
-        every { authenticationRepository.isAuthenticated } returns true
-        val route = ChatRoute(ConversationJsonParser.toJson(conversationFixture))
+        val route = listOf(ChatRoute(ConversationJsonParser.toJson(conversationFixture)))
+        every { navigationRequestUseCase.routesToNavigate } returns flowOf(route)
 
         // When
-        navigationViewModel = NavigationViewModel(
+        viewModel = NavigationViewModel(
             getUnreadConversationsCountUseCase = getUnreadConversationsCountUseCase,
             routeRepository = routeRepository,
-            authenticationRepository = authenticationRepository
+            authenticationRepository = authenticationRepository,
+            navigationRequestUseCase = navigationRequestUseCase
         )
-        navigationViewModel.intentToNavigate(route)
 
         // Then
-        val result = navigationViewModel.routesToNavigate.replayCache[0]
+        val result = viewModel.routeToNavigate.first()
 
-        assert(result.contains(route))
+        assert(result == route)
     }
 
     @Test
-    fun intentToNavigate_should_not_navigate_when_unauthenticated() = runTest {
+    fun routeToNavigate_should_be_AuthenticationRoute_route_when_unauthenticated() = runTest {
         // Given
+        val route = listOf(ChatRoute(ConversationJsonParser.toJson(conversationFixture)))
         every { authenticationRepository.isAuthenticated } returns false
-        val route = ChatRoute(ConversationJsonParser.toJson(conversationFixture))
+        every { navigationRequestUseCase.routesToNavigate } returns flowOf(route)
 
         // When
-        navigationViewModel = NavigationViewModel(
+        viewModel = NavigationViewModel(
             getUnreadConversationsCountUseCase = getUnreadConversationsCountUseCase,
             routeRepository = routeRepository,
-            authenticationRepository = authenticationRepository
+            authenticationRepository = authenticationRepository,
+            navigationRequestUseCase = navigationRequestUseCase
         )
-        navigationViewModel.intentToNavigate(route)
 
         // Then
-        val result = navigationViewModel.routesToNavigate.replayCache.getOrNull(0) ?: emptyList()
+        val result = viewModel.routeToNavigate.first()
 
-        assertEquals(emptyList(), result)
+        assertEquals(listOf(AuthenticationRoute), result)
+    }
+
+    @Test
+    fun routeToNavigate_should_be_reset_after_being_received() = runTest {
+        // Given
+        val route = listOf(ChatRoute(ConversationJsonParser.toJson(conversationFixture)))
+        every { navigationRequestUseCase.routesToNavigate } returns flowOf(route)
+
+        // When
+        viewModel = NavigationViewModel(
+            getUnreadConversationsCountUseCase = getUnreadConversationsCountUseCase,
+            routeRepository = routeRepository,
+            authenticationRepository = authenticationRepository,
+            navigationRequestUseCase = navigationRequestUseCase
+        )
+
+        viewModel.routeToNavigate.first()
+
+        verify { navigationRequestUseCase.resetRoute() }
     }
 
     @Test
@@ -121,14 +150,15 @@ class NavigationViewModelTest {
         every { getUnreadConversationsCountUseCase() } returns flowOf(2)
 
         // When
-        navigationViewModel = NavigationViewModel(
+        viewModel = NavigationViewModel(
             getUnreadConversationsCountUseCase = getUnreadConversationsCountUseCase,
             routeRepository = routeRepository,
-            authenticationRepository = authenticationRepository
+            authenticationRepository = authenticationRepository,
+            navigationRequestUseCase = navigationRequestUseCase
         )
 
         // Then
-        val result = navigationViewModel.uiState.value.topLevelDestinations
+        val result = viewModel.uiState.value.topLevelDestinations
         val topLevelDestination = result.find { it is TopLevelDestination.Message } as TopLevelDestination.Message
 
         assertEquals(2, topLevelDestination.badges)

@@ -113,7 +113,7 @@ val conversationsFixture = listOf(
     )
 )
 
-val messageContentNotificationFixture = MessageNotification(
+val messageNotificationFixture = MessageNotification(
     conversation = conversationFixture,
     messageContent = MessageNotification.MessageContent(
         messageId = messageFixture.id,
@@ -123,8 +123,8 @@ val messageContentNotificationFixture = MessageNotification(
 )
 
 val messageContentNotificationsFixture = listOf(
-    messageContentNotificationFixture,
-    messageContentNotificationFixture.copy(
+    messageNotificationFixture,
+    messageNotificationFixture.copy(
         conversation = conversationFixture.copy(id = "2"),
         messageContent = MessageNotification.MessageContent(
             messageId = "2",

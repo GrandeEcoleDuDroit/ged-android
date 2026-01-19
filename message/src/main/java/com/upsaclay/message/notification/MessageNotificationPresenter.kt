@@ -73,7 +73,7 @@ class MessageNotificationPresenter (
         }
     }
 
-    suspend fun showNotification(messageNotificationUi: MessageNotificationUi) {
+    private suspend fun showNotification(messageNotificationUi: MessageNotificationUi) {
         if (!notificationManagerCompat.areNotificationsEnabled()) {
             return
         }

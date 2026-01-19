@@ -1,11 +1,10 @@
 package com.upsaclay.message
 
+import android.os.Bundle
 import com.upsaclay.common.domain.repository.RouteRepository
+import com.upsaclay.common.domain.usecase.NavigationRequestUseCase
 import com.upsaclay.message.domain.converter.ConversationJsonParser
-import com.upsaclay.message.domain.entity.MessageNotificationUi
-import com.upsaclay.message.domain.mapper.toMessageNotificationsUi
-import com.upsaclay.message.domain.messageContentNotificationFixture
-import com.upsaclay.message.domain.messageContentNotificationsFixture
+import com.upsaclay.message.domain.messageNotificationFixture
 import com.upsaclay.message.domain.repository.MessageNotificationRepository
 import com.upsaclay.message.notification.MessageNotificationManager
 import com.upsaclay.message.notification.MessageNotificationPresenter
@@ -15,6 +14,8 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
@@ -23,37 +24,34 @@ class MessageContentNotificationManagerTest {
     private val routeRepository: RouteRepository = mockk()
     private val messageNotificationRepository: MessageNotificationRepository = mockk()
     private val messageNotificationPresenter: MessageNotificationPresenter = mockk()
+    private val navigationRequestUseCase: NavigationRequestUseCase = mockk()
 
     private lateinit var manager: MessageNotificationManager
-    private val messageNotificationUi = MessageNotificationUi(
-        conversation = messageContentNotificationFixture.conversation,
-        messages = listOf(
-            MessageNotificationUi.Message(
-                text = messageContentNotificationFixture.messageContent.content,
-                timestamp = messageContentNotificationFixture.messageContent.timestamp
-            )
-        )
-    )
+    private val testScope = TestScope(UnconfinedTestDispatcher())
+    private val bundle: Bundle = mockk()
 
     @Before
     fun setUp() {
+        every { bundle.getString(any()) } returns ""
+        every { navigationRequestUseCase.navigate(any()) } returns Unit
         every { routeRepository.currentRoute } returns ConversationRoute
         every { messageNotificationPresenter.createNotificationChannel() } returns Unit
         every { messageNotificationPresenter.clearNotification(any()) } returns Unit
+        every { messageNotificationRepository.parseNotification(any()) } returns messageNotificationFixture
         coEvery { messageNotificationRepository.storeMessageNotification(any()) } returns Unit
-        coEvery { messageNotificationRepository.getMessageNotifications(any()) } returns listOf(messageContentNotificationFixture)
+        coEvery { messageNotificationRepository.getMessageNotifications(any()) } returns listOf(messageNotificationFixture)
         coEvery { messageNotificationRepository.deleteMessageNotifications(any()) } returns Unit
-        coEvery { messageNotificationPresenter.showNotification(any()) } returns Unit
 
         manager = MessageNotificationManager(
-            routeRepository = routeRepository,
             messageNotificationRepository = messageNotificationRepository,
-            messageNotificationPresenter = messageNotificationPresenter
+            messageNotificationPresenter = messageNotificationPresenter,
+            navigationRequestUseCase = navigationRequestUseCase,
+            scope = testScope
         )
     }
 
     @Test
-    fun start_should_createNotificationChannel_notification_presenter() {
+    fun createNotificationChannel_should_create_notification_channel() {
         // When
         manager.createNotificationChannel()
 
@@ -62,70 +60,54 @@ class MessageContentNotificationManagerTest {
     }
 
     @Test
-    fun showNotification_should_store_notification() = runTest {
+    fun onNotificationClick_should_navigate_to_chat_route() {
         // Given
-        val messageNotification = messageContentNotificationsFixture.first()
+        val conversationJson = ConversationJsonParser.toJson(messageNotificationFixture.conversation)
+        val route = listOf(ConversationRoute, ChatRoute(conversationJson))
+        every { bundle.getString(any()) } returns conversationJson
 
         // When
-        manager.showNotification(messageNotification)
+        manager.onNotificationClick(bundle)
 
         // Then
-        coVerify { messageNotificationRepository.storeMessageNotification(messageNotification) }
+        coVerify { navigationRequestUseCase.navigate(route) }
+    }
+
+
+    @Test
+    fun presentNotification_should_store_notification() = runTest {
+        // When
+        manager.presentNotification(bundle)
+
+        // Then
+        coVerify { messageNotificationRepository.storeMessageNotification(messageNotificationFixture) }
     }
 
     @Test
-    fun showNotification_should_not_show_notification_when_current_screen_is_message() = runTest {
-        // Given
-        every { routeRepository.currentRoute } returns ChatRoute(
-            conversationJson = ConversationJsonParser.toJson(messageContentNotificationFixture.conversation)
-        )
-
+    fun presentNotification_should_presentNotification() = runTest {
         // When
-        manager.showNotification(messageContentNotificationFixture)
+        manager.presentNotification(bundle)
 
         // Then
-        coVerify(exactly = 0) { messageNotificationPresenter.showNotification(messageNotificationUi) }
+        coVerify { messageNotificationPresenter.presentNotification(messageNotificationFixture) }
     }
 
     @Test
-    fun showNotification_should_show_notification_when_current_screen_is_not_message() = runTest {
-        // When
-        manager.showNotification(messageContentNotificationFixture)
-
-        // Then
-        coVerify { messageNotificationPresenter.showNotification(messageNotificationUi) }
-    }
-
-    @Test
-    fun showNotification_should_show_stored_message_notifications() = runTest {
+    fun clearNotifications_should_delete_message_notifications() = runTest {
         // Given
-        val messageNotificationsUi = listOf(messageContentNotificationFixture).toMessageNotificationsUi()
-
-        // When
-        manager.showNotification(messageContentNotificationFixture)
-
-        // Then
-        coVerify { messageNotificationRepository.getMessageNotifications(messageContentNotificationFixture.conversation.id) }
-        coVerify { messageNotificationPresenter.showNotification(messageNotificationsUi[0]) }
-    }
-
-    @Test
-    fun clearNotifications_should_delete_local_message_notifications() = runTest {
-        // Given
-        val conversationId = messageContentNotificationFixture.conversation.id
+        val conversationId = messageNotificationFixture.conversation.id
 
         // When
         manager.clearNotifications(conversationId)
 
         // Then
         coVerify { messageNotificationRepository.deleteMessageNotifications(conversationId) }
-        coVerify { messageNotificationPresenter.clearNotification(conversationId) }
     }
 
     @Test
     fun clearNotifications_should_clear_notifications() = runTest {
         // Given
-        val conversationId = messageContentNotificationFixture.conversation.id
+        val conversationId = messageNotificationFixture.conversation.id
 
         // When
         manager.clearNotifications(conversationId)

@@ -6,6 +6,7 @@ import com.upsaclay.app.domain.usecase.FetchDataUseCase
 import com.upsaclay.app.domain.usecase.ListenBlockedUserEventsUseCase
 import com.upsaclay.app.domain.usecase.ListenRemoteUserUseCase
 import com.upsaclay.authentication.domain.repository.AuthenticationRepository
+import com.upsaclay.common.domain.ConnectivityObserver
 import com.upsaclay.gedoise.presentation.MainViewModel
 import com.upsaclay.message.domain.usecase.ListenRemoteConversationsUseCase
 import com.upsaclay.message.domain.usecase.ListenRemoteMessagesUseCase
@@ -33,6 +34,7 @@ class MainViewModelTest {
     private val listenRemoteMessagesUseCase: ListenRemoteMessagesUseCase = mockk()
     private val listenRemoteUserUseCase: ListenRemoteUserUseCase = mockk()
     private val listenBlockedUserEventsUseCase: ListenBlockedUserEventsUseCase = mockk()
+    private val connectivityObserver: ConnectivityObserver = mockk()
 
     private lateinit var viewModel: MainViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
@@ -41,6 +43,7 @@ class MainViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
 
+        every { connectivityObserver.connected } returns flowOf(true)
         every { authenticationRepository.authenticated } returns flowOf(true)
         coEvery { clearDataUseCase() } returns Unit
         coEvery { listenRemoteUserUseCase.start() } returns Unit
@@ -57,7 +60,8 @@ class MainViewModelTest {
             listenRemoteUserUseCase = listenRemoteUserUseCase,
             listenRemoteConversationsUseCase = listenRemoteConversationsUseCase,
             listenRemoteMessagesUseCase = listenRemoteMessagesUseCase,
-            listenBlockedUserEventsUseCase = listenBlockedUserEventsUseCase
+            listenBlockedUserEventsUseCase = listenBlockedUserEventsUseCase,
+            connectivityObserver = connectivityObserver
         )
     }
 
