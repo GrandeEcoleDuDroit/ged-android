@@ -4,6 +4,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.upsaclay.authentication.data.model.AuthTokenState
+import com.upsaclay.authentication.domain.entity.AuthenticationState
 import com.upsaclay.common.domain.entity.CustomException
 import com.upsaclay.common.domain.entity.CustomException.CustomError.CURRENT_USER_NOT_FOUND
 import kotlinx.coroutines.channels.awaitClose
@@ -14,9 +15,11 @@ import kotlinx.coroutines.tasks.await
 class AuthenticationApiImpl: AuthenticationApi {
     private val firebaseAuth = Firebase.auth
 
-    override fun listenAuthenticationState(): Flow<Boolean> = callbackFlow {
+    override fun listenAuthenticationState(): Flow<AuthenticationState> = callbackFlow {
         val listener = FirebaseAuth.AuthStateListener { auth ->
-            trySend(auth.currentUser != null)
+            auth.currentUser?.uid?.let {
+                trySend(AuthenticationState.Authenticated(it))
+            } ?: trySend(AuthenticationState.Unauthenticated)
         }
 
         firebaseAuth.addAuthStateListener(listener)
@@ -54,6 +57,8 @@ class AuthenticationApiImpl: AuthenticationApi {
             firebaseAuth.removeIdTokenListener(listener)
         }
     }
+
+    override fun isAuthenticated(): Boolean = firebaseAuth.currentUser != null
 
     override suspend fun signIn(email: String, password: String): String? =
         firebaseAuth.signInWithEmailAndPassword(email, password).await().user?.uid

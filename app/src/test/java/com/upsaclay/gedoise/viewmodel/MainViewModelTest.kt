@@ -44,7 +44,7 @@ class MainViewModelTest {
         Dispatchers.setMain(testDispatcher)
 
         every { connectivityObserver.connected } returns flowOf(true)
-        every { authenticationRepository.authenticated } returns flowOf(true)
+        every { authenticationRepository.authenticationState } returns flowOf(true)
         coEvery { clearDataUseCase() } returns Unit
         coEvery { listenRemoteUserUseCase.start() } returns Unit
         coEvery { listenRemoteConversationsUseCase.start() } returns Unit
@@ -89,7 +89,7 @@ class MainViewModelTest {
     @Test
     fun data_should_stop_be_listened_when_user_is_unauthenticated() {
         // Given
-        every { authenticationRepository.authenticated } returns flowOf(false)
+        every { authenticationRepository.authenticationState } returns flowOf(false)
 
         // When
         viewModel.updateDataOnAuthChange()
@@ -102,7 +102,7 @@ class MainViewModelTest {
     @Test
     fun data_should_be_deleted_when_user_is_unauthenticated() = runTest {
         // Given
-        every { authenticationRepository.authenticated } returns flowOf(false)
+        every { authenticationRepository.authenticationState } returns flowOf(false)
 
         // When
         viewModel.updateDataOnAuthChange()

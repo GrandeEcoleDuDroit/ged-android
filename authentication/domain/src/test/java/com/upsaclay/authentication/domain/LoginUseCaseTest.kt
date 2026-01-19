@@ -28,7 +28,7 @@ class LoginUseCaseTest {
         coEvery { authenticationRepository.loginWithEmailAndPassword(any(), any()) } returns userId
         coEvery { userRepository.getUser(any()) } returns userFixture
         coEvery { userRepository.storeUser(any()) } returns Unit
-        coEvery { authenticationRepository.setAuthenticated(any()) } returns Unit
+        coEvery { authenticationRepository.storeAuthenticationState(any()) } returns Unit
 
         useCase = LoginUseCase(
             authenticationRepository = authenticationRepository,
@@ -44,7 +44,7 @@ class LoginUseCaseTest {
         // Then
         coEvery { userRepository.getUser(userId) } returns userFixture
         coEvery { userRepository.storeUser(userFixture) } returns Unit
-        coEvery { authenticationRepository.setAuthenticated(true) } returns Unit
+        coEvery { authenticationRepository.storeAuthenticationState(true) } returns Unit
     }
 
     @Test(expected = AuthenticationException::class)

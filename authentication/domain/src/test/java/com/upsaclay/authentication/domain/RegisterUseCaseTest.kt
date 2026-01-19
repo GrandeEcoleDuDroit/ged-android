@@ -33,7 +33,7 @@ class RegisterUseCaseTest {
             )
         } returns userFixture.id
         coEvery { userRepository.createUser(any()) } returns Unit
-        coEvery { authenticationRepository.setAuthenticated(any()) } returns Unit
+        coEvery { authenticationRepository.storeAuthenticationState(any()) } returns Unit
 
         useCase = RegisterUseCase(
             authenticationRepository = authenticationRepository,
@@ -49,6 +49,6 @@ class RegisterUseCaseTest {
 
         // Then
         coEvery { userRepository.createUser(any()) } returns Unit
-        coEvery { authenticationRepository.setAuthenticated(true) } returns Unit
+        coEvery { authenticationRepository.storeAuthenticationState(true) } returns Unit
     }
 }

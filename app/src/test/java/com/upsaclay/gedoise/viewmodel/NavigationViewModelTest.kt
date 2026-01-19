@@ -42,7 +42,7 @@ class NavigationViewModelTest {
 
         every { navigationRequestUseCase.routesToNavigate } returns flowOf()
         every { navigationRequestUseCase.resetRoute() } returns Unit
-        every { authenticationRepository.authenticated } returns flowOf(true)
+        every { authenticationRepository.authenticationState } returns flowOf(true)
         every { authenticationRepository.isAuthenticated } returns true
         every { routeRepository.currentRoute } returns null
         every { routeRepository.setCurrentRoute(any()) } returns Unit
@@ -68,7 +68,7 @@ class NavigationViewModelTest {
     @Test
     fun startDestination_should_be_AuthenticationRoute_when_unauthenticated() = runTest {
         // Given
-        every { authenticationRepository.authenticated } returns flowOf(false)
+        every { authenticationRepository.authenticationState } returns flowOf(false)
 
         // When
         viewModel = NavigationViewModel(

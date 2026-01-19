@@ -5,6 +5,7 @@ import com.upsaclay.app.domain.usecase.DeleteAccountUseCase
 import com.upsaclay.app.domain.usecase.FcmTokenUseCase
 import com.upsaclay.app.domain.usecase.FetchDataUseCase
 import com.upsaclay.app.domain.usecase.ListenBlockedUserEventsUseCase
+import com.upsaclay.app.domain.usecase.ListenDataUseCase
 import com.upsaclay.app.domain.usecase.ListenRemoteUserUseCase
 import com.upsaclay.app.domain.usecase.LogoutUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -42,4 +43,13 @@ val appDomainModule = module {
     singleOf(::ListenRemoteUserUseCase)
     singleOf(::ListenBlockedUserEventsUseCase)
     singleOf(::LogoutUseCase)
+    single {
+        ListenDataUseCase(
+            listenRemoteUserUseCase = get(),
+            listenRemoteConversationsUseCase = get(),
+            listenRemoteMessagesUseCase = get(),
+            listenBlockedUserEventsUseCase = get(),
+            scope = get(BACKGROUND_SCOPE)
+        )
+    }
 }

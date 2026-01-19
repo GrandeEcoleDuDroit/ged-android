@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavDestination
 import com.upsaclay.authentication.AuthenticationBaseRoute
 import com.upsaclay.authentication.AuthenticationRoute
+import com.upsaclay.authentication.domain.entity.AuthenticationState
 import com.upsaclay.authentication.domain.repository.AuthenticationRepository
 import com.upsaclay.common.domain.entity.Route
 import com.upsaclay.common.domain.repository.RouteRepository
@@ -30,7 +31,7 @@ class NavigationViewModel(
     private val _uiState = MutableStateFlow(NavigationState())
     val uiState: StateFlow<NavigationState> = _uiState
     val routeToNavigate: Flow<List<Route>> = navigationRequestUseCase.routesToNavigate.map {
-        if (authenticationRepository.isAuthenticated) {
+        if (authenticationRepository.isAuthenticated()) {
             it
         } else {
             listOf(AuthenticationRoute)
@@ -63,8 +64,12 @@ class NavigationViewModel(
 
     private fun updateStartDestination() {
         viewModelScope.launch {
-            authenticationRepository.authenticated.map {
-                if (it) NewsBaseRoute else AuthenticationBaseRoute
+            authenticationRepository.authenticationState.map {
+                if (it is AuthenticationState.Authenticated) {
+                    NewsBaseRoute
+                } else {
+                    AuthenticationBaseRoute
+                }
             }.collect { route ->
                 _uiState.update {
                     it.copy(startDestination = route)
