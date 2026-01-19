@@ -1,7 +1,7 @@
 package com.upsaclay.news.domain
 
 import com.upsaclay.news.domain.usecase.RefreshAnnouncementsUseCase
-import com.upsaclay.news.domain.usecase.SynchronizeAnnouncementsUseCase
+import com.upsaclay.news.domain.usecase.FetchAnnouncementsUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -10,16 +10,16 @@ import org.junit.Before
 import org.junit.Test
 
 class RefreshAnnouncementsUseCaseTest {
-    private val synchronizeAnnouncementsUseCase: SynchronizeAnnouncementsUseCase = mockk()
+    private val fetchAnnouncementsUseCase: FetchAnnouncementsUseCase = mockk()
 
     private lateinit var useCase: RefreshAnnouncementsUseCase
 
     @Before
     fun setUp() {
-        coEvery { synchronizeAnnouncementsUseCase() } returns Unit
+        coEvery { fetchAnnouncementsUseCase() } returns Unit
 
         useCase = RefreshAnnouncementsUseCase(
-            synchronizeAnnouncementsUseCase = synchronizeAnnouncementsUseCase
+            fetchAnnouncementsUseCase = fetchAnnouncementsUseCase
         )
     }
 
@@ -30,7 +30,7 @@ class RefreshAnnouncementsUseCaseTest {
 
         // Then
         assert(useCase.lastRequestTime > 0)
-        coVerify { synchronizeAnnouncementsUseCase() }
+        coVerify { fetchAnnouncementsUseCase() }
     }
 
     @Test
@@ -44,6 +44,6 @@ class RefreshAnnouncementsUseCaseTest {
 
         // Then
         assert(useCase.lastRequestTime == currentTime)
-        coVerify(exactly = 0) { synchronizeAnnouncementsUseCase() }
+        coVerify(exactly = 0) { fetchAnnouncementsUseCase() }
     }
 }

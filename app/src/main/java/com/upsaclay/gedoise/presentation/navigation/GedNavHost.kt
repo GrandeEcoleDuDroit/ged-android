@@ -108,7 +108,7 @@ fun GedNavHost(
     }
 
     LaunchedEffect(Unit) {
-        navigationViewModel.routesToNavigate.collect { routes ->
+        navigationViewModel.routeToNavigate.collect { routes ->
             routes.forEach {
                 when (it) {
                     is ConversationRoute -> navController.navigateToConversation()

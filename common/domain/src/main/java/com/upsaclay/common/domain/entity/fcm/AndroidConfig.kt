@@ -3,15 +3,8 @@ package com.upsaclay.common.domain.entity.fcm
 import com.google.gson.annotations.SerializedName
 
 data class AndroidConfig(
-    val priority: AndroidMessagePriority = AndroidMessagePriority.HIGH,
-    val notification: AndroidNotification
+    val priority: AndroidMessagePriority = AndroidMessagePriority.HIGH
 )
-
-data class AndroidNotification(
-    val channelId: String
-) {
-    val icon: String = "ic_notification"
-}
 
 enum class AndroidMessagePriority {
     @SerializedName("high")

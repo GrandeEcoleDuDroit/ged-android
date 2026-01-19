@@ -11,8 +11,8 @@ import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.MissionReport
 import com.upsaclay.mission.domain.repository.MissionRepository
 import com.upsaclay.mission.domain.usecase.DeleteMissionUseCase
-import com.upsaclay.mission.domain.usecase.RefreshMissionsUseCase
 import com.upsaclay.mission.domain.usecase.RecreateMissionUseCase
+import com.upsaclay.mission.domain.usecase.RefreshMissionsUseCase
 import com.upsaclay.mission.presentation.extension.missionSorting
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -3,7 +3,7 @@ package com.upsaclay.news.domain
 import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.news.domain.repository.AnnouncementRepository
-import com.upsaclay.news.domain.usecase.SynchronizeAnnouncementsUseCase
+import com.upsaclay.news.domain.usecase.FetchAnnouncementsUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -13,11 +13,11 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 
-class SynchronizeAnnouncementsUseCaseTest {
+class FetchAnnouncementsUseCaseTest {
     private val announcementRepository: AnnouncementRepository = mockk()
     private val blockedUserRepository: BlockedUserRepository = mockk()
 
-    private lateinit var useCase: SynchronizeAnnouncementsUseCase
+    private lateinit var useCase: FetchAnnouncementsUseCase
     private val blockedUserId = "blockedUserId"
 
     @Before
@@ -29,7 +29,7 @@ class SynchronizeAnnouncementsUseCaseTest {
         coEvery { announcementRepository.getRemoteAnnouncements() } returns announcementsFixture
         coEvery { blockedUserRepository.getLocalBlockedUserIds() } returns setOf(blockedUserId)
 
-        useCase = SynchronizeAnnouncementsUseCase(
+        useCase = FetchAnnouncementsUseCase(
             announcementRepository = announcementRepository,
             blockedUserRepository = blockedUserRepository
         )

@@ -1,6 +1,6 @@
 package com.upsaclay.gedoise.viewmodel
 
-import com.upsaclay.authentication.domain.repository.AuthenticationRepository
+import com.upsaclay.app.domain.usecase.LogoutUseCase
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.gedoise.presentation.profile.ProfileViewModel
@@ -19,7 +19,7 @@ import org.junit.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class ProfileViewModelTest {
     private val userRepository: UserRepository = mockk()
-    private val authenticationRepository: AuthenticationRepository = mockk()
+    private val logoutUseCase: LogoutUseCase = mockk()
 
     private lateinit var profileViewModel: ProfileViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
@@ -29,11 +29,11 @@ class ProfileViewModelTest {
         Dispatchers.setMain(testDispatcher)
 
         every { userRepository.user } returns MutableStateFlow(userFixture)
-        coEvery { authenticationRepository.logout() } returns Unit
+        coEvery { logoutUseCase() } returns Unit
 
         profileViewModel = ProfileViewModel(
             userRepository = userRepository,
-            authenticationRepository = authenticationRepository
+            logoutUseCase = logoutUseCase
         )
     }
 
@@ -43,6 +43,6 @@ class ProfileViewModelTest {
         profileViewModel.logout()
 
         // Then
-        coVerify { authenticationRepository.logout() }
+        coVerify { logoutUseCase() }
     }
 }

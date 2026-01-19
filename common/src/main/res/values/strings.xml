@@ -80,7 +80,7 @@
     <string name="forbidden_error">Vous n\'êtes pas autorisé à effectuer cette action.</string>
     <string name="bad_request_error">La requête n\'a pu aboutir.</string>
     <string name="unauthorized_error">Votre session a expiré. Veuillez vous reconnecter.</string>
-    <string name="resource_not_found_error">La ressource n\'a pas été trouvée.</string>
+    <string name="resource_not_found_error">La ressource n\'a pu être trouvée.</string>
     <string name="timed_out_error">Le service a mis trop de temps à répondre. Veuillez réessayer.</string>
     <string name="cannot_connect_to_host_error">Impossible de se connecter au serveur.</string>
     <string name="any_network_error">Une erreur réseau est survenue.</string>

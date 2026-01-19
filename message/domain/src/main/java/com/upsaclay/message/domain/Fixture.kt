@@ -115,18 +115,18 @@ val conversationsFixture = listOf(
 
 val messageNotificationFixture = MessageNotification(
     conversation = conversationFixture,
-    message = MessageNotification.Message(
+    messageContent = MessageNotification.MessageContent(
         messageId = messageFixture.id,
         content = messageFixture.content,
         timestamp = messageFixture.date.toEpochMilliUTC()
     )
 )
 
-val messageNotificationsFixture = listOf(
+val messageContentNotificationsFixture = listOf(
     messageNotificationFixture,
     messageNotificationFixture.copy(
         conversation = conversationFixture.copy(id = "2"),
-        message = MessageNotification.Message(
+        messageContent = MessageNotification.MessageContent(
             messageId = "2",
             content = messageFixture.content,
             timestamp = messageFixture.date.toEpochMilliUTC(),

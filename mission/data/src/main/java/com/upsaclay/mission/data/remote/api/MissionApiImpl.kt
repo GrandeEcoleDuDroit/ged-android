@@ -3,10 +3,10 @@ package com.upsaclay.mission.data.remote.api
 import com.google.gson.Gson
 import com.upsaclay.common.data.UserField.Oracle.USER_ID
 import com.upsaclay.common.data.UserField.Oracle.USER_SCHOOL_LEVEL
-import com.upsaclay.common.data.utils.sendDataServerRequest
-import com.upsaclay.common.data.utils.sendServerRequest
 import com.upsaclay.common.data.remote.model.OracleUser
 import com.upsaclay.common.data.remote.model.ServerResponse
+import com.upsaclay.common.data.utils.sendDataServerRequest
+import com.upsaclay.common.data.utils.sendServerRequest
 import com.upsaclay.mission.data.MissionField.Remote.MISSION_ID
 import com.upsaclay.mission.data.remote.models.InboundRemoteMission
 import com.upsaclay.mission.data.remote.models.OutboundRemoteMission

@@ -4,7 +4,7 @@ import com.upsaclay.news.domain.usecase.CreateAnnouncementUseCase
 import com.upsaclay.news.domain.usecase.DeleteAnnouncementUseCase
 import com.upsaclay.news.domain.usecase.RefreshAnnouncementsUseCase
 import com.upsaclay.news.domain.usecase.ResendAnnouncementUseCase
-import com.upsaclay.news.domain.usecase.SynchronizeAnnouncementsUseCase
+import com.upsaclay.news.domain.usecase.FetchAnnouncementsUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -40,5 +40,5 @@ val newsDomainModule = module {
     }
     singleOf(::RefreshAnnouncementsUseCase)
     singleOf(::DeleteAnnouncementUseCase)
-    singleOf(::SynchronizeAnnouncementsUseCase)
+    singleOf(::FetchAnnouncementsUseCase)
 }

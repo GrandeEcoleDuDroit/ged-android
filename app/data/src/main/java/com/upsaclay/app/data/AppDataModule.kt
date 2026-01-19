@@ -5,9 +5,9 @@ import com.upsaclay.app.data.local.FcmDataStore
 import com.upsaclay.app.data.local.FcmLocalDataSource
 import com.upsaclay.app.data.repository.FcmTokenRepositoryImpl
 import com.upsaclay.app.data.repository.RouteRepositoryImpl
-import com.upsaclay.app.domain.repository.FcmTokenRepository
 import com.upsaclay.common.data.GED_SERVER_QUALIFIER
 import com.upsaclay.common.data.remote.api.FcmApi
+import com.upsaclay.common.domain.repository.FcmTokenRepository
 import com.upsaclay.common.domain.repository.RouteRepository
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.bind

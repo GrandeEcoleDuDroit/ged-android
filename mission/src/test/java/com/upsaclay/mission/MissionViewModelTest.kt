@@ -6,8 +6,8 @@ import com.upsaclay.mission.domain.missionFixture
 import com.upsaclay.mission.domain.missionsFixture
 import com.upsaclay.mission.domain.repository.MissionRepository
 import com.upsaclay.mission.domain.usecase.DeleteMissionUseCase
-import com.upsaclay.mission.domain.usecase.RefreshMissionsUseCase
 import com.upsaclay.mission.domain.usecase.RecreateMissionUseCase
+import com.upsaclay.mission.domain.usecase.RefreshMissionsUseCase
 import com.upsaclay.mission.presentation.MissionViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify

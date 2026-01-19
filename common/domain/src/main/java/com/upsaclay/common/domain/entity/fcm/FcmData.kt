@@ -16,4 +16,13 @@ enum class FcmDataType {
             MESSAGE -> "message"
         }
     }
+
+    companion object {
+        fun fromString(value: String): FcmDataType? {
+            return when (value) {
+                "message" -> MESSAGE
+                else -> null
+            }
+        }
+    }
 }

@@ -3,8 +3,6 @@ package com.upsaclay.common.data.remote.api.user
 import com.upsaclay.common.data.remote.model.FirestoreUser
 import com.upsaclay.common.data.remote.model.OracleUser
 import com.upsaclay.common.data.remote.model.RemoteUserReport
-import com.upsaclay.common.domain.entity.User
-import com.upsaclay.common.domain.entity.UserReport
 import kotlinx.coroutines.flow.Flow
 import java.io.File
 

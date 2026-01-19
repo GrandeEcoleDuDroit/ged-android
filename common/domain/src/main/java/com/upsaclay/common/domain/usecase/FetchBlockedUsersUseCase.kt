@@ -3,7 +3,7 @@ package com.upsaclay.common.domain.usecase
 import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.repository.UserRepository
 
-class SynchronizeBlockedUsersUseCase(
+class FetchBlockedUsersUseCase(
     private val blockedUserRepository: BlockedUserRepository,
     private val userRepository: UserRepository
 ) {

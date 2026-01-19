@@ -19,8 +19,8 @@ internal class AuthenticationRepositoryImpl(
 ) : AuthenticationRepository {
     private var authToken: String? = null
     private val _authenticationState = MutableStateFlow<Boolean?>(null)
-    override val authenticationState: Flow<Boolean> = _authenticationState.filterNotNull()
-    override val currentAuthenticationState: Boolean
+    override val authenticated: Flow<Boolean> = _authenticationState.filterNotNull()
+    override val isAuthenticated: Boolean
         get() = _authenticationState.value ?: false
 
     init {

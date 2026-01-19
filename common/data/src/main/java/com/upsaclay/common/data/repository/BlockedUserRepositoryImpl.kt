@@ -1,8 +1,8 @@
 package com.upsaclay.common.data.repository
 
-import com.upsaclay.common.data.utils.e
 import com.upsaclay.common.data.local.BlockedUserLocalDataSource
 import com.upsaclay.common.data.remote.BlockedUserRemoteDataSource
+import com.upsaclay.common.data.utils.e
 import com.upsaclay.common.domain.entity.BlockUserEvent
 import com.upsaclay.common.domain.entity.BlockedUser
 import com.upsaclay.common.domain.repository.BlockedUserRepository

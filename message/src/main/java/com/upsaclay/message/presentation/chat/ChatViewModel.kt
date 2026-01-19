@@ -44,7 +44,6 @@ class ChatViewModel(
     private val deleteConversationUseCase: DeleteConversationUseCase,
     private val generateIdUseCase: GenerateIdUseCase
 ): ViewModel() {
-    private val user: User? = userRepository.currentUser
     private val _uiState = MutableStateFlow(
         ChatUiState(
             messageText = "",
@@ -60,6 +59,7 @@ class ChatViewModel(
     private var seeMessagesJob: Job? = null
 
     init {
+        seeMessages()
         listenConversation()
         listenCurrentUser()
         listenBlockUserIds()
@@ -77,7 +77,7 @@ class ChatViewModel(
     fun sendMessage() {
         try {
             val text = uiState.value.messageText.takeUnless { it.isEmpty() } ?: return
-            val user = user ?: throw CustomException(CURRENT_USER_NOT_FOUND)
+            val user = uiState.value.currentUser ?: throw CustomException(CURRENT_USER_NOT_FOUND)
 
             val message = Message(
                 id = generateIdUseCase(),
@@ -105,7 +105,7 @@ class ChatViewModel(
 
     fun resendErrorMessage(message: Message) {
         try {
-            val user = user ?: throw CustomException(CURRENT_USER_NOT_FOUND)
+            val user = uiState.value.currentUser ?: throw CustomException(CURRENT_USER_NOT_FOUND)
             viewModelScope.launch {
                 sendMessageUseCase(
                     conversation = conversation,
@@ -173,9 +173,10 @@ class ChatViewModel(
     }
 
     fun startSeeingMessages() {
+        seeMessagesJob?.cancel()
         seeMessagesJob = viewModelScope.launch {
             launch {
-                user?.let {
+                uiState.value.currentUser?.let {
                     messageRepository.setMessagesSeen(conversation.id, it.id)
                 }
             }
@@ -183,7 +184,7 @@ class ChatViewModel(
             launch {
                 event
                     .mapNotNull { it as? MessageEvent.NewMessage }
-                    .filter { it.message.senderId != user?.id && !it.message.seen }
+                    .filter { it.message.senderId != uiState.value.currentUser?.id && !it.message.seen }
                     .collect {
                         messageRepository.setMessageSeen(it.message)
                     }
@@ -194,6 +195,14 @@ class ChatViewModel(
     fun stopSeeingMessages() {
         seeMessagesJob?.cancel()
         seeMessagesJob = null
+    }
+
+    private fun seeMessages() {
+        viewModelScope.launch {
+            uiState.value.currentUser?.let {
+                messageRepository.setMessagesSeen(conversation.id, it.id)
+            }
+        }
     }
 
     private fun emitNewMessageReceived() {

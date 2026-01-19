@@ -4,7 +4,7 @@ import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.news.domain.entity.Announcement.AnnouncementState
 import com.upsaclay.news.domain.repository.AnnouncementRepository
 
-class SynchronizeAnnouncementsUseCase(
+class FetchAnnouncementsUseCase(
     private val announcementRepository: AnnouncementRepository,
     private val blockedUserRepository: BlockedUserRepository
 ) {

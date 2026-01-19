@@ -1,5 +1,5 @@
+import com.upsaclay.mission.domain.usecase.FetchMissionsUseCase
 import com.upsaclay.mission.domain.usecase.RefreshMissionsUseCase
-import com.upsaclay.mission.domain.usecase.SynchronizeMissionsUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -8,16 +8,16 @@ import org.junit.Before
 import org.junit.Test
 
 class RefreshMissionsUseCaseTest {
-    private val synchronizeMissionsUseCase: SynchronizeMissionsUseCase = mockk()
+    private val fetchMissionsUseCase: FetchMissionsUseCase = mockk()
 
     private lateinit var useCase: RefreshMissionsUseCase
 
     @Before
     fun setUp() {
-        coEvery { synchronizeMissionsUseCase() } returns Unit
+        coEvery { fetchMissionsUseCase() } returns Unit
 
         useCase = RefreshMissionsUseCase(
-            synchronizeMissionsUseCase = synchronizeMissionsUseCase
+            fetchMissionsUseCase = fetchMissionsUseCase
         )
     }
 
@@ -28,7 +28,7 @@ class RefreshMissionsUseCaseTest {
 
         // Then
         assert(useCase.lastRequestTime > 0)
-        coVerify { synchronizeMissionsUseCase() }
+        coVerify { fetchMissionsUseCase() }
     }
 
     @Test
@@ -42,6 +42,6 @@ class RefreshMissionsUseCaseTest {
 
         // Then
         assert(useCase.lastRequestTime == currentTime)
-        coVerify(exactly = 0) { synchronizeMissionsUseCase() }
+        coVerify(exactly = 0) { fetchMissionsUseCase() }
     }
 }

@@ -1,17 +1,15 @@
 package com.upsaclay.app.data.local
 
-import com.upsaclay.app.domain.entity.FcmToken
+import com.upsaclay.common.domain.entity.FcmToken
 
-class FcmLocalDataSource(
-    private val fcmDataStore: FcmDataStore
-) {
-    suspend fun getUnsentFcmToken(): FcmToken? = fcmDataStore.getFcmToken()
+class FcmLocalDataSource(private val fcmDataStore: FcmDataStore) {
+    suspend fun getFcmToken(): FcmToken? = fcmDataStore.getFcmToken()
 
-    suspend fun storeUnsentFcmToken(fcmToken: FcmToken) {
+    suspend fun storeFcmToken(fcmToken: FcmToken) {
         fcmDataStore.storeFcmToken(fcmToken)
     }
 
-    suspend fun removeUnsentFcmToken() {
-        fcmDataStore.removeFcmToken()
+    suspend fun deleteFcmToken() {
+        fcmDataStore.deleteFcmToken()
     }
 }

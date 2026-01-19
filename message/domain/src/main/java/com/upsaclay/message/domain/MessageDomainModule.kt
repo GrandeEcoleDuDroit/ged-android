@@ -7,6 +7,7 @@ import com.upsaclay.message.domain.usecase.GetUnreadConversationsCountUseCase
 import com.upsaclay.message.domain.usecase.ListenRemoteConversationsUseCase
 import com.upsaclay.message.domain.usecase.ListenRemoteMessagesUseCase
 import com.upsaclay.message.domain.usecase.RecreateConversationUseCase
+import com.upsaclay.message.domain.usecase.SendMessageNotificationUseCase
 import com.upsaclay.message.domain.usecase.SendMessageUseCase
 import com.upsaclay.message.domain.usecase.UpdateConversationDeleteTimeUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -36,12 +37,12 @@ val messageDomainModule = module {
     singleOf(::GetUnreadConversationsCountUseCase)
     singleOf(::ListenRemoteConversationsUseCase)
     singleOf(::ListenRemoteMessagesUseCase)
+    singleOf(::SendMessageNotificationUseCase)
     single {
         SendMessageUseCase(
             conversationRepository = get(),
             messageRepository = get(),
-            messageNotificationRepository = get(),
-            userRepository = get(),
+            sendMessageNotificationUseCase = get(),
             scope = get(BACKGROUND_SCOPE)
         )
     }

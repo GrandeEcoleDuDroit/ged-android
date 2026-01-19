@@ -24,7 +24,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.paging.PagingData
 import com.upsaclay.common.domain.entity.User
-import com.upsaclay.common.extension.rootMediumPadding
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.LoadingDialog
@@ -184,7 +183,6 @@ private fun ChatScreen(
             MessageBottomSection(
                 modifier = Modifier
                     .padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
-                    .padding(bottom = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
                     .fillMaxWidth(),
                 isUserBlocked = isUserBlocked,
                 messageText = messageText,
@@ -202,7 +200,12 @@ private fun ChatScreen(
     ) { innerPadding ->
         MessageFeed(
             modifier = Modifier
-                .rootMediumPadding(innerPadding)
+                .padding(
+                    top = innerPadding.calculateTopPadding(),
+                    start = dimensionResource(com.upsaclay.common.R.dimen.medium_padding),
+                    end = dimensionResource(com.upsaclay.common.R.dimen.medium_padding),
+                    bottom = innerPadding.calculateBottomPadding()
+                )
                 .fillMaxSize(),
             messages = messages,
             interlocutor = conversation.interlocutor,

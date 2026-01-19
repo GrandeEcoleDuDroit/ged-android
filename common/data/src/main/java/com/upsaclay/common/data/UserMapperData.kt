@@ -3,9 +3,9 @@ package com.upsaclay.common.data
 import com.upsaclay.common.data.extensions.formatUrl
 import com.upsaclay.common.data.local.LocalUser
 import com.upsaclay.common.data.remote.model.FirestoreUser
-import com.upsaclay.common.data.remote.model.RemoteUserReport
 import com.upsaclay.common.data.remote.model.OracleUser
 import com.upsaclay.common.data.remote.model.RemoteBlockedUser
+import com.upsaclay.common.data.remote.model.RemoteUserReport
 import com.upsaclay.common.domain.UserUtils
 import com.upsaclay.common.domain.entity.BlockedUser
 import com.upsaclay.common.domain.entity.SchoolLevel
