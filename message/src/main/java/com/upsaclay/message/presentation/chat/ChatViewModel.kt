@@ -137,7 +137,7 @@ class ChatViewModel(
     fun unblockUser(userId: String) {
         executeRequest {
             val currentUserId = uiState.value.currentUser?.id ?: throw CustomException(CURRENT_USER_NOT_FOUND)
-            blockedUserRepository.unblockUser(currentUserId, userId)
+            blockedUserRepository.removeBlockedUser(currentUserId, userId)
         }
     }
 
@@ -233,9 +233,9 @@ class ChatViewModel(
     private fun listenBlockUserIds() {
         viewModelScope.launch {
             val interlocutorId = conversation.interlocutor.id
-            blockedUserRepository.blockedUserIds.collect { blockedUserIds ->
+            blockedUserRepository.blockedUsers.collect { blockedUsers ->
                 _uiState.update {
-                    it.copy(isUserBlocked = blockedUserIds.contains(interlocutorId))
+                    it.copy(isUserBlocked = blockedUsers.containsKey(interlocutorId))
                 }
             }
         }

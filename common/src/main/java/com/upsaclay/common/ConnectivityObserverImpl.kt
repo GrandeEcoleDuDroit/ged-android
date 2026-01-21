@@ -7,18 +7,13 @@ import android.net.ConnectivityManager.NetworkCallback
 import android.net.Network
 import androidx.core.content.getSystemService
 import com.upsaclay.common.domain.ConnectivityObserver
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.stateIn
 
 @SuppressLint("MissingPermission")
-class ConnectivityObserverImpl(context: Context, scope: CoroutineScope): ConnectivityObserver {
+class ConnectivityObserverImpl(context: Context): ConnectivityObserver {
     private val connectivityManager = context.getSystemService<ConnectivityManager>()
-
-    private val _connected = callbackFlow {
+    override val connected = callbackFlow {
         val callback = object : NetworkCallback() {
             override fun onUnavailable() { trySend(false) }
             override fun onAvailable(network: Network) { trySend(true) }
@@ -27,12 +22,5 @@ class ConnectivityObserverImpl(context: Context, scope: CoroutineScope): Connect
 
         connectivityManager?.registerDefaultNetworkCallback(callback)
         awaitClose { connectivityManager?.unregisterNetworkCallback(callback) }
-    }.stateIn(
-        scope = scope,
-        started = SharingStarted.Eagerly,
-        initialValue = false
-    )
-    override val connected: Flow<Boolean> = _connected
-    override val isConnected: Boolean
-        get() = _connected.value
+    }
 }

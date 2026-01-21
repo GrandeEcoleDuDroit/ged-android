@@ -75,6 +75,15 @@ internal class MessageRepositoryImpl(
         messageLocalDataSource.upsertMessage(message)
     }
 
+    override suspend fun updateMessageVisibility(message: Message, currentUserId: String, visible: Boolean) {
+        try {
+            messageRemoteDataSource.updateMessageVisibility(message, currentUserId, visible)
+        } catch (e: Exception) {
+            e("Error updating message visibility ${message.id} for conversation ${message.conversationId}", e)
+            throw e
+        }
+    }
+
     override suspend fun deleteLocalMessage(message: Message) {
         messageLocalDataSource.deleteMessage(message)
     }

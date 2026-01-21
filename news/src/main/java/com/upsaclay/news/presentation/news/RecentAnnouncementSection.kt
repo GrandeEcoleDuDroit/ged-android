@@ -80,7 +80,10 @@ fun RecentAnnouncementSection(
             ) {
                 if (announcements.isEmpty()) {
                     item {
-                        EmptyText(text = stringResource(id = R.string.no_announcement))
+                        EmptyText(
+                            modifier = Modifier.padding(top = dimensionResource(com.upsaclay.common.R.dimen.small_padding)),
+                            text = stringResource(id = R.string.no_announcement)
+                        )
                     }
                 } else {
                     items(announcements) { announcement ->

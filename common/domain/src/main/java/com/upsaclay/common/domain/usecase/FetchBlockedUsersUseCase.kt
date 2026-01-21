@@ -4,18 +4,18 @@ import com.upsaclay.common.domain.repository.BlockedUserRepository
 
 class FetchBlockedUsersUseCase(private val blockedUserRepository: BlockedUserRepository) {
     suspend operator fun invoke(userId: String) {
-        val remoteBlockedUserIds = blockedUserRepository.getRemoteBlockedUserIds(userId)
-        val localBlockedUserIds = blockedUserRepository.getLocalBlockedUserIds()
+        val remoteBlockedUsers = blockedUserRepository.getRemoteBlockedUsers(userId)
+        val localBlockedUsers = blockedUserRepository.getLocalBlockedUsers()
 
-        val usersToBlock = remoteBlockedUserIds - localBlockedUserIds
-        val usersToUnblock = localBlockedUserIds - remoteBlockedUserIds
+        val usersToBlock = (remoteBlockedUsers - localBlockedUsers).values
+        val usersToUnblock = (localBlockedUsers - remoteBlockedUsers).values
 
-        usersToBlock.forEach { id ->
-            blockedUserRepository.blockLocalUser(id)
+        usersToBlock.forEach { blockedUser ->
+            blockedUserRepository.addLocalBlockUser(blockedUser)
         }
 
-        usersToUnblock.forEach { id ->
-            blockedUserRepository.unblockLocalUser(id)
+        usersToUnblock.forEach { blockedUser ->
+            blockedUserRepository.removeLocalBlockedUser(blockedUser.userId)
         }
     }
 }

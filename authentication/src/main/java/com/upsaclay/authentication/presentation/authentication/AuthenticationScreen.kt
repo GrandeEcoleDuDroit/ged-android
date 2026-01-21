@@ -132,7 +132,7 @@ private fun AuthenticationScreen(
                 },
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.aligned { size, space ->
-                size + (20 * space / 100)
+                size + (10 * space / 100)
             }
         ) {
             HeaderSection()

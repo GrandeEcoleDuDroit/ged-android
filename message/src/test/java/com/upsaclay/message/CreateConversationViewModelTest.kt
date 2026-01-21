@@ -1,5 +1,6 @@
 package com.upsaclay.message
 
+import com.upsaclay.common.domain.entity.BlockedUser
 import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.GetUsersUseCase
@@ -19,6 +20,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.Before
 import org.junit.Test
+import java.time.LocalDateTime
 import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -38,7 +40,7 @@ class CreateConversationViewModelTest {
         every { userRepository.user } returns MutableStateFlow(userFixture)
         every { userRepository.currentUser } returns userFixture
         coEvery { getConversationUseCase(any()) } returns conversationFixture
-        coEvery { blockedUserRepository.getLocalBlockedUserIds() } returns emptySet()
+        coEvery { blockedUserRepository.getLocalBlockedUsers() } returns emptyMap()
         coEvery { getUsersUseCase() } returns usersFixture
 
         createConversationViewModel = CreateConversationViewModel(
@@ -82,7 +84,7 @@ class CreateConversationViewModelTest {
     fun all_users_should_be_fetched_except_blocked_ones() = runTest {
         // Given
         val blockedUserId = "userId"
-        coEvery { blockedUserRepository.getLocalBlockedUserIds() } returns setOf(blockedUserId)
+        coEvery { blockedUserRepository.getLocalBlockedUsers() } returns mapOf(blockedUserId to BlockedUser(blockedUserId, LocalDateTime.now()))
         coEvery { getUsersUseCase()} returns listOf(userFixture.copy(id = blockedUserId))
 
         // When

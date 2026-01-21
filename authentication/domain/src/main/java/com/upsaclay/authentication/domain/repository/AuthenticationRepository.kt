@@ -6,11 +6,11 @@ import kotlinx.coroutines.flow.Flow
 interface AuthenticationRepository {
     val authenticationState: Flow<AuthenticationState>
 
-    val currentAuthenticationState: AuthenticationState
+    val authToken: String?
 
     suspend fun isAuthenticated(): Boolean
 
-    suspend fun getAuthToken(): String?
+    suspend fun refreshTokenIfNecessary()
 
     suspend fun loginWithEmailAndPassword(email: String, password: String): String?
 

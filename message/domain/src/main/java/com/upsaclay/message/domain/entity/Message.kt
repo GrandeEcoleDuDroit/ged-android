@@ -10,7 +10,8 @@ data class Message(
     val content: String,
     val date: LocalDateTime,
     val seen: Boolean = false,
-    val state: MessageState
+    val state: MessageState,
+    val visible: Boolean = true
 ) {
     enum class MessageState {
         DRAFT,

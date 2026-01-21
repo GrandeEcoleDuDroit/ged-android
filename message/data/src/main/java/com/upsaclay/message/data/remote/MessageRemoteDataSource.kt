@@ -50,6 +50,16 @@ internal class MessageRemoteDataSource(private val messageApi: MessageApi) {
         }
     }
 
+    suspend fun updateMessageVisibility(message: Message, userId: String, visible: Boolean) {
+        withContext(dispatcher) {
+            try {
+                messageApi.updateMessageVisibility(message.toRemote(), userId, visible)
+            } catch (e: Exception) {
+                throw mapFirebaseException(e)
+            }
+        }
+    }
+
     suspend fun reportMessage(report: MessageReport) {
         withContext(dispatcher) {
             try {

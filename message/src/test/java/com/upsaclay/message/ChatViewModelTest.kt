@@ -54,7 +54,7 @@ class ChatViewModelTest {
         every { messageRepository.getPagingMessages(any()) } returns flowOf(PagingData.from(messagesFixture))
         every { messageRepository.getNewMessagesFlow(any(), any()) } returns flowOf(messageFixture)
         every { sendMessageUseCase(any(), any(), any()) } returns Unit
-        every { blockedUserRepository.blockedUserIds } returns flowOf(emptySet())
+        every { blockedUserRepository.blockedUsers } returns flowOf(emptyMap())
         coEvery { deleteConversationUseCase(any(), any()) } returns Unit
         coEvery { messageRepository.setMessagesSeen(any(), any()) } returns Unit
         coEvery { messageNotificationManager.clearNotifications(any()) } returns Unit
@@ -112,12 +112,12 @@ class ChatViewModelTest {
     @Test
     fun unblockUser_should_unblock_user() {
         // Given
-        coEvery { blockedUserRepository.unblockUser(userFixture.id, blockedUserId) } returns Unit
+        coEvery { blockedUserRepository.removeBlockedUser(userFixture.id, blockedUserId) } returns Unit
 
         // When
         chatViewModel.unblockUser(blockedUserId)
 
         // Then
-        coVerify { blockedUserRepository.unblockUser(userFixture.id, blockedUserId) }
+        coVerify { blockedUserRepository.removeBlockedUser(userFixture.id, blockedUserId) }
     }
 }

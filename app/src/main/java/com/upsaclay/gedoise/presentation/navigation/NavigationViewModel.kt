@@ -17,6 +17,7 @@ import com.upsaclay.news.presentation.NewsBaseRoute
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -31,7 +32,7 @@ class NavigationViewModel(
     private val _uiState = MutableStateFlow(NavigationState())
     val uiState: StateFlow<NavigationState> = _uiState
     val routeToNavigate: Flow<List<Route>> = navigationRequestUseCase.routesToNavigate.map { route ->
-        when (authenticationRepository.currentAuthenticationState) {
+        when (authenticationRepository.authenticationState.first()) {
             is AuthenticationState.Authenticated -> route
             is AuthenticationState.Unauthenticated -> listOf(AuthenticationRoute)
         }
@@ -46,9 +47,7 @@ class NavigationViewModel(
 
     fun setCurrentRoute(destination: NavDestination, arguments: Bundle?) {
         val route = resolveRoute(destination, arguments)
-        viewModelScope.launch {
-            routeRepository.setCurrentRoute(route)
-        }
+        routeRepository.setCurrentRoute(route)
     }
 
     private fun resolveRoute(destination: NavDestination, arguments: Bundle?): Route? {
@@ -63,11 +62,10 @@ class NavigationViewModel(
 
     private fun updateStartDestination() {
         viewModelScope.launch {
-            authenticationRepository.authenticationState.map {
-                if (it is AuthenticationState.Authenticated) {
-                    NewsBaseRoute
-                } else {
-                    AuthenticationBaseRoute
+            authenticationRepository.authenticationState.map { state ->
+                when (state) {
+                    is AuthenticationState.Authenticated -> NewsBaseRoute
+                    is AuthenticationState.Unauthenticated -> AuthenticationBaseRoute
                 }
             }.collect { route ->
                 _uiState.update {

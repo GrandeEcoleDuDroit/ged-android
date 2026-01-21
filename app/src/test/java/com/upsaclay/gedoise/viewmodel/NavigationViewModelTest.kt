@@ -45,7 +45,6 @@ class NavigationViewModelTest {
         every { navigationRequestUseCase.routesToNavigate } returns flowOf()
         every { navigationRequestUseCase.resetRoute() } returns Unit
         every { authenticationRepository.authenticationState } returns flowOf(AuthenticationState.Authenticated(userId))
-        every { authenticationRepository.currentAuthenticationState } returns AuthenticationState.Authenticated(userId)
         every { routeRepository.setCurrentRoute(any()) } returns Unit
         every { getUnreadConversationsCountUseCase() } returns flowOf(0)
     }
@@ -109,7 +108,7 @@ class NavigationViewModelTest {
     fun routeToNavigate_should_be_AuthenticationRoute_route_when_unauthenticated() = runTest {
         // Given
         val route = listOf(ChatRoute(ConversationJsonParser.toJson(conversationFixture)))
-        every { authenticationRepository.currentAuthenticationState } returns AuthenticationState.Unauthenticated
+        every { authenticationRepository.authenticationState } returns flowOf(AuthenticationState.Unauthenticated)
         every { navigationRequestUseCase.routesToNavigate } returns flowOf(route)
 
         // When

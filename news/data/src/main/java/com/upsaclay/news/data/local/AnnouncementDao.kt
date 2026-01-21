@@ -25,5 +25,5 @@ interface AnnouncementDao {
     suspend fun deleteAnnouncements()
 
     @Query("DELETE FROM $ANNOUNCEMENT_TABLE_NAME WHERE $ANNOUNCEMENT_AUTHOR_ID = :userId")
-    suspend fun deleteAnnouncements(userId: String)
+    suspend fun deleteUserAnnouncements(userId: String)
 }

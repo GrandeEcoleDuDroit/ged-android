@@ -1,11 +1,6 @@
 package com.upsaclay.common.domain.entity
 
-import java.time.LocalDateTime
-
-sealed class BlockUserEvent(
-    open val userId: String,
-    open val date: LocalDateTime
-) {
-    data class Block(override val userId: String): BlockUserEvent(userId, LocalDateTime.now())
-    data class Unblock(override val userId: String): BlockUserEvent(userId, LocalDateTime.now())
+sealed class BlockUserEvent(open val userId: String) {
+    data class Block(val blockedUser: BlockedUser): BlockUserEvent(blockedUser.userId)
+    data class Unblock(val blockedUserId: String): BlockUserEvent(blockedUserId)
 }

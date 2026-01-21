@@ -1,22 +1,26 @@
 package com.upsaclay.common.domain.repository
 
 import com.upsaclay.common.domain.entity.BlockUserEvent
+import com.upsaclay.common.domain.entity.BlockedUser
+import com.upsaclay.common.domain.entity.BlockedUsers
 import kotlinx.coroutines.flow.Flow
 
 interface BlockedUserRepository {
     val blockUserEvent: Flow<BlockUserEvent>
+    val blockedUsers: Flow<BlockedUsers>
+    val currentBlockedUsers: BlockedUsers?
 
-    val blockedUserIds: Flow<Set<String>>
+    suspend fun getLocalBlockedUsers(): BlockedUsers
 
-    suspend fun getLocalBlockedUserIds(): Set<String>
+    suspend fun getRemoteBlockedUsers(currentUserId: String): BlockedUsers
 
-    suspend fun getRemoteBlockedUserIds(currentUserId: String): Set<String>
+    suspend fun addBlockUser(currentUserId: String, blockedUser: BlockedUser)
 
-    suspend fun blockUser(currentUserId: String, userId: String)
+    suspend fun addLocalBlockUser(blockedUser: BlockedUser)
 
-    suspend fun blockLocalUser(userId: String)
+    suspend fun removeBlockedUser(currentUserId: String, blockedUserId: String)
 
-    suspend fun unblockUser(currentUserId: String, userId: String)
+    suspend fun removeLocalBlockedUser(blockedUserId: String)
 
-    suspend fun unblockLocalUser(userId: String)
+    suspend fun deleteLocalBlockedUsers()
 }

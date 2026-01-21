@@ -6,9 +6,11 @@ import kotlinx.coroutines.flow.Flow
 import java.time.LocalDateTime
 
 interface ConversationRepository {
-    suspend fun getConversations(): List<Conversation>
+    fun getConversationsFlow(): Flow<List<Conversation>>
 
     fun getConversationFlow(interlocutorId: String): Flow<Conversation>
+
+    suspend fun getConversations(): List<Conversation>
 
     suspend fun getConversation(interlocutorId: String): Conversation?
 

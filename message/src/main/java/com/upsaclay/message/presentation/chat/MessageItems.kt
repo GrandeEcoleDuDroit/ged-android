@@ -1,7 +1,6 @@
 package com.upsaclay.message.presentation.chat
 
 import android.content.res.Configuration
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -105,7 +104,7 @@ fun SentMessageItem(
                 dateTimeTextColor = dateTimeTextColor,
             )
 
-            AnimatedVisibility(showSeen) {
+            if (showSeen) {
                 Text(
                     modifier = Modifier.padding(
                         top = dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding),
@@ -118,28 +117,26 @@ fun SentMessageItem(
             }
         }
 
-        AnimatedVisibility(
-            modifier = Modifier.weight(0.1f),
-            visible = message.state == MessageState.SENDING
-        ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Outlined.Send,
-                contentDescription = null,
-                tint = Color.Gray,
-                modifier = Modifier.size(20.dp)
-            )
-        }
+        when (message.state) {
+            MessageState.SENDING -> {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Outlined.Send,
+                    contentDescription = null,
+                    tint = Color.Gray,
+                    modifier = Modifier.size(20.dp).weight(0.1f)
+                )
+            }
 
-        AnimatedVisibility(
-            modifier = Modifier.weight(0.1f),
-            visible = message.state == MessageState.ERROR
-        ) {
-            Icon(
-                painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_error),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.error,
-                modifier = Modifier.size(22.dp)
-            )
+            MessageState.ERROR -> {
+                Icon(
+                    painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_error),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.size(20.dp).weight(0.1f)
+                )
+            }
+
+            else -> Unit
         }
     }
 }

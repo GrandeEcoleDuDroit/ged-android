@@ -7,7 +7,10 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.upsaclay.common.data.extensions.getGsonFlowValue
 import com.upsaclay.common.data.extensions.getGsonValue
+import com.upsaclay.common.data.extensions.removeValue
 import com.upsaclay.common.data.extensions.setGsonValue
+import com.upsaclay.common.domain.entity.BlockedUser
+import com.upsaclay.common.domain.entity.BlockedUsers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -16,20 +19,24 @@ internal class BlockedUserDataStore(context: Context) {
     private val store = context.dataStore
     private val blockedUserKey = stringPreferencesKey("blockedUserKey")
 
-    fun getBlockedUserIdsFlow(): Flow<Set<String>> =
-        store.getGsonFlowValue<Set<String>>(blockedUserKey).map { it ?: emptySet() }
+    fun getBlockedUsersFlow(): Flow<BlockedUsers> =
+        store.getGsonFlowValue<BlockedUsers>(blockedUserKey).map { it ?: emptyMap() }
 
-    suspend fun getBlockedUserIds(): Set<String> = store.getGsonValue(blockedUserKey) ?: emptySet()
+    suspend fun getBlockedUsers(): BlockedUsers = store.getGsonValue(blockedUserKey) ?: emptyMap()
 
-    suspend fun blockUser(userId: String) {
-        val blockedUserIds = getBlockedUserIds().toMutableSet()
-        blockedUserIds.add(userId)
-        store.setGsonValue(blockedUserKey, blockedUserIds)
+    suspend fun addBlockedUser(blockedUser: BlockedUser) {
+        val blockedUsers = getBlockedUsers().toMutableMap()
+        blockedUsers[blockedUser.userId] = blockedUser
+        store.setGsonValue(blockedUserKey, blockedUsers)
     }
 
-    suspend fun unblockUser(userId: String) {
-        val blockedUserIds = getBlockedUserIds().toMutableSet()
-        blockedUserIds.remove(userId)
-        store.setGsonValue(blockedUserKey, blockedUserIds)
+    suspend fun removeBlockUser(userId: String) {
+        val blockedUsers = getBlockedUsers().toMutableMap()
+        blockedUsers.remove(userId)
+        store.setGsonValue(blockedUserKey, blockedUsers)
+    }
+
+    suspend fun deleteBlockedUsers() {
+        store.removeValue(blockedUserKey)
     }
 }

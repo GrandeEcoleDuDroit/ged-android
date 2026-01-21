@@ -1,7 +1,9 @@
 package com.upsaclay.common.domain
 
+import com.upsaclay.common.domain.entity.BlockedUser
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.entity.User
+import java.time.LocalDateTime
 
 val userFixture = User(
     id = "12",
@@ -63,3 +65,6 @@ val usersFixture = listOf(
         email = "charles@email.com"
     )
 )
+
+val blockedUserFixture = BlockedUser("userId", LocalDateTime.now())
+val blockedUsersFixture = mapOf(blockedUserFixture.userId to blockedUserFixture)

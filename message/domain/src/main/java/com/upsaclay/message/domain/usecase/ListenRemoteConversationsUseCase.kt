@@ -6,6 +6,7 @@ import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.ConversationDTO
 import com.upsaclay.message.domain.mapper.toConversation
 import com.upsaclay.message.domain.repository.ConversationRepository
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -13,7 +14,9 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -21,21 +24,17 @@ import kotlinx.coroutines.sync.withLock
 @OptIn(ExperimentalCoroutinesApi::class)
 class ListenRemoteConversationsUseCase(
     private val userRepository: UserRepository,
-    private val conversationRepository: ConversationRepository,
-    private val listenRemoteMessagesUseCase: ListenRemoteMessagesUseCase,
+    private val conversationRepository: ConversationRepository
 ) {
     internal val fetchedInterlocutors = mutableMapOf<String, User>()
     private val mutex = Mutex()
 
-    suspend fun start() {
+    fun start(scope: CoroutineScope) {
         userRepository.user
-            .flatMapLatest { user ->
-                listenConversations(user)
-            }
-            .collect { conversation ->
-                conversationRepository.upsertLocalConversation(conversation)
-                listenRemoteMessagesUseCase.start(conversation)
-            }
+            .flatMapLatest { listenConversations(it) }
+            .onEach { conversationRepository.upsertLocalConversation(it) }
+            .onCompletion { fetchedInterlocutors.clear() }
+            .launchIn(scope)
     }
 
     private suspend fun listenConversations(user: User): Flow<Conversation> {
