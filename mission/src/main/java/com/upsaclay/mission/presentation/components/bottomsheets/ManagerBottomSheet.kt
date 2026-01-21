@@ -2,10 +2,10 @@ package com.upsaclay.mission.presentation.components.bottomsheets
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -59,61 +59,61 @@ fun SelectManagerBottomSheet(
         onDismissRequest = onDismissRequest,
         sheetState = state
     ) {
-        StaticSearchBar(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = dimensionResource(R.dimen.medium_padding)),
-            query = userQuery,
-            onQueryChange = onUserQueryChange,
-            onResetQuery = onResetQuery,
-            placeholder = stringResource(R.string.search_ellipsis)
-        )
+        Column(modifier = Modifier.navigationBarsPadding()) {
+            StaticSearchBar(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = dimensionResource(R.dimen.medium_padding)),
+                query = userQuery,
+                onQueryChange = onUserQueryChange,
+                onResetQuery = onResetQuery,
+                placeholder = stringResource(R.string.search_ellipsis)
+            )
 
-        LazyColumn(
-            modifier = Modifier
-                .padding(top = dimensionResource(R.dimen.medium_padding))
-                .weight(1f)
-        ) {
-            if (users.isEmpty()) {
-                item {
-                    EmptyText(text = stringResource(id = R.string.no_user))
-                }
-            } else {
-                items(users) { user ->
-                    val selected = currentSelectedManagers.contains(user)
-                    SelectableManagerItem(
-                        user = user,
-                        selected = selected,
-                        onUserClick = {
-                            currentSelectedManagers = if (selected) {
-                                currentSelectedManagers - user
-                            } else {
-                                currentSelectedManagers + user
+            LazyColumn(
+                modifier = Modifier
+                    .padding(top = dimensionResource(R.dimen.medium_padding))
+                    .weight(1f)
+            ) {
+                if (users.isEmpty()) {
+                    item {
+                        EmptyText(text = stringResource(id = R.string.no_user))
+                    }
+                } else {
+                    items(users) { user ->
+                        val selected = currentSelectedManagers.contains(user)
+                        SelectableManagerItem(
+                            user = user,
+                            selected = selected,
+                            onUserClick = {
+                                currentSelectedManagers = if (selected) {
+                                    currentSelectedManagers - user
+                                } else {
+                                    currentSelectedManagers + user
+                                }
+
+                                saveEnabled = currentSelectedManagers.isNotEmpty() &&
+                                        currentSelectedManagers != selectedManagers
                             }
-
-                            saveEnabled = currentSelectedManagers.isNotEmpty() &&
-                                    currentSelectedManagers != selectedManagers
-                        }
-                    )
+                        )
+                    }
                 }
             }
-        }
 
-        TextButton(
-            modifier = Modifier
-                .align(Alignment.End)
-                .padding(end = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
-            onClick = { onSaveClick(currentSelectedManagers) },
-            enabled = saveEnabled
-        ) {
-            Text(
-                text = stringResource(R.string.save),
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.SemiBold
-            )
+            TextButton(
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .padding(end = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                onClick = { onSaveClick(currentSelectedManagers) },
+                enabled = saveEnabled
+            ) {
+                Text(
+                    text = stringResource(R.string.save),
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
         }
-
-        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.modal_bottom_sheet_bottom_space)))
     }
 }
 

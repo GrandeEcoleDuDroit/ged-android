@@ -1,8 +1,8 @@
 package com.upsaclay.mission.presentation.components.bottomsheets
 
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -120,40 +120,40 @@ private fun MissionTaskBottomSheet(
         onDismissRequest = {},
         sheetState = state
     ) {
-        OutlinedTextField(
-            modifier = Modifier
-                .focusRequester(focusRequester)
-                .weight(1f, fill = false)
-                .fillMaxWidth(),
-            value = textFieldValue,
-            onValueChange = {
-                val text = it.text.take(MAX_TASK_LENGTH)
-                textFieldValue = it.copy(text = text)
-                onValueChange(text)
-            },
-            keyboardOptions = KeyboardOptions(KeyboardCapitalization.Sentences),
-            placeholder = { Text(text = stringResource(R.string.enter_task)) },
-            colors = OutlinedTextFieldDefaults.colors(
-                unfocusedBorderColor = Color.Transparent,
-                focusedBorderColor = Color.Transparent
+        Column(modifier = Modifier.navigationBarsPadding()) {
+            OutlinedTextField(
+                modifier = Modifier
+                    .focusRequester(focusRequester)
+                    .weight(1f, fill = false)
+                    .fillMaxWidth(),
+                value = textFieldValue,
+                onValueChange = {
+                    val text = it.text.take(MAX_TASK_LENGTH)
+                    textFieldValue = it.copy(text = text)
+                    onValueChange(text)
+                },
+                keyboardOptions = KeyboardOptions(KeyboardCapitalization.Sentences),
+                placeholder = { Text(text = stringResource(R.string.enter_task)) },
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedBorderColor = Color.Transparent,
+                    focusedBorderColor = Color.Transparent
+                )
             )
-        )
 
-        TextButton(
-            modifier = Modifier
-                .align(Alignment.End)
-                .padding(end = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
-            onClick = { onButtonClick(textFieldValue.text) },
-            enabled = buttonEnabled,
-        ) {
-            Text(
-                text = buttonLabel,
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.SemiBold
-            )
+            TextButton(
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .padding(end = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                onClick = { onButtonClick(textFieldValue.text) },
+                enabled = buttonEnabled,
+            ) {
+                Text(
+                    text = buttonLabel,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
         }
-
-        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.modal_bottom_sheet_bottom_space)))
     }
 }
 

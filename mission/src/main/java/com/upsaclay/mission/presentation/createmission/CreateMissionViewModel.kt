@@ -58,7 +58,9 @@ class CreateMissionViewModel(
             state = MissionState.Draft,
         )
 
-        createMissionUseCase(mission, uiState.value.imageUri?.toString())
+        viewModelScope.launch {
+            createMissionUseCase(mission, uiState.value.imageUri?.toString())
+        }
     }
 
     fun onImageUriChange(uri: Uri?) {

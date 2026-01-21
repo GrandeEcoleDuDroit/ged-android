@@ -31,6 +31,7 @@ val missionDomainModule = module {
         CreateMissionUseCase(
             missionRepository = get(),
             imageRepository = get(),
+            missionJobQueue = get(),
             scope = get(BACKGROUND_SCOPE)
         )
     }
@@ -40,6 +41,7 @@ val missionDomainModule = module {
             missionRepository = get(),
             fileRepository = get(),
             imageRepository = get(),
+            missionJobQueue = get(),
             scope = get(BACKGROUND_SCOPE)
         )
     }
@@ -48,4 +50,5 @@ val missionDomainModule = module {
     singleOf(::UpdateMissionUseCase)
     singleOf(::FetchMissionsUseCase)
     singleOf(::RefreshMissionsUseCase)
+    singleOf(::MissionJobQueue)
 }

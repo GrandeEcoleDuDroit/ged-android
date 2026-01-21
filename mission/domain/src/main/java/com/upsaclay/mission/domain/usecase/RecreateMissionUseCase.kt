@@ -2,6 +2,7 @@ package com.upsaclay.mission.domain.usecase
 
 import com.upsaclay.common.domain.repository.FileRepository
 import com.upsaclay.common.domain.repository.ImageRepository
+import com.upsaclay.mission.domain.MissionJobQueue
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.repository.MissionRepository
@@ -12,12 +13,13 @@ class RecreateMissionUseCase(
     private val missionRepository: MissionRepository,
     private val fileRepository: FileRepository,
     private val imageRepository: ImageRepository,
+    private val missionJobQueue: MissionJobQueue,
     private val scope: CoroutineScope
 ) {
-    operator fun invoke(mission: Mission) {
+    suspend operator fun invoke(mission: Mission) {
         if (mission.state is MissionState.Error) {
             val imagePath = mission.state.imagePath
-            scope.launch {
+            val job = scope.launch {
                 val imageFile = imagePath?.let { path ->
                     fileRepository.getFile(path)
                 }
@@ -35,12 +37,16 @@ class RecreateMissionUseCase(
                     imagePath?.let {
                         imageRepository.deleteLocalImage(it)
                     }
+                    missionJobQueue.cancelAndRemoveJob(mission.id)
                 } catch (e: Exception) {
                     missionRepository.upsertLocalMission(
                         mission.copy(state = MissionState.Error(imagePath))
                     )
+                    missionJobQueue.cancelAndRemoveJob(mission.id)
                 }
             }
+
+            missionJobQueue.addJob(job, mission.id)
         }
     }
 }

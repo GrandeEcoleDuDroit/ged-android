@@ -1,4 +1,5 @@
 import com.upsaclay.common.domain.repository.ImageRepository
+import com.upsaclay.mission.domain.MissionJobQueue
 import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.missionFixture
 import com.upsaclay.mission.domain.repository.MissionRepository
@@ -13,6 +14,7 @@ import org.junit.Test
 class DeleteMissionUseCaseTest {
     private val missionRepository: MissionRepository = mockk()
     private val imageRepository: ImageRepository = mockk()
+    private val missionJobQueue: MissionJobQueue = mockk()
 
     private lateinit var useCase: DeleteMissionUseCase
     private val imageUrl = "imageUrl"
@@ -20,12 +22,14 @@ class DeleteMissionUseCaseTest {
 
     @Before
     fun setUp() {
+        coEvery { missionJobQueue.cancelAndRemoveJob(any()) } returns Unit
         coEvery { missionRepository.deleteMission(any(), any()) } returns Unit
         coEvery { missionRepository.deleteLocalMission(any()) } returns Unit
         coEvery { imageRepository.deleteLocalImage(any()) } returns Unit
 
         useCase = DeleteMissionUseCase(
             missionRepository = missionRepository,
+            missionJobQueue = missionJobQueue,
             imageRepository = imageRepository
         )
     }
@@ -64,5 +68,17 @@ class DeleteMissionUseCaseTest {
 
         // Then
         coVerify { imageRepository.deleteLocalImage(imagePath) }
+    }
+
+    @Test
+    fun deleteMission_should_remove_job_reference_when_state_is_publishing() = runTest {
+        // Given
+        val mission = missionFixture.copy(state = MissionState.Publishing())
+
+        // When
+        useCase(mission)
+
+        // Then
+        coVerify { missionJobQueue.cancelAndRemoveJob(mission.id) }
     }
 }

@@ -1,8 +1,8 @@
 package com.upsaclay.message.presentation.conversation
 
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Refresh
@@ -13,7 +13,6 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.upsaclay.common.presentation.components.TextItem
@@ -29,18 +28,18 @@ fun ConversationBottomSheet(
     onDismiss: () -> Unit,
 ) {
     ModalBottomSheet(onDismissRequest = onDismiss) {
-        if (conversationState == Conversation.ConversationState.ERROR) {
-            ErrorConversationBottomSheetContent(
-                onRecreateClick = onRecreateClick,
-                onDeleteClick = onDeleteClick
-            )
-        } else {
-            DefaultConversationBottomSheetContent(
-                onDeleteClick = onDeleteClick
-            )
+        Column(modifier = Modifier.navigationBarsPadding()) {
+            if (conversationState == Conversation.ConversationState.ERROR) {
+                ErrorConversationBottomSheetContent(
+                    onRecreateClick = onRecreateClick,
+                    onDeleteClick = onDeleteClick
+                )
+            } else {
+                DefaultConversationBottomSheetContent(
+                    onDeleteClick = onDeleteClick
+                )
+            }
         }
-
-        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.modal_bottom_sheet_bottom_space)))
     }
 }
 

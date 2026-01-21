@@ -1,19 +1,22 @@
 package com.upsaclay.mission.domain.usecase
 
 import com.upsaclay.common.domain.repository.ImageRepository
+import com.upsaclay.mission.domain.MissionJobQueue
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.repository.MissionRepository
 
 class DeleteMissionUseCase(
     private val missionRepository: MissionRepository,
-    private val imageRepository: ImageRepository
+    private val imageRepository: ImageRepository,
+    private val missionJobQueue: MissionJobQueue
 ) {
     suspend operator fun invoke(mission: Mission) {
         when (val state = mission.state) {
             is MissionState.Draft -> missionRepository.deleteLocalMission(mission)
 
             is MissionState.Publishing -> {
+                missionJobQueue.cancelAndRemoveJob(mission.id)
                 missionRepository.deleteLocalMission(mission)
                 state.imagePath?.let {
                     imageRepository.deleteLocalImage(it)

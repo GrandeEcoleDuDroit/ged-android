@@ -13,7 +13,7 @@ import com.upsaclay.news.domain.entity.AnnouncementReport
 import com.upsaclay.news.domain.repository.AnnouncementRepository
 import com.upsaclay.news.domain.usecase.DeleteAnnouncementUseCase
 import com.upsaclay.news.domain.usecase.RefreshAnnouncementsUseCase
-import com.upsaclay.news.domain.usecase.ResendAnnouncementUseCase
+import com.upsaclay.news.domain.usecase.RecreateAnnouncementUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -25,7 +25,7 @@ class AllAnnouncementsViewModel(
     private val userRepository: UserRepository,
     private val announcementRepository: AnnouncementRepository,
     private val refreshAnnouncementsUseCase: RefreshAnnouncementsUseCase,
-    private val resendAnnouncementUseCase: ResendAnnouncementUseCase,
+    private val recreateAnnouncementUseCase: RecreateAnnouncementUseCase,
     private val deleteAnnouncementUseCase: DeleteAnnouncementUseCase
 ): ViewModel() {
     private val _uiState = MutableStateFlow(AllAnnouncementsUiState())
@@ -57,7 +57,7 @@ class AllAnnouncementsViewModel(
 
     fun resendAnnouncement(announcement: Announcement) {
         viewModelScope.launch {
-            resendAnnouncementUseCase(announcement)
+            recreateAnnouncementUseCase(announcement)
         }
     }
 

@@ -40,7 +40,7 @@ class MissionViewModelTest {
 
         every { missionRepository.missions } returns flowOf(missionsFixture)
         every { userRepository.user } returns MutableStateFlow(userFixture)
-        every { recreateMissionUseCase(any()) } returns Unit
+        coEvery { recreateMissionUseCase(any()) } returns Unit
         coEvery { deleteMissionUseCase(any()) } returns Unit
         coEvery { refreshMissionsUseCase() } returns Unit
 

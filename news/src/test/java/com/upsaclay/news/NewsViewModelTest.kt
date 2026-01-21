@@ -5,8 +5,8 @@ import com.upsaclay.common.domain.userFixture
 import com.upsaclay.news.domain.announcementsFixture
 import com.upsaclay.news.domain.repository.AnnouncementRepository
 import com.upsaclay.news.domain.usecase.DeleteAnnouncementUseCase
+import com.upsaclay.news.domain.usecase.RecreateAnnouncementUseCase
 import com.upsaclay.news.domain.usecase.RefreshAnnouncementsUseCase
-import com.upsaclay.news.domain.usecase.ResendAnnouncementUseCase
 import com.upsaclay.news.presentation.news.NewsViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -24,7 +24,7 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class NewsViewModelTest {
-    private val resendAnnouncementUseCase: ResendAnnouncementUseCase = mockk()
+    private val recreateAnnouncementUseCase: RecreateAnnouncementUseCase = mockk()
     private val deleteAnnouncementUseCase: DeleteAnnouncementUseCase = mockk()
     private val refreshAnnouncementsUseCase: RefreshAnnouncementsUseCase = mockk()
     private val userRepository: UserRepository = mockk()
@@ -39,12 +39,12 @@ class NewsViewModelTest {
 
         every { announcementRepository.announcements } returns flowOf(announcementsFixture)
         every { userRepository.user } returns MutableStateFlow(userFixture)
-        every { resendAnnouncementUseCase(any()) } returns Unit
+        coEvery { recreateAnnouncementUseCase(any()) } returns Unit
         coEvery { refreshAnnouncementsUseCase() } returns Unit
         coEvery { deleteAnnouncementUseCase(any()) } returns Unit
 
         newsViewModel = NewsViewModel(
-            resendAnnouncementUseCase = resendAnnouncementUseCase,
+            recreateAnnouncementUseCase = recreateAnnouncementUseCase,
             deleteAnnouncementUseCase = deleteAnnouncementUseCase,
             refreshAnnouncementsUseCase = refreshAnnouncementsUseCase,
             announcementRepository = announcementRepository,
@@ -70,7 +70,7 @@ class NewsViewModelTest {
         newsViewModel.resendAnnouncement(announcement)
 
         // Then
-        coVerify { resendAnnouncementUseCase(announcement) }
+        coVerify { recreateAnnouncementUseCase(announcement) }
     }
 
     @Test
