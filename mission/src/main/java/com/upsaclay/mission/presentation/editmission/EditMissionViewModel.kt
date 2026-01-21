@@ -8,6 +8,7 @@ import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.extensions.replace
 import com.upsaclay.common.domain.usecase.GenerateIdUseCase
 import com.upsaclay.common.domain.usecase.GetUsersUseCase
+import com.upsaclay.common.extension.executeUiBlockingRequest
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapExceptionErrorMessage
 import com.upsaclay.mission.R
@@ -87,23 +88,12 @@ class EditMissionViewModel(
             state = state
         )
 
-        viewModelScope.launch {
-            try {
-                _uiState.update {
-                    it.copy(loading = true)
-                }
-                updateMissionUseCase(
-                    mission = newMission,
-                    imageUri = uiState.value.imageUri?.toString()
-                )
-                _event.emit(SingleUiEvent.Success())
-            } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
-            } finally {
-                _uiState.update {
-                    it.copy(loading = false)
-                }
-            }
+        executeRequest {
+            updateMissionUseCase(
+                mission = newMission,
+                imageUri = uiState.value.imageUri?.toString()
+            )
+            _event.emit(SingleUiEvent.Success())
         }
     }
 
@@ -361,6 +351,21 @@ class EditMissionViewModel(
         }
 
         return uiState.value.maxParticipantsError == null
+    }
+
+    private fun executeRequest(block: suspend () -> Unit) {
+        viewModelScope.executeUiBlockingRequest(
+            block = block,
+            onLoading = {
+                _uiState.update { it.copy(loading = true) }
+            },
+            onError = {
+                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(it)))
+            },
+            onFinished = {
+                _uiState.update { it.copy(loading = false) }
+            }
+        )
     }
 
     private fun listenMissionUpdateState() {

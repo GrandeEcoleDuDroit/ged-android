@@ -2,10 +2,11 @@ package com.upsaclay.gedoise.presentation.profile.blockedusers
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.upsaclay.common.R
+import com.upsaclay.common.domain.entity.CustomException
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.repository.UserRepository
+import com.upsaclay.common.extension.executeUiBlockingRequest
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapExceptionErrorMessage
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -29,26 +30,30 @@ class BlockedUsersViewModel(
     }
 
     fun unblockUser(userId: String) {
-        val currentUserId = userRepository.currentUser?.id ?: return
-
-        viewModelScope.launch {
-            try {
-                _uiState.update {
-                    it.copy(loading = true)
-                }
-                blockedUserRepository.unblockUser(currentUserId, userId)
-                _uiState.update { state ->
-                    state.copy(
-                        blockedUsers = state.blockedUsers.filterNot { it.id == userId }
-                    )
-                }
-                _event.emit(SingleUiEvent.Success(R.string.unblocked_user))
-            } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
-            } finally {
-                _uiState.update { it.copy(loading = false) }
+        executeRequest {
+            val currentUserId = userRepository.currentUser?.id ?: throw CustomException(CustomException.CustomError.CURRENT_USER_NOT_FOUND)
+            blockedUserRepository.unblockUser(currentUserId, userId)
+            _uiState.update { state ->
+                state.copy(
+                    blockedUsers = state.blockedUsers.filterNot { it.id == userId }
+                )
             }
         }
+    }
+
+    private fun executeRequest(block: suspend () -> Unit) {
+        viewModelScope.executeUiBlockingRequest(
+            block = block,
+            onLoading = {
+                _uiState.update { it.copy(loading = true) }
+            },
+            onError = {
+                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(it)))
+            },
+            onFinished = {
+                _uiState.update { it.copy(loading = false) }
+            }
+        )
     }
 
     private fun initBlockedUsers() {

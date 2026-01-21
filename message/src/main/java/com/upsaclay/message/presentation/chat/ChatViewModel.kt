@@ -9,6 +9,7 @@ import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.GenerateIdUseCase
+import com.upsaclay.common.extension.executeUiBlockingRequest
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapExceptionErrorMessage
 import com.upsaclay.message.domain.entity.Conversation
@@ -127,48 +128,24 @@ class ChatViewModel(
     }
 
     fun reportMessage(report: MessageReport) {
-        _uiState.update { it.copy(loading = true) }
-
-        viewModelScope.launch {
-            try {
-                messageRepository.reportMessage(report)
-                _event.emit(MessageEvent.MessageReported)
-            } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
-            } finally {
-                _uiState.update { it.copy(loading = false) }
-            }
+        executeRequest {
+            messageRepository.reportMessage(report)
+            _event.emit(MessageEvent.MessageReported)
         }
     }
 
     fun unblockUser(userId: String) {
-        val currentUserId = uiState.value.currentUser?.id ?: return
-        _uiState.update { it.copy(loading = true) }
-
-        viewModelScope.launch {
-            try {
-                blockedUserRepository.unblockUser(currentUserId, userId)
-            } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
-            } finally {
-                _uiState.update { it.copy(loading = false) }
-            }
+        executeRequest {
+            val currentUserId = uiState.value.currentUser?.id ?: throw CustomException(CURRENT_USER_NOT_FOUND)
+            blockedUserRepository.unblockUser(currentUserId, userId)
         }
     }
 
     fun deleteChat() {
-        viewModelScope.launch {
+        executeRequest {
             val currentUserId = uiState.value.currentUser?.id ?: throw CustomException(CURRENT_USER_NOT_FOUND)
-            _uiState.update { it.copy(loading = true) }
-
-            try {
-                deleteConversationUseCase(conversation, currentUserId)
-                _event.emit(MessageEvent.ChatDeleted)
-            } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
-            } finally {
-                _uiState.update { it.copy(loading = false) }
-            }
+            deleteConversationUseCase(conversation, currentUserId)
+            _event.emit(MessageEvent.ChatDeleted)
         }
     }
 
@@ -213,6 +190,21 @@ class ChatViewModel(
                     _event.emit(MessageEvent.NewMessage(it))
                 }
         }
+    }
+
+    private fun executeRequest(block: suspend () -> Unit) {
+        viewModelScope.executeUiBlockingRequest(
+            block = block,
+            onLoading = {
+                _uiState.update { it.copy(loading = true) }
+            },
+            onError = {
+                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(it)))
+            },
+            onFinished = {
+                _uiState.update { it.copy(loading = false) }
+            }
+        )
     }
 
     private fun listenConversation() {

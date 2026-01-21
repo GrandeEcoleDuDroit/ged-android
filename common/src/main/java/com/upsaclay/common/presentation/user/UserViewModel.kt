@@ -3,10 +3,12 @@ package com.upsaclay.common.presentation.user
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upsaclay.common.R
+import com.upsaclay.common.domain.entity.CustomException
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.entity.UserReport
 import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.repository.UserRepository
+import com.upsaclay.common.extension.executeUiBlockingRequest
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapExceptionErrorMessage
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -32,50 +34,41 @@ class UserViewModel(
     }
 
     fun reportUser(report: UserReport) {
-        _uiState.update { it.copy(loading = true) }
-
-        viewModelScope.launch {
-            try {
-                userRepository.reportUser(report)
-                _event.emit(SingleUiEvent.Success(R.string.reported_user))
-            } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
-            } finally {
-                _uiState.update { it.copy(loading = false) }
-            }
+        executeRequest {
+            userRepository.reportUser(report)
+            _event.emit(SingleUiEvent.Success(R.string.reported_user))
         }
     }
 
     fun blockUser(userId: String) {
-        _uiState.update { it.copy(loading = true) }
-        val currentUserId = uiState.value.currentUser?.id ?: return
-
-        viewModelScope.launch {
-            try {
-                blockedUserRepository.blockUser(currentUserId,userId)
-                _event.emit(SingleUiEvent.Success(R.string.blocked_user))
-            } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
-            } finally {
-                _uiState.update { it.copy(loading = false) }
-            }
+        executeRequest {
+            val currentUserId = uiState.value.currentUser?.id ?: throw CustomException(CustomException.CustomError.CURRENT_USER_NOT_FOUND)
+            blockedUserRepository.blockUser(currentUserId,userId)
+            _event.emit(SingleUiEvent.Success(R.string.blocked_user))
         }
     }
 
     fun unblockUser(userId: String) {
-        _uiState.update { it.copy(loading = true) }
-        val currentUserId = uiState.value.currentUser?.id ?: return
+        executeRequest {
+            val currentUserId = uiState.value.currentUser?.id ?: throw CustomException(CustomException.CustomError.CURRENT_USER_NOT_FOUND)
+            blockedUserRepository.unblockUser(currentUserId, userId)
+            _event.emit(SingleUiEvent.Success(R.string.unblocked_user))
+        }
+    }
 
-        viewModelScope.launch {
-            try {
-                blockedUserRepository.unblockUser(currentUserId, userId)
-                _event.emit(SingleUiEvent.Success(R.string.unblocked_user))
-            } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
-            } finally {
+    private fun executeRequest(block: suspend () -> Unit) {
+        viewModelScope.executeUiBlockingRequest(
+            block = block,
+            onLoading = {
+                _uiState.update { it.copy(loading = true) }
+            },
+            onError = {
+                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(it)))
+            },
+            onFinished = {
                 _uiState.update { it.copy(loading = false) }
             }
-        }
+        )
     }
 
     private fun listenCurrentUser() {

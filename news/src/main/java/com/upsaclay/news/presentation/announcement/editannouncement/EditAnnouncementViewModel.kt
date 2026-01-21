@@ -2,6 +2,7 @@ package com.upsaclay.news.presentation.announcement.editannouncement
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.upsaclay.common.extension.executeUiBlockingRequest
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapExceptionErrorMessage
 import com.upsaclay.news.domain.entity.Announcement
@@ -13,7 +14,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
 class EditAnnouncementViewModel(
     private val announcement: Announcement,
@@ -50,30 +50,29 @@ class EditAnnouncementViewModel(
     }
 
     fun updateAnnouncement() {
-        if (!validateUpdate(uiState.value.title, uiState.value.content)) {
-            return
-        }
-
+        if (!validateUpdate(uiState.value.title, uiState.value.content)) return
         val trimmedAnnouncement = announcement.copy(
             title = uiState.value.title.trim(),
             content = uiState.value.content.trim()
         )
-
-        viewModelScope.launch {
-            try {
-                _uiState.update {
-                    it.copy(loading = true)
-                }
-                announcementRepository.updateAnnouncement(trimmedAnnouncement)
-                _event.emit(SingleUiEvent.Success())
-            } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
-            } finally {
-                _uiState.update {
-                    it.copy(loading = false)
-                }
-            }
+        executeRequest {
+            announcementRepository.updateAnnouncement(trimmedAnnouncement)
         }
+    }
+
+    private fun executeRequest(block: suspend () -> Unit) {
+        viewModelScope.executeUiBlockingRequest(
+            block = block,
+            onLoading = {
+                _uiState.update { it.copy(loading = true) }
+            },
+            onError = {
+                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(it)))
+            },
+            onFinished = {
+                _uiState.update { it.copy(loading = false) }
+            }
+        )
     }
 
     private fun validateUpdate(title: String, content: String): Boolean =

@@ -9,13 +9,10 @@ import com.upsaclay.authentication.mapAuthException
 import com.upsaclay.common.domain.entity.CustomException
 import com.upsaclay.common.domain.entity.CustomException.CustomError.CURRENT_USER_NOT_FOUND
 import com.upsaclay.common.domain.repository.UserRepository
-import com.upsaclay.common.presentation.SingleUiEvent
-import kotlinx.coroutines.flow.MutableSharedFlow
+import com.upsaclay.common.extension.executeUiBlockingRequest
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
 class DeleteAccountViewModel(
     private val userRepository: UserRepository,
@@ -23,8 +20,6 @@ class DeleteAccountViewModel(
 ): ViewModel() {
     private val _uiState = MutableStateFlow(DeleteAccountUiState())
     val uiState: StateFlow<DeleteAccountUiState> = _uiState
-    private val _event = MutableSharedFlow<SingleUiEvent>()
-    val event: SharedFlow<SingleUiEvent> = _event
 
     fun onPasswordChange(password: String) {
         _uiState.update {
@@ -36,24 +31,27 @@ class DeleteAccountViewModel(
         val password = uiState.value.password
         if (!validateInput(password)) return
 
-        viewModelScope.launch {
-            try {
-                val currentUser = userRepository.currentUser ?: throw CustomException(CURRENT_USER_NOT_FOUND)
-
-                _uiState.update {
-                    it.copy(loading = true)
-                }
-                deleteAccountUseCase(currentUser, password)
-            } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(errorMessage = mapAuthException(e))
-                }
-            } finally {
-                _uiState.update {
-                    it.copy(loading = false)
-                }
-            }
+        executeRequest {
+            val currentUser = userRepository.currentUser ?: throw CustomException(CURRENT_USER_NOT_FOUND)
+            deleteAccountUseCase(currentUser, password)
         }
+    }
+
+    private fun executeRequest(block: suspend () -> Unit) {
+        viewModelScope.executeUiBlockingRequest(
+            block = block,
+            onLoading = {
+                _uiState.update { it.copy(loading = true) }
+            },
+            onError = { error ->
+                _uiState.update {
+                    it.copy(errorMessage = mapAuthException(error))
+                }
+            },
+            onFinished = {
+                _uiState.update { it.copy(loading = false) }
+            }
+        )
     }
 
     private fun validateInput(password: String): Boolean {

@@ -8,6 +8,7 @@ import com.upsaclay.common.domain.entity.CustomException.CustomError.CURRENT_USE
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.UpdateProfilePictureUseCase
+import com.upsaclay.common.extension.executeUiBlockingRequest
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapExceptionErrorMessage
 import com.upsaclay.gedoise.R
@@ -18,7 +19,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
 class AccountInformationViewModel(
     private val updateProfilePictureUseCase: UpdateProfilePictureUseCase,
@@ -32,79 +32,68 @@ class AccountInformationViewModel(
 
     init {
         userRepository.user
-            .map(::updateState)
+            .map { user ->
+                _uiState.update { it.copy(user = user) }
+            }
             .launchIn(viewModelScope)
     }
 
     fun updateProfilePicture() {
-        viewModelScope.launch {
-            try {
+        executeRequest {
+            uiState.value.profilePictureUri?.let { uri ->
                 val user = uiState.value.user ?: throw CustomException(CURRENT_USER_NOT_FOUND, Exception())
-                _uiState.value.profilePictureUri?.let { uri ->
-                    updateState(loading = true)
-                    updateProfilePictureUseCase(user, uri.toString())
-                    cancelEdit()
-                    _event.emit(SingleUiEvent.Success(R.string.profile_picture_updated))
-                }
-            } catch (e: Exception) {
-                cancelEdit()
-                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
-            } finally {
-                _uiState.update {
-                    it.copy(loading = false)
-                }
+                updateProfilePictureUseCase(user, uri.toString())
+                _event.emit(SingleUiEvent.Success(R.string.profile_picture_updated))
             }
         }
     }
 
     fun deleteProfilePicture() {
-        viewModelScope.launch {
-            try {
-                val user = uiState.value.user ?: throw CustomException(CURRENT_USER_NOT_FOUND, Exception())
-                updateState(loading = true)
-                user.profilePictureUrl?.let {
-                    userRepository.deleteProfilePicture(user)
-                }
-                cancelEdit()
-                _event.emit(SingleUiEvent.Success(R.string.profile_picture_deleted))
-            } catch (e: Exception) {
-                cancelEdit()
-                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
+        executeRequest {
+            val user = uiState.value.user ?: throw CustomException(CURRENT_USER_NOT_FOUND, Exception())
+            user.profilePictureUrl?.let {
+                userRepository.deleteProfilePicture(user)
             }
+            _event.emit(SingleUiEvent.Success(R.string.profile_picture_deleted))
         }
     }
 
     fun onScreenStateChange(screenState: AccountInformationScreenState) {
-        updateState(screenState = screenState)
+        _uiState.update {
+            it.copy(screenState = screenState)
+        }
     }
 
-    fun cancelEdit() {
-        updateState(
-            screenState = AccountInformationScreenState.READ,
-            profilePictureUri = null,
-            loading = false
-        )
+    fun resetScreenState() {
+        _uiState.update {
+            it.copy(
+                screenState = AccountInformationScreenState.READ,
+                profilePictureUri = null,
+                loading = false
+            )
+        }
     }
 
     fun onProfilePictureUriChange(uri: Uri?) {
-        updateState(profilePictureUri = uri)
-
+        _uiState.update {
+            it.copy(profilePictureUri = uri)
+        }
     }
 
-    private fun updateState(
-        user: User? = _uiState.value.user,
-        profilePictureUri: Uri? = _uiState.value.profilePictureUri,
-        loading: Boolean = _uiState.value.loading,
-        screenState: AccountInformationScreenState = _uiState.value.screenState
-    ) {
-        _uiState.update {
-            it.copy(
-                user = user,
-                profilePictureUri = profilePictureUri,
-                loading = loading,
-                screenState = screenState,
-            )
-        }
+    private fun executeRequest(block: suspend () -> Unit) {
+        viewModelScope.executeUiBlockingRequest(
+            block = block,
+            onLoading = {
+                _uiState.update { it.copy(loading = true) }
+            },
+            onError = {
+                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(it)))
+            },
+            onFinished = {
+                _uiState.update { it.copy(loading = false) }
+                resetScreenState()
+            }
+        )
     }
 
     data class AccountInformationUiState(
@@ -113,9 +102,9 @@ class AccountInformationViewModel(
         val loading: Boolean = false,
         val screenState: AccountInformationScreenState = AccountInformationScreenState.READ,
     )
-}
 
-enum class AccountInformationScreenState {
-    READ,
-    EDIT
+    enum class AccountInformationScreenState {
+        READ,
+        EDIT
+    }
 }
