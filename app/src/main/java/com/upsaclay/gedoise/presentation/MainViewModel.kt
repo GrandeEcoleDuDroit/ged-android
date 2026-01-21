@@ -8,8 +8,10 @@ import com.upsaclay.app.domain.usecase.FetchDataUseCase
 import com.upsaclay.app.domain.usecase.ListenDataUseCase
 import com.upsaclay.authentication.domain.entity.AuthenticationState
 import com.upsaclay.authentication.domain.repository.AuthenticationRepository
+import com.upsaclay.common.domain.ConnectivityObserver
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -18,19 +20,21 @@ class MainViewModel(
     private val fetchDataUseCase: FetchDataUseCase,
     private val clearDataUseCase: ClearDataUseCase,
     private val fcmTokenUseCase: FcmTokenUseCase,
-    private val listenDataUseCase: ListenDataUseCase
+    private val listenDataUseCase: ListenDataUseCase,
+    private val connectivityObserver: ConnectivityObserver
 ): ViewModel() {
-    fun updateDataOnAuthChange() {
+    fun updateAppData() {
         viewModelScope.launch {
             authenticationRepository.authenticationState.collectLatest { state ->
                 when (state) {
                     is AuthenticationState.Authenticated -> {
+                        connectivityObserver.connected.first { it }
+                        authenticationRepository.refreshTokenIfNecessary()
                         runCatching { fetchDataUseCase(state.userId) }
                             .onFailure { Timber.e("Error fetching data: ${it.message}") }
-                        listenDataUseCase.start(state.userId)
-                         runCatching { fcmTokenUseCase.sendUnsentToken() }
-                             .onFailure { Timber.e("Error sending unsent token: ${it.message}") }
-                             .onSuccess { Timber.i("Unsent token sent successfully") }
+                        listenDataUseCase.start(this, state.userId)
+                        runCatching { fcmTokenUseCase.sendUnsentToken() }
+                             .onFailure { Timber.e("Error sending fcm token: ${it.message}") }
                     }
 
                     is AuthenticationState.Unauthenticated -> {

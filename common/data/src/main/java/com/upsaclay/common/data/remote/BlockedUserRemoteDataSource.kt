@@ -14,15 +14,13 @@ import kotlinx.coroutines.withContext
 internal class BlockedUserRemoteDataSource(private val blockedUserApi: BlockedUserApi) {
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 
-    suspend fun getBlockedUsers(currentUserId: String): List<BlockedUser> {
-        return withContext(dispatcher) {
-            try {
-                sendDataServerRequest {
-                    blockedUserApi.getBlockedUsers(currentUserId)
-                }?.map { it.toBlockedUser() } ?: emptyList()
-            } catch (e: Exception) {
-                throw mapServerException(e)
-            }
+    suspend fun getBlockedUsers(currentUserId: String): List<BlockedUser> = withContext(dispatcher) {
+        try {
+            sendDataServerRequest { blockedUserApi.getBlockedUsers(currentUserId) }
+                ?.map { it.toBlockedUser() }
+                ?: emptyList()
+        } catch (e: Exception) {
+            throw mapServerException(e)
         }
     }
 
@@ -31,7 +29,11 @@ internal class BlockedUserRemoteDataSource(private val blockedUserApi: BlockedUs
         withContext(dispatcher) {
             try {
                 sendServerRequest {
-                    blockedUserApi.addBlockedUser(currentUserId, remoteBlockedUser.blockedUserId)
+                    blockedUserApi.addBlockedUser(
+                        currentUserId,
+                        remoteBlockedUser.blockedUserId,
+                        remoteBlockedUser.blockedDate
+                    )
                 }
             } catch (e: Exception) {
                 throw mapServerException(e)
@@ -42,9 +44,7 @@ internal class BlockedUserRemoteDataSource(private val blockedUserApi: BlockedUs
     suspend fun removeBlockedUser(currentUserId: String, blockedUserId: String) {
         withContext(dispatcher) {
             try {
-                sendServerRequest {
-                    blockedUserApi.removeBlockedUser(currentUserId, blockedUserId)
-                }
+                sendServerRequest { blockedUserApi.removeBlockedUser(currentUserId, blockedUserId) }
             } catch (e: Exception) {
                 throw mapServerException(e)
             }

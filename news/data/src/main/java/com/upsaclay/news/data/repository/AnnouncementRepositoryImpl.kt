@@ -87,8 +87,8 @@ internal class AnnouncementRepositoryImpl(
         announcementLocalDataSource.deleteAnnouncements()
     }
 
-    override suspend fun deleteLocalAnnouncements(userId: String) {
-        announcementLocalDataSource.deleteAnnouncements(userId)
+    override suspend fun deleteLocalUserAnnouncements(userId: String) {
+        announcementLocalDataSource.deleteUserAnnouncements(userId)
     }
 
     override suspend fun reportAnnouncement(report: AnnouncementReport) {

@@ -43,13 +43,5 @@ val appDomainModule = module {
     singleOf(::ListenRemoteUserUseCase)
     singleOf(::ListenBlockedUserEventsUseCase)
     singleOf(::LogoutUseCase)
-    single {
-        ListenDataUseCase(
-            listenRemoteUserUseCase = get(),
-            listenRemoteConversationsUseCase = get(),
-            listenRemoteMessagesUseCase = get(),
-            listenBlockedUserEventsUseCase = get(),
-            scope = get(BACKGROUND_SCOPE)
-        )
-    }
+    singleOf(::ListenDataUseCase)
 }

@@ -119,7 +119,13 @@ val commonDataModule = module {
     singleOf(::BlockedUserRemoteDataSource)
     singleOf(::BlockedUserDataStore)
     singleOf(::BlockedUserLocalDataSource)
-    singleOf(::BlockedUserRepositoryImpl) { bind<BlockedUserRepository>() }
+    single<BlockedUserRepository> {
+        BlockedUserRepositoryImpl(
+            blockedUserLocalDataSource = get(),
+            blockedUserRemoteDataSource = get(),
+            scope = get(BACKGROUND_SCOPE)
+        )
+    }
 
     singleOf(::WhiteListRepositoryImpl) { bind<WhiteListRepository>() }
 }

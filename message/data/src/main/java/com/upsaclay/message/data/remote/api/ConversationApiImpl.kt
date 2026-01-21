@@ -38,10 +38,13 @@ internal class ConversationApiImpl: ConversationApi {
     }
 
     override suspend fun createConversation(remoteConversation: RemoteConversation) {
-        conversationsCollection
-            .document(remoteConversation.conversationId)
-            .set(remoteConversation.toMap(), SetOptions.merge())
-            .await()
+        val conversationExist = conversationsCollection.document(remoteConversation.conversationId).get().await().exists()
+        if (!conversationExist) {
+            conversationsCollection
+                .document(remoteConversation.conversationId)
+                .set(remoteConversation.toMap(), SetOptions.merge())
+                .await()
+        }
     }
 
     override suspend fun updateConversation(conversationId: String, data: Map<String, Any>) {

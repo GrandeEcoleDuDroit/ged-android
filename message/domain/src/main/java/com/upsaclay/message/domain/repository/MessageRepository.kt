@@ -27,6 +27,8 @@ interface MessageRepository {
 
     suspend fun setMessageSeen(message: Message)
 
+    suspend fun updateMessageVisibility(message: Message, currentUserId: String, visible: Boolean)
+
     suspend fun upsertLocalMessage(message: Message)
 
     suspend fun deleteLocalMessage(message: Message)

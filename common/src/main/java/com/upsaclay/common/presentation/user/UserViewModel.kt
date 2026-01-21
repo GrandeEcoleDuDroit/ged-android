@@ -3,6 +3,7 @@ package com.upsaclay.common.presentation.user
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upsaclay.common.R
+import com.upsaclay.common.domain.entity.BlockedUser
 import com.upsaclay.common.domain.entity.CustomException
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.entity.UserReport
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
 class UserViewModel(
     userId: String,
@@ -43,7 +45,7 @@ class UserViewModel(
     fun blockUser(userId: String) {
         executeRequest {
             val currentUserId = uiState.value.currentUser?.id ?: throw CustomException(CustomException.CustomError.CURRENT_USER_NOT_FOUND)
-            blockedUserRepository.blockUser(currentUserId,userId)
+            blockedUserRepository.addBlockUser(currentUserId, BlockedUser(userId, LocalDateTime.now()))
             _event.emit(SingleUiEvent.Success(R.string.blocked_user))
         }
     }
@@ -51,7 +53,7 @@ class UserViewModel(
     fun unblockUser(userId: String) {
         executeRequest {
             val currentUserId = uiState.value.currentUser?.id ?: throw CustomException(CustomException.CustomError.CURRENT_USER_NOT_FOUND)
-            blockedUserRepository.unblockUser(currentUserId, userId)
+            blockedUserRepository.removeBlockedUser(currentUserId, userId)
             _event.emit(SingleUiEvent.Success(R.string.unblocked_user))
         }
     }
@@ -83,9 +85,9 @@ class UserViewModel(
 
     private fun listenBlockedUserIds(userId: String) {
         viewModelScope.launch {
-            blockedUserRepository.blockedUserIds.collect { blockedUserIds ->
+            blockedUserRepository.blockedUsers.collect { blockedUsers ->
                 _uiState.update {
-                    it.copy(userBlocked = userId in blockedUserIds)
+                    it.copy(userBlocked = userId in blockedUsers)
                 }
             }
         }

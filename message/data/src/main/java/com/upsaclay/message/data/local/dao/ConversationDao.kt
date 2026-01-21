@@ -14,10 +14,13 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface ConversationDao {
     @Query("SELECT * FROM $CONVERSATION_TABLE_NAME")
-    suspend fun getConversations(): List<LocalConversation>
+    fun getConversationsFlow(): Flow<List<LocalConversation>>
 
     @Query("SELECT * FROM $CONVERSATION_TABLE_NAME WHERE $CONVERSATION_INTERLOCUTOR_ID = :interlocutorId")
     fun getConversationFlow(interlocutorId: String): Flow<LocalConversation?>
+
+    @Query("SELECT * FROM $CONVERSATION_TABLE_NAME")
+    suspend fun getConversations(): List<LocalConversation>
 
     @Query("SELECT * FROM $CONVERSATION_TABLE_NAME WHERE $CONVERSATION_INTERLOCUTOR_ID = :interlocutorId")
     suspend fun getConversation(interlocutorId: String): LocalConversation?

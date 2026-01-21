@@ -1,9 +1,10 @@
 package com.upsaclay.message.presentation.chat
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -19,11 +20,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.paging.PagingData
 import com.upsaclay.common.domain.entity.User
+import com.upsaclay.common.extension.rootMediumPadding
+import com.upsaclay.common.extension.smallMediumSpacing
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.LoadingDialog
@@ -179,11 +181,36 @@ private fun ChatScreen(
         modifier = Modifier.imePadding(),
         interlocutor = conversation.interlocutor,
         snackbarHostState = snackbarHostState,
-        bottomBar = {
+        onBackClick = {
+            focusManager.clearFocus()
+            onBackClick()
+        },
+        onInterlocutorClick = { onInterlocutorClick(conversation.interlocutor) }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .rootMediumPadding(innerPadding)
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.smallMediumSpacing()
+        ) {
+            MessageFeed(
+                modifier = Modifier.weight(1f),
+                messages = messages,
+                interlocutor = conversation.interlocutor,
+                newMessageEvent = newMessageEvent,
+                onErrorSentMessageClick = {
+                    if (it.state == MessageState.ERROR) {
+                        activeBottomSheet = ChatScreenBottomSheet.SentMessageBottomSheet(it)
+                    }
+                },
+                onReceivedMessageLongClick = {
+                    activeBottomSheet = ChatScreenBottomSheet.ReceivedMessageBottomSheet(it)
+                },
+                onInterlocutorClick = { onInterlocutorClick(conversation.interlocutor) }
+            )
+
             MessageBottomSection(
-                modifier = Modifier
-                    .padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 isUserBlocked = isUserBlocked,
                 messageText = messageText,
                 onMessageTextChange = onMessageTextChange,
@@ -191,35 +218,7 @@ private fun ChatScreen(
                 onDeleteConversationClick = { activeDialog = ChatDialog.DeleteConversationDialog },
                 onUnblockUserClick = { activeDialog = ChatDialog.UnblockUserDialog }
             )
-        },
-        onBackClick = {
-            focusManager.clearFocus()
-            onBackClick()
-        },
-        onInterlocutorClick = { onInterlocutorClick(conversation.interlocutor) }
-    ) { innerPadding ->
-        MessageFeed(
-            modifier = Modifier
-                .padding(
-                    top = innerPadding.calculateTopPadding(),
-                    start = dimensionResource(com.upsaclay.common.R.dimen.medium_padding),
-                    end = dimensionResource(com.upsaclay.common.R.dimen.medium_padding),
-                    bottom = innerPadding.calculateBottomPadding()
-                )
-                .fillMaxSize(),
-            messages = messages,
-            interlocutor = conversation.interlocutor,
-            newMessageEvent = newMessageEvent,
-            onErrorSentMessageClick = {
-                if (it.state == MessageState.ERROR) {
-                    activeBottomSheet = ChatScreenBottomSheet.SentMessageBottomSheet(it)
-                }
-            },
-            onReceivedMessageLongClick = {
-                activeBottomSheet = ChatScreenBottomSheet.ReceivedMessageBottomSheet(it)
-            },
-            onInterlocutorClick = { onInterlocutorClick(conversation.interlocutor) }
-        )
+        }
     }
 
     when(val bottomSheet = activeBottomSheet) {

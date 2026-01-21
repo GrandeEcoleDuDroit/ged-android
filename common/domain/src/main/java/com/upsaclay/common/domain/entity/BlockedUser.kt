@@ -4,5 +4,7 @@ import java.time.LocalDateTime
 
 data class BlockedUser(
     val userId: String,
-    val blockedDate: LocalDateTime
+    val date: LocalDateTime
 )
+
+typealias BlockedUsers = Map<String, BlockedUser>

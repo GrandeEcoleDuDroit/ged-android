@@ -3,6 +3,7 @@ package com.upsaclay.common.domain
 import com.upsaclay.common.domain.usecase.FetchBlockedUsersUseCase
 import com.upsaclay.common.domain.usecase.FetchCurrentUserUseCase
 import com.upsaclay.common.domain.usecase.GenerateIdUseCase
+import com.upsaclay.common.domain.usecase.GetBlockedUsersUseCase
 import com.upsaclay.common.domain.usecase.GetUsersUseCase
 import com.upsaclay.common.domain.usecase.NavigationRequestUseCase
 import com.upsaclay.common.domain.usecase.UpdateProfilePictureUseCase
@@ -16,4 +17,5 @@ val commonDomainModule = module {
     singleOf(::GenerateIdUseCase)
     singleOf(::NavigationRequestUseCase)
     singleOf(::FetchCurrentUserUseCase)
+    singleOf(::GetBlockedUsersUseCase)
 }

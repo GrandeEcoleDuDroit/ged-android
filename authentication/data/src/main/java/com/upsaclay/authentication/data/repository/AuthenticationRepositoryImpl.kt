@@ -22,9 +22,8 @@ internal class AuthenticationRepositoryImpl(
 ): AuthenticationRepository {
     private val _authenticationState = MutableStateFlow<AuthenticationState?>(null)
     override val authenticationState: Flow<AuthenticationState> = _authenticationState.filterNotNull()
-    override val currentAuthenticationState: AuthenticationState
-        get() = _authenticationState.value ?: AuthenticationState.Unauthenticated
-    private var authToken: String? = null
+    override var authToken: String? = null
+        private set
 
     init {
         listenAuthenticationState()
@@ -35,7 +34,11 @@ internal class AuthenticationRepositoryImpl(
         authenticationLocalDataSource.getAuthenticationState() is AuthenticationState.Authenticated &&
                 authenticationRemoteDataSource.isAuthenticated()
 
-    override suspend fun getAuthToken(): String? = authToken ?: authenticationRemoteDataSource.getAuthToken()
+    override suspend fun refreshTokenIfNecessary() {
+        if (authToken == null) {
+            authToken = authenticationRemoteDataSource.getAuthToken()
+        }
+    }
 
     override suspend fun loginWithEmailAndPassword(email: String, password: String): String? {
         return try {

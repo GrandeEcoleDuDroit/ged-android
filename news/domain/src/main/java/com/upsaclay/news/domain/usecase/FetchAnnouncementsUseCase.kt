@@ -9,16 +9,16 @@ class FetchAnnouncementsUseCase(
     private val blockedUserRepository: BlockedUserRepository
 ) {
     suspend operator fun invoke() {
-        val announcements = announcementRepository.currentAnnouncements
+        val localAnnouncements = announcementRepository.currentAnnouncements
         val remoteAnnouncements = announcementRepository.getRemoteAnnouncements()
-        val blockedUserIds = blockedUserRepository.getLocalBlockedUserIds()
+        val localBlockedUsers = blockedUserRepository.getLocalBlockedUsers()
 
-        val announcementsToDelete = announcements.filter {
+        val announcementsToDelete = localAnnouncements.filter {
             (it.state == AnnouncementState.PUBLISHED && it !in remoteAnnouncements) ||
-                    it.author.id in blockedUserIds
+                    localBlockedUsers.containsKey(it.author.id)
         }
         val announcementsToUpsert = remoteAnnouncements.filter {
-            it !in announcements && it.author.id !in blockedUserIds
+            it !in localAnnouncements && !localBlockedUsers.containsKey(it.author.id)
         }
 
         announcementsToDelete.forEach { announcementRepository.deleteLocalAnnouncement(it) }

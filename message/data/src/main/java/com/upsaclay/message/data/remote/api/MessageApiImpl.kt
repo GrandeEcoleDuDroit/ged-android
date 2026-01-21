@@ -10,6 +10,7 @@ import com.upsaclay.common.data.utils.sendServerRequest
 import com.upsaclay.message.data.mapper.toMap
 import com.upsaclay.message.data.model.ConversationField
 import com.upsaclay.message.data.model.MessageField.MESSAGE_TABLE_NAME
+import com.upsaclay.message.data.model.MessageField.Remote.NOT_VISIBLE_FOR
 import com.upsaclay.message.data.model.MessageField.Remote.SEEN
 import com.upsaclay.message.data.remote.model.RemoteMessage
 import com.upsaclay.message.data.remote.model.RemoteMessageReport
@@ -63,6 +64,15 @@ internal class MessageApiImpl(private val messageServerApi: MessageServerApi): M
             .collection(MESSAGE_TABLE_NAME)
             .document(messageId)
             .update(SEEN, true)
+            .await()
+    }
+
+    override suspend fun updateMessageVisibility(remoteMessage: RemoteMessage, userId: String, visible: Boolean) {
+        conversationsCollection
+            .document(remoteMessage.conversationId)
+            .collection(MESSAGE_TABLE_NAME)
+            .document(remoteMessage.messageId)
+            .update("$NOT_VISIBLE_FOR.$userId", !visible)
             .await()
     }
 

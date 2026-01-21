@@ -1,20 +1,26 @@
 package com.upsaclay.common.data.local
 
 import com.upsaclay.common.data.local.datastore.BlockedUserDataStore
+import com.upsaclay.common.domain.entity.BlockedUser
+import com.upsaclay.common.domain.entity.BlockedUsers
 import kotlinx.coroutines.flow.Flow
 
 internal class BlockedUserLocalDataSource(
     private val blockedUserDataStore: BlockedUserDataStore
 ) {
-    fun getBlockedUserIdsFlow(): Flow<Set<String>> = blockedUserDataStore.getBlockedUserIdsFlow()
+    fun getBlockedUsersFlow(): Flow<BlockedUsers> = blockedUserDataStore.getBlockedUsersFlow()
 
-    suspend fun getBlockedUserIds(): Set<String> = blockedUserDataStore.getBlockedUserIds()
+    suspend fun getBlockedUsers(): BlockedUsers = blockedUserDataStore.getBlockedUsers()
 
-    suspend fun blockUser(userId: String) {
-        blockedUserDataStore.blockUser(userId)
+    suspend fun addBlockUser(blockedUser: BlockedUser) {
+        blockedUserDataStore.addBlockedUser(blockedUser)
     }
 
-    suspend fun unblockUser(userId: String) {
-        blockedUserDataStore.unblockUser(userId)
+    suspend fun removeBlockUser(userId: String) {
+        blockedUserDataStore.removeBlockUser(userId)
+    }
+
+    suspend fun deleteBlockedUsers() {
+        blockedUserDataStore.deleteBlockedUsers()
     }
 }

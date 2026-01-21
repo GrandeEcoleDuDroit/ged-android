@@ -6,6 +6,7 @@ import com.upsaclay.common.domain.entity.CustomException
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.repository.UserRepository
+import com.upsaclay.common.domain.usecase.GetBlockedUsersUseCase
 import com.upsaclay.common.extension.executeUiBlockingRequest
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapExceptionErrorMessage
@@ -18,7 +19,8 @@ import kotlinx.coroutines.launch
 
 class BlockedUsersViewModel(
     private val blockedUserRepository: BlockedUserRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val getBlockedUsersUseCase: GetBlockedUsersUseCase
 ): ViewModel() {
     private val _uiState = MutableStateFlow(BlockedUserUiState())
     val uiState: StateFlow<BlockedUserUiState> = _uiState
@@ -26,17 +28,15 @@ class BlockedUsersViewModel(
     val event: SharedFlow<SingleUiEvent?> = _event
 
     init {
-        initBlockedUsers()
+        initUiState()
     }
 
     fun unblockUser(userId: String) {
         executeRequest {
-            val currentUserId = userRepository.currentUser?.id ?: throw CustomException(CustomException.CustomError.CURRENT_USER_NOT_FOUND)
-            blockedUserRepository.unblockUser(currentUserId, userId)
+            val currentUserId = userRepository.getCurrentUser()?.id ?: throw CustomException(CustomException.CustomError.CURRENT_USER_NOT_FOUND)
+            blockedUserRepository.removeBlockedUser(currentUserId, userId)
             _uiState.update { state ->
-                state.copy(
-                    blockedUsers = state.blockedUsers.filterNot { it.id == userId }
-                )
+                state.copy(blockedUsers = state.blockedUsers.filterNot { it.id == userId })
             }
         }
     }
@@ -56,16 +56,11 @@ class BlockedUsersViewModel(
         )
     }
 
-    private fun initBlockedUsers() {
+    private fun initUiState() {
         viewModelScope.launch {
-           val blockedUserIds = blockedUserRepository.getLocalBlockedUserIds()
-            blockedUserIds.forEach { userId ->
-                launch blockedUserUpdate@ {
-                    val user = userRepository.getUser(userId) ?: return@blockedUserUpdate
-                    _uiState.update { state ->
-                        state.copy(blockedUsers = (state.blockedUsers + user).sortedBy { it.fullName })
-                    }
-                }
+           val blockedUsers = getBlockedUsersUseCase()
+            _uiState.update {
+                it.copy(blockedUsers = blockedUsers)
             }
         }
     }

@@ -12,5 +12,7 @@ internal interface MessageApi {
 
     suspend fun setMessageSeen(conversationId: String, messageId: String)
 
+    suspend fun updateMessageVisibility(remoteMessage: RemoteMessage, userId: String, visible: Boolean)
+
     suspend fun reportMessage(report: RemoteMessageReport)
 }

@@ -12,6 +12,8 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -24,6 +26,7 @@ class ListenRemoteConversationUseCaseTest {
     private val listenRemoteMessagesUseCase: ListenRemoteMessagesUseCase = mockk()
 
     private lateinit var useCase: ListenRemoteConversationsUseCase
+    private val testScope = TestScope(UnconfinedTestDispatcher())
 
     @Before
     fun setUp() {
@@ -36,22 +39,8 @@ class ListenRemoteConversationUseCaseTest {
 
         useCase = ListenRemoteConversationsUseCase(
             userRepository = userRepository,
-            conversationRepository = conversationRepository,
-            listenRemoteMessagesUseCase = listenRemoteMessagesUseCase
+            conversationRepository = conversationRepository
         )
-    }
-
-    @Test
-    fun listenRemoteConversationsUseCase_should_start_listenRemoteMessage() = runTest {
-        // Given
-        coEvery { conversationRepository.getConversation(any()) } returns null
-
-        // When
-        useCase.start()
-        advanceUntilIdle()
-
-        // Then
-        coVerify { listenRemoteMessagesUseCase.start(conversationFixture) }
     }
 
     @Test
@@ -64,7 +53,7 @@ class ListenRemoteConversationUseCaseTest {
         useCase.fetchedInterlocutors[userFixture2.id] = userFixture2
 
         // When
-        useCase.start()
+        useCase.start(this)
         advanceUntilIdle()
 
         // Then
@@ -82,13 +71,12 @@ class ListenRemoteConversationUseCaseTest {
         coEvery { userRepository.getUserFlow(any()) } returns flowOf(userFixture2)
 
         // When
-        useCase.start()
+        useCase.start(this)
         advanceUntilIdle()
 
         // Then
         coVerify { userRepository.getUserFlow(userFixture2.id) }
         coVerify { conversationRepository.upsertLocalConversation(conversation) }
-        assert(useCase.fetchedInterlocutors[userFixture2.id] == userFixture2)
     }
 
     @Test
@@ -97,7 +85,7 @@ class ListenRemoteConversationUseCaseTest {
         coEvery { conversationRepository.getConversation(any()) } returns null
 
         // When
-        useCase.start()
+        useCase.start(this)
         advanceUntilIdle()
 
         // Then

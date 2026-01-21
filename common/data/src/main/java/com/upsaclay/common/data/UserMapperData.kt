@@ -95,10 +95,10 @@ private fun UserReport.Reporter.toRemote() = RemoteUserReport.RemoteReporter(
 internal fun BlockedUser.toRemote(currentUserId: String) = RemoteBlockedUser(
     userId = currentUserId,
     blockedUserId = userId,
-    blockedDate = blockedDate.toEpochMilliUTC()
+    blockedDate = date.toEpochMilliUTC()
 )
 
 internal fun RemoteBlockedUser.toBlockedUser() = BlockedUser(
     userId = userId,
-    blockedDate = blockedDate.toLocalDateTimeUTC()
+    date = blockedDate.toLocalDateTimeUTC()
 )

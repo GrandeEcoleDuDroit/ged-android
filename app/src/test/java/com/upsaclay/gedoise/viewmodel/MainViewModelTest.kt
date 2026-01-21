@@ -6,6 +6,7 @@ import com.upsaclay.app.domain.usecase.FetchDataUseCase
 import com.upsaclay.app.domain.usecase.ListenDataUseCase
 import com.upsaclay.authentication.domain.entity.AuthenticationState
 import com.upsaclay.authentication.domain.repository.AuthenticationRepository
+import com.upsaclay.common.domain.ConnectivityObserver
 import com.upsaclay.gedoise.presentation.MainViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -29,6 +30,7 @@ class MainViewModelTest {
     private val fetchDataUseCase: FetchDataUseCase = mockk()
     private val fcmTokenUseCase: FcmTokenUseCase = mockk()
     private val listenDataUseCase: ListenDataUseCase = mockk()
+    private val connectivityObserver: ConnectivityObserver = mockk()
 
     private lateinit var viewModel: MainViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
@@ -39,8 +41,10 @@ class MainViewModelTest {
         Dispatchers.setMain(testDispatcher)
 
         every { authenticationRepository.authenticationState } returns flowOf(AuthenticationState.Authenticated(userId))
+        every { connectivityObserver.connected } returns flowOf(true)
+        coEvery { authenticationRepository.refreshTokenIfNecessary() } returns Unit
         coEvery { clearDataUseCase() } returns Unit
-        coEvery { listenDataUseCase.start(any()) } returns Unit
+        coEvery { listenDataUseCase.start(any(), any()) } returns Unit
         coEvery { listenDataUseCase.stop() } returns Unit
         coEvery { fetchDataUseCase(any()) } returns Unit
 
@@ -49,23 +53,24 @@ class MainViewModelTest {
             clearDataUseCase = clearDataUseCase,
             fetchDataUseCase = fetchDataUseCase,
             fcmTokenUseCase = fcmTokenUseCase,
-            listenDataUseCase = listenDataUseCase
+            listenDataUseCase = listenDataUseCase,
+            connectivityObserver = connectivityObserver
         )
     }
 
     @Test
     fun data_should_be_listened_when_user_is_authenticated() = runTest {
         // When
-        viewModel.updateDataOnAuthChange()
+        viewModel.updateAppData()
 
         // Then
-        coVerify { listenDataUseCase.start(userId) }
+        coVerify { listenDataUseCase.start(any(), userId) }
     }
 
     @Test
     fun data_should_be_fetched_when_user_is_authenticated() {
         // When
-        viewModel.updateDataOnAuthChange()
+        viewModel.updateAppData()
 
         // Then
         coVerify { fetchDataUseCase(userId) }
@@ -77,7 +82,7 @@ class MainViewModelTest {
         every { authenticationRepository.authenticationState } returns flowOf(AuthenticationState.Unauthenticated)
 
         // When
-        viewModel.updateDataOnAuthChange()
+        viewModel.updateAppData()
 
         // Then
         coVerify { listenDataUseCase.stop() }
@@ -89,7 +94,7 @@ class MainViewModelTest {
         every { authenticationRepository.authenticationState } returns flowOf(AuthenticationState.Unauthenticated)
 
         // When
-        viewModel.updateDataOnAuthChange()
+        viewModel.updateAppData()
         advanceTimeBy(2000)
         advanceUntilIdle()
 

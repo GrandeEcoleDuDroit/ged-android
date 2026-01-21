@@ -1,6 +1,7 @@
 package com.upsaclay.gedoise.usecase
 
 import com.upsaclay.app.domain.usecase.ClearDataUseCase
+import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
@@ -17,6 +18,7 @@ class ClearDataUseCaseTest {
     private val conversationRepository: ConversationRepository = mockk()
     private val messageRepository: MessageRepository = mockk()
     private val announcementRepository: AnnouncementRepository = mockk()
+    private val blockedUserRepository: BlockedUserRepository = mockk()
 
     private lateinit var useCase: ClearDataUseCase
 
@@ -26,12 +28,14 @@ class ClearDataUseCaseTest {
         coEvery { conversationRepository.deleteLocalConversations() } returns Unit
         coEvery { messageRepository.deleteLocalMessages() } returns Unit
         coEvery { announcementRepository.deleteLocalAnnouncements() } returns Unit
+        coEvery { blockedUserRepository.deleteLocalBlockedUsers() } returns Unit
 
         useCase = ClearDataUseCase(
             userRepository = userRepository,
             conversationRepository = conversationRepository,
             messageRepository = messageRepository,
-            announcementRepository = announcementRepository
+            announcementRepository = announcementRepository,
+            blockedUserRepository = blockedUserRepository
         )
     }
 
@@ -45,5 +49,6 @@ class ClearDataUseCaseTest {
         coVerify { conversationRepository.deleteLocalConversations() }
         coVerify { messageRepository.deleteLocalMessages() }
         coVerify { announcementRepository.deleteLocalAnnouncements() }
+        coVerify { blockedUserRepository.deleteLocalBlockedUsers() }
     }
 }

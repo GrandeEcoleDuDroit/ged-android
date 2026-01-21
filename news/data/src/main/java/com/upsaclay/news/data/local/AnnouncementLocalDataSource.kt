@@ -32,9 +32,9 @@ internal class AnnouncementLocalDataSource(private val announcementDao: Announce
         }
     }
 
-    suspend fun deleteAnnouncements(userId: String) {
+    suspend fun deleteUserAnnouncements(userId: String) {
         withContext(Dispatchers.IO) {
-            announcementDao.deleteAnnouncements(userId)
+            announcementDao.deleteUserAnnouncements(userId)
         }
     }
 }

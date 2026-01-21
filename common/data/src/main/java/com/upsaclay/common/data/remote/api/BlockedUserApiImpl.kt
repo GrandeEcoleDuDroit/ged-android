@@ -1,5 +1,6 @@
 package com.upsaclay.common.data.remote.api
 
+import com.upsaclay.common.data.BlockedUserField.Remote.BLOCKED_DATE
 import com.upsaclay.common.data.BlockedUserField.Remote.BLOCKED_USER_ID
 import com.upsaclay.common.data.BlockedUserField.Remote.USER_ID
 import com.upsaclay.common.data.remote.model.RemoteBlockedUser
@@ -19,7 +20,8 @@ internal interface BlockedUserApi {
     @POST("blocked-users/create")
     suspend fun addBlockedUser(
         @Field(USER_ID) currentUserId: String,
-        @Field(BLOCKED_USER_ID) blockedUserId: String
+        @Field(BLOCKED_USER_ID) blockedUserId: String,
+        @Field(BLOCKED_DATE) blockedDate: Long
     ): Response<ServerResponse>
 
     @FormUrlEncoded

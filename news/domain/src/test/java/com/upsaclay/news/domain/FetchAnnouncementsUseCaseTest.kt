@@ -1,5 +1,6 @@
 package com.upsaclay.news.domain
 
+import com.upsaclay.common.domain.entity.BlockedUser
 import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.news.domain.repository.AnnouncementRepository
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
+import java.time.LocalDateTime
 
 class FetchAnnouncementsUseCaseTest {
     private val announcementRepository: AnnouncementRepository = mockk()
@@ -27,7 +29,7 @@ class FetchAnnouncementsUseCaseTest {
         coEvery { announcementRepository.upsertLocalAnnouncement(any()) } returns Unit
         coEvery { announcementRepository.deleteLocalAnnouncement(any()) } returns Unit
         coEvery { announcementRepository.getRemoteAnnouncements() } returns announcementsFixture
-        coEvery { blockedUserRepository.getLocalBlockedUserIds() } returns setOf(blockedUserId)
+        coEvery { blockedUserRepository.getLocalBlockedUsers() } returns emptyMap()
 
         useCase = FetchAnnouncementsUseCase(
             announcementRepository = announcementRepository,
@@ -65,6 +67,7 @@ class FetchAnnouncementsUseCaseTest {
     fun synchronizeAnnouncement_should_not_upsert_announcement_from_blocked_user() = runTest {
         // Given
         val announcement = announcementFixture.copy(author = userFixture.copy(id = blockedUserId))
+        coEvery { blockedUserRepository.getLocalBlockedUsers() } returns mapOf(blockedUserId to BlockedUser(blockedUserId, LocalDateTime.now()))
         coEvery { announcementRepository.getRemoteAnnouncements() } returns listOf(announcement)
         every { announcementRepository.currentAnnouncements } returns emptyList()
 

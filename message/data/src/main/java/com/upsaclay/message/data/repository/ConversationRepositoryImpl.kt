@@ -16,6 +16,9 @@ internal class ConversationRepositoryImpl(
     private val conversationLocalDataSource: ConversationLocalDataSource,
     private val conversationRemoteDataSource: ConversationRemoteDataSource,
 ) : ConversationRepository {
+    override fun getConversationsFlow(): Flow<List<Conversation>> =
+        conversationLocalDataSource.getConversationsFlow()
+
     override suspend fun getConversations(): List<Conversation> = conversationLocalDataSource.getConversations()
 
     override fun getConversationFlow(interlocutorId: String): Flow<Conversation> =

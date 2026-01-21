@@ -14,11 +14,16 @@ import java.time.LocalDateTime
 internal class ConversationLocalDataSource(
     private val conversationDao: ConversationDao
 ) {
-    suspend fun getConversations(): List<Conversation> =
-        conversationDao.getConversations().map { it.toConversation() }
+    fun getConversationsFlow(): Flow<List<Conversation>> =
+        conversationDao.getConversationsFlow().map { localConversations ->
+            localConversations.map { it.toConversation() }
+        }
 
     fun getConversationFlow(interlocutorId: String): Flow<Conversation?> =
         conversationDao.getConversationFlow(interlocutorId).map { it?.toConversation() }
+
+    suspend fun getConversations(): List<Conversation> =
+        conversationDao.getConversations().map { it.toConversation() }
 
     suspend fun getConversation(interlocutorId: String): Conversation? =
         conversationDao.getConversation(interlocutorId)?.toConversation()
