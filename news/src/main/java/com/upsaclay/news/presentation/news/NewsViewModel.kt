@@ -13,7 +13,7 @@ import com.upsaclay.news.domain.entity.AnnouncementReport
 import com.upsaclay.news.domain.repository.AnnouncementRepository
 import com.upsaclay.news.domain.usecase.DeleteAnnouncementUseCase
 import com.upsaclay.news.domain.usecase.RefreshAnnouncementsUseCase
-import com.upsaclay.news.domain.usecase.ResendAnnouncementUseCase
+import com.upsaclay.news.domain.usecase.RecreateAnnouncementUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class NewsViewModel(
-    private val resendAnnouncementUseCase: ResendAnnouncementUseCase,
+    private val recreateAnnouncementUseCase: RecreateAnnouncementUseCase,
     private val deleteAnnouncementUseCase: DeleteAnnouncementUseCase,
     private val refreshAnnouncementsUseCase: RefreshAnnouncementsUseCase,
     private val announcementRepository: AnnouncementRepository,
@@ -58,7 +58,7 @@ class NewsViewModel(
 
     fun resendAnnouncement(announcement: Announcement) {
         viewModelScope.launch {
-            resendAnnouncementUseCase(announcement)
+            recreateAnnouncementUseCase(announcement)
         }
     }
 

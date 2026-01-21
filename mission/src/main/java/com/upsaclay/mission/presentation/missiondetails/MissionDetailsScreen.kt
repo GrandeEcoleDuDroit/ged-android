@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
@@ -332,27 +333,28 @@ private fun MissionDetailsScreen(
             ModalBottomSheet(
                 onDismissRequest = { activeBottomSheet = null },
             ) {
-                TextItem(
-                    text = {
-                        Text(
-                            text = stringResource(com.upsaclay.common.R.string.remove),
-                            color = MaterialTheme.colorScheme.error
-                        )
-                    },
-                    icon = {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_outline_remove_person),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.error
-                        )
-                    },
-                    onClick = {
-                        activeBottomSheet = null
-                        activeDialog = MissionDetailsScreenDialog.RemoveParticipantDialog(bottomSheet.participant)
-                    }
-                )
-
-                Spacer(Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.modal_bottom_sheet_bottom_space)))
+                Column(modifier = Modifier.navigationBarsPadding()) {
+                    TextItem(
+                        text = {
+                            Text(
+                                text = stringResource(com.upsaclay.common.R.string.remove),
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        },
+                        icon = {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_outline_remove_person),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.error
+                            )
+                        },
+                        onClick = {
+                            activeBottomSheet = null
+                            activeDialog =
+                                MissionDetailsScreenDialog.RemoveParticipantDialog(bottomSheet.participant)
+                        }
+                    )
+                }
             }
         }
 
@@ -379,21 +381,6 @@ private fun MissionDetailsScreen(
         else -> Unit
     }
 }
-
-@Composable
-private fun RegisterButton(
-    modifier: Modifier = Modifier,
-    loading: Boolean,
-    onClick: () -> Unit
-) {
-    LoadingButton(
-        modifier = modifier,
-        text = stringResource(R.string.register_mission_button_text),
-        loading = loading,
-        onClick = onClick
-    )
-}
-
 
 @Composable
 private fun BottomSection(

@@ -2,7 +2,7 @@ package com.upsaclay.news.domain
 
 import com.upsaclay.news.domain.entity.Announcement.AnnouncementState
 import com.upsaclay.news.domain.repository.AnnouncementRepository
-import com.upsaclay.news.domain.usecase.ResendAnnouncementUseCase
+import com.upsaclay.news.domain.usecase.RecreateAnnouncementUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -14,25 +14,29 @@ import org.junit.Before
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class ResendAnnouncementUseCaseTest {
+class RecreateAnnouncementUseCaseTest {
     private val announcementRepository: AnnouncementRepository = mockk()
+    private val announcementJobQueue: AnnouncementJobQueue = mockk()
 
-    private lateinit var useCase: ResendAnnouncementUseCase
+    private lateinit var useCase: RecreateAnnouncementUseCase
     private val testScope = TestScope(UnconfinedTestDispatcher())
 
     @Before
     fun setUp() {
+        coEvery { announcementJobQueue.addJob(any(), any()) } returns Unit
+        coEvery { announcementJobQueue.cancelAndRemoveJob(any()) } returns Unit
         coEvery { announcementRepository.createAnnouncement(any()) } returns Unit
         coEvery { announcementRepository.upsertLocalAnnouncement(any()) } returns Unit
 
-        useCase = ResendAnnouncementUseCase(
+        useCase = RecreateAnnouncementUseCase(
             announcementRepository = announcementRepository,
+            announcementJobQueue = announcementJobQueue,
             scope = testScope
         )
     }
 
     @Test
-    fun resendAnnouncement_should_create_announcement_with_publishing_state() {
+    fun resendAnnouncement_should_create_announcement_with_publishing_state() = runTest {
         // Given
         val announcement = longAnnouncementFixture.copy(state = AnnouncementState.ERROR)
 
@@ -46,7 +50,7 @@ class ResendAnnouncementUseCaseTest {
     }
 
     @Test
-    fun resendAnnouncement_should_update_local_announcement_to_published_state_when_succeeds() {
+    fun resendAnnouncement_should_update_local_announcement_to_published_state_when_succeeds() = runTest {
         // Given
         val announcement = announcementFixture.copy(state = AnnouncementState.ERROR)
 
@@ -60,7 +64,7 @@ class ResendAnnouncementUseCaseTest {
     }
 
     @Test
-    fun resendAnnouncement_should_update_local_announcement_to_error_state_when_fails() {
+    fun resendAnnouncement_should_update_local_announcement_to_error_state_when_fails() = runTest {
         // Given
         val announcement = longAnnouncementFixture.copy(state = AnnouncementState.ERROR)
         coEvery { announcementRepository.createAnnouncement(any()) } throws Exception()
@@ -72,5 +76,25 @@ class ResendAnnouncementUseCaseTest {
         coVerify {
             announcementRepository.upsertLocalAnnouncement(announcement.copy(state = AnnouncementState.ERROR))
         }
+    }
+
+    @Test
+    fun recreateAnnouncement_should_store_job_reference() = runTest {
+        // When
+        useCase(announcementFixture)
+
+        // Then
+        coVerify {
+            announcementJobQueue.addJob(any(), announcementFixture.id)
+        }
+    }
+
+    @Test
+    fun recreateAnnouncement_should_remove_job_reference_when_job_finished() = runTest {
+        // When
+        useCase(announcementFixture)
+
+        // Then
+        coVerify { announcementJobQueue.cancelAndRemoveJob(announcementFixture.id) }
     }
 }

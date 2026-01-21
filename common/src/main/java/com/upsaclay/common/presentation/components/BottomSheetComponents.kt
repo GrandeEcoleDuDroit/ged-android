@@ -1,8 +1,10 @@
 package com.upsaclay.common.presentation.components
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -31,24 +33,24 @@ fun <T>ReportBottomSheet(
         sheetState = sheetState,
         onDismissRequest = onDismiss
     ) {
-        Text(
-            text = stringResource(com.upsaclay.common.R.string.report),
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center
-        )
-
-        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.small_padding)))
-
-        items.forEach {
-            TextItem(
+        Column(modifier = Modifier.navigationBarsPadding()) {
+            Text(
+                text = stringResource(com.upsaclay.common.R.string.report),
+                style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.fillMaxWidth(),
-                text = { Text(text = it.toString()) },
-                onClick = { onReportClick(it) }
+                textAlign = TextAlign.Center
             )
-        }
 
-        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.modal_bottom_sheet_bottom_space)))
+            Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.small_padding)))
+
+            items.forEach {
+                TextItem(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = { Text(text = it.toString()) },
+                    onClick = { onReportClick(it) }
+                )
+            }
+        }
     }
 }
 

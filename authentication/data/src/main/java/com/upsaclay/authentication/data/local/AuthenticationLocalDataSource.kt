@@ -19,20 +19,20 @@ import kotlinx.coroutines.withContext
 internal class AuthenticationLocalDataSource(context: Context) {
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "authentication")
     private val store = context.dataStore
-    private val authenticationKey = stringPreferencesKey("authenticationKey")
+    private val authenticationStateKey = stringPreferencesKey("authenticationStateKey")
     private val gson = GsonBuilder()
         .registerTypeHierarchyAdapter(AuthenticationState::class.java, AuthenticationStateAdapter)
         .create()
 
     fun listenAuthenticationState(): Flow<AuthenticationState> =
-        store.getGsonFlowValue<AuthenticationState>(authenticationKey, gson)
+        store.getGsonFlowValue<AuthenticationState>(authenticationStateKey, gson)
             .map { it ?: AuthenticationState.Unauthenticated }
 
     suspend fun getAuthenticationState(): AuthenticationState? = withContext(Dispatchers.IO) {
-        store.getGsonValue(authenticationKey, gson)
+        store.getGsonValue(authenticationStateKey, gson)
     }
 
     suspend fun storeAuthenticationState(authenticationState: AuthenticationState) = withContext(Dispatchers.IO) {
-        store.setGsonValue(authenticationKey, authenticationState, gson)
+        store.setGsonValue(authenticationStateKey, authenticationState, gson)
     }
 }

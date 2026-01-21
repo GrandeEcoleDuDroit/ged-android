@@ -1,8 +1,8 @@
 package com.upsaclay.mission.presentation.components.bottomsheets
 
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Refresh
@@ -16,7 +16,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,30 +36,32 @@ fun MissionBottomSheet(
     onReportClick: () -> Unit,
     onDismiss: () -> Unit
 ) {
-    ModalBottomSheet(
-        onDismissRequest = onDismiss
-    ) {
-        when (mission.state) {
-            is MissionState.Error -> {
-                ErrorMissionBottomSheetContent(
-                    onDeleteClick = onDeleteClick,
-                    onRecreateClick = onRecreateClick
-                )
-            }
-
-            else -> {
-                if (editable) {
-                    EditableMissionBottomSheetContent(
-                        onEditClick = onEditClick,
-                        onDeleteClick = onDeleteClick
-                    )
-                } else {
-                    NonEditableMissionBottomSheetContent(onReportClick = onReportClick)
+    ModalBottomSheet(onDismissRequest = onDismiss) {
+        Column(modifier = Modifier.navigationBarsPadding()) {
+            when (mission.state) {
+                is MissionState.Published -> {
+                    if (editable) {
+                        EditableMissionBottomSheetContent(
+                            onEditClick = onEditClick,
+                            onDeleteClick = onDeleteClick
+                        )
+                    } else {
+                        NonEditableMissionBottomSheetContent(onReportClick = onReportClick)
+                    }
                 }
+
+                is MissionState.Publishing -> PublishingMissionBottomSheetContent(onDeleteClick = onDeleteClick)
+
+                is MissionState.Error -> {
+                    ErrorMissionBottomSheetContent(
+                        onDeleteClick = onDeleteClick,
+                        onRecreateClick = onRecreateClick
+                    )
+                }
+
+                else -> Unit
             }
         }
-
-        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.large_padding)))
     }
 }
 
@@ -81,6 +82,29 @@ private fun EditableMissionBottomSheetContent(
         onClick = onEditClick
     )
 
+    TextItem(
+        modifier = Modifier.fillMaxWidth(),
+        text = {
+            Text(
+                text = stringResource(id = com.upsaclay.common.R.string.delete),
+                color = MaterialTheme.colorScheme.error
+            )
+        },
+        icon = {
+            Icon(
+                imageVector = Icons.Outlined.Delete,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.error
+            )
+        },
+        onClick = onDeleteClick
+    )
+}
+
+@Composable
+private fun PublishingMissionBottomSheetContent(
+    onDeleteClick: () -> Unit
+) {
     TextItem(
         modifier = Modifier.fillMaxWidth(),
         text = {

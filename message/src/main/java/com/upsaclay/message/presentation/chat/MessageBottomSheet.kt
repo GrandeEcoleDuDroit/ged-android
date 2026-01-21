@@ -1,8 +1,8 @@
 package com.upsaclay.message.presentation.chat
 
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Send
 import androidx.compose.material.icons.outlined.Delete
@@ -13,7 +13,6 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,39 +30,39 @@ fun SentMessageBottomSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss
     ) {
-        TextItem(
-            modifier = Modifier.fillMaxWidth(),
-            text = {
-                Text(text = stringResource(id = R.string.resend))
-            },
-            icon = {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Outlined.Send,
-                    contentDescription = null
-                )
-            },
-            onClick = onResendMessageClick
-        )
+        Column(modifier = Modifier.navigationBarsPadding()) {
+            TextItem(
+                modifier = Modifier.fillMaxWidth(),
+                text = {
+                    Text(text = stringResource(id = R.string.resend))
+                },
+                icon = {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Outlined.Send,
+                        contentDescription = null
+                    )
+                },
+                onClick = onResendMessageClick
+            )
 
-        TextItem(
-            modifier = Modifier.fillMaxWidth(),
-            text = {
-                Text(
-                    text = stringResource(id = com.upsaclay.common.R.string.delete),
-                    color = MaterialTheme.colorScheme.error
-                )
-            },
-            icon = {
-                Icon(
-                    imageVector = Icons.Outlined.Delete,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.error
-                )
-            },
-            onClick = onDeleteMessageClick
-        )
-
-        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.modal_bottom_sheet_bottom_space)))
+            TextItem(
+                modifier = Modifier.fillMaxWidth(),
+                text = {
+                    Text(
+                        text = stringResource(id = com.upsaclay.common.R.string.delete),
+                        color = MaterialTheme.colorScheme.error
+                    )
+                },
+                icon = {
+                    Icon(
+                        imageVector = Icons.Outlined.Delete,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                },
+                onClick = onDeleteMessageClick
+            )
+        }
     }
 }
 
@@ -76,25 +75,25 @@ fun ReceivedMessageBottomSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss
     ) {
-        TextItem(
-            modifier = Modifier.fillMaxWidth(),
-            text = {
-                Text(
-                    text = stringResource(id = com.upsaclay.common.R.string.report),
-                    color = MaterialTheme.colorScheme.error
-                )
-            },
-            icon = {
-                Icon(
-                    painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_report),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.error
-                )
-            },
-            onClick = onReportClick
-        )
-
-        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.modal_bottom_sheet_bottom_space)))
+        Column(modifier = Modifier.navigationBarsPadding()) {
+            TextItem(
+                modifier = Modifier.fillMaxWidth(),
+                text = {
+                    Text(
+                        text = stringResource(id = com.upsaclay.common.R.string.report),
+                        color = MaterialTheme.colorScheme.error
+                    )
+                },
+                icon = {
+                    Icon(
+                        painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_report),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                },
+                onClick = onReportClick
+            )
+        }
     }
 }
 
