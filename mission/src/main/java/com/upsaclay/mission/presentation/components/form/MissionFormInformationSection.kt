@@ -44,6 +44,7 @@ fun MissionFormInformationSection(
     schoolLevels: List<SchoolLevel>,
     duration: String,
     maxParticipants: String,
+    schoolLevelSupportingText: Int? = null,
     maxParticipantsError: String? = null,
     onSchoolLevelChange: (SchoolLevel) -> Unit,
     onStartDateClick: () -> Unit,
@@ -75,7 +76,8 @@ fun MissionFormInformationSection(
             modifier = Modifier.fillMaxWidth(),
             allSchoolLevels = allSchoolLevels,
             schoolLevels = schoolLevels,
-            onSchoolLevelChange = onSchoolLevelChange
+            onSchoolLevelChange = onSchoolLevelChange,
+            schoolLevelSupportingText = schoolLevelSupportingText
         )
 
         SimpleOutlinedTextField(
@@ -121,13 +123,14 @@ private fun OutlinedSchoolLevelDropDownMenu(
     modifier: Modifier = Modifier,
     allSchoolLevels: List<SchoolLevel>,
     schoolLevels: List<SchoolLevel>,
+    schoolLevelSupportingText: Int? = null,
     onSchoolLevelChange: (SchoolLevel) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
     val value = when {
         schoolLevels.isEmpty() -> stringResource(R.string.everyone)
         schoolLevels.size == allSchoolLevels.size -> stringResource(R.string.everyone)
-        else -> schoolLevels.joinToString(" - ")
+        else -> schoolLevels.joinToString(" - ", transform = { it.value })
     }
 
     MultiSelectionDropDownMenu(
@@ -144,6 +147,7 @@ private fun OutlinedSchoolLevelDropDownMenu(
         },
         singleLine = true,
         onItemSelected = { SchoolLevel.fromValue(it).let(onSchoolLevelChange) },
+        supportingText = schoolLevelSupportingText,
         expanded = expanded,
         onExpandedChange = { expanded = it },
         onDismissRequest = { expanded = false }
@@ -201,6 +205,7 @@ private fun MissionFormInformationSectionPreview() {
                 endDate = LocalDate.now().plusDays(7),
                 allSchoolLevels = SchoolLevel.all,
                 schoolLevels = schoolLevels,
+                schoolLevelSupportingText = null,
                 duration = duration,
                 maxParticipants = participantsNumber,
                 onSchoolLevelChange = {
