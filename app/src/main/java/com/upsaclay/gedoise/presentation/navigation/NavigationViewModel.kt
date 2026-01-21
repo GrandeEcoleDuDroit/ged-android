@@ -30,11 +30,10 @@ class NavigationViewModel(
 ): ViewModel() {
     private val _uiState = MutableStateFlow(NavigationState())
     val uiState: StateFlow<NavigationState> = _uiState
-    val routeToNavigate: Flow<List<Route>> = navigationRequestUseCase.routesToNavigate.map {
-        if (authenticationRepository.isAuthenticated()) {
-            it
-        } else {
-            listOf(AuthenticationRoute)
+    val routeToNavigate: Flow<List<Route>> = navigationRequestUseCase.routesToNavigate.map { route ->
+        when (authenticationRepository.currentAuthenticationState) {
+            is AuthenticationState.Authenticated -> route
+            is AuthenticationState.Unauthenticated -> listOf(AuthenticationRoute)
         }
     }.onEach {
         navigationRequestUseCase.resetRoute()

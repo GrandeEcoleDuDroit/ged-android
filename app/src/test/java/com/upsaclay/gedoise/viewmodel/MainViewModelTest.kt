@@ -3,13 +3,10 @@ package com.upsaclay.gedoise.viewmodel
 import com.upsaclay.app.domain.usecase.ClearDataUseCase
 import com.upsaclay.app.domain.usecase.FcmTokenUseCase
 import com.upsaclay.app.domain.usecase.FetchDataUseCase
-import com.upsaclay.app.domain.usecase.ListenBlockedUserEventsUseCase
-import com.upsaclay.app.domain.usecase.ListenRemoteUserUseCase
+import com.upsaclay.app.domain.usecase.ListenDataUseCase
+import com.upsaclay.authentication.domain.entity.AuthenticationState
 import com.upsaclay.authentication.domain.repository.AuthenticationRepository
-import com.upsaclay.common.domain.ConnectivityObserver
 import com.upsaclay.gedoise.presentation.MainViewModel
-import com.upsaclay.message.domain.usecase.ListenRemoteConversationsUseCase
-import com.upsaclay.message.domain.usecase.ListenRemoteMessagesUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -18,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -30,82 +28,69 @@ class MainViewModelTest {
     private val clearDataUseCase: ClearDataUseCase = mockk()
     private val fetchDataUseCase: FetchDataUseCase = mockk()
     private val fcmTokenUseCase: FcmTokenUseCase = mockk()
-    private val listenRemoteConversationsUseCase: ListenRemoteConversationsUseCase = mockk()
-    private val listenRemoteMessagesUseCase: ListenRemoteMessagesUseCase = mockk()
-    private val listenRemoteUserUseCase: ListenRemoteUserUseCase = mockk()
-    private val listenBlockedUserEventsUseCase: ListenBlockedUserEventsUseCase = mockk()
-    private val connectivityObserver: ConnectivityObserver = mockk()
+    private val listenDataUseCase: ListenDataUseCase = mockk()
 
     private lateinit var viewModel: MainViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
+    private val userId = "userId1234"
 
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
 
-        every { connectivityObserver.connected } returns flowOf(true)
-        every { authenticationRepository.authenticationState } returns flowOf(true)
+        every { authenticationRepository.authenticationState } returns flowOf(AuthenticationState.Authenticated(userId))
         coEvery { clearDataUseCase() } returns Unit
-        coEvery { listenRemoteUserUseCase.start() } returns Unit
-        coEvery { listenRemoteConversationsUseCase.start() } returns Unit
-        coEvery { listenBlockedUserEventsUseCase.start() } returns Unit
-        coEvery { listenRemoteMessagesUseCase.stopAll() } returns Unit
-        coEvery { fetchDataUseCase() } returns Unit
+        coEvery { listenDataUseCase.start(any()) } returns Unit
+        coEvery { listenDataUseCase.stop() } returns Unit
+        coEvery { fetchDataUseCase(any()) } returns Unit
 
         viewModel = MainViewModel(
             authenticationRepository = authenticationRepository,
             clearDataUseCase = clearDataUseCase,
             fetchDataUseCase = fetchDataUseCase,
             fcmTokenUseCase = fcmTokenUseCase,
-            listenRemoteUserUseCase = listenRemoteUserUseCase,
-            listenRemoteConversationsUseCase = listenRemoteConversationsUseCase,
-            listenRemoteMessagesUseCase = listenRemoteMessagesUseCase,
-            listenBlockedUserEventsUseCase = listenBlockedUserEventsUseCase,
-            connectivityObserver = connectivityObserver
+            listenDataUseCase = listenDataUseCase
         )
     }
 
     @Test
-    fun data_should_be_listened_when_user_is_authenticated() = runTest(testDispatcher) {
+    fun data_should_be_listened_when_user_is_authenticated() = runTest {
         // When
         viewModel.updateDataOnAuthChange()
 
         // Then
-        coVerify { listenRemoteUserUseCase.start() }
-        coVerify { listenRemoteConversationsUseCase.start() }
-        coVerify { listenBlockedUserEventsUseCase.start() }
-        assert(viewModel.dataListeningJob?.isActive ?: false)
+        coVerify { listenDataUseCase.start(userId) }
     }
 
     @Test
-    fun data_should_be_synchronized_when_user_is_authenticated() {
+    fun data_should_be_fetched_when_user_is_authenticated() {
         // When
         viewModel.updateDataOnAuthChange()
 
         // Then
-        coVerify { fetchDataUseCase() }
+        coVerify { fetchDataUseCase(userId) }
     }
 
     @Test
     fun data_should_stop_be_listened_when_user_is_unauthenticated() {
         // Given
-        every { authenticationRepository.authenticationState } returns flowOf(false)
+        every { authenticationRepository.authenticationState } returns flowOf(AuthenticationState.Unauthenticated)
 
         // When
         viewModel.updateDataOnAuthChange()
 
         // Then
-        coVerify { listenRemoteMessagesUseCase.stopAll() }
-        assert(viewModel.dataListeningJob?.isCancelled ?: true)
+        coVerify { listenDataUseCase.stop() }
     }
 
     @Test
     fun data_should_be_deleted_when_user_is_unauthenticated() = runTest {
         // Given
-        every { authenticationRepository.authenticationState } returns flowOf(false)
+        every { authenticationRepository.authenticationState } returns flowOf(AuthenticationState.Unauthenticated)
 
         // When
         viewModel.updateDataOnAuthChange()
+        advanceTimeBy(2000)
         advanceUntilIdle()
 
         // Then

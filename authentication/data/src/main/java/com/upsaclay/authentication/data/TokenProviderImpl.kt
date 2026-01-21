@@ -6,5 +6,5 @@ import com.upsaclay.common.data.TokenProvider
 class TokenProviderImpl(
     private val authenticationRepository: AuthenticationRepository
 ): TokenProvider {
-    override fun getAuthIdToken(): String? = authenticationRepository.getAuthToken()
+    override suspend fun getAuthIdToken(): String? = authenticationRepository.getAuthToken()
 }

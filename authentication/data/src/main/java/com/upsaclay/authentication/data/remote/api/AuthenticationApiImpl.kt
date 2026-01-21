@@ -17,8 +17,8 @@ class AuthenticationApiImpl: AuthenticationApi {
 
     override fun listenAuthenticationState(): Flow<AuthenticationState> = callbackFlow {
         val listener = FirebaseAuth.AuthStateListener { auth ->
-            auth.currentUser?.uid?.let {
-                trySend(AuthenticationState.Authenticated(it))
+            auth.currentUser?.let { user ->
+                trySend(AuthenticationState.Authenticated(user.uid))
             } ?: trySend(AuthenticationState.Unauthenticated)
         }
 
@@ -38,7 +38,7 @@ class AuthenticationApiImpl: AuthenticationApi {
                 return@IdTokenListener
             }
 
-            user.getIdToken(true)
+            user.getIdToken(false)
                 .addOnSuccessListener { result ->
                     result.token?.let {
                         trySend(AuthTokenState.Valid(it))
@@ -59,6 +59,8 @@ class AuthenticationApiImpl: AuthenticationApi {
     }
 
     override fun isAuthenticated(): Boolean = firebaseAuth.currentUser != null
+
+    override suspend fun getAuthToken(): String? = firebaseAuth.currentUser?.getIdToken(false)?.await()?.token
 
     override suspend fun signIn(email: String, password: String): String? =
         firebaseAuth.signInWithEmailAndPassword(email, password).await().user?.uid

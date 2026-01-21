@@ -8,6 +8,7 @@ import com.upsaclay.authentication.domain.repository.AuthenticationRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.update
@@ -18,10 +19,12 @@ internal class AuthenticationRepositoryImpl(
     private val authenticationLocalDataSource: AuthenticationLocalDataSource,
     private val authenticationRemoteDataSource: AuthenticationRemoteDataSource,
     private val scope: CoroutineScope
-) : AuthenticationRepository {
-    private var authToken: String? = null
+): AuthenticationRepository {
     private val _authenticationState = MutableStateFlow<AuthenticationState?>(null)
     override val authenticationState: Flow<AuthenticationState> = _authenticationState.filterNotNull()
+    override val currentAuthenticationState: AuthenticationState
+        get() = _authenticationState.value ?: AuthenticationState.Unauthenticated
+    private var authToken: String? = null
 
     init {
         listenAuthenticationState()
@@ -32,8 +35,7 @@ internal class AuthenticationRepositoryImpl(
         authenticationLocalDataSource.getAuthenticationState() is AuthenticationState.Authenticated &&
                 authenticationRemoteDataSource.isAuthenticated()
 
-
-    override fun getAuthToken(): String? = authToken
+    override suspend fun getAuthToken(): String? = authToken ?: authenticationRemoteDataSource.getAuthToken()
 
     override suspend fun loginWithEmailAndPassword(email: String, password: String): String? {
         return try {
@@ -71,6 +73,7 @@ internal class AuthenticationRepositoryImpl(
         scope.launch {
             merge(
                 authenticationLocalDataSource.listenAuthenticationState(),
+                authenticationRemoteDataSource.listenAuthenticationState().filter { it is AuthenticationState.Unauthenticated }
             ).collect { state ->
                 _authenticationState.update { state }
             }

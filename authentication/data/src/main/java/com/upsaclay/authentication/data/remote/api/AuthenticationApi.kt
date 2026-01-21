@@ -11,6 +11,8 @@ interface AuthenticationApi {
 
     fun isAuthenticated(): Boolean
 
+    suspend fun getAuthToken(): String?
+
     suspend fun signIn(email: String, password: String): String?
 
     suspend fun signUp(email: String, password: String): String?

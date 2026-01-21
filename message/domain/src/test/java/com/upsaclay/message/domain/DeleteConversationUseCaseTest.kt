@@ -1,17 +1,18 @@
 package com.upsaclay.message.domain
 
 import com.upsaclay.common.domain.userFixture
-import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
 import com.upsaclay.message.domain.usecase.DeleteConversationUseCase
+import io.mockk.awaits
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.just
 import io.mockk.mockk
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
-import kotlin.test.assertFailsWith
 
 class DeleteConversationUseCaseTest {
     private val conversationRepository: ConversationRepository = mockk()
@@ -44,22 +45,6 @@ class DeleteConversationUseCaseTest {
     }
 
     @Test
-    fun deleteConversation_should_update_state_to_deleting() = runTest {
-        // When
-        useCase(
-            conversationFixture,
-            userFixture.id
-        )
-
-        // Then
-        coVerify {
-            conversationRepository.updateLocalConversation(
-                conversationFixture.copy(state = Conversation.ConversationState.DELETING)
-            )
-        }
-    }
-
-    @Test
     fun deleteConversation_should_delete_local_conversation_messages() = runTest {
         // When
         useCase(conversationFixture, userFixture.id)
@@ -68,24 +53,12 @@ class DeleteConversationUseCaseTest {
         coVerify { messageRepository.deleteLocalMessages(any()) }
     }
 
-    @Test
-    fun deleteConversation_should_update_state_to_error_when_exception_thrown() = runTest {
+    @Test(expected = TimeoutCancellationException::class)
+    fun deleteConversation_should_throw_TimeoutCancellationException_when_takes_more_10_seconds() = runTest {
         // Given
-        coEvery { conversationRepository.deleteConversation(any(), any(), any()) } throws Exception()
+        coEvery { conversationRepository.deleteConversation(any(), any(), any()) } just awaits
 
         // When
-        assertFailsWith<Exception> {
-            useCase(
-                conversationFixture,
-                userFixture.id
-            )
-        }
-
-        // Then
-        coVerify {
-            conversationRepository.updateLocalConversation(
-                conversationFixture.copy(state = Conversation.ConversationState.ERROR)
-            )
-        }
+        useCase(conversationFixture, userFixture.id)
     }
 }

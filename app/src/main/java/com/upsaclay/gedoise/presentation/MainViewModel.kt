@@ -8,11 +8,7 @@ import com.upsaclay.app.domain.usecase.FetchDataUseCase
 import com.upsaclay.app.domain.usecase.ListenDataUseCase
 import com.upsaclay.authentication.domain.entity.AuthenticationState
 import com.upsaclay.authentication.domain.repository.AuthenticationRepository
-import com.upsaclay.common.presentation.SingleUiEvent
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -24,11 +20,6 @@ class MainViewModel(
     private val fcmTokenUseCase: FcmTokenUseCase,
     private val listenDataUseCase: ListenDataUseCase
 ): ViewModel() {
-    private val _event = MutableSharedFlow<SingleUiEvent>()
-    val event: SharedFlow<SingleUiEvent> = _event
-    internal var dataListeningJob: Job? = null
-        private set
-
     fun updateDataOnAuthChange() {
         viewModelScope.launch {
             authenticationRepository.authenticationState.collectLatest { state ->

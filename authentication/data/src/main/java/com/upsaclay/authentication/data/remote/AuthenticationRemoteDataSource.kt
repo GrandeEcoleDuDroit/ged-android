@@ -25,6 +25,8 @@ class AuthenticationRemoteDataSource(private val authenticationApi: Authenticati
 
     fun isAuthenticated(): Boolean = authenticationApi.isAuthenticated()
 
+    suspend fun getAuthToken(): String? = authenticationApi.getAuthToken()
+
     suspend fun loginWithEmailAndPassword(email: String, password: String): String? = withContext(Dispatchers.IO) {
         try {
             authenticationApi.signIn(email, password)

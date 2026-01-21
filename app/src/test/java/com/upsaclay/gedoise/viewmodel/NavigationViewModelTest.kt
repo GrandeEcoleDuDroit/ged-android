@@ -2,6 +2,7 @@ package com.upsaclay.gedoise.viewmodel
 
 import com.upsaclay.authentication.AuthenticationBaseRoute
 import com.upsaclay.authentication.AuthenticationRoute
+import com.upsaclay.authentication.domain.entity.AuthenticationState
 import com.upsaclay.authentication.domain.repository.AuthenticationRepository
 import com.upsaclay.common.domain.repository.RouteRepository
 import com.upsaclay.common.domain.usecase.NavigationRequestUseCase
@@ -35,6 +36,7 @@ class NavigationViewModelTest {
 
     private lateinit var viewModel: NavigationViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
+    private val userId = "userId1234"
 
     @Before
     fun setUp() {
@@ -42,9 +44,8 @@ class NavigationViewModelTest {
 
         every { navigationRequestUseCase.routesToNavigate } returns flowOf()
         every { navigationRequestUseCase.resetRoute() } returns Unit
-        every { authenticationRepository.authenticationState } returns flowOf(true)
-        every { authenticationRepository.isAuthenticated } returns true
-        every { routeRepository.currentRoute } returns null
+        every { authenticationRepository.authenticationState } returns flowOf(AuthenticationState.Authenticated(userId))
+        every { authenticationRepository.currentAuthenticationState } returns AuthenticationState.Authenticated(userId)
         every { routeRepository.setCurrentRoute(any()) } returns Unit
         every { getUnreadConversationsCountUseCase() } returns flowOf(0)
     }
@@ -68,7 +69,7 @@ class NavigationViewModelTest {
     @Test
     fun startDestination_should_be_AuthenticationRoute_when_unauthenticated() = runTest {
         // Given
-        every { authenticationRepository.authenticationState } returns flowOf(false)
+        every { authenticationRepository.authenticationState } returns flowOf(AuthenticationState.Unauthenticated)
 
         // When
         viewModel = NavigationViewModel(
@@ -108,7 +109,7 @@ class NavigationViewModelTest {
     fun routeToNavigate_should_be_AuthenticationRoute_route_when_unauthenticated() = runTest {
         // Given
         val route = listOf(ChatRoute(ConversationJsonParser.toJson(conversationFixture)))
-        every { authenticationRepository.isAuthenticated } returns false
+        every { authenticationRepository.currentAuthenticationState } returns AuthenticationState.Unauthenticated
         every { navigationRequestUseCase.routesToNavigate } returns flowOf(route)
 
         // When
