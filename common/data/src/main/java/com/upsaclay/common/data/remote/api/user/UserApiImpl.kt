@@ -45,6 +45,12 @@ internal class UserApiImpl(
         }
     }
 
+    override suspend fun deleteUser(oracleUser: OracleUser) {
+        sendServerRequest {
+            userServerApi.deleteUser(oracleUser)
+        }
+    }
+
     override suspend fun deleteProfilePicture(oracleUser: OracleUser) {
         sendServerRequest {
             userServerApi.deleteProfilePicture(oracleUser.userId, oracleUser.userProfilePictureFileName!!)

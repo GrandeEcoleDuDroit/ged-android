@@ -53,7 +53,7 @@ class MessageNotificationManager(
     private fun parseMessageNotification(extra: Bundle): MessageNotification? {
         return extra.getString("value")?.let { value  ->
             runCatching { messageNotificationRepository.parseNotification(value) }
-                .onFailure { Timber.e(it) }
+                .onFailure { Timber.e("Error parsing message notification: ${it.message}") }
                 .getOrNull()
         }
     }

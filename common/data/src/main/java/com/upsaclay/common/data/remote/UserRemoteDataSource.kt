@@ -7,6 +7,7 @@ import com.upsaclay.common.data.toRemote
 import com.upsaclay.common.data.toUser
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.entity.UserReport
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -14,9 +15,11 @@ import kotlinx.coroutines.withContext
 import java.io.File
 
 internal class UserRemoteDataSource(private val userApi: UserApi) {
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+
     fun listenUser(userId: String): Flow<User?> = userApi.listenUser(userId).map { it?.toUser() }
 
-    suspend fun getUsers(): List<User> = withContext(Dispatchers.IO) {
+    suspend fun getUsers(): List<User> = withContext(dispatcher) {
         try {
             userApi.getUsers()?.map { it.toUser() } ?: emptyList()
         } catch (e: Exception) {
@@ -24,7 +27,7 @@ internal class UserRemoteDataSource(private val userApi: UserApi) {
         }
     }
 
-    suspend fun getUser(userId: String): User? = withContext(Dispatchers.IO) {
+    suspend fun getUser(userId: String): User? = withContext(dispatcher) {
         try {
             userApi.getUser(userId)?.toUser()
         } catch (e: Exception) {
@@ -33,7 +36,7 @@ internal class UserRemoteDataSource(private val userApi: UserApi) {
     }
 
     suspend fun createUser(user: User) {
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             try {
                 userApi.createUser(user.toOracleUser())
             } catch (e: Exception) {
@@ -43,7 +46,7 @@ internal class UserRemoteDataSource(private val userApi: UserApi) {
     }
 
     suspend fun updateProfilePicture(user: User, imageFile: File, fileName: String) {
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             try {
                 userApi.updateProfilePicture(user.toOracleUser(), imageFile, fileName)
             } catch (e: Exception) {
@@ -52,8 +55,14 @@ internal class UserRemoteDataSource(private val userApi: UserApi) {
         }
     }
 
+    suspend fun deleteUser(user: User) {
+        withContext(dispatcher) {
+            userApi.deleteUser(user.toOracleUser())
+        }
+    }
+
     suspend fun deleteProfilePicture(user: User) {
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             try {
                 userApi.deleteProfilePicture(user.toOracleUser())
             } catch (e: Exception) {
@@ -63,7 +72,7 @@ internal class UserRemoteDataSource(private val userApi: UserApi) {
     }
 
     suspend fun reportUser(report: UserReport) {
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             try {
                 userApi.reportUser(report.toRemote())
             } catch (e: Exception) {

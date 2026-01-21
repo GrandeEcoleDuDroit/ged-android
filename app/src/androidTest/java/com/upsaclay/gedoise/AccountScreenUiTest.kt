@@ -7,7 +7,6 @@ import androidx.compose.ui.test.performClick
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.domain.userFixture2
 import com.upsaclay.gedoise.presentation.profile.accountinformation.AccountInformationScreen
-import com.upsaclay.gedoise.presentation.profile.accountinformation.AccountInformationScreenState
 import com.upsaclay.gedoise.presentation.profile.accountinformation.AccountInformationViewModel
 import io.mockk.every
 import io.mockk.mockk
@@ -20,7 +19,7 @@ import org.junit.Test
 class AccountScreenUiTest {
     private val uiStateFixture = AccountInformationViewModel.AccountInformationUiState(
         user = userFixture,
-        screenState = AccountInformationScreenState.READ,
+        screenState = AccountInformationViewModel.AccountInformationScreenState.READ,
         profilePictureUri = null,
         loading = false,
     )

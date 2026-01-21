@@ -16,7 +16,7 @@ inline fun <reified T> DataStore<Preferences>.getGsonFlowValue(key: Preferences.
     val type = object : TypeToken<T>() {}.type
     return getFlowValue(key).map {
         runCatching { gson.fromJson<T>(it, type) }
-            .onFailure { Timber.e("Error getting gson value flow of $key from data store", it) }
+            .onFailure { Timber.e("Error getting gson value flow of $key from data store: ${it.message}") }
             .getOrNull()
     }
 }
@@ -27,7 +27,7 @@ suspend inline fun <reified T> DataStore<Preferences>.getGsonValue(key: Preferen
     val type = object : TypeToken<T>() {}.type
     return getValue(key)?.let {
         runCatching { gson.fromJson<T>(it, type) }
-            .onFailure { Timber.e("Error getting gson value of $key from data store", it) }
+            .onFailure { Timber.e("Error getting gson value of $key from data store: ${it.message}") }
             .getOrNull()
     }
 }

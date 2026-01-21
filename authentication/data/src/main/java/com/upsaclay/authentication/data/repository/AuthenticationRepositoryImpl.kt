@@ -41,7 +41,7 @@ internal class AuthenticationRepositoryImpl(
         return try {
             authenticationRemoteDataSource.loginWithEmailAndPassword(email, password)
         } catch (e: Exception) {
-            Timber.e("Error logging in user $email", e)
+            Timber.e("Error logging in user $email: ${e.message}")
             throw e
         }
     }
@@ -50,7 +50,7 @@ internal class AuthenticationRepositoryImpl(
         return try {
             authenticationRemoteDataSource.registerWithEmailAndPassword(email, password)
         } catch (e: Exception) {
-            Timber.e("Error registering user $email", e)
+            Timber.e("Error registering user $email: ${e.message}")
             throw e
         }
     }
@@ -62,11 +62,6 @@ internal class AuthenticationRepositoryImpl(
 
     override suspend fun storeAuthenticationState(authenticationState: AuthenticationState) {
         authenticationLocalDataSource.storeAuthenticationState(authenticationState)
-    }
-
-    override suspend fun deleteAuthUser() {
-        authenticationRemoteDataSource.deleteAuthUser()
-        storeAuthenticationState(AuthenticationState.Unauthenticated)
     }
 
     private fun listenAuthenticationState() {
@@ -86,7 +81,7 @@ internal class AuthenticationRepositoryImpl(
                 when(state) {
                     is AuthTokenState.Valid -> authToken = state.token
                     is AuthTokenState.Unauthenticated -> authToken = null
-                    is AuthTokenState.Error -> Timber.e("Error getting auth token", state.throwable)
+                    is AuthTokenState.Error -> Timber.e("Error getting auth token: ${state.throwable?.message}")
                 }
             }
         }

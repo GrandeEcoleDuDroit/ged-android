@@ -7,14 +7,15 @@ import com.upsaclay.common.data.toRemote
 import com.upsaclay.common.data.utils.sendDataServerRequest
 import com.upsaclay.common.data.utils.sendServerRequest
 import com.upsaclay.common.domain.entity.BlockedUser
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-internal class BlockedUserRemoteDataSource(
-    private val blockedUserApi: BlockedUserApi
-) {
+internal class BlockedUserRemoteDataSource(private val blockedUserApi: BlockedUserApi) {
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+
     suspend fun getBlockedUsers(currentUserId: String): List<BlockedUser> {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher) {
             try {
                 sendDataServerRequest {
                     blockedUserApi.getBlockedUsers(currentUserId)
@@ -27,7 +28,7 @@ internal class BlockedUserRemoteDataSource(
 
     suspend fun addBlockedUser(currentUserId: String, blockedUser: BlockedUser) {
         val remoteBlockedUser = blockedUser.toRemote(currentUserId)
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             try {
                 sendServerRequest {
                     blockedUserApi.addBlockedUser(currentUserId, remoteBlockedUser.blockedUserId)
@@ -39,7 +40,7 @@ internal class BlockedUserRemoteDataSource(
     }
 
     suspend fun removeBlockedUser(currentUserId: String, blockedUserId: String) {
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             try {
                 sendServerRequest {
                     blockedUserApi.removeBlockedUser(currentUserId, blockedUserId)

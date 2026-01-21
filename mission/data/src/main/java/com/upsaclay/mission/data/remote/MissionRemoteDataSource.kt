@@ -8,12 +8,15 @@ import com.upsaclay.mission.data.mapper.toRemote
 import com.upsaclay.mission.data.remote.api.MissionApi
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.MissionReport
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 
 class MissionRemoteDataSource(private val missionApi: MissionApi) {
-    suspend fun getMissions(): List<Mission> = withContext(Dispatchers.IO) {
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+
+    suspend fun getMissions(): List<Mission> = withContext(dispatcher) {
         try {
             missionApi.getMissions()?.map { it.toMission() } ?: emptyList()
         } catch (e: Exception) {
@@ -22,7 +25,7 @@ class MissionRemoteDataSource(private val missionApi: MissionApi) {
     }
 
     suspend fun createMission(mission: Mission, imageFile: File?) {
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             try {
                 missionApi.createMission(mission.toRemote(), imageFile)
             } catch (e: Exception) {
@@ -32,7 +35,7 @@ class MissionRemoteDataSource(private val missionApi: MissionApi) {
     }
 
     suspend fun updateMission(mission: Mission, imageFile: File?) {
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             try {
                 missionApi.updateMission(mission.toRemote(), imageFile)
             } catch (e: Exception) {
@@ -42,7 +45,7 @@ class MissionRemoteDataSource(private val missionApi: MissionApi) {
     }
 
     suspend fun deleteMission(mission: Mission) {
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             try {
                 missionApi.deleteMission(mission.toRemote())
             } catch (e: Exception) {
@@ -52,7 +55,7 @@ class MissionRemoteDataSource(private val missionApi: MissionApi) {
     }
 
     suspend fun reportMission(report: MissionReport) {
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             try {
                 missionApi.reportMission(report.toRemote())
             } catch (e: Exception) {
@@ -62,7 +65,7 @@ class MissionRemoteDataSource(private val missionApi: MissionApi) {
     }
 
     suspend fun addParticipant(missionId: String, user: User) {
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             try {
                 missionApi.addParticipant(missionId, user.toOracleUser())
             } catch (e: Exception) {
@@ -72,7 +75,7 @@ class MissionRemoteDataSource(private val missionApi: MissionApi) {
     }
 
     suspend fun removeParticipant(missionId: String, userId: String) {
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             try {
                 missionApi.removeParticipant(missionId, userId)
             } catch (e: Exception) {

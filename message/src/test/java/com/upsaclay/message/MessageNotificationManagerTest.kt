@@ -20,7 +20,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 
-class MessageContentNotificationManagerTest {
+class MessageNotificationManagerTest {
     private val routeRepository: RouteRepository = mockk()
     private val messageNotificationRepository: MessageNotificationRepository = mockk()
     private val messageNotificationPresenter: MessageNotificationPresenter = mockk()

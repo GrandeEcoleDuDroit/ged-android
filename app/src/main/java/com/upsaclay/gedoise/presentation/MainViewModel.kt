@@ -26,10 +26,10 @@ class MainViewModel(
                 when (state) {
                     is AuthenticationState.Authenticated -> {
                         runCatching { fetchDataUseCase(state.userId) }
-                            .onFailure { Timber.e("Error fetching data", it) }
+                            .onFailure { Timber.e("Error fetching data: ${it.message}") }
                         listenDataUseCase.start(state.userId)
                          runCatching { fcmTokenUseCase.sendUnsentToken() }
-                             .onFailure { Timber.e("Error sending unsent token", it) }
+                             .onFailure { Timber.e("Error sending unsent token: ${it.message}") }
                              .onSuccess { Timber.i("Unsent token sent successfully") }
                     }
 
