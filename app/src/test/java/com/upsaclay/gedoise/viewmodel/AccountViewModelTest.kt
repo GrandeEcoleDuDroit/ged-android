@@ -4,7 +4,6 @@ import android.net.Uri
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.UpdateProfilePictureUseCase
 import com.upsaclay.common.domain.userFixture
-import com.upsaclay.gedoise.presentation.profile.accountinformation.AccountInformationScreenState
 import com.upsaclay.gedoise.presentation.profile.accountinformation.AccountInformationViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -55,7 +54,7 @@ class AccountViewModelTest {
     @Test
     fun onScreenStateChange_should_update_screen_state() {
         // Given
-        val screenState = AccountInformationScreenState.EDIT
+        val screenState = AccountInformationViewModel.AccountInformationScreenState.EDIT
 
         // When
         accountInformationViewModel.onScreenStateChange(screenState)
