@@ -37,7 +37,7 @@ class AccountScreenUiTest {
         every { viewModel.onProfilePictureUriChange(any()) } returns Unit
         every { viewModel.onScreenStateChange(any()) } returns Unit
         every { viewModel.deleteProfilePicture() } returns Unit
-        every { viewModel.cancelEdit() } returns Unit
+        every { viewModel.resetScreenState() } returns Unit
     }
 
     @Test
@@ -52,8 +52,8 @@ class AccountScreenUiTest {
                 onProfilePictureUriChange = viewModel::onProfilePictureUriChange,
                 onScreenStateChange = viewModel::onScreenStateChange,
                 onDeleteProfilePictureClick = viewModel::deleteProfilePicture,
-                onSaveProfilePictureClick = viewModel::cancelEdit,
-                onCancelUpdateProfilePictureClick = viewModel::cancelEdit,
+                onSaveProfilePictureClick = viewModel::resetScreenState,
+                onCancelUpdateProfilePictureClick = viewModel::resetScreenState,
                 onBackClick = { }
             )
         }
@@ -77,8 +77,8 @@ class AccountScreenUiTest {
                 onProfilePictureUriChange = viewModel::onProfilePictureUriChange,
                 onScreenStateChange = viewModel::onScreenStateChange,
                 onDeleteProfilePictureClick = viewModel::deleteProfilePicture,
-                onSaveProfilePictureClick = viewModel::cancelEdit,
-                onCancelUpdateProfilePictureClick = viewModel::cancelEdit,
+                onSaveProfilePictureClick = viewModel::resetScreenState,
+                onCancelUpdateProfilePictureClick = viewModel::resetScreenState,
                 onBackClick = { }
             )
         }
@@ -99,8 +99,8 @@ class AccountScreenUiTest {
                 onProfilePictureUriChange = viewModel::onProfilePictureUriChange,
                 onScreenStateChange = viewModel::onScreenStateChange,
                 onDeleteProfilePictureClick = viewModel::deleteProfilePicture,
-                onSaveProfilePictureClick = viewModel::cancelEdit,
-                onCancelUpdateProfilePictureClick = viewModel::cancelEdit,
+                onSaveProfilePictureClick = viewModel::resetScreenState,
+                onCancelUpdateProfilePictureClick = viewModel::resetScreenState,
                 onBackClick = { }
             )
         }

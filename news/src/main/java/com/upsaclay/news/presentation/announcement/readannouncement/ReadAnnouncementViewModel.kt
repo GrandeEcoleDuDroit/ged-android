@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.UserRepository
+import com.upsaclay.common.extension.executeUiBlockingRequest
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapExceptionErrorMessage
 import com.upsaclay.news.R
@@ -38,40 +39,33 @@ class ReadAnnouncementViewModel(
     }
 
     fun reportAnnouncement(report: AnnouncementReport) {
-        viewModelScope.launch {
-            try {
-                _uiState.update {
-                    it.copy(loading = true)
-                }
-                announcementRepository.reportAnnouncement(report)
-                _event.emit(ReadAnnouncementUiEvent.AnnouncementReported(R.string.announcement_reported))
-            } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
-            } finally {
-                _uiState.update {
-                    it.copy(loading = false)
-                }
-            }
+        executeRequest {
+            announcementRepository.reportAnnouncement(report)
+            _event.emit(ReadAnnouncementUiEvent.AnnouncementReported(R.string.announcement_reported))
         }
     }
 
     fun deleteAnnouncement() {
         val announcement = uiState.value.announcement ?: return
-        viewModelScope.launch {
-            try {
-                _uiState.update {
-                    it.copy(loading = true)
-                }
-                deleteAnnouncementUseCase(announcement)
-                _event.emit(ReadAnnouncementUiEvent.AnnouncementDeleted)
-            } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
-            } finally {
-                _uiState.update {
-                    it.copy(loading = false)
-                }
-            }
+        executeRequest {
+            deleteAnnouncementUseCase(announcement)
+            _event.emit(ReadAnnouncementUiEvent.AnnouncementDeleted)
         }
+    }
+
+    private fun executeRequest(block: suspend () -> Unit) {
+        viewModelScope.executeUiBlockingRequest(
+            block = block,
+            onLoading = {
+                _uiState.update { it.copy(loading = true) }
+            },
+            onError = {
+                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(it)))
+            },
+            onFinished = {
+                _uiState.update { it.copy(loading = false) }
+            }
+        )
     }
 
     private fun listenAnnouncement() {

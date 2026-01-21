@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.upsaclay.common.domain.entity.CustomException
 import com.upsaclay.common.domain.entity.CustomException.CustomError.CURRENT_USER_NOT_FOUND
 import com.upsaclay.common.domain.repository.UserRepository
+import com.upsaclay.common.extension.executeUiBlockingRequest
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapExceptionErrorMessage
 import com.upsaclay.message.R
@@ -37,22 +38,10 @@ class ConversationViewModel(
     }
 
     fun deleteConversation(conversation: Conversation) {
-        viewModelScope.launch {
-            try {
-                val user = userRepository.currentUser ?: throw CustomException(CURRENT_USER_NOT_FOUND, Exception())
-                _uiState.update {
-                    it.copy(loading = true)
-                }
-
-                deleteConversationUseCase(conversation, user.id)
-                _event.emit(SingleUiEvent.Success(R.string.conversation_deleted))
-            } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
-            } finally {
-                _uiState.update {
-                    it.copy(loading = false)
-                }
-            }
+        executeRequest {
+            val user = userRepository.currentUser ?: throw CustomException(CURRENT_USER_NOT_FOUND, Exception())
+            deleteConversationUseCase(conversation, user.id)
+            _event.emit(SingleUiEvent.Success(R.string.conversation_deleted))
         }
     }
 
@@ -65,6 +54,21 @@ class ConversationViewModel(
                 _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
             }
         }
+    }
+
+    private fun executeRequest(block: suspend () -> Unit) {
+        viewModelScope.executeUiBlockingRequest(
+            block = block,
+            onLoading = {
+                _uiState.update { it.copy(loading = true) }
+            },
+            onError = {
+                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(it)))
+            },
+            onFinished = {
+                _uiState.update { it.copy(loading = false) }
+            }
+        )
     }
 
     private fun listenConversations() {

@@ -48,6 +48,7 @@ import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.gedoise.R
 import com.upsaclay.gedoise.presentation.components.AccountBottomSheet
 import com.upsaclay.gedoise.presentation.components.AccountTopBar
+import com.upsaclay.gedoise.presentation.profile.accountinformation.AccountInformationViewModel.AccountInformationScreenState
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -68,7 +69,7 @@ fun AccountInformationDestination(
     }
 
     BackHandler(enabled = uiState.screenState == AccountInformationScreenState.EDIT) {
-        viewModel.cancelEdit()
+        viewModel.resetScreenState()
     }
 
     LaunchedEffect(Unit) {
@@ -92,7 +93,7 @@ fun AccountInformationDestination(
             onScreenStateChange = viewModel::onScreenStateChange,
             onDeleteProfilePictureClick = viewModel::deleteProfilePicture,
             onSaveProfilePictureClick = viewModel::updateProfilePicture,
-            onCancelUpdateProfilePictureClick = viewModel::cancelEdit,
+            onCancelUpdateProfilePictureClick = viewModel::resetScreenState,
             onBackClick = onBackClick
         )
     }

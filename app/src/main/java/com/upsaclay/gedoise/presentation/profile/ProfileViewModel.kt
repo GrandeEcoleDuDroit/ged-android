@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.upsaclay.app.domain.usecase.LogoutUseCase
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.UserRepository
+import com.upsaclay.common.extension.executeUiBlockingRequest
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapExceptionErrorMessage
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -32,16 +33,24 @@ class ProfileViewModel(
     }
 
     fun logout() {
-        viewModelScope.launch {
-            try {
+        executeRequest {
+            logoutUseCase()
+        }
+    }
+
+    private fun executeRequest(block: suspend () -> Unit) {
+        viewModelScope.executeUiBlockingRequest(
+            block = block,
+            onLoading = {
                 _uiState.update { it.copy(loading = true) }
-                logoutUseCase()
-            } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
-            } finally {
+            },
+            onError = {
+                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(it)))
+            },
+            onFinished = {
                 _uiState.update { it.copy(loading = false) }
             }
-        }
+        )
     }
 
     data class ProfileUiState(

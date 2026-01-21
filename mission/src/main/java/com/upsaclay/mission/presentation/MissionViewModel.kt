@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.UserRepository
+import com.upsaclay.common.extension.executeUiBlockingRequest
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapExceptionErrorMessage
 import com.upsaclay.mission.R
@@ -39,74 +40,53 @@ class MissionViewModel(
     }
 
     fun refreshMissions() {
-        _uiState.update {
-            it.copy(refreshing = true)
-        }
-        viewModelScope.launch {
-            try {
-                refreshMissionsUseCase()
-            } catch (e: Exception) {
+        viewModelScope.executeUiBlockingRequest(
+            block = { refreshMissionsUseCase() },
+            onLoading = {
+                _uiState.update { it.copy(refreshing = true) }
+            },
+            onError = {
                 _event.emit(SingleUiEvent.Error(R.string.missions_refresh_error))
-            } finally {
-                _uiState.update {
-                    it.copy(refreshing = false)
-                }
+            },
+            onFinished = {
+                _uiState.update { it.copy(refreshing = false) }
             }
-        }
+        )
     }
 
     fun reportMission(report: MissionReport) {
-        viewModelScope.launch {
-            try {
-                _uiState.update {
-                    it.copy(loading = true)
-                }
-                missionRepository.reportMission(report)
-                _event.emit(SingleUiEvent.Success(R.string.mission_reported))
-            } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
-            } finally {
-                _uiState.update {
-                    it.copy(loading = false)
-                }
-            }
+        executeRequest {
+            missionRepository.reportMission(report)
+            _event.emit(SingleUiEvent.Success(R.string.mission_reported))
         }
     }
 
     fun recreateMission(mission: Mission) {
-        viewModelScope.launch {
-            try {
-                _uiState.update {
-                    it.copy(loading = true)
-                }
-
-                recreateMissionUseCase(mission)
-            } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
-            } finally {
-                _uiState.update {
-                    it.copy(loading = false)
-                }
-            }
+        executeRequest {
+            recreateMissionUseCase(mission)
         }
     }
 
     fun deleteMission(mission: Mission) {
-        viewModelScope.launch {
-            try {
-                _uiState.update {
-                    it.copy(loading = true)
-                }
-                deleteMissionUseCase(mission)
-                _event.emit(SingleUiEvent.Success(R.string.mission_deleted))
-            } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
-            } finally {
-                _uiState.update {
-                    it.copy(loading = false)
-                }
-            }
+        executeRequest {
+            deleteMissionUseCase(mission)
+            _event.emit(SingleUiEvent.Success(R.string.mission_deleted))
         }
+    }
+
+    private fun executeRequest(block: suspend () -> Unit) {
+        viewModelScope.executeUiBlockingRequest(
+            block = block,
+            onLoading = {
+                _uiState.update { it.copy(loading = true) }
+            },
+            onError = {
+                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(it)))
+            },
+            onFinished = {
+                _uiState.update { it.copy(loading = false) }
+            }
+        )
     }
 
     private fun listenMissions() {

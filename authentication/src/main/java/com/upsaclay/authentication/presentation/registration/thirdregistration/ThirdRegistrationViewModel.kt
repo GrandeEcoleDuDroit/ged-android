@@ -8,13 +8,13 @@ import com.upsaclay.authentication.domain.usecase.RegisterUseCase
 import com.upsaclay.authentication.mapAuthException
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.usecase.VerifyEmailFormatUseCase
+import com.upsaclay.common.extension.executeUiBlockingRequest
 import com.upsaclay.common.presentation.SingleUiEvent
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
 private const val MIN_PASSWORD_LENGTH = 8
 
@@ -59,23 +59,9 @@ class ThirdRegistrationViewModel(
             return
         }
 
-        _uiState.update {
-            it.copy(loading = true)
-        }
-
-        viewModelScope.launch {
-            try {
-                registerUseCase(email, password, firstName, lastName, schoolLevel)
-                _event.emit(SingleUiEvent.Success())
-            } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(errorMessage = mapAuthException(e))
-                }
-            } finally {
-                _uiState.update {
-                    it.copy(loading = false)
-                }
-            }
+        executeRequest {
+            registerUseCase(email, password, firstName, lastName, schoolLevel)
+            _event.emit(SingleUiEvent.Success())
         }
     }
 
@@ -106,6 +92,21 @@ class ThirdRegistrationViewModel(
             !VerifyEmailFormatUseCase(email) -> R.string.incorrect_email_format_error
             else -> null
         }
+    }
+
+    private fun executeRequest(block: suspend () -> Unit) {
+        viewModelScope.executeUiBlockingRequest(
+            block = block,
+            onLoading = {
+                _uiState.update { it.copy(loading = true) }
+            },
+            onError = {
+                _event.emit(SingleUiEvent.Error(mapAuthException(it)))
+            },
+            onFinished = {
+                _uiState.update { it.copy(loading = false) }
+            }
+        )
     }
 
     internal data class ThirdRegistrationUiState(
