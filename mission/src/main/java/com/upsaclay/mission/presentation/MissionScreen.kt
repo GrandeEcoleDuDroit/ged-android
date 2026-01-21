@@ -32,6 +32,7 @@ import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.extension.mediumSpacing
+import com.upsaclay.common.presentation.LoadingScreen
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.CircularProgressBar
 import com.upsaclay.common.presentation.components.DefaultDialog
@@ -61,7 +62,7 @@ fun MissionDestination(
     bottomBar: @Composable () -> Unit,
     viewModel: MissionViewModel = koinViewModel()
 ) {
-    val uiState = viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
@@ -80,12 +81,12 @@ fun MissionDestination(
         }
     }
 
-    if (uiState.value.user != null) {
+    if (uiState.user != null) {
         MissionScreen(
-            user = uiState.value.user!!,
-            missions = uiState.value.missions,
-            loading = uiState.value.loading,
-            refreshing = uiState.value.refreshing,
+            user = uiState.user!!,
+            missions = uiState.missions,
+            loading = uiState.loading,
+            refreshing = uiState.refreshing,
             snackbarHostState = snackbarHostState,
             onMissionClick = onMissionClick,
             onCreateMissionClick = onCreateMissionClick,
@@ -96,6 +97,8 @@ fun MissionDestination(
             onRefresh = viewModel::refreshMissions,
             bottomBar = bottomBar
         )
+    } else {
+        LoadingScreen()
     }
 }
 

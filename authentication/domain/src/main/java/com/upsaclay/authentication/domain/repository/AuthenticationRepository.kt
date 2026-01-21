@@ -1,13 +1,16 @@
 package com.upsaclay.authentication.domain.repository
 
+import com.upsaclay.authentication.domain.entity.AuthenticationState
 import kotlinx.coroutines.flow.Flow
 
 interface AuthenticationRepository {
-    val authenticated: Flow<Boolean>
+    val authenticationState: Flow<AuthenticationState>
 
-    val isAuthenticated: Boolean
+    val currentAuthenticationState: AuthenticationState
 
-    fun getAuthToken(): String?
+    suspend fun isAuthenticated(): Boolean
+
+    suspend fun getAuthToken(): String?
 
     suspend fun loginWithEmailAndPassword(email: String, password: String): String?
 
@@ -15,7 +18,7 @@ interface AuthenticationRepository {
 
     suspend fun logout()
 
-    suspend fun setAuthenticated(isAuthenticated: Boolean)
+    suspend fun storeAuthenticationState(authenticationState: AuthenticationState)
 
     suspend fun deleteAuthUser()
 }

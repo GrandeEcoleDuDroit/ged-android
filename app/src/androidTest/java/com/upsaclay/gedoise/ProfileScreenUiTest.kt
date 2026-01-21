@@ -1,6 +1,7 @@
 package com.upsaclay.gedoise
 
 import androidx.activity.ComponentActivity
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
@@ -36,10 +37,12 @@ class ProfileScreenUiTest {
         rule.setContent {
             ProfileScreen(
                 user = userFixture,
+                loading = false,
                 onLogoutClick = profileViewModel::logout,
                 onAccountClick = {},
                 onPrivacyClick = {},
                 onAccountInformationClick = {},
+                snackbarHostState = SnackbarHostState(),
                 bottomBar = {}
             )
         }

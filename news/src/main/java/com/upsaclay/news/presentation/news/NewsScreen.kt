@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
+import com.upsaclay.common.presentation.LoadingScreen
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.LoadingDialog
@@ -78,6 +79,8 @@ fun NewsDestination(
             onSeeAllAnnouncementsClick = onSeeAllAnnouncementsClick,
             onReportAnnouncementClick = viewModel::reportAnnouncement
         )
+    } else {
+        LoadingScreen()
     }
 }
 

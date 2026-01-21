@@ -10,6 +10,7 @@ import com.upsaclay.authentication.domain.entity.AuthenticationException
 import com.upsaclay.authentication.domain.entity.AuthenticationException.AuthenticationError.EMAIL_ALREADY_IN_USE
 import com.upsaclay.authentication.domain.entity.AuthenticationException.AuthenticationError.INVALID_CREDENTIALS
 import com.upsaclay.authentication.domain.entity.AuthenticationException.AuthenticationError.USER_DISABLED
+import com.upsaclay.authentication.domain.entity.AuthenticationState
 import com.upsaclay.common.data.exceptions.mapFirebaseException
 import com.upsaclay.common.domain.entity.CustomException
 import com.upsaclay.common.domain.entity.CustomException.CustomError.FORBIDDEN
@@ -18,9 +19,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 class AuthenticationRemoteDataSource(private val authenticationApi: AuthenticationApi) {
-    fun listenAuthenticationState(): Flow<Boolean> = authenticationApi.listenAuthenticationState()
+    fun listenAuthenticationState(): Flow<AuthenticationState> = authenticationApi.listenAuthenticationState()
 
     fun listenAuthTokenState(): Flow<AuthTokenState> = authenticationApi.listenAuthTokenState()
+
+    fun isAuthenticated(): Boolean = authenticationApi.isAuthenticated()
+
+    suspend fun getAuthToken(): String? = authenticationApi.getAuthToken()
 
     suspend fun loginWithEmailAndPassword(email: String, password: String): String? = withContext(Dispatchers.IO) {
         try {

@@ -1,6 +1,7 @@
 package com.upsaclay.common.domain
 
 import com.upsaclay.common.domain.usecase.FetchBlockedUsersUseCase
+import com.upsaclay.common.domain.usecase.FetchCurrentUserUseCase
 import com.upsaclay.common.domain.usecase.GenerateIdUseCase
 import com.upsaclay.common.domain.usecase.GetUsersUseCase
 import com.upsaclay.common.domain.usecase.NavigationRequestUseCase
@@ -14,4 +15,5 @@ val commonDomainModule = module {
     singleOf(::GetUsersUseCase)
     singleOf(::GenerateIdUseCase)
     singleOf(::NavigationRequestUseCase)
+    singleOf(::FetchCurrentUserUseCase)
 }

@@ -3,11 +3,14 @@ package com.upsaclay.authentication.data.local
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.upsaclay.common.data.extensions.getFlowValue
-import com.upsaclay.common.data.extensions.getValue
-import com.upsaclay.common.data.extensions.setValue
+import com.google.gson.GsonBuilder
+import com.upsaclay.authentication.data.AuthenticationStateAdapter
+import com.upsaclay.authentication.domain.entity.AuthenticationState
+import com.upsaclay.common.data.extensions.getGsonFlowValue
+import com.upsaclay.common.data.extensions.getGsonValue
+import com.upsaclay.common.data.extensions.setGsonValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -16,13 +19,20 @@ import kotlinx.coroutines.withContext
 internal class AuthenticationLocalDataSource(context: Context) {
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "authentication")
     private val store = context.dataStore
-    private val authenticationKey = booleanPreferencesKey("authenticationKey")
+    private val authenticationKey = stringPreferencesKey("authenticationKey")
+    private val gson = GsonBuilder()
+        .registerTypeHierarchyAdapter(AuthenticationState::class.java, AuthenticationStateAdapter)
+        .create()
 
-    suspend fun isAuthenticated(): Boolean = store.getValue(authenticationKey) ?: false
+    fun listenAuthenticationState(): Flow<AuthenticationState> =
+        store.getGsonFlowValue<AuthenticationState>(authenticationKey, gson)
+            .map { it ?: AuthenticationState.Unauthenticated }
 
-    suspend fun setAuthenticationState(isAuthenticated: Boolean) = withContext(Dispatchers.IO) {
-        store.setValue(authenticationKey, isAuthenticated)
+    suspend fun getAuthenticationState(): AuthenticationState? = withContext(Dispatchers.IO) {
+        store.getGsonValue(authenticationKey, gson)
     }
 
-    fun listenAuthenticationState(): Flow<Boolean> = store.getFlowValue(authenticationKey).map { it ?: false }
+    suspend fun storeAuthenticationState(authenticationState: AuthenticationState) = withContext(Dispatchers.IO) {
+        store.setGsonValue(authenticationKey, authenticationState, gson)
+    }
 }

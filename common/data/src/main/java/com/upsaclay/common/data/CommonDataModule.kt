@@ -62,7 +62,7 @@ val commonDataModule = module {
 
     single<OkHttpClient>(OKHTTP_CLIENT_QUALIFIER) {
         OkHttpClient.Builder()
-            .addInterceptor(get<Interceptor>())
+            .addInterceptor(get<AuthInterceptor>())
             .build()
     }
 

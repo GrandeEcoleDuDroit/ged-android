@@ -15,15 +15,21 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -34,8 +40,10 @@ import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.extension.displayName
 import com.upsaclay.common.extension.smallSpacing
-import com.upsaclay.common.presentation.components.CircularProgressBar
+import com.upsaclay.common.presentation.LoadingScreen
+import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.DefaultDialog
+import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.components.TextItem
 import com.upsaclay.common.presentation.components.TitleTopBar
@@ -44,6 +52,8 @@ import com.upsaclay.common.presentation.theme.gold
 import com.upsaclay.common.presentation.theme.informationText
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.gedoise.R
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -55,28 +65,48 @@ fun ProfileDestination(
     viewModel: ProfileViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
+    val showSnackBar = { message: String ->
+        scope.launch {
+            snackbarHostState.showSnackbar(message = message)
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.event.collectLatest { event ->
+            when (event) {
+                is SingleUiEvent.Error -> showSnackBar(context.getString(event.messageId))
+            }
+        }
+    }
 
     if (uiState.user != null) {
         ProfileScreen(
             user = uiState.user!!,
+            loading = uiState.loading,
             onAccountInformationClick = onAccountInformationClick,
             onAccountClick = onAccountClick,
             onPrivacyClick = onPrivacyClick,
             onLogoutClick = viewModel::logout,
+            snackbarHostState = snackbarHostState,
             bottomBar = bottomBar
         )
     } else {
-        CircularProgressBar()
+        LoadingScreen()
     }
 }
 
 @Composable
 fun ProfileScreen(
     user: User,
+    loading: Boolean,
     onAccountInformationClick: () -> Unit,
     onAccountClick: () -> Unit,
     onPrivacyClick: () -> Unit,
     onLogoutClick: () -> Unit,
+    snackbarHostState: SnackbarHostState,
     bottomBar: @Composable () -> Unit
 ) {
     var showLogoutDialog by remember { mutableStateOf(false) }
@@ -95,9 +125,18 @@ fun ProfileScreen(
         )
     }
 
+    if (loading) {
+        LoadingDialog()
+    }
+
     Scaffold(
         topBar = {
             TitleTopBar(title = stringResource(com.upsaclay.common.R.string.profile))
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState) {
+                Snackbar(snackbarData = it)
+            }
         },
         bottomBar = bottomBar
     ) { innerPadding ->
@@ -215,10 +254,12 @@ fun ProfileScreenPreview() {
     GedoiseTheme {
         ProfileScreen(
             user = userFixture,
+            loading = false,
             onAccountInformationClick = {},
             onAccountClick = {},
             onPrivacyClick = {},
             onLogoutClick = {},
+            snackbarHostState = SnackbarHostState(),
             bottomBar = {}
         )
     }

@@ -20,7 +20,7 @@ class ListenRemoteUserUseCaseTest {
 
     @Before
     fun setup() {
-        every { userRepository.user } returns flowOf(userFixture)
+        every { userRepository.currentUser } returns userFixture
         every { userRepository.getUserFlow(any()) } returns flowOf(userFixture2)
         coEvery { userRepository.storeUser(any()) } returns Unit
 
@@ -32,7 +32,7 @@ class ListenRemoteUserUseCaseTest {
     @Test
     fun start_should_update_local_user_when_different_from_remote() = runTest {
         // When
-        useCase.start()
+        useCase.start(userFixture2.id)
 
         // Then
         coVerify { userRepository.storeUser(userFixture2) }
