@@ -20,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.outlinedTextFieldColor
@@ -80,6 +81,7 @@ fun MultiSelectionDropDownMenu(
     isEnable: Boolean = true,
     singleLine: Boolean = false,
     leadingIcon: @Composable (() -> Unit)? = null,
+    supportingText: Int? = null,
     onExpandedChange: (Boolean) -> Unit,
     onDismissRequest: () -> Unit
 ) {
@@ -98,6 +100,11 @@ fun MultiSelectionDropDownMenu(
             enabled = isEnable,
             singleLine = singleLine,
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            supportingText = if (supportingText != null) {
+                { Text(text = stringResource(supportingText)) }
+            } else {
+                null
+            },
             colors = MaterialTheme.colorScheme.outlinedTextFieldColor
         )
 

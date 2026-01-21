@@ -179,11 +179,22 @@ class EditMissionViewModel(
         }.sorted()
 
         _uiState.update {
-            it.copy(schoolLevels = schoolLevels)
+            it.copy(
+                schoolLevels = schoolLevels,
+                schoolLevelSupportingText = if (showSchoolLevelSupportingText(schoolLevels)) {
+                    R.string.edit_mission_school_level_supporting_text
+                } else null
+            )
         }
         missionUpdateState.update {
             it.copy(schoolLevelsUpdated = validateSchoolLevelsUpdate(schoolLevels))
         }
+    }
+
+    private fun showSchoolLevelSupportingText(schoolLevels: List<SchoolLevel>): Boolean {
+        return schoolLevels.isNotEmpty() &&
+                schoolLevels.size < SchoolLevel.all.size &&
+                schoolLevels != mission.schoolLevels
     }
 
     fun onMaxParticipantsChange(maxParticipants: String) {
@@ -405,7 +416,8 @@ class EditMissionViewModel(
         val imageUri: Uri? = null,
         val loading: Boolean = false,
         val updateEnabled: Boolean = false,
-        val maxParticipantsError: Int? = null
+        val maxParticipantsError: Int? = null,
+        val schoolLevelSupportingText: Int? = null
     ) {
         val allSchoolLevels: List<SchoolLevel> = SchoolLevel.all
     }

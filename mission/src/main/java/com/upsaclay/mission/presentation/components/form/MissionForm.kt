@@ -2,8 +2,6 @@ package com.upsaclay.mission.presentation.components.form
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -74,6 +72,7 @@ fun MissionForm(
             endDate = value.endDate,
             duration = value.duration,
             maxParticipants = value.maxParticipants,
+            schoolLevelSupportingText = value.schoolLevelSupportingText,
             maxParticipantsError = value.maxParticipantsError,
             onSchoolLevelChange = onSchoolLevelChange,
             onStartDateClick = onStartDateClick,
@@ -98,8 +97,6 @@ fun MissionForm(
             onTaskClick = onEditTaskClick,
             onRemoveTaskClick = onRemoveTaskClick
         )
-
-        Spacer(Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.default_padding)))
     }
 }
 
@@ -115,6 +112,7 @@ data class MissionFormValue(
     val maxParticipants: String,
     val managers: List<User>,
     val missionTasks: List<MissionTask>,
+    val schoolLevelSupportingText: Int? = null,
     val maxParticipantsError: String? = null
 )
 
