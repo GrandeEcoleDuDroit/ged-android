@@ -17,6 +17,8 @@ internal interface UserApi {
 
     suspend fun updateProfilePicture(oracleUser: OracleUser, imageFile: File, fileName: String)
 
+    suspend fun deleteUser(oracleUser: OracleUser)
+
     suspend fun deleteProfilePicture(oracleUser: OracleUser)
 
     suspend fun reportUser(remoteUserReport: RemoteUserReport)

@@ -23,6 +23,8 @@ interface UserRepository {
 
     suspend fun updateProfilePicture(user: User, imageFile: File, fileName: String)
 
+    suspend fun deleteUser(user: User)
+
     suspend fun deleteLocalUser()
 
     suspend fun deleteProfilePicture(user: User)

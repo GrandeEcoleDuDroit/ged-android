@@ -8,10 +8,13 @@ import com.upsaclay.news.data.toAnnouncement
 import com.upsaclay.news.data.toRemote
 import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.domain.entity.AnnouncementReport
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 internal class AnnouncementRemoteDataSource(private val announcementApi: AnnouncementApi) {
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+
     suspend fun getAnnouncement(): List<Announcement> = withContext(Dispatchers.IO) {
         try {
             sendDataServerRequest {
@@ -23,7 +26,7 @@ internal class AnnouncementRemoteDataSource(private val announcementApi: Announc
     }
 
     suspend fun createAnnouncement(announcement: Announcement) {
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             try {
                 sendServerRequest { announcementApi.createAnnouncement(announcement.toRemote()) }
             } catch (e: Exception) {
@@ -33,7 +36,7 @@ internal class AnnouncementRemoteDataSource(private val announcementApi: Announc
     }
 
     suspend fun updateAnnouncement(announcement: Announcement) {
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             try {
                 sendServerRequest { announcementApi.updateAnnouncement(announcement.toRemote()) }
             } catch (e: Exception) {
@@ -43,7 +46,7 @@ internal class AnnouncementRemoteDataSource(private val announcementApi: Announc
     }
 
     suspend fun deleteAnnouncement(announcement: Announcement) {
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             try {
                 sendServerRequest {
                     announcementApi.deleteAnnouncements(announcement.id, announcement.author.id)
@@ -55,7 +58,7 @@ internal class AnnouncementRemoteDataSource(private val announcementApi: Announc
     }
 
     suspend fun reportAnnouncement(report: AnnouncementReport) {
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             try {
                 sendServerRequest { announcementApi.reportAnnouncement(report.toRemote()) }
             } catch (e: Exception) {

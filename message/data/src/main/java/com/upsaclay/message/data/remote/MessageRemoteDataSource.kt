@@ -8,15 +8,16 @@ import com.upsaclay.message.data.mapper.toRemote
 import com.upsaclay.message.data.remote.api.MessageApi
 import com.upsaclay.message.domain.entity.Message
 import com.upsaclay.message.domain.entity.MessageReport
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 
-internal class MessageRemoteDataSource(
-    private val messageApi: MessageApi
-) {
+internal class MessageRemoteDataSource(private val messageApi: MessageApi) {
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+
     fun listenMessages(
         conversationId: String,
         interlocutorId: String,
@@ -30,7 +31,7 @@ internal class MessageRemoteDataSource(
     }
 
     suspend fun createMessage(message: Message) {
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             try {
                 messageApi.createMessage(message.toRemote())
             } catch (e: Exception) {
@@ -40,7 +41,7 @@ internal class MessageRemoteDataSource(
     }
 
     suspend fun setMessageSeen(message: Message) {
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             try {
                 messageApi.setMessageSeen(message.conversationId, message.id)
             } catch (e: Exception) {
@@ -50,7 +51,7 @@ internal class MessageRemoteDataSource(
     }
 
     suspend fun reportMessage(report: MessageReport) {
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             try {
                 messageApi.reportMessage(report.toRemote())
             } catch (e: Exception) {

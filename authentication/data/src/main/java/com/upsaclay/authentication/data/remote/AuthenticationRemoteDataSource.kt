@@ -14,11 +14,14 @@ import com.upsaclay.authentication.domain.entity.AuthenticationState
 import com.upsaclay.common.data.exceptions.mapFirebaseException
 import com.upsaclay.common.domain.entity.CustomException
 import com.upsaclay.common.domain.entity.CustomException.CustomError.FORBIDDEN
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 class AuthenticationRemoteDataSource(private val authenticationApi: AuthenticationApi) {
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+
     fun listenAuthenticationState(): Flow<AuthenticationState> = authenticationApi.listenAuthenticationState()
 
     fun listenAuthTokenState(): Flow<AuthTokenState> = authenticationApi.listenAuthTokenState()
@@ -27,7 +30,7 @@ class AuthenticationRemoteDataSource(private val authenticationApi: Authenticati
 
     suspend fun getAuthToken(): String? = authenticationApi.getAuthToken()
 
-    suspend fun loginWithEmailAndPassword(email: String, password: String): String? = withContext(Dispatchers.IO) {
+    suspend fun loginWithEmailAndPassword(email: String, password: String): String? = withContext(dispatcher) {
         try {
             authenticationApi.signIn(email, password)
         } catch (e: Exception) {
@@ -35,7 +38,7 @@ class AuthenticationRemoteDataSource(private val authenticationApi: Authenticati
         }
     }
 
-    suspend fun registerWithEmailAndPassword(email: String, password: String): String? = withContext(Dispatchers.IO) {
+    suspend fun registerWithEmailAndPassword(email: String, password: String): String? = withContext(dispatcher) {
         try {
             authenticationApi.signUp(email, password)
         } catch (e: Exception) {
@@ -45,16 +48,6 @@ class AuthenticationRemoteDataSource(private val authenticationApi: Authenticati
 
     fun logout() {
         authenticationApi.signOut()
-    }
-
-    suspend fun deleteAuthUser() {
-        withContext(Dispatchers.IO) {
-            try {
-                authenticationApi.deleteAuthUser()
-            } catch (e: Exception) {
-                throw mapFirebaseAuthException(e)
-            }
-        }
     }
 
     private fun mapFirebaseAuthException(e: Exception): Exception {

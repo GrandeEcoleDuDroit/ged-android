@@ -74,6 +74,10 @@ internal class UserRepositoryImpl(
         }
     }
 
+    override suspend fun deleteUser(user: User) {
+        userRemoteDataSource.deleteUser(user)
+    }
+
     override suspend fun deleteLocalUser() {
         userLocalDataSource.removeUser()
     }

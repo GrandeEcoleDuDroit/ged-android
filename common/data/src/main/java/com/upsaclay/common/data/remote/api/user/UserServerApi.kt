@@ -35,6 +35,9 @@ internal interface UserServerApi {
         @Part(USER_PROFILE_PICTURE_FILE_NAME) previousProfilePictureFileName: RequestBody?
     ): Response<ServerResponse>
 
+    @POST("users/delete")
+    suspend fun deleteUser(@Body oracleUser: OracleUser): Response<ServerResponse>
+
     @FormUrlEncoded
     @POST("users/profile-picture/delete")
     suspend fun deleteProfilePicture(
