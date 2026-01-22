@@ -3,6 +3,8 @@
     <string name="mission_details">Détail mission</string>
     <string name="edit_mission">Editer mission</string>
     <string name="new_mission">Nouvelle mission</string>
+    <string name="open">Ouvert</string>
+    <string name="all">Tout</string>
 
     <string name="no_mission">Aucune mission</string>
     <string name="remaining_spots">%s places restantes</string>

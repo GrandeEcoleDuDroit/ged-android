@@ -44,7 +44,7 @@ internal class UserRepositoryImpl(
             userRemoteDataSource.getUser(userId)
         } catch (e: Exception) {
             e("Error getting remote user $userId", e)
-            throw e
+            return null
         }
     }
 

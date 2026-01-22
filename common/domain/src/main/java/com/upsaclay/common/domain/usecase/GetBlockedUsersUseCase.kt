@@ -14,7 +14,9 @@ class GetBlockedUsersUseCase(
     suspend fun execute(): List<User> = coroutineScope {
         val blockedUsers = blockedUserRepository.getLocalBlockedUsers().values
         blockedUsers.map {
-            async { userRepository.getUser(it.userId) }
+            async {
+                runCatching { userRepository.getUser(it.userId) }.getOrNull()
+            }
         }
         .awaitAll()
         .filterNotNull()

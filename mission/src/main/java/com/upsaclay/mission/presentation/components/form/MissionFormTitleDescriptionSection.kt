@@ -25,7 +25,7 @@ import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.inputForeground
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
-import com.upsaclay.mission.presentation.MissionPresentationUtils.contentStyle
+import com.upsaclay.mission.presentation.MissionPresentationUtils.descriptionStyle
 import com.upsaclay.mission.presentation.MissionPresentationUtils.titleStyle
 import kotlinx.coroutines.launch
 
@@ -85,12 +85,12 @@ fun MissionFormTitleDescriptionSection(
                 placeholder = {
                     Text(
                         text = stringResource(R.string.description),
-                        style = contentStyle,
+                        style = descriptionStyle,
                         color = MaterialTheme.colorScheme.inputForeground
                     )
                 },
                 minLines = 4,
-                textStyle = contentStyle
+                textStyle = descriptionStyle
             )
         }
     }

@@ -24,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.extension.extraSmallSpacing
 import com.upsaclay.common.extension.smallMediumSpacing
@@ -235,7 +236,7 @@ private fun CardTitle(
     Text(
         modifier = modifier,
         text = title,
-        style = titleStyle,
+        style = titleStyle.copy(fontSize = 18.sp),
         maxLines = 2,
         overflow = TextOverflow.Ellipsis
     )
