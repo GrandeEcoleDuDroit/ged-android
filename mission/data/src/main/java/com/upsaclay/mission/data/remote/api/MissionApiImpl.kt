@@ -55,8 +55,10 @@ internal class MissionApiImpl(private val missionServerApi: MissionServerApi): M
         }
     }
 
-    override suspend fun updateMission(remoteMission: OutboundRemoteMission, imageFile: File?) {
+    override suspend fun updateMission(userId: String, remoteMission: OutboundRemoteMission, imageFile: File?) {
         var imagePart: MultipartBody.Part? = null
+
+        val userIdPart = userId.toRequestBody("text/plain".toMediaType())
 
         val missionPart = gson
             .toJson(remoteMission)
@@ -70,7 +72,7 @@ internal class MissionApiImpl(private val missionServerApi: MissionServerApi): M
         }
 
         sendServerRequest {
-            missionServerApi.updateMission(imagePart, missionPart)
+            missionServerApi.updateMission(imagePart, userIdPart, missionPart)
         }
     }
 
@@ -118,6 +120,7 @@ internal interface MissionServerApi {
     @POST("missions/update")
     suspend fun updateMission(
         @Part image: MultipartBody.Part?,
+        @Part(USER_ID) userId: RequestBody,
         @Part("mission") mission: RequestBody
     ): Response<ServerResponse>
 

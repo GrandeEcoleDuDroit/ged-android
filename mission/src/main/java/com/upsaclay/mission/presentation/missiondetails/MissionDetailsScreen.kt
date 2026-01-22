@@ -313,7 +313,7 @@ private fun MissionDetailsScreen(
         is MissionDetailsScreenBottomSheet.MissionBottomSheet -> {
             MissionBottomSheet(
                 mission = mission,
-                editable = isManager,
+                user = user,
                 onEditClick = {
                     activeBottomSheet = null
                     onEditMissionClick(mission)

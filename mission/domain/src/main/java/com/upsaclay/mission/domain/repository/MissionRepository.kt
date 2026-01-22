@@ -17,7 +17,7 @@ interface MissionRepository {
 
     suspend fun createMission(mission: Mission, imageFile: File?)
 
-    suspend fun updateMission(mission: Mission, imageFile: File?)
+    suspend fun updateMission(user: User, mission: Mission, imageFile: File?)
 
     suspend fun upsertLocalMission(mission: Mission)
 

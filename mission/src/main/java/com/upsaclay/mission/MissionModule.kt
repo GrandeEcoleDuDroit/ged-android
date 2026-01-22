@@ -25,7 +25,8 @@ val missionModule = module {
             mission = mission,
             updateMissionUseCase = get(),
             getUsersUseCase = get(),
-            generateIdUseCase = get()
+            generateIdUseCase = get(),
+            userRepository = get()
         )
     }
 }

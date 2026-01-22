@@ -19,6 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.upsaclay.common.domain.entity.User
+import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.presentation.components.TextItem
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.mission.domain.entity.Mission
@@ -29,7 +31,7 @@ import com.upsaclay.mission.domain.missionFixture
 @Composable
 fun MissionBottomSheet(
     mission: Mission,
-    editable: Boolean,
+    user: User,
     onEditClick: () -> Unit,
     onRecreateClick: () -> Unit = {},
     onDeleteClick: () -> Unit,
@@ -40,8 +42,9 @@ fun MissionBottomSheet(
         Column(modifier = Modifier.navigationBarsPadding()) {
             when (mission.state) {
                 is MissionState.Published -> {
-                    if (editable) {
+                    if (user.admin || mission.managers.contains(user)) {
                         EditableMissionBottomSheetContent(
+                            admin = user.admin,
                             onEditClick = onEditClick,
                             onDeleteClick = onDeleteClick
                         )
@@ -67,6 +70,7 @@ fun MissionBottomSheet(
 
 @Composable
 private fun EditableMissionBottomSheetContent(
+    admin: Boolean,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit
 ) {
@@ -82,23 +86,25 @@ private fun EditableMissionBottomSheetContent(
         onClick = onEditClick
     )
 
-    TextItem(
-        modifier = Modifier.fillMaxWidth(),
-        text = {
-            Text(
-                text = stringResource(id = com.upsaclay.common.R.string.delete),
-                color = MaterialTheme.colorScheme.error
-            )
-        },
-        icon = {
-            Icon(
-                imageVector = Icons.Outlined.Delete,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.error
-            )
-        },
-        onClick = onDeleteClick
-    )
+    if (admin) {
+        TextItem(
+            modifier = Modifier.fillMaxWidth(),
+            text = {
+                Text(
+                    text = stringResource(id = com.upsaclay.common.R.string.delete),
+                    color = MaterialTheme.colorScheme.error
+                )
+            },
+            icon = {
+                Icon(
+                    imageVector = Icons.Outlined.Delete,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.error
+                )
+            },
+            onClick = onDeleteClick
+        )
+    }
 }
 
 @Composable
@@ -196,7 +202,7 @@ fun EditableMissionBottomSheetPreview() {
         Surface {
             MissionBottomSheet(
                 mission = missionFixture,
-                editable = true,
+                user = userFixture,
                 onEditClick = {},
                 onRecreateClick = {},
                 onReportClick = {},
@@ -214,7 +220,7 @@ fun NonEditableMissionBottomSheetPreview() {
         Surface {
             MissionBottomSheet(
                 mission = missionFixture,
-                editable = false,
+                user = userFixture,
                 onEditClick = {},
                 onRecreateClick = {},
                 onReportClick = {},

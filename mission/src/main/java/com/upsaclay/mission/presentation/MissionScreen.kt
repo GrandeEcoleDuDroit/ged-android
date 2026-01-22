@@ -198,7 +198,7 @@ private fun MissionScreen(
             is MissionScreenBottomSheet.MissionBottomSheet -> {
                 MissionBottomSheet(
                     mission = bottomSheet.mission,
-                    editable = bottomSheet.mission.managers.contains(user),
+                    user = user,
                     onRecreateClick = {
                         activeBottomSheet = null
                         onRecreateMissionClick(bottomSheet.mission)

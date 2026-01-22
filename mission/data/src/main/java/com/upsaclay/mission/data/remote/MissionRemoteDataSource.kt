@@ -34,10 +34,10 @@ class MissionRemoteDataSource(private val missionApi: MissionApi) {
         }
     }
 
-    suspend fun updateMission(mission: Mission, imageFile: File?) {
+    suspend fun updateMission(user: User, mission: Mission, imageFile: File?) {
         withContext(dispatcher) {
             try {
-                missionApi.updateMission(mission.toRemote(), imageFile)
+                missionApi.updateMission(user.id, mission.toRemote(), imageFile)
             } catch (e: Exception) {
                 throw mapServerException(e)
             }

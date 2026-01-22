@@ -3,9 +3,11 @@ package com.upsaclay.mission.presentation.editmission
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.upsaclay.common.domain.entity.CustomException
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.extensions.replace
+import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.GenerateIdUseCase
 import com.upsaclay.common.domain.usecase.GetUsersUseCase
 import com.upsaclay.common.extension.executeUiBlockingRequest
@@ -32,7 +34,8 @@ class EditMissionViewModel(
     private val mission: Mission,
     private val getUsersUseCase: GetUsersUseCase,
     private val updateMissionUseCase: UpdateMissionUseCase,
-    private val generateIdUseCase: GenerateIdUseCase
+    private val generateIdUseCase: GenerateIdUseCase,
+    private val userRepository: UserRepository
 ): ViewModel() {
     private val _uiState = MutableStateFlow(
         EditMissionUiState(
@@ -89,7 +92,9 @@ class EditMissionViewModel(
         )
 
         executeRequest {
+            val user = userRepository.currentUser ?: throw CustomException(CustomException.CustomError.CURRENT_USER_NOT_FOUND)
             updateMissionUseCase(
+                user = user,
                 mission = newMission,
                 imageUri = uiState.value.imageUri?.toString()
             )
