@@ -43,7 +43,7 @@ class RegisterUseCaseTest {
     @Test
     fun register_should_register_user() = runTest {
         // When
-        useCase(email, password, firstName, lastName, schoolLevel)
+        useCase.execute(email, password, firstName, lastName, schoolLevel)
 
         // Then
         coVerify { authenticationRepository.registerWithEmailAndPassword(email, password) }
@@ -52,7 +52,7 @@ class RegisterUseCaseTest {
     @Test
     fun register_should_create_user_when_registered() = runTest {
         // When
-        useCase(email, password, firstName, lastName, schoolLevel)
+        useCase.execute(email, password, firstName, lastName, schoolLevel)
 
         // Then
         coVerify { userRepository.createUser(any()) }
@@ -65,7 +65,7 @@ class RegisterUseCaseTest {
         coEvery { authenticationRepository.registerWithEmailAndPassword(any(), any()) } returns userId
 
         // When
-        useCase(email, password, firstName, lastName, schoolLevel)
+        useCase.execute(email, password, firstName, lastName, schoolLevel)
 
         // Then
         coVerify { authenticationRepository.storeAuthenticationState(AuthenticationState.Authenticated(userId)) }
@@ -77,6 +77,6 @@ class RegisterUseCaseTest {
         coEvery { whiteListRepository.isUserWhiteListed(any()) } returns false
 
         // When
-        useCase(email, password, firstName, lastName, schoolLevel)
+        useCase.execute(email, password, firstName, lastName, schoolLevel)
     }
 }

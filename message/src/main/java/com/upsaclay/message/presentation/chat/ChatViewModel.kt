@@ -81,7 +81,7 @@ class ChatViewModel(
             val user = uiState.value.currentUser ?: throw CustomException(CURRENT_USER_NOT_FOUND)
 
             val message = Message(
-                id = generateIdUseCase(),
+                id = generateIdUseCase.execute(),
                 senderId = user.id,
                 recipientId = conversation.interlocutor.id,
                 conversationId = conversation.id,
@@ -90,7 +90,7 @@ class ChatViewModel(
                 state = MessageState.DRAFT
             )
 
-            sendMessageUseCase(
+            sendMessageUseCase.execute(
                 conversation = conversation,
                 message = message,
                 userId = user.id
@@ -108,7 +108,7 @@ class ChatViewModel(
         try {
             val user = uiState.value.currentUser ?: throw CustomException(CURRENT_USER_NOT_FOUND)
             viewModelScope.launch {
-                sendMessageUseCase(
+                sendMessageUseCase.execute(
                     conversation = conversation,
                     message = message.copy(date = LocalDateTime.now(ZoneOffset.UTC)),
                     userId = user.id
@@ -144,7 +144,7 @@ class ChatViewModel(
     fun deleteChat() {
         executeRequest {
             val currentUserId = uiState.value.currentUser?.id ?: throw CustomException(CURRENT_USER_NOT_FOUND)
-            deleteConversationUseCase(conversation, currentUserId)
+            deleteConversationUseCase.execute(conversation, currentUserId)
             _event.emit(MessageEvent.ChatDeleted)
         }
     }

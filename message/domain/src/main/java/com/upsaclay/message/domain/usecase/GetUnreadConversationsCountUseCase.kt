@@ -12,7 +12,7 @@ class GetUnreadConversationsCountUseCase(
     private val conversationMessageRepository: ConversationMessageRepository,
     private val userRepository: UserRepository
 ) {
-    operator fun invoke(): Flow<Int> = userRepository.user.flatMapLatest { user ->
+    fun execute(): Flow<Int> = userRepository.user.flatMapLatest { user ->
         conversationMessageRepository.conversationsMessage
             .mapLatest { conversationsMessage ->
                 conversationsMessage.count {

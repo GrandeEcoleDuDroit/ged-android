@@ -43,7 +43,7 @@ class AuthenticationViewModel(private val loginUseCase: LoginUseCase): ViewModel
                 _uiState.update {
                     it.copy(loading = true)
                 }
-                loginUseCase(email, password)
+                loginUseCase.execute(email, password)
             } catch (e: Exception)  {
                 _uiState.update {
                     it.copy(errorMessage = mapAuthException(e))
@@ -90,7 +90,7 @@ class AuthenticationViewModel(private val loginUseCase: LoginUseCase): ViewModel
     private fun validateEmail(email: String): Int? {
         return when {
             email.isBlank() -> R.string.mandatory_field
-            !VerifyEmailFormatUseCase(email) -> R.string.incorrect_email_format_error
+            !VerifyEmailFormatUseCase.execute(email) -> R.string.incorrect_email_format_error
             else -> null
         }
     }

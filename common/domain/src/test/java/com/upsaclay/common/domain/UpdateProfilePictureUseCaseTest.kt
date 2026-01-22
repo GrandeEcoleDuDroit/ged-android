@@ -34,7 +34,7 @@ class UpdateProfilePictureUseCaseTest {
     @Test
     fun updateProfilePictureUseCase_should_update_profile_picture() = runTest {
         // When
-        useCase(userFixture, uri)
+        useCase.execute(userFixture, uri)
 
         // Then
         coVerify { userRepository.updateProfilePicture(userFixture, any(), any()) }

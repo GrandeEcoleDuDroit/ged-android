@@ -9,7 +9,7 @@ class DeleteAnnouncementUseCase(
     private val announcementRepository: AnnouncementRepository,
     private val announcementJobQueue: AnnouncementJobQueue
 ) {
-    suspend operator fun invoke(announcement: Announcement) {
+    suspend fun execute(announcement: Announcement) {
         when (announcement.state) {
             AnnouncementState.PUBLISHED -> announcementRepository.deleteAnnouncement(announcement)
 

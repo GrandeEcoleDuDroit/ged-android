@@ -77,7 +77,7 @@ class NavigationViewModel(
 
     private fun updateMessageBadges() {
         viewModelScope.launch {
-            getUnreadConversationsCountUseCase().collect { number ->
+            getUnreadConversationsCountUseCase.execute().collect { number ->
                 _uiState.update {
                     it.copy(
                         topLevelDestinations = it.topLevelDestinations.map { destination ->

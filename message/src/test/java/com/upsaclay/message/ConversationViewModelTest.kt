@@ -35,9 +35,9 @@ class ConversationViewModelTest {
         Dispatchers.setMain(testDispatcher)
 
         every { userRepository.currentUser } returns userFixture
-        every { getConversationUiUseCase() } returns emptyFlow()
-        coEvery { recreateConversationUseCase(any(), any()) } returns Unit
-        coEvery { deleteConversationUseCase(any(), any()) } returns Unit
+        every { getConversationUiUseCase.execute() } returns emptyFlow()
+        coEvery { recreateConversationUseCase.execute(any(), any()) } returns Unit
+        coEvery { deleteConversationUseCase.execute(any(), any()) } returns Unit
 
         conversationViewModel = ConversationViewModel(
             userRepository = userRepository,
@@ -53,7 +53,7 @@ class ConversationViewModelTest {
         conversationViewModel.deleteConversation(conversationFixture)
 
         // Then
-        coVerify { deleteConversationUseCase(conversationFixture, userFixture.id) }
+        coVerify { deleteConversationUseCase.execute(conversationFixture, userFixture.id) }
     }
 
     @Test
@@ -62,6 +62,6 @@ class ConversationViewModelTest {
         conversationViewModel.recreateConversation(conversationFixture)
 
         // Then
-        coVerify { recreateConversationUseCase(conversationFixture, userFixture.id) }
+        coVerify { recreateConversationUseCase.execute(conversationFixture, userFixture.id) }
     }
 }

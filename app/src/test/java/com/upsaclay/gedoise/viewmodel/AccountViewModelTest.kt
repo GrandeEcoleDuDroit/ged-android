@@ -33,7 +33,7 @@ class AccountViewModelTest {
         Dispatchers.setMain(testDispatcher)
 
         every { userRepository.user } returns MutableStateFlow(userFixture)
-        coEvery { updateProfilePictureUseCase(any(), any()) } returns Unit
+        coEvery { updateProfilePictureUseCase.execute(any(), any()) } returns Unit
         coEvery { userRepository.deleteProfilePicture(any()) } returns Unit
 
         accountInformationViewModel = AccountInformationViewModel(
@@ -72,7 +72,7 @@ class AccountViewModelTest {
         accountInformationViewModel.updateProfilePicture()
 
         // Then
-        coVerify { updateProfilePictureUseCase(any(), any()) }
+        coVerify { updateProfilePictureUseCase.execute(any(), any()) }
     }
 
     @Test

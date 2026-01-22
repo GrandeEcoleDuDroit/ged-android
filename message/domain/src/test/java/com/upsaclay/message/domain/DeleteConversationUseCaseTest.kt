@@ -35,7 +35,7 @@ class DeleteConversationUseCaseTest {
     @Test
     fun deleteConversation_should_delete_conversation() = runTest {
         // When
-        useCase(
+        useCase.execute(
             conversationFixture,
             userFixture.id
         )
@@ -47,7 +47,7 @@ class DeleteConversationUseCaseTest {
     @Test
     fun deleteConversation_should_delete_local_conversation_messages() = runTest {
         // When
-        useCase(conversationFixture, userFixture.id)
+        useCase.execute(conversationFixture, userFixture.id)
 
         // Then
         coVerify { messageRepository.deleteLocalMessages(any()) }
@@ -59,6 +59,6 @@ class DeleteConversationUseCaseTest {
         coEvery { conversationRepository.deleteConversation(any(), any(), any()) } just awaits
 
         // When
-        useCase(conversationFixture, userFixture.id)
+        useCase.execute(conversationFixture, userFixture.id)
     }
 }

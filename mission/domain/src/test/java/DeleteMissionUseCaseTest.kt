@@ -40,7 +40,7 @@ class DeleteMissionUseCaseTest {
         val mission = missionFixture.copy(state = MissionState.Published(imageUrl))
 
         // When
-        useCase(mission = mission)
+        useCase.execute(mission = mission)
 
         // Then
         coVerify { missionRepository.deleteMission(mission, imageUrl) }
@@ -52,7 +52,7 @@ class DeleteMissionUseCaseTest {
         val mission = missionFixture.copy(state = MissionState.Draft)
 
         // When
-        useCase(mission = mission)
+        useCase.execute(mission = mission)
 
         // Then
         coEvery { missionRepository.deleteLocalMission(mission) }
@@ -64,7 +64,7 @@ class DeleteMissionUseCaseTest {
         val mission = missionFixture.copy(state = MissionState.Error(imagePath))
 
         // When
-        useCase(mission = mission)
+        useCase.execute(mission = mission)
 
         // Then
         coVerify { imageRepository.deleteLocalImage(imagePath) }
@@ -76,7 +76,7 @@ class DeleteMissionUseCaseTest {
         val mission = missionFixture.copy(state = MissionState.Publishing())
 
         // When
-        useCase(mission)
+        useCase.execute(mission)
 
         // Then
         coVerify { missionJobQueue.cancelAndRemoveJob(mission.id) }

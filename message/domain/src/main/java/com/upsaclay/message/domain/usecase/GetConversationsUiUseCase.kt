@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.map
 class GetConversationsUiUseCase(
     private val conversationMessageRepository: ConversationMessageRepository
 ) {
-    operator fun invoke() = conversationMessageRepository.conversationsMessage
+    fun execute() = conversationMessageRepository.conversationsMessage
         .map { conversationMessages ->
             conversationMessages.map { it.toConversationUI() }
         }

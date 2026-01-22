@@ -11,7 +11,7 @@ class DeleteConversationUseCase(
     private val conversationRepository: ConversationRepository,
     private val messageRepository: MessageRepository
 ) {
-    suspend operator fun invoke(conversation: Conversation, currentUserId: String) {
+    suspend fun execute(conversation: Conversation, currentUserId: String) {
         val deleteTime = LocalDateTime.now(ZoneOffset.UTC)
         withTimeout(10000) {
             conversationRepository.deleteConversation(conversation.id, currentUserId, deleteTime)

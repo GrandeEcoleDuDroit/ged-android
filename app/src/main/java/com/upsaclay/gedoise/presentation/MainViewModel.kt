@@ -30,7 +30,7 @@ class MainViewModel(
                     is AuthenticationState.Authenticated -> {
                         connectivityObserver.connected.first { it }
                         authenticationRepository.refreshTokenIfNecessary()
-                        runCatching { fetchDataUseCase(state.userId) }
+                        runCatching { fetchDataUseCase.execute(state.userId) }
                             .onFailure { Timber.e("Error fetching data: ${it.message}") }
                         listenDataUseCase.start(this, state.userId)
                         runCatching { fcmTokenUseCase.sendUnsentToken() }
@@ -40,7 +40,7 @@ class MainViewModel(
                     is AuthenticationState.Unauthenticated -> {
                         listenDataUseCase.stop()
                         delay(2000)
-                        clearDataUseCase()
+                        clearDataUseCase.execute()
                     }
                 }
             }

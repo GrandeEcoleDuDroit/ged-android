@@ -31,7 +31,7 @@ class GetUsersUseCaseTest {
         coEvery { userRepository.getUsers() } returns users
 
         // When
-        val result = useCase()
+        val result = useCase.execute()
 
         // Then
         assert(result == listOf(userFixture))

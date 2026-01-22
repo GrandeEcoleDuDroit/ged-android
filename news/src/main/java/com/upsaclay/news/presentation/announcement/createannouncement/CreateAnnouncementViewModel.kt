@@ -49,7 +49,7 @@ class CreateAnnouncementViewModel(
         if (user == null) return
         val (title, content) = uiState.value
         val announcement = Announcement(
-            id = generateIdUseCase(),
+            id = generateIdUseCase.execute(),
             title = if (title.isBlank()) null else title.trim(),
             content = content.trim(),
             date = LocalDateTime.now(ZoneOffset.UTC),
@@ -57,7 +57,7 @@ class CreateAnnouncementViewModel(
             state = AnnouncementState.DRAFT
         )
         viewModelScope.launch {
-            createAnnouncementUseCase(announcement)
+            createAnnouncementUseCase.execute(announcement)
         }
     }
 

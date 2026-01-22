@@ -41,7 +41,7 @@ class RecreateAnnouncementUseCaseTest {
         val announcement = longAnnouncementFixture.copy(state = AnnouncementState.ERROR)
 
         // When
-        useCase(announcement)
+        useCase.execute(announcement)
 
         // Then
         coVerify {
@@ -55,7 +55,7 @@ class RecreateAnnouncementUseCaseTest {
         val announcement = announcementFixture.copy(state = AnnouncementState.ERROR)
 
         // When
-        useCase(announcement)
+        useCase.execute(announcement)
 
         // Then
         coVerify {
@@ -70,7 +70,7 @@ class RecreateAnnouncementUseCaseTest {
         coEvery { announcementRepository.createAnnouncement(any()) } throws Exception()
 
         // When
-        useCase(announcement)
+        useCase.execute(announcement)
 
         // Then
         coVerify {
@@ -81,7 +81,7 @@ class RecreateAnnouncementUseCaseTest {
     @Test
     fun recreateAnnouncement_should_store_job_reference() = runTest {
         // When
-        useCase(announcementFixture.copy(state = AnnouncementState.ERROR))
+        useCase.execute(announcementFixture.copy(state = AnnouncementState.ERROR))
 
         // Then
         coVerify {
@@ -92,7 +92,7 @@ class RecreateAnnouncementUseCaseTest {
     @Test
     fun recreateAnnouncement_should_remove_job_reference_when_job_finished() = runTest {
         // When
-        useCase(announcementFixture.copy(state = AnnouncementState.ERROR))
+        useCase.execute(announcementFixture.copy(state = AnnouncementState.ERROR))
 
         // Then
         coVerify { announcementJobQueue.cancelAndRemoveJob(announcementFixture.id) }

@@ -11,10 +11,10 @@ class FetchDataUseCase(
     private val fetchAnnouncementsUseCase: FetchAnnouncementsUseCase,
     private val fetchMissionsUseCase: FetchMissionsUseCase
 ) {
-    suspend operator fun invoke(userId: String) {
-        fetchCurrentUserUseCase(userId)
-        fetchBlockedUsersUseCase(userId)
-        fetchAnnouncementsUseCase()
-        fetchMissionsUseCase()
+    suspend fun execute(userId: String) {
+        fetchCurrentUserUseCase.execute(userId)
+        fetchBlockedUsersUseCase.execute(userId)
+        fetchAnnouncementsUseCase.execute()
+        fetchMissionsUseCase.execute()
     }
 }

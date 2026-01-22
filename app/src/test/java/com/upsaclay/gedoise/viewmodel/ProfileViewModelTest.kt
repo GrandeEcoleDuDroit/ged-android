@@ -29,7 +29,7 @@ class ProfileViewModelTest {
         Dispatchers.setMain(testDispatcher)
 
         every { userRepository.user } returns MutableStateFlow(userFixture)
-        coEvery { logoutUseCase() } returns Unit
+        coEvery { logoutUseCase.execute() } returns Unit
 
         profileViewModel = ProfileViewModel(
             userRepository = userRepository,
@@ -43,6 +43,6 @@ class ProfileViewModelTest {
         profileViewModel.logout()
 
         // Then
-        coVerify { logoutUseCase() }
+        coVerify { logoutUseCase.execute() }
     }
 }

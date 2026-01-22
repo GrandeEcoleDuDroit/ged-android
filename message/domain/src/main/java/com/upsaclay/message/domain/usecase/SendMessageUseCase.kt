@@ -14,12 +14,12 @@ class SendMessageUseCase(
     private val sendMessageNotificationUseCase: SendMessageNotificationUseCase,
     private val scope: CoroutineScope
 ) {
-    operator fun invoke(conversation: Conversation, message: Message, userId: String) {
+    fun execute(conversation: Conversation, message: Message, userId: String) {
         scope.launch {
             try {
                 createDataLocally(conversation, message)
                 createDataRemotely(conversation, message, userId)
-                sendMessageNotificationUseCase(conversation, message)
+                sendMessageNotificationUseCase.execute(conversation, message)
             } catch (_: Exception) {
                 if (conversation.state == Conversation.ConversationState.DRAFT) {
                     conversationRepository.updateLocalConversation(conversation.copy(state = Conversation.ConversationState.ERROR))

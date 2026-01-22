@@ -13,7 +13,7 @@ class ClearDataUseCase(
     private val announcementRepository: AnnouncementRepository,
     private val blockedUserRepository: BlockedUserRepository,
 ) {
-    suspend operator fun invoke() {
+    suspend fun execute() {
         userRepository.deleteLocalUser()
         conversationRepository.deleteLocalConversations()
         messageRepository.deleteLocalMessages()

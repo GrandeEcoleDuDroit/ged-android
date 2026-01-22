@@ -14,7 +14,7 @@ class RefreshMissionsUseCaseTest {
 
     @Before
     fun setUp() {
-        coEvery { fetchMissionsUseCase() } returns Unit
+        coEvery { fetchMissionsUseCase.execute() } returns Unit
 
         useCase = RefreshMissionsUseCase(
             fetchMissionsUseCase = fetchMissionsUseCase
@@ -24,11 +24,11 @@ class RefreshMissionsUseCaseTest {
     @Test
     fun refreshMissionsUseCase_should_synchronize_announcements_when_debounce_interval_exceeded() = runTest {
         // When
-        useCase()
+        useCase.execute()
 
         // Then
         assert(useCase.lastRequestTime > 0)
-        coVerify { fetchMissionsUseCase() }
+        coVerify { fetchMissionsUseCase.execute() }
     }
 
     @Test
@@ -38,10 +38,10 @@ class RefreshMissionsUseCaseTest {
         useCase.lastRequestTime = currentTime
 
         // When
-        useCase()
+        useCase.execute()
 
         // Then
         assert(useCase.lastRequestTime == currentTime)
-        coVerify(exactly = 0) { fetchMissionsUseCase() }
+        coVerify(exactly = 0) { fetchMissionsUseCase.execute() }
     }
 }

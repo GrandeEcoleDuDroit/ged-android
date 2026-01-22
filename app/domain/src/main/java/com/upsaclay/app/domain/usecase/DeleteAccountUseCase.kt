@@ -9,7 +9,7 @@ class DeleteAccountUseCase(
     private val userRepository: UserRepository,
     private val authenticationRepository: AuthenticationRepository,
 ) {
-    suspend operator fun invoke(user: User, password: String) {
+    suspend fun execute(user: User, password: String) {
         authenticationRepository.loginWithEmailAndPassword(user.email, password)
         userRepository.deleteUser(user)
         authenticationRepository.storeAuthenticationState(AuthenticationState.Unauthenticated)

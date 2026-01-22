@@ -12,7 +12,7 @@ class RecreateAnnouncementUseCase(
     private val announcementJobQueue: AnnouncementJobQueue,
     private val scope: CoroutineScope
 ) {
-    suspend operator fun invoke(announcement: Announcement) {
+    suspend fun execute(announcement: Announcement) {
         if (announcement.state == AnnouncementState.ERROR) {
             val job = scope.launch {
                 try {

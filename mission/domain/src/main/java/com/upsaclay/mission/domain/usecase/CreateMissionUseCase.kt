@@ -15,7 +15,7 @@ class CreateMissionUseCase(
     private val missionJobQueue: MissionJobQueue,
     private val scope: CoroutineScope
 ) {
-    suspend operator fun invoke(mission: Mission, imageUri: String?) {
+    suspend fun execute(mission: Mission, imageUri: String?) {
         val job = scope.launch {
             var imagePath: String? = null
             val imageFile = imageUri?.let { uri ->

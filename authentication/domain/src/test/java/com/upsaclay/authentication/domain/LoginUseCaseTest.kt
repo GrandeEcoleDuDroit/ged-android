@@ -34,7 +34,7 @@ class LoginUseCaseTest {
     @Test
     fun login_should_set_authentication_state_to_authenticated_when_authentication_succeeds() = runTest {
         // When
-        useCase(email, password)
+        useCase.execute(email, password)
 
         // Then
         coVerify {
@@ -48,6 +48,6 @@ class LoginUseCaseTest {
         coEvery { authenticationRepository.loginWithEmailAndPassword(email, password) } just awaits
 
         // When
-        useCase(email, password)
+        useCase.execute(email, password)
     }
 }

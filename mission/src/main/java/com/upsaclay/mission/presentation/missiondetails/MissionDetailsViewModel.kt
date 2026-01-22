@@ -53,7 +53,7 @@ class MissionDetailsViewModel(
     fun deleteMission() {
         val mission = uiState.value.mission ?: return
         executeRequest {
-            deleteMissionUseCase(mission)
+            deleteMissionUseCase.execute(mission)
             _event.emit(MissionDetailsUiEvent.MissionDetailsDeleted)
         }
     }

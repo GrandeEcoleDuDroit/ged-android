@@ -93,7 +93,7 @@ class EditMissionViewModel(
 
         executeRequest {
             val user = userRepository.currentUser ?: throw CustomException(CustomException.CustomError.CURRENT_USER_NOT_FOUND)
-            updateMissionUseCase(
+            updateMissionUseCase.execute(
                 user = user,
                 mission = newMission,
                 imageUri = uiState.value.imageUri?.toString()
@@ -295,7 +295,7 @@ class EditMissionViewModel(
     }
 
     fun onAddMissionTask(missionTaskValue: String) {
-        val missionTask = MissionTask(generateIdUseCase(), missionTaskValue.trim())
+        val missionTask = MissionTask(generateIdUseCase.execute(), missionTaskValue.trim())
         val missionTasks = uiState.value.tasks + missionTask
         _uiState.update {
             it.copy(tasks = missionTasks)
@@ -402,7 +402,7 @@ class EditMissionViewModel(
 
     private fun initUsers() {
         viewModelScope.launch {
-            getUsersUseCase()
+            getUsersUseCase.execute()
                 .missionManagerSorting(mission.managers)
                 .also { users ->
                     _uiState.update { it.copy(users = users) }

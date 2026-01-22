@@ -3,7 +3,7 @@ package com.upsaclay.common.domain.usecase
 import com.upsaclay.common.domain.repository.BlockedUserRepository
 
 class FetchBlockedUsersUseCase(private val blockedUserRepository: BlockedUserRepository) {
-    suspend operator fun invoke(userId: String) {
+    suspend fun execute(userId: String) {
         val remoteBlockedUsers = blockedUserRepository.getRemoteBlockedUsers(userId)
         val localBlockedUsers = blockedUserRepository.getLocalBlockedUsers()
 

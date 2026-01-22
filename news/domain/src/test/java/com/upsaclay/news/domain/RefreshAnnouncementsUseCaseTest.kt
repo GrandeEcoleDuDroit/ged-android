@@ -1,7 +1,7 @@
 package com.upsaclay.news.domain
 
-import com.upsaclay.news.domain.usecase.RefreshAnnouncementsUseCase
 import com.upsaclay.news.domain.usecase.FetchAnnouncementsUseCase
+import com.upsaclay.news.domain.usecase.RefreshAnnouncementsUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -16,7 +16,7 @@ class RefreshAnnouncementsUseCaseTest {
 
     @Before
     fun setUp() {
-        coEvery { fetchAnnouncementsUseCase() } returns Unit
+        coEvery { fetchAnnouncementsUseCase.execute() } returns Unit
 
         useCase = RefreshAnnouncementsUseCase(
             fetchAnnouncementsUseCase = fetchAnnouncementsUseCase
@@ -26,11 +26,11 @@ class RefreshAnnouncementsUseCaseTest {
     @Test
     fun refreshAnnouncement_should_synchronize_announcements_when_debounce_interval_exceeded() = runTest {
         // When
-        useCase()
+        useCase.execute()
 
         // Then
         assert(useCase.lastRequestTime > 0)
-        coVerify { fetchAnnouncementsUseCase() }
+        coVerify { fetchAnnouncementsUseCase.execute() }
     }
 
     @Test
@@ -40,10 +40,10 @@ class RefreshAnnouncementsUseCaseTest {
         useCase.lastRequestTime = currentTime
 
         // When
-        useCase()
+        useCase.execute()
 
         // Then
         assert(useCase.lastRequestTime == currentTime)
-        coVerify(exactly = 0) { fetchAnnouncementsUseCase() }
+        coVerify(exactly = 0) { fetchAnnouncementsUseCase.execute() }
     }
 }

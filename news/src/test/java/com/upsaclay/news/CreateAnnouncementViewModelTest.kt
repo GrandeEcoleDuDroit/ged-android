@@ -33,10 +33,10 @@ class CreateAnnouncementViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
 
-        every { generateIdUseCase() } returns "id"
+        every { generateIdUseCase.execute() } returns "id"
         every { userRepository.user } returns MutableStateFlow(userFixture)
         every { userRepository.currentUser } returns userFixture
-        coEvery { createAnnouncementUseCase(any()) } returns Unit
+        coEvery { createAnnouncementUseCase.execute(any()) } returns Unit
 
         createAnnouncementViewModel = CreateAnnouncementViewModel(
             userRepository = userRepository,
@@ -75,7 +75,7 @@ class CreateAnnouncementViewModelTest {
         createAnnouncementViewModel.createAnnouncement()
 
         // Then
-        coVerify { createAnnouncementUseCase(any()) }
+        coVerify { createAnnouncementUseCase.execute(any()) }
     }
 
     @Test
@@ -92,7 +92,7 @@ class CreateAnnouncementViewModelTest {
         createAnnouncementViewModel.createAnnouncement()
 
         // Then
-        coVerify(exactly = 0) { createAnnouncementUseCase(any()) }
+        coVerify(exactly = 0) { createAnnouncementUseCase.execute(any()) }
     }
 
     @Test

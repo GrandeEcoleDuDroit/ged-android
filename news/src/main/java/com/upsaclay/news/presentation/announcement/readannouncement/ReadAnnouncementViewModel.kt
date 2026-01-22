@@ -48,7 +48,7 @@ class ReadAnnouncementViewModel(
     fun deleteAnnouncement() {
         val announcement = uiState.value.announcement ?: return
         executeRequest {
-            deleteAnnouncementUseCase(announcement)
+            deleteAnnouncementUseCase.execute(announcement)
             _event.emit(ReadAnnouncementUiEvent.AnnouncementDeleted)
         }
     }
