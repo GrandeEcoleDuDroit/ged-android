@@ -36,7 +36,7 @@ android {
         applicationId = "com.upsaclay.gedoise"
         minSdk = 29
         targetSdk = 35
-        versionCode = 12
+        versionCode = 13
         versionName = "1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
