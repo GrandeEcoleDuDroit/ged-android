@@ -129,7 +129,7 @@ fun EditTopBar(
 fun SearchTopBar(
     query: String,
     onQueryChange: (String) -> Unit,
-    onSearchBackClick: () -> Unit,
+    onBackClick: () -> Unit,
     onClearClick: () -> Unit
 
 ) {
@@ -141,7 +141,7 @@ fun SearchTopBar(
                 onQueryChange = onQueryChange,
                 leadingIcon = {
                     BackButton(
-                        onClick = onSearchBackClick,
+                        onClick = onBackClick,
                         color = IconButtonDefaults.iconButtonColors().copy(
                             contentColor = MaterialTheme.colorScheme.onSurface
                         )
@@ -220,7 +220,7 @@ private fun SearchTopBarPreview() {
             SearchTopBar(
                 query = "",
                 onQueryChange = {},
-                onSearchBackClick = {},
+                onBackClick = {},
                 onClearClick = {}
             )
         }

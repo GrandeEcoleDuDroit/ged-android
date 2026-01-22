@@ -5,6 +5,7 @@
     <string name="new_mission">Nouvelle mission</string>
     <string name="open">Ouvert</string>
     <string name="all">Tout</string>
+    <string name="see_all_users">Voir tout (%d plus)</string>
 
     <string name="no_mission">Aucune mission</string>
     <string name="remaining_spots">%s places restantes</string>

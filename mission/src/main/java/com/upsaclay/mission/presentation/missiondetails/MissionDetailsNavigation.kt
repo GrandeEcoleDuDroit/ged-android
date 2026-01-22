@@ -19,7 +19,8 @@ fun NavGraphBuilder.missionDetailsScreen(
     onBackClick: () -> Unit,
     onManagerClick: (User) -> Unit,
     onParticipantClick: (User) -> Unit,
-    onEditMissionClick: (Mission) -> Unit
+    onEditMissionClick: (Mission) -> Unit,
+    onSeeAllUsersClick: (List<User>) -> Unit
 ) {
     composable<MissionDetailsRoute> {
         val missionId = it.toRoute<MissionDetailsRoute>().missionId
@@ -28,7 +29,8 @@ fun NavGraphBuilder.missionDetailsScreen(
             onBackClick = onBackClick,
             onManagerClick = onManagerClick,
             onParticipantClick = onParticipantClick,
-            onEditMissionClick = onEditMissionClick
+            onEditMissionClick = onEditMissionClick,
+            onSeeAllUsersClick = onSeeAllUsersClick
         )
     }
 }
