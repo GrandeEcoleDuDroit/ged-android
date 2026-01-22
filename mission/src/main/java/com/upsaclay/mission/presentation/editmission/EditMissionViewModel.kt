@@ -402,8 +402,8 @@ class EditMissionViewModel(
 
     private fun initUsers() {
         viewModelScope.launch {
-            getUsersUseCase.execute()
-                .missionManagerSorting(mission.managers)
+            runCatching { getUsersUseCase.execute().missionManagerSorting(mission.managers) }
+                .getOrDefault(emptyList())
                 .also { users ->
                     _uiState.update { it.copy(users = users) }
                     defaultUsers = users

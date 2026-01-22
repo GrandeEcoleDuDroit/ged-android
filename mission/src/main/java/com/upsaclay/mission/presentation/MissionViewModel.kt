@@ -1,5 +1,6 @@
 package com.upsaclay.mission.presentation
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upsaclay.common.domain.entity.User
@@ -19,6 +20,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -33,10 +35,15 @@ class MissionViewModel(
     val uiState: StateFlow<MissionUiState> = _uiState
     private val _event = MutableSharedFlow<SingleUiEvent>()
     val event: SharedFlow<SingleUiEvent> = _event
+    private var defaultMissions: List<Mission> = emptyList()
 
     init {
         listenMissions()
         listenUser()
+    }
+
+    fun onMissionFilterChange(filter: MissionFilter) {
+        updateMission(filter)
     }
 
     fun refreshMissions() {
@@ -74,6 +81,28 @@ class MissionViewModel(
         }
     }
 
+    private fun updateMission(filter: MissionFilter = uiState.value.activeFilter) {
+        when (filter) {
+            MissionFilter.OPEN -> {
+                _uiState.update { state ->
+                    state.copy(
+                        activeFilter = filter,
+                        missions = defaultMissions.filterNot { it.completed }
+                    )
+                }
+            }
+
+            MissionFilter.ALL -> {
+                _uiState.update { state ->
+                    state.copy(
+                        activeFilter = filter,
+                        missions = defaultMissions
+                    )
+                }
+            }
+        }
+    }
+
     private fun executeRequest(block: suspend () -> Unit) {
         viewModelScope.executeUiBlockingRequest(
             block = block,
@@ -91,10 +120,9 @@ class MissionViewModel(
 
     private fun listenMissions() {
         viewModelScope.launch {
-            missionRepository.missions.collect { missions ->
-                _uiState.update {
-                    it.copy(missions = missions.missionSorting())
-                }
+            missionRepository.missions.map { it.missionSorting() }.collect { missions ->
+                defaultMissions = missions
+                updateMission()
             }
         }
     }
@@ -113,6 +141,13 @@ class MissionViewModel(
         val missions: List<Mission>? = null,
         val user: User? = null,
         val loading: Boolean = false,
-        val refreshing: Boolean = false
+        val refreshing: Boolean = false,
+        val activeFilter: MissionFilter = MissionFilter.OPEN,
+        val filters: List<MissionFilter> = MissionFilter.entries
     )
+
+    enum class MissionFilter(@StringRes val label: Int) {
+        OPEN(R.string.open),
+        ALL(R.string.all)
+    }
 }

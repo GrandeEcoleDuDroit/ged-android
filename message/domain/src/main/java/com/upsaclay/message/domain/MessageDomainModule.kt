@@ -9,7 +9,6 @@ import com.upsaclay.message.domain.usecase.ListenRemoteMessagesUseCase
 import com.upsaclay.message.domain.usecase.RecreateConversationUseCase
 import com.upsaclay.message.domain.usecase.SendMessageNotificationUseCase
 import com.upsaclay.message.domain.usecase.SendMessageUseCase
-import com.upsaclay.message.domain.usecase.UpdateConversationDeleteTimeUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -46,6 +45,5 @@ val messageDomainModule = module {
             scope = get(BACKGROUND_SCOPE)
         )
     }
-    singleOf(::UpdateConversationDeleteTimeUseCase)
     singleOf(::RecreateConversationUseCase)
 }

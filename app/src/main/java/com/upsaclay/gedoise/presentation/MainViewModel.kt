@@ -29,7 +29,7 @@ class MainViewModel(
                 when (state) {
                     is AuthenticationState.Authenticated -> {
                         connectivityObserver.connected.first { it }
-                        authenticationRepository.refreshTokenIfNecessary()
+                        runCatching { authenticationRepository.refreshTokenIfNecessary() }
                         runCatching { fetchDataUseCase.execute(state.userId) }
                             .onFailure { Timber.e("Error fetching data: ${it.message}") }
                         listenDataUseCase.start(this, state.userId)

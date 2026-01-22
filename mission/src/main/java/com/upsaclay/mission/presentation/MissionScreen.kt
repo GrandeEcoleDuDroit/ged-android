@@ -7,15 +7,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -32,6 +35,8 @@ import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.extension.mediumSpacing
+import com.upsaclay.common.extension.rootMediumPadding
+import com.upsaclay.common.extension.smallMediumSpacing
 import com.upsaclay.common.presentation.LoadingScreen
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.CircularProgressBar
@@ -87,6 +92,8 @@ fun MissionDestination(
             missions = uiState.missions,
             loading = uiState.loading,
             refreshing = uiState.refreshing,
+            activeFilter = uiState.activeFilter,
+            filters = uiState.filters,
             snackbarHostState = snackbarHostState,
             onMissionClick = onMissionClick,
             onCreateMissionClick = onCreateMissionClick,
@@ -95,6 +102,7 @@ fun MissionDestination(
             onDeleteMissionClick = viewModel::deleteMission,
             onReportMissionClick = viewModel::reportMission,
             onRefresh = viewModel::refreshMissions,
+            onMissionFilterChange = viewModel::onMissionFilterChange,
             bottomBar = bottomBar
         )
     } else {
@@ -109,6 +117,8 @@ private fun MissionScreen(
     missions: List<Mission>?,
     loading: Boolean,
     refreshing: Boolean,
+    activeFilter: MissionViewModel.MissionFilter,
+    filters: List<MissionViewModel.MissionFilter>,
     snackbarHostState: SnackbarHostState,
     onMissionClick: (String) -> Unit,
     onCreateMissionClick: () -> Unit,
@@ -117,6 +127,7 @@ private fun MissionScreen(
     onDeleteMissionClick: (Mission) -> Unit,
     onReportMissionClick: (MissionReport) -> Unit,
     onRefresh: () -> Unit,
+    onMissionFilterChange: (MissionViewModel.MissionFilter) -> Unit,
     bottomBar: @Composable () -> Unit
 ) {
     var activeBottomSheet by remember { mutableStateOf<MissionScreenBottomSheet?>(null) }
@@ -151,19 +162,31 @@ private fun MissionScreen(
     ) { innerPadding ->
         missions?.let { missions ->
             PullToRefreshComponent(
-                modifier = Modifier.padding(innerPadding),
+                modifier = Modifier.rootMediumPadding(innerPadding),
                 onRefresh = onRefresh,
                 refreshing = refreshing
             ) {
                 LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                    modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.mediumSpacing()
                 ) {
                     if (missions.isEmpty()) {
                         item { EmptyText(text = stringResource(R.string.no_mission)) }
                     } else {
+                        item {
+                            LazyRow(
+                                horizontalArrangement = Arrangement.smallMediumSpacing()
+                            ) {
+                                items(filters) { filter ->
+                                    FilterChip(
+                                        onClick = { onMissionFilterChange(filter) },
+                                        label = { Text(stringResource(filter.label)) },
+                                        selected = filter == activeFilter
+                                    )
+                                }
+                            }
+                        }
+
                         items(missions) { mission ->
                             MissionCard(
                                 mission = mission,
@@ -301,6 +324,8 @@ private fun MissionScreenPreview() {
             user = userFixture,
             missions = missionsFixture,
             loading = false,
+            activeFilter = MissionViewModel.MissionFilter.OPEN,
+            filters = MissionViewModel.MissionFilter.entries,
             snackbarHostState = SnackbarHostState(),
             refreshing = false,
             onMissionClick = {},
@@ -310,6 +335,7 @@ private fun MissionScreenPreview() {
             onDeleteMissionClick = {},
             onReportMissionClick = {},
             onRefresh = {},
+            onMissionFilterChange = {},
             bottomBar = {}
         )
     }

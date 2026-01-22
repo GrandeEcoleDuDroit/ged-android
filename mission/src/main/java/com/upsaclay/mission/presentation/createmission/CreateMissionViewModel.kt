@@ -265,8 +265,8 @@ class CreateMissionViewModel(
 
     private fun initUsers() {
         viewModelScope.launch {
-            getUsersUseCase.execute()
-                .missionManagerSorting()
+            runCatching { getUsersUseCase.execute().missionManagerSorting() }
+                .getOrDefault(emptyList())
                 .also { users ->
                     _uiState.update { it.copy(users = users) }
                     defaultUsers = users
@@ -296,7 +296,7 @@ class CreateMissionViewModel(
     private data class MissionCreateState(
         val validTitle: Boolean = false,
         val validDescription: Boolean = false,
-        val validSchoolLevels: Boolean = false,
+        val validSchoolLevels: Boolean = true,
         val validMaxParticipants: Boolean = false
     ) {
         val valid: Boolean
