@@ -57,6 +57,7 @@ class EditAnnouncementViewModel(
         )
         executeRequest {
             announcementRepository.updateAnnouncement(trimmedAnnouncement)
+            _event.emit(SingleUiEvent.Success())
         }
     }
 
