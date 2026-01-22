@@ -8,7 +8,7 @@ import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import com.upsaclay.common.domain.userFixture2
 import com.upsaclay.message.domain.fixtures.conversationUiFixture
-import com.upsaclay.message.domain.fixtures.conversationsUIFixture
+import com.upsaclay.message.domain.fixtures.conversationsUiFixture
 import com.upsaclay.message.domain.fixtures.messageFixture
 import com.upsaclay.message.presentation.conversation.ConversationDestination
 import com.upsaclay.message.presentation.conversation.ConversationViewModel
@@ -26,7 +26,7 @@ class ConversationScreenUiTest {
 
     private val conversationViewModel: ConversationViewModel = mockk()
     private val uiState = ConversationViewModel.ConversationUiState(
-        conversations = conversationsUIFixture
+        conversations = conversationsUiFixture
     )
 
     @Before
@@ -51,7 +51,7 @@ class ConversationScreenUiTest {
         rule.onAllNodesWithTag(rule.activity.getString(R.string.conversation_screen_conversation_item_tag))
             .apply {
                 fetchSemanticsNodes().forEachIndexed { i, _ ->
-                    get(i).assert(hasText(conversationsUIFixture[i].interlocutor.fullName))
+                    get(i).assert(hasText(conversationsUiFixture[i].interlocutor.fullName))
                 }
             }
     }

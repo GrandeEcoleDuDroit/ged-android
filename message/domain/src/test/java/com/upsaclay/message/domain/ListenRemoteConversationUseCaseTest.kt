@@ -14,8 +14,6 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -28,15 +26,12 @@ class ListenRemoteConversationUseCaseTest {
     private val listenRemoteMessagesUseCase: ListenRemoteMessagesUseCase = mockk()
 
     private lateinit var useCase: ListenRemoteConversationsUseCase
-    private val testScope = TestScope(UnconfinedTestDispatcher())
 
     @Before
     fun setUp() {
         coEvery { userRepository.user } returns flowOf(userFixture)
-        coEvery { userRepository.getUserFlow(any()) } returns flowOf(userFixture2)
-        coEvery { conversationRepository.getRemoteConversationsFlow(any()) } returns flowOf(
-            conversationDTOFixture
-        )
+        coEvery { userRepository.getUserFlow(any()) } returns flowOf(conversationFixture.interlocutor)
+        coEvery { conversationRepository.getRemoteConversationsFlow(any()) } returns flowOf(conversationDTOFixture)
         coEvery { conversationRepository.upsertLocalConversation(any()) } returns Unit
         coEvery { listenRemoteMessagesUseCase.start(any()) } returns Unit
         coEvery { conversationRepository.upsertLocalConversation(any()) } returns Unit
@@ -85,9 +80,6 @@ class ListenRemoteConversationUseCaseTest {
 
     @Test
     fun listenRemoteConversationsUseCase_should_upsert_local_conversation() = runTest {
-        // Given
-        coEvery { conversationRepository.getConversation(any()) } returns null
-
         // When
         useCase.start(this)
         advanceUntilIdle()

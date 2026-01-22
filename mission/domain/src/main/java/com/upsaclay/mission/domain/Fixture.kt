@@ -25,7 +25,7 @@ val missionFixture = Mission(
             "Ce sera l'occasion de se détendre et de profiter du grand air.",
     date = LocalDateTime.now(),
     startDate = LocalDate.now(),
-    endDate = LocalDate.now(),
+    endDate = LocalDate.now().plusDays(2),
     schoolLevels = SchoolLevel.all,
     duration = "Toute la journée",
     managers = listOf(userFixture, userFixture2),

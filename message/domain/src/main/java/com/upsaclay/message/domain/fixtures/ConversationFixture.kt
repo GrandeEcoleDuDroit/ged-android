@@ -27,10 +27,10 @@ val conversationUiFixture = ConversationUi(
 )
 
 val conversationDTOFixture = ConversationDTO(
-    conversationId = "1",
-    participants = listOf(userFixture.id, userFixture2.id),
-    createdAt = LocalDateTime.of(2024, 7, 20, 10, 0),
-    effectiveFrom = null
+    conversationId = conversationFixture.id,
+    participants = listOf(userFixture.id, conversationFixture.interlocutor.id),
+    createdAt = conversationFixture.createdAt,
+    effectiveFrom = conversationFixture.effectiveFrom
 )
 
 val conversationMessageFixture = ConversationMessage(

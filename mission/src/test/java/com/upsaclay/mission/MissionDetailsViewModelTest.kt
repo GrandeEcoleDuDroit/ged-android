@@ -4,6 +4,7 @@ import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.domain.userFixture2
+import com.upsaclay.common.domain.userFixture3
 import com.upsaclay.mission.domain.entity.MissionReport
 import com.upsaclay.mission.domain.missionFixture
 import com.upsaclay.mission.domain.repository.MissionRepository
@@ -37,7 +38,7 @@ class MissionDetailsViewModelTest {
         Dispatchers.setMain(testDispatcher)
 
         every { missionRepository.getMissionFlow(any()) } returns flowOf(missionFixture)
-        every { userRepository.user } returns flowOf(userFixture2)
+        every { userRepository.user } returns flowOf(userFixture3)
         coEvery { missionRepository.removeParticipant(any(), any()) } returns Unit
         coEvery { missionRepository.reportMission(any()) } returns Unit
         coEvery { missionRepository.addParticipant(any(), any()) } returns Unit
@@ -54,7 +55,7 @@ class MissionDetailsViewModelTest {
     @Test
     fun missionDetailsViewModel_default_values_are_correct() {
         // Then
-        assertEquals(userFixture2, viewModel.uiState.value.currentUser)
+        assertEquals(userFixture3, viewModel.uiState.value.currentUser)
         assertEquals(missionFixture, viewModel.uiState.value.mission)
         assertEquals(false, viewModel.uiState.value.loading)
     }
@@ -65,7 +66,7 @@ class MissionDetailsViewModelTest {
         viewModel.unregisterFromMission()
 
         // Then
-        coVerify { missionRepository.removeParticipant(missionFixture.id, userFixture2.id) }
+        coVerify { missionRepository.removeParticipant(missionFixture.id, userFixture3.id) }
     }
 
     @Test
@@ -111,6 +112,7 @@ class MissionDetailsViewModelTest {
         val mission = missionFixture.copy(
             participants = emptyList()
         )
+
         every { missionRepository.getMissionFlow(any()) } returns flowOf(mission)
 
         // When
@@ -128,10 +130,9 @@ class MissionDetailsViewModelTest {
     @Test
     fun button_state_should_be_registration_closed_when_mission_is_full_and_user_is_not_registered() {
         // Given
-        val user = userFixture2.copy(id = "3")
         val mission = missionFixture.copy(
             maxParticipants = 1,
-            participants = listOf(user)
+            participants = listOf(userFixture2)
         )
         every { missionRepository.getMissionFlow(any()) } returns flowOf(mission)
 
@@ -175,7 +176,7 @@ class MissionDetailsViewModelTest {
         // Given
         val mission = missionFixture.copy(
             maxParticipants = 1,
-            participants = listOf(userFixture2)
+            participants = listOf(userFixture3)
         )
         every { missionRepository.getMissionFlow(any()) } returns flowOf(mission)
 
