@@ -29,8 +29,8 @@ import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.supportingText
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.message.R
-import com.upsaclay.message.domain.conversationsUIFixture
 import com.upsaclay.message.domain.entity.ConversationUi
+import com.upsaclay.message.domain.fixtures.conversationsUiFixture
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -112,7 +112,7 @@ private fun ConversationFeedPreview() {
     GedoiseTheme {
         Surface {
             ConversationFeed(
-                conversationsUi = conversationsUIFixture,
+                conversationsUi = conversationsUiFixture,
                 onClick = {},
                 onLongClick = {},
                 onCreateClick = {}

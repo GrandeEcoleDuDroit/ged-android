@@ -236,7 +236,7 @@ private fun CardTitle(
     Text(
         modifier = modifier,
         text = title,
-        style = titleStyle.copy(fontSize = 18.sp),
+        style = titleStyle.copy(fontSize = 20.sp),
         maxLines = 2,
         overflow = TextOverflow.Ellipsis
     )

@@ -68,7 +68,7 @@ import com.upsaclay.common.utils.DateUtils
 import com.upsaclay.message.R
 import com.upsaclay.message.domain.entity.Message
 import com.upsaclay.message.domain.entity.Message.MessageState
-import com.upsaclay.message.domain.messageFixture
+import com.upsaclay.message.domain.fixtures.messageFixture
 import java.time.LocalDateTime
 
 @Composable
@@ -206,7 +206,7 @@ private fun MessageBubble(
 ) {
     FlowRow(
         modifier = modifier
-            .clip(RoundedCornerShape(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)))
+            .clip(RoundedCornerShape(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)))
             .background(backgroundColor)
             .padding(
                 vertical = dimensionResource(com.upsaclay.common.R.dimen.small_padding),

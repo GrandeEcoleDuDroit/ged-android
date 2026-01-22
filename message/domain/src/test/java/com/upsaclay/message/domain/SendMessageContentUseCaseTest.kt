@@ -4,6 +4,8 @@ import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.message.domain.entity.Conversation.ConversationState
 import com.upsaclay.message.domain.entity.Message.MessageState
+import com.upsaclay.message.domain.fixtures.conversationFixture
+import com.upsaclay.message.domain.fixtures.messageFixture
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
 import com.upsaclay.message.domain.usecase.SendMessageNotificationUseCase

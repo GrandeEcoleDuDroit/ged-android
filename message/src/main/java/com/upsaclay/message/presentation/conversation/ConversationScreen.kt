@@ -25,9 +25,9 @@ import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.message.R
-import com.upsaclay.message.domain.conversationsUIFixture
 import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.ConversationUi
+import com.upsaclay.message.domain.fixtures.conversationsUiFixture
 import com.upsaclay.message.domain.mapper.toConversation
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -179,7 +179,7 @@ private sealed class ConversationScreenDialog {
 @PhonePreviews
 @Composable
 private fun ConversationsScreenPreview() {
-    val conversations = conversationsUIFixture.sortedByDescending { it.lastMessage.date }
+    val conversations = conversationsUiFixture.sortedByDescending { it.lastMessage.date }
 
     GedoiseTheme {
         Surface {

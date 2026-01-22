@@ -35,7 +35,7 @@ import com.upsaclay.message.R
 import com.upsaclay.message.domain.entity.Conversation.ConversationState
 import com.upsaclay.message.domain.entity.ConversationUi
 import com.upsaclay.message.domain.entity.Message.MessageState
-import com.upsaclay.message.domain.messageFixture
+import com.upsaclay.message.domain.fixtures.messageFixture
 
 @Composable
 fun ConversationItem(

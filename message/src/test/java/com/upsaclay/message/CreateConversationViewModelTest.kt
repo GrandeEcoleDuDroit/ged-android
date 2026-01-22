@@ -6,7 +6,7 @@ import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.GetUsersUseCase
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.domain.usersFixture
-import com.upsaclay.message.domain.conversationFixture
+import com.upsaclay.message.domain.fixtures.conversationFixture
 import com.upsaclay.message.domain.usecase.GetConversationUseCase
 import com.upsaclay.message.presentation.conversation.createconversation.CreateConversationViewModel
 import io.mockk.coEvery

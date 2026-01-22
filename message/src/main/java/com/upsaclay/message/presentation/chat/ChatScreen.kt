@@ -33,12 +33,12 @@ import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.message.R
-import com.upsaclay.message.domain.conversationFixture
 import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.Message
 import com.upsaclay.message.domain.entity.Message.MessageState
 import com.upsaclay.message.domain.entity.MessageReport
-import com.upsaclay.message.domain.messagesFixture
+import com.upsaclay.message.domain.fixtures.conversationFixture
+import com.upsaclay.message.domain.fixtures.messagesFixture
 import com.upsaclay.message.presentation.chat.ChatViewModel.MessageEvent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest

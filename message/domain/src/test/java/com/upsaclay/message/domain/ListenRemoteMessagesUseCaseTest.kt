@@ -5,6 +5,8 @@ import com.upsaclay.common.domain.blockedUsersFixture
 import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.userFixture
+import com.upsaclay.message.domain.fixtures.conversationFixture
+import com.upsaclay.message.domain.fixtures.messageFixture
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
 import com.upsaclay.message.domain.usecase.ListenRemoteMessagesUseCase
@@ -32,9 +34,13 @@ class ListenRemoteMessagesUseCaseTest {
         every { userRepository.currentUser } returns userFixture
         every { blockedUserRepository.currentBlockedUsers } returns blockedUsersFixture
         coEvery { userRepository.user } returns flowOf(userFixture)
-        coEvery { conversationRepository.getConversationsFlow() } returns flowOf(listOf(conversationFixture))
+        coEvery { conversationRepository.getConversationsFlow() } returns flowOf(listOf(
+            conversationFixture
+        ))
         coEvery { messageRepository.getLastMessage(any()) } returns messageFixture
-        coEvery { messageRepository.fetchRemoteMessages(any(), any(), any()) } returns flowOf(messageFixture)
+        coEvery { messageRepository.fetchRemoteMessages(any(), any(), any()) } returns flowOf(
+            messageFixture
+        )
         coEvery { messageRepository.upsertLocalMessage(any()) } returns Unit
         coEvery { blockedUserRepository.getLocalBlockedUsers() } returns blockedUsersFixture
 

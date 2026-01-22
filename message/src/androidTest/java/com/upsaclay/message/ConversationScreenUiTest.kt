@@ -7,9 +7,9 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import com.upsaclay.common.domain.userFixture2
-import com.upsaclay.message.domain.conversationUiFixture
-import com.upsaclay.message.domain.conversationsUIFixture
-import com.upsaclay.message.domain.messageFixture
+import com.upsaclay.message.domain.fixtures.conversationUiFixture
+import com.upsaclay.message.domain.fixtures.conversationsUIFixture
+import com.upsaclay.message.domain.fixtures.messageFixture
 import com.upsaclay.message.presentation.conversation.ConversationDestination
 import com.upsaclay.message.presentation.conversation.ConversationViewModel
 import io.mockk.every

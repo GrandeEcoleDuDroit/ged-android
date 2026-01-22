@@ -8,9 +8,9 @@ import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.paging.PagingData
 import com.upsaclay.common.domain.userFixture
-import com.upsaclay.message.domain.conversationFixture
-import com.upsaclay.message.domain.messageFixture
-import com.upsaclay.message.domain.messageFixture2
+import com.upsaclay.message.domain.fixtures.conversationFixture
+import com.upsaclay.message.domain.fixtures.messageFixture
+import com.upsaclay.message.domain.fixtures.messageFixture2
 import com.upsaclay.message.presentation.chat.ChatDestination
 import com.upsaclay.message.presentation.chat.ChatViewModel
 import io.mockk.every
@@ -44,7 +44,9 @@ class ChatScreenUiTest {
     @Test
     fun sentMessageItem_should_be_displayed_when_user_is_sender() {
         // Given
-        every { chatViewModel.messages } returns MutableStateFlow(PagingData.from(listOf(messageFixture)))
+        every { chatViewModel.messages } returns MutableStateFlow(PagingData.from(listOf(
+            messageFixture
+        )))
 
         // When
         rule.setContent {
@@ -65,7 +67,9 @@ class ChatScreenUiTest {
     @Test
     fun receiveMessageItem_should_be_displayed_user_is_sender() {
         // Given
-        every { chatViewModel.messages } returns MutableStateFlow(PagingData.from(listOf(messageFixture2)))
+        every { chatViewModel.messages } returns MutableStateFlow(PagingData.from(listOf(
+            messageFixture2
+        )))
 
         // When
         rule.setContent {

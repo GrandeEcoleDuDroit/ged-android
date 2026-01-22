@@ -1,6 +1,7 @@
 package com.upsaclay.news.domain
 
 import com.upsaclay.common.domain.userFixture
+import com.upsaclay.common.domain.usersFixture
 import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.domain.entity.Announcement.AnnouncementState
 import java.time.LocalDateTime
@@ -48,9 +49,60 @@ val announcementFixture = Announcement(
 )
 
 val announcementsFixture = listOf(
-    announcementFixture,
-    announcementFixture,
-    longAnnouncementFixture,
-    longAnnouncementFixture,
-    longAnnouncementFixture
+    Announcement(
+        id = "1",
+        title = "Soirée pyjama !",
+        content = "Ceci est une annonce de soirée pyjama.",
+        date = LocalDateTime.now(),
+        author = usersFixture[0],
+        state = AnnouncementState.PUBLISHED
+    ),
+    Announcement(
+        id = "2",
+        title = "Rappel : Rendu de dossier le 23/03",
+        content = "Ceci est une annonce de rendu de dossier.",
+        date = LocalDateTime.now().minusDays(1),
+        author = usersFixture[1],
+        state = AnnouncementState.PUBLISHED
+    ),
+    Announcement(
+        id = "3",
+        title = null,
+        content = "Bonjour à tous, voici la liste des étudiants qui seront absent durant la journée portes ouvertes.",
+        date = LocalDateTime.now().minusDays(3),
+        author = usersFixture[2],
+        state = AnnouncementState.PUBLISHED
+    ),
+    Announcement(
+        id = "4",
+        title = "Attention à la neige ❄️",
+        content = "Ceci est une annonce de rendu de dossier.",
+        date = LocalDateTime.now().minusYears(1),
+        author = usersFixture[5],
+        state = AnnouncementState.PUBLISHED
+    ),
+    Announcement(
+        id = "5",
+        title = "Aide au devoir",
+        content = "Ceci est une annonce pour l'aide au devoir.",
+        date = LocalDateTime.now().minusMonths(1),
+        author = usersFixture[4],
+        state = AnnouncementState.PUBLISHED
+    ),
+    Announcement(
+        id = "6",
+        title = "Rendez-vous accueil",
+        content = "Ceci est une annonce pour un rendez-vous d'accueil.",
+        date = LocalDateTime.now().minusWeeks(1),
+        author = usersFixture[3],
+        state = AnnouncementState.PUBLISHED
+    ),
+    Announcement(
+        id = "7",
+        title = null,
+        content = "Cadeau 🎁",
+        date = LocalDateTime.now().minusYears(1),
+        author = usersFixture[6],
+        state = AnnouncementState.PUBLISHED
+    )
 )

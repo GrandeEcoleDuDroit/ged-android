@@ -3,6 +3,8 @@ package com.upsaclay.message.domain
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.domain.userFixture2
+import com.upsaclay.message.domain.fixtures.conversationDTOFixture
+import com.upsaclay.message.domain.fixtures.conversationFixture
 import com.upsaclay.message.domain.mapper.toConversation
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.usecase.ListenRemoteConversationsUseCase
@@ -32,7 +34,9 @@ class ListenRemoteConversationUseCaseTest {
     fun setUp() {
         coEvery { userRepository.user } returns flowOf(userFixture)
         coEvery { userRepository.getUserFlow(any()) } returns flowOf(userFixture2)
-        coEvery { conversationRepository.getRemoteConversationsFlow(any()) } returns flowOf(conversationDTOFixture)
+        coEvery { conversationRepository.getRemoteConversationsFlow(any()) } returns flowOf(
+            conversationDTOFixture
+        )
         coEvery { conversationRepository.upsertLocalConversation(any()) } returns Unit
         coEvery { listenRemoteMessagesUseCase.start(any()) } returns Unit
         coEvery { conversationRepository.upsertLocalConversation(any()) } returns Unit

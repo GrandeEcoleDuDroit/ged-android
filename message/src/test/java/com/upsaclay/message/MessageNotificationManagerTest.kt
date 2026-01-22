@@ -4,7 +4,7 @@ import android.os.Bundle
 import com.upsaclay.common.domain.repository.RouteRepository
 import com.upsaclay.common.domain.usecase.NavigationRequestUseCase
 import com.upsaclay.message.domain.converter.ConversationJsonParser
-import com.upsaclay.message.domain.messageNotificationFixture
+import com.upsaclay.message.domain.fixtures.messageNotificationFixture
 import com.upsaclay.message.domain.repository.MessageNotificationRepository
 import com.upsaclay.message.notification.MessageNotificationManager
 import com.upsaclay.message.notification.MessageNotificationPresenter
@@ -39,7 +39,9 @@ class MessageNotificationManagerTest {
         every { messageNotificationPresenter.clearNotification(any()) } returns Unit
         every { messageNotificationRepository.parseNotification(any()) } returns messageNotificationFixture
         coEvery { messageNotificationRepository.storeMessageNotification(any()) } returns Unit
-        coEvery { messageNotificationRepository.getMessageNotifications(any()) } returns listOf(messageNotificationFixture)
+        coEvery { messageNotificationRepository.getMessageNotifications(any()) } returns listOf(
+            messageNotificationFixture
+        )
         coEvery { messageNotificationRepository.deleteMessageNotifications(any()) } returns Unit
 
         manager = MessageNotificationManager(

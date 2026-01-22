@@ -1,6 +1,7 @@
 package com.upsaclay.message.domain
 
 import com.upsaclay.common.domain.userFixture
+import com.upsaclay.message.domain.fixtures.conversationFixture
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
 import com.upsaclay.message.domain.usecase.DeleteConversationUseCase

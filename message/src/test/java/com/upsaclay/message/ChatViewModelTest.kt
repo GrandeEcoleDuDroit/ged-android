@@ -5,9 +5,9 @@ import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.GenerateIdUseCase
 import com.upsaclay.common.domain.userFixture
-import com.upsaclay.message.domain.conversationFixture
-import com.upsaclay.message.domain.messageFixture
-import com.upsaclay.message.domain.messagesFixture
+import com.upsaclay.message.domain.fixtures.conversationFixture
+import com.upsaclay.message.domain.fixtures.messageFixture
+import com.upsaclay.message.domain.fixtures.messagesFixture
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
 import com.upsaclay.message.domain.usecase.DeleteConversationUseCase
@@ -48,10 +48,14 @@ class ChatViewModelTest {
         Dispatchers.setMain(testDispatcher)
 
         every { generateIdUseCase.execute() } returns "testId"
-        every { conversationRepository.getConversationFlow(any()) } returns flowOf(conversationFixture)
+        every { conversationRepository.getConversationFlow(any()) } returns flowOf(
+            conversationFixture
+        )
         every { userRepository.user } returns MutableStateFlow(userFixture)
         every { userRepository.currentUser } returns userFixture
-        every { messageRepository.getPagingMessages(any()) } returns flowOf(PagingData.from(messagesFixture))
+        every { messageRepository.getPagingMessages(any()) } returns flowOf(PagingData.from(
+            messagesFixture
+        ))
         every { messageRepository.getNewMessagesFlow(any(), any()) } returns flowOf(messageFixture)
         every { sendMessageUseCase.execute(any(), any(), any()) } returns Unit
         every { blockedUserRepository.blockedUsers } returns flowOf(emptyMap())
