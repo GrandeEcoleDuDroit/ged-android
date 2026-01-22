@@ -48,6 +48,8 @@ import com.upsaclay.mission.presentation.createmission.navigateToCreateMission
 import com.upsaclay.mission.presentation.editmission.editMissionScreen
 import com.upsaclay.mission.presentation.editmission.navigateToEditMission
 import com.upsaclay.mission.presentation.missionSection
+import com.upsaclay.mission.presentation.missiondetails.allusers.allUsersScreen
+import com.upsaclay.mission.presentation.missiondetails.allusers.navigateToAllUsers
 import com.upsaclay.mission.presentation.missiondetails.missionDetailsScreen
 import com.upsaclay.mission.presentation.missiondetails.navigateToMissionDetails
 import com.upsaclay.mission.presentation.navigateToMission
@@ -246,11 +248,17 @@ fun GedNavHost(
                 onBackClick = navController::popBackStack,
                 onManagerClick = navController::navigateToUser,
                 onParticipantClick = navController::navigateToUser,
-                onEditMissionClick = navController::navigateToEditMission
+                onEditMissionClick = navController::navigateToEditMission,
+                onSeeAllUsersClick = navController::navigateToAllUsers
             )
 
             editMissionScreen(
                 onBackClick = navController::popBackStack
+            )
+
+            allUsersScreen(
+                onBackClick = navController::popBackStack,
+                onUserClick = navController::navigateToUser
             )
         }
     }

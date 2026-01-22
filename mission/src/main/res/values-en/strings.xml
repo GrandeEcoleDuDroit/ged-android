@@ -5,6 +5,7 @@
     <string name="mission_details">Mission details</string>
     <string name="open">Open</string>
     <string name="all">All</string>
+    <string name="see_all_users">See all (%d more)</string>
 
     <string name="no_mission">No mission</string>
     <string name="remaining_spots">%s remaining spots</string>

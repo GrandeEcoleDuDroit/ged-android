@@ -80,6 +80,7 @@ fun MissionDetailsDestination(
     onManagerClick: (User) -> Unit,
     onParticipantClick: (User) -> Unit,
     onEditMissionClick: (Mission) -> Unit,
+    onSeeAllUsersClick: (List<User>) -> Unit,
     viewModel: MissionDetailsViewModel = koinViewModel(
         parameters = { parametersOf(missionId) }
     )
@@ -120,7 +121,9 @@ fun MissionDetailsDestination(
             onRemoveParticipantClick = viewModel::removeParticipant,
             onEditMissionClick = onEditMissionClick,
             onReportMissionClick = viewModel::reportMission,
-            onDeleteMissionClick = viewModel::deleteMission
+            onDeleteMissionClick = viewModel::deleteMission,
+            onSeeAllManagersClick = onSeeAllUsersClick,
+            onSeeAllParticipantsClick = onSeeAllUsersClick
         )
     } else {
         Box(
@@ -151,7 +154,9 @@ private fun MissionDetailsScreen(
     onRemoveParticipantClick: (String) -> Unit,
     onEditMissionClick: (Mission) -> Unit,
     onReportMissionClick: (MissionReport) -> Unit,
-    onDeleteMissionClick: () -> Unit
+    onDeleteMissionClick: () -> Unit,
+    onSeeAllManagersClick: (List<User>) -> Unit,
+    onSeeAllParticipantsClick: (List<User>) -> Unit,
 ) {
     var activeBottomSheet by remember { mutableStateOf<MissionDetailsScreenBottomSheet?>(null) }
     var activeDialog by remember { mutableStateOf<MissionDetailsScreenDialog?>(null) }
@@ -263,7 +268,8 @@ private fun MissionDetailsScreen(
                     MissionDetailsManagerSection(
                         modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
                         managers = mission.managers,
-                        onManagerClick = onManagerClick
+                        onManagerClick = onManagerClick,
+                        onSeeAllClick = { onSeeAllManagersClick(mission.managers) }
                     )
 
                     HorizontalDivider(
@@ -279,7 +285,8 @@ private fun MissionDetailsScreen(
                                 hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                 activeBottomSheet = MissionDetailsScreenBottomSheet.ParticipantBottomSheet(it)
                             }
-                        }
+                        },
+                        onSeeAllClick = { onSeeAllParticipantsClick(mission.participants) }
                     )
 
                     if (mission.tasks.isNotEmpty()) {
@@ -506,7 +513,9 @@ private fun MissionDetailsScreenPreview() {
                 onRemoveParticipantClick = {},
                 onEditMissionClick = {},
                 onReportMissionClick = {},
-                onDeleteMissionClick = {}
+                onDeleteMissionClick = {},
+                onSeeAllManagersClick = {},
+                onSeeAllParticipantsClick = {}
             )
         }
     }

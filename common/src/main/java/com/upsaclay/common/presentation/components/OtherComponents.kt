@@ -103,7 +103,9 @@ fun UserItem(
     trailingContent: @Composable (() -> Unit)? = null
 ) {
     ListItem(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .padding(vertical = 2.dp)
+            .fillMaxWidth(),
         leadingContent = {
             ProfilePicture(
                 url = user.profilePictureUrl,

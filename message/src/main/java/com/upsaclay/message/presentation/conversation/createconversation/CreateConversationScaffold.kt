@@ -40,7 +40,7 @@ fun CreateConversationScaffold(
                     SearchTopBar(
                         query = query,
                         onQueryChange = onQueryChange,
-                        onSearchBackClick = onSearchBackClick,
+                        onBackClick = onSearchBackClick,
                         onClearClick = onClearClick
                     )
                 } else {

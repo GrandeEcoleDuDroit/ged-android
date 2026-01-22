@@ -1,10 +1,12 @@
 package com.upsaclay.mission
 
+import com.upsaclay.common.domain.entity.User
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.presentation.MissionViewModel
 import com.upsaclay.mission.presentation.createmission.CreateMissionViewModel
 import com.upsaclay.mission.presentation.editmission.EditMissionViewModel
 import com.upsaclay.mission.presentation.missiondetails.MissionDetailsViewModel
+import com.upsaclay.mission.presentation.missiondetails.allusers.AllUsersViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.dsl.module
@@ -28,5 +30,9 @@ val missionModule = module {
             generateIdUseCase = get(),
             userRepository = get()
         )
+    }
+
+    viewModel { (users: List<User>) ->
+        AllUsersViewModel(users = users)
     }
 }
