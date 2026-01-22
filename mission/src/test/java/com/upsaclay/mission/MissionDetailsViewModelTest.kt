@@ -41,7 +41,7 @@ class MissionDetailsViewModelTest {
         coEvery { missionRepository.removeParticipant(any(), any()) } returns Unit
         coEvery { missionRepository.reportMission(any()) } returns Unit
         coEvery { missionRepository.addParticipant(any(), any()) } returns Unit
-        coEvery { deleteMissionUseCase(any()) } returns Unit
+        coEvery { deleteMissionUseCase.execute(any()) } returns Unit
 
         viewModel = MissionDetailsViewModel(
             missionId = missionFixture.id,
@@ -93,7 +93,7 @@ class MissionDetailsViewModelTest {
         viewModel.deleteMission()
 
         // Then
-        coVerify { deleteMissionUseCase(missionFixture) }
+        coVerify { deleteMissionUseCase.execute(missionFixture) }
     }
 
     @Test

@@ -15,7 +15,7 @@ class RegisterUseCase(
     private val userRepository: UserRepository,
     private val whiteListRepository: WhiteListRepository
 ) {
-    suspend operator fun invoke(
+    suspend fun execute(
         email: String,
         password: String,
         firstName: String,

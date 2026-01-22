@@ -13,7 +13,7 @@ class GetConversationUseCase(
     private val userRepository: UserRepository,
     private val conversationRepository: ConversationRepository
 ) {
-    suspend operator fun invoke(interlocutor: User): Conversation {
+    suspend fun execute(interlocutor: User): Conversation {
         return conversationRepository.getConversation(interlocutor.id) ?: run {
             val user = userRepository.currentUser ?: throw CustomException(CURRENT_USER_NOT_FOUND)
             generateNewConversation(user.id, interlocutor)

@@ -58,7 +58,7 @@ class BlockedUsersViewModel(
 
     private fun initUiState() {
         viewModelScope.launch {
-           val blockedUsers = getBlockedUsersUseCase()
+           val blockedUsers = getBlockedUsersUseCase.execute()
             _uiState.update {
                 it.copy(blockedUsers = blockedUsers)
             }

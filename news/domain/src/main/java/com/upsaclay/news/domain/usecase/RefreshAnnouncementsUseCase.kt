@@ -9,11 +9,11 @@ class RefreshAnnouncementsUseCase(
 ) {
     internal var lastRequestTime: Long = 0
 
-    suspend operator fun invoke() {
+    suspend fun execute() {
         delay(500)
         val currentTime = System.currentTimeMillis()
         if (currentTime - lastRequestTime > DEBOUNCE_INTERVAL) {
-            fetchAnnouncementsUseCase()
+            fetchAnnouncementsUseCase.execute()
             lastRequestTime = currentTime
         }
     }

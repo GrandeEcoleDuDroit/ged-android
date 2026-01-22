@@ -33,7 +33,7 @@ class ThirdRegistrationViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
 
-        coEvery { registerUseCase(any(), any(), any(), any(), any()) } returns Unit
+        coEvery { registerUseCase.execute(any(), any(), any(), any(), any()) } returns Unit
 
         viewModel = ThirdRegistrationViewModel(
             registerUseCase = registerUseCase
@@ -69,7 +69,7 @@ class ThirdRegistrationViewModelTest {
         viewModel.register(firstName, lastName, schoolLevel)
 
         // Then
-        coVerify { registerUseCase(email, password, firstName, lastName, schoolLevel) }
+        coVerify { registerUseCase.execute(email, password, firstName, lastName, schoolLevel) }
     }
 
     @Test

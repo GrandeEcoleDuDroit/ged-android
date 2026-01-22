@@ -47,15 +47,15 @@ class ChatViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
 
-        every { generateIdUseCase() } returns "testId"
+        every { generateIdUseCase.execute() } returns "testId"
         every { conversationRepository.getConversationFlow(any()) } returns flowOf(conversationFixture)
         every { userRepository.user } returns MutableStateFlow(userFixture)
         every { userRepository.currentUser } returns userFixture
         every { messageRepository.getPagingMessages(any()) } returns flowOf(PagingData.from(messagesFixture))
         every { messageRepository.getNewMessagesFlow(any(), any()) } returns flowOf(messageFixture)
-        every { sendMessageUseCase(any(), any(), any()) } returns Unit
+        every { sendMessageUseCase.execute(any(), any(), any()) } returns Unit
         every { blockedUserRepository.blockedUsers } returns flowOf(emptyMap())
-        coEvery { deleteConversationUseCase(any(), any()) } returns Unit
+        coEvery { deleteConversationUseCase.execute(any(), any()) } returns Unit
         coEvery { messageRepository.setMessagesSeen(any(), any()) } returns Unit
         coEvery { messageNotificationManager.clearNotifications(any()) } returns Unit
         coEvery { messageRepository.deleteLocalMessages(any()) } returns Unit
@@ -94,7 +94,7 @@ class ChatViewModelTest {
         chatViewModel.sendMessage()
 
         // Then
-        coVerify { sendMessageUseCase(any(), any(), any()) }
+        coVerify { sendMessageUseCase.execute(any(), any(), any()) }
     }
 
     @Test

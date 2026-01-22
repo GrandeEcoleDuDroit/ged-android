@@ -35,7 +35,7 @@ class DeleteAnnouncementUseCaseTest {
         val announcement = announcementFixture.copy(state = AnnouncementState.PUBLISHED)
 
         // When
-        useCase(announcement)
+        useCase.execute(announcement)
 
         // Then
         coVerify { announcementRepository.deleteAnnouncement(announcement) }
@@ -47,7 +47,7 @@ class DeleteAnnouncementUseCaseTest {
         val announcement = announcementFixture.copy(state = AnnouncementState.DRAFT)
 
         // When
-        useCase(announcement)
+        useCase.execute(announcement)
 
         // Then
         coVerify { announcementRepository.deleteLocalAnnouncement(announcement) }
@@ -59,7 +59,7 @@ class DeleteAnnouncementUseCaseTest {
         val announcement = announcementFixture.copy(state = AnnouncementState.ERROR)
 
         // When
-        useCase(announcement)
+        useCase.execute(announcement)
 
         // Then
         coVerify { announcementRepository.deleteLocalAnnouncement(announcement) }
@@ -71,7 +71,7 @@ class DeleteAnnouncementUseCaseTest {
         val announcement = announcementFixture.copy(state = AnnouncementState.PUBLISHING)
 
         // When
-        useCase(announcement)
+        useCase.execute(announcement)
 
         // Then
         coVerify { announcementRepository.deleteLocalAnnouncement(announcement) }
@@ -83,7 +83,7 @@ class DeleteAnnouncementUseCaseTest {
         val announcement = announcementFixture.copy(state = AnnouncementState.PUBLISHING)
 
         // When
-        useCase(announcement)
+        useCase.execute(announcement)
 
         // Then
         coVerify { announcementJobQueue.cancelAndRemoveJob(announcement.id) }

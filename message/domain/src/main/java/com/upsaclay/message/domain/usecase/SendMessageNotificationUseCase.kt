@@ -11,7 +11,7 @@ class SendMessageNotificationUseCase(
     private val userRepository: UserRepository,
     private val messageNotificationRepository: MessageNotificationRepository
 ) {
-    suspend operator fun invoke(conversation: Conversation, message: Message) {
+    suspend fun execute(conversation: Conversation, message: Message) {
         runCatching {
             val currentUser = userRepository.currentUser ?: return
             val messageContentNotification = MessageNotification(

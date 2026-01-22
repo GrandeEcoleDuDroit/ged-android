@@ -39,9 +39,9 @@ class CreateConversationViewModelTest {
 
         every { userRepository.user } returns MutableStateFlow(userFixture)
         every { userRepository.currentUser } returns userFixture
-        coEvery { getConversationUseCase(any()) } returns conversationFixture
+        coEvery { getConversationUseCase.execute(any()) } returns conversationFixture
         coEvery { blockedUserRepository.getLocalBlockedUsers() } returns emptyMap()
-        coEvery { getUsersUseCase() } returns usersFixture
+        coEvery { getUsersUseCase.execute() } returns usersFixture
 
         createConversationViewModel = CreateConversationViewModel(
             userRepository = userRepository,
@@ -66,7 +66,7 @@ class CreateConversationViewModelTest {
         val users = usersFixture
             .filterNot { it.id == userFixture.id }
             .sortedBy { it.fullName }
-        coEvery { getUsersUseCase() } returns users
+        coEvery { getUsersUseCase.execute() } returns users
 
         // When
         createConversationViewModel = CreateConversationViewModel(
@@ -85,7 +85,7 @@ class CreateConversationViewModelTest {
         // Given
         val blockedUserId = "userId"
         coEvery { blockedUserRepository.getLocalBlockedUsers() } returns mapOf(blockedUserId to BlockedUser(blockedUserId, LocalDateTime.now()))
-        coEvery { getUsersUseCase()} returns listOf(userFixture.copy(id = blockedUserId))
+        coEvery { getUsersUseCase.execute()} returns listOf(userFixture.copy(id = blockedUserId))
 
         // When
         createConversationViewModel = CreateConversationViewModel(

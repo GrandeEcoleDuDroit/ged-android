@@ -44,7 +44,7 @@ class FetchAnnouncementsUseCaseTest {
         coEvery { announcementRepository.getRemoteAnnouncements() } returns listOf(announcementFixture)
 
         // When
-        useCase()
+        useCase.execute()
 
         // Then
         coVerify { announcementRepository.upsertLocalAnnouncement(announcementFixture) }
@@ -57,7 +57,7 @@ class FetchAnnouncementsUseCaseTest {
         coEvery { announcementRepository.getRemoteAnnouncements() } returns emptyList()
 
         // When
-        useCase()
+        useCase.execute()
 
         // Then
         coVerify { announcementRepository.deleteLocalAnnouncement(announcementFixture) }
@@ -72,7 +72,7 @@ class FetchAnnouncementsUseCaseTest {
         every { announcementRepository.currentAnnouncements } returns emptyList()
 
         // When
-        useCase()
+        useCase.execute()
 
         // Then
         coVerify(exactly = 0) { announcementRepository.upsertLocalAnnouncement(any()) }
@@ -86,7 +86,7 @@ class FetchAnnouncementsUseCaseTest {
         coEvery { announcementRepository.getRemoteAnnouncements() } returns emptyList()
 
         // When
-        useCase()
+        useCase.execute()
 
         // Then
         coVerify { announcementRepository.deleteLocalAnnouncement(announcement) }

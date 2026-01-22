@@ -39,9 +39,9 @@ class NewsViewModelTest {
 
         every { announcementRepository.announcements } returns flowOf(announcementsFixture)
         every { userRepository.user } returns MutableStateFlow(userFixture)
-        coEvery { recreateAnnouncementUseCase(any()) } returns Unit
-        coEvery { refreshAnnouncementsUseCase() } returns Unit
-        coEvery { deleteAnnouncementUseCase(any()) } returns Unit
+        coEvery { recreateAnnouncementUseCase.execute(any()) } returns Unit
+        coEvery { refreshAnnouncementsUseCase.execute() } returns Unit
+        coEvery { deleteAnnouncementUseCase.execute(any()) } returns Unit
 
         newsViewModel = NewsViewModel(
             recreateAnnouncementUseCase = recreateAnnouncementUseCase,
@@ -58,7 +58,7 @@ class NewsViewModelTest {
         newsViewModel.refreshAnnouncements()
 
         // Then
-        coVerify { refreshAnnouncementsUseCase() }
+        coVerify { refreshAnnouncementsUseCase.execute() }
     }
 
     @Test
@@ -70,7 +70,7 @@ class NewsViewModelTest {
         newsViewModel.resendAnnouncement(announcement)
 
         // Then
-        coVerify { recreateAnnouncementUseCase(announcement) }
+        coVerify { recreateAnnouncementUseCase.execute(announcement) }
     }
 
     @Test
@@ -82,6 +82,6 @@ class NewsViewModelTest {
         newsViewModel.deleteAnnouncement(announcement)
 
         // Then
-        coVerify { deleteAnnouncementUseCase(announcement) }
+        coVerify { deleteAnnouncementUseCase.execute(announcement) }
     }
 }

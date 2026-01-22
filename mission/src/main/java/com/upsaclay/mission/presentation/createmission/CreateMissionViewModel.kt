@@ -45,7 +45,7 @@ class CreateMissionViewModel(
 
     fun createMission() {
         val mission = Mission(
-            id = generateIdUseCase(),
+            id = generateIdUseCase.execute(),
             title = uiState.value.title.trim(),
             description = uiState.value.description.trim(),
             date = LocalDateTime.now(ZoneOffset.UTC),
@@ -61,7 +61,7 @@ class CreateMissionViewModel(
         )
 
         viewModelScope.launch {
-            createMissionUseCase(mission, uiState.value.imageUri?.toString())
+            createMissionUseCase.execute(mission, uiState.value.imageUri?.toString())
         }
     }
 
@@ -205,7 +205,7 @@ class CreateMissionViewModel(
     }
 
     fun onAddMissionTask(missionTaskValue: String) {
-        val missionTask = MissionTask(generateIdUseCase(), missionTaskValue.trim())
+        val missionTask = MissionTask(generateIdUseCase.execute(), missionTaskValue.trim())
         _uiState.update {
             it.copy(missionTasks = it.missionTasks + missionTask)
         }
@@ -265,7 +265,7 @@ class CreateMissionViewModel(
 
     private fun initUsers() {
         viewModelScope.launch {
-            getUsersUseCase()
+            getUsersUseCase.execute()
                 .missionManagerSorting()
                 .also { users ->
                     _uiState.update { it.copy(users = users) }

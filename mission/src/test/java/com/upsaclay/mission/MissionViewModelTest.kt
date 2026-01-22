@@ -40,9 +40,9 @@ class MissionViewModelTest {
 
         every { missionRepository.missions } returns flowOf(missionsFixture)
         every { userRepository.user } returns MutableStateFlow(userFixture)
-        coEvery { recreateMissionUseCase(any()) } returns Unit
-        coEvery { deleteMissionUseCase(any()) } returns Unit
-        coEvery { refreshMissionsUseCase() } returns Unit
+        coEvery { recreateMissionUseCase.execute(any()) } returns Unit
+        coEvery { deleteMissionUseCase.execute(any()) } returns Unit
+        coEvery { refreshMissionsUseCase.execute() } returns Unit
 
         viewModel = MissionViewModel(
             missionRepository = missionRepository,
@@ -59,7 +59,7 @@ class MissionViewModelTest {
         viewModel.refreshMissions()
 
         // Then
-        coVerify { refreshMissionsUseCase() }
+        coVerify { refreshMissionsUseCase.execute() }
     }
 
     @Test
@@ -68,7 +68,7 @@ class MissionViewModelTest {
         viewModel.recreateMission(missionFixture)
 
         // Then
-        coVerify { recreateMissionUseCase(missionFixture) }
+        coVerify { recreateMissionUseCase.execute(missionFixture) }
     }
 
     @Test
@@ -77,6 +77,6 @@ class MissionViewModelTest {
         viewModel.deleteMission(missionFixture)
 
         // Then
-        coVerify { deleteMissionUseCase(missionFixture) }
+        coVerify { deleteMissionUseCase.execute(missionFixture) }
     }
 }

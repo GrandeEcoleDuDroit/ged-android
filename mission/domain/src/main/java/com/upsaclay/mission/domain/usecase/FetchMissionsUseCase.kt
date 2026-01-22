@@ -4,7 +4,7 @@ import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.repository.MissionRepository
 
 class FetchMissionsUseCase(private val missionRepository: MissionRepository) {
-    suspend operator fun invoke() {
+    suspend fun execute() {
         val missions = missionRepository.currentMissions
         val remoteMissions = missionRepository.getRemoteMissions()
 

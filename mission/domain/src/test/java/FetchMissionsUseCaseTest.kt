@@ -36,7 +36,7 @@ class FetchMissionsUseCaseTest {
         coEvery { missionRepository.getRemoteMissions() } returns listOf(missionFixture)
 
         // When
-        useCase()
+        useCase.execute()
 
         // Then
         coVerify { missionRepository.upsertLocalMission(missionFixture) }
@@ -49,7 +49,7 @@ class FetchMissionsUseCaseTest {
         coEvery { missionRepository.getRemoteMissions() } returns emptyList()
 
         // When
-        useCase()
+        useCase.execute()
 
         // Then
         coVerify { missionRepository.deleteLocalMission(missionFixture) }

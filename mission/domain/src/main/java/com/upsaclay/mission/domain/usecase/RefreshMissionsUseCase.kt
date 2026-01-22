@@ -11,11 +11,11 @@ class RefreshMissionsUseCase(
         private const val DEBOUNCE_INTERVAL = 10000L
     }
 
-    suspend operator fun invoke() {
+    suspend fun execute() {
         delay(500)
         val currentTime = System.currentTimeMillis()
         if (currentTime - lastRequestTime > DEBOUNCE_INTERVAL) {
-            fetchMissionsUseCase()
+            fetchMissionsUseCase.execute()
             lastRequestTime = currentTime
         }
     }

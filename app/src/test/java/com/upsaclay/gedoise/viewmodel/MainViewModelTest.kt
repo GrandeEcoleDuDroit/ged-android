@@ -43,10 +43,10 @@ class MainViewModelTest {
         every { authenticationRepository.authenticationState } returns flowOf(AuthenticationState.Authenticated(userId))
         every { connectivityObserver.connected } returns flowOf(true)
         coEvery { authenticationRepository.refreshTokenIfNecessary() } returns Unit
-        coEvery { clearDataUseCase() } returns Unit
+        coEvery { clearDataUseCase.execute() } returns Unit
         coEvery { listenDataUseCase.start(any(), any()) } returns Unit
         coEvery { listenDataUseCase.stop() } returns Unit
-        coEvery { fetchDataUseCase(any()) } returns Unit
+        coEvery { fetchDataUseCase.execute(any()) } returns Unit
 
         viewModel = MainViewModel(
             authenticationRepository = authenticationRepository,
@@ -73,7 +73,7 @@ class MainViewModelTest {
         viewModel.updateAppData()
 
         // Then
-        coVerify { fetchDataUseCase(userId) }
+        coVerify { fetchDataUseCase.execute(userId) }
     }
 
     @Test
@@ -99,6 +99,6 @@ class MainViewModelTest {
         advanceUntilIdle()
 
         // Then
-        coVerify { clearDataUseCase() }
+        coVerify { clearDataUseCase.execute() }
     }
 }

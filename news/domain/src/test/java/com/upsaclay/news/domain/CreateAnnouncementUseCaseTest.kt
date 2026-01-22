@@ -42,7 +42,7 @@ class CreateAnnouncementUseCaseTest {
         val announcement = longAnnouncementFixture.copy(state = AnnouncementState.DRAFT)
 
         // When
-        useCase(announcement)
+        useCase.execute(announcement)
 
         // Then
         coVerify {
@@ -56,7 +56,7 @@ class CreateAnnouncementUseCaseTest {
         val announcement = longAnnouncementFixture.copy(state = AnnouncementState.DRAFT)
 
         // When
-        useCase(announcement)
+        useCase.execute(announcement)
 
         // Then
         coVerify {
@@ -71,7 +71,7 @@ class CreateAnnouncementUseCaseTest {
         coEvery { announcementRepository.createAnnouncement(any()) } throws Exception()
 
         // When
-        useCase(announcement)
+        useCase.execute(announcement)
 
         // Then
         coVerify {
@@ -82,7 +82,7 @@ class CreateAnnouncementUseCaseTest {
     @Test
     fun createAnnouncement_should_store_job_reference() = runTest {
         // When
-        useCase(announcementFixture)
+        useCase.execute(announcementFixture)
 
         // Then
         coVerify {
@@ -93,7 +93,7 @@ class CreateAnnouncementUseCaseTest {
     @Test
     fun createAnnouncement_should_remove_job_reference_when_job_finished() = runTest {
         // When
-        useCase(announcementFixture)
+        useCase.execute(announcementFixture)
 
         // Then
         coVerify { announcementJobQueue.cancelAndRemoveJob(announcementFixture.id) }

@@ -40,7 +40,7 @@ class UpdateMissionUseCaseTest {
         val mission = missionFixture.copy(state = MissionState.Published())
 
         // When
-        useCase(userFixture, mission, imageUri)
+        useCase.execute(userFixture, mission, imageUri)
 
         // Then
         coVerify {
@@ -54,7 +54,7 @@ class UpdateMissionUseCaseTest {
         val mission = missionFixture.copy(state = MissionState.Published())
 
         // When
-        useCase(userFixture, mission, imageUri)
+        useCase.execute(userFixture, mission, imageUri)
 
         // Then
         coVerify { imageRepository.deleteCacheImage(any()) }

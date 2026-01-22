@@ -60,7 +60,7 @@ class ThirdRegistrationViewModel(
         }
 
         executeRequest {
-            registerUseCase(email, password, firstName, lastName, schoolLevel)
+            registerUseCase.execute(email, password, firstName, lastName, schoolLevel)
             _event.emit(SingleUiEvent.Success())
         }
     }
@@ -89,7 +89,7 @@ class ThirdRegistrationViewModel(
     private fun validateEmail(email: String): Int? {
         return when {
             email.isBlank() -> R.string.mandatory_field
-            !VerifyEmailFormatUseCase(email) -> R.string.incorrect_email_format_error
+            !VerifyEmailFormatUseCase.execute(email) -> R.string.incorrect_email_format_error
             else -> null
         }
     }

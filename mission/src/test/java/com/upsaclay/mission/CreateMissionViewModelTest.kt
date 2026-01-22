@@ -40,10 +40,10 @@ class CreateMissionViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
 
-        every { generateIdUseCase() } returns newId
+        every { generateIdUseCase.execute() } returns newId
         every { userRepository.user } returns MutableStateFlow(userFixture)
-        coEvery { createMissionUseCase(any(), any()) } returns Unit
-        coEvery { getUsersUseCase() } returns usersFixture
+        coEvery { createMissionUseCase.execute(any(), any()) } returns Unit
+        coEvery { getUsersUseCase.execute() } returns usersFixture
 
         viewModel = CreateMissionViewModel(
             userRepository = userRepository,
@@ -388,7 +388,7 @@ class CreateMissionViewModelTest {
         val user = userFixture.copy(firstName = "ab")
         val userQuery = "a"
         val users = listOf(user, userFixture2.copy(firstName = "b", lastName = "b"))
-        coEvery { getUsersUseCase() } returns users
+        coEvery { getUsersUseCase.execute() } returns users
 
         // When
         viewModel = CreateMissionViewModel(

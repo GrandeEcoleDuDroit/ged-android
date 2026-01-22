@@ -41,7 +41,7 @@ class MissionViewModel(
 
     fun refreshMissions() {
         viewModelScope.executeUiBlockingRequest(
-            block = { refreshMissionsUseCase() },
+            block = { refreshMissionsUseCase.execute() },
             onLoading = {
                 _uiState.update { it.copy(refreshing = true) }
             },
@@ -63,13 +63,13 @@ class MissionViewModel(
 
     fun recreateMission(mission: Mission) {
         executeRequest {
-            recreateMissionUseCase(mission)
+            recreateMissionUseCase.execute(mission)
         }
     }
 
     fun deleteMission(mission: Mission) {
         executeRequest {
-            deleteMissionUseCase(mission)
+            deleteMissionUseCase.execute(mission)
             _event.emit(SingleUiEvent.Success(R.string.mission_deleted))
         }
     }

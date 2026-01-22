@@ -32,7 +32,7 @@ class SendMessageContentUseCaseTest {
     @Before
     fun setUp() {
         every { userRepository.currentUser } returns userFixture
-        coEvery { sendMessageNotificationUseCase(any(), any()) } returns Unit
+        coEvery { sendMessageNotificationUseCase.execute(any(), any()) } returns Unit
         coEvery { conversationRepository.updateLocalConversation(any()) } returns Unit
         coEvery { conversationRepository.createLocalConversation(any()) } returns Unit
         coEvery { conversationRepository.createRemoteConversation(any(), any()) } returns Unit
@@ -55,7 +55,7 @@ class SendMessageContentUseCaseTest {
         val conversation = conversationFixture.copy(state = ConversationState.DRAFT)
 
         // When
-        useCase(conversation, messageFixture, userFixture.id)
+        useCase.execute(conversation, messageFixture, userFixture.id)
 
         // Then
         coVerify {
@@ -70,7 +70,7 @@ class SendMessageContentUseCaseTest {
         coEvery { conversationRepository.createRemoteConversation(any(), any()) } throws Exception()
 
         // When
-        useCase(conversation, messageFixture, userFixture.id)
+        useCase.execute(conversation, messageFixture, userFixture.id)
 
         // Then
         coVerify { conversationRepository.updateLocalConversation(conversation.copy(state = ConversationState.ERROR)) }
@@ -82,7 +82,7 @@ class SendMessageContentUseCaseTest {
         val message = messageFixture.copy(state = MessageState.DRAFT)
 
         // When
-        useCase(conversationFixture, message, userFixture.id)
+        useCase.execute(conversationFixture, message, userFixture.id)
 
         // Then
         coVerify { messageRepository.createLocalMessage(message.copy(state = MessageState.SENDING)) }
@@ -95,7 +95,7 @@ class SendMessageContentUseCaseTest {
         coEvery { messageRepository.createRemoteMessage(any()) } throws Exception()
 
         // When
-        useCase(conversationFixture, message, userFixture.id)
+        useCase.execute(conversationFixture, message, userFixture.id)
 
         // Then
         coVerify { messageRepository.upsertLocalMessage(message.copy(state = MessageState.ERROR)) }
@@ -104,9 +104,9 @@ class SendMessageContentUseCaseTest {
     @Test
     fun sendMessageUseCase_should_send_notification() {
         // When
-        useCase(conversationFixture, messageFixture, userFixture.id)
+        useCase.execute(conversationFixture, messageFixture, userFixture.id)
 
         // Then
-        coVerify { sendMessageNotificationUseCase(conversationFixture, messageFixture) }
+        coVerify { sendMessageNotificationUseCase.execute(conversationFixture, messageFixture) }
     }
 }

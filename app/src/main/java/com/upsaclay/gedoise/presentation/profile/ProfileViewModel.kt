@@ -34,7 +34,7 @@ class ProfileViewModel(
 
     fun logout() {
         executeRequest {
-            logoutUseCase()
+            logoutUseCase.execute()
         }
     }
 

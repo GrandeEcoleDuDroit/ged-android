@@ -37,7 +37,7 @@ class CreateConversationViewModel(
         viewModelScope.launch {
             val blockedUsers = blockedUserRepository.getLocalBlockedUsers()
             try {
-                getUsersUseCase()
+                getUsersUseCase.execute()
                     .filter { it.id != userRepository.currentUser?.id && !blockedUsers.containsKey(it.id) }
                     .sortedBy { it.fullName }
                     .also { users ->
@@ -57,7 +57,7 @@ class CreateConversationViewModel(
 
     suspend fun getConversation(interlocutor: User): Conversation? {
         return try {
-            getConversationUseCase(interlocutor)
+            getConversationUseCase.execute(interlocutor)
         } catch (e: Exception) {
             _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
             null

@@ -51,7 +51,7 @@ class RecreateMissionUseCaseTest {
         val mission = missionFixture.copy(state = MissionState.Error())
 
         // When
-        useCase(mission)
+        useCase.execute(mission)
 
         // Then
         coVerify {
@@ -65,7 +65,7 @@ class RecreateMissionUseCaseTest {
         val mission = missionFixture.copy(state = MissionState.Error())
 
         // When
-        useCase(mission)
+        useCase.execute(mission)
 
         // Then
         coVerify {
@@ -79,7 +79,7 @@ class RecreateMissionUseCaseTest {
         val mission = missionFixture.copy(state = MissionState.Error(file.path))
 
         // When
-        useCase(mission)
+        useCase.execute(mission)
 
         // Then
         coVerify {
@@ -93,7 +93,7 @@ class RecreateMissionUseCaseTest {
         val mission = missionFixture.copy(state = MissionState.Error())
 
         // When
-        useCase(mission)
+        useCase.execute(mission)
 
         // Then
         coVerify {
@@ -107,7 +107,7 @@ class RecreateMissionUseCaseTest {
         val mission = missionFixture.copy(state = MissionState.Error(file.path))
 
         // When
-        useCase(mission)
+        useCase.execute(mission)
 
         // Then
         coVerify {
@@ -122,7 +122,7 @@ class RecreateMissionUseCaseTest {
         coEvery { missionRepository.createMission(any(), any()) } throws Exception()
 
         // When
-        useCase(mission)
+        useCase.execute(mission)
 
         // Then
         coVerify {
@@ -137,7 +137,7 @@ class RecreateMissionUseCaseTest {
         coEvery { missionRepository.createMission(any(), any()) } throws Exception()
 
         // When
-        useCase(mission)
+        useCase.execute(mission)
 
         // Then
         coVerify {
@@ -151,7 +151,7 @@ class RecreateMissionUseCaseTest {
         val mission = missionFixture.copy(state = MissionState.Error(file.path))
 
         // When
-        useCase(mission)
+        useCase.execute(mission)
 
         // Then
         coVerify {
@@ -162,7 +162,7 @@ class RecreateMissionUseCaseTest {
     @Test
     fun recreateMission_should_store_job_reference() = runTest {
         // When
-        useCase(missionFixture.copy(state = MissionState.Error()))
+        useCase.execute(missionFixture.copy(state = MissionState.Error()))
 
         // Then
         coVerify {
@@ -173,7 +173,7 @@ class RecreateMissionUseCaseTest {
     @Test
     fun recreateMission_should_remove_job_reference_when_job_finished() = runTest {
         // When
-        useCase(missionFixture.copy(state = MissionState.Error()))
+        useCase.execute(missionFixture.copy(state = MissionState.Error()))
 
         // Then
         coVerify { missionJobQueue.cancelAndRemoveJob(missionFixture.id) }

@@ -16,7 +16,7 @@ class RecreateMissionUseCase(
     private val missionJobQueue: MissionJobQueue,
     private val scope: CoroutineScope
 ) {
-    suspend operator fun invoke(mission: Mission) {
+    suspend fun execute(mission: Mission) {
         if (mission.state is MissionState.Error) {
             val imagePath = mission.state.imagePath
             val job = scope.launch {

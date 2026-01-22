@@ -11,7 +11,7 @@ class DeleteMissionUseCase(
     private val imageRepository: ImageRepository,
     private val missionJobQueue: MissionJobQueue
 ) {
-    suspend operator fun invoke(mission: Mission) {
+    suspend fun execute(mission: Mission) {
         when (val state = mission.state) {
             is MissionState.Draft -> missionRepository.deleteLocalMission(mission)
 

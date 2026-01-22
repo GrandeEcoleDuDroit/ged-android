@@ -28,7 +28,7 @@ class AuthenticationViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
 
-        coEvery { loginUseCase(any(), any()) } returns Unit
+        coEvery { loginUseCase.execute(any(), any()) } returns Unit
 
         authenticationViewModel = AuthenticationViewModel(loginUseCase = loginUseCase)
     }
@@ -54,7 +54,7 @@ class AuthenticationViewModelTest {
     @Test
     fun login_should_reset_password_when_exception_is_thrown() = runTest {
         // Given
-        coEvery { loginUseCase(any(), any()) } throws Exception()
+        coEvery { loginUseCase.execute(any(), any()) } throws Exception()
         authenticationViewModel.onPasswordChange(password)
         authenticationViewModel.onEmailChange(email)
 

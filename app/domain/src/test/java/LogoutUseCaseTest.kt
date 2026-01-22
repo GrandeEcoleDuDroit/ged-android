@@ -35,7 +35,7 @@ class LogoutUseCaseTest {
     @Test
     fun logoutUseCase_should_logout() = runTest {
         // When
-        useCase()
+        useCase.execute()
 
         // Then
         coEvery { authenticationRepository.logout() }
@@ -44,7 +44,7 @@ class LogoutUseCaseTest {
     @Test
     fun logoutUseCase_should_delete_token() = runTest {
         // When
-        useCase()
+        useCase.execute()
 
         // Then
         coEvery { fcmTokenRepository.deleteToken(userFixture.id) }

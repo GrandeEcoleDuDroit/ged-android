@@ -42,7 +42,7 @@ class AccountInformationViewModel(
         executeRequest {
             uiState.value.profilePictureUri?.let { uri ->
                 val user = uiState.value.user ?: throw CustomException(CURRENT_USER_NOT_FOUND, Exception())
-                updateProfilePictureUseCase(user, uri.toString())
+                updateProfilePictureUseCase.execute(user, uri.toString())
                 _event.emit(SingleUiEvent.Success(R.string.profile_picture_updated))
             }
         }

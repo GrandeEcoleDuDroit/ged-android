@@ -33,7 +33,7 @@ class RecreateConversationUseCaseTest {
     @Test
     fun recreateConversationUseCase_should_update_conversation_to_creating() = runTest(testScope.testScheduler) {
         // When
-        useCase(conversationFixture, userFixture.id)
+        useCase.execute(conversationFixture, userFixture.id)
 
         // Then
         coVerify { conversationRepository.updateLocalConversation(conversationFixture.copy(state = Conversation.ConversationState.CREATING)) }
@@ -42,7 +42,7 @@ class RecreateConversationUseCaseTest {
     @Test
     fun recreateConversationUseCase_should_create_conversation() = runTest(testScope.testScheduler) {
         // When
-        useCase(conversationFixture, userFixture.id)
+        useCase.execute(conversationFixture, userFixture.id)
 
         // Then
         coVerify { conversationRepository.createRemoteConversation(conversationFixture, userFixture.id) }
@@ -51,7 +51,7 @@ class RecreateConversationUseCaseTest {
     @Test
     fun recreateConversationUseCase_should_update_conversation_to_created_when_success() = runTest(testScope.testScheduler) {
         // When
-        useCase(conversationFixture, userFixture.id)
+        useCase.execute(conversationFixture, userFixture.id)
         advanceUntilIdle()
 
         // Then
@@ -64,7 +64,7 @@ class RecreateConversationUseCaseTest {
         coEvery { conversationRepository.createRemoteConversation(any(), any()) } throws Exception()
 
         // When
-        useCase(conversationFixture, userFixture.id)
+        useCase.execute(conversationFixture, userFixture.id)
         advanceUntilIdle()
 
         // Then

@@ -28,7 +28,7 @@ class BlockedUsersViewModelTest {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
 
-        coEvery { getBlockedUsersUseCase() } returns listOf(userFixture)
+        coEvery { getBlockedUsersUseCase.execute() } returns listOf(userFixture)
         coEvery { userRepository.getCurrentUser() } returns userFixture
         coEvery { blockedUserRepository.removeBlockedUser(any(), any()) } returns Unit
         coEvery { blockedUserRepository.getLocalBlockedUsers() } returns emptyMap()

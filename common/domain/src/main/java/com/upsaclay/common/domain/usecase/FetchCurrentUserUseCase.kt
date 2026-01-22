@@ -5,7 +5,7 @@ import com.upsaclay.common.domain.repository.UserRepository
 class FetchCurrentUserUseCase(
     private val userRepository: UserRepository
 ) {
-    suspend operator fun invoke(userId: String) {
+    suspend fun execute(userId: String) {
         userRepository.getUser(userId)?.let {
             userRepository.storeUser(it)
         }

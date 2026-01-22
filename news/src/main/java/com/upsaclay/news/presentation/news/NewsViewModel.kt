@@ -12,8 +12,8 @@ import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.domain.entity.AnnouncementReport
 import com.upsaclay.news.domain.repository.AnnouncementRepository
 import com.upsaclay.news.domain.usecase.DeleteAnnouncementUseCase
-import com.upsaclay.news.domain.usecase.RefreshAnnouncementsUseCase
 import com.upsaclay.news.domain.usecase.RecreateAnnouncementUseCase
+import com.upsaclay.news.domain.usecase.RefreshAnnouncementsUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -43,7 +43,7 @@ class NewsViewModel(
 
     fun refreshAnnouncements() {
         viewModelScope.executeUiBlockingRequest(
-            block = { refreshAnnouncementsUseCase() },
+            block = { refreshAnnouncementsUseCase.execute() },
             onLoading = {
                 _uiState.update { it.copy(refreshing = true) }
             },
@@ -58,13 +58,13 @@ class NewsViewModel(
 
     fun resendAnnouncement(announcement: Announcement) {
         viewModelScope.launch {
-            recreateAnnouncementUseCase(announcement)
+            recreateAnnouncementUseCase.execute(announcement)
         }
     }
 
     fun deleteAnnouncement(announcement: Announcement) {
         executeRequest {
-            deleteAnnouncementUseCase(announcement)
+            deleteAnnouncementUseCase.execute(announcement)
             _event.emit(SingleUiEvent.Success(R.string.announcement_deleted))
         }
     }

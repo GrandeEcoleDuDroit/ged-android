@@ -33,7 +33,7 @@ class DeleteAccountViewModel(
 
         executeRequest {
             val currentUser = userRepository.currentUser ?: throw CustomException(CURRENT_USER_NOT_FOUND)
-            deleteAccountUseCase(currentUser, password)
+            deleteAccountUseCase.execute(currentUser, password)
         }
     }
 

@@ -42,8 +42,8 @@ class EditMissionViewModelTest {
         Dispatchers.setMain(testDispatcher)
 
         every { userRepository.currentUser } returns userFixture
-        every { generateIdUseCase() } returns newId
-        coEvery { getUsersUseCase() } returns usersFixture
+        every { generateIdUseCase.execute() } returns newId
+        coEvery { getUsersUseCase.execute() } returns usersFixture
 
         viewModel = EditMissionViewModel(
             mission = missionFixture,
@@ -415,7 +415,7 @@ class EditMissionViewModelTest {
         val user = userFixture.copy(firstName = "ab")
         val userQuery = "a"
         val users = listOf(user, userFixture2.copy(firstName = "b", lastName = "b"))
-        coEvery { getUsersUseCase() } returns users
+        coEvery { getUsersUseCase.execute() } returns users
 
         // When
         viewModel = EditMissionViewModel(

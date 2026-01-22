@@ -47,7 +47,7 @@ class CreateMissionUseCaseTest {
     @Test
     fun createMissionUseCase_should_create_local_image_when_image_uri_is_provided() = runTest {
         // When
-        useCase(missionFixture, imageUri)
+        useCase.execute(missionFixture, imageUri)
 
         // Then
         coVerify {
@@ -61,7 +61,7 @@ class CreateMissionUseCaseTest {
         val mission = missionFixture.copy(state = MissionState.Draft)
 
         // When
-        useCase(mission, null)
+        useCase.execute(mission, null)
 
         // Then
         coVerify {
@@ -75,7 +75,7 @@ class CreateMissionUseCaseTest {
         val mission = missionFixture.copy(state = MissionState.Draft)
 
         // When
-        useCase(mission, null)
+        useCase.execute(mission, null)
 
         // Then
         coVerify {
@@ -90,7 +90,7 @@ class CreateMissionUseCaseTest {
         coEvery { missionRepository.createMission(any(), any()) } throws Exception()
 
         // When
-        useCase(mission, null)
+        useCase.execute(mission, null)
 
         // Then
         coVerify {
@@ -104,7 +104,7 @@ class CreateMissionUseCaseTest {
         val mission = missionFixture.copy(state = MissionState.Draft)
 
         // When
-        useCase(mission, imageUri)
+        useCase.execute(mission, imageUri)
 
         // Then
         coVerify {
@@ -115,7 +115,7 @@ class CreateMissionUseCaseTest {
     @Test
     fun createMission_should_store_job_reference() = runTest {
         // When
-        useCase(missionFixture, imageUri)
+        useCase.execute(missionFixture, imageUri)
 
         // Then
         coVerify {
@@ -126,7 +126,7 @@ class CreateMissionUseCaseTest {
     @Test
     fun createMission_should_remove_job_reference_when_job_finished() = runTest {
         // When
-        useCase(missionFixture, imageUri)
+        useCase.execute(missionFixture, imageUri)
 
         // Then
         coVerify { missionJobQueue.cancelAndRemoveJob(missionFixture.id) }

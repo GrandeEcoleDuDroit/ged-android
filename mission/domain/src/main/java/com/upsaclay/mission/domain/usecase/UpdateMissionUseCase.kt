@@ -11,7 +11,7 @@ class UpdateMissionUseCase(
     private val missionRepository: MissionRepository,
     private val imageRepository: ImageRepository
 ) {
-    suspend operator fun invoke(user: User,  mission: Mission, imageUri: String?) {
+    suspend fun execute(user: User,  mission: Mission, imageUri: String?) {
         var newImagePath: String? = null
 
         val newImageFile = imageUri?.let { uri ->

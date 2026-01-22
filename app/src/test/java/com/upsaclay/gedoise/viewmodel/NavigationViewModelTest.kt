@@ -46,7 +46,7 @@ class NavigationViewModelTest {
         every { navigationRequestUseCase.resetRoute() } returns Unit
         every { authenticationRepository.authenticationState } returns flowOf(AuthenticationState.Authenticated(userId))
         every { routeRepository.setCurrentRoute(any()) } returns Unit
-        every { getUnreadConversationsCountUseCase() } returns flowOf(0)
+        every { getUnreadConversationsCountUseCase.execute() } returns flowOf(0)
     }
 
     @Test
@@ -147,7 +147,7 @@ class NavigationViewModelTest {
     @Test
     fun updateMessageBadges_should_be_equals_to_unread_conversations_count() {
         // Given
-        every { getUnreadConversationsCountUseCase() } returns flowOf(2)
+        every { getUnreadConversationsCountUseCase.execute() } returns flowOf(2)
 
         // When
         viewModel = NavigationViewModel(

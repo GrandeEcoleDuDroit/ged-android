@@ -42,7 +42,7 @@ class ClearDataUseCaseTest {
     @Test
     fun clearDataUseCase_should_delete_all_local_data() = runTest {
         // When
-        useCase()
+        useCase.execute()
 
         // Then
         coVerify { userRepository.deleteLocalUser() }
