@@ -131,7 +131,10 @@ class EditMissionViewModel(
             it.copy(title = truncatedTitle)
         }
         missionUpdateState.update {
-            it.copy(titleUpdated = validateTitleUpdate(truncatedTitle))
+            it.copy(
+                titleUpdated = validateTitleUpdate(truncatedTitle),
+                validTitle = validateTitle(truncatedTitle)
+            )
         }
     }
 
@@ -141,7 +144,10 @@ class EditMissionViewModel(
             it.copy(description = truncatedDescription)
         }
         missionUpdateState.update {
-            it.copy(descriptionUpdated = validateDescriptionUpdate(truncatedDescription))
+            it.copy(
+                descriptionUpdated = validateDescriptionUpdate(truncatedDescription),
+                validDescription = validateDescription(truncatedDescription)
+            )
         }
     }
 
@@ -187,7 +193,10 @@ class EditMissionViewModel(
             )
         }
         missionUpdateState.update {
-            it.copy(schoolLevelsUpdated = validateSchoolLevelsUpdate(schoolLevels))
+            it.copy(
+                schoolLevelsUpdated = validateSchoolLevelsUpdate(schoolLevels),
+                validSchoolLevels = validateSchoolLevels(schoolLevels)
+            )
         }
     }
 
@@ -208,7 +217,10 @@ class EditMissionViewModel(
             it.copy(maxParticipants = value)
         }
         missionUpdateState.update {
-            it.copy(maxParticipantsUpdated = validateMaxParticipantsUpdate(value))
+            it.copy(
+                maxParticipantsUpdated = validateMaxParticipantsUpdate(value),
+                validMaxParticipants = validateMaxParticipants(value)
+            )
         }
     }
 
@@ -311,42 +323,36 @@ class EditMissionViewModel(
         }
     }
 
-    private fun validateInputs(maxParticipants: String): Boolean =
-        validateMaxParticipantsInput(maxParticipants)
+    private fun validateInputs(maxParticipants: String): Boolean = validateMaxParticipantsInput(maxParticipants)
 
-    private fun validateImageReferenceUpdate(imageReference: String?): Boolean =
-        imageReference != mission.state.imageReference
+    private fun validateImageReferenceUpdate(imageReference: String?): Boolean = imageReference != mission.state.imageReference
 
-    private fun validateTitleUpdate(title: String): Boolean = title != mission.title && title.isNotBlank()
+    private fun validateTitleUpdate(title: String): Boolean = title != mission.title
 
-    private fun validateDescriptionUpdate(description: String): Boolean =
-        description != mission.description && description.isNotBlank()
+    private fun validateTitle(title: String): Boolean = title.isNotBlank()
 
-    private fun validateSchoolLevelsUpdate(schoolLevels: List<SchoolLevel>): Boolean =
-        schoolLevels != mission.schoolLevels
+    private fun validateDescriptionUpdate(description: String): Boolean = description != mission.description
 
-    private fun validateStartDateUpdate(startDate: LocalDate): Boolean =
-        startDate != mission.startDate
+    private fun validateDescription(description: String): Boolean = description.isNotBlank()
+
+    private fun validateSchoolLevelsUpdate(schoolLevels: List<SchoolLevel>): Boolean = schoolLevels != mission.schoolLevels
+
+    private fun validateSchoolLevels(schoolLevels: List<SchoolLevel>): Boolean = schoolLevels.isNotEmpty()
+
+    private fun validateStartDateUpdate(startDate: LocalDate): Boolean = startDate != mission.startDate
 
     private fun validateEndDateUpdate(startDate: LocalDate, endDate: LocalDate): Boolean =
         endDate != mission.endDate && (endDate.isEqual(startDate) || endDate.isAfter(startDate))
 
-    private fun validateMaxParticipantsUpdate(maxParticipants: String): Boolean =
-        maxParticipants != mission.maxParticipants.toString() && maxParticipants.isNotBlank()
+    private fun validateMaxParticipantsUpdate(maxParticipants: String): Boolean = maxParticipants != mission.maxParticipants.toString()
 
-    private fun validateDurationUpdate(duration: String): Boolean =
-        duration != mission.duration.orEmpty()
+    private fun validateMaxParticipants(maxParticipants: String): Boolean = maxParticipants.isNotBlank()
 
-    private fun validateManagersUpdate(managers: List<User>): Boolean =
-        managers != mission.managers
+    private fun validateDurationUpdate(duration: String): Boolean = duration != mission.duration.orEmpty()
 
-    private fun validateMissionTasksUpdate(missionTasks: List<MissionTask>): Boolean =
-        missionTasks != mission.tasks
+    private fun validateManagersUpdate(managers: List<User>): Boolean = managers != mission.managers
 
-    private fun validateMandatoryFields(): Boolean =
-        uiState.value.title.isNotBlank() &&
-                uiState.value.description.isNotBlank() &&
-                uiState.value.maxParticipants.isNotBlank()
+    private fun validateMissionTasksUpdate(missionTasks: List<MissionTask>): Boolean = missionTasks != mission.tasks
 
     private fun validateMaxParticipantsInput(maxParticipants: String): Boolean {
         val maxParticipantsNumber = maxParticipants.toIntOrNull()
@@ -383,7 +389,7 @@ class EditMissionViewModel(
         viewModelScope.launch {
             missionUpdateState.collect { missionUpdateState ->
                 _uiState.update {
-                    it.copy(updateEnabled = missionUpdateState.updated && validateMandatoryFields())
+                    it.copy(updateEnabled = missionUpdateState.updated && missionUpdateState.valid)
                 }
             }
         }
@@ -432,7 +438,12 @@ class EditMissionViewModel(
         val durationUpdated: Boolean = false,
         val managersUpdated: Boolean = false,
         val missionTasksUpdated: Boolean = false,
-        val imageReferenceUpdated: Boolean = false
+        val imageReferenceUpdated: Boolean = false,
+
+        val validTitle: Boolean = true,
+        val validDescription: Boolean = true,
+        val validSchoolLevels: Boolean = true,
+        val validMaxParticipants: Boolean = true
     ) {
         val updated: Boolean
             get() = titleUpdated ||
@@ -445,5 +456,11 @@ class EditMissionViewModel(
                     managersUpdated ||
                     missionTasksUpdated ||
                     imageReferenceUpdated
+
+        val valid: Boolean
+            get() = validTitle &&
+                    validDescription &&
+                    validSchoolLevels &&
+                    validMaxParticipants
     }
 }

@@ -34,11 +34,13 @@ class CreateMissionViewModel(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(CreateMissionUiState())
     val uiState: StateFlow<CreateMissionUiState> = _uiState
+    private val missionCreateState = MutableStateFlow(MissionCreateState())
     private var defaultUsers: List<User> = emptyList()
 
     init {
         initCurrentUser()
         initUsers()
+        listenMissionCreateState()
     }
 
     fun createMission() {
@@ -78,20 +80,20 @@ class CreateMissionViewModel(
     fun onTitleChange(title: String) {
         val truncatedTitle = title.take(MAX_TITLE_LENGTH)
         _uiState.update {
-            it.copy(
-                title = truncatedTitle,
-                createEnabled = validateCreate(title = truncatedTitle)
-            )
+            it.copy(title = truncatedTitle)
+        }
+        missionCreateState.update {
+            it.copy(validTitle = validateTitle(truncatedTitle))
         }
     }
 
     fun onDescriptionChange(description: String) {
         val truncatedDescription = description.take(MAX_DESCRIPTION_LENGTH)
         _uiState.update {
-            it.copy(
-                description = truncatedDescription,
-                createEnabled = validateCreate(description = truncatedDescription)
-            )
+            it.copy(description = truncatedDescription)
+        }
+        missionCreateState.update {
+            it.copy(validDescription = validateDescription(truncatedDescription))
         }
     }
 
@@ -114,14 +116,20 @@ class CreateMissionViewModel(
     }
 
     fun onSchoolLevelChange(schoolLevel: SchoolLevel) {
-        _uiState.update {
-            val schoolLevels = if (it.schoolLevels.contains(schoolLevel)) {
-                it.schoolLevels - schoolLevel
+       val schoolLevels = uiState.value.schoolLevels.let {
+            if (it.contains(schoolLevel)) {
+                it - schoolLevel
             } else {
-                it.schoolLevels + schoolLevel
-            }.sorted()
+                it + schoolLevel
+            }
+        }.sorted()
 
+        _uiState.update {
             it.copy(schoolLevels = schoolLevels)
+        }
+
+        missionCreateState.update {
+            it.copy(validSchoolLevels = validateSchoolLevels(schoolLevels))
         }
     }
 
@@ -133,10 +141,11 @@ class CreateMissionViewModel(
         }
 
         _uiState.update {
-            it.copy(
-                maxParticipants = value,
-                createEnabled = validateCreate(maxParticipants = value)
-            )
+            it.copy(maxParticipants = value)
+        }
+
+        missionCreateState.update {
+            it.copy(validMaxParticipants = validateMaxParticipants(value))
         }
     }
 
@@ -221,6 +230,26 @@ class CreateMissionViewModel(
         }
     }
 
+    private fun validateTitle(title: String): Boolean = title.isNotBlank()
+
+    private fun validateDescription(description: String): Boolean = description.isNotBlank()
+
+    private fun validateSchoolLevels(schoolLevels: List<SchoolLevel>): Boolean = schoolLevels.isNotEmpty()
+
+    private fun validateEndDate(startDate: LocalDate, endDate: LocalDate): Boolean = endDate.isEqual(startDate) || endDate.isAfter(startDate)
+
+    private fun validateMaxParticipants(maxParticipants: String): Boolean = maxParticipants.isNotBlank()
+
+    private fun listenMissionCreateState() {
+        viewModelScope.launch {
+            missionCreateState.collect { missionCreateState ->
+                _uiState.update {
+                    it.copy(createEnabled = missionCreateState.valid)
+                }
+            }
+        }
+    }
+
     private fun initCurrentUser() {
         viewModelScope.launch {
             userRepository.user.take(1).collect { user ->
@@ -245,31 +274,12 @@ class CreateMissionViewModel(
         }
     }
 
-    private fun validateCreate(
-        title: String = uiState.value.title,
-        description: String = uiState.value.description,
-        maxParticipants: String = uiState.value.maxParticipants
-    ): Boolean {
-        return validateTitle(title) &&
-                validateDescription(description) &&
-                validateMaxParticipants(maxParticipants)
-    }
-
-    private fun validateTitle(title: String): Boolean = title.isNotBlank()
-
-    private fun validateDescription(description: String): Boolean = description.isNotBlank()
-
-    private fun validateEndDate(startDate: LocalDate, endDate: LocalDate): Boolean =
-        endDate.isEqual(startDate) || endDate.isAfter(startDate)
-
-    private fun validateMaxParticipants(maxParticipants: String): Boolean = maxParticipants.isNotBlank()
-
     data class CreateMissionUiState(
         val title: String = "",
         val description: String = "",
         val startDate: LocalDate = LocalDate.now(),
         val endDate: LocalDate = LocalDate.now(),
-        val schoolLevels: List<SchoolLevel> = emptyList(),
+        val schoolLevels: List<SchoolLevel> = SchoolLevel.all,
         val duration: String = "",
         val managers: List<User> = emptyList(),
         val maxParticipants: String = "",
@@ -281,5 +291,18 @@ class CreateMissionViewModel(
         val createEnabled: Boolean = false
     ) {
         val allSchoolLevels: List<SchoolLevel> = SchoolLevel.all
+    }
+
+    private data class MissionCreateState(
+        val validTitle: Boolean = false,
+        val validDescription: Boolean = false,
+        val validSchoolLevels: Boolean = false,
+        val validMaxParticipants: Boolean = false
+    ) {
+        val valid: Boolean
+            get() = validTitle &&
+                    validDescription &&
+                    validSchoolLevels &&
+                    validMaxParticipants
     }
 }

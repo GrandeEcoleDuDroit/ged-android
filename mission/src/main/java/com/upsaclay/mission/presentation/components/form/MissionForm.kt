@@ -2,6 +2,7 @@ package com.upsaclay.mission.presentation.components.form
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -97,6 +98,8 @@ fun MissionForm(
             onTaskClick = onEditTaskClick,
             onRemoveTaskClick = onRemoveTaskClick
         )
+
+        Spacer(modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.small_padding)))
     }
 }
 
