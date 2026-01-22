@@ -74,7 +74,7 @@
     <string name="too_many_request_error">You have made too many requests. Please try again in a few minutes.</string>
     <string name="user_not_found_title_dialog">User not found.</string>
     <string name="current_user_not_found_error">The current user was not found. Please try again.</string>
-    <string name="forbidden_error">You are not authorized to perform this action.</string>
+    <string name="forbidden_error">You do not have permission to perform this action.</string>
     <string name="bad_request_error">The request could not be successful.</string>
     <string name="unauthorized_error">Your session has expired. Please log in again.</string>
     <string name="resource_not_found_error">Resource was not found.</string>

@@ -77,7 +77,7 @@
     <string name="too_many_request_error">Vous avez effectué trop de requêtes. Veuillez réessayer dans quelques minutes.</string>
     <string name="user_not_found_title_dialog">Utilisateur non trouvé.</string>
     <string name="current_user_not_found_error">L\'utilisateur actuel n\'a pas été trouvé. Veuillez réessayer.</string>
-    <string name="forbidden_error">Vous n\'êtes pas autorisé à effectuer cette action.</string>
+    <string name="forbidden_error">Vous n\’avez pas les droits nécessaires pour effectuer cette action.</string>
     <string name="bad_request_error">La requête n\'a pu aboutir.</string>
     <string name="unauthorized_error">Votre session a expiré. Veuillez vous reconnecter.</string>
     <string name="resource_not_found_error">La ressource n\'a pu être trouvée.</string>
