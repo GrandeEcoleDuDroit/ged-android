@@ -60,7 +60,7 @@ class CreateMissionViewModelTest {
         assertEquals("", viewModel.uiState.value.description)
         assertEquals(LocalDate.now(), viewModel.uiState.value.startDate)
         assertEquals(LocalDate.now(), viewModel.uiState.value.endDate)
-        assertEquals(emptyList(), viewModel.uiState.value.schoolLevels)
+        assertEquals(SchoolLevel.all, viewModel.uiState.value.schoolLevels)
         assertEquals("", viewModel.uiState.value.duration)
         assertEquals(listOf(userFixture), viewModel.uiState.value.managers)
         assertEquals("", viewModel.uiState.value.maxParticipants)
@@ -210,40 +210,44 @@ class CreateMissionViewModelTest {
     @Test
     fun onSchoolLevelChange_should_add_school_level_when_not_present() {
         // Given
-        val schoolLevel = SchoolLevel.GED_4
+        val schoolLevelToAdd = SchoolLevel.GED_4
+        val expectedResult = listOf(SchoolLevel.GED_1, SchoolLevel.GED_2, SchoolLevel.GED_3, SchoolLevel.GED_4)
 
         // When
-        viewModel.onSchoolLevelChange(schoolLevel)
+        viewModel.onSchoolLevelChange(schoolLevelToAdd)
+        viewModel.onSchoolLevelChange(schoolLevelToAdd)
 
         // Then
-        assertEquals(listOf(schoolLevel), viewModel.uiState.value.schoolLevels)
+        assertEquals(expectedResult, viewModel.uiState.value.schoolLevels)
     }
 
     @Test
     fun onSchoolLevelChange_should_remove_school_level_when_present() {
         // Given
-        val schoolLevel = SchoolLevel.GED_4
+        val schoolLevelToRemove = SchoolLevel.GED_4
+        val expectedResult = listOf(SchoolLevel.GED_1, SchoolLevel.GED_2, SchoolLevel.GED_3)
+
 
         // When
-        viewModel.onSchoolLevelChange(schoolLevel)
-        viewModel.onSchoolLevelChange(schoolLevel)
+        viewModel.onSchoolLevelChange(schoolLevelToRemove)
 
         // Then
-        assertEquals(emptyList(), viewModel.uiState.value.schoolLevels)
+        assertEquals(expectedResult, viewModel.uiState.value.schoolLevels)
     }
 
     @Test
     fun onSchoolLevelChange_should_update_school_levels_sorted() {
         // Given
-        val schoolLevels = listOf(SchoolLevel.GED_4, SchoolLevel.GED_1)
+        val schoolLevelsToRemove = listOf(SchoolLevel.GED_4, SchoolLevel.GED_1)
+        val expectedResult = listOf(SchoolLevel.GED_2, SchoolLevel.GED_3)
 
         // When
-        schoolLevels.forEach {
+        schoolLevelsToRemove.forEach {
             viewModel.onSchoolLevelChange(it)
         }
 
         // Then
-        assertEquals(schoolLevels.sorted(), viewModel.uiState.value.schoolLevels)
+        assertEquals(expectedResult, viewModel.uiState.value.schoolLevels)
     }
 
     @Test

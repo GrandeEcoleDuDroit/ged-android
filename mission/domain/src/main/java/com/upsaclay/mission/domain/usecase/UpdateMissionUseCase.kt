@@ -1,5 +1,6 @@
 package com.upsaclay.mission.domain.usecase
 
+import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.mission.domain.MissionUtils
 import com.upsaclay.mission.domain.entity.Mission
@@ -10,7 +11,7 @@ class UpdateMissionUseCase(
     private val missionRepository: MissionRepository,
     private val imageRepository: ImageRepository
 ) {
-    suspend operator fun invoke(mission: Mission, imageUri: String?) {
+    suspend operator fun invoke(user: User,  mission: Mission, imageUri: String?) {
         var newImagePath: String? = null
 
         val newImageFile = imageUri?.let { uri ->
@@ -24,7 +25,7 @@ class UpdateMissionUseCase(
             mission.copy(state = MissionState.Published(it))
         } ?: mission
 
-        missionRepository.updateMission(missionToUpdate, newImageFile)
+        missionRepository.updateMission(user, missionToUpdate, newImageFile)
 
         newImagePath?.let {
             imageRepository.deleteCacheImage(it)

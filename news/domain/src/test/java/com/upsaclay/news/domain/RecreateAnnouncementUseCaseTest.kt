@@ -81,7 +81,7 @@ class RecreateAnnouncementUseCaseTest {
     @Test
     fun recreateAnnouncement_should_store_job_reference() = runTest {
         // When
-        useCase(announcementFixture)
+        useCase(announcementFixture.copy(state = AnnouncementState.ERROR))
 
         // Then
         coVerify {
@@ -92,7 +92,7 @@ class RecreateAnnouncementUseCaseTest {
     @Test
     fun recreateAnnouncement_should_remove_job_reference_when_job_finished() = runTest {
         // When
-        useCase(announcementFixture)
+        useCase(announcementFixture.copy(state = AnnouncementState.ERROR))
 
         // Then
         coVerify { announcementJobQueue.cancelAndRemoveJob(announcementFixture.id) }

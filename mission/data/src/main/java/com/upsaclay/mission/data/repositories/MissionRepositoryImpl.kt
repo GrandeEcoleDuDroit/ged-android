@@ -51,9 +51,9 @@ class MissionRepositoryImpl(
         }
     }
 
-    override suspend fun updateMission(mission: Mission, imageFile: File?) {
+    override suspend fun updateMission(user: User, mission: Mission, imageFile: File?) {
         try {
-            missionRemoteDataSource.updateMission(mission, imageFile)
+            missionRemoteDataSource.updateMission(user, mission, imageFile)
             missionLocalDataSource.upsertMission(mission)
         } catch (e: Exception) {
             e("Error updating mission ${mission.id}", e)
