@@ -128,7 +128,6 @@ private fun OutlinedSchoolLevelDropDownMenu(
 ) {
     var expanded by remember { mutableStateOf(false) }
     val value = when {
-        schoolLevels.isEmpty() -> stringResource(R.string.everyone)
         schoolLevels.size == allSchoolLevels.size -> stringResource(R.string.everyone)
         else -> schoolLevels.joinToString(" - ", transform = { it.value })
     }
