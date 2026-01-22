@@ -2,6 +2,7 @@ package com.upsaclay.mission
 
 import android.net.Uri
 import com.upsaclay.common.domain.entity.SchoolLevel
+import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.GenerateIdUseCase
 import com.upsaclay.common.domain.usecase.GetUsersUseCase
 import com.upsaclay.common.domain.userFixture
@@ -30,6 +31,7 @@ class EditMissionViewModelTest {
     private val getUsersUseCase: GetUsersUseCase = mockk()
     private val updateMissionUseCase: UpdateMissionUseCase = mockk()
     private val generateIdUseCase: GenerateIdUseCase = mockk()
+    private val userRepository: UserRepository = mockk()
 
     private lateinit var viewModel: EditMissionViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
@@ -39,6 +41,7 @@ class EditMissionViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
 
+        every { userRepository.currentUser } returns userFixture
         every { generateIdUseCase() } returns newId
         coEvery { getUsersUseCase() } returns usersFixture
 
@@ -46,7 +49,8 @@ class EditMissionViewModelTest {
             mission = missionFixture,
             getUsersUseCase = getUsersUseCase,
             updateMissionUseCase = updateMissionUseCase,
-            generateIdUseCase = generateIdUseCase
+            generateIdUseCase = generateIdUseCase,
+            userRepository = userRepository
         )
     }
 
@@ -223,7 +227,8 @@ class EditMissionViewModelTest {
             mission = missionFixture.copy(schoolLevels = emptyList()),
             getUsersUseCase = getUsersUseCase,
             updateMissionUseCase = updateMissionUseCase,
-            generateIdUseCase = generateIdUseCase
+            generateIdUseCase = generateIdUseCase,
+            userRepository = userRepository
         )
         viewModel.onSchoolLevelChange(schoolLevel)
 
@@ -241,7 +246,8 @@ class EditMissionViewModelTest {
             mission = missionFixture.copy(schoolLevels = emptyList()),
             getUsersUseCase = getUsersUseCase,
             updateMissionUseCase = updateMissionUseCase,
-            generateIdUseCase = generateIdUseCase
+            generateIdUseCase = generateIdUseCase,
+            userRepository = userRepository
         )
         viewModel.onSchoolLevelChange(schoolLevel)
         viewModel.onSchoolLevelChange(schoolLevel)
@@ -260,7 +266,8 @@ class EditMissionViewModelTest {
             mission = missionFixture.copy(schoolLevels = emptyList()),
             getUsersUseCase = getUsersUseCase,
             updateMissionUseCase = updateMissionUseCase,
-            generateIdUseCase = generateIdUseCase
+            generateIdUseCase = generateIdUseCase,
+            userRepository = userRepository
         )
         schoolLevels.forEach {
             viewModel.onSchoolLevelChange(it)
@@ -415,7 +422,8 @@ class EditMissionViewModelTest {
             mission = missionFixture,
             getUsersUseCase = getUsersUseCase,
             updateMissionUseCase = updateMissionUseCase,
-            generateIdUseCase = generateIdUseCase
+            generateIdUseCase = generateIdUseCase,
+            userRepository = userRepository
         )
         viewModel.onUserQueryChange(userQuery)
 
