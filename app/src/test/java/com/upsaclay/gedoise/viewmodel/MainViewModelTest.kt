@@ -64,7 +64,7 @@ class MainViewModelTest {
         viewModel.updateAppData()
 
         // Then
-        coVerify { listenDataUseCase.start(any(), userId) }
+        coVerify { listenDataUseCase.start(any(), any()) }
     }
 
     @Test
