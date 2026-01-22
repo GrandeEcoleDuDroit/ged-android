@@ -148,6 +148,7 @@ private fun ConversationScreen(
             ConversationBottomSheet(
                 conversationState = bottomSheetType.conversation.state,
                 onRecreateClick = {
+                    activeBottomSheet = null
                     onRecreateConversationClick(bottomSheetType.conversation)
                 },
                 onDeleteClick = {
