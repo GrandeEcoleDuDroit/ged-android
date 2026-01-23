@@ -2,10 +2,9 @@ package com.upsaclay.authentication
 
 import com.upsaclay.authentication.domain.usecase.RegisterUseCase
 import com.upsaclay.authentication.presentation.registration.thirdregistration.ThirdRegistrationViewModel
-import com.upsaclay.common.domain.ConnectivityObserver
+import com.upsaclay.common.domain.entity.SchoolLevel
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -20,14 +19,13 @@ import kotlin.test.assertNotNull
 @OptIn(ExperimentalCoroutinesApi::class)
 class ThirdRegistrationViewModelTest {
     private val registerUseCase: RegisterUseCase = mockk()
-    private val connectivityObserver: ConnectivityObserver = mockk()
 
-    private lateinit var thirdRegistrationViewModel: ThirdRegistrationViewModel
+    private lateinit var viewModel: ThirdRegistrationViewModel
     
     private val testDispatcher = UnconfinedTestDispatcher()
     private val firstName = "John"
     private val lastName = "Doe"
-    private val schoolLevel = "Bachelor"
+    private val schoolLevel = SchoolLevel.GED_1
     private val email = "email@example.com"
     private val password = "password1234"
 
@@ -35,118 +33,108 @@ class ThirdRegistrationViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
 
-        every { connectivityObserver.isConnected } returns true
-        coEvery {
-            registerUseCase(
-                any(),
-                any(),
-                any(),
-                any(),
-                any())
-        } returns Unit
+        coEvery { registerUseCase.execute(any(), any(), any(), any(), any()) } returns Unit
 
-        thirdRegistrationViewModel = ThirdRegistrationViewModel(
-            registerUseCase = registerUseCase,
-            connectivityObserver = connectivityObserver
+        viewModel = ThirdRegistrationViewModel(
+            registerUseCase = registerUseCase
         )
-
     }
 
     @Test
     fun onEmailChange_should_update_email() {
         // When
-        thirdRegistrationViewModel.onEmailChange(email)
+        viewModel.onEmailChange(email)
 
         // Then
-        assertEquals(email, thirdRegistrationViewModel.uiState.value.email)
+        assertEquals(email, viewModel.uiState.value.email)
     }
 
     @Test
     fun onPasswordChange_should_update_password() {
         // When
-        thirdRegistrationViewModel.onPasswordChange(password)
+        viewModel.onPasswordChange(password)
 
         // Then
-        assertEquals(password, thirdRegistrationViewModel.uiState.value.password)
+        assertEquals(password, viewModel.uiState.value.password)
     }
 
     @Test
     fun register_should_register_user() = runTest {
         // Given
-        thirdRegistrationViewModel.onEmailChange(email)
-        thirdRegistrationViewModel.onPasswordChange(password)
-        thirdRegistrationViewModel.onLegalNoticeCheckedChange(true)
+        viewModel.onEmailChange(email)
+        viewModel.onPasswordChange(password)
+        viewModel.onLegalNoticeCheckedChange(true)
 
         // When
-        thirdRegistrationViewModel.register(firstName, lastName, schoolLevel)
+        viewModel.register(firstName, lastName, schoolLevel)
 
         // Then
-        coVerify { registerUseCase(email, password, firstName, lastName, schoolLevel) }
+        coVerify { registerUseCase.execute(email, password, firstName, lastName, schoolLevel) }
     }
 
     @Test
     fun register_should_set_email_error_when_email_is_empty() {
         // Given
-        thirdRegistrationViewModel.onEmailChange("")
-        thirdRegistrationViewModel.onPasswordChange(password)
+        viewModel.onEmailChange("")
+        viewModel.onPasswordChange(password)
 
         // When
-        thirdRegistrationViewModel.register(firstName, lastName, schoolLevel)
+        viewModel.register(firstName, lastName, schoolLevel)
 
         // Then
-        assertNotNull(thirdRegistrationViewModel.uiState.value.email)
+        assertNotNull(viewModel.uiState.value.email)
     }
 
     @Test
     fun register_should_set_email_error_when_email_format_is_incorrect() {
         // Given
-        thirdRegistrationViewModel.onEmailChange("email")
-        thirdRegistrationViewModel.onPasswordChange(password)
+        viewModel.onEmailChange("email")
+        viewModel.onPasswordChange(password)
 
         // When
-        thirdRegistrationViewModel.register(firstName, lastName, schoolLevel)
+        viewModel.register(firstName, lastName, schoolLevel)
 
         // Then
-        assertNotNull(thirdRegistrationViewModel.uiState.value.email)
+        assertNotNull(viewModel.uiState.value.email)
     }
 
     @Test
     fun register_should_set_password_error_when_password_is_empty() {
         // Given
-        thirdRegistrationViewModel.onEmailChange(email)
-        thirdRegistrationViewModel.onPasswordChange("")
+        viewModel.onEmailChange(email)
+        viewModel.onPasswordChange("")
 
         // When
-        thirdRegistrationViewModel.register(firstName, lastName, schoolLevel)
+        viewModel.register(firstName, lastName, schoolLevel)
 
         // Then
-        assertNotNull(thirdRegistrationViewModel.uiState.value.password)
+        assertNotNull(viewModel.uiState.value.password)
     }
 
     @Test
     fun register_should_set_error_message_when_legal_notice_is_not_checked() {
         // Given
-        thirdRegistrationViewModel.onEmailChange(email)
-        thirdRegistrationViewModel.onPasswordChange(password)
-        thirdRegistrationViewModel.onLegalNoticeCheckedChange(false)
+        viewModel.onEmailChange(email)
+        viewModel.onPasswordChange(password)
+        viewModel.onLegalNoticeCheckedChange(false)
 
         // When
-        thirdRegistrationViewModel.register(firstName, lastName, schoolLevel)
+        viewModel.register(firstName, lastName, schoolLevel)
 
         // Then
-        assertNotNull(thirdRegistrationViewModel.uiState.value.errorMessage)
+        assertNotNull(viewModel.uiState.value.errorMessage)
     }
 
     @Test
     fun validateInputs_should_return_false_when_password_length_is_shorter_than_8() {
         // Given
-        thirdRegistrationViewModel.onEmailChange(email)
-        thirdRegistrationViewModel.onPasswordChange("pass")
+        viewModel.onEmailChange(email)
+        viewModel.onPasswordChange("pass")
 
         // When
-        thirdRegistrationViewModel.register(firstName, lastName, schoolLevel)
+        viewModel.register(firstName, lastName, schoolLevel)
 
         // Then
-        assertNotNull(thirdRegistrationViewModel.uiState.value.password)
+        assertNotNull(viewModel.uiState.value.password)
     }
 }

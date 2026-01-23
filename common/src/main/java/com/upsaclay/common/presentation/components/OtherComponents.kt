@@ -2,6 +2,7 @@ package com.upsaclay.common.presentation.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -27,15 +29,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.upsaclay.common.R
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
+import com.upsaclay.common.extension.displayName
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,8 +46,8 @@ import kotlinx.coroutines.delay
 fun PullToRefreshComponent(
     modifier: Modifier = Modifier,
     onRefresh: () -> Unit,
-    isRefreshing: Boolean,
-    content: @Composable () -> Unit
+    refreshing: Boolean,
+    content: @Composable BoxScope.() -> Unit
 ) {
     val pullToRefreshState = rememberPullToRefreshState()
 
@@ -59,8 +62,8 @@ fun PullToRefreshComponent(
             }
         }
 
-        LaunchedEffect(isRefreshing) {
-            if (!isRefreshing) {
+        LaunchedEffect(refreshing) {
+            if (!refreshing) {
                 pullToRefreshState.endRefresh()
             }
         }
@@ -95,19 +98,21 @@ fun TextItem(
 fun UserItem(
     modifier: Modifier = Modifier,
     user: User,
+    imageScale: Float = 0.5f,
+    textStyle: TextStyle = LocalTextStyle.current,
     trailingContent: @Composable (() -> Unit)? = null
 ) {
-    val userName = if (!user.isDeleted) user.fullName else stringResource(R.string.deleted_user)
-
     ListItem(
-        modifier = modifier.fillMaxWidth(),
-        headlineContent = { Text(text = userName) },
+        modifier = modifier
+            .padding(vertical = 2.dp)
+            .fillMaxWidth(),
         leadingContent = {
             ProfilePicture(
                 url = user.profilePictureUrl,
-                scale = 0.5f
+                scale = imageScale
             )
         },
+        headlineContent = { Text(text = user.displayName(), style = textStyle) },
         trailingContent = trailingContent
     )
 }
@@ -118,7 +123,7 @@ fun UserItem(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun ClickableMenuItemPreview() {
     GedoiseTheme {
@@ -143,17 +148,17 @@ private fun ClickableMenuItemPreview() {
 @Preview(showBackground = true, widthDp = 200, heightDp = 200)
 @Composable
 private fun PullRefreshComponentPreview() {
-    var isRefreshing by remember { mutableStateOf(true) }
+    var refreshing by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
         delay(1000)
-        isRefreshing = false
+        refreshing = false
     }
 
     GedoiseTheme {
         PullToRefreshComponent(
             onRefresh = { },
-            isRefreshing = isRefreshing
+            refreshing = refreshing
         ) {
             LazyColumn(modifier = Modifier.padding(dimensionResource(R.dimen.medium_padding))) {
                 item {
@@ -164,7 +169,7 @@ private fun PullRefreshComponentPreview() {
     }
 }
 
-@Phones
+@PhonePreviews
 @Composable
 private fun UserItemPreview() {
     GedoiseTheme {

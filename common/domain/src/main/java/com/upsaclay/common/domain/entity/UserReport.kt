@@ -1,12 +1,17 @@
 package com.upsaclay.common.domain.entity
 
 data class UserReport(
-    val userId: String,
-    val userInfo: UserInfo,
-    val reporterInfo: UserInfo,
+    val reportedUser: ReportedUser,
+    val reporter: Reporter,
     val reason: Reason
 ) {
-    data class UserInfo(
+    data class ReportedUser(
+        val id: String,
+        val fullName: String,
+        val email: String
+    )
+
+    data class Reporter(
         val fullName: String,
         val email: String
     )

@@ -1,12 +1,14 @@
 package com.upsaclay.message
 
+import com.upsaclay.common.domain.entity.BlockedUser
 import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.repository.UserRepository
+import com.upsaclay.common.domain.usecase.GetUsersUseCase
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.domain.usersFixture
-import com.upsaclay.message.domain.conversationFixture
+import com.upsaclay.message.domain.fixtures.conversationFixture
 import com.upsaclay.message.domain.usecase.GetConversationUseCase
-import com.upsaclay.message.presentation.conversation.create.CreateConversationViewModel
+import com.upsaclay.message.presentation.conversation.createconversation.CreateConversationViewModel
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -18,6 +20,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.Before
 import org.junit.Test
+import java.time.LocalDateTime
 import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -25,6 +28,7 @@ class CreateConversationViewModelTest {
     private val userRepository: UserRepository = mockk()
     private val blockedUserRepository: BlockedUserRepository = mockk()
     private val getConversationUseCase: GetConversationUseCase = mockk()
+    private val getUsersUseCase: GetUsersUseCase = mockk()
 
     private lateinit var createConversationViewModel: CreateConversationViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
@@ -35,14 +39,15 @@ class CreateConversationViewModelTest {
 
         every { userRepository.user } returns MutableStateFlow(userFixture)
         every { userRepository.currentUser } returns userFixture
-        coEvery { getConversationUseCase(any()) } returns conversationFixture
-        coEvery { userRepository.getUsers() } returns usersFixture
-        coEvery { blockedUserRepository.getLocalBlockedUserIds() } returns emptySet()
+        coEvery { getConversationUseCase.execute(any()) } returns conversationFixture
+        coEvery { blockedUserRepository.getLocalBlockedUsers() } returns emptyMap()
+        coEvery { getUsersUseCase.execute() } returns usersFixture
 
         createConversationViewModel = CreateConversationViewModel(
             userRepository = userRepository,
             blockedUserRepository = blockedUserRepository,
-            getConversationUseCase = getConversationUseCase
+            getConversationUseCase = getConversationUseCase,
+            getUsersUseCase = getUsersUseCase
         )
     }
 
@@ -61,13 +66,14 @@ class CreateConversationViewModelTest {
         val users = usersFixture
             .filterNot { it.id == userFixture.id }
             .sortedBy { it.fullName }
-        coEvery { userRepository.getUsers() } returns users
+        coEvery { getUsersUseCase.execute() } returns users
 
         // When
         createConversationViewModel = CreateConversationViewModel(
             userRepository = userRepository,
             blockedUserRepository = blockedUserRepository,
-            getConversationUseCase = getConversationUseCase
+            getConversationUseCase = getConversationUseCase,
+            getUsersUseCase = getUsersUseCase
         )
 
         // Then
@@ -75,21 +81,22 @@ class CreateConversationViewModelTest {
     }
 
     @Test
-    fun all_users_should_be_fetched_except_blocked() = runTest {
+    fun all_users_should_be_fetched_except_blocked_ones() = runTest {
         // Given
         val blockedUserId = "userId"
-        coEvery { blockedUserRepository.getLocalBlockedUserIds() } returns setOf(blockedUserId)
-        coEvery { userRepository.getUsers() } returns listOf(userFixture.copy(id = blockedUserId))
+        coEvery { blockedUserRepository.getLocalBlockedUsers() } returns mapOf(blockedUserId to BlockedUser(blockedUserId, LocalDateTime.now()))
+        coEvery { getUsersUseCase.execute()} returns listOf(userFixture.copy(id = blockedUserId))
 
         // When
         createConversationViewModel = CreateConversationViewModel(
             userRepository = userRepository,
             blockedUserRepository = blockedUserRepository,
-            getConversationUseCase = getConversationUseCase
+            getConversationUseCase = getConversationUseCase,
+            getUsersUseCase = getUsersUseCase
         )
 
         // Then
-        assert(createConversationViewModel.uiState.value.users.isEmpty())
+        assert(createConversationViewModel.uiState.value.users?.isEmpty() ?: false)
     }
 
             @Test
@@ -118,7 +125,7 @@ class CreateConversationViewModelTest {
     }
 
     @Test
-    fun resetQuery_should_reset_query_and_users() = runTest {
+    fun resetQuery_should_reset_query() = runTest {
         // Given
         createConversationViewModel.onQueryChange("test")
 

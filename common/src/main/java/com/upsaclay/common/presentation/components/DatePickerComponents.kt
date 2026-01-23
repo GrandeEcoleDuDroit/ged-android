@@ -14,7 +14,7 @@ import com.upsaclay.common.R
 import com.upsaclay.common.domain.extensions.toEpochMilliUTC
 import com.upsaclay.common.domain.extensions.toLocalDateUTC
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,7 +57,7 @@ fun DatePickerModal(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun DatePickerModalPreview() {
     GedoiseTheme {

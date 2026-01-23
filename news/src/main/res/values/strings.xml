@@ -13,7 +13,7 @@
     <string name="delete_announcement_dialog_message">Voulez-vous supprimer cette annonce ?</string>
     <string name="title_field_entry">Titre</string>
     <string name="content_field_entry">Contenu</string>
-    <string name="announcement_refresh_error">Impossible de rafraîchir les annonces</string>
+    <string name="announcements_refresh_error">Impossible de rafraîchir les annonces</string>
     <string name="announcement_deleted">Annonce supprimé</string>
     <string name="announcement_reported">Annonce signalé</string>
 

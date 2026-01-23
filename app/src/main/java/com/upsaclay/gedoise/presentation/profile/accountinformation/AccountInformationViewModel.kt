@@ -3,14 +3,14 @@ package com.upsaclay.gedoise.presentation.profile.accountinformation
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.upsaclay.common.domain.ConnectivityObserver
-import com.upsaclay.common.domain.entity.NoInternetConnectionException
-import com.upsaclay.common.domain.entity.SingleUiEvent
+import com.upsaclay.common.domain.entity.CustomException
+import com.upsaclay.common.domain.entity.CustomException.CustomError.CURRENT_USER_NOT_FOUND
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.UserRepository
-import com.upsaclay.common.domain.usecase.DeleteProfilePictureUseCase
 import com.upsaclay.common.domain.usecase.UpdateProfilePictureUseCase
-import com.upsaclay.common.utils.mapNetworkErrorMessage
+import com.upsaclay.common.extension.executeUiBlockingRequest
+import com.upsaclay.common.presentation.SingleUiEvent
+import com.upsaclay.common.utils.mapExceptionErrorMessage
 import com.upsaclay.gedoise.R
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,13 +19,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
 class AccountInformationViewModel(
     private val updateProfilePictureUseCase: UpdateProfilePictureUseCase,
-    private val deleteProfilePictureUseCase: DeleteProfilePictureUseCase,
-    userRepository: UserRepository,
-    private val connectivityObserver: ConnectivityObserver
+    private val userRepository: UserRepository
 ): ViewModel() {
     private val _uiState = MutableStateFlow(AccountInformationUiState())
     val uiState: StateFlow<AccountInformationUiState> = _uiState
@@ -35,96 +32,68 @@ class AccountInformationViewModel(
 
     init {
         userRepository.user
-            .map(::updateState)
+            .map { user ->
+                _uiState.update { it.copy(user = user) }
+            }
             .launchIn(viewModelScope)
     }
 
     fun updateProfilePicture() {
-        viewModelScope.launch {
-            try {
-                if (!connectivityObserver.isConnected) {
-                    throw NoInternetConnectionException()
-                }
-
-                val user = requireNotNull(_uiState.value.user)
-                _uiState.value.profilePictureUri?.let { uri ->
-                    updateState(loading = true)
-                    updateProfilePictureUseCase(user, uri)
-                    cancelEdit()
-                    _event.emit(SingleUiEvent.Success(R.string.profile_picture_updated))
-                }
-            } catch (e: Exception) {
-                cancelEdit()
-                _event.emit(SingleUiEvent.Error(mapErrorMessage(e)))
-            } finally {
-                _uiState.update {
-                    it.copy(loading = false)
-                }
+        executeRequest {
+            uiState.value.profilePictureUri?.let { uri ->
+                val user = uiState.value.user ?: throw CustomException(CURRENT_USER_NOT_FOUND, Exception())
+                updateProfilePictureUseCase.execute(user, uri.toString())
+                _event.emit(SingleUiEvent.Success(R.string.profile_picture_updated))
             }
         }
     }
 
     fun deleteProfilePicture() {
-        viewModelScope.launch {
-            try {
-                if (!connectivityObserver.isConnected) {
-                    throw NoInternetConnectionException()
-                }
-
-                val user = requireNotNull(_uiState.value.user)
-                updateState(loading = true)
-                user.profilePictureUrl?.let {
-                    deleteProfilePictureUseCase(user.id, it)
-                }
-                cancelEdit()
-                _event.emit(SingleUiEvent.Success(R.string.profile_picture_deleted))
-            } catch (e: Exception) {
-                cancelEdit()
-                _event.emit(SingleUiEvent.Error(mapErrorMessage(e)))
+        executeRequest {
+            val user = uiState.value.user ?: throw CustomException(CURRENT_USER_NOT_FOUND, Exception())
+            user.profilePictureUrl?.let {
+                userRepository.deleteProfilePicture(user)
             }
+            _event.emit(SingleUiEvent.Success(R.string.profile_picture_deleted))
         }
     }
 
     fun onScreenStateChange(screenState: AccountInformationScreenState) {
-        updateState(screenState = screenState)
+        _uiState.update {
+            it.copy(screenState = screenState)
+        }
     }
 
-    fun cancelEdit() {
-        updateState(
-            screenState = AccountInformationScreenState.READ,
-            profilePictureUri = null,
-            loading = false
-        )
-    }
-
-    fun onProfilePictureUriChange(uri: Uri?) {
-        updateState(profilePictureUri = uri)
-
-    }
-
-    private fun updateState(
-        user: User? = _uiState.value.user,
-        profilePictureUri: Uri? = _uiState.value.profilePictureUri,
-        loading: Boolean = _uiState.value.loading,
-        screenState: AccountInformationScreenState = _uiState.value.screenState
-    ) {
+    fun resetScreenState() {
         _uiState.update {
             it.copy(
-                user = user,
-                profilePictureUri = profilePictureUri,
-                loading = loading,
-                screenState = screenState,
+                screenState = AccountInformationScreenState.READ,
+                profilePictureUri = null,
+                loading = false
             )
         }
     }
 
-    private fun mapErrorMessage(e: Exception): Int {
-        return mapNetworkErrorMessage(e) {
-            when (e) {
-                is IllegalArgumentException -> com.upsaclay.common.R.string.current_user_not_found_error
-                else -> com.upsaclay.common.R.string.unknown_error
-            }
+    fun onProfilePictureUriChange(uri: Uri?) {
+        _uiState.update {
+            it.copy(profilePictureUri = uri)
         }
+    }
+
+    private fun executeRequest(block: suspend () -> Unit) {
+        viewModelScope.executeUiBlockingRequest(
+            block = block,
+            onLoading = {
+                _uiState.update { it.copy(loading = true) }
+            },
+            onError = {
+                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(it)))
+            },
+            onFinished = {
+                _uiState.update { it.copy(loading = false) }
+                resetScreenState()
+            }
+        )
     }
 
     data class AccountInformationUiState(
@@ -133,9 +102,9 @@ class AccountInformationViewModel(
         val loading: Boolean = false,
         val screenState: AccountInformationScreenState = AccountInformationScreenState.READ,
     )
-}
 
-enum class AccountInformationScreenState {
-    READ,
-    EDIT
+    enum class AccountInformationScreenState {
+        READ,
+        EDIT
+    }
 }

@@ -22,16 +22,17 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.authentication.R
 import com.upsaclay.authentication.presentation.components.RegistrationScaffold
-import com.upsaclay.common.extension.mediumPadding
+import com.upsaclay.common.domain.entity.SchoolLevel
+import com.upsaclay.common.extension.rootMediumPadding
 import com.upsaclay.common.presentation.components.PrimaryButton
-import com.upsaclay.common.presentation.components.SingleSelectionDropDownMenu
+import com.upsaclay.common.presentation.components.SingleSelectionDropDown
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SecondRegistrationDestination(
-    onNextClick: (String) -> Unit,
+    onNextClick: (SchoolLevel) -> Unit,
     onBackClick: () -> Unit,
     viewModel: SecondRegistrationViewModel = koinViewModel()
 ) {
@@ -48,9 +49,9 @@ fun SecondRegistrationDestination(
 
 @Composable
 private fun SecondRegistrationScreen(
-    schoolLevel: String,
-    schoolLevels: List<String>,
-    onItemClick: (String) -> Unit,
+    schoolLevel: SchoolLevel,
+    schoolLevels: List<SchoolLevel>,
+    onItemClick: (SchoolLevel) -> Unit,
     onNextClick: () -> Unit,
     onBackClick: () -> Unit
 ) {
@@ -62,7 +63,7 @@ private fun SecondRegistrationScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .mediumPadding(paddingValues)
+                .rootMediumPadding(paddingValues)
                 .pointerInput(Unit) {
                     detectTapGestures(onPress = { expanded = false })
                 }
@@ -75,11 +76,11 @@ private fun SecondRegistrationScreen(
                     style = MaterialTheme.typography.titleMedium
                 )
 
-                SingleSelectionDropDownMenu(
-                    items = schoolLevels,
-                    selectedItem = schoolLevel,
-                    onItemClicked = { item ->
-                        onItemClick(item)
+                SingleSelectionDropDown(
+                    items = schoolLevels.map { it.value },
+                    selectedItem = schoolLevel.value,
+                    onItemClicked = {
+                        onItemClick(SchoolLevel.fromValue(it))
                         expanded = false
                     },
                     expanded = expanded,
@@ -106,16 +107,15 @@ private fun SecondRegistrationScreen(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun SecondRegistrationScreenPreview() {
-    val items = listOf("GED 1", "GED 2", "GED 3")
-    var selectedItem by remember { mutableStateOf(items[0]) }
+    var selectedItem by remember { mutableStateOf(SchoolLevel.GED_1) }
 
     GedoiseTheme {
         SecondRegistrationScreen(
             schoolLevel = selectedItem,
-            schoolLevels = items,
+            schoolLevels = SchoolLevel.all,
             onItemClick = { selectedItem = it },
             onNextClick = {},
             onBackClick = {}

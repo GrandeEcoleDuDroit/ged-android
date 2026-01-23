@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -16,7 +17,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -41,10 +41,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.upsaclay.authentication.R
-import com.upsaclay.common.domain.entity.SingleUiEvent
-import com.upsaclay.common.extension.mediumPadding
+import com.upsaclay.common.extension.rootMediumPadding
+import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -113,48 +113,47 @@ private fun AuthenticationScreen(
     val scrollState = rememberScrollState()
 
     Scaffold(
+        modifier = Modifier.imePadding(),
         snackbarHost = {
             SnackbarHost(snackbarHostState) {
                 Snackbar(it)
             }
         }
     ) { innerPadding ->
-        Surface {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.aligned { size, space ->
-                    size + (20 * space / 100)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .rootMediumPadding(innerPadding)
+                .verticalScroll(scrollState)
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onTap = { focusManager.clearFocus() }
+                    )
                 },
-                modifier = Modifier
-                    .fillMaxSize()
-                    .mediumPadding(innerPadding)
-                    .verticalScroll(scrollState)
-                    .pointerInput(Unit) {
-                        detectTapGestures(
-                            onTap = { focusManager.clearFocus() }
-                        )
-                    }
-            ) {
-                HeaderSection()
-
-                Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.extra_large_padding)))
-
-                AuthenticationForm(
-                    email = email,
-                    password = password,
-                    loading = loading,
-                    emailError = emailError,
-                    passwordError = passwordError,
-                    errorMessage = errorMessage,
-                    onEmailChange = onEmailChange,
-                    onPasswordChange = onPasswordChange,
-                    onLoginClick = {
-                        focusManager.clearFocus()
-                        onLoginClick()
-                    },
-                    onRegistrationClick = onRegistrationClick
-                )
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.aligned { size, space ->
+                size + (10 * space / 100)
             }
+        ) {
+            HeaderSection()
+
+            Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.extra_large_padding)))
+
+            AuthenticationForm(
+                email = email,
+                password = password,
+                loading = loading,
+                emailError = emailError,
+                passwordError = passwordError,
+                errorMessage = errorMessage,
+                onEmailChange = onEmailChange,
+                onPasswordChange = onPasswordChange,
+                onLoginClick = {
+                    focusManager.clearFocus()
+                    onLoginClick()
+                },
+                onRegisterClick = onRegistrationClick
+            )
         }
     }
 }
@@ -189,7 +188,7 @@ private fun HeaderSection() {
         Text(
             text = stringResource(id = R.string.presentation_text),
             textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onBackground
+            color = MaterialTheme.colorScheme.onSurface
         )
     }
 }
@@ -200,7 +199,7 @@ private fun HeaderSection() {
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun AuthenticationScreenPreview() {
     var email by remember { mutableStateOf("") }

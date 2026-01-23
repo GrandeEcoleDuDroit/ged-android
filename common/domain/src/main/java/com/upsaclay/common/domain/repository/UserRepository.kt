@@ -3,10 +3,13 @@ package com.upsaclay.common.domain.repository
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.entity.UserReport
 import kotlinx.coroutines.flow.Flow
+import java.io.File
 
 interface UserRepository {
     val user: Flow<User>
     val currentUser: User?
+
+    fun getUserFlow(userId: String): Flow<User?>
 
     suspend fun getUsers(): List<User>
 
@@ -14,21 +17,17 @@ interface UserRepository {
 
     suspend fun getCurrentUser(): User?
 
-    fun getUserFlow(userId: String): Flow<User?>
-
-    suspend fun getUserWithEmail(userEmail: String): User?
-
     suspend fun createUser(user: User)
 
     suspend fun storeUser(user: User)
 
-    suspend fun updateRemoteUser(user: User)
+    suspend fun updateProfilePicture(user: User, imageFile: File, fileName: String)
 
-    suspend fun updateProfilePictureFileName(userId: String, fileName: String)
+    suspend fun deleteUser(user: User)
 
     suspend fun deleteLocalUser()
 
-    suspend fun deleteProfilePictureFileName(userId: String)
+    suspend fun deleteProfilePicture(user: User)
 
     suspend fun reportUser(report: UserReport)
 }

@@ -18,15 +18,13 @@ val newsModule = module {
             announcementId = announcementId,
             deleteAnnouncementUseCase = get(),
             userRepository = get(),
-            announcementRepository = get(),
-            connectivityObserver = get()
+            announcementRepository = get()
         )
     }
     viewModel { (announcement: Announcement) ->
         EditAnnouncementViewModel(
             announcement = announcement,
-            announcementRepository = get(),
-            connectivityObserver = get()
+            announcementRepository = get()
         )
     }
     viewModelOf(::AllAnnouncementsViewModel)

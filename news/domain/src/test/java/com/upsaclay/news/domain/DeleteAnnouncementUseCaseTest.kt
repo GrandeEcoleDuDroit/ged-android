@@ -1,6 +1,6 @@
 package com.upsaclay.news.domain
 
-import com.upsaclay.news.domain.entity.AnnouncementState
+import com.upsaclay.news.domain.entity.Announcement.AnnouncementState
 import com.upsaclay.news.domain.repository.AnnouncementRepository
 import com.upsaclay.news.domain.usecase.DeleteAnnouncementUseCase
 import io.mockk.coEvery
@@ -12,40 +12,80 @@ import org.junit.Test
 
 class DeleteAnnouncementUseCaseTest {
     private val announcementRepository: AnnouncementRepository = mockk()
+    private val announcementJobQueue: AnnouncementJobQueue = mockk()
 
     private lateinit var useCase: DeleteAnnouncementUseCase
 
     @Before
     fun setUp() {
+        coEvery { announcementJobQueue.addJob(any(), any()) } returns Unit
+        coEvery { announcementJobQueue.cancelAndRemoveJob(any()) } returns Unit
         coEvery { announcementRepository.deleteAnnouncement(any()) } returns Unit
         coEvery { announcementRepository.deleteLocalAnnouncement(any()) } returns Unit
 
         useCase = DeleteAnnouncementUseCase(
-            announcementRepository = announcementRepository
+            announcementRepository = announcementRepository,
+            announcementJobQueue = announcementJobQueue
         )
     }
 
     @Test
-    fun deleteAnnouncement_should_delete_remote_announcement_when_published() = runTest {
+    fun deleteAnnouncement_should_delete_announcement_when_published() = runTest {
         // Given
-        val announcement = longAnnouncementFixture.copy(state = AnnouncementState.PUBLISHED)
+        val announcement = announcementFixture.copy(state = AnnouncementState.PUBLISHED)
 
         // When
-        useCase(announcement)
+        useCase.execute(announcement)
 
         // Then
         coVerify { announcementRepository.deleteAnnouncement(announcement) }
     }
 
     @Test
-    fun deleteAnnouncement_should_delete_local_announcement_when_not_published() = runTest {
+    fun deleteAnnouncement_should_delete_local_announcement_when_state_is_draft() = runTest {
         // Given
-        val announcement = longAnnouncementFixture.copy(state = AnnouncementState.DRAFT)
+        val announcement = announcementFixture.copy(state = AnnouncementState.DRAFT)
 
         // When
-        useCase(announcement)
+        useCase.execute(announcement)
 
         // Then
         coVerify { announcementRepository.deleteLocalAnnouncement(announcement) }
+    }
+
+    @Test
+    fun deleteAnnouncement_should_delete_local_announcement_when_state_is_error() = runTest {
+        // Given
+        val announcement = announcementFixture.copy(state = AnnouncementState.ERROR)
+
+        // When
+        useCase.execute(announcement)
+
+        // Then
+        coVerify { announcementRepository.deleteLocalAnnouncement(announcement) }
+    }
+
+    @Test
+    fun deleteAnnouncement_should_delete_local_announcement_when_state_is_publishing() = runTest {
+        // Given
+        val announcement = announcementFixture.copy(state = AnnouncementState.PUBLISHING)
+
+        // When
+        useCase.execute(announcement)
+
+        // Then
+        coVerify { announcementRepository.deleteLocalAnnouncement(announcement) }
+    }
+
+    @Test
+    fun deleteAnnouncement_should_remove_job_reference_when_state_is_publishing() = runTest {
+        // Given
+        val announcement = announcementFixture.copy(state = AnnouncementState.PUBLISHING)
+
+        // When
+        useCase.execute(announcement)
+
+        // Then
+        coVerify { announcementJobQueue.cancelAndRemoveJob(announcement.id) }
     }
 }

@@ -1,6 +1,5 @@
 package com.upsaclay.gedoise.presentation
 
-import MainViewModel
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -12,18 +11,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.google.gson.Gson
-import com.upsaclay.common.domain.entity.fcm.FcmDataType
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.gedoise.presentation.navigation.GedNavHost
 import com.upsaclay.gedoise.presentation.navigation.NavigationViewModel
 import com.upsaclay.gedoise.presentation.navigation.SplashRoute
-import com.upsaclay.message.domain.converter.ConversationJsonConverter
-import com.upsaclay.message.domain.entity.RemoteNotificationMessage
-import com.upsaclay.message.domain.mapper.toNotificationMessage
-import com.upsaclay.message.notification.CONVERSATION_ID_EXTRA
-import com.upsaclay.message.notification.NotificationMessageManager
-import com.upsaclay.message.presentation.chat.ChatRoute
+import com.upsaclay.gedoise.presentation.notification.NotificationMediator
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -31,19 +23,18 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class MainActivity : ComponentActivity() {
     private val mainViewModel: MainViewModel by viewModel()
     private val navigationViewModel: NavigationViewModel by viewModel()
-    private val notificationMessageManager: NotificationMessageManager by inject<NotificationMessageManager>()
+    private val notificationMediator: NotificationMediator by inject()
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
-                notificationMessageManager.start()
+                notificationMediator.createNotificationChannels()
             }
         }
-    private val gson = Gson()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mainViewModel.updateDataOnAuthChange()
-        startNotification()
+        mainViewModel.updateAppData()
+        setupNotificationChannels()
 
         val splashscreen = installSplashScreen()
         splashscreen.setKeepOnScreenCondition {
@@ -56,54 +47,23 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        intent?.let {
-            handleIntent(it)
-        }
+        intent?.extras?.let(notificationMediator::onNotificationClick)
     }
 
-    private fun startNotification() {
+    private fun setupNotificationChannels() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
-                == PackageManager.PERMISSION_GRANTED
-            ) {
-                notificationMessageManager.start()
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                notificationMediator.createNotificationChannels()
             } else {
                 requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         } else {
-            notificationMessageManager.start()
+            notificationMediator.createNotificationChannels()
         }
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        handleIntent(intent)
-    }
-
-    private fun handleIntent(intent: Intent) {
-        val conversationJson = intent.getStringExtra(CONVERSATION_ID_EXTRA)
-        val notificationType = intent.getStringExtra("type")
-
-        when {
-            conversationJson != null ->
-                navigationViewModel.intentToNavigate(ChatRoute(conversationJson))
-
-            notificationType != null ->
-                handleNotificationIntent(notificationType, intent.extras)
-        }
-    }
-
-    private fun handleNotificationIntent(type: String, extras: Bundle?) {
-        when (type) {
-            FcmDataType.MESSAGE.toString() -> {
-                extras?.getString("value")?.let { value ->
-                    val notificationMessage = gson.fromJson(value, RemoteNotificationMessage::class.java).toNotificationMessage()
-                    val conversationJson = ConversationJsonConverter.toConversationJson(notificationMessage.conversation)
-                    navigationViewModel.intentToNavigate(ChatRoute(conversationJson))
-                }
-            }
-
-            else -> Unit
-        }
+        intent.extras?.let(notificationMediator::onNotificationClick)
     }
 }

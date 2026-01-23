@@ -32,13 +32,14 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.R
-import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.entity.UserReport
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.domain.userFixture2
-import com.upsaclay.common.extension.mediumPadding
+import com.upsaclay.common.extension.displayName
 import com.upsaclay.common.extension.mediumSpacing
+import com.upsaclay.common.extension.rootMediumPadding
+import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.BackTopBar
 import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.LoadingDialog
@@ -47,7 +48,7 @@ import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.components.TextItem
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -107,51 +108,52 @@ private fun UserScreen(
     userBlocked: Boolean,
     snackbarHostState: SnackbarHostState = SnackbarHostState()
 ) {
-    var showUserBottomSheet by remember { mutableStateOf(false) }
-    var showReportBottomSheet by remember { mutableStateOf(false) }
-    var showBlockUserDialog by remember { mutableStateOf(false) }
-    var showUnblockUserDialog by remember { mutableStateOf(false) }
-    val userName = if (!user.isDeleted) user.fullName else stringResource(id = R.string.deleted_user)
+    var activeBottomSheet by remember { mutableStateOf<UserScreenBottomSheet?>(null) }
+    var activeDialog by remember { mutableStateOf<UserScreenDialog?>(null) }
+
+    when(activeDialog) {
+        is UserScreenDialog.BlockUserDialog -> {
+            DefaultDialog(
+                title = stringResource(id = R.string.block_user_dialog_title),
+                text = stringResource(id = R.string.block_user_dialog_message),
+                confirmText = stringResource(id = R.string.block),
+                critical = true,
+                onConfirm = {
+                    activeDialog = null
+                    onBlockUserClick(user.id)
+                },
+                onCancel = { activeDialog = null }
+            )
+        }
+
+        is UserScreenDialog.UnblockUserDialog -> {
+            DefaultDialog(
+                text = stringResource(id = R.string.unblock_user_dialog_message),
+                confirmText = stringResource(id = R.string.unblock),
+                onConfirm = {
+                    activeDialog = null
+                    onUnblockUserClick(user.id)
+                },
+                onCancel = { activeDialog = null }
+            )
+        }
+
+        else -> Unit
+    }
 
     if (loading) {
         LoadingDialog()
-    }
-
-    if (showBlockUserDialog) {
-        DefaultDialog(
-            title = stringResource(id = R.string.block_user_dialog_title),
-            text = stringResource(id = R.string.block_user_dialog_message),
-            confirmText = stringResource(id = com.upsaclay.common.R.string.block),
-            critical = true,
-            onConfirm = {
-                showBlockUserDialog = false
-                onBlockUserClick(user.id)
-            },
-            onCancel = { showBlockUserDialog = false }
-        )
-    }
-
-    if (showUnblockUserDialog) {
-        DefaultDialog(
-            text = stringResource(id = R.string.unblock_user_dialog_message),
-            confirmText = stringResource(id = R.string.unblock),
-            onConfirm = {
-                showUnblockUserDialog = false
-                onUnblockUserClick(user.id)
-            },
-            onCancel = { showUnblockUserDialog = false }
-        )
     }
 
     Scaffold(
         topBar = {
             BackTopBar(
                 onBackClick = onBackClick,
-                title = userName,
+                title = user.displayName(),
                 leadingIcon = {
                     if (user != currentUser) {
                         OptionButton(
-                            onClick = { showUserBottomSheet = true },
+                            onClick = { activeBottomSheet = UserScreenBottomSheet.UserBottomSheet },
                             contentDescription = "Show user options"
                         )
                     }
@@ -167,7 +169,7 @@ private fun UserScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .mediumPadding(innerPadding),
+                .rootMediumPadding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.mediumSpacing()
         ) {
@@ -176,7 +178,7 @@ private fun UserScreen(
                 scale = 1.8f
             )
 
-            if (!user.isDeleted) {
+            if (user.state != User.UserState.DELETED) {
                 SelectionContainer {
                     UserInformationItems(user = user)
                 }
@@ -184,47 +186,48 @@ private fun UserScreen(
         }
     }
 
-    if (showUserBottomSheet) {
-        UserBottomSheet(
-            onDismiss = { showUserBottomSheet = false },
-            onReportClick = {
-                showUserBottomSheet = false
-                showReportBottomSheet = true
-            },
-            onBlockClick = {
-                showUserBottomSheet = false
-                showBlockUserDialog = true
-            },
-            onUnblockClick = {
-                showUserBottomSheet = false
-                showUnblockUserDialog = true
-            },
-            isBlocked = userBlocked
-        )
-    }
+    when(activeBottomSheet) {
+        is UserScreenBottomSheet.UserBottomSheet -> {
+            UserBottomSheet(
+                onBlockClick = {
+                    activeBottomSheet = null
+                    activeDialog = UserScreenDialog.BlockUserDialog
+                },
+                onUnblockClick = {
+                    activeBottomSheet = null
+                    activeDialog = UserScreenDialog.UnblockUserDialog
+                },
+                onReportClick = { activeBottomSheet = UserScreenBottomSheet.UserReportBottomSheet },
+                isBlocked = userBlocked,
+                onDismiss = { activeBottomSheet = null }
+            )
+        }
 
-    if (showReportBottomSheet) {
-        ReportBottomSheet(
-            items = UserReport.Reason.entries,
-            onDismiss = { showReportBottomSheet = false },
-            onReportClick = { reason ->
-                showReportBottomSheet = false
-                onReportUserClick(
-                    UserReport(
-                        userId = user.id,
-                        userInfo = UserReport.UserInfo(
-                            fullName = user.fullName,
-                            email = user.email
-                        ),
-                        reporterInfo = UserReport.UserInfo(
-                            fullName = currentUser.fullName,
-                            email = currentUser.email
-                        ),
-                        reason = reason
+        is UserScreenBottomSheet.UserReportBottomSheet -> {
+            ReportBottomSheet(
+                items = UserReport.Reason.entries,
+                onReportClick = { reason ->
+                    activeBottomSheet = null
+                    onReportUserClick(
+                        UserReport(
+                            reportedUser = UserReport.ReportedUser(
+                                id = user.id,
+                                fullName = user.fullName,
+                                email = user.email
+                            ),
+                            reporter = UserReport.Reporter(
+                                fullName = currentUser.fullName,
+                                email = currentUser.email
+                            ),
+                            reason = reason
+                        )
                     )
-                )
-            }
-        )
+                },
+                onDismiss = { activeBottomSheet = null },
+            )
+        }
+
+        else -> Unit
     }
 }
 
@@ -245,12 +248,12 @@ private fun UserBottomSheet(
                 modifier = Modifier.fillMaxWidth(),
                 text = {
                     Text(
-                        text = stringResource(id = com.upsaclay.common.R.string.unblock)
+                        text = stringResource(id = R.string.unblock)
                     )
                 },
                 icon = {
                     Icon(
-                        painter = painterResource(id = com.upsaclay.common.R.drawable.ic_outline_block),
+                        painter = painterResource(id = R.drawable.ic_outline_block),
                         contentDescription = null
                     )
                 },
@@ -261,12 +264,12 @@ private fun UserBottomSheet(
                 modifier = Modifier.fillMaxWidth(),
                 text = {
                     Text(
-                        text = stringResource(id = com.upsaclay.common.R.string.block)
+                        text = stringResource(id = R.string.block)
                     )
                 },
                 icon = {
                     Icon(
-                        painter = painterResource(id = com.upsaclay.common.R.drawable.ic_outline_block),
+                        painter = painterResource(id = R.drawable.ic_outline_block),
                         contentDescription = null
                     )
                 },
@@ -278,13 +281,13 @@ private fun UserBottomSheet(
             modifier = Modifier.fillMaxWidth(),
             text = {
                 Text(
-                    text = stringResource(id = com.upsaclay.common.R.string.report),
+                    text = stringResource(id = R.string.report),
                     color = MaterialTheme.colorScheme.error
                 )
             },
             icon = {
                 Icon(
-                    painter = painterResource(id = com.upsaclay.common.R.drawable.ic_outline_report),
+                    painter = painterResource(id = R.drawable.ic_outline_report),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.error
                 )
@@ -292,8 +295,18 @@ private fun UserBottomSheet(
             onClick = onReportClick
         )
 
-        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.large_padding)))
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.large_padding)))
     }
+}
+
+private sealed class UserScreenBottomSheet {
+    data object UserBottomSheet: UserScreenBottomSheet()
+    data object UserReportBottomSheet: UserScreenBottomSheet()
+}
+
+private sealed class UserScreenDialog {
+    data object BlockUserDialog: UserScreenDialog()
+    data object UnblockUserDialog: UserScreenDialog()
 }
 
 /*
@@ -302,7 +315,7 @@ private fun UserBottomSheet(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun UserScreenPreview() {
     GedoiseTheme {

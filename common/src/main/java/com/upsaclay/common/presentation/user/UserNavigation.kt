@@ -37,7 +37,7 @@ fun NavGraphBuilder.userScreen(
     ) { backStackEntry ->
         val user = backStackEntry.arguments?.getString("userJson")?.let {
             val decoded = Uri.decode(it)
-            UserJsonParser.fromJson(decoded)
+            UserJsonParser.toUser(decoded)
         }
 
         user?.let {

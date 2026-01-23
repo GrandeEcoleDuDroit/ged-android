@@ -9,14 +9,13 @@ import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 
 @Composable
 fun ChatScaffold(
@@ -51,7 +50,7 @@ fun ChatScaffold(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun ChatScaffoldPreview() {
     GedoiseTheme {
@@ -66,10 +65,9 @@ private fun ChatScaffoldPreview() {
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(it),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("Chat content")
-                }
+                    contentAlignment = Alignment.Center,
+                    content = {}
+                )
             }
         }
     }

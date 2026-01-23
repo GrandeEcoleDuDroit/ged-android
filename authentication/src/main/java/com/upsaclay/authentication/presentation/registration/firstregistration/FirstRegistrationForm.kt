@@ -16,7 +16,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import com.upsaclay.authentication.R
 import com.upsaclay.common.presentation.components.SimpleOutlinedTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 
 @Composable
 fun FirstRegistrationForm(
@@ -41,7 +41,7 @@ fun FirstRegistrationForm(
             label = stringResource(com.upsaclay.common.R.string.first_name),
             onValueChange = onFirstNameChange,
             keyboardOptions = KeyboardOptions(KeyboardCapitalization.Sentences),
-            errorMessage = firstNameError
+            errorMessage = firstNameError?.let { stringResource(it) }
         )
 
         SimpleOutlinedTextField(
@@ -50,7 +50,7 @@ fun FirstRegistrationForm(
             label = stringResource(com.upsaclay.common.R.string.last_name),
             onValueChange = onLastNameChange,
             keyboardOptions = KeyboardOptions(KeyboardCapitalization.Sentences),
-            errorMessage = lastNameError
+            errorMessage = lastNameError?.let { stringResource(it) }
         )
     }
 }
@@ -61,7 +61,7 @@ fun FirstRegistrationForm(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun PreviewFirstRegistrationForm() {
     GedoiseTheme {

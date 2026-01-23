@@ -5,10 +5,16 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ContentTransform
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
@@ -27,19 +33,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
-import com.upsaclay.common.extension.mediumPadding
 import com.upsaclay.common.extension.mediumSpacing
+import com.upsaclay.common.extension.rootMediumPadding
+import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.LoadingDialog
+import com.upsaclay.common.presentation.components.ProfilePicture
+import com.upsaclay.common.presentation.components.ProfilePictureWithIcon
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.user.UserInformationItems
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.gedoise.R
-import com.upsaclay.gedoise.presentation.components.AccountModelBottomSheet
+import com.upsaclay.gedoise.presentation.components.AccountBottomSheet
 import com.upsaclay.gedoise.presentation.components.AccountTopBar
+import com.upsaclay.gedoise.presentation.profile.accountinformation.AccountInformationViewModel.AccountInformationScreenState
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -60,7 +69,7 @@ fun AccountInformationDestination(
     }
 
     BackHandler(enabled = uiState.screenState == AccountInformationScreenState.EDIT) {
-        viewModel.cancelEdit()
+        viewModel.resetScreenState()
     }
 
     LaunchedEffect(Unit) {
@@ -84,7 +93,7 @@ fun AccountInformationDestination(
             onScreenStateChange = viewModel::onScreenStateChange,
             onDeleteProfilePictureClick = viewModel::deleteProfilePicture,
             onSaveProfilePictureClick = viewModel::updateProfilePicture,
-            onCancelUpdateProfilePictureClick = viewModel::cancelEdit,
+            onCancelUpdateProfilePictureClick = viewModel::resetScreenState,
             onBackClick = onBackClick
         )
     }
@@ -157,11 +166,11 @@ fun AccountInformationScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .mediumPadding(innerPadding),
+                .rootMediumPadding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.mediumSpacing()
         ) {
-            AccountImage(
+            AccountInformationImage(
                 modifier = Modifier.testTag(stringResource(id = R.string.account_screen_profile_picture_tag)),
                 isEdited = screenState == AccountInformationScreenState.EDIT,
                 profilePictureUri = profilePictureUri,
@@ -185,7 +194,7 @@ fun AccountInformationScreen(
         }
 
         if (showBottomSheet) {
-            AccountModelBottomSheet(
+            AccountBottomSheet(
                 onDismiss = { showBottomSheet = false },
                 onNewProfilePictureClick = {
                     singlePhotoPickerLauncher.launch(
@@ -201,13 +210,64 @@ fun AccountInformationScreen(
     }
 }
 
+@Composable
+private fun AccountInformationImage(
+    modifier: Modifier = Modifier,
+    isEdited: Boolean,
+    profilePictureUri: Uri?,
+    profilePictureUrl: String?,
+    onClick: () -> Unit
+) {
+    val scaleImage = 1.8f
+
+    AnimatedContent(
+        targetState = profilePictureUri,
+        transitionSpec = {
+            ContentTransform(
+                targetContentEnter = fadeIn(),
+                initialContentExit = fadeOut()
+            )
+        }
+    ) { uri ->
+        when(uri) {
+            null -> {
+                ProfilePictureWithIcon(
+                    modifier = modifier,
+                    url = profilePictureUrl,
+                    iconVector = Icons.Default.Edit,
+                    scale = scaleImage,
+                    onClick = onClick
+                )
+            }
+
+            else -> {
+                if (isEdited) {
+                    ProfilePicture(
+                        modifier = modifier,
+                        uri = uri,
+                        scale = scaleImage,
+                        onClick = onClick
+                    )
+                } else {
+                    ProfilePicture(
+                        modifier = modifier,
+                        uri = uri,
+                        scale = scaleImage,
+                        onClick = onClick
+                    )
+                }
+            }
+        }
+    }
+}
+
 /*
  =====================================================================
                                 Preview
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun AccountScreenPreview() {
     GedoiseTheme {

@@ -7,17 +7,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 
 @Composable
-fun Modifier.mediumPadding(topPadding: PaddingValues): Modifier {
+fun Modifier.rootMediumPadding(innerPadding: PaddingValues): Modifier {
     return this.padding(
-        top = topPadding.calculateTopPadding(),
+        top = innerPadding.calculateTopPadding(),
         start = dimensionResource(com.upsaclay.common.R.dimen.medium_padding),
         end = dimensionResource(com.upsaclay.common.R.dimen.medium_padding),
-        bottom = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)
+        bottom = innerPadding.calculateBottomPadding() +
+                dimensionResource(com.upsaclay.common.R.dimen.medium_padding)
     )
 }
 
 @Composable
-fun Modifier.mediumPadding(): Modifier {
+fun Modifier.rootMediumPadding(): Modifier {
     return this.padding(
         start = dimensionResource(com.upsaclay.common.R.dimen.medium_padding),
         end = dimensionResource(com.upsaclay.common.R.dimen.medium_padding),

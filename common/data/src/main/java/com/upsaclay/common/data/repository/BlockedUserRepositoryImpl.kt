@@ -2,44 +2,85 @@ package com.upsaclay.common.data.repository
 
 import com.upsaclay.common.data.local.BlockedUserLocalDataSource
 import com.upsaclay.common.data.remote.BlockedUserRemoteDataSource
+import com.upsaclay.common.data.utils.e
 import com.upsaclay.common.domain.entity.BlockUserEvent
+import com.upsaclay.common.domain.entity.BlockedUser
+import com.upsaclay.common.domain.entity.BlockedUsers
 import com.upsaclay.common.domain.repository.BlockedUserRepository
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 internal class BlockedUserRepositoryImpl(
     private val blockedUserLocalDataSource: BlockedUserLocalDataSource,
-    private val blockedUserRemoteDataSource: BlockedUserRemoteDataSource
+    private val blockedUserRemoteDataSource: BlockedUserRemoteDataSource,
+    private val scope: CoroutineScope
 ): BlockedUserRepository {
     private val _blockUserEvent = MutableSharedFlow<BlockUserEvent>(replay = 1)
     override val blockUserEvent: Flow<BlockUserEvent> = _blockUserEvent
 
-    override val blockedUserIds: Flow<Set<String>> = blockedUserLocalDataSource.getBlockedUserIdsFlow()
+    private val _blockedUsers = MutableStateFlow<BlockedUsers?>(null)
+    override val blockedUsers: Flow<BlockedUsers> = _blockedUsers.filterNotNull()
+    override val currentBlockedUsers: BlockedUsers?
+        get() = _blockedUsers.value
 
-    override suspend fun getLocalBlockedUserIds(): Set<String> = blockedUserLocalDataSource.getBlockedUserIds()
-
-    override suspend fun getRemoteBlockedUserIds(currentUserId: String): Set<String> =
-        blockedUserRemoteDataSource.getBlockedUserIds(currentUserId)
-
-    override suspend fun blockUser(currentUserId: String, userId: String) {
-        blockedUserRemoteDataSource.blockUser(currentUserId, userId)
-        blockedUserLocalDataSource.blockUser(userId)
-        _blockUserEvent.emit(BlockUserEvent.Block(userId))
+    init {
+        listenBlockedUsers()
     }
 
-    override suspend fun blockLocalUser(userId: String) {
-        blockedUserLocalDataSource.blockUser(userId)
-        _blockUserEvent.emit(BlockUserEvent.Block(userId))
+    override suspend fun getLocalBlockedUsers(): BlockedUsers = blockedUserLocalDataSource.getBlockedUsers()
+
+    override suspend fun getRemoteBlockedUsers(currentUserId: String): BlockedUsers {
+        return try {
+            blockedUserRemoteDataSource.getBlockedUsers(currentUserId).associateBy { it.userId }
+        } catch (e: Exception) {
+            e("Error getting remote blocked users for user $currentUserId", e)
+            throw e
+        }
     }
 
-    override suspend fun unblockUser(currentUserId: String, userId: String) {
-        blockedUserRemoteDataSource.unblockUser(currentUserId, userId)
-        blockedUserLocalDataSource.unblockUser(userId)
-        _blockUserEvent.emit(BlockUserEvent.Unblock(userId))
+    override suspend fun addBlockUser(currentUserId: String, blockedUser: BlockedUser) {
+        try {
+            blockedUserRemoteDataSource.addBlockedUser(currentUserId, blockedUser)
+            blockedUserLocalDataSource.addBlockUser(blockedUser)
+            _blockUserEvent.emit(BlockUserEvent.Block(blockedUser))
+        } catch (e: Exception) {
+            e("Error blocking user ${blockedUser.userId} for user $currentUserId", e)
+            throw e
+        }
     }
 
-    override suspend fun unblockLocalUser(userId: String) {
-        blockedUserLocalDataSource.unblockUser(userId)
-        _blockUserEvent.emit(BlockUserEvent.Unblock(userId))
+    override suspend fun addLocalBlockUser(blockedUser: BlockedUser) {
+        blockedUserLocalDataSource.addBlockUser(blockedUser)
+    }
+
+    override suspend fun removeBlockedUser(currentUserId: String, blockedUserId: String) {
+        try {
+            blockedUserRemoteDataSource.removeBlockedUser(currentUserId, blockedUserId)
+            blockedUserLocalDataSource.removeBlockUser(blockedUserId)
+            _blockUserEvent.emit(BlockUserEvent.Unblock(blockedUserId))
+        } catch (e: Exception) {
+            e("Error unblocking user $blockedUserId for user $currentUserId", e)
+            throw e
+        }
+    }
+
+    override suspend fun removeLocalBlockedUser(blockedUserId: String) {
+        blockedUserLocalDataSource.removeBlockUser(blockedUserId)
+    }
+    override suspend fun deleteLocalBlockedUsers() {
+        blockedUserLocalDataSource.deleteBlockedUsers()
+    }
+
+    private fun listenBlockedUsers() {
+        scope.launch {
+            blockedUserLocalDataSource.getBlockedUsersFlow().collect { blockedUsers ->
+                _blockedUsers.update { blockedUsers }
+            }
+        }
     }
 }

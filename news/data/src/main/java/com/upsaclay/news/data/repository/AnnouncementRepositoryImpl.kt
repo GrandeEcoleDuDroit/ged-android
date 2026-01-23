@@ -1,5 +1,6 @@
 package com.upsaclay.news.data.repository
 
+import com.upsaclay.common.data.utils.e
 import com.upsaclay.news.data.local.AnnouncementLocalDataSource
 import com.upsaclay.news.data.remote.AnnouncementRemoteDataSource
 import com.upsaclay.news.domain.entity.Announcement
@@ -35,35 +36,47 @@ internal class AnnouncementRepositoryImpl(
     override fun getAnnouncement(announcementId: String): Announcement? =
         _announcements.value.firstOrNull { it.id == announcementId }
 
-    override suspend fun getRemoteAnnouncements(): List<Announcement> =
-        announcementRemoteDataSource.getAnnouncement()
+    override suspend fun getRemoteAnnouncements(): List<Announcement> {
+        return try {
+            announcementRemoteDataSource.getAnnouncement()
+        } catch (e: Exception) {
+            e("Error getting remote announcements", e)
+            throw e
+        }
+    }
 
     override suspend fun createAnnouncement(announcement: Announcement) {
-        announcementLocalDataSource.upsertAnnouncement(announcement)
-        announcementRemoteDataSource.createAnnouncement(announcement)
+        try {
+            announcementLocalDataSource.upsertAnnouncement(announcement)
+            announcementRemoteDataSource.createAnnouncement(announcement)
+        } catch (e: Exception) {
+            e("Error creating announcement ${announcement.id}", e)
+            throw e
+        }
     }
 
     override suspend fun updateAnnouncement(announcement: Announcement) {
-        announcementRemoteDataSource.updateAnnouncement(announcement)
-        announcementLocalDataSource.upsertAnnouncement(announcement)
-    }
-
-    override suspend fun updateLocalAnnouncement(announcement: Announcement) {
-        announcementLocalDataSource.upsertAnnouncement(announcement)
+        try {
+            announcementRemoteDataSource.updateAnnouncement(announcement)
+            announcementLocalDataSource.upsertAnnouncement(announcement)
+        } catch (e: Exception) {
+            e("Error updating announcement ${announcement.id}", e)
+            throw e
+        }
     }
 
     override suspend fun upsertLocalAnnouncement(announcement: Announcement) {
         announcementLocalDataSource.upsertAnnouncement(announcement)
     }
 
-    override suspend fun deleteAnnouncements(userId: String) {
-        announcementRemoteDataSource.deleteAnnouncements(userId)
-        announcementLocalDataSource.deleteAnnouncements(userId)
-    }
-
     override suspend fun deleteAnnouncement(announcement: Announcement) {
-        announcementRemoteDataSource.deleteAnnouncement(announcement.id)
-        announcementLocalDataSource.deleteAnnouncement(announcement)
+        try {
+            announcementRemoteDataSource.deleteAnnouncement(announcement)
+            announcementLocalDataSource.deleteAnnouncement(announcement)
+        } catch (e: Exception) {
+            e("Error deleting announcement ${announcement.id}", e)
+            throw e
+        }
     }
 
     override suspend fun deleteLocalAnnouncement(announcement: Announcement) {
@@ -74,11 +87,16 @@ internal class AnnouncementRepositoryImpl(
         announcementLocalDataSource.deleteAnnouncements()
     }
 
-    override suspend fun deleteLocalAnnouncements(userId: String) {
-        announcementLocalDataSource.deleteAnnouncements(userId)
+    override suspend fun deleteLocalUserAnnouncements(userId: String) {
+        announcementLocalDataSource.deleteUserAnnouncements(userId)
     }
 
     override suspend fun reportAnnouncement(report: AnnouncementReport) {
-        announcementRemoteDataSource.reportAnnouncement(report)
+        try {
+            announcementRemoteDataSource.reportAnnouncement(report)
+        } catch (e: Exception) {
+            e("Error reporting announcement ${report.announcementId}", e)
+            throw e
+        }
     }
 }

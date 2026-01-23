@@ -1,58 +1,64 @@
 package com.upsaclay.news.presentation.announcement.createannouncement
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.GenerateIdUseCase
 import com.upsaclay.news.domain.entity.Announcement
-import com.upsaclay.news.domain.entity.AnnouncementState
+import com.upsaclay.news.domain.entity.Announcement.AnnouncementState
+import com.upsaclay.news.domain.entity.Announcement.Companion.CONTENT_MAX_LENGTH
+import com.upsaclay.news.domain.entity.Announcement.Companion.TITLE_MAX_LENGTH
 import com.upsaclay.news.domain.usecase.CreateAnnouncementUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
 class CreateAnnouncementViewModel(
     userRepository: UserRepository,
-    private val createAnnouncementUseCase: CreateAnnouncementUseCase
+    private val createAnnouncementUseCase: CreateAnnouncementUseCase,
+    private val generateIdUseCase: GenerateIdUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(CreateAnnouncementUiState())
-    internal val uiState : StateFlow<CreateAnnouncementUiState> = _uiState
+    internal val uiState: StateFlow<CreateAnnouncementUiState> = _uiState
     private val user: User? = userRepository.currentUser
 
     fun onTitleChange(title: String) {
-        if (title.length > 300) return
         _uiState.update {
             it.copy(
-                title = title,
-                createEnabled = validateCreate(_uiState.value.content)
+                title = title.take(TITLE_MAX_LENGTH),
+                createEnabled = validateCreate(uiState.value.content)
             )
         }
     }
 
     fun onContentChange(content: String) {
-        if (content.length > 2000) return
+        val contentTruncated = content.take(CONTENT_MAX_LENGTH)
         _uiState.update {
             it.copy(
-                content = content,
-                createEnabled = validateCreate(content)
+                content = contentTruncated,
+                createEnabled = validateCreate(contentTruncated)
             )
         }
     }
 
     fun createAnnouncement() {
         if (user == null) return
-        val (title, content) = _uiState.value
+        val (title, content) = uiState.value
         val announcement = Announcement(
-            id = GenerateIdUseCase.stringId,
+            id = generateIdUseCase.execute(),
             title = if (title.isBlank()) null else title.trim(),
             content = content.trim(),
             date = LocalDateTime.now(ZoneOffset.UTC),
             author = user,
             state = AnnouncementState.DRAFT
         )
-        createAnnouncementUseCase(announcement)
+        viewModelScope.launch {
+            createAnnouncementUseCase.execute(announcement)
+        }
     }
 
     private fun validateCreate(content: String): Boolean = content.isNotBlank()

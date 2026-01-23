@@ -1,7 +1,7 @@
 package com.upsaclay.news.data
 
 import com.upsaclay.common.data.GED_SERVER_QUALIFIER
-import com.upsaclay.common.domain.e
+import com.upsaclay.common.data.utils.e
 import com.upsaclay.news.data.local.AnnouncementLocalDataSource
 import com.upsaclay.news.data.remote.AnnouncementRemoteDataSource
 import com.upsaclay.news.data.remote.api.AnnouncementApi
@@ -26,11 +26,11 @@ val newsDataModule = module {
 
     single<CoroutineScope>(BACKGROUND_SCOPE) {
         CoroutineScope(
-    SupervisorJob() +
-            Dispatchers.IO +
-            CoroutineExceptionHandler { _, throwable ->
-                e("Uncaught error in backgroundScope", throwable)
-            }
+            SupervisorJob() +
+                    Dispatchers.IO +
+                    CoroutineExceptionHandler { _, throwable ->
+                        e("Uncaught error in backgroundScope", throwable)
+                    }
         )
     }
 

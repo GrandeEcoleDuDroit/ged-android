@@ -4,62 +4,64 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import com.upsaclay.message.data.local.model.LocalConversationMessage
-import com.upsaclay.message.data.model.CONVERSATIONS_TABLE_NAME
-import com.upsaclay.message.data.model.ConversationField.CREATED_AT
-import com.upsaclay.message.data.model.ConversationField.Local.CONVERSATION_DELETE_TIME
+import com.upsaclay.message.data.model.ConversationField.CONVERSATION_TABLE_NAME
+import com.upsaclay.message.data.model.ConversationField.Local.CONVERSATION_CREATED_AT
+import com.upsaclay.message.data.model.ConversationField.Local.CONVERSATION_EFFECTIVE_FROM
+import com.upsaclay.message.data.model.ConversationField.Local.CONVERSATION_ID
+import com.upsaclay.message.data.model.ConversationField.Local.CONVERSATION_INTERLOCUTOR_ADMIN
+import com.upsaclay.message.data.model.ConversationField.Local.CONVERSATION_INTERLOCUTOR_EMAIL
+import com.upsaclay.message.data.model.ConversationField.Local.CONVERSATION_INTERLOCUTOR_FIRST_NAME
+import com.upsaclay.message.data.model.ConversationField.Local.CONVERSATION_INTERLOCUTOR_ID
+import com.upsaclay.message.data.model.ConversationField.Local.CONVERSATION_INTERLOCUTOR_LAST_NAME
+import com.upsaclay.message.data.model.ConversationField.Local.CONVERSATION_INTERLOCUTOR_PROFILE_PICTURE_FILE_NAME
+import com.upsaclay.message.data.model.ConversationField.Local.CONVERSATION_INTERLOCUTOR_SCHOOL_LEVEL
+import com.upsaclay.message.data.model.ConversationField.Local.CONVERSATION_INTERLOCUTOR_STATE
+import com.upsaclay.message.data.model.ConversationField.Local.CONVERSATION_INTERLOCUTOR_TESTER
 import com.upsaclay.message.data.model.ConversationField.Local.CONVERSATION_STATE
-import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_EMAIL
-import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_FIRST_NAME
-import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_ID
-import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_IS_DELETED
-import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_IS_MEMBER
-import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_LAST_NAME
-import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_PROFILE_PICTURE_FILE_NAME
-import com.upsaclay.message.data.model.ConversationField.Local.INTERLOCUTOR_SCHOOL_LEVEL
-import com.upsaclay.message.data.model.MESSAGES_TABLE_NAME
-import com.upsaclay.message.data.model.MessageField.CONTENT
-import com.upsaclay.message.data.model.MessageField.MESSAGE_ID
-import com.upsaclay.message.data.model.MessageField.RECIPIENT_ID
-import com.upsaclay.message.data.model.MessageField.SEEN
-import com.upsaclay.message.data.model.MessageField.SENDER_ID
-import com.upsaclay.message.data.model.MessageField.TIMESTAMP
+import com.upsaclay.message.data.model.MessageField.Local.MESSAGE_CONTENT
+import com.upsaclay.message.data.model.MessageField.Local.MESSAGE_CONVERSATION_ID
+import com.upsaclay.message.data.model.MessageField.Local.MESSAGE_ID
+import com.upsaclay.message.data.model.MessageField.Local.MESSAGE_RECIPIENT_ID
+import com.upsaclay.message.data.model.MessageField.Local.MESSAGE_SEEN
+import com.upsaclay.message.data.model.MessageField.Local.MESSAGE_SENDER_ID
+import com.upsaclay.message.data.model.MessageField.Local.MESSAGE_STATE
+import com.upsaclay.message.data.model.MessageField.Local.MESSAGE_TIMESTAMP
+import com.upsaclay.message.data.model.MessageField.MESSAGE_TABLE_NAME
 import kotlinx.coroutines.flow.Flow
-import com.upsaclay.message.data.model.ConversationField.CONVERSATION_ID as CONVERSATION_CONVERSATION_ID
-import com.upsaclay.message.data.model.MessageField.CONVERSATION_ID as MESSAGE_CONVERSATION_ID
-import com.upsaclay.message.data.model.MessageField.Local.STATE as MESSAGE_STATE
 
 @Dao
 interface ConversationMessageDao {
     @Transaction
     @Query("""
-        SELECT C.$CONVERSATION_CONVERSATION_ID,
-            C.$INTERLOCUTOR_ID, 
-            C.$INTERLOCUTOR_FIRST_NAME,
-            C.$INTERLOCUTOR_LAST_NAME, 
-            C.$INTERLOCUTOR_EMAIL, 
-            C.$INTERLOCUTOR_SCHOOL_LEVEL,
-            C.$INTERLOCUTOR_IS_MEMBER,
-            C.$INTERLOCUTOR_PROFILE_PICTURE_FILE_NAME,
-            C.$INTERLOCUTOR_IS_DELETED,
-            C.$CREATED_AT,
+        SELECT C.$CONVERSATION_ID,
+            C.$CONVERSATION_INTERLOCUTOR_ID, 
+            C.$CONVERSATION_INTERLOCUTOR_FIRST_NAME,
+            C.$CONVERSATION_INTERLOCUTOR_LAST_NAME, 
+            C.$CONVERSATION_INTERLOCUTOR_EMAIL, 
+            C.$CONVERSATION_INTERLOCUTOR_SCHOOL_LEVEL,
+            C.$CONVERSATION_INTERLOCUTOR_ADMIN,
+            C.$CONVERSATION_INTERLOCUTOR_PROFILE_PICTURE_FILE_NAME,
+            C.$CONVERSATION_INTERLOCUTOR_STATE,
+            C.$CONVERSATION_INTERLOCUTOR_TESTER,
+            C.$CONVERSATION_CREATED_AT,
             C.$CONVERSATION_STATE, 
-            C.$CONVERSATION_DELETE_TIME,
+            C.$CONVERSATION_EFFECTIVE_FROM,
             M.$MESSAGE_ID, 
-            M.$SENDER_ID,
-            M.$RECIPIENT_ID,
-            M.$CONTENT,
-            M.$TIMESTAMP,
-            M.$SEEN, 
+            M.$MESSAGE_SENDER_ID,
+            M.$MESSAGE_RECIPIENT_ID,
+            M.$MESSAGE_CONTENT,
+            M.$MESSAGE_TIMESTAMP,
+            M.$MESSAGE_SEEN, 
             M.$MESSAGE_STATE
-        FROM $CONVERSATIONS_TABLE_NAME C
-        JOIN $MESSAGES_TABLE_NAME M ON C.$CONVERSATION_CONVERSATION_ID = M.$MESSAGE_CONVERSATION_ID
+        FROM $CONVERSATION_TABLE_NAME C
+        JOIN $MESSAGE_TABLE_NAME M ON C.$CONVERSATION_ID = M.$MESSAGE_CONVERSATION_ID
         JOIN (
-            SELECT $MESSAGE_CONVERSATION_ID, MAX($TIMESTAMP) AS MAX_TIMESTAMP
-            FROM $MESSAGES_TABLE_NAME
+            SELECT $MESSAGE_CONVERSATION_ID, MAX($MESSAGE_TIMESTAMP) AS MAX_TIMESTAMP
+            FROM $MESSAGE_TABLE_NAME
             GROUP BY $MESSAGE_CONVERSATION_ID
         ) M_MAX
           ON M.$MESSAGE_CONVERSATION_ID = M_MAX.$MESSAGE_CONVERSATION_ID
-          AND M.$TIMESTAMP = M_MAX.MAX_TIMESTAMP
+          AND M.$MESSAGE_TIMESTAMP = M_MAX.MAX_TIMESTAMP
           ORDER BY M_MAX.MAX_TIMESTAMP DESC
     """)
     fun getConversationsMessage(): Flow<List<LocalConversationMessage>>

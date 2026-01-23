@@ -1,7 +1,6 @@
 package com.upsaclay.message.presentation.chat
 
 import android.content.res.Configuration
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -22,6 +21,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.automirrored.outlined.Send
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -61,16 +61,14 @@ import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.black
-import com.upsaclay.common.presentation.theme.cursor
 import com.upsaclay.common.presentation.theme.informationText
 import com.upsaclay.common.presentation.theme.inputBackground
-import com.upsaclay.common.presentation.theme.inputForeground
 import com.upsaclay.common.presentation.theme.white
-import com.upsaclay.common.utils.FormatLocalDateTimeHelper
+import com.upsaclay.common.utils.DateUtils
 import com.upsaclay.message.R
 import com.upsaclay.message.domain.entity.Message
-import com.upsaclay.message.domain.entity.MessageState
-import com.upsaclay.message.domain.messageFixture
+import com.upsaclay.message.domain.entity.Message.MessageState
+import com.upsaclay.message.domain.fixtures.messageFixture
 import java.time.LocalDateTime
 
 @Composable
@@ -85,7 +83,7 @@ fun SentMessageItem(
 
     Row(
         modifier = modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.End
     ) {
         Spacer(modifier = Modifier.weight(0.2f))
@@ -107,8 +105,6 @@ fun SentMessageItem(
             )
 
             if (showSeen) {
-                val seenColor = if (isSystemInDarkTheme()) Color.Gray else Color.DarkGray
-
                 Text(
                     modifier = Modifier.padding(
                         top = dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding),
@@ -116,30 +112,31 @@ fun SentMessageItem(
                     ),
                     text = stringResource(id = R.string.message_seen),
                     style = MaterialTheme.typography.bodySmall,
-                    color = seenColor
+                    color = if (isSystemInDarkTheme()) Color.Gray else Color.DarkGray
                 )
             }
         }
 
-        if (message.state == MessageState.SENDING) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.Send,
-                contentDescription = stringResource(id = R.string.send_message_icon_description),
-                tint = if (isSystemInDarkTheme()) Color.Gray else Color.LightGray,
-                modifier = Modifier.size(20.dp).weight(0.1f)
-            )
-        }
+        when (message.state) {
+            MessageState.SENDING -> {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Outlined.Send,
+                    contentDescription = null,
+                    tint = Color.Gray,
+                    modifier = Modifier.size(20.dp).weight(0.1f)
+                )
+            }
 
-        AnimatedVisibility(
-            modifier = Modifier.weight(0.1f),
-            visible = message.state == MessageState.ERROR
-        ) {
-            Icon(
-                painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_error),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.error,
-                modifier = Modifier.size(22.dp)
-            )
+            MessageState.ERROR -> {
+                Icon(
+                    painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_error),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.size(20.dp).weight(0.1f)
+                )
+            }
+
+            else -> Unit
         }
     }
 }
@@ -228,7 +225,7 @@ private fun MessageBubble(
             modifier = Modifier
                 .padding(start = dimensionResource(com.upsaclay.common.R.dimen.small_padding))
                 .align(Alignment.Bottom),
-            text = FormatLocalDateTimeHelper.formatHourMinute(date),
+            text = DateUtils.formatHourMinute(date),
             style = MaterialTheme.typography.labelSmall,
             color = dateTimeTextColor
         )
@@ -253,12 +250,12 @@ fun MessageInput(
         verticalAlignment = Alignment.CenterVertically
     ) {
         BasicTextField(
-            modifier = modifier.weight(1f),
+            modifier = Modifier.weight(1f),
             value = value,
             onValueChange = onValueChange,
+            textStyle = TextStyle.Default.copy(color = MaterialTheme.colorScheme.onSurface),
             keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
-            cursorBrush = SolidColor(MaterialTheme.colorScheme.cursor),
-            textStyle = TextStyle(color = MaterialTheme.colorScheme.cursor),
+            cursorBrush = SolidColor(TextFieldDefaults.colors().cursorColor),
             maxLines = 6
         ) { innerTextField ->
             TextFieldDefaults.DecorationBox(
@@ -268,7 +265,6 @@ fun MessageInput(
                     Text(
                         text = stringResource(id = R.string.message_placeholder),
                         style = TextStyle(platformStyle = PlatformTextStyle(false)),
-                        color = MaterialTheme.colorScheme.inputForeground
                     )
                 },
                 enabled = true,
@@ -278,7 +274,7 @@ fun MessageInput(
                     unfocusedContainerColor = MaterialTheme.colorScheme.inputBackground,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
-                    cursorColor = MaterialTheme.colorScheme.cursor
+                    cursorColor = TextFieldDefaults.colors().cursorColor
                 ),
                 visualTransformation = VisualTransformation.None,
                 interactionSource = interactionSource,
@@ -357,7 +353,7 @@ fun MessageBlockedUserIndicator(
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(R.string.chat_blocked_user_indicator_text),
-            style = MaterialTheme.typography.bodySmall,
+            style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.informationText,
             textAlign = TextAlign.Center
         )
@@ -397,23 +393,12 @@ fun MessageBlockedUserIndicator(
  =====================================================================
  */
 
-private val smallText = "Bonsoir, pas de soucis."
-private val mediumText = "Cela pourrait également aider à résoudre tout problème éventuel."
-private val longtext = "Bonjour, j'espère que vous allez bien. " +
-        "Je voulais prendre un moment pour vous parler de quelque chose d'important. " +
-        "En fait, je pense qu'il est essentiel que nous discutions de la direction que prend notre projet, " +
-        "car il y a plusieurs points que nous devrions clarifier. " +
-        "Tout d'abord, j'ai remarqué que certains aspects de notre stratégie actuelle pourraient être améliorés. " +
-        "Je crois que nous pourrions gagner en efficacité si nous ajustions certaines étapes du processus. " +
-        "Par exemple, en ce qui concerne la gestion des priorités, il serait peut-être utile de revoir nos méthodes " +
-        "afin d'être sûrs que nous concentrons nos efforts sur les éléments les plus importants."
-
 @Preview
 @Composable
 private fun SeenSentMessageItemPreview() {
     GedoiseTheme {
         SentMessageItem(
-            message = messageFixture.copy(content = mediumText),
+            message = messageFixture.copy(content = "Hahaha"),
             showSeen = true,
             clickEnabled = false,
             onClick = {}
@@ -451,7 +436,7 @@ private fun ErrorSentMessageItemPreview() {
 private fun ReceiveMessageItemPreview() {
     GedoiseTheme {
         ReceivedMessageItem(
-            message = messageFixture.copy(content = mediumText),
+            message = messageFixture,
             displayProfilePicture = true,
             profilePictureUrl = "",
             onLongClick = {},

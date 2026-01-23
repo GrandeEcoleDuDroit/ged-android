@@ -3,30 +3,34 @@ package com.upsaclay.message.presentation.chat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
-import com.upsaclay.common.domain.entity.SingleUiEvent
+import com.upsaclay.common.domain.entity.CustomException
+import com.upsaclay.common.domain.entity.CustomException.CustomError.CURRENT_USER_NOT_FOUND
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.GenerateIdUseCase
-import com.upsaclay.common.utils.mapNetworkErrorMessage
+import com.upsaclay.common.extension.executeUiBlockingRequest
+import com.upsaclay.common.presentation.SingleUiEvent
+import com.upsaclay.common.utils.mapExceptionErrorMessage
 import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.Message
+import com.upsaclay.message.domain.entity.Message.MessageState
 import com.upsaclay.message.domain.entity.MessageReport
-import com.upsaclay.message.domain.entity.MessageState
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
 import com.upsaclay.message.domain.usecase.DeleteConversationUseCase
 import com.upsaclay.message.domain.usecase.SendMessageUseCase
-import com.upsaclay.message.notification.NotificationMessageManager
+import com.upsaclay.message.notification.MessageNotificationManager
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.Duration
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
@@ -35,17 +39,17 @@ class ChatViewModel(
     private val userRepository: UserRepository,
     private val conversationRepository: ConversationRepository,
     private val messageRepository: MessageRepository,
-    private val notificationMessageManager: NotificationMessageManager,
+    private val messageNotificationManager: MessageNotificationManager,
     private val blockedUserRepository: BlockedUserRepository,
     private val sendMessageUseCase: SendMessageUseCase,
-    private val deleteConversationUseCase: DeleteConversationUseCase
+    private val deleteConversationUseCase: DeleteConversationUseCase,
+    private val generateIdUseCase: GenerateIdUseCase
 ): ViewModel() {
-    private val user: User? = userRepository.currentUser
     private val _uiState = MutableStateFlow(
         ChatUiState(
             messageText = "",
             loading = false,
-            userBlocked = false,
+            isUserBlocked = false,
             currentUser = userRepository.currentUser
         )
     )
@@ -53,15 +57,15 @@ class ChatViewModel(
     internal val messages: Flow<PagingData<Message>> = messageRepository.getPagingMessages(conversation.id)
     private val _event = MutableSharedFlow<SingleUiEvent>()
     internal val event: Flow<SingleUiEvent> = _event
+    private var seeMessagesJob: Job? = null
 
     init {
+        seeMessages()
         listenConversation()
         listenCurrentUser()
         listenBlockUserIds()
 
         emitNewMessageReceived()
-        seeMessages()
-        seeNewMessage()
         clearChatNotifications()
     }
 
@@ -74,128 +78,133 @@ class ChatViewModel(
     fun sendMessage() {
         try {
             val text = uiState.value.messageText.takeUnless { it.isEmpty() } ?: return
-            val user = requireNotNull(user)
+            val user = uiState.value.currentUser ?: throw CustomException(CURRENT_USER_NOT_FOUND)
+
             val message = Message(
-                id = GenerateIdUseCase.longId,
-                conversationId = conversation.id,
+                id = generateIdUseCase.execute(),
                 senderId = user.id,
                 recipientId = conversation.interlocutor.id,
+                conversationId = conversation.id,
                 content = text,
                 date = LocalDateTime.now(ZoneOffset.UTC),
                 state = MessageState.DRAFT
             )
 
-            sendMessageUseCase(
+            sendMessageUseCase.execute(
                 conversation = conversation,
                 message = message,
                 userId = user.id
             )
+
             _uiState.update { it.copy(messageText = "") }
-        } catch (_: IllegalArgumentException) {
+        } catch (e: Exception) {
             viewModelScope.launch {
-                _event.emit(SingleUiEvent.Error(com.upsaclay.common.R.string.current_user_not_found_error))
+                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
             }
         }
     }
 
-    fun resendMessage(message: Message) {
+    fun resendErrorMessage(message: Message) {
         try {
-            val user = requireNotNull(user)
+            val user = uiState.value.currentUser ?: throw CustomException(CURRENT_USER_NOT_FOUND)
             viewModelScope.launch {
-                sendMessageUseCase(
+                sendMessageUseCase.execute(
                     conversation = conversation,
                     message = message.copy(date = LocalDateTime.now(ZoneOffset.UTC)),
                     userId = user.id
                 )
             }
-        } catch (_: IllegalArgumentException) {
+        } catch (e: Exception) {
             viewModelScope.launch {
-                _event.emit(SingleUiEvent.Error(com.upsaclay.common.R.string.current_user_not_found_error))
+                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
             }
         }
     }
 
-    fun deleteMessage(message: Message) {
+    fun deleteErrorMessage(message: Message) {
         viewModelScope.launch {
             messageRepository.deleteLocalMessage(message)
         }
     }
 
     fun reportMessage(report: MessageReport) {
-        _uiState.update { it.copy(loading = true) }
-
-        viewModelScope.launch {
-            try {
-                messageRepository.reportMessage(report)
-                _event.emit(MessageEvent.MessageReported)
-            } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
-            } finally {
-                _uiState.update { it.copy(loading = false) }
-            }
+        executeRequest {
+            messageRepository.reportMessage(report)
+            _event.emit(MessageEvent.MessageReported)
         }
     }
 
     fun unblockUser(userId: String) {
-        val currentUserId = uiState.value.currentUser?.id ?: return
-        _uiState.update { it.copy(loading = true) }
+        executeRequest {
+            val currentUserId = uiState.value.currentUser?.id ?: throw CustomException(CURRENT_USER_NOT_FOUND)
+            blockedUserRepository.removeBlockedUser(currentUserId, userId)
+        }
+    }
 
-        viewModelScope.launch {
-            try {
-                blockedUserRepository.unblockUser(currentUserId, userId)
-            } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
-            } finally {
-                _uiState.update { it.copy(loading = false) }
+    fun deleteChat() {
+        executeRequest {
+            val currentUserId = uiState.value.currentUser?.id ?: throw CustomException(CURRENT_USER_NOT_FOUND)
+            deleteConversationUseCase.execute(conversation, currentUserId)
+            _event.emit(MessageEvent.ChatDeleted)
+        }
+    }
+
+    fun startSeeingMessages() {
+        seeMessagesJob?.cancel()
+        seeMessagesJob = viewModelScope.launch {
+            launch {
+                uiState.value.currentUser?.let {
+                    messageRepository.setMessagesSeen(conversation.id, it.id)
+                }
+            }
+
+            launch {
+                event
+                    .mapNotNull { it as? MessageEvent.NewMessage }
+                    .filter { it.message.senderId != uiState.value.currentUser?.id && !it.message.seen }
+                    .collect {
+                        messageRepository.setMessageSeen(it.message)
+                    }
             }
         }
     }
 
-    fun deleteConversation() {
-        val currentUserId = uiState.value.currentUser?.id ?: return
-        _uiState.update { it.copy(loading = true) }
-
-        viewModelScope.launch {
-            try {
-                deleteConversationUseCase(conversation, currentUserId)
-                _event.emit(MessageEvent.ConversationDeleted)
-            } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
-            } finally {
-                _uiState.update { it.copy(loading = false) }
-            }
-        }
+    fun stopSeeingMessages() {
+        seeMessagesJob?.cancel()
+        seeMessagesJob = null
     }
 
     private fun seeMessages() {
         viewModelScope.launch {
-            user?.let {
-                messageRepository.updateSeenMessages(conversation.id, it.id)
+            uiState.value.currentUser?.let {
+                messageRepository.setMessagesSeen(conversation.id, it.id)
             }
         }
     }
 
     private fun emitNewMessageReceived() {
         viewModelScope.launch {
-            messageRepository.getLastMessageFlow(conversation.id)
+            messageRepository.getNewMessagesFlow(conversation.id, LocalDateTime.now(ZoneOffset.UTC))
                 .filterNotNull()
-                .filter { Duration.between(it.date, LocalDateTime.now(ZoneOffset.UTC)).toMinutes() < 1L }
                 .collect {
                     _event.emit(MessageEvent.NewMessage(it))
                 }
         }
     }
 
-    private fun seeNewMessage() {
-        viewModelScope.launch {
-            messageRepository.getLastMessageFlow(conversation.id)
-                .filterNotNull()
-                .filter { it.senderId != user?.id }
-                .filter { it.seen.not() }
-                .collect {
-                    messageRepository.updateSeenMessage(it)
-                }
-        }
+    private fun executeRequest(block: suspend () -> Unit) {
+        viewModelScope.executeUiBlockingRequest(
+            block = block,
+            onLoading = {
+                _uiState.update { it.copy(loading = true) }
+            },
+            onError = {
+                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(it)))
+            },
+            onFinished = {
+                _uiState.update { it.copy(loading = false) }
+            }
+        )
     }
 
     private fun listenConversation() {
@@ -209,7 +218,7 @@ class ChatViewModel(
 
     private fun clearChatNotifications() {
         viewModelScope.launch {
-            notificationMessageManager.clearNotifications(conversation.id)
+            messageNotificationManager.clearNotifications(conversation.id)
         }
     }
 
@@ -224,9 +233,9 @@ class ChatViewModel(
     private fun listenBlockUserIds() {
         viewModelScope.launch {
             val interlocutorId = conversation.interlocutor.id
-            blockedUserRepository.blockedUserIds.collect { blockedUserIds ->
+            blockedUserRepository.blockedUsers.collect { blockedUsers ->
                 _uiState.update {
-                    it.copy(userBlocked = blockedUserIds.contains(interlocutorId))
+                    it.copy(isUserBlocked = blockedUsers.containsKey(interlocutorId))
                 }
             }
         }
@@ -235,13 +244,13 @@ class ChatViewModel(
     internal data class ChatUiState(
         val messageText: String,
         val loading: Boolean,
-        val userBlocked: Boolean,
+        val isUserBlocked: Boolean,
         val currentUser: User?
     )
 
     internal sealed class MessageEvent: SingleUiEvent {
         data class NewMessage(val message: Message): MessageEvent()
         data object MessageReported: MessageEvent()
-        data object ConversationDeleted: MessageEvent()
+        data object ChatDeleted: MessageEvent()
     }
 }

@@ -10,4 +10,5 @@
     <dimen name="large_padding">24dp</dimen>
     <dimen name="extra_large_padding">32dp</dimen>
     <dimen name="very_extra_large_padding">64dp</dimen>
+    <dimen name="icon_size">20dp</dimen>
 </resources>

@@ -1,8 +1,10 @@
 package com.upsaclay.common.presentation.components
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -15,7 +17,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -23,32 +25,32 @@ fun <T>ReportBottomSheet(
     modifier: Modifier = Modifier,
     sheetState: SheetState = rememberModalBottomSheetState(),
     items: List<T>,
-    onDismiss: () -> Unit,
-    onReportClick: (T) -> Unit
+    onReportClick: (T) -> Unit,
+    onDismiss: () -> Unit
 ) {
     ModalBottomSheet(
         modifier = modifier,
         sheetState = sheetState,
         onDismissRequest = onDismiss
     ) {
-        Text(
-            text = stringResource(com.upsaclay.common.R.string.report),
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center
-        )
-
-        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.small_padding)))
-
-        items.forEach {
-            TextItem(
+        Column(modifier = Modifier.navigationBarsPadding()) {
+            Text(
+                text = stringResource(com.upsaclay.common.R.string.report),
+                style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.fillMaxWidth(),
-                text = { Text(text = it.toString()) },
-                onClick = { onReportClick(it) }
+                textAlign = TextAlign.Center
             )
-        }
 
-        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.large_padding)))
+            Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.small_padding)))
+
+            items.forEach {
+                TextItem(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = { Text(text = it.toString()) },
+                    onClick = { onReportClick(it) }
+                )
+            }
+        }
     }
 }
 
@@ -59,7 +61,7 @@ fun <T>ReportBottomSheet(
  */
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Phones
+@PhonePreviews
 @Composable
 private fun PreviewReportBottomSheet() {
     GedoiseTheme {

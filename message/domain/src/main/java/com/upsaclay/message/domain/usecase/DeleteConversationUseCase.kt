@@ -1,25 +1,21 @@
 package com.upsaclay.message.domain.usecase
 
 import com.upsaclay.message.domain.entity.Conversation
-import com.upsaclay.message.domain.entity.ConversationState
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
 class DeleteConversationUseCase(
     private val conversationRepository: ConversationRepository,
-    private val messageRepository: MessageRepository,
-    private val scope: CoroutineScope
+    private val messageRepository: MessageRepository
 ) {
-    operator fun invoke(conversation: Conversation, currentUserId: String) {
+    suspend fun execute(conversation: Conversation, currentUserId: String) {
         val deleteTime = LocalDateTime.now(ZoneOffset.UTC)
-        scope.launch {
-            conversationRepository.updateLocalConversation(conversation.copy(state = ConversationState.DELETING))
+        withTimeout(10000) {
             conversationRepository.deleteConversation(conversation.id, currentUserId, deleteTime)
-            messageRepository.deleteLocalMessages(conversation.id)
         }
+        messageRepository.deleteLocalMessages(conversation.id)
     }
 }

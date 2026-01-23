@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mission_details">Détail mission</string>
+    <string name="edit_mission">Editer mission</string>
+    <string name="new_mission">Nouvelle mission</string>
+    <string name="open">Ouvert</string>
+    <string name="all">Tout</string>
+    <string name="see_all_users">Voir tout (%d plus)</string>
+
+    <string name="no_mission">Aucune mission</string>
+    <string name="remaining_spots">%s places restantes</string>
+    <string name="title">Titre</string>
+    <string name="description">Description</string>
+    <string name="information">Informations</string>
+    <string name="everyone">Tout le monde</string>
+    <string name="start_date">Date de début</string>
+    <string name="end_date">Date de fin</string>
+    <string name="duration">Durée</string>
+    <string name="managers">Gérants</string>
+    <string name="participants">Participants</string>
+    <string name="max_participant">Participants max</string>
+    <string name="tasks">Tâches</string>
+    <string name="school_level">Niveau scolaire</string>
+    <string name="short_participant_number" translatable="false">%d / %d</string>
+    <string name="add_image">Ajouter image</string>
+    <string name="add_manager">Ajouter gérant</string>
+    <string name="add">Ajouter</string>
+    <string name="task">Tâche</string>
+    <string name="new_task">Nouvelle tâche</string>
+    <string name="undo">Annuler</string>
+    <string name="add_task">Ajouter tâche</string>
+    <string name="enter_task">Entrer tâche</string>
+    <string name="new_image">Nouvelle image</string>
+    <string name="full">Complet</string>
+    <string name="completed">Terminée</string>
+    <string name="register_mission_button_text">S\'inscrire</string>
+    <string name="registered_mission_button_text">Inscrit</string>
+    <string name="completed_mission_button_text">Terminée</string>
+    <string name="registration_closed_mission_button_text">Inscription fermée</string>
+    <string name="unavailable_mission_button_text">Non disponible</string>
+
+    <string name="mission_school_level_field">Niveau scolaire</string>
+    <string name="mission_end_date_field">Date de fin</string>
+    <string name="mission_start_date_field">Date de début</string>
+    <string name="mission_max_participants_field">Participants max</string>
+    <string name="mission_duration_field">Durée (optionnel)</string>
+    <string name="no_participant">Aucun participant</string>
+    <string name="non_matching_school_level_information_text">Reservé aux %s.</string>
+    <string name="full_mission_information_text">Nombre maximal de participant atteint.</string>
+    <string name="edit_mission_school_level_supporting_text">Les participants dont le niveau scolaire ne correspond pas seront retirés.</string>
+
+    <string name="mission_reported">Mission signalé</string>
+    <string name="mission_deleted">Mission supprimé</string>
+    <string name="delete_mission_dialog_text">Voulez-vous supprimer cette mission ?</string>
+    <string name="remove_participant_dialog_text">Voulez-vous retirer %s de cette mission ?</string>
+    <string name="unregister_mission_dialog_text">Se désinscrire de cette mission ?</string>
+
+    <string name="sending_error">Erreur d\'envoi</string>
+    <string name="missions_refresh_error">Impossible de rafraîchir les missions</string>
+    <string name="max_participants_lower_than_current_error">Le nombre maximum de participants ne peut pas être inférieur au nombre actuel (%d).</string>
+
+    <string name="no_mission_tag" translatable="false">No mission tag</string>
+    <string name="missions_card_tag" translatable="false">Missions card tag</string>
+    <string name="missions_card_school_level_tag" translatable="false">Mission card school level tag</string>
+</resources>

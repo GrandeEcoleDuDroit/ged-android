@@ -2,11 +2,11 @@ package com.upsaclay.message.domain.entity
 
 data class MessageReport(
     val conversationId: String,
-    val messageId: Long,
-    val recipientInfo: MessageReport.UserInfo,
+    val messageId: String,
+    val recipient: MessageReport.Recipient,
     val reason: MessageReport.Reason
 ) {
-    data class UserInfo(
+    data class Recipient(
         val fullName: String,
         val email: String
     )

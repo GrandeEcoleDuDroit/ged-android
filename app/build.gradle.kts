@@ -5,8 +5,28 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.google.services)
     alias(libs.plugins.firebase.crashlytics)
-    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.jetbrains.kotlin.serialization)
 }
+
+val KEYSTORE_PATH: String =
+    project.findProperty("KEYSTORE_PATH") as String?
+        ?: System.getenv("KEYSTORE_PATH")
+        ?: error("KEYSTORE_PATH is not set in gradle.properties or as environment variable")
+
+val KEYSTORE_PASSWORD: String =
+    project.findProperty("KEYSTORE_PASSWORD") as String?
+        ?: System.getenv("KEYSTORE_PASSWORD")
+        ?: error("KEYSTORE_PASSWORD is not set in gradle.properties or as environment variable")
+
+val KEY_ALIAS: String =
+    project.findProperty("KEY_ALIAS") as String?
+        ?: System.getenv("KEY_ALIAS")
+        ?: error("KEY_ALIAS is not set in gradle.properties or as environment variable")
+
+val KEY_PASSWORD: String =
+    project.findProperty("KEY_PASSWORD") as String?
+        ?: System.getenv("KEY_PASSWORD")
+        ?: error("KEY_PASSWORD is not set in gradle.properties or as environment variable")
 
 android {
     namespace = "com.upsaclay.gedoise"
@@ -16,14 +36,23 @@ android {
         applicationId = "com.upsaclay.gedoise"
         minSdk = 29
         targetSdk = 35
-        versionCode = 10
-        versionName = "1.0"
+        versionCode = 16
+        versionName = "1.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
         signingConfig = signingConfigs.getByName("debug")
+    }
+
+    signingConfigs {
+        create("release") {
+            storeFile = file(KEYSTORE_PATH)
+            storePassword = KEYSTORE_PASSWORD
+            keyAlias = KEY_ALIAS
+            keyPassword = KEY_PASSWORD
+        }
     }
 
     buildTypes {
@@ -33,6 +62,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 
@@ -64,15 +94,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.paging.common)
-    implementation(libs.androidx.paging.runtime.ktx)
-    implementation(libs.androidx.room.paging)
-    implementation(libs.firebase.messaging.ktx)
     implementation(libs.androidx.work.runtime.ktx)
-    ksp(libs.androidx.room.compiler)
-    implementation(libs.androidx.room.ktx)
-    implementation(libs.koin)
     implementation(libs.koin.core)
     implementation(libs.koin.androidx.compose)
     implementation(libs.androidx.navigation.compose)
@@ -85,10 +107,7 @@ dependencies {
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.firestore)
     implementation(platform(libs.firebase.bom))
-    implementation(libs.androidx.datastore.core)
-    implementation(libs.androidx.datastore.preferences)
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.converter.gson)
+    implementation(libs.firebase.messaging.ktx)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.core.splashscreen)
 
@@ -108,6 +127,9 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    implementation(project(":app:domain"))
+    implementation(project(":app:data"))
+
     implementation(project(":authentication"))
     implementation(project(":authentication:domain"))
     implementation(project(":authentication:data"))
@@ -123,4 +145,8 @@ dependencies {
     implementation(project(":news"))
     implementation(project(":news:domain"))
     implementation(project(":news:data"))
+
+    implementation(project(":mission"))
+    implementation(project(":mission:domain"))
+    implementation(project(":mission:data"))
 }

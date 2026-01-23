@@ -1,30 +1,53 @@
+package com.upsaclay.gedoise.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.upsaclay.authentication.domain.usecase.ListenAuthenticationStateUseCase
-import com.upsaclay.gedoise.domain.usecase.ClearDataUseCase
-import com.upsaclay.gedoise.domain.usecase.ListenDataUseCase
-import com.upsaclay.gedoise.domain.usecase.SynchronizeDataUseCase
+import com.upsaclay.app.domain.usecase.ClearDataUseCase
+import com.upsaclay.app.domain.usecase.FcmTokenUseCase
+import com.upsaclay.app.domain.usecase.FetchDataUseCase
+import com.upsaclay.app.domain.usecase.ListenDataUseCase
+import com.upsaclay.authentication.domain.entity.AuthenticationState
+import com.upsaclay.authentication.domain.repository.AuthenticationRepository
+import com.upsaclay.common.data.utils.e
+import com.upsaclay.common.domain.ConnectivityObserver
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class MainViewModel(
-    private val listenAuthenticationStateUseCase: ListenAuthenticationStateUseCase,
+    private val authenticationRepository: AuthenticationRepository,
+    private val fetchDataUseCase: FetchDataUseCase,
+    private val clearDataUseCase: ClearDataUseCase,
+    private val fcmTokenUseCase: FcmTokenUseCase,
     private val listenDataUseCase: ListenDataUseCase,
-    private val synchronizeDataUseCase: SynchronizeDataUseCase,
-    private val clearDataUseCase:  ClearDataUseCase
+    private val connectivityObserver: ConnectivityObserver
 ): ViewModel() {
-    fun updateDataOnAuthChange() {
+    private val coroutineExceptionHandler = CoroutineExceptionHandler { _, e ->
+        e(e.message)
+    }
+
+    fun updateAppData() {
         viewModelScope.launch {
-            listenAuthenticationStateUseCase.authenticated.collectLatest { authenticated ->
-                if (authenticated) {
-                    listenDataUseCase.start()
-                    synchronizeDataUseCase()
-                } else {
-                    listenDataUseCase.stop()
-                    delay(2000)
-                    clearDataUseCase()
+            authenticationRepository.authenticationState.collectLatest { state ->
+                when (state) {
+                    is AuthenticationState.Authenticated -> {
+                        connectivityObserver.connected.first { it }
+                        runCatching { authenticationRepository.refreshTokenIfNecessary() }
+                        runCatching { fetchDataUseCase.execute(state.userId) }
+                            .onFailure { Timber.e("Error fetching data: ${it.message}") }
+                        listenDataUseCase.start(this, coroutineExceptionHandler)
+                        runCatching { fcmTokenUseCase.sendUnsentToken() }
+                             .onFailure { Timber.e("Error sending fcm token: ${it.message}") }
+                    }
+
+                    is AuthenticationState.Unauthenticated -> {
+                        listenDataUseCase.stop()
+                        delay(2000)
+                        clearDataUseCase.execute()
+                    }
                 }
             }
         }

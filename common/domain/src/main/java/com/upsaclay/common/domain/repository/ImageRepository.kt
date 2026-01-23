@@ -1,12 +1,18 @@
 package com.upsaclay.common.domain.repository
 
-import android.graphics.Bitmap
 import java.io.File
+import java.io.InputStream
 
 interface ImageRepository {
-    suspend fun getImage(fileName: String): Bitmap?
+    suspend fun getRemoteImage(fileName: String): InputStream?
 
-    suspend fun uploadImage(file: File)
+    fun getFileExtension(uri: String): String
 
-    suspend fun deleteImage(fileName: String)
+    suspend fun createLocalImage(imagePath: String, uri: String): File?
+
+    suspend fun createCacheImage(fileName: String, uri: String): File?
+
+    suspend fun deleteLocalImage(imagePath: String)
+
+    suspend fun deleteCacheImage(imagePath: String)
 }

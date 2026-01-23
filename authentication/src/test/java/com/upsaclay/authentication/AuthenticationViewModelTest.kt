@@ -2,9 +2,7 @@ package com.upsaclay.authentication
 
 import com.upsaclay.authentication.domain.usecase.LoginUseCase
 import com.upsaclay.authentication.presentation.authentication.AuthenticationViewModel
-import com.upsaclay.common.domain.ConnectivityObserver
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import junit.framework.TestCase.assertNull
 import kotlinx.coroutines.Dispatchers
@@ -20,7 +18,6 @@ import kotlin.test.assertNotNull
 @OptIn(ExperimentalCoroutinesApi::class)
 class AuthenticationViewModelTest {
     private val loginUseCase: LoginUseCase = mockk()
-    private val connectivityObserver: ConnectivityObserver = mockk()
 
     private lateinit var authenticationViewModel: AuthenticationViewModel
     private val email = "email@example.com"
@@ -31,13 +28,9 @@ class AuthenticationViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
 
-        every { connectivityObserver.isConnected } returns true
-        coEvery { loginUseCase(any(), any()) } returns Unit
+        coEvery { loginUseCase.execute(any(), any()) } returns Unit
 
-        authenticationViewModel = AuthenticationViewModel(
-            loginUseCase = loginUseCase,
-            connectivityObserver = connectivityObserver
-        )
+        authenticationViewModel = AuthenticationViewModel(loginUseCase = loginUseCase)
     }
 
     @Test
@@ -61,7 +54,7 @@ class AuthenticationViewModelTest {
     @Test
     fun login_should_reset_password_when_exception_is_thrown() = runTest {
         // Given
-        coEvery { loginUseCase(any(), any()) } throws Exception()
+        coEvery { loginUseCase.execute(any(), any()) } throws Exception()
         authenticationViewModel.onPasswordChange(password)
         authenticationViewModel.onEmailChange(email)
 

@@ -3,12 +3,10 @@ package com.upsaclay.news.presentation.announcement.readannouncement
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
@@ -25,21 +23,24 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
-import com.upsaclay.common.domain.userFixture2
+import com.upsaclay.common.extension.rootMediumPadding
+import com.upsaclay.common.extension.smallMediumSpacing
+import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.BackTopBar
 import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.LoadingDialog
+import com.upsaclay.common.presentation.components.OptionButton
 import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
+import com.upsaclay.news.domain.announcementFixture
 import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.domain.entity.AnnouncementReport
-import com.upsaclay.news.domain.longAnnouncementFixture
+import com.upsaclay.news.presentation.announcement.AnnouncementPresentationUtils.contentStyle
+import com.upsaclay.news.presentation.announcement.AnnouncementPresentationUtils.titleStyle
 import com.upsaclay.news.presentation.announcement.components.AnnouncementBottomSheet
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -48,7 +49,7 @@ import org.koin.core.parameter.parametersOf
 fun ReadAnnouncementDestination(
     announcementId: String,
     onBackClick: () -> Unit,
-    onEditClick: (Announcement) -> Unit,
+    onEditAnnouncementClick: (Announcement) -> Unit,
     onAuthorClick: (User) -> Unit,
     viewModel: ReadAnnouncementViewModel = koinViewModel(
         parameters = { parametersOf(announcementId) }
@@ -86,7 +87,7 @@ fun ReadAnnouncementDestination(
             snackbarHostState = snackbarHostState,
             onBackClick = onBackClick,
             onAuthorClick = onAuthorClick,
-            onEditAnnouncementClick = onEditClick,
+            onEditAnnouncementClick = onEditAnnouncementClick,
             onReportAnnouncementClick = viewModel::reportAnnouncement,
             onDeleteAnnouncementClick = viewModel::deleteAnnouncement
         )
@@ -132,7 +133,10 @@ fun ReadAnnouncementScreen(
         topBar = {
             BackTopBar(
                 onBackClick = onBackClick,
-                title = stringResource(id = R.string.announcement)
+                title = stringResource(id = R.string.announcement),
+                leadingIcon = {
+                    OptionButton { showBottomSheet = true }
+                }
             )
         },
         snackbarHost = {
@@ -146,46 +150,22 @@ fun ReadAnnouncementScreen(
                )
             }
         }
-    ) { contentPadding ->
-        SelectionContainer  {
-            Column(
+    ) { innerPadding ->
+        SelectionContainer {
+            Announcement(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(
-                        top = contentPadding.calculateTopPadding(),
-                        start = dimensionResource(com.upsaclay.common.R.dimen.medium_padding),
-                        end = dimensionResource(com.upsaclay.common.R.dimen.medium_padding),
-                        bottom = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)
-                    )
+                    .rootMediumPadding(innerPadding)
                     .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
-            ) {
-                AnnouncementHeader(
-                    announcement = announcement,
-                    onOptionClick = { showBottomSheet = true },
-                    onAuthorClick = { onAuthorClick(announcement.author) }
-                )
-
-                announcement.title?.let {
-                    Text(
-                        modifier = Modifier.testTag(stringResource(id = R.string.read_screen_announcement_title_tag)),
-                        text = it,
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                }
-
-                Text(
-                    modifier = Modifier.testTag(stringResource(id = R.string.read_screen_announcement_content_tag)),
-                    text = announcement.content,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
+                announcement = announcement,
+                onAuthorClick = { onAuthorClick(announcement.author) }
+            )
         }
 
         if (showBottomSheet) {
             AnnouncementBottomSheet(
-                announcement = announcement,
-                isEditable = user.isMember && user.id == announcement.author.id,
+                announcementState = announcement.state,
+                isEditable = user.admin && user.id == announcement.author.id,
                 onEditClick = {
                     showBottomSheet = false
                     onEditAnnouncementClick(announcement)
@@ -212,20 +192,51 @@ fun ReadAnnouncementScreen(
                     onReportAnnouncementClick(
                         AnnouncementReport(
                             announcementId = announcement.id,
-                            userInfo = AnnouncementReport.UserInfo(
-                                fullName = user.fullName,
-                                email = user.email
-                            ),
-                            authorInfo = AnnouncementReport.UserInfo(
+                            author = AnnouncementReport.Author(
                                 fullName = announcement.author.fullName,
                                 email = announcement.author.email
                             ),
-                            reason = reason,
+                            reporter = AnnouncementReport.Reporter(
+                                fullName = user.fullName,
+                                email = user.email
+                            ),
+                            reason = reason
                         )
                     )
                 }
             )
         }
+    }
+}
+
+@Composable
+private fun Announcement(
+    modifier: Modifier = Modifier,
+    announcement: Announcement,
+    onAuthorClick: () -> Unit
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.smallMediumSpacing()
+    ) {
+        AnnouncementHeader(
+            announcement = announcement,
+            onClick = onAuthorClick
+        )
+
+        announcement.title?.let {
+            Text(
+                modifier = Modifier.testTag(stringResource(id = R.string.read_screen_announcement_title_tag)),
+                text = it,
+                style = titleStyle
+            )
+        }
+
+        Text(
+            modifier = Modifier.testTag(stringResource(id = R.string.read_screen_announcement_content_tag)),
+            text = announcement.content,
+            style = contentStyle
+        )
     }
 }
 
@@ -235,14 +246,14 @@ fun ReadAnnouncementScreen(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun NonEditableAnnouncementScreenPreview() {
     GedoiseTheme {
         Surface {
             ReadAnnouncementScreen(
-                user = userFixture2,
-                announcement = longAnnouncementFixture,
+                user = announcementFixture.author,
+                announcement = announcementFixture,
                 snackbarHostState = SnackbarHostState(),
                 onBackClick = {},
                 onAuthorClick = {},
@@ -254,14 +265,14 @@ private fun NonEditableAnnouncementScreenPreview() {
     }
 }
 
-@Phones
+@PhonePreviews
 @Composable
 private fun EditableAnnouncementScreenPreview() {
     GedoiseTheme {
         Surface {
             ReadAnnouncementScreen(
-                user = longAnnouncementFixture.author,
-                announcement = longAnnouncementFixture,
+                user = announcementFixture.author,
+                announcement = announcementFixture,
                 snackbarHostState = SnackbarHostState(),
                 onBackClick = {},
                 onAuthorClick = {},

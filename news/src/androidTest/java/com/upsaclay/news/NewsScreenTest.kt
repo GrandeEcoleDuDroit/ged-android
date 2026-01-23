@@ -114,7 +114,13 @@ class NewsScreenTest {
         // Given
         val content = longAnnouncementFixture.content.take(100)
         val announcement = longAnnouncementFixture.copy(title = null, content = content)
-        every { newsViewModel.uiState } returns MutableStateFlow(uiState.copy(announcements = listOf(announcement)))
+        every { newsViewModel.uiState } returns MutableStateFlow(
+            uiState.copy(
+                announcements = listOf(
+                    announcement
+                )
+            )
+        )
 
         // When
         rule.setContent {

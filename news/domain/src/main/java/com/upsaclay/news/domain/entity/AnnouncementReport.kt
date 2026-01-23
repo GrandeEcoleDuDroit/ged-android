@@ -2,11 +2,16 @@ package com.upsaclay.news.domain.entity
 
 data class AnnouncementReport(
     val announcementId: String,
-    val authorInfo: AnnouncementReport.UserInfo,
-    val userInfo: AnnouncementReport.UserInfo,
-    val reason: AnnouncementReport.Reason,
+    val author: Author,
+    val reporter: Reporter,
+    val reason: Reason,
 ) {
-    data class UserInfo(
+    data class Author(
+        val fullName: String,
+        val email: String
+    )
+
+    data class Reporter(
         val fullName: String,
         val email: String
     )

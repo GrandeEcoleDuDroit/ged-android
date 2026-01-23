@@ -1,6 +1,7 @@
 package com.upsaclay.message.presentation.conversation
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
@@ -12,17 +13,21 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import com.upsaclay.common.domain.entity.SingleUiEvent
+import com.upsaclay.common.presentation.SingleUiEvent
+import com.upsaclay.common.presentation.components.CircularProgressBar
 import com.upsaclay.common.presentation.components.DefaultDialog
+import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.message.R
-import com.upsaclay.message.domain.conversationsUIFixture
 import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.ConversationUi
+import com.upsaclay.message.domain.fixtures.conversationsUiFixture
 import com.upsaclay.message.domain.mapper.toConversation
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -57,9 +62,11 @@ fun ConversationDestination(
 
     ConversationScreen(
         conversations = uiState.conversations,
+        loading = uiState.loading,
         onConversationClick = onConversationClick,
-        onDeleteConversation = viewModel::deleteConversation,
-        onCreateConversation = onCreateConversation,
+        onDeleteConversationClick = viewModel::deleteConversation,
+        onCreateConversationClick = onCreateConversation,
+        onRecreateConversationClick = viewModel::recreateConversation,
         snackbarHostState = snackbarHostState,
         bottomBar = bottomBar
     )
@@ -68,61 +75,100 @@ fun ConversationDestination(
 @Composable
 private fun ConversationScreen(
     conversations: List<ConversationUi>?,
+    loading: Boolean,
     onConversationClick: (Conversation) -> Unit,
-    onDeleteConversation: (Conversation) -> Unit,
-    onCreateConversation: () -> Unit,
+    onDeleteConversationClick: (Conversation) -> Unit,
+    onCreateConversationClick: () -> Unit,
+    onRecreateConversationClick: (Conversation) -> Unit,
     snackbarHostState: SnackbarHostState = SnackbarHostState(),
     bottomBar: @Composable () -> Unit
 ) {
-    var clickedConversation by remember { mutableStateOf<ConversationUi?>(null) }
-    var showBottomSheet by remember { mutableStateOf(false) }
-    var showDeleteConversationDialog by remember { mutableStateOf(false) }
+    var activeBottomSheet by remember { mutableStateOf<ConversationScreenBottomSheet?>(null) }
+    var activeDialog by remember { mutableStateOf<ConversationScreenDialog?>(null) }
 
-    if (showDeleteConversationDialog) {
-        DefaultDialog(
-            title = stringResource(id = R.string.delete_conversation_dialog_title),
-            text = stringResource(id = R.string.delete_conversation_dialog_message),
-            confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
-            critical = true,
-            onConfirm = {
-                showDeleteConversationDialog = false
-                clickedConversation?.let { onDeleteConversation(it.toConversation()) }
-            },
-            onCancel = { showDeleteConversationDialog  = false }
-        )
+    when(val dialog = activeDialog) {
+        is ConversationScreenDialog.DeleteConversationDialog -> {
+            DefaultDialog(
+                title = stringResource(id = R.string.delete_conversation_dialog_title),
+                text = stringResource(id = R.string.delete_conversation_dialog_message),
+                confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
+                critical = true,
+                onConfirm = {
+                    activeDialog = null
+                    onDeleteConversationClick(dialog.conversation)
+                },
+                onCancel = { activeDialog = null }
+            )
+        }
+
+        else -> Unit
+    }
+
+    if (loading) {
+        LoadingDialog()
     }
 
     ConversationScaffold(
-        onCreateConversation = onCreateConversation,
+        onCreateConversation = onCreateConversationClick,
         snackbarHostState = snackbarHostState,
         bottomBar = bottomBar
     ) { paddingValues ->
-        Column(
-            modifier = Modifier.padding(paddingValues)
-        ) {
-            conversations?.let { conversations ->
-                ConversationFeed(
-                    conversations = conversations,
-                    onClick = { onConversationClick(it.toConversation()) },
-                    onLongClick = {
-                        clickedConversation = it
-                        showBottomSheet = true
-                    },
-                    onCreateClick = onCreateConversation
+        conversations?.let { conversations ->
+            ConversationFeed(
+                modifier = Modifier.padding(paddingValues),
+                conversationsUi = conversations,
+                onClick = {
+                    if (it.state == Conversation.ConversationState.CREATED) {
+                        onConversationClick(it.toConversation())
+                    } else {
+                        activeBottomSheet = ConversationScreenBottomSheet.ConversationBottomSheet(it.toConversation())
+                    }
+                },
+                onLongClick = {
+                    activeBottomSheet = ConversationScreenBottomSheet.ConversationBottomSheet(it.toConversation())
+                },
+                onCreateClick = onCreateConversationClick
+            )
+        } ?: run {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(paddingValues),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressBar(
+                    modifier = Modifier.padding(top = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
                 )
             }
         }
     }
 
-    if (showBottomSheet) {
-        ConversationBottomSheet(
-            onDismiss = { showBottomSheet = false },
-            onDeleteClick = {
-                showBottomSheet = false
-                showDeleteConversationDialog = true
-            }
-        )
+    when(val bottomSheetType = activeBottomSheet)  {
+        is ConversationScreenBottomSheet.ConversationBottomSheet -> {
+            ConversationBottomSheet(
+                conversationState = bottomSheetType.conversation.state,
+                onRecreateClick = {
+                    activeBottomSheet = null
+                    onRecreateConversationClick(bottomSheetType.conversation)
+                },
+                onDeleteClick = {
+                    activeBottomSheet = null
+                    activeDialog = ConversationScreenDialog.DeleteConversationDialog(bottomSheetType.conversation)
+                },
+                onDismiss = { activeBottomSheet = null }
+            )
+        }
+
+        else -> Unit
     }
+}
+
+private sealed class ConversationScreenBottomSheet {
+    data class ConversationBottomSheet(val conversation: Conversation): ConversationScreenBottomSheet()
+}
+
+private sealed class ConversationScreenDialog {
+    data class DeleteConversationDialog(val conversation: Conversation): ConversationScreenDialog()
 }
 
 /*
@@ -131,18 +177,20 @@ private fun ConversationScreen(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun ConversationsScreenPreview() {
-    val conversations = conversationsUIFixture.sortedByDescending { it.lastMessage.date }
+    val conversations = conversationsUiFixture.sortedByDescending { it.lastMessage.date }
 
     GedoiseTheme {
         Surface {
             ConversationScreen(
                 conversations = conversations,
+                loading = false,
                 onConversationClick = {},
-                onDeleteConversation = {},
-                onCreateConversation = {},
+                onDeleteConversationClick = {},
+                onCreateConversationClick = {},
+                onRecreateConversationClick = {},
                 bottomBar = {}
             )
         }

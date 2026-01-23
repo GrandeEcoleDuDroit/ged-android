@@ -25,12 +25,12 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import com.upsaclay.authentication.R
-import com.upsaclay.authentication.presentation.components.LoginButton
 import com.upsaclay.authentication.presentation.components.OutlinePasswordTextField
 import com.upsaclay.common.extension.extraSmallSpacing
+import com.upsaclay.common.presentation.components.LoadingButton
 import com.upsaclay.common.presentation.components.SimpleOutlinedTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 
 @Composable
 fun AuthenticationForm(
@@ -43,7 +43,7 @@ fun AuthenticationForm(
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onLoginClick: () -> Unit,
-    onRegistrationClick: () -> Unit
+    onRegisterClick: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     val passwordFocusRequester = remember { FocusRequester() }
@@ -57,30 +57,19 @@ fun AuthenticationForm(
             password = password,
             emailError = emailError,
             passwordError = passwordError,
+            errorMessage = errorMessage,
             passwordFocusRequester = passwordFocusRequester,
             keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
             onEmailChange = onEmailChange,
             onPasswordChange = onPasswordChange
         )
 
-        errorMessage?.let {
-            LaunchedEffect(it) {
-                passwordFocusRequester.requestFocus()
-            }
-            Text(
-                modifier = Modifier.align(Alignment.Start),
-                text = stringResource(it),
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodyMedium
-            )
-        }
-
-        LoginButton(
+        LoadingButton(
             modifier = Modifier
                 .fillMaxWidth()
                 .testTag(stringResource(id = R.string.authentication_screen_login_button_tag)),
             text = stringResource(id = R.string.login),
-            isLoading = loading,
+            loading = loading,
             onClick = {
                 focusManager.clearFocus()
                 onLoginClick()
@@ -90,7 +79,7 @@ fun AuthenticationForm(
         RegistrationText(
             onRegistrationClick = {
                 focusManager.clearFocus()
-                onRegistrationClick()
+                onRegisterClick()
             }
         )
     }
@@ -103,6 +92,7 @@ private fun CredentialsInputs(
     password: String,
     emailError: Int?,
     passwordError: Int?,
+    errorMessage: Int?,
     passwordFocusRequester: FocusRequester,
     keyboardActions: KeyboardActions,
     onEmailChange: (String) -> Unit,
@@ -117,7 +107,7 @@ private fun CredentialsInputs(
             label = stringResource(com.upsaclay.common.R.string.email),
             onValueChange = onEmailChange,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            errorMessage = emailError
+            errorMessage = emailError?.let { stringResource(it) }
         )
 
         OutlinePasswordTextField(
@@ -129,6 +119,18 @@ private fun CredentialsInputs(
             keyboardActions = keyboardActions,
             errorMessage = passwordError
         )
+
+        errorMessage?.let {
+            LaunchedEffect(it) {
+                passwordFocusRequester.requestFocus()
+            }
+            Text(
+                modifier = Modifier.align(Alignment.Start),
+                text = stringResource(it),
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
     }
 }
 
@@ -163,7 +165,7 @@ private fun RegistrationText(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun AuthenticationFormPreview() {
     GedoiseTheme {
@@ -178,7 +180,7 @@ private fun AuthenticationFormPreview() {
                 onEmailChange = {},
                 onPasswordChange = {},
                 onLoginClick = {},
-                onRegistrationClick = {}
+                onRegisterClick = {}
             )
         }
     }

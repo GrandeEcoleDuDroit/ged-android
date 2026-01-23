@@ -20,13 +20,12 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.upsaclay.common.R
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.backgroundLoadingImage
+import com.upsaclay.common.presentation.theme.loadingImageBackground
 
 @Composable
 fun ProfilePicture(
@@ -35,7 +34,7 @@ fun ProfilePicture(
     url: String?,
     onClick: (() -> Unit)? = null
 ) {
-    ProfileImage(
+    ProfilePictureImage(
         modifier = modifier,
         scale = scale,
         model = url ?: R.drawable.default_profile_picture,
@@ -50,7 +49,7 @@ fun ProfilePicture(
     uri: Uri?,
     onClick: (() -> Unit)? = null
 ) {
-    ProfileImage(
+    ProfilePictureImage(
         modifier = modifier,
         scale = scale,
         model = uri ?: R.drawable.default_profile_picture,
@@ -82,30 +81,29 @@ fun ProfilePictureWithIcon(
 }
 
 @Composable
-fun LargeAsyncImage(
+fun SimpleAsyncImage(
     modifier: Modifier = Modifier,
-    model: Any,
+    model: Any
 ) {
-    val color = MaterialTheme.colorScheme.backgroundLoadingImage
+    val loadingColor = MaterialTheme.colorScheme.loadingImageBackground
 
     AsyncImage(
         model = model,
         contentDescription = "",
         modifier = modifier,
         contentScale = ContentScale.Crop,
-        onLoading = { ColorPainter(color) },
-        onError = { ColorPainter(color) }
+        error = ColorPainter(loadingColor)
     )
 }
 
 @Composable
-private fun ProfileImage(
+private fun ProfilePictureImage(
     modifier: Modifier = Modifier,
     scale: Float = 1f,
     model: Any,
     onClick: (() -> Unit)? = null
 ) {
-    val color = MaterialTheme.colorScheme.backgroundLoadingImage
+    val loadingColor = MaterialTheme.colorScheme.loadingImageBackground
 
     AsyncImage(
         model = model,
@@ -121,8 +119,7 @@ private fun ProfileImage(
                 .size(100.dp * scale)
                 .clip(CircleShape)
         },
-        onLoading = { ColorPainter(color) },
-        error = painterResource(R.drawable.default_profile_picture)
+        error = ColorPainter(loadingColor)
     )
 }
 
@@ -137,7 +134,7 @@ private fun ProfileImageWithIcon(
     contentDescription: String,
     onClick: (() -> Unit)?
 ) {
-    val color = MaterialTheme.colorScheme.backgroundLoadingImage
+    val loadingColor = MaterialTheme.colorScheme.loadingImageBackground
 
     Box(modifier = modifier.size(100.dp * scale)) {
         AsyncImage(
@@ -156,8 +153,7 @@ private fun ProfileImageWithIcon(
                     .size(100.dp * scale)
                     .clip(CircleShape)
             },
-            onLoading = { ColorPainter(color) },
-            error = painterResource(R.drawable.default_profile_picture)
+            error = ColorPainter(loadingColor)
         )
 
         Box(

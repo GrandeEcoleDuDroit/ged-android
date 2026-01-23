@@ -3,16 +3,16 @@ package com.upsaclay.message
 import androidx.paging.PagingData
 import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.repository.UserRepository
+import com.upsaclay.common.domain.usecase.GenerateIdUseCase
 import com.upsaclay.common.domain.userFixture
-import com.upsaclay.message.domain.conversationFixture
-import com.upsaclay.message.domain.messageFixture
-import com.upsaclay.message.domain.messagesFixture
+import com.upsaclay.message.domain.fixtures.conversationFixture
+import com.upsaclay.message.domain.fixtures.messageFixture
+import com.upsaclay.message.domain.fixtures.messagesFixture
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
 import com.upsaclay.message.domain.usecase.DeleteConversationUseCase
-import com.upsaclay.message.domain.usecase.NotificationMessageUseCase
 import com.upsaclay.message.domain.usecase.SendMessageUseCase
-import com.upsaclay.message.notification.NotificationMessageManager
+import com.upsaclay.message.notification.MessageNotificationManager
 import com.upsaclay.message.presentation.chat.ChatViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -35,9 +35,9 @@ class ChatViewModelTest {
     private val messageRepository: MessageRepository = mockk()
     private val blockedUserRepository: BlockedUserRepository = mockk()
     private val sendMessageUseCase: SendMessageUseCase = mockk()
-    private val notificationMessageUseCase: NotificationMessageUseCase = mockk()
-    private val notificationMessageManager: NotificationMessageManager = mockk()
+    private val messageNotificationManager: MessageNotificationManager = mockk()
     private val deleteConversationUseCase: DeleteConversationUseCase = mockk()
+    private val generateIdUseCase: GenerateIdUseCase = mockk()
 
     private lateinit var chatViewModel: ChatViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
@@ -47,17 +47,21 @@ class ChatViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
 
-        every { conversationRepository.getConversationFlow(any()) } returns flowOf(conversationFixture)
+        every { generateIdUseCase.execute() } returns "testId"
+        every { conversationRepository.getConversationFlow(any()) } returns flowOf(
+            conversationFixture
+        )
         every { userRepository.user } returns MutableStateFlow(userFixture)
         every { userRepository.currentUser } returns userFixture
-        every { messageRepository.getPagingMessages(any()) } returns flowOf(PagingData.from(messagesFixture))
-        every { messageRepository.getLastMessageFlow(any()) } returns flowOf(messageFixture)
-        every { sendMessageUseCase(any(), any(), any()) } returns Unit
-        every { blockedUserRepository.blockedUserIds } returns flowOf(emptySet())
-        every { deleteConversationUseCase(any(), any()) } returns Unit
-        coEvery { messageRepository.updateSeenMessages(any(), any()) } returns Unit
-        coEvery { notificationMessageManager.clearNotifications(any()) } returns Unit
-        coEvery { notificationMessageUseCase.sendNotification(any()) } returns Unit
+        every { messageRepository.getPagingMessages(any()) } returns flowOf(PagingData.from(
+            messagesFixture
+        ))
+        every { messageRepository.getNewMessagesFlow(any(), any()) } returns flowOf(messageFixture)
+        every { sendMessageUseCase.execute(any(), any(), any()) } returns Unit
+        every { blockedUserRepository.blockedUsers } returns flowOf(emptyMap())
+        coEvery { deleteConversationUseCase.execute(any(), any()) } returns Unit
+        coEvery { messageRepository.setMessagesSeen(any(), any()) } returns Unit
+        coEvery { messageNotificationManager.clearNotifications(any()) } returns Unit
         coEvery { messageRepository.deleteLocalMessages(any()) } returns Unit
 
         chatViewModel = ChatViewModel(
@@ -66,9 +70,10 @@ class ChatViewModelTest {
             conversationRepository = conversationRepository,
             messageRepository = messageRepository,
             sendMessageUseCase = sendMessageUseCase,
-            notificationMessageManager = notificationMessageManager,
+            messageNotificationManager = messageNotificationManager,
             blockedUserRepository = blockedUserRepository,
-            deleteConversationUseCase = deleteConversationUseCase
+            deleteConversationUseCase = deleteConversationUseCase,
+            generateIdUseCase = generateIdUseCase
         )
     }
 
@@ -93,7 +98,7 @@ class ChatViewModelTest {
         chatViewModel.sendMessage()
 
         // Then
-        coVerify { sendMessageUseCase(any(), any(), any()) }
+        coVerify { sendMessageUseCase.execute(any(), any(), any()) }
     }
 
     @Test
@@ -111,12 +116,12 @@ class ChatViewModelTest {
     @Test
     fun unblockUser_should_unblock_user() {
         // Given
-        coEvery { blockedUserRepository.unblockUser(userFixture.id, blockedUserId) } returns Unit
+        coEvery { blockedUserRepository.removeBlockedUser(userFixture.id, blockedUserId) } returns Unit
 
         // When
         chatViewModel.unblockUser(blockedUserId)
 
         // Then
-        coVerify { blockedUserRepository.unblockUser(userFixture.id, blockedUserId) }
+        coVerify { blockedUserRepository.removeBlockedUser(userFixture.id, blockedUserId) }
     }
 }

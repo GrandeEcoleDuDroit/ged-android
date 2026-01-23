@@ -6,11 +6,13 @@
     <string name="calendar">Calendrier</string>
     <string name="forum" translatable="false">Forum</string>
     <string name="profile">Profil</string>
+    <string name="mission" translatable="false">Mission</string>
     <string name="home_icon_description">Icône pour accéder à la page d\'accueil</string>
     <string name="calendar_icon_description">Icône pour accéder au calendrier</string>
     <string name="forum_icon_description">Icône pour accéder au forum</string>
     <string name="message_icon_description">Icône pour accéder à la messagerie</string>
     <string name="profile_icon_description">Icône pour accéder au profil</string>
+    <string name="mission_icon_description">Icône pour accéder au mission</string>
     <string name="close">Fermer</string>
     <string name="show">Voir</string>
     <string name="next">Suivant</string>
@@ -28,16 +30,17 @@
     <string name="search">Rechercher</string>
     <string name="search_ellipsis">Rechercher</string>
     <string name="edit">Editer</string>
-    <string name="resend">Renvoyer</string>
+    <string name="retry">Réessayer</string>
     <string name="ok">OK</string>
     <string name="see">Voir</string>
     <string name="see_all">Voir tout</string>
     <string name="report">Signaler</string>
     <string name="block">Bloquer</string>
+    <string name="confirm">Confirmer</string>
     <string name="arrow_back_icon_description">Retour en arrière</string>
     <string name="ged_logo_description">Logo de l\'université de La Grande École du Droit</string>
     <string name="profile_picture_description">Photo de profil de l\'utilisateur</string>
-    <string name="icon_add_descrption">Icône d\'ajout</string>
+    <string name="icon_add_description">Icône d\'ajout</string>
     <string name="school_level">Niveau d\'étude</string>
     <string name="first_name">Prénom</string>
     <string name="last_name">Nom</string>
@@ -49,23 +52,13 @@
     <string name="hour_ago_short">%d h</string>
     <string name="day_ago_short">%d j</string>
     <string name="week_ago_short">%d sem</string>
-    <string name="member">Membre</string>
+    <string name="administrator">Administrateur</string>
     <string name="minute_ago_medium">%d minutes</string>
     <string name="hour_ago_medium">%d heures</string>
     <string name="day_ago_medium">%d jours</string>
     <string name="week_ago_medium">%d semaines</string>
-    <string name="empty_fields_error">Veuillez remplir tous les champs.</string>
-    <string name="empty_field_error">Veuillez remplir le champ.</string>
-    <string name="unknown_error">Une erreur inconnue est survenue.</string>
-    <string name="internal_server_error">Une erreur interne au serveur est survenue.</string>
-    <string name="server_connection_error">Impossible de se connecter au serveur.</string>
-    <string name="unknown_network_error">Une erreur réseau est survenue.</string>
-    <string name="occurred_error">Une erreur est survenue.</string>
-    <string name="too_many_request_error">Vous avez effectué trop de requêtes. Veuillez réessayer dans quelques minutes.</string>
-    <string name="user_not_found_title_dialog">Utilisateur non trouvé.</string>
-    <string name="current_user_not_found_error">L\'utilisateur n\'a pas été trouvé. Veuillez vous reconnecter.</string>
-    <string name="timeout_error">Le service a mis trop de temps à répondre. Veuillez réessayer.</string>
-    <string name="no_user">Aucun utilisateur.</string>
+
+    <string name="no_user">Aucun utilisateur</string>
     <string name="no_internet_connection">Aucune connexion Internet.</string>
     <string name="reported_user">Utilisateur signalé</string>
     <string name="blocked_user">Utilisateur bloqué</string>
@@ -75,6 +68,23 @@
     <string name="block_user_dialog_message">Vous ne verrez plus aucun de ses contenus.</string>
     <string name="unblock_user_dialog_message">Voulez-vous débloquer cet utilisateur ?</string>
     <string name="deleted_user">Utilisateur supprimé</string>
+
+    <string name="mandatory_field_error">Champ obligatoire.</string>
+    <string name="number_field_error">Veuillez entrer un nombre valide.</string>
+    <string name="internal_server_error">Une erreur interne au serveur est survenue.</string>
+    <string name="unknown_network_error">Une erreur réseau est survenue.</string>
+    <string name="occurred_error">Une erreur est survenue.</string>
+    <string name="too_many_request_error">Vous avez effectué trop de requêtes. Veuillez réessayer dans quelques minutes.</string>
+    <string name="user_not_found_title_dialog">Utilisateur non trouvé.</string>
+    <string name="current_user_not_found_error">L\'utilisateur actuel n\'a pas été trouvé. Veuillez réessayer.</string>
+    <string name="forbidden_error">Vous n\’avez pas les droits nécessaires pour effectuer cette action.</string>
+    <string name="bad_request_error">La requête n\'a pu aboutir.</string>
+    <string name="unauthorized_error">Votre session a expiré. Veuillez vous reconnecter.</string>
+    <string name="resource_not_found_error">La ressource n\'a pu être trouvée.</string>
+    <string name="timed_out_error">Le service a mis trop de temps à répondre. Veuillez réessayer.</string>
+    <string name="cannot_connect_to_host_error">Impossible de se connecter au serveur.</string>
+    <string name="any_network_error">Une erreur réseau est survenue.</string>
+    <string name="unknown_error">Une erreur inconnue est survenue.</string>
 
     <string name="member_text_tag" translatable="false">Member text tag</string>
 </resources>

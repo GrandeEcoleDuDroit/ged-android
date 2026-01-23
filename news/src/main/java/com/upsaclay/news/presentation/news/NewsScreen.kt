@@ -1,8 +1,5 @@
 package com.upsaclay.news.presentation.news
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SnackbarHostState
@@ -14,21 +11,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
-import com.upsaclay.common.presentation.components.CircularProgressBar
+import com.upsaclay.common.presentation.LoadingScreen
+import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.PullToRefreshComponent
 import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.announcementsFixture
 import com.upsaclay.news.domain.entity.Announcement
@@ -83,6 +79,8 @@ fun NewsDestination(
             onSeeAllAnnouncementsClick = onSeeAllAnnouncementsClick,
             onReportAnnouncementClick = viewModel::reportAnnouncement
         )
+    } else {
+        LoadingScreen()
     }
 }
 
@@ -104,23 +102,25 @@ private fun NewsScreen(
     onSeeAllAnnouncementsClick: () -> Unit,
     onReportAnnouncementClick: (AnnouncementReport) -> Unit
 ) {
-    var showAnnouncementBottomSheet by remember { mutableStateOf(false) }
-    var showDeleteAnnouncementDialog by remember { mutableStateOf(false) }
-    var clickedAnnouncement by remember { mutableStateOf<Announcement?>(null) }
-    var showAnnouncementReportBottomSheet by remember { mutableStateOf(false) }
+    var activeBottomSheet by remember { mutableStateOf<NewsScreenBottomSheet?>(null) }
+    var activeDialog by remember { mutableStateOf<NewsDialog?>(null) }
 
-    if (showDeleteAnnouncementDialog) {
-        DefaultDialog(
-            modifier = Modifier.testTag(stringResource(id = R.string.read_screen_delete_dialog_tag)),
-            text = stringResource(id = R.string.delete_announcement_dialog_message),
-            confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
-            critical = true,
-            onConfirm = {
-                showDeleteAnnouncementDialog = false
-                clickedAnnouncement?.let(onDeleteAnnouncementClick)
-            },
-            onCancel = { showDeleteAnnouncementDialog = false }
-        )
+    when(val dialogType = activeDialog) {
+        is NewsDialog.DeleteAnnouncementDialog -> {
+            DefaultDialog(
+                modifier = Modifier.testTag(stringResource(id = R.string.read_screen_delete_dialog_tag)),
+                text = stringResource(id = R.string.delete_announcement_dialog_message),
+                confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
+                critical = true,
+                onConfirm = {
+                    activeDialog = null
+                    onDeleteAnnouncementClick(dialogType.announcement)
+                },
+                onCancel = { activeDialog = null }
+            )
+        }
+
+        else -> Unit
     }
 
     if (loading) {
@@ -136,88 +136,81 @@ private fun NewsScreen(
         PullToRefreshComponent(
             modifier = Modifier.padding(paddingValues),
             onRefresh = onRefresh,
-            isRefreshing = refreshing
+            refreshing = refreshing
         ) {
-            Column {
-                announcements?.let {
-                    RecentAnnouncementSection(
-                        modifier = Modifier.weight(1f),
-                        announcements = it,
-                        onAnnouncementClick = onAnnouncementClick,
-                        onUncreatedAnnouncementClick = { announcement ->
-                            clickedAnnouncement = announcement
-                            showAnnouncementBottomSheet = true
-                        },
-                        onSeeAllAnnouncementsClick = onSeeAllAnnouncementsClick,
-                        onAnnouncementOptionClick = { announcement ->
-                            clickedAnnouncement = announcement
-                            showAnnouncementBottomSheet = true
-                        }
-                    )
-                } ?: run {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressBar()
-                    }
-                }
-            }
-        }
-
-        if (showAnnouncementBottomSheet) {
-            clickedAnnouncement?.let { announcement ->
-                AnnouncementBottomSheet(
-                    announcement = announcement,
-                    isEditable = user.isMember && announcement.author.id == user.id,
-                    onEditClick = {
-                        showAnnouncementBottomSheet = false
-                        clickedAnnouncement?.id?.let(onEditAnnouncementClick)
-                    },
-                    onResendClick = {
-                        showAnnouncementBottomSheet = false
-                        onResendAnnouncementClick(announcement)
-                    },
-                    onReportClick = {
-                        showAnnouncementBottomSheet = false
-                        showAnnouncementReportBottomSheet = true
-                    },
-                    onDeleteClick = {
-                        showAnnouncementBottomSheet = false
-                        showDeleteAnnouncementDialog = true
-                    },
-                    onDismiss = { showAnnouncementBottomSheet = false }
-                )
-            }
-        }
-
-        if (showAnnouncementReportBottomSheet) {
-            ReportBottomSheet(
-                items = AnnouncementReport.Reason.entries,
-                onDismiss = { showAnnouncementReportBottomSheet = false },
-                onReportClick = { reason ->
-                    showAnnouncementReportBottomSheet = false
-
-                    clickedAnnouncement?.let { announcement ->
-                        onReportAnnouncementClick(
-                            AnnouncementReport(
-                                announcementId = announcement.id,
-                                userInfo = AnnouncementReport.UserInfo(
-                                    fullName = user.fullName,
-                                    email = user.email
-                                ),
-                                authorInfo = AnnouncementReport.UserInfo(
-                                    fullName = announcement.author.fullName,
-                                    email = announcement.author.email
-                                ),
-                                reason = reason,
-                            )
-                        )
-                    }
+            RecentAnnouncementSection(
+                announcements = announcements,
+                onAnnouncementClick = onAnnouncementClick,
+                onUncreatedAnnouncementClick = { announcement ->
+                    activeBottomSheet = NewsScreenBottomSheet.AnnouncementBottomSheet(announcement)
+                },
+                onSeeAllAnnouncementsClick = onSeeAllAnnouncementsClick,
+                onAnnouncementOptionClick = { announcement ->
+                    activeBottomSheet = NewsScreenBottomSheet.AnnouncementBottomSheet(announcement)
                 }
             )
         }
+
+        when(val bottomSheet = activeBottomSheet) {
+            is NewsScreenBottomSheet.AnnouncementBottomSheet -> {
+                AnnouncementBottomSheet(
+                    announcementState = bottomSheet.announcement.state,
+                    isEditable = user.admin && bottomSheet.announcement.author.id == user.id,
+                    onEditClick = {
+                        activeBottomSheet = null
+                        onEditAnnouncementClick(bottomSheet.announcement.id)
+                    },
+                    onResendClick = {
+                        activeBottomSheet = null
+                        onResendAnnouncementClick(bottomSheet.announcement)
+                    },
+                    onReportClick = {
+                        activeBottomSheet = NewsScreenBottomSheet.AnnouncementReportBottomSheet(bottomSheet.announcement)
+                    },
+                    onDeleteClick = {
+                        activeBottomSheet = null
+                        activeDialog = NewsDialog.DeleteAnnouncementDialog(bottomSheet.announcement)
+                    },
+                    onDismiss = { activeBottomSheet = null }
+                )
+            }
+
+            is NewsScreenBottomSheet.AnnouncementReportBottomSheet -> {
+                ReportBottomSheet(
+                    items = AnnouncementReport.Reason.entries,
+                    onReportClick = { reason ->
+                        activeBottomSheet = null
+                        onReportAnnouncementClick(
+                            AnnouncementReport(
+                                announcementId = bottomSheet.announcement.id,
+                                author = AnnouncementReport.Author(
+                                    fullName = bottomSheet.announcement.author.fullName,
+                                    email = bottomSheet.announcement.author.email
+                                ),
+                                reporter = AnnouncementReport.Reporter(
+                                    fullName = user.fullName,
+                                    email = user.email
+                                ),
+                                reason = reason
+                            )
+                        )
+                    },
+                    onDismiss = { activeBottomSheet = null }
+                )
+            }
+
+            else -> Unit
+        }
     }
+}
+
+private sealed class NewsScreenBottomSheet {
+    data class AnnouncementBottomSheet(val announcement: Announcement): NewsScreenBottomSheet()
+    data class AnnouncementReportBottomSheet(val announcement: Announcement): NewsScreenBottomSheet()
+}
+
+private sealed class NewsDialog {
+    data class DeleteAnnouncementDialog(val announcement: Announcement): NewsDialog()
 }
 
 /*
@@ -226,7 +219,7 @@ private fun NewsScreen(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun NewsScreenPreview() {
     GedoiseTheme {

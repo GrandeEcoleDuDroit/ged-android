@@ -24,26 +24,26 @@ import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.gold
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 
 @Composable
 fun UserInformationItems(user: User) {
-    val accountInfos: List<AccountInfo> = listOf(
-        AccountInfo(
+    val accountInformationValues: List<AccountInformationValue> = listOf(
+        AccountInformationValue(
             stringResource(id = com.upsaclay.common.R.string.last_name),
             user.lastName
         ),
-        AccountInfo(
+        AccountInformationValue(
             stringResource(id = com.upsaclay.common.R.string.first_name),
             user.firstName
         ),
-        AccountInfo(
+        AccountInformationValue(
             stringResource(id = com.upsaclay.common.R.string.email),
             user.email
         ),
-        AccountInfo(
+        AccountInformationValue(
             stringResource(id = com.upsaclay.common.R.string.school_level),
-            user.schoolLevel
+            user.schoolLevel.value
         )
     )
 
@@ -52,62 +52,54 @@ fun UserInformationItems(user: User) {
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
     ) {
-        accountInfos.forEach { accountInfo ->
-            NonMemberUserInformationItem(
-                accountInfo = accountInfo
+        accountInformationValues.forEach { accountInfo ->
+            UserInformationItem(
+                accountInformationValue = accountInfo
             )
         }
 
-        if (user.isMember) {
-            MemberUserInformationItem(
-                modifier = Modifier
-                    .testTag(stringResource(id = R.string.member_text_tag))
-            )
+        if (user.admin) {
+            Row(
+                modifier = Modifier.testTag(stringResource(id = R.string.member_text_tag)),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding))
+            ) {
+                Text(
+                    text = stringResource(R.string.administrator),
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.labelLarge
+                )
+
+                Icon(
+                    imageVector = Icons.Default.Star,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.gold,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
         }
     }
 }
 
 @Composable
-private fun MemberUserInformationItem(
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding))
-    ) {
-        Text(
-            text = stringResource(R.string.member),
-            color = MaterialTheme.colorScheme.primary,
-            style = MaterialTheme.typography.labelLarge
-        )
-
-        Icon(
-            imageVector = Icons.Default.Star,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.gold,
-            modifier = Modifier.size(20.dp)
-        )
-    }
-}
-
-@Composable
-internal fun NonMemberUserInformationItem(
-    accountInfo: AccountInfo
+internal fun UserInformationItem(
+    accountInformationValue: AccountInformationValue
 ) {
     Column {
         Text(
-            text = accountInfo.label,
+            text = accountInformationValue.label,
             color = MaterialTheme.colorScheme.primary,
             style = MaterialTheme.typography.labelLarge
         )
 
-        Text(text = accountInfo.value)
+        Text(
+            text = accountInformationValue.value
+        )
     }
 }
 
 
-data class AccountInfo(
+data class AccountInformationValue(
     val label: String,
     val value: String
 )
@@ -118,7 +110,7 @@ data class AccountInfo(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun AccountInfoItemsPreview() {
     GedoiseTheme {

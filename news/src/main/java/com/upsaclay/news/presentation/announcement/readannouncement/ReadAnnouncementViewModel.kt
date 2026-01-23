@@ -3,12 +3,11 @@ package com.upsaclay.news.presentation.announcement.readannouncement
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.upsaclay.common.domain.ConnectivityObserver
-import com.upsaclay.common.domain.entity.NoInternetConnectionException
-import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.UserRepository
-import com.upsaclay.common.utils.mapNetworkErrorMessage
+import com.upsaclay.common.extension.executeUiBlockingRequest
+import com.upsaclay.common.presentation.SingleUiEvent
+import com.upsaclay.common.utils.mapExceptionErrorMessage
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.domain.entity.AnnouncementReport
@@ -27,8 +26,7 @@ class ReadAnnouncementViewModel(
     private val announcementId: String,
     private val userRepository: UserRepository,
     private val announcementRepository: AnnouncementRepository,
-    private val deleteAnnouncementUseCase: DeleteAnnouncementUseCase,
-    private val connectivityObserver: ConnectivityObserver
+    private val deleteAnnouncementUseCase: DeleteAnnouncementUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ReadAnnouncementUiState())
     val uiState: StateFlow<ReadAnnouncementUiState> = _uiState
@@ -41,46 +39,33 @@ class ReadAnnouncementViewModel(
     }
 
     fun reportAnnouncement(report: AnnouncementReport) {
-        viewModelScope.launch {
-            try {
-                if (!connectivityObserver.isConnected) {
-                    throw NoInternetConnectionException()
-                }
-                _uiState.update {
-                    it.copy(loading = true)
-                }
-                announcementRepository.reportAnnouncement(report)
-                _event.emit(ReadAnnouncementUiEvent.AnnouncementReported(R.string.announcement_reported))
-            } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
-            } finally {
-                _uiState.update {
-                    it.copy(loading = false)
-                }
-            }
+        executeRequest {
+            announcementRepository.reportAnnouncement(report)
+            _event.emit(ReadAnnouncementUiEvent.AnnouncementReported(R.string.announcement_reported))
         }
     }
 
     fun deleteAnnouncement() {
         val announcement = uiState.value.announcement ?: return
-        viewModelScope.launch {
-            try {
-                if (!connectivityObserver.isConnected) {
-                    throw NoInternetConnectionException()
-                }
-                _uiState.update {
-                    it.copy(loading = true)
-                }
-                deleteAnnouncementUseCase(announcement)
-                _event.emit(ReadAnnouncementUiEvent.AnnouncementDeleted)
-            } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
-            } finally {
-                _uiState.update {
-                    it.copy(loading = false)
-                }
-            }
+        executeRequest {
+            deleteAnnouncementUseCase.execute(announcement)
+            _event.emit(ReadAnnouncementUiEvent.AnnouncementDeleted)
         }
+    }
+
+    private fun executeRequest(block: suspend () -> Unit) {
+        viewModelScope.executeUiBlockingRequest(
+            block = block,
+            onLoading = {
+                _uiState.update { it.copy(loading = true) }
+            },
+            onError = {
+                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(it)))
+            },
+            onFinished = {
+                _uiState.update { it.copy(loading = false) }
+            }
+        )
     }
 
     private fun listenAnnouncement() {
@@ -113,8 +98,8 @@ class ReadAnnouncementViewModel(
         val loading: Boolean = false
     )
 
-    sealed interface ReadAnnouncementUiEvent: SingleUiEvent {
-        data object AnnouncementDeleted: ReadAnnouncementUiEvent
-        data class AnnouncementReported(@StringRes val messageId: Int): ReadAnnouncementUiEvent
+    sealed interface ReadAnnouncementUiEvent : SingleUiEvent {
+        data object AnnouncementDeleted : ReadAnnouncementUiEvent
+        data class AnnouncementReported(@StringRes val messageId: Int) : ReadAnnouncementUiEvent
     }
 }

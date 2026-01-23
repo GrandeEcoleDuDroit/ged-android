@@ -5,43 +5,41 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import com.upsaclay.common.R
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.inputForeground
+import com.upsaclay.common.presentation.theme.topBarTitle
 import com.upsaclay.common.presentation.theme.white
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TitleTopBar(title: String) {
     TopAppBar(
-        title = { Text(text = title) },
+        title = {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.topBarTitle,
+                maxLines = 1
+            )
+        },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.background
         )
@@ -51,29 +49,24 @@ fun TitleTopBar(title: String) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BackTopBar(
+    modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     title: String,
-    icon: @Composable () -> Unit = {
-        Icon(
-            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-            contentDescription = stringResource(id = R.string.arrow_back_icon_description)
-        )
-    },
     leadingIcon: @Composable (RowScope.() -> Unit) = {},
     scrollBehavior: TopAppBarScrollBehavior? = null
 ) {
     TopAppBar(
+        modifier = modifier,
         title = {
             Text(
                 text = title,
-                maxLines = 2,
+                style = MaterialTheme.typography.topBarTitle,
+                maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
         },
         navigationIcon = {
-            IconButton(onClick = onBackClick) {
-                icon()
-            }
+            BackButton(onClick = onBackClick)
         },
         actions = leadingIcon,
         colors = TopAppBarDefaults.topAppBarColors(
@@ -89,14 +82,20 @@ fun BackTopBar(
 fun EditTopBar(
     modifier: Modifier = Modifier,
     title: String = "",
+    buttonEnable: Boolean = true,
+    actionLabel: String,
     onCancelClick: () -> Unit,
-    onActionClick: () -> Unit,
-    isButtonEnable: Boolean = true,
-    actionLabel: String
+    onActionClick: () -> Unit
 ) {
     TopAppBar(
         modifier = modifier,
-        title = { Text(text = title) },
+        title = {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.topBarTitle,
+                maxLines = 1
+            )
+        },
         navigationIcon = {
             IconButton(onClick = onCancelClick) {
                 Icon(
@@ -108,10 +107,10 @@ fun EditTopBar(
         actions = {
             Button(
                 modifier = Modifier.padding(end = dimensionResource(R.dimen.small_padding)),
-                enabled = isButtonEnable,
+                enabled = buttonEnable,
                 contentPadding = PaddingValues(
-                    vertical = dimensionResource(com.upsaclay.common.R.dimen.default_padding),
-                    horizontal = dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)
+                    vertical = dimensionResource(R.dimen.default_padding),
+                    horizontal = dimensionResource(R.dimen.small_medium_padding)
                 ),
                 colors = ButtonDefaults.buttonColors(contentColor = MaterialTheme.colorScheme.white),
                 onClick = onActionClick
@@ -130,53 +129,31 @@ fun EditTopBar(
 fun SearchTopBar(
     query: String,
     onQueryChange: (String) -> Unit,
-    onBackClick: () -> Unit
-) {
-    val focusRequester by remember { mutableStateOf(FocusRequester()) }
-    LaunchedEffect(Unit) {
-        focusRequester.requestFocus()
-    }
+    onBackClick: () -> Unit,
+    onClearClick: () -> Unit
 
-    TopAppBar(
+) {
+    CenterAlignedTopAppBar(
         title = {
-            SearchBar(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .focusRequester(focusRequester),
+            StaticSearchBar(
+                modifier = Modifier.fillMaxWidth(),
                 query = query,
                 onQueryChange = onQueryChange,
-                onSearch = { focusRequester.freeFocus() },
-                active = false,
-                onActiveChange = {
-                    if (!it) {
-                        focusRequester.freeFocus()
-                    }
-                },
-                content = {},
-                placeholder = {
-                    Text(
-                        text = stringResource(R.string.search_ellipsis),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.inputForeground
-                    )
-                },
                 leadingIcon = {
-                    IconButton(
-                        onClick = {
-                            focusRequester.freeFocus()
-                            onBackClick()
-                        }
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = null
+                    BackButton(
+                        onClick = onBackClick,
+                        color = IconButtonDefaults.iconButtonColors().copy(
+                            contentColor = MaterialTheme.colorScheme.onSurface
                         )
-                    }
+                    )
                 },
                 trailingIcon = {
                     if (query.isNotEmpty()) {
                         IconButton(
-                            onClick = { onQueryChange("") }
+                            onClick = onClearClick,
+                            colors = IconButtonDefaults.iconButtonColors().copy(
+                                contentColor = MaterialTheme.colorScheme.onSurface
+                            )
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Close,
@@ -196,50 +173,55 @@ fun SearchTopBar(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun TitleTopBarPreview() {
     GedoiseTheme {
-        TitleTopBar(title = "Title")
+        Surface {
+            TitleTopBar(title = "Title")
+        }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Phones
+@PhonePreviews
 @Composable
 private fun BackTopBarPreview() {
     GedoiseTheme {
-        BackTopBar(
-            onBackClick = {},
-            title = "Title"
-        )
+        Surface {
+            BackTopBar(
+                onBackClick = {},
+                title = "Title"
+            )
+        }
     }
 }
 
-@Phones
+@PhonePreviews
 @Composable
 private fun EditTopBarPreview() {
     GedoiseTheme {
-        EditTopBar(
-            title = "Title",
-            onCancelClick = { },
-            onActionClick = { },
-            actionLabel = "Enregister"
-        )
+        Surface {
+            EditTopBar(
+                title = "Title",
+                onCancelClick = { },
+                onActionClick = { },
+                actionLabel = "Enregister"
+            )
+        }
     }
 }
 
-@Phones
+@PhonePreviews
 @Composable
 private fun SearchTopBarPreview() {
-    var query by remember { mutableStateOf("") }
-
     GedoiseTheme {
         Surface {
             SearchTopBar(
-                query = query,
-                onQueryChange = { query = it },
-                onBackClick = { }
+                query = "",
+                onQueryChange = {},
+                onBackClick = {},
+                onClearClick = {}
             )
         }
     }

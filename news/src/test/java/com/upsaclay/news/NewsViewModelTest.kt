@@ -1,13 +1,12 @@
 package com.upsaclay.news
 
-import com.upsaclay.common.domain.ConnectivityObserver
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.news.domain.announcementsFixture
 import com.upsaclay.news.domain.repository.AnnouncementRepository
 import com.upsaclay.news.domain.usecase.DeleteAnnouncementUseCase
-import com.upsaclay.news.domain.usecase.RefreshAnnouncementUseCase
-import com.upsaclay.news.domain.usecase.ResendAnnouncementUseCase
+import com.upsaclay.news.domain.usecase.RecreateAnnouncementUseCase
+import com.upsaclay.news.domain.usecase.RefreshAnnouncementsUseCase
 import com.upsaclay.news.presentation.news.NewsViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -25,11 +24,9 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class NewsViewModelTest {
-    private val resendAnnouncementUseCase: ResendAnnouncementUseCase = mockk()
+    private val recreateAnnouncementUseCase: RecreateAnnouncementUseCase = mockk()
     private val deleteAnnouncementUseCase: DeleteAnnouncementUseCase = mockk()
-    private val refreshAnnouncementUseCase: RefreshAnnouncementUseCase = mockk()
-    private val connectivityObserver: ConnectivityObserver = mockk()
-
+    private val refreshAnnouncementsUseCase: RefreshAnnouncementsUseCase = mockk()
     private val userRepository: UserRepository = mockk()
     private val announcementRepository: AnnouncementRepository = mockk()
 
@@ -40,20 +37,18 @@ class NewsViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
 
-        every { connectivityObserver.isConnected } returns true
         every { announcementRepository.announcements } returns flowOf(announcementsFixture)
         every { userRepository.user } returns MutableStateFlow(userFixture)
-        every { resendAnnouncementUseCase(any()) } returns Unit
-        coEvery { refreshAnnouncementUseCase() } returns Unit
-        coEvery { deleteAnnouncementUseCase(any()) } returns Unit
+        coEvery { recreateAnnouncementUseCase.execute(any()) } returns Unit
+        coEvery { refreshAnnouncementsUseCase.execute() } returns Unit
+        coEvery { deleteAnnouncementUseCase.execute(any()) } returns Unit
 
         newsViewModel = NewsViewModel(
-            resendAnnouncementUseCase = resendAnnouncementUseCase,
+            recreateAnnouncementUseCase = recreateAnnouncementUseCase,
             deleteAnnouncementUseCase = deleteAnnouncementUseCase,
-            refreshAnnouncementUseCase = refreshAnnouncementUseCase,
+            refreshAnnouncementsUseCase = refreshAnnouncementsUseCase,
             announcementRepository = announcementRepository,
-            userRepository = userRepository,
-            connectivityObserver = connectivityObserver
+            userRepository = userRepository
         )
     }
 
@@ -63,7 +58,7 @@ class NewsViewModelTest {
         newsViewModel.refreshAnnouncements()
 
         // Then
-        coVerify { refreshAnnouncementUseCase() }
+        coVerify { refreshAnnouncementsUseCase.execute() }
     }
 
     @Test
@@ -75,7 +70,7 @@ class NewsViewModelTest {
         newsViewModel.resendAnnouncement(announcement)
 
         // Then
-        coVerify { resendAnnouncementUseCase(announcement) }
+        coVerify { recreateAnnouncementUseCase.execute(announcement) }
     }
 
     @Test
@@ -87,6 +82,6 @@ class NewsViewModelTest {
         newsViewModel.deleteAnnouncement(announcement)
 
         // Then
-        coVerify { deleteAnnouncementUseCase(announcement) }
+        coVerify { deleteAnnouncementUseCase.execute(announcement) }
     }
 }

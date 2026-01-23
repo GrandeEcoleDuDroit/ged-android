@@ -4,10 +4,11 @@ import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.upsaclay.common.domain.repository.UserRepository
-import com.upsaclay.message.domain.entity.ConversationState
+import com.upsaclay.message.domain.entity.Conversation.ConversationState
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
 import org.koin.java.KoinJavaComponent.inject
+
 
 internal class SendUnsentConversationWorker (
     context: Context,
@@ -27,7 +28,7 @@ internal class SendUnsentConversationWorker (
                     }
 
                     ConversationState.DELETING -> {
-                        conversation.deleteTime?.let {
+                        conversation.effectiveFrom?.let {
                             conversationRepository.deleteConversation(
                                 conversation.id,
                                 userId,

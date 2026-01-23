@@ -4,6 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
+import com.upsaclay.common.domain.extensions.toEpochMilliUTC
 import com.upsaclay.message.data.local.dao.MessageDao
 import com.upsaclay.message.data.mapper.toLocal
 import com.upsaclay.message.data.mapper.toMessage
@@ -12,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import java.time.LocalDateTime
 
 private const val MESSAGE_LIMIT = 20
 
@@ -28,14 +30,14 @@ internal class MessageLocalDataSource(private val messageDao: MessageDao) {
         }
     }
 
-    suspend fun getUnreadMessagesByUser(conversationId: String, userId: String): List<Message> {
+    suspend fun getUserUnseenMessages(conversationId: String, userId: String): List<Message> {
         return withContext(Dispatchers.IO) {
             messageDao.getUnreadMessagesByUser(conversationId, userId).map { it.toMessage() }
         }
     }
 
-    fun getLastMessageFlow(conversationId: String): Flow<Message?> =
-        messageDao.getLastMessageFlow(conversationId).map { it?.toMessage() }
+    fun getNewMessagesFlow(conversationId: String, date: LocalDateTime): Flow<Message?> =
+        messageDao.getNewMessagesFlow(conversationId, date.toEpochMilliUTC()).map { it?.toMessage() }
 
     suspend fun getLastMessage(conversationId: String): Message? = withContext(Dispatchers.IO) {
         messageDao.getLastMessage(conversationId)?.toMessage()
@@ -51,9 +53,15 @@ internal class MessageLocalDataSource(private val messageDao: MessageDao) {
         }
     }
 
-    suspend fun updateSeenMessages(conversationId: String, userId: String) {
+    suspend fun setMessagesSeen(conversationId: String, userId: String) {
         withContext(Dispatchers.IO) {
-            messageDao.updateSeenMessages(conversationId, userId)
+            messageDao.setMessagesSeen(conversationId, userId)
+        }
+    }
+
+    suspend fun setMessageSeen(messageId: String) {
+        withContext(Dispatchers.IO) {
+            messageDao.setMessageSeen(messageId)
         }
     }
 

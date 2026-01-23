@@ -9,6 +9,7 @@
     <string name="forum_icon_description">Icon to access the forum</string>
     <string name="message_icon_description">Icon to access messaging</string>
     <string name="profile_icon_description">Icon to access the profile</string>
+    <string name="mission_icon_description">Icon to access the mission</string>
     <string name="close">Close</string>
     <string name="show">View</string>
     <string name="next">Next</string>
@@ -26,7 +27,7 @@
     <string name="search">Search</string>
     <string name="search_ellipsis">Search</string>
     <string name="edit">Edit</string>
-    <string name="resend">Resend</string>
+    <string name="retry">Retry</string>
     <string name="ok">OK</string>
     <string name="see">See</string>
     <string name="see_all">See all</string>
@@ -35,7 +36,7 @@
     <string name="arrow_back_icon_description">Go back</string>
     <string name="ged_logo_description">Logo of the university La Grande École du Droit</string>
     <string name="profile_picture_description">User\'s profile picture</string>
-    <string name="icon_add_descrption">Add icon</string>
+    <string name="icon_add_description">Add icon</string>
     <string name="school_level">School level</string>
     <string name="first_name">First name</string>
     <string name="last_name">Last name</string>
@@ -51,20 +52,10 @@
     <string name="hour_ago_medium">%d hours</string>
     <string name="day_ago_medium">%d days</string>
     <string name="week_ago_medium">%d weeks</string>
-    <string name="empty_fields_error">Please fill in all fields.</string>
-    <string name="empty_field_error">Please fill in the field.</string>
-    <string name="unknown_error">An unknown error occurred.</string>
-    <string name="internal_server_error">An internal server error occurred.</string>
-    <string name="server_connection_error">Unable to connect to the server.</string>
-    <string name="unknown_network_error">A network error occurred.</string>
-    <string name="occurred_error">An error occurred.</string>
-    <string name="too_many_request_error">You have made too many requests. Please try again in a few minutes.</string>
-    <string name="user_not_found_title_dialog">User not found.</string>
-    <string name="current_user_not_found_error">User not found. Please log in again.</string>
-    <string name="timeout_error">The service took too long to respond. Please try again.</string>
-    <string name="no_user">No users.</string>
+
+    <string name="no_user">No users</string>
     <string name="no_internet_connection">No internet connection.</string>
-    <string name="member">Member</string>
+    <string name="administrator">Administrator</string>
     <string name="unblock">Unblock</string>
     <string name="reported_user">User reported</string>
     <string name="blocked_user">User blocked</string>
@@ -73,4 +64,23 @@
     <string name="block_user_dialog_message">You will no longer see any of their content.</string>
     <string name="unblock_user_dialog_message">Do you want to unblock this user?</string>
     <string name="deleted_user">Deleted user</string>
+    <string name="confirm">Confirm</string>
+
+    <string name="mandatory_field_error">Mandatory field.</string>
+    <string name="number_field_error">Please enter a valid number.</string>
+    <string name="internal_server_error">An internal server error occurred.</string>
+    <string name="unknown_network_error">A network error occurred.</string>
+    <string name="occurred_error">An error occurred.</string>
+    <string name="too_many_request_error">You have made too many requests. Please try again in a few minutes.</string>
+    <string name="user_not_found_title_dialog">User not found.</string>
+    <string name="current_user_not_found_error">The current user was not found. Please try again.</string>
+    <string name="forbidden_error">You do not have permission to perform this action.</string>
+    <string name="bad_request_error">The request could not be successful.</string>
+    <string name="unauthorized_error">Your session has expired. Please log in again.</string>
+    <string name="resource_not_found_error">Resource was not found.</string>
+    <string name="timed_out_error">The service took too long to respond. Please try again.</string>
+    <string name="cannot_connect_to_host_error">Could not connect to the server.</string>
+    <string name="any_network_error">A network error has occurred.</string>
+    <string name="unknown_error">An unknown error occurred.</string>
+
 </resources>

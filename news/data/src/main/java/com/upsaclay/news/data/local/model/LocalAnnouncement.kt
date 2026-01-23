@@ -3,50 +3,51 @@ package com.upsaclay.news.data.local.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.upsaclay.news.data.AnnouncementField.Local.ANNOUNCEMENT_AUTHOR_ADMIN
+import com.upsaclay.news.data.AnnouncementField.Local.ANNOUNCEMENT_AUTHOR_EMAIL
+import com.upsaclay.news.data.AnnouncementField.Local.ANNOUNCEMENT_AUTHOR_FIRST_NAME
+import com.upsaclay.news.data.AnnouncementField.Local.ANNOUNCEMENT_AUTHOR_ID
+import com.upsaclay.news.data.AnnouncementField.Local.ANNOUNCEMENT_AUTHOR_LAST_NAME
+import com.upsaclay.news.data.AnnouncementField.Local.ANNOUNCEMENT_AUTHOR_PROFILE_PICTURE_FILE_NAME
+import com.upsaclay.news.data.AnnouncementField.Local.ANNOUNCEMENT_AUTHOR_SCHOOL_LEVEL
+import com.upsaclay.news.data.AnnouncementField.Local.ANNOUNCEMENT_AUTHOR_STATE
+import com.upsaclay.news.data.AnnouncementField.Local.ANNOUNCEMENT_AUTHOR_TESTER
+import com.upsaclay.news.data.AnnouncementField.Local.ANNOUNCEMENT_CONTENT
+import com.upsaclay.news.data.AnnouncementField.Local.ANNOUNCEMENT_DATE
 import com.upsaclay.news.data.AnnouncementField.Local.ANNOUNCEMENT_ID
-import com.upsaclay.news.data.AnnouncementField.Local.CONTENT
-import com.upsaclay.news.data.AnnouncementField.Local.DATE
-import com.upsaclay.news.data.AnnouncementField.Local.STATE
-import com.upsaclay.news.data.AnnouncementField.Local.TITLE
-import com.upsaclay.news.data.AnnouncementField.Local.USER_EMAIL
-import com.upsaclay.news.data.AnnouncementField.Local.USER_FIRST_NAME
-import com.upsaclay.news.data.AnnouncementField.Local.USER_ID
-import com.upsaclay.news.data.AnnouncementField.Local.USER_IS_DELETED
-import com.upsaclay.news.data.AnnouncementField.Local.USER_IS_MEMBER
-import com.upsaclay.news.data.AnnouncementField.Local.USER_LAST_NAME
-import com.upsaclay.news.data.AnnouncementField.Local.USER_PROFILE_PICTURE_FILE_NAME
-import com.upsaclay.news.data.AnnouncementField.Local.USER_SCHOOL_LEVEL
-import com.upsaclay.news.domain.entity.AnnouncementState
+import com.upsaclay.news.data.AnnouncementField.Local.ANNOUNCEMENT_STATE
+import com.upsaclay.news.data.AnnouncementField.Local.ANNOUNCEMENT_TABLE_NAME
+import com.upsaclay.news.data.AnnouncementField.Local.ANNOUNCEMENT_TITLE
 
-const val ANNOUNCEMENTS_TABLE = "announcements_table"
-
-@Entity(tableName = ANNOUNCEMENTS_TABLE)
+@Entity(tableName = ANNOUNCEMENT_TABLE_NAME)
 data class LocalAnnouncement(
     @PrimaryKey
     @ColumnInfo(name = ANNOUNCEMENT_ID)
     val announcementId: String,
-    @ColumnInfo(name = TITLE)
+    @ColumnInfo(name = ANNOUNCEMENT_TITLE)
     val announcementTitle: String?,
-    @ColumnInfo(name = CONTENT)
+    @ColumnInfo(name = ANNOUNCEMENT_CONTENT)
     val announcementContent: String,
-    @ColumnInfo(name = DATE)
+    @ColumnInfo(name = ANNOUNCEMENT_DATE)
     val announcementDate: Long,
-    @ColumnInfo(name = STATE)
-    val announcementState: AnnouncementState,
-    @ColumnInfo(name = USER_ID)
-    val userId: String,
-    @ColumnInfo(name = USER_FIRST_NAME)
-    val userFirstName: String,
-    @ColumnInfo(name = USER_LAST_NAME)
-    val userLastName: String,
-    @ColumnInfo(name = USER_EMAIL)
-    val userEmail: String,
-    @ColumnInfo(name = USER_SCHOOL_LEVEL)
-    val userSchoolLevel: String,
-    @ColumnInfo(name = USER_IS_MEMBER)
-    val userIsMember: Boolean,
-    @ColumnInfo(name = USER_PROFILE_PICTURE_FILE_NAME)
-    val userProfilePictureFileName: String?,
-    @ColumnInfo(name = USER_IS_DELETED)
-    val userIsDeleted: Boolean
+    @ColumnInfo(name = ANNOUNCEMENT_STATE)
+    val announcementState: String,
+    @ColumnInfo(name = ANNOUNCEMENT_AUTHOR_ID)
+    val announcementAuthorId: String,
+    @ColumnInfo(name = ANNOUNCEMENT_AUTHOR_FIRST_NAME)
+    val announcementAuthorFirstName: String,
+    @ColumnInfo(name = ANNOUNCEMENT_AUTHOR_LAST_NAME)
+    val announcementAuthorLastName: String,
+    @ColumnInfo(name = ANNOUNCEMENT_AUTHOR_EMAIL)
+    val announcementAuthorEmail: String,
+    @ColumnInfo(name = ANNOUNCEMENT_AUTHOR_SCHOOL_LEVEL)
+    val announcementAuthorSchoolLevel: Int,
+    @ColumnInfo(name = ANNOUNCEMENT_AUTHOR_ADMIN)
+    val announcementAuthorAdmin: Boolean,
+    @ColumnInfo(name = ANNOUNCEMENT_AUTHOR_PROFILE_PICTURE_FILE_NAME)
+    val announcementAuthorProfilePictureFileName: String?,
+    @ColumnInfo(name = ANNOUNCEMENT_AUTHOR_STATE)
+    val announcementAuthorState: Int,
+    @ColumnInfo(name = ANNOUNCEMENT_AUTHOR_TESTER)
+    val announcementAuthorTester: Boolean
 )

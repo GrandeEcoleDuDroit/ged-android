@@ -42,30 +42,32 @@ class ReadAnnouncementScreenTest {
                 announcementId = longAnnouncementFixture.id,
                 onBackClick = {},
                 onAuthorClick = {},
-                onEditClick = {},
+                onEditAnnouncementClick = {},
                 viewModel = readAnnouncementViewModel
             )
         }
 
         // Then
-        rule.onNodeWithTag(rule.activity.getString(R.string.announcement_option_button_tag)).assertExists()
+        rule.onNodeWithTag(rule.activity.getString(R.string.announcement_option_button_tag))
+            .assertExists()
     }
 
     @Test
     fun option_button_should_not_be_displayed_when_user_is_not_member() {
         // When
         rule.setContent {
-             ReadAnnouncementDestination(
+            ReadAnnouncementDestination(
                 announcementId = longAnnouncementFixture.id,
                 onBackClick = {},
-                 onAuthorClick = {},
-                onEditClick = {},
+                onAuthorClick = {},
+                onEditAnnouncementClick = {},
                 viewModel = readAnnouncementViewModel
             )
         }
 
         // Then
-        rule.onNodeWithTag(rule.activity.getString(R.string.read_screen_sheet_edit_field_tag)).assertDoesNotExist()
+        rule.onNodeWithTag(rule.activity.getString(R.string.read_screen_sheet_edit_field_tag))
+            .assertDoesNotExist()
     }
 
     @Test
@@ -77,36 +79,39 @@ class ReadAnnouncementScreenTest {
 
         // When
         rule.setContent {
-             ReadAnnouncementDestination(
-                 announcementId = longAnnouncementFixture.id,
-                 onBackClick = {},
-                 onAuthorClick = {},
-                 onEditClick = {},
-                 viewModel = readAnnouncementViewModel
+            ReadAnnouncementDestination(
+                announcementId = longAnnouncementFixture.id,
+                onBackClick = {},
+                onAuthorClick = {},
+                onEditAnnouncementClick = {},
+                viewModel = readAnnouncementViewModel
             )
         }
 
         // Then
-        rule.onNodeWithTag(rule.activity.getString(R.string.read_screen_sheet_edit_field_tag)).assertDoesNotExist()
+        rule.onNodeWithTag(rule.activity.getString(R.string.read_screen_sheet_edit_field_tag))
+            .assertDoesNotExist()
     }
 
     @Test
     fun clicking_option_should_display_bottom_sheet() {
         // When
         rule.setContent {
-             ReadAnnouncementDestination(
+            ReadAnnouncementDestination(
                 announcementId = longAnnouncementFixture.id,
                 onBackClick = {},
                 onAuthorClick = {},
-                onEditClick = {},
+                onEditAnnouncementClick = {},
                 viewModel = readAnnouncementViewModel
             )
         }
 
-        rule.onNodeWithTag(rule.activity.getString(R.string.announcement_option_button_tag)).performClick()
+        rule.onNodeWithTag(rule.activity.getString(R.string.announcement_option_button_tag))
+            .performClick()
 
         // Then
-        rule.onNodeWithTag(rule.activity.getString(R.string.announcement_bottom_sheet_tag)).assertExists()
+        rule.onNodeWithTag(rule.activity.getString(R.string.announcement_bottom_sheet_tag))
+            .assertExists()
     }
 
 
@@ -114,19 +119,22 @@ class ReadAnnouncementScreenTest {
     fun clicking_delete_sheet_field_should_display_delete_dialog() {
         // When
         rule.setContent {
-             ReadAnnouncementDestination(
+            ReadAnnouncementDestination(
                 announcementId = longAnnouncementFixture.id,
                 onBackClick = {},
                 onAuthorClick = {},
-                onEditClick = {},
+                onEditAnnouncementClick = {},
                 viewModel = readAnnouncementViewModel
             )
         }
 
-        rule.onNodeWithTag(rule.activity.getString(R.string.announcement_option_button_tag)).performClick()
-        rule.onNodeWithTag(rule.activity.getString(R.string.announcement_bottom_sheet_delete_field_tag)).performClick()
+        rule.onNodeWithTag(rule.activity.getString(R.string.announcement_option_button_tag))
+            .performClick()
+        rule.onNodeWithTag(rule.activity.getString(R.string.announcement_bottom_sheet_delete_field_tag))
+            .performClick()
 
         // Then
-        rule.onNodeWithTag(rule.activity.getString(R.string.read_screen_delete_dialog_tag)).assertExists()
+        rule.onNodeWithTag(rule.activity.getString(R.string.read_screen_delete_dialog_tag))
+            .assertExists()
     }
 }

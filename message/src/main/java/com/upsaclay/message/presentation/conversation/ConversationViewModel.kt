@@ -2,13 +2,18 @@ package com.upsaclay.message.presentation.conversation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.upsaclay.common.domain.entity.SingleUiEvent
+import com.upsaclay.common.domain.entity.CustomException
+import com.upsaclay.common.domain.entity.CustomException.CustomError.CURRENT_USER_NOT_FOUND
 import com.upsaclay.common.domain.repository.UserRepository
-import com.upsaclay.common.utils.mapNetworkErrorMessage
+import com.upsaclay.common.extension.executeUiBlockingRequest
+import com.upsaclay.common.presentation.SingleUiEvent
+import com.upsaclay.common.utils.mapExceptionErrorMessage
+import com.upsaclay.message.R
 import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.ConversationUi
 import com.upsaclay.message.domain.usecase.DeleteConversationUseCase
 import com.upsaclay.message.domain.usecase.GetConversationsUiUseCase
+import com.upsaclay.message.domain.usecase.RecreateConversationUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -20,7 +25,8 @@ import kotlinx.coroutines.launch
 class ConversationViewModel(
     private val userRepository: UserRepository,
     private val getConversationsUiUseCase: GetConversationsUiUseCase,
-    private val deleteConversationUseCase: DeleteConversationUseCase
+    private val deleteConversationUseCase: DeleteConversationUseCase,
+    private val recreateConversationUseCase: RecreateConversationUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ConversationUiState())
     val uiState: StateFlow<ConversationUiState> = _uiState
@@ -32,19 +38,42 @@ class ConversationViewModel(
     }
 
     fun deleteConversation(conversation: Conversation) {
-        try {
-            val user = requireNotNull(userRepository.currentUser)
-            deleteConversationUseCase(conversation, user.id)
-        } catch (e: Exception) {
-            viewModelScope.launch {
-                _event.emit(SingleUiEvent.Error(mapToErrorMessage(e)))
+        executeRequest {
+            val user = userRepository.currentUser ?: throw CustomException(CURRENT_USER_NOT_FOUND, Exception())
+            deleteConversationUseCase.execute(conversation, user.id)
+            _event.emit(SingleUiEvent.Success(R.string.conversation_deleted))
+        }
+    }
+
+    fun recreateConversation(conversation: Conversation) {
+        viewModelScope.launch {
+            try {
+                val userId = userRepository.currentUser?.id ?: throw CustomException(CURRENT_USER_NOT_FOUND)
+                recreateConversationUseCase.execute(conversation, userId)
+            } catch (e: Exception) {
+                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))
             }
         }
     }
 
+    private fun executeRequest(block: suspend () -> Unit) {
+        viewModelScope.executeUiBlockingRequest(
+            block = block,
+            onLoading = {
+                _uiState.update { it.copy(loading = true) }
+            },
+            onError = {
+                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(it)))
+            },
+            onFinished = {
+                _uiState.update { it.copy(loading = false) }
+            }
+        )
+    }
+
     private fun listenConversations() {
         viewModelScope.launch {
-            getConversationsUiUseCase().collectLatest { conversations ->
+            getConversationsUiUseCase.execute().collectLatest { conversations ->
                 _uiState.update {
                     it.copy(conversations = conversations)
                 }
@@ -52,14 +81,8 @@ class ConversationViewModel(
         }
     }
 
-    private fun mapToErrorMessage(e: Throwable): Int {
-        return mapNetworkErrorMessage(e) {
-            when (e) {
-                is IllegalArgumentException -> com.upsaclay.common.R.string.current_user_not_found_error
-                else -> com.upsaclay.common.R.string.unknown_error
-            }
-        }
-    }
-
-    data class ConversationUiState(val conversations: List<ConversationUi>? = null)
+    data class ConversationUiState(
+        val conversations: List<ConversationUi>? = null,
+        val loading: Boolean = false
+    )
 }

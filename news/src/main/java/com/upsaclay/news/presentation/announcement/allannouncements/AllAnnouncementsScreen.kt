@@ -1,17 +1,16 @@
 package com.upsaclay.news.presentation.announcement.allannouncements
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -19,31 +18,33 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
+import com.upsaclay.common.extension.noRippleClickable
+import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.BackTopBar
+import com.upsaclay.common.presentation.components.CircularProgressBar
 import com.upsaclay.common.presentation.components.DefaultDialog
+import com.upsaclay.common.presentation.components.EmptyText
 import com.upsaclay.common.presentation.components.ListDivider
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.PullToRefreshComponent
 import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.previewText
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.announcementsFixture
 import com.upsaclay.news.domain.entity.Announcement
+import com.upsaclay.news.domain.entity.Announcement.AnnouncementState
 import com.upsaclay.news.domain.entity.AnnouncementReport
-import com.upsaclay.news.domain.entity.AnnouncementState
 import com.upsaclay.news.presentation.announcement.components.AnnouncementBottomSheet
+import com.upsaclay.news.presentation.announcement.components.ExtendedAnnouncementItem
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -76,10 +77,10 @@ fun AllAnnouncementsDestination(
         }
     }
 
-    if (uiState.announcements != null && uiState.user != null) {
+    if (uiState.user != null) {
         AllAnnouncementsScreen(
             user = uiState.user!!,
-            announcements = uiState.announcements!!,
+            announcements = uiState.announcements,
             refreshing = uiState.refreshing,
             loading = uiState.loading,
             snackbarHostState = snackbarHostState,
@@ -99,7 +100,7 @@ fun AllAnnouncementsDestination(
 @Composable
 private fun AllAnnouncementsScreen(
     user: User,
-    announcements: List<Announcement>,
+    announcements: List<Announcement>?,
     refreshing: Boolean,
     loading: Boolean,
     snackbarHostState: SnackbarHostState = SnackbarHostState(),
@@ -112,24 +113,25 @@ private fun AllAnnouncementsScreen(
     onReportAnnouncementClick: (AnnouncementReport) -> Unit,
     onDeleteAnnouncementClick: (Announcement) -> Unit
 ) {
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-    var showAnnouncementBottomSheet by remember { mutableStateOf(false) }
-    var showAnnouncementReportBottomSheet by remember { mutableStateOf(false) }
-    var showDeleteAnnouncementDialog by remember { mutableStateOf(false) }
-    var clickedAnnouncement by remember { mutableStateOf<Announcement?>(null) }
+    var activeBottomSheet by remember { mutableStateOf<AllAnnouncementScreenBottomSheet?>(null) }
+    var activeDialog by remember { mutableStateOf<AllAnnouncementDialog?>(null) }
 
-    if (showDeleteAnnouncementDialog) {
-        DefaultDialog(
-            modifier = Modifier.testTag(stringResource(id = R.string.read_screen_delete_dialog_tag)),
-            text = stringResource(id = R.string.delete_announcement_dialog_message),
-            confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
-            critical = true,
-            onConfirm = {
-                showDeleteAnnouncementDialog = false
-                clickedAnnouncement?.let(onDeleteAnnouncementClick)
-            },
-            onCancel = { showDeleteAnnouncementDialog = false }
-        )
+    when(val dialog = activeDialog) {
+        is AllAnnouncementDialog.DeleteAnnouncementDialog -> {
+            DefaultDialog(
+                modifier = Modifier.testTag(stringResource(id = R.string.read_screen_delete_dialog_tag)),
+                text = stringResource(id = R.string.delete_announcement_dialog_message),
+                confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
+                critical = true,
+                onConfirm = {
+                    activeDialog = null
+                    onDeleteAnnouncementClick(dialog.announcement)
+                },
+                onCancel = { activeDialog = null }
+            )
+        }
+
+        else -> Unit
     }
 
     if (loading) {
@@ -137,12 +139,10 @@ private fun AllAnnouncementsScreen(
     }
 
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             BackTopBar(
                 onBackClick = onBackClick,
-                title = stringResource(R.string.all_announcements),
-                scrollBehavior = scrollBehavior
+                title = stringResource(R.string.all_announcements)
             )
         },
         snackbarHost = {
@@ -151,106 +151,121 @@ private fun AllAnnouncementsScreen(
             }
         }
     ) { innerPadding ->
-        PullToRefreshComponent(
-            modifier = Modifier.padding(innerPadding),
-            onRefresh = onRefresh,
-            isRefreshing = refreshing
-        ) {
-            LazyColumn {
-                if (announcements.isEmpty()) {
-                    item {
-                        Text(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = stringResource(id = R.string.no_announcement),
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.previewText,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                } else {
-                    itemsIndexed(announcements) { index, announcement ->
-                        ExtendedAnnouncementItem(
-                            announcement = announcement,
-                            onClick = {
-                                if (announcement.state == AnnouncementState.PUBLISHED) {
-                                    onAnnouncementClick(announcement.id)
-                                } else {
-                                    clickedAnnouncement = announcement
-                                    showAnnouncementBottomSheet = true
-                                }
-                            },
-                            onOptionClick = {
-                                clickedAnnouncement = announcement
-                                showAnnouncementBottomSheet = true
-                            },
-                            onAuthorClick = { onAuthorClick(announcement.author) }
-                        )
+        announcements?.let {
+            PullToRefreshComponent(
+                modifier = Modifier.padding(innerPadding),
+                onRefresh = onRefresh,
+                refreshing = refreshing
+            ) {
+                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    if (announcements.isEmpty()) {
+                        item {
+                            EmptyText(text = stringResource(id = R.string.no_announcement))
+                        }
+                    } else {
+                        itemsIndexed(announcements) { index, announcement ->
+                            ListDivider()
 
-                        if (index != announcements.lastIndex) {
-                            ListDivider(
-                                modifier = Modifier.padding(
-                                    start = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)
-                                )
+                            ExtendedAnnouncementItem(
+                                modifier = Modifier
+                                    .noRippleClickable {
+                                        if (announcement.state == AnnouncementState.PUBLISHED) {
+                                            onAnnouncementClick(announcement.id)
+                                        } else {
+                                            activeBottomSheet =
+                                                AllAnnouncementScreenBottomSheet.AnnouncementBottomSheet(announcement)
+                                        }
+                                    }
+                                    .padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                                announcement = announcement,
+                                onOptionClick = {
+                                    activeBottomSheet =
+                                        AllAnnouncementScreenBottomSheet.AnnouncementBottomSheet(announcement)
+                                },
+                                onAuthorClick = { onAuthorClick(announcement.author) }
                             )
+
+                            if (index == announcements.lastIndex) {
+                                ListDivider()
+                            }
                         }
                     }
                 }
             }
-        }
-    }
-
-    if (showAnnouncementBottomSheet) {
-        clickedAnnouncement?.let { announcement ->
-            AnnouncementBottomSheet(
-                announcement = announcement,
-                isEditable = user.isMember && announcement.author.id == user.id,
-                onEditClick = {
-                    showAnnouncementBottomSheet = false
-                    clickedAnnouncement?.let(onEditAnnouncementClick)
-                },
-                onResendClick = {
-                    showAnnouncementBottomSheet = false
-                    onResendAnnouncementClick(announcement)
-                },
-                onReportClick = {
-                    showAnnouncementBottomSheet = false
-                    showAnnouncementReportBottomSheet = true
-                },
-                onDeleteClick = {
-                    showAnnouncementBottomSheet = false
-                    showDeleteAnnouncementDialog = true
-                },
-                onDismiss = { showAnnouncementBottomSheet = false }
-            )
-        }
-    }
-
-    if (showAnnouncementReportBottomSheet) {
-        ReportBottomSheet(
-            items = AnnouncementReport.Reason.entries,
-            onDismiss = { showAnnouncementReportBottomSheet = false },
-            onReportClick = { reason ->
-                showAnnouncementReportBottomSheet = false
-
-                clickedAnnouncement?.let { announcement ->
-                    onReportAnnouncementClick(
-                        AnnouncementReport(
-                            announcementId = announcement.id,
-                            userInfo = AnnouncementReport.UserInfo(
-                                fullName = user.fullName,
-                                email = user.email
-                            ),
-                            authorInfo = AnnouncementReport.UserInfo(
-                                fullName = announcement.author.fullName,
-                                email = announcement.author.email
-                            ),
-                            reason = reason,
-                        )
-                    )
-                }
+        } ?: run {
+            Box(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressBar(
+                    modifier = Modifier.padding(top = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+                )
             }
-        )
+        }
+
+        when(val bottomSheet = activeBottomSheet) {
+            is AllAnnouncementScreenBottomSheet.AnnouncementBottomSheet -> {
+                AnnouncementBottomSheet(
+                    announcementState = bottomSheet.announcement.state,
+                    isEditable = user.admin && bottomSheet.announcement.author.id == user.id,
+                    onEditClick = {
+                        activeBottomSheet = null
+                        onEditAnnouncementClick(bottomSheet.announcement)
+                    },
+                    onResendClick = {
+                        activeBottomSheet = null
+                        onResendAnnouncementClick(bottomSheet.announcement)
+                    },
+                    onReportClick = {
+                        activeBottomSheet =
+                            AllAnnouncementScreenBottomSheet.AnnouncementReportBottomSheet(bottomSheet.announcement)
+                    },
+                    onDeleteClick = {
+                        activeBottomSheet = null
+                        activeDialog = AllAnnouncementDialog.DeleteAnnouncementDialog(bottomSheet.announcement)
+                    },
+                    onDismiss = { activeBottomSheet = null }
+                )
+            }
+
+            is AllAnnouncementScreenBottomSheet.AnnouncementReportBottomSheet -> {
+                ReportBottomSheet(
+                    items = AnnouncementReport.Reason.entries,
+                    onReportClick = { reason ->
+                        activeBottomSheet = null
+                        onReportAnnouncementClick(
+                            AnnouncementReport(
+                                announcementId = bottomSheet.announcement.id,
+                                author = AnnouncementReport.Author(
+                                    fullName = bottomSheet.announcement.author.fullName,
+                                    email = bottomSheet.announcement.author.email
+                                ),
+                                reporter = AnnouncementReport.Reporter(
+                                    fullName = user.fullName,
+                                    email = user.email
+                                ),
+                                reason = reason
+                            )
+                        )
+                    },
+                    onDismiss = { activeBottomSheet = null }
+                )
+            }
+
+            else -> Unit
+        }
     }
+}
+
+private sealed class AllAnnouncementScreenBottomSheet {
+    data class AnnouncementBottomSheet(val announcement: Announcement): AllAnnouncementScreenBottomSheet()
+    data class AnnouncementReportBottomSheet(val announcement: Announcement): AllAnnouncementScreenBottomSheet()
+}
+
+private sealed class AllAnnouncementDialog {
+    data class DeleteAnnouncementDialog(val announcement: Announcement): AllAnnouncementDialog()
 }
 
 /*
@@ -259,7 +274,7 @@ private fun AllAnnouncementsScreen(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun AllAnnouncementsScreenPreview() {
     GedoiseTheme {

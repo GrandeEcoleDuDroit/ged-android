@@ -6,6 +6,7 @@ import com.upsaclay.common.R
 import com.upsaclay.common.domain.entity.Route
 import com.upsaclay.gedoise.presentation.profile.ProfileRoute
 import com.upsaclay.message.presentation.conversation.ConversationRoute
+import com.upsaclay.mission.presentation.MissionRoute
 import com.upsaclay.news.presentation.NewsRoute
 
 sealed class TopLevelDestination(
@@ -37,6 +38,14 @@ sealed class TopLevelDestination(
         @StringRes override val iconDescription: Int = R.string.message_icon_description
     }
 
+    data object Mission: TopLevelDestination(0, false) {
+        override val route = MissionRoute
+        @StringRes override val label: Int = R.string.mission
+        @DrawableRes override val filledIcon: Int = R.drawable.ic_outline_target
+        @DrawableRes override val outlinedIcon: Int = R.drawable.ic_outline_target
+        @StringRes override val iconDescription: Int = R.string.mission_icon_description
+    }
+
     data object Profile: TopLevelDestination(0, false) {
         override val route = ProfileRoute
         @StringRes override val label: Int = R.string.profile
@@ -49,5 +58,6 @@ sealed class TopLevelDestination(
 enum class TopLevelDestinationRoute {
     HOME,
     MESSAGE,
+    MISSION,
     PROFILE
 }

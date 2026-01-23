@@ -17,7 +17,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.upsaclay.common.domain.entity.Route
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.gedoise.presentation.navigation.TopLevelDestination
 import com.upsaclay.gedoise.presentation.navigation.TopLevelDestinationRoute
 
@@ -83,7 +83,7 @@ private fun NavDestination?.isRouteInHierarchy(route: Route) =
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun MainBottomBarPreview() {
     val navController = rememberNavController()
@@ -91,6 +91,7 @@ private fun MainBottomBarPreview() {
     val itemList = listOf(
         TopLevelDestination.Home,
         TopLevelDestination.Message(badges = 5),
+        TopLevelDestination.Mission,
         TopLevelDestination.Profile
     )
 

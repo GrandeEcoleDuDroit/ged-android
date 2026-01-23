@@ -39,10 +39,20 @@ import com.upsaclay.message.presentation.chat.navigateToChat
 import com.upsaclay.message.presentation.conversation.ConversationBaseRoute
 import com.upsaclay.message.presentation.conversation.ConversationRoute
 import com.upsaclay.message.presentation.conversation.conversationSection
-import com.upsaclay.message.presentation.conversation.create.CreateConversationRoute
-import com.upsaclay.message.presentation.conversation.create.createConversationScreen
-import com.upsaclay.message.presentation.conversation.create.navigateToCreateConversation
+import com.upsaclay.message.presentation.conversation.createconversation.CreateConversationRoute
+import com.upsaclay.message.presentation.conversation.createconversation.createConversationScreen
+import com.upsaclay.message.presentation.conversation.createconversation.navigateToCreateConversation
 import com.upsaclay.message.presentation.conversation.navigateToConversation
+import com.upsaclay.mission.presentation.createmission.createMissionScreen
+import com.upsaclay.mission.presentation.createmission.navigateToCreateMission
+import com.upsaclay.mission.presentation.editmission.editMissionScreen
+import com.upsaclay.mission.presentation.editmission.navigateToEditMission
+import com.upsaclay.mission.presentation.missionSection
+import com.upsaclay.mission.presentation.missiondetails.allusers.allUsersScreen
+import com.upsaclay.mission.presentation.missiondetails.allusers.navigateToAllUsers
+import com.upsaclay.mission.presentation.missiondetails.missionDetailsScreen
+import com.upsaclay.mission.presentation.missiondetails.navigateToMissionDetails
+import com.upsaclay.mission.presentation.navigateToMission
 import com.upsaclay.news.presentation.NewsRoute
 import com.upsaclay.news.presentation.announcement.allannouncements.allAnnouncementsScreen
 import com.upsaclay.news.presentation.announcement.allannouncements.navigateToAllAnnouncements
@@ -85,6 +95,8 @@ fun GedNavHost(
 
             TopLevelDestinationRoute.MESSAGE -> navigateToConversation(navOptions = navOptions)
 
+            TopLevelDestinationRoute.MISSION -> navigateToMission(navOptions = navOptions)
+
             TopLevelDestinationRoute.PROFILE -> navigateToProfile(navOptions = navOptions)
         }
     }
@@ -98,7 +110,7 @@ fun GedNavHost(
     }
 
     LaunchedEffect(Unit) {
-        navigationViewModel.routesToNavigate.collect { routes ->
+        navigationViewModel.routeToNavigate.collect { routes ->
             routes.forEach {
                 when (it) {
                     is ConversationRoute -> navController.navigateToConversation()
@@ -152,7 +164,7 @@ fun GedNavHost(
 
             readAnnouncementScreen(
                 onBackClick = navController::popBackStack,
-                onEditClick = navController::navigateToEditAnnouncement,
+                onEditAnnouncementClick = navController::navigateToEditAnnouncement,
                 onAuthorClick = navController::navigateToUser
             )
 
@@ -221,5 +233,33 @@ fun GedNavHost(
         }
 
         userScreen(onBackClick = navController::popBackStack)
+
+        missionSection(
+            onMissionClick = navController::navigateToMissionDetails,
+            onCreateMissionClick = navController::navigateToCreateMission,
+            onEditMissionClick = navController::navigateToEditMission,
+            bottomBar = bottomBar
+        ) {
+            createMissionScreen(
+                onBackClick = navController::popBackStack
+            )
+
+            missionDetailsScreen(
+                onBackClick = navController::popBackStack,
+                onManagerClick = navController::navigateToUser,
+                onParticipantClick = navController::navigateToUser,
+                onEditMissionClick = navController::navigateToEditMission,
+                onSeeAllUsersClick = navController::navigateToAllUsers
+            )
+
+            editMissionScreen(
+                onBackClick = navController::popBackStack
+            )
+
+            allUsersScreen(
+                onBackClick = navController::popBackStack,
+                onUserClick = navController::navigateToUser
+            )
+        }
     }
 }

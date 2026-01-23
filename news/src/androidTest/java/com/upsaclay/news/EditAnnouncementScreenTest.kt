@@ -35,7 +35,11 @@ class EditAnnouncementScreenTest {
     @Test
     fun save_button_should_be_disabled_when_updateEnabled_is_false() {
         // Given
-        every { editAnnouncementViewModel.uiState } returns MutableStateFlow(uiState.copy(updateEnabled = false))
+        every { editAnnouncementViewModel.uiState } returns MutableStateFlow(
+            uiState.copy(
+                updateEnabled = false
+            )
+        )
 
         // When
         rule.setContent {

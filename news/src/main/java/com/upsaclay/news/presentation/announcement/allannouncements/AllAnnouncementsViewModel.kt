@@ -2,19 +2,18 @@ package com.upsaclay.news.presentation.announcement.allannouncements
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.upsaclay.common.domain.ConnectivityObserver
-import com.upsaclay.common.domain.entity.NoInternetConnectionException
-import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.UserRepository
-import com.upsaclay.common.utils.mapNetworkErrorMessage
+import com.upsaclay.common.extension.executeUiBlockingRequest
+import com.upsaclay.common.presentation.SingleUiEvent
+import com.upsaclay.common.utils.mapExceptionErrorMessage
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.domain.entity.AnnouncementReport
 import com.upsaclay.news.domain.repository.AnnouncementRepository
 import com.upsaclay.news.domain.usecase.DeleteAnnouncementUseCase
-import com.upsaclay.news.domain.usecase.RefreshAnnouncementUseCase
-import com.upsaclay.news.domain.usecase.ResendAnnouncementUseCase
+import com.upsaclay.news.domain.usecase.RecreateAnnouncementUseCase
+import com.upsaclay.news.domain.usecase.RefreshAnnouncementsUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -25,10 +24,9 @@ import kotlinx.coroutines.launch
 class AllAnnouncementsViewModel(
     private val userRepository: UserRepository,
     private val announcementRepository: AnnouncementRepository,
-    private val refreshAnnouncementUseCase: RefreshAnnouncementUseCase,
-    private val resendAnnouncementUseCase: ResendAnnouncementUseCase,
-    private val deleteAnnouncementUseCase: DeleteAnnouncementUseCase,
-    private val connectivityObserver: ConnectivityObserver
+    private val refreshAnnouncementsUseCase: RefreshAnnouncementsUseCase,
+    private val recreateAnnouncementUseCase: RecreateAnnouncementUseCase,
+    private val deleteAnnouncementUseCase: DeleteAnnouncementUseCase
 ): ViewModel() {
     private val _uiState = MutableStateFlow(AllAnnouncementsUiState())
     val uiState: StateFlow<AllAnnouncementsUiState> = _uiState
@@ -41,60 +39,55 @@ class AllAnnouncementsViewModel(
     }
 
     fun refreshAnnouncements() {
-        _uiState.update {
-            it.copy(refreshing = true)
-        }
-        viewModelScope.launch {
-            try {
-                refreshAnnouncementUseCase()
-            } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapErrorMessage(e)))
-            } finally {
+        viewModelScope.executeUiBlockingRequest(
+            block = { refreshAnnouncementsUseCase.execute() },
+            onLoading = {
+                _uiState.update {
+                    it.copy(refreshing = true)
+                }
+            },
+            onError = {
+                _event.emit(SingleUiEvent.Error( R.string.announcements_refresh_error))
+            },
+            onFinished = {
                 _uiState.update { it.copy(refreshing = false) }
             }
-        }
+        )
     }
 
     fun resendAnnouncement(announcement: Announcement) {
-        resendAnnouncementUseCase(announcement)
+        viewModelScope.launch {
+            recreateAnnouncementUseCase.execute(announcement)
+        }
     }
 
     fun deleteAnnouncement(announcement: Announcement) {
-        viewModelScope.launch {
-            try {
-                if (!connectivityObserver.isConnected) {
-                    throw NoInternetConnectionException()
-                }
-                _uiState.update {
-                    it.copy(loading = true)
-                }
-                deleteAnnouncementUseCase(announcement)
-                _event.emit(SingleUiEvent.Success(R.string.announcement_deleted))
-            } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
-            } finally {
-                _uiState.update {
-                    it.copy(loading = false)
-                }
-            }
+        executeRequest {
+            deleteAnnouncementUseCase.execute(announcement)
+            _event.emit(SingleUiEvent.Success(R.string.announcement_deleted))
         }
     }
 
     fun reportAnnouncement(report: AnnouncementReport) {
-        viewModelScope.launch {
-            try {
-                if (!connectivityObserver.isConnected) {
-                    throw NoInternetConnectionException()
-                }
+        executeRequest {
+            announcementRepository.reportAnnouncement(report)
+            _event.emit(SingleUiEvent.Success(R.string.announcement_reported))
+        }
+    }
+
+    private fun executeRequest(block: suspend () -> Unit) {
+        viewModelScope.executeUiBlockingRequest(
+            block = block,
+            onLoading = {
                 _uiState.update { it.copy(loading = true) }
-                announcementRepository.reportAnnouncement(report)
-                _event.emit(SingleUiEvent.Success(R.string.announcement_reported))
-            } catch (e: Exception) {
-                _event.emit(SingleUiEvent.Error(mapNetworkErrorMessage(e)))
-            } finally {
+            },
+            onError = {
+                _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(it)))
+            },
+            onFinished = {
                 _uiState.update { it.copy(loading = false) }
             }
-        }
+        )
     }
 
     private fun listenAnnouncements() {
@@ -114,13 +107,6 @@ class AllAnnouncementsViewModel(
                     it.copy(user = user)
                 }
             }
-        }
-    }
-
-    private fun mapErrorMessage(e: Exception): Int {
-        return when (e) {
-            is NoInternetConnectionException -> com.upsaclay.common.R.string.no_internet_connection
-            else -> R.string.announcement_refresh_error
         }
     }
 

@@ -1,22 +1,22 @@
 package com.upsaclay.gedoise.viewmodel
 
-import MainViewModel
-import com.upsaclay.authentication.domain.usecase.ListenAuthenticationStateUseCase
-import com.upsaclay.common.domain.repository.UserRepository
-import com.upsaclay.common.domain.userFixture
-import com.upsaclay.common.domain.usersFixture
-import com.upsaclay.gedoise.domain.usecase.ClearDataUseCase
-import com.upsaclay.gedoise.domain.usecase.ListenDataUseCase
-import com.upsaclay.gedoise.domain.usecase.SynchronizeDataUseCase
+import com.upsaclay.app.domain.usecase.ClearDataUseCase
+import com.upsaclay.app.domain.usecase.FcmTokenUseCase
+import com.upsaclay.app.domain.usecase.FetchDataUseCase
+import com.upsaclay.app.domain.usecase.ListenDataUseCase
+import com.upsaclay.authentication.domain.entity.AuthenticationState
+import com.upsaclay.authentication.domain.repository.AuthenticationRepository
+import com.upsaclay.common.domain.ConnectivityObserver
+import com.upsaclay.gedoise.presentation.MainViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -25,63 +25,64 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MainViewModelTest {
-    private val userRepository: UserRepository = mockk()
-    private val listenDataUseCase: ListenDataUseCase = mockk()
+    private val authenticationRepository: AuthenticationRepository = mockk()
     private val clearDataUseCase: ClearDataUseCase = mockk()
-    private val synchronizeDataUseCase: SynchronizeDataUseCase = mockk()
-    private val listenAuthenticationStateUseCase: ListenAuthenticationStateUseCase = mockk()
+    private val fetchDataUseCase: FetchDataUseCase = mockk()
+    private val fcmTokenUseCase: FcmTokenUseCase = mockk()
+    private val listenDataUseCase: ListenDataUseCase = mockk()
+    private val connectivityObserver: ConnectivityObserver = mockk()
 
-    private lateinit var mainViewModel: MainViewModel
+    private lateinit var viewModel: MainViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
+    private val userId = "userId1234"
 
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
 
-        every { userRepository.user } returns MutableStateFlow(userFixture)
-        every { listenAuthenticationStateUseCase.authenticated } returns flowOf(true)
-        coEvery { userRepository.getUsers() } returns usersFixture
-        coEvery { userRepository.getUser(any()) } returns userFixture
-        coEvery { userRepository.storeUser(any()) } returns Unit
-        coEvery { userRepository.deleteLocalUser() } returns Unit
-        coEvery { listenDataUseCase.start() } returns Unit
+        every { authenticationRepository.authenticationState } returns flowOf(AuthenticationState.Authenticated(userId))
+        every { connectivityObserver.connected } returns flowOf(true)
+        coEvery { authenticationRepository.refreshTokenIfNecessary() } returns Unit
+        coEvery { clearDataUseCase.execute() } returns Unit
+        coEvery { listenDataUseCase.start(any(), any()) } returns Unit
         coEvery { listenDataUseCase.stop() } returns Unit
-        coEvery { clearDataUseCase() } returns Unit
-        coEvery { synchronizeDataUseCase() } returns Unit
+        coEvery { fetchDataUseCase.execute(any()) } returns Unit
 
-        mainViewModel = MainViewModel(
-            listenAuthenticationStateUseCase = listenAuthenticationStateUseCase,
-            listenDataUseCase = listenDataUseCase,
+        viewModel = MainViewModel(
+            authenticationRepository = authenticationRepository,
             clearDataUseCase = clearDataUseCase,
-            synchronizeDataUseCase = synchronizeDataUseCase,
+            fetchDataUseCase = fetchDataUseCase,
+            fcmTokenUseCase = fcmTokenUseCase,
+            listenDataUseCase = listenDataUseCase,
+            connectivityObserver = connectivityObserver
         )
     }
 
     @Test
-    fun data_should_be_listened_when_user_is_authenticated() {
+    fun data_should_be_listened_when_user_is_authenticated() = runTest {
         // When
-        mainViewModel.updateDataOnAuthChange()
+        viewModel.updateAppData()
 
         // Then
-        coVerify { listenDataUseCase.start() }
+        coVerify { listenDataUseCase.start(any(), any()) }
     }
 
     @Test
-    fun data_should_be_synchronized_when_user_is_authenticated() {
+    fun data_should_be_fetched_when_user_is_authenticated() {
         // When
-        mainViewModel.updateDataOnAuthChange()
+        viewModel.updateAppData()
 
         // Then
-        coVerify { synchronizeDataUseCase() }
+        coVerify { fetchDataUseCase.execute(userId) }
     }
 
     @Test
     fun data_should_stop_be_listened_when_user_is_unauthenticated() {
         // Given
-        every { listenAuthenticationStateUseCase.authenticated } returns flowOf(false)
+        every { authenticationRepository.authenticationState } returns flowOf(AuthenticationState.Unauthenticated)
 
         // When
-        mainViewModel.updateDataOnAuthChange()
+        viewModel.updateAppData()
 
         // Then
         coVerify { listenDataUseCase.stop() }
@@ -90,13 +91,14 @@ class MainViewModelTest {
     @Test
     fun data_should_be_deleted_when_user_is_unauthenticated() = runTest {
         // Given
-        every { listenAuthenticationStateUseCase.authenticated } returns flowOf(false)
+        every { authenticationRepository.authenticationState } returns flowOf(AuthenticationState.Unauthenticated)
 
         // When
-        mainViewModel.updateDataOnAuthChange()
+        viewModel.updateAppData()
+        advanceTimeBy(2000)
         advanceUntilIdle()
 
         // Then
-        coVerify { clearDataUseCase() }
+        coVerify { clearDataUseCase.execute() }
     }
 }

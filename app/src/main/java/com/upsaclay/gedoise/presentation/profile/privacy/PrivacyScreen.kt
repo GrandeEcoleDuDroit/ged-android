@@ -11,7 +11,7 @@ import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.presentation.components.BackTopBar
 import com.upsaclay.common.presentation.components.TextItem
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.gedoise.R
 
 @Composable
@@ -56,7 +56,7 @@ private fun PrivacyScreen(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun PrivacyScreenPreview() {
     GedoiseTheme {

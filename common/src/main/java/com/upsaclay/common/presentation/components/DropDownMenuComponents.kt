@@ -20,14 +20,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.outlinedTextFieldColor
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SingleSelectionDropDownMenu(
+fun SingleSelectionDropDown(
     modifier: Modifier = Modifier,
     items: List<String>,
     selectedItem: String,
@@ -75,11 +76,12 @@ fun MultiSelectionDropDownMenu(
     selectedItems: List<String>,
     value: String,
     label: String,
-    onItemClicked: (String) -> Unit,
+    onItemSelected: (String) -> Unit,
     expanded: Boolean,
     isEnable: Boolean = true,
     singleLine: Boolean = false,
     leadingIcon: @Composable (() -> Unit)? = null,
+    supportingText: Int? = null,
     onExpandedChange: (Boolean) -> Unit,
     onDismissRequest: () -> Unit
 ) {
@@ -98,6 +100,11 @@ fun MultiSelectionDropDownMenu(
             enabled = isEnable,
             singleLine = singleLine,
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            supportingText = if (supportingText != null) {
+                { Text(text = stringResource(supportingText)) }
+            } else {
+                null
+            },
             colors = MaterialTheme.colorScheme.outlinedTextFieldColor
         )
 
@@ -117,10 +124,11 @@ fun MultiSelectionDropDownMenu(
                                 checked = selectedItems.contains(item),
                                 onCheckedChange = null
                             )
+
                             Text(text = item)
                         }
                     },
-                    onClick = { onItemClicked(item) }
+                    onClick = { onItemSelected(item) }
                 )
             }
         }
@@ -133,9 +141,9 @@ fun MultiSelectionDropDownMenu(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
-private fun SimpleDropDownMenuPreview() {
+private fun SimpleDropDownPreview() {
     val items = listOf("Item 1", "Item 2", "Item 3")
     var selectedItem by remember {
         mutableStateOf(items[0])
@@ -146,7 +154,7 @@ private fun SimpleDropDownMenuPreview() {
 
     GedoiseTheme {
         Surface {
-            SingleSelectionDropDownMenu(
+            SingleSelectionDropDown(
                 modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding)),
                 items = items,
                 selectedItem = selectedItem,
@@ -165,7 +173,7 @@ private fun SimpleDropDownMenuPreview() {
     }
 }
 
-@Phones
+@PhonePreviews
 @Composable
 private fun MultiDropDownMenuPreview() {
     val items = listOf("Item 1", "Item 2", "Item 3")
@@ -184,7 +192,7 @@ private fun MultiDropDownMenuPreview() {
                 selectedItems = selectedItems,
                 value = selectedItems.joinToString(" - "),
                 label = "Select Items",
-                onItemClicked = { item ->
+                onItemSelected = { item ->
                     selectedItems = if (selectedItems.contains(item)) {
                         selectedItems - item
                     } else {

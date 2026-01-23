@@ -1,8 +1,9 @@
 package com.upsaclay.news.domain
 
 import com.upsaclay.common.domain.userFixture
+import com.upsaclay.common.domain.usersFixture
 import com.upsaclay.news.domain.entity.Announcement
-import com.upsaclay.news.domain.entity.AnnouncementState
+import com.upsaclay.news.domain.entity.Announcement.AnnouncementState
 import java.time.LocalDateTime
 
 val longAnnouncementFixture = Announcement(
@@ -29,18 +30,79 @@ val longAnnouncementFixture = Announcement(
 
 val announcementFixture = Announcement(
     id = "1",
-    title = "New single of Seal",
+    title = "Rappel : Visite de cabinet le 23/03.",
     date = LocalDateTime.of(2024, 7, 20, 10, 0),
-    content = "This is a man's world. But it wouldn't be nothing, nothing without a woman or a girl.\n" +
-            "Patrick Dupont",
+    content = "Nous vous informons que la visite de votre " +
+            "cabinet médical est programmée pour le 23 mars. " +
+            "Cette visite a pour but de s'assurer que toutes les normes de sécurité " +
+            "et de conformité sont respectées, ainsi que de vérifier l'état général " +
+            "des installations et des équipements médicaux." +
+            "Nous vous recommandons de préparer tous les documents nécessaires et " +
+            "de veiller à ce que votre personnel soit disponible pour répondre " +
+            "à d'éventuelles questions ou fournir des informations supplémentaires. " +
+            "Une préparation adéquate permettra de garantir que la visite se déroule " +
+            "sans heurts et de manière efficace. N'hésitez pas à nous contacter si " +
+            "vous avez des questions ou si vous avez besoin de plus amples informations " +
+            "avant la date prévue",
     author = userFixture,
     state = AnnouncementState.PUBLISHED
 )
 
 val announcementsFixture = listOf(
-    announcementFixture,
-    announcementFixture,
-    longAnnouncementFixture,
-    longAnnouncementFixture,
-    longAnnouncementFixture
+    Announcement(
+        id = "1",
+        title = "Soirée pyjama !",
+        content = "Ceci est une annonce de soirée pyjama.",
+        date = LocalDateTime.now(),
+        author = usersFixture[0],
+        state = AnnouncementState.PUBLISHED
+    ),
+    Announcement(
+        id = "2",
+        title = "Rappel : Rendu de dossier le 23/03",
+        content = "Ceci est une annonce de rendu de dossier.",
+        date = LocalDateTime.now().minusDays(1),
+        author = usersFixture[1],
+        state = AnnouncementState.PUBLISHED
+    ),
+    Announcement(
+        id = "3",
+        title = null,
+        content = "Bonjour à tous, voici la liste des étudiants qui seront absent durant la journée portes ouvertes.",
+        date = LocalDateTime.now().minusDays(3),
+        author = usersFixture[2],
+        state = AnnouncementState.PUBLISHED
+    ),
+    Announcement(
+        id = "4",
+        title = "Attention à la neige ❄️",
+        content = "Ceci est une annonce de rendu de dossier.",
+        date = LocalDateTime.now().minusYears(1),
+        author = usersFixture[5],
+        state = AnnouncementState.PUBLISHED
+    ),
+    Announcement(
+        id = "5",
+        title = "Aide au devoir",
+        content = "Ceci est une annonce pour l'aide au devoir.",
+        date = LocalDateTime.now().minusMonths(1),
+        author = usersFixture[4],
+        state = AnnouncementState.PUBLISHED
+    ),
+    Announcement(
+        id = "6",
+        title = "Rendez-vous accueil",
+        content = "Ceci est une annonce pour un rendez-vous d'accueil.",
+        date = LocalDateTime.now().minusWeeks(1),
+        author = usersFixture[3],
+        state = AnnouncementState.PUBLISHED
+    ),
+    Announcement(
+        id = "7",
+        title = null,
+        content = "Cadeau 🎁",
+        date = LocalDateTime.now().minusYears(1),
+        author = usersFixture[6],
+        state = AnnouncementState.PUBLISHED
+    )
 )

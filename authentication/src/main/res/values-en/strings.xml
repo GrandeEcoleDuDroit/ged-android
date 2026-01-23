@@ -17,12 +17,14 @@
     <string name="select_level_school">Select your school level</string>
     <string name="agree_terms_privacy_beginning_text">I read and agree to the</string>
     <string name="terms_and_privacy">Terms of Use and Privacy Policy.</string>
-    <string name="legal_notice_error">Please accept the Terms of Use and Privacy Policy to continue.</string>
 
+    <string name="legal_notice_error">Please accept the Terms of Use and Privacy Policy to continue.</string>
     <string name="invalid_credentials_error">Incorrect email or password.</string>
-    <string name="user_disabled_error">Your account has been disabled. Please contact support.</string>
+    <string name="user_disabled_error">Your account has been disabled.</string>
     <string name="incorrect_email_format_error">Please enter a valid email address.</string>
     <string name="password_length_error">Password must be at least 8 characters long.</string>
-    <string name="email_already_associated">This email address is already in use.</string>
-    <string name="user_not_white_listed">Registration is currently limited to authorized users.</string>
+    <string name="email_already_in_use_error">This email address is already in use.</string>
+    <string name="user_not_white_listed_error">Registration is currently limited to authorized users.</string>
+    <string name="auth_user_not_found_error">No user found.</string>
+    <string name="registration_failed">The registration could not be completed.</string>
 </resources>

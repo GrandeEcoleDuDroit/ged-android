@@ -1,8 +1,8 @@
 package com.upsaclay.news.presentation.announcement.components
 
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Send
 import androidx.compose.material.icons.outlined.Delete
@@ -16,7 +16,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,13 +23,12 @@ import com.upsaclay.common.presentation.components.TextItem
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.announcementFixture
-import com.upsaclay.news.domain.entity.Announcement
-import com.upsaclay.news.domain.entity.AnnouncementState
+import com.upsaclay.news.domain.entity.Announcement.AnnouncementState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AnnouncementBottomSheet(
-    announcement: Announcement,
+    announcementState: AnnouncementState,
     isEditable: Boolean,
     onEditClick: () -> Unit,
     onResendClick: () -> Unit,
@@ -42,79 +40,35 @@ fun AnnouncementBottomSheet(
         modifier = Modifier.testTag(stringResource(id = R.string.announcement_bottom_sheet_tag)),
         onDismissRequest = onDismiss
     ) {
-        when (announcement.state) {
-            AnnouncementState.ERROR -> {
-                ErrorAnnouncementBottomSheet(
-                    onResendClick = onResendClick,
-                    onDeleteClick = onDeleteClick,
-                    onDismiss = onDismiss
-                )
-            }
+        Column(modifier = Modifier.navigationBarsPadding()) {
+            when (announcementState) {
+                AnnouncementState.PUBLISHED -> {
+                    if (isEditable) {
+                        EditableAnnouncementBottomSheetContent(
+                            onEditClick = onEditClick,
+                            onDeleteClick = onDeleteClick
+                        )
+                    } else {
+                        NonEditableAnnouncementBottomSheetContent(
+                            onReportClick = onReportClick
+                        )
+                    }
+                }
 
-            else -> {
-                if (isEditable) {
-                    EditableAnnouncementBottomSheetContent(
-                        onEditClick = onEditClick,
+                AnnouncementState.ERROR -> {
+                    ErrorAnnouncementBottomSheetContent(
+                        onResendClick = onResendClick,
                         onDeleteClick = onDeleteClick
                     )
-                } else {
-                    NonEditableAnnouncementBottomSheetContent(
-                        onReportClick = onReportClick
-                    )
                 }
+
+                AnnouncementState.PUBLISHING -> PublishingAnnouncementBottomSheetContent(
+                    onDeleteClick = onDeleteClick
+                )
+
+                AnnouncementState.DRAFT -> Unit
             }
         }
-
-        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.large_padding)))
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun ErrorAnnouncementBottomSheet(
-    onResendClick: () -> Unit,
-    onDeleteClick: () -> Unit,
-    onDismiss: () -> Unit
-) {
-    ModalBottomSheet(
-        modifier = Modifier.testTag(stringResource(id = R.string.announcement_bottom_sheet_tag)),
-        onDismissRequest = onDismiss
-    ) {
-        TextItem(
-            modifier = Modifier.fillMaxWidth(),
-            text = {
-                Text(text = stringResource(id = com.upsaclay.common.R.string.resend))
-            },
-            icon = {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Outlined.Send,
-                    contentDescription = null
-                )
-            },
-            onClick = onResendClick
-        )
-
-        TextItem(
-            modifier = Modifier
-                .fillMaxWidth()
-                .testTag(stringResource(id = R.string.announcement_bottom_sheet_delete_field_tag)),
-            text = {
-                Text(
-                    text = stringResource(id = com.upsaclay.common.R.string.delete),
-                    color = MaterialTheme.colorScheme.error
-                )
-            },
-            icon = {
-                Icon(
-                    imageVector = Icons.Outlined.Delete,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.error
-                )
-            },
-            onClick = onDeleteClick
-        )
-
-        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.large_padding)))
     }
 }
 
@@ -181,6 +135,69 @@ private fun NonEditableAnnouncementBottomSheetContent(
     )
 }
 
+@Composable
+private fun PublishingAnnouncementBottomSheetContent(onDeleteClick: () -> Unit) {
+    TextItem(
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag(stringResource(id = R.string.announcement_bottom_sheet_delete_field_tag)),
+        text = {
+            Text(
+                text = stringResource(id = com.upsaclay.common.R.string.delete),
+                color = MaterialTheme.colorScheme.error
+            )
+        },
+        icon = {
+            Icon(
+                imageVector = Icons.Outlined.Delete,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.error
+            )
+        },
+        onClick = onDeleteClick
+    )
+}
+
+@Composable
+private fun ErrorAnnouncementBottomSheetContent(
+    onResendClick: () -> Unit,
+    onDeleteClick: () -> Unit
+) {
+    TextItem(
+        modifier = Modifier.fillMaxWidth(),
+        text = {
+            Text(text = stringResource(id = com.upsaclay.common.R.string.retry))
+        },
+        icon = {
+            Icon(
+                imageVector = Icons.AutoMirrored.Outlined.Send,
+                contentDescription = null
+            )
+        },
+        onClick = onResendClick
+    )
+
+    TextItem(
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag(stringResource(id = R.string.announcement_bottom_sheet_delete_field_tag)),
+        text = {
+            Text(
+                text = stringResource(id = com.upsaclay.common.R.string.delete),
+                color = MaterialTheme.colorScheme.error
+            )
+        },
+        icon = {
+            Icon(
+                imageVector = Icons.Outlined.Delete,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.error
+            )
+        },
+        onClick = onDeleteClick
+    )
+}
+
 /*
  =====================================================================
                                 Preview
@@ -193,7 +210,7 @@ fun EditableAnnouncementBottomSheetPreview() {
     GedoiseTheme {
         Surface {
             AnnouncementBottomSheet(
-                announcement = announcementFixture,
+                announcementState = announcementFixture.state,
                 isEditable = true,
                 onEditClick = {},
                 onResendClick = {},
@@ -211,7 +228,7 @@ fun NonEditableAnnouncementBottomSheetPreview() {
     GedoiseTheme {
         Surface {
             AnnouncementBottomSheet(
-                announcement = announcementFixture,
+                announcementState = announcementFixture.state,
                 isEditable = false,
                 onEditClick = {},
                 onResendClick = {},
@@ -225,13 +242,12 @@ fun NonEditableAnnouncementBottomSheetPreview() {
 
 @Preview(heightDp = 400)
 @Composable
-fun ErrorAnnouncementBottomSheetPreview() {
+fun ErrorAnnouncementBottomSheetContentPreview() {
     GedoiseTheme {
         Surface {
-            ErrorAnnouncementBottomSheet(
+            ErrorAnnouncementBottomSheetContent(
                 onResendClick = {},
-                onDeleteClick = {},
-                onDismiss = {}
+                onDeleteClick = {}
             )
         }
     }

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,7 +27,7 @@ import com.upsaclay.authentication.presentation.components.OutlinePasswordTextFi
 import com.upsaclay.common.presentation.components.SimpleOutlinedTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.checkBoxColor
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 
 @Composable
 fun ThirdRegistrationForm(
@@ -61,7 +62,7 @@ fun ThirdRegistrationForm(
                 enabled = !loading,
                 onValueChange = onEmailChange,
                 label = stringResource(com.upsaclay.common.R.string.email),
-                errorMessage = emailError
+                errorMessage = emailError?.let { stringResource(it) }
             )
 
             OutlinePasswordTextField(
@@ -128,21 +129,23 @@ private fun LegalNoticeText() {
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun PreviewThirdRegistrationForm() {
     GedoiseTheme {
-        ThirdRegistrationForm(
-            email = "",
-            password = "",
-            loading = false,
-            legalNoticeChecked = false,
-            emailError = null,
-            passwordError = null,
-            errorMessage = null,
-            onEmailChange = {},
-            onPasswordChange = {},
-            onLegalNoticeCheckedChange = {}
-        )
+        Surface {
+            ThirdRegistrationForm(
+                email = "",
+                password = "",
+                loading = false,
+                legalNoticeChecked = false,
+                emailError = null,
+                passwordError = null,
+                errorMessage = null,
+                onEmailChange = {},
+                onPasswordChange = {},
+                onLegalNoticeCheckedChange = {}
+            )
+        }
     }
 }

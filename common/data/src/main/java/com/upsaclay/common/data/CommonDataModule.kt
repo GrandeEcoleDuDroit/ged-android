@@ -1,6 +1,7 @@
 package com.upsaclay.common.data
 
 import com.upsaclay.common.data.local.BlockedUserLocalDataSource
+import com.upsaclay.common.data.local.ImageLocalDataSource
 import com.upsaclay.common.data.local.UserLocalDataSource
 import com.upsaclay.common.data.local.datastore.BlockedUserDataStore
 import com.upsaclay.common.data.local.datastore.UserDataStore
@@ -8,29 +9,23 @@ import com.upsaclay.common.data.remote.BlockedUserRemoteDataSource
 import com.upsaclay.common.data.remote.ImageRemoteDataSource
 import com.upsaclay.common.data.remote.UserRemoteDataSource
 import com.upsaclay.common.data.remote.api.BlockedUserApi
-import com.upsaclay.common.data.remote.api.BlockedUserApiImpl
-import com.upsaclay.common.data.remote.api.BlockedUserFirestoreApi
 import com.upsaclay.common.data.remote.api.FcmApi
 import com.upsaclay.common.data.remote.api.ImageApi
 import com.upsaclay.common.data.remote.api.ImageApiImpl
+import com.upsaclay.common.data.remote.api.NotificationApi
 import com.upsaclay.common.data.remote.api.NotificationApiImpl
-import com.upsaclay.common.data.remote.api.UserApi
-import com.upsaclay.common.data.remote.api.UserApiImpl
-import com.upsaclay.common.data.remote.api.UserFirestoreApi
-import com.upsaclay.common.data.remote.api.UserServerApi
 import com.upsaclay.common.data.remote.api.WhiteListApi
+import com.upsaclay.common.data.remote.api.user.UserApi
+import com.upsaclay.common.data.remote.api.user.UserApiImpl
+import com.upsaclay.common.data.remote.api.user.UserFirestoreApi
+import com.upsaclay.common.data.remote.api.user.UserServerApi
 import com.upsaclay.common.data.repository.BlockedUserRepositoryImpl
-import com.upsaclay.common.data.repository.DrawableRepositoryImpl
-import com.upsaclay.common.data.repository.FcmTokenRepositoryImpl
 import com.upsaclay.common.data.repository.FileRepositoryImpl
 import com.upsaclay.common.data.repository.ImageRepositoryImpl
 import com.upsaclay.common.data.repository.UserRepositoryImpl
 import com.upsaclay.common.data.repository.WhiteListRepositoryImpl
-import com.upsaclay.common.domain.NotificationApi
-import com.upsaclay.common.domain.e
+import com.upsaclay.common.data.utils.e
 import com.upsaclay.common.domain.repository.BlockedUserRepository
-import com.upsaclay.common.domain.repository.DrawableRepository
-import com.upsaclay.common.domain.repository.FcmTokenRepository
 import com.upsaclay.common.domain.repository.FileRepository
 import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.common.domain.repository.UserRepository
@@ -67,7 +62,7 @@ val commonDataModule = module {
 
     single<OkHttpClient>(OKHTTP_CLIENT_QUALIFIER) {
         OkHttpClient.Builder()
-            .addInterceptor(get<Interceptor>())
+            .addInterceptor(get<AuthInterceptor>())
             .build()
     }
 
@@ -77,11 +72,6 @@ val commonDataModule = module {
             .client(get(OKHTTP_CLIENT_QUALIFIER))
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-    }
-
-    single {
-        get<Retrofit>(GED_SERVER_QUALIFIER)
-            .create(ImageApiImpl.RetrofitImageApi::class.java)
     }
 
     single {
@@ -99,13 +89,19 @@ val commonDataModule = module {
             .create(WhiteListApi::class.java)
     }
 
+    single {
+        get<Retrofit>(GED_SERVER_QUALIFIER)
+            .create(BlockedUserApi::class.java)
+    }
+
     singleOf(::NotificationApiImpl) { bind<NotificationApi>() }
+
     singleOf(::ImageApiImpl) { bind<ImageApi>() }
     singleOf(::ImageRemoteDataSource)
-
-    singleOf(::DrawableRepositoryImpl) { bind<DrawableRepository>() }
-    singleOf(::FileRepositoryImpl) { bind<FileRepository>() }
+    singleOf(::ImageLocalDataSource)
     singleOf(::ImageRepositoryImpl) { bind<ImageRepository>() }
+
+    singleOf(::FileRepositoryImpl) { bind<FileRepository>() }
 
     singleOf(::UserFirestoreApi)
     singleOf(::UserApiImpl) { bind<UserApi>() }
@@ -120,14 +116,16 @@ val commonDataModule = module {
         )
     }
 
-    singleOf(::BlockedUserFirestoreApi)
-    singleOf(::BlockedUserApiImpl) { bind<BlockedUserApi>() }
     singleOf(::BlockedUserRemoteDataSource)
     singleOf(::BlockedUserDataStore)
     singleOf(::BlockedUserLocalDataSource)
-    singleOf(::BlockedUserRepositoryImpl) { bind<BlockedUserRepository>() }
-
+    single<BlockedUserRepository> {
+        BlockedUserRepositoryImpl(
+            blockedUserLocalDataSource = get(),
+            blockedUserRemoteDataSource = get(),
+            scope = get(BACKGROUND_SCOPE)
+        )
+    }
 
     singleOf(::WhiteListRepositoryImpl) { bind<WhiteListRepository>() }
-    singleOf(::FcmTokenRepositoryImpl) { bind<FcmTokenRepository>() }
 }

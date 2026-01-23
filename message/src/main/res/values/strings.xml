@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="ic_message_add_description">Nouvelle conversation</string>
-    <string name="ic_group_add_description">Nouveau groupe</string>
-    <string name="ic_fab_button_add_description">Ouvrir le pannel des boutons flottants</string>
+    <string name="message_add_icon_description">Nouvelle conversation</string>
+    <string name="group_add_icon_description">Nouveau groupe</string>
+    <string name="fab_button_panel_icon_description">Ouvrir le pannel des boutons flottants</string>
     <string name="new_conversation">Nouvelle conversation</string>
     <string name="new_group">Nouveau groupe</string>
     <string name="start_conversation">Démarrer une conversation avec vos amis.</string>
@@ -15,12 +15,15 @@
     <string name="tap_to_chat">Appuyer pour discuter</string>
     <string name="message_seen">Vu</string>
     <string name="sending">Envoi...</string>
-    <string name="new_message">Nouveau messages</string>
+    <string name="resend">Renvoyer</string>
+    <string name="new_message">Nouveau message</string>
     <string name="error_fetch_messages">Une erreur est survenue durant la récupération des messages</string>
     <string name="error_fetch_conversations">Une erreur est survenue durant la récupération des conversations</string>
     <string name="no_conversation">Aucune conversation</string>
     <string name="message_reported">Message signalé</string>
     <string name="chat_blocked_user_indicator_text">Vous ne pouvez pas envoyer de messages à cet utilisateur à moins que vous ne le débloquiez.</string>
+
+    <string name="message_failed_to_send_error">Échec de l\’envoi du message.</string>
 
     <string name="conversation_screen_conversation_item_tag" translatable="false">Conversation Screen Conversation Item Tag</string>
     <string name="conversation_screen_empty_conversation_item_tag" translatable="false">Conversation Screen Empty Conversation Item Tag</string>
@@ -36,4 +39,5 @@
     <string name="chat_screen_message_input_tag" translatable="false">Chat Screen Message Input Tag</string>
     <string name="chat_screen_send_button_tag" translatable="false">Chat Screen Send Button Tag</string>
     <string name="chat_screen_blocked_user_indicator_tag" translatable="false">Mesage blocked user indicator test tag</string>
+    <string name="search_icon_description">Rechercher utilisateur</string>
 </resources>

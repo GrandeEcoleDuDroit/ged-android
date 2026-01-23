@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -27,12 +28,13 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.authentication.R
 import com.upsaclay.authentication.presentation.components.RegistrationScaffold
-import com.upsaclay.common.domain.entity.SingleUiEvent
-import com.upsaclay.common.extension.mediumPadding
+import com.upsaclay.common.domain.entity.SchoolLevel
+import com.upsaclay.common.extension.rootMediumPadding
+import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.LinearProgressBar
 import com.upsaclay.common.presentation.components.PrimaryButton
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -41,7 +43,7 @@ import org.koin.androidx.compose.koinViewModel
 fun ThirdRegistrationDestination(
     firstName: String,
     lastName: String,
-    schoolLevel: String,
+    schoolLevel: SchoolLevel,
     onBackClick: () -> Unit,
     onRegistrationClick: () -> Unit,
     viewModel: ThirdRegistrationViewModel = koinViewModel()
@@ -138,9 +140,9 @@ private fun ThirdRegistrationScreen(
                 PrimaryButton(
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
-                        .mediumPadding()
+                        .rootMediumPadding()
                         .testTag(stringResource(R.string.registration_screen_next_button_tag)),
-                    enable = !loading,
+                    enabled = !loading,
                     text = stringResource(id = com.upsaclay.common.R.string.next),
                     onClick = onRegistrationClick
                 )
@@ -155,7 +157,7 @@ private fun ThirdRegistrationScreen(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun ThirdRegistrationScreenPreview() {
     var email by remember { mutableStateOf("") }
@@ -163,17 +165,19 @@ private fun ThirdRegistrationScreenPreview() {
     val isLoading by remember { mutableStateOf(false) }
 
     GedoiseTheme {
-        ThirdRegistrationScreen(
-            email = email,
-            password = password,
-            loading = isLoading,
-            legalNoticeChecked = false,
-            snackbarHostState = SnackbarHostState(),
-            onEmailChange = { email = it },
-            onPasswordChange = { password = it },
-            onRegistrationClick = {},
-            onLegalNoticeCheckedChange = {},
-            onBackClick = {},
-        )
+        Surface {
+            ThirdRegistrationScreen(
+                email = email,
+                password = password,
+                loading = isLoading,
+                legalNoticeChecked = false,
+                snackbarHostState = SnackbarHostState(),
+                onEmailChange = { email = it },
+                onPasswordChange = { password = it },
+                onRegistrationClick = {},
+                onLegalNoticeCheckedChange = {},
+                onBackClick = {}
+            )
+        }
     }
 }

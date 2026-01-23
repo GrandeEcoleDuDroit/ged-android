@@ -1,7 +1,6 @@
 package com.upsaclay.message.presentation.chat
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,26 +18,27 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.paging.PagingData
-import com.upsaclay.common.domain.entity.SingleUiEvent
 import com.upsaclay.common.domain.entity.User
-import com.upsaclay.common.extension.mediumPadding
+import com.upsaclay.common.extension.rootMediumPadding
 import com.upsaclay.common.extension.smallMediumSpacing
+import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.message.R
-import com.upsaclay.message.domain.conversationFixture
 import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.Message
+import com.upsaclay.message.domain.entity.Message.MessageState
 import com.upsaclay.message.domain.entity.MessageReport
-import com.upsaclay.message.domain.entity.MessageState
-import com.upsaclay.message.domain.messagesFixture
+import com.upsaclay.message.domain.fixtures.conversationFixture
+import com.upsaclay.message.domain.fixtures.messagesFixture
 import com.upsaclay.message.presentation.chat.ChatViewModel.MessageEvent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -71,13 +71,18 @@ fun ChatDestination(
         viewModel.event.collectLatest { event ->
             when (event) {
                 is MessageEvent.NewMessage -> newMessageEvent = event
-
                 is MessageEvent.MessageReported -> showSnackBar(context.getString(R.string.message_reported))
-
-                is MessageEvent.ConversationDeleted -> onBackClick()
-
+                is MessageEvent.ChatDeleted -> onBackClick()
                 is SingleUiEvent.Error -> showSnackBar(context.getString(event.messageId))
             }
+        }
+    }
+
+    LifecycleResumeEffect(Unit) {
+        viewModel.startSeeingMessages()
+
+        onPauseOrDispose {
+            viewModel.stopSeeingMessages()
         }
     }
 
@@ -86,18 +91,18 @@ fun ChatDestination(
         messages = viewModel.messages,
         messageText = uiState.messageText,
         loading = uiState.loading,
-        userBlocked = uiState.userBlocked,
+        isUserBlocked = uiState.isUserBlocked,
         snackbarHostState = snackbarHostState,
         newMessageEvent = newMessageEvent,
         onBackClick = onBackClick,
         onInterlocutorClick = onInterlocutorClick,
         onMessageTextChange = viewModel::onMessageTextChange,
         onSendMessageClick = viewModel::sendMessage,
-        onResendMessageClick = viewModel::resendMessage,
-        onDeleteMessageClick = viewModel::deleteMessage,
+        onResendMessageClick = viewModel::resendErrorMessage,
+        onDeleteMessageClick = viewModel::deleteErrorMessage,
         onReportClick = viewModel::reportMessage,
         onUnblockUserClick = viewModel::unblockUser,
-        onDeleteConversationClick = viewModel::deleteConversation
+        onDeleteConversationClick = viewModel::deleteChat
     )
 }
 
@@ -108,7 +113,7 @@ private fun ChatScreen(
     messages: Flow<PagingData<Message>>,
     messageText: String,
     loading: Boolean,
-    userBlocked: Boolean,
+    isUserBlocked: Boolean,
     snackbarHostState: SnackbarHostState = SnackbarHostState(),
     newMessageEvent: MessageEvent.NewMessage?,
     onBackClick: () -> Unit,
@@ -121,59 +126,55 @@ private fun ChatScreen(
     onUnblockUserClick: (String) -> Unit,
     onDeleteConversationClick: () -> Unit
 ) {
-    val keyboardController = LocalSoftwareKeyboardController.current
-    val bottomSheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
-    )
-    var clickedMessage: Message? by remember { mutableStateOf(null) }
-    var showDeleteMessageDialog by remember { mutableStateOf(false) }
-    var showSentMessageBottomSheet by remember { mutableStateOf(false) }
-    var showReceivedMessageBottomSheet by remember { mutableStateOf(false) }
-    var showReportMessageBottomSheet by remember { mutableStateOf(false) }
-    var showDeleteConversationDialog by remember { mutableStateOf(false) }
-    var showUnblockUserDialog by remember { mutableStateOf(false) }
+    val focusManager = LocalFocusManager.current
+    var activeBottomSheet by remember { mutableStateOf<ChatScreenBottomSheet?>(null) }
+    var activeDialog by remember { mutableStateOf<ChatDialog?>(null) }
+
+    when(val dialog = activeDialog) {
+        is ChatDialog.DeleteMessageDialog -> {
+            DefaultDialog(
+                text = stringResource(id = R.string.delete_message_dialog_message),
+                confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
+                critical = true,
+                onConfirm = {
+                    activeDialog = null
+                    onDeleteMessageClick(dialog.message)
+                },
+                onCancel = { activeDialog = null }
+            )
+        }
+
+        is ChatDialog.DeleteConversationDialog -> {
+            DefaultDialog(
+                title = stringResource(id = R.string.delete_conversation_dialog_title),
+                text = stringResource(id = R.string.delete_conversation_dialog_message),
+                confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
+                critical = true,
+                onConfirm = {
+                    activeDialog = null
+                    onDeleteConversationClick()
+                },
+                onCancel = { activeDialog = null }
+            )
+        }
+
+        is ChatDialog.UnblockUserDialog -> {
+            DefaultDialog(
+                text = stringResource(id = com.upsaclay.common.R.string.unblock_user_dialog_message),
+                confirmText = stringResource(id = com.upsaclay.common.R.string.unblock),
+                onConfirm = {
+                    activeDialog = null
+                    onUnblockUserClick(conversation.interlocutor.id)
+                },
+                onCancel = { activeDialog = null }
+            )
+        }
+
+        else -> Unit
+    }
 
     if (loading) {
         LoadingDialog()
-    }
-
-    if (showDeleteMessageDialog) {
-        DefaultDialog(
-            text = stringResource(id = R.string.delete_message_dialog_message),
-            confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
-            critical = true,
-            onConfirm = {
-                showDeleteMessageDialog = false
-                clickedMessage?.let(onDeleteMessageClick)
-            },
-            onCancel = { showDeleteMessageDialog  = false }
-        )
-    }
-
-    if (showDeleteConversationDialog) {
-        DefaultDialog(
-            title = stringResource(id = R.string.delete_conversation_dialog_title),
-            text = stringResource(id = R.string.delete_conversation_dialog_message),
-            confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
-            critical = true,
-            onConfirm = {
-                showDeleteConversationDialog = false
-                onDeleteConversationClick()
-            },
-            onCancel = { showDeleteConversationDialog  = false }
-        )
-    }
-
-    if (showUnblockUserDialog) {
-        DefaultDialog(
-            text = stringResource(id = com.upsaclay.common.R.string.unblock_user_dialog_message),
-            confirmText = stringResource(id = com.upsaclay.common.R.string.unblock),
-            onConfirm = {
-                showUnblockUserDialog = false
-                onUnblockUserClick(conversation.interlocutor.id)
-            },
-            onCancel = { showUnblockUserDialog = false }
-        )
     }
 
     ChatScaffold(
@@ -181,14 +182,14 @@ private fun ChatScreen(
         interlocutor = conversation.interlocutor,
         snackbarHostState = snackbarHostState,
         onBackClick = {
-            keyboardController?.hide()
+            focusManager.clearFocus()
             onBackClick()
         },
         onInterlocutorClick = { onInterlocutorClick(conversation.interlocutor) }
     ) { innerPadding ->
         Column(
             modifier = Modifier
-                .mediumPadding(innerPadding)
+                .rootMediumPadding(innerPadding)
                 .fillMaxSize(),
             verticalArrangement = Arrangement.smallMediumSpacing()
         ) {
@@ -199,106 +200,113 @@ private fun ChatScreen(
                 newMessageEvent = newMessageEvent,
                 onErrorSentMessageClick = {
                     if (it.state == MessageState.ERROR) {
-                        clickedMessage = it
-                        showSentMessageBottomSheet = true
+                        activeBottomSheet = ChatScreenBottomSheet.SentMessageBottomSheet(it)
                     }
                 },
                 onReceivedMessageLongClick = {
-                    clickedMessage = it
-                    showReceivedMessageBottomSheet = true
+                    activeBottomSheet = ChatScreenBottomSheet.ReceivedMessageBottomSheet(it)
                 },
                 onInterlocutorClick = { onInterlocutorClick(conversation.interlocutor) }
             )
 
             MessageBottomSection(
                 modifier = Modifier.fillMaxWidth(),
-                userBlocked = userBlocked,
+                isUserBlocked = isUserBlocked,
                 messageText = messageText,
                 onMessageTextChange = onMessageTextChange,
                 onSendMessageClick = onSendMessageClick,
-                onDeleteConversationClick = { showDeleteConversationDialog = true },
-                onUnblockUserClick = { showUnblockUserDialog = true }
+                onDeleteConversationClick = { activeDialog = ChatDialog.DeleteConversationDialog },
+                onUnblockUserClick = { activeDialog = ChatDialog.UnblockUserDialog }
             )
         }
     }
 
-    if (showSentMessageBottomSheet) {
-        SentMessageBottomSheet(
-            onDismiss = { showSentMessageBottomSheet = false },
-            onResendMessageClick = {
-                showSentMessageBottomSheet = false
-                clickedMessage?.let(onResendMessageClick)
-            },
-            onDeleteMessageClick = {
-                showSentMessageBottomSheet = false
-                showDeleteMessageDialog = true
-            }
-        )
-    }
+    when(val bottomSheet = activeBottomSheet) {
+        is ChatScreenBottomSheet.SentMessageBottomSheet -> {
+            SentMessageBottomSheet(
+                onResendMessageClick = {
+                    activeBottomSheet = null
+                    onResendMessageClick(bottomSheet.message)
+                },
+                onDeleteMessageClick = {
+                    activeBottomSheet = null
+                    activeDialog = ChatDialog.DeleteMessageDialog(bottomSheet.message)
+                },
+                onDismiss = { activeBottomSheet = null },
+            )
+        }
 
-    if (showReceivedMessageBottomSheet) {
-        ReceivedMessageBottomSheet(
-            onDismiss = { showReceivedMessageBottomSheet = false },
-            onReportClick = {
-                showReceivedMessageBottomSheet = false
-                showReportMessageBottomSheet = true
-            }
-        )
-    }
+        is ChatScreenBottomSheet.ReceivedMessageBottomSheet -> {
+            ReceivedMessageBottomSheet(
+                onReportClick = {
+                    activeBottomSheet = ChatScreenBottomSheet.MessageReportBottomSheet(bottomSheet.message)
+                },
+                onDismiss = { activeBottomSheet = null }
+            )
+        }
 
-    if (showReportMessageBottomSheet) {
-        ReportBottomSheet(
-            sheetState = bottomSheetState,
-            items = MessageReport.Reason.entries,
-            onDismiss = { showReportMessageBottomSheet = false },
-            onReportClick = { reason ->
-                showReportMessageBottomSheet = false
-                clickedMessage?.let { message ->
+        is ChatScreenBottomSheet.MessageReportBottomSheet -> {
+            ReportBottomSheet(
+                sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+                items = MessageReport.Reason.entries,
+                onReportClick = { reason ->
+                    activeBottomSheet = null
                     onReportClick(
                         MessageReport(
                             conversationId = conversation.id,
-                            messageId = message.id,
-                            recipientInfo = MessageReport.UserInfo(
+                            messageId = bottomSheet.message.id,
+                            recipient = MessageReport.Recipient(
                                 fullName = conversation.interlocutor.fullName,
                                 email = conversation.interlocutor.email
                             ),
                             reason = reason
                         )
                     )
-                }
-            }
-        )
+                },
+                onDismiss = { activeBottomSheet = null },
+            )
+        }
+
+        else -> Unit
     }
 }
 
 @Composable
 private fun MessageBottomSection(
     modifier: Modifier = Modifier,
-    userBlocked: Boolean,
+    isUserBlocked: Boolean,
     messageText: String,
     onMessageTextChange: (String) -> Unit,
     onSendMessageClick: () -> Unit,
     onDeleteConversationClick: () -> Unit,
     onUnblockUserClick: () -> Unit
 ) {
-    if (userBlocked) {
+    if (isUserBlocked) {
         MessageBlockedUserIndicator(
-            modifier = modifier
-                .testTag(stringResource(R.string.chat_screen_blocked_user_indicator_tag)),
+            modifier = modifier.testTag(stringResource(R.string.chat_screen_blocked_user_indicator_tag)),
             onDeleteChatClick = onDeleteConversationClick,
             onUnblockUserClick = onUnblockUserClick
         )
     } else {
-        Box(modifier = modifier) {
-            MessageInput(
-                modifier = Modifier
-                    .testTag(stringResource(R.string.chat_screen_message_input_tag)),
-                value = messageText,
-                onValueChange = onMessageTextChange,
-                onSendClick = onSendMessageClick
-            )
-        }
+        MessageInput(
+            modifier = modifier.testTag(stringResource(R.string.chat_screen_message_input_tag)),
+            value = messageText,
+            onValueChange = onMessageTextChange,
+            onSendClick = onSendMessageClick
+        )
     }
+}
+
+private sealed class ChatScreenBottomSheet {
+    data class SentMessageBottomSheet(val message: Message): ChatScreenBottomSheet()
+    data class ReceivedMessageBottomSheet(val message: Message): ChatScreenBottomSheet()
+    data class MessageReportBottomSheet(val message: Message): ChatScreenBottomSheet()
+}
+
+private sealed class ChatDialog {
+    data class DeleteMessageDialog(val message: Message): ChatDialog()
+    data object DeleteConversationDialog: ChatDialog()
+    data object UnblockUserDialog: ChatDialog()
 }
 
 /*
@@ -307,7 +315,7 @@ private fun MessageBottomSection(
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun ChatScreenPreview() {
     var text by remember { mutableStateOf("") }
@@ -318,7 +326,7 @@ private fun ChatScreenPreview() {
             messages = flowOf(PagingData.from(messagesFixture)),
             messageText = text,
             loading = false,
-            userBlocked = false,
+            isUserBlocked = false,
             newMessageEvent = null,
             onBackClick = {},
             onInterlocutorClick = {},

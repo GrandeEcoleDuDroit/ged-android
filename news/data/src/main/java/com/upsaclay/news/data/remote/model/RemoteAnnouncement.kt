@@ -1,20 +1,21 @@
 package com.upsaclay.news.data.remote.model
 
 import com.google.gson.annotations.SerializedName
-import com.upsaclay.news.data.AnnouncementField.Local.USER_IS_DELETED
 import com.upsaclay.news.data.AnnouncementField.Remote.ANNOUNCEMENT_CONTENT
 import com.upsaclay.news.data.AnnouncementField.Remote.ANNOUNCEMENT_DATE
 import com.upsaclay.news.data.AnnouncementField.Remote.ANNOUNCEMENT_ID
 import com.upsaclay.news.data.AnnouncementField.Remote.ANNOUNCEMENT_TITLE
+import com.upsaclay.news.data.AnnouncementField.Remote.USER_ADMIN
 import com.upsaclay.news.data.AnnouncementField.Remote.USER_EMAIL
 import com.upsaclay.news.data.AnnouncementField.Remote.USER_FIRST_NAME
 import com.upsaclay.news.data.AnnouncementField.Remote.USER_ID
-import com.upsaclay.news.data.AnnouncementField.Remote.USER_IS_MEMBER
 import com.upsaclay.news.data.AnnouncementField.Remote.USER_LAST_NAME
 import com.upsaclay.news.data.AnnouncementField.Remote.USER_PROFILE_PICTURE_FILE_NAME
 import com.upsaclay.news.data.AnnouncementField.Remote.USER_SCHOOL_LEVEL
+import com.upsaclay.news.data.AnnouncementField.Remote.USER_STATE
+import com.upsaclay.news.data.AnnouncementField.Remote.USER_TESTER
 
-internal data class RemoteAnnouncement(
+internal data class OutbondRemoteAnnouncement(
     @SerializedName(ANNOUNCEMENT_ID)
     val announcementId: String,
     @SerializedName(ANNOUNCEMENT_TITLE)
@@ -27,7 +28,7 @@ internal data class RemoteAnnouncement(
     val userId: String
 )
 
-internal data class RemoteAnnouncementWithUser(
+internal data class InboundRemoteAnnouncement(
     @SerializedName(ANNOUNCEMENT_ID)
     val announcementId: String,
     @SerializedName(ANNOUNCEMENT_TITLE)
@@ -45,11 +46,13 @@ internal data class RemoteAnnouncementWithUser(
     @SerializedName(USER_EMAIL)
     val userEmail: String,
     @SerializedName(USER_SCHOOL_LEVEL)
-    val userSchoolLevel: String,
-    @SerializedName(USER_IS_MEMBER)
-    val userIsMember: Int,
+    val userSchoolLevel: Int,
+    @SerializedName(USER_ADMIN)
+    val userAdmin: Int,
     @SerializedName(USER_PROFILE_PICTURE_FILE_NAME)
     val userProfilePictureFileName: String?,
-    @SerializedName(USER_IS_DELETED)
-    val userIsDeleted: Int
+    @SerializedName(USER_STATE)
+    val userState: Int,
+    @SerializedName(USER_TESTER)
+    val userTester: Int
 )

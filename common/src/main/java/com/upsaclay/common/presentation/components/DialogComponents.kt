@@ -24,7 +24,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.upsaclay.common.R
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.utils.Phones
+import com.upsaclay.common.utils.PhonePreviews
 
 @Composable
 fun DefaultDialog(
@@ -97,7 +97,7 @@ fun LoadingDialog(message: String = stringResource(id = R.string.loading)) {
  =====================================================================
  */
 
-@Phones
+@PhonePreviews
 @Composable
 private fun SimpleDialogPreview() {
     GedoiseTheme {
@@ -112,7 +112,7 @@ private fun SimpleDialogPreview() {
     }
 }
 
-@Phones
+@PhonePreviews
 @Composable
 private fun CriticalDialogPreview() {
     GedoiseTheme {
@@ -128,7 +128,7 @@ private fun CriticalDialogPreview() {
     }
 }
 
-@Phones
+@PhonePreviews
 @Composable
 private fun LoadingDialogPreview() {
     GedoiseTheme {

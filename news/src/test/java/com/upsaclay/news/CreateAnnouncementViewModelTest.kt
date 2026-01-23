@@ -1,6 +1,7 @@
 package com.upsaclay.news
 
 import com.upsaclay.common.domain.repository.UserRepository
+import com.upsaclay.common.domain.usecase.GenerateIdUseCase
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.news.domain.usecase.CreateAnnouncementUseCase
 import com.upsaclay.news.presentation.announcement.createannouncement.CreateAnnouncementViewModel
@@ -21,6 +22,7 @@ import kotlin.test.assertEquals
 class CreateAnnouncementViewModelTest {
     private val userRepository: UserRepository = mockk()
     private val createAnnouncementUseCase: CreateAnnouncementUseCase = mockk()
+    private val generateIdUseCase: GenerateIdUseCase = mockk()
 
     private lateinit var createAnnouncementViewModel: CreateAnnouncementViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
@@ -31,13 +33,15 @@ class CreateAnnouncementViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
 
+        every { generateIdUseCase.execute() } returns "id"
         every { userRepository.user } returns MutableStateFlow(userFixture)
         every { userRepository.currentUser } returns userFixture
-        coEvery { createAnnouncementUseCase(any()) } returns Unit
+        coEvery { createAnnouncementUseCase.execute(any()) } returns Unit
 
         createAnnouncementViewModel = CreateAnnouncementViewModel(
             userRepository = userRepository,
-            createAnnouncementUseCase = createAnnouncementUseCase
+            createAnnouncementUseCase = createAnnouncementUseCase,
+            generateIdUseCase = generateIdUseCase
         )
     }
 
@@ -71,7 +75,7 @@ class CreateAnnouncementViewModelTest {
         createAnnouncementViewModel.createAnnouncement()
 
         // Then
-        coVerify { createAnnouncementUseCase(any())}
+        coVerify { createAnnouncementUseCase.execute(any()) }
     }
 
     @Test
@@ -80,14 +84,15 @@ class CreateAnnouncementViewModelTest {
         every { userRepository.currentUser } returns null
         createAnnouncementViewModel = CreateAnnouncementViewModel(
             userRepository = userRepository,
-            createAnnouncementUseCase = createAnnouncementUseCase
+            createAnnouncementUseCase = createAnnouncementUseCase,
+            generateIdUseCase = generateIdUseCase
         )
 
         // When
         createAnnouncementViewModel.createAnnouncement()
 
         // Then
-        coVerify(exactly = 0) { createAnnouncementUseCase(any())}
+        coVerify(exactly = 0) { createAnnouncementUseCase.execute(any()) }
     }
 
     @Test
