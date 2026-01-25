@@ -18,7 +18,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.authentication.R
 import com.upsaclay.authentication.presentation.components.RegistrationScaffold
-import com.upsaclay.common.domain.extensions.uppercaseFirstLetter
+import com.upsaclay.common.domain.extensions.capitalize
 import com.upsaclay.common.extension.rootMediumPadding
 import com.upsaclay.common.presentation.components.PrimaryButton
 import com.upsaclay.common.presentation.theme.GedoiseTheme
@@ -42,10 +42,7 @@ fun FirstRegistrationDestination(
         lastNameError = uiState.lastNameError,
         onNextClick = {
             if (viewModel.validateInputs()) {
-                onNextClick(
-                    uiState.firstName.uppercaseFirstLetter(),
-                    uiState.lastName.uppercaseFirstLetter()
-                )
+                onNextClick(uiState.firstName, uiState.lastName)
             }
         },
         onBackClick = onBackClick
@@ -120,8 +117,8 @@ private fun FirstRegistrationScreenPreview() {
         FirstRegistrationScreen(
             firstName = firstName,
             lastName = lastName,
-            onFirstNameChange = { firstName = it.uppercaseFirstLetter() },
-            onLastNameChange = { lastName = it.uppercaseFirstLetter() },
+            onFirstNameChange = { firstName = it.capitalize() },
+            onLastNameChange = { lastName = it.capitalize() },
             firstNameError = null,
             lastNameError = null,
             onNextClick = {},

@@ -13,7 +13,6 @@ import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.entity.UserReport
 import com.upsaclay.common.domain.extensions.toEpochMilliUTC
 import com.upsaclay.common.domain.extensions.toLocalDateTimeUTC
-import com.upsaclay.common.domain.extensions.uppercaseFirstLetter
 
 fun User.toLocal() = LocalUser(
     userId = id,
@@ -41,8 +40,8 @@ fun User.toOracleUser() = OracleUser(
 
 internal fun LocalUser.toUser() = User(
     id = userId,
-    firstName = userFirstName.uppercaseFirstLetter(),
-    lastName = userLastName.uppercaseFirstLetter(),
+    firstName = UserUtils.Name.formatName(userFirstName),
+    lastName = UserUtils.Name.formatName(userLastName),
     email = userEmail,
     schoolLevel = SchoolLevel.fromNumber(userSchoolLevel),
     admin = userAdmin == 1,
@@ -53,8 +52,8 @@ internal fun LocalUser.toUser() = User(
 
 internal fun FirestoreUser.toUser() = User(
     id = userId,
-    firstName = firstName.uppercaseFirstLetter(),
-    lastName = lastName.uppercaseFirstLetter(),
+    firstName = UserUtils.Name.formatName(firstName),
+    lastName = UserUtils.Name.formatName(lastName),
     email = email,
     schoolLevel = SchoolLevel.fromNumber(schoolLevel),
     admin = admin,
@@ -65,8 +64,8 @@ internal fun FirestoreUser.toUser() = User(
 
 fun OracleUser.toUser() = User(
     id = userId,
-    firstName = userFirstName.uppercaseFirstLetter(),
-    lastName = userLastName.uppercaseFirstLetter(),
+    firstName = UserUtils.Name.formatName(userFirstName),
+    lastName = UserUtils.Name.formatName(userLastName),
     email = userEmail,
     schoolLevel = SchoolLevel.fromNumber(userSchoolLevel),
     admin = userAdmin == 1,
