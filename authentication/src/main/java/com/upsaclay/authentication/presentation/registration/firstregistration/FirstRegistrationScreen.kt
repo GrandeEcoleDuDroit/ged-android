@@ -42,10 +42,7 @@ fun FirstRegistrationDestination(
         lastNameError = uiState.lastNameError,
         onNextClick = {
             if (viewModel.validateInputs()) {
-                onNextClick(
-                    uiState.firstName.capitalize(),
-                    uiState.lastName.capitalize()
-                )
+                onNextClick(uiState.firstName, uiState.lastName)
             }
         },
         onBackClick = onBackClick

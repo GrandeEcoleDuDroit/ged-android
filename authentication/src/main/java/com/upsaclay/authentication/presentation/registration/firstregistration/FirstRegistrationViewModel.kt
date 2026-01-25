@@ -3,7 +3,7 @@ package com.upsaclay.authentication.presentation.registration.firstregistration
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import com.upsaclay.authentication.R
-import com.upsaclay.common.domain.extensions.capitalizeWords
+import com.upsaclay.common.domain.UserUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -33,8 +33,8 @@ class FirstRegistrationViewModel: ViewModel() {
 
         _uiState.update {
             it.copy(
-                firstName = firstName.trim().capitalizeWords(),
-                lastName = lastName.trim().capitalizeWords(),
+                firstName = UserUtils.Name.formatName(firstName.trim()),
+                lastName = UserUtils.Name.formatName(lastName.trim()),
                 firstNameError = R.string.mandatory_field.takeIf { firstName.isBlank() },
                 lastNameError = R.string.mandatory_field.takeIf { lastName.isBlank() }
             )
@@ -46,7 +46,7 @@ class FirstRegistrationViewModel: ViewModel() {
     }
 
     private fun validateName(name: String): Boolean =
-        name.matches(Regex("^[\\p{L}\\p{M}'\\s-]+$")) || name.isBlank()
+        name.matches(Regex("^[\\p{L}\\p{M}’'\\s-]+$")) || name.isBlank()
 
     internal data class FirstRegistrationUiState(
         val firstName: String = "",

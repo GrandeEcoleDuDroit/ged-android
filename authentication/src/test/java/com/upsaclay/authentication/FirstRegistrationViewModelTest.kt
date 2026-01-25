@@ -92,16 +92,20 @@ class FirstRegistrationViewModelTest {
     }
 
     @Test
-    fun validateInputs_should_trim_and_uppercase_names() {
+    fun validateInputs_should_format_names() {
         // Given
-        firstRegistrationViewModel.onFirstNameChange("john ")
-        firstRegistrationViewModel.onLastNameChange(" doe")
+        val firstName = "john-smith"
+        val lastName = " o'neal"
+        val expectedFirstName = "John-Smith"
+        val expectedLastName = "O'Neal"
+        firstRegistrationViewModel.onFirstNameChange(firstName)
+        firstRegistrationViewModel.onLastNameChange(lastName)
 
         // When
         firstRegistrationViewModel.validateInputs()
 
         // Then
-        assertEquals(firstName, firstRegistrationViewModel.uiState.value.firstName)
-        assertEquals(lastName, firstRegistrationViewModel.uiState.value.lastName)
+        assertEquals(expectedFirstName, firstRegistrationViewModel.uiState.value.firstName)
+        assertEquals(expectedLastName, firstRegistrationViewModel.uiState.value.lastName)
     }
 }
