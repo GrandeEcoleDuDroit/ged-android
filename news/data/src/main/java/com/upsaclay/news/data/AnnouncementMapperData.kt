@@ -7,7 +7,7 @@ import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.entity.User.UserState
 import com.upsaclay.common.domain.extensions.toEpochMilliUTC
 import com.upsaclay.common.domain.extensions.toLocalDateTimeUTC
-import com.upsaclay.common.domain.extensions.uppercaseFirstLetter
+import com.upsaclay.common.domain.extensions.capitalize
 import com.upsaclay.news.data.local.model.LocalAnnouncement
 import com.upsaclay.news.data.remote.model.InboundRemoteAnnouncement
 import com.upsaclay.news.data.remote.model.OutbondRemoteAnnouncement
@@ -48,8 +48,8 @@ fun LocalAnnouncement.toAnnouncement() = Announcement(
     date = announcementDate.toLocalDateTimeUTC(),
     author = User(
         id = announcementAuthorId,
-        firstName = announcementAuthorFirstName.uppercaseFirstLetter(),
-        lastName = announcementAuthorLastName.uppercaseFirstLetter(),
+        firstName = announcementAuthorFirstName.capitalize(),
+        lastName = announcementAuthorLastName.capitalize(),
         email = announcementAuthorEmail,
         schoolLevel = SchoolLevel.fromNumber(announcementAuthorSchoolLevel),
         admin = announcementAuthorAdmin,
@@ -67,8 +67,8 @@ internal fun InboundRemoteAnnouncement.toAnnouncement() = Announcement(
     date = announcementDate.toLocalDateTimeUTC(),
     author = User(
         id = userId,
-        firstName = userFirstName.uppercaseFirstLetter(),
-        lastName = userLastName.uppercaseFirstLetter(),
+        firstName = userFirstName.capitalize(),
+        lastName = userLastName.capitalize(),
         email = userEmail,
         schoolLevel = SchoolLevel.fromNumber(userSchoolLevel),
         admin = userAdmin == 1,
