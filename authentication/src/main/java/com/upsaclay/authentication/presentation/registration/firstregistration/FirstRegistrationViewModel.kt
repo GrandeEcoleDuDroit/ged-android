@@ -46,7 +46,7 @@ class FirstRegistrationViewModel: ViewModel() {
     }
 
     private fun validateName(name: String): Boolean =
-        name.matches(Regex("^[\\p{L}\\p{M}’'\\s-]+$")) || name.isBlank()
+        name.matches(Regex("^[\\p{L}'\\s-]+$")) || name.isBlank()
 
     internal data class FirstRegistrationUiState(
         val firstName: String = "",
