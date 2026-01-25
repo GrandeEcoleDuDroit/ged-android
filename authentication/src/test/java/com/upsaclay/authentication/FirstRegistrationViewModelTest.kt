@@ -94,9 +94,9 @@ class FirstRegistrationViewModelTest {
     @Test
     fun validateInputs_should_format_names() {
         // Given
-        val firstName = "john-smith"
+        val firstName = "élodie-smith"
         val lastName = " o'neal"
-        val expectedFirstName = "John-Smith"
+        val expectedFirstName = "Élodie-Smith"
         val expectedLastName = "O'Neal"
         firstRegistrationViewModel.onFirstNameChange(firstName)
         firstRegistrationViewModel.onLastNameChange(lastName)
