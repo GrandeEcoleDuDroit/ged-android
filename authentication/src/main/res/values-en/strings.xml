@@ -28,4 +28,6 @@
     <string name="auth_user_not_found_error">No user found.</string>
     <string name="registration_failed">The registration could not be completed.</string>
     <string name="forgotten_password">Forgotten password ?</string>
+    <string name="send">Send</string>
+    <string name="password_forgot">Password forgot</string>
 </resources>

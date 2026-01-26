@@ -2,8 +2,10 @@ package com.upsaclay.authentication.forgottenpassword
 
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 class ForgottenPasswordViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(ForgottenPasswordUiState())
@@ -16,7 +18,9 @@ class ForgottenPasswordViewModel : ViewModel() {
     }
 
     fun onEmailChange (email : String) {
-        TODO("not implemented yet")
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(email = email)
+        }
     }
     internal data class ForgottenPasswordUiState(
         val email : String? = "",
