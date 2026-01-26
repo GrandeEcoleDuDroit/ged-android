@@ -43,7 +43,8 @@ fun AuthenticationForm(
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onLoginClick: () -> Unit,
-    onRegisterClick: () -> Unit
+    onRegisterClick: () -> Unit,
+    onForgottenPasswordClick: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     val passwordFocusRequester = remember { FocusRequester() }
@@ -61,7 +62,8 @@ fun AuthenticationForm(
             passwordFocusRequester = passwordFocusRequester,
             keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
             onEmailChange = onEmailChange,
-            onPasswordChange = onPasswordChange
+            onPasswordChange = onPasswordChange,
+            onForgottenPasswordClick = onForgottenPasswordClick
         )
 
         LoadingButton(
@@ -96,7 +98,8 @@ private fun CredentialsInputs(
     passwordFocusRequester: FocusRequester,
     keyboardActions: KeyboardActions,
     onEmailChange: (String) -> Unit,
-    onPasswordChange: (String) -> Unit
+    onPasswordChange: (String) -> Unit,
+    onForgottenPasswordClick : () -> Unit,
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
@@ -119,16 +122,26 @@ private fun CredentialsInputs(
             keyboardActions = keyboardActions,
             errorMessage = passwordError
         )
+        Text(
+            modifier = Modifier
+                .align(Alignment.Start),
+            text = stringResource(R.string.forgotten_password),
+            style = MaterialTheme.typography.bodyLarge
+        )
 
         errorMessage?.let {
             LaunchedEffect(it) {
                 passwordFocusRequester.requestFocus()
             }
             Text(
-                modifier = Modifier.align(Alignment.Start),
+                modifier = Modifier
+                    .align(Alignment.Start)
+                    .clickable(onClick = onForgottenPasswordClick)
+                    .testTag(stringResource(R.string.forgotten_password_button_tag)),
                 text = stringResource(it),
                 color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.ExtraBold
             )
         }
     }
@@ -180,7 +193,8 @@ private fun AuthenticationFormPreview() {
                 onEmailChange = {},
                 onPasswordChange = {},
                 onLoginClick = {},
-                onRegisterClick = {}
+                onRegisterClick = {},
+                onForgottenPasswordClick = {}
             )
         }
     }

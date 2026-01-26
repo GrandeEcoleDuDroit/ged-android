@@ -67,6 +67,10 @@ internal class AuthenticationRepositoryImpl(
         authenticationLocalDataSource.storeAuthenticationState(authenticationState)
     }
 
+    override suspend fun forgotPassword(email: String) {
+        TODO("Not yet implemented")
+    }
+
     private fun listenAuthenticationState() {
         scope.launch {
             merge(

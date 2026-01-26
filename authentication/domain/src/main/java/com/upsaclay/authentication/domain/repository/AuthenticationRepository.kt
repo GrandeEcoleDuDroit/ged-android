@@ -19,4 +19,5 @@ interface AuthenticationRepository {
     suspend fun logout()
 
     suspend fun storeAuthenticationState(authenticationState: AuthenticationState)
+    suspend fun forgotPassword(email : String)
 }

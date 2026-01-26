@@ -33,4 +33,6 @@
     <string name="registration_screen_next_button_tag" translatable="false">Registration Screen Next Button Tag</string>
     <string name="registration_screen_email_input_tag" translatable="false">Registration Screen Email Input Tag</string>
     <string name="registration_screen_password_input_tag" translatable="false">Registration Screen Password Input Tag</string>
+    <string name="forgotten_password">Mot de passe oublié ?</string>
+    <string name="forgotten_password_button_tag" translatable="false">forgotten_password_button_tag</string>
 </resources>

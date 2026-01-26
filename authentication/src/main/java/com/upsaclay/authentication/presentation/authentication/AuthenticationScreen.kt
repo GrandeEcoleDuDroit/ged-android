@@ -53,6 +53,7 @@ import org.koin.androidx.compose.koinViewModel
 fun AuthenticationDestination(
     onRegistrationClick: () -> Unit,
     onLoginClick: () -> Unit,
+    onForgottenPasswordClick: () -> Unit,
     viewModel: AuthenticationViewModel = koinViewModel()
 ) {
     val context = LocalContext.current
@@ -91,7 +92,8 @@ fun AuthenticationDestination(
         onEmailChange = viewModel::onEmailChange,
         onPasswordChange = viewModel::onPasswordChange,
         onRegistrationClick = onRegistrationClick,
-        onLoginClick = viewModel::login
+        onLoginClick = viewModel::login,
+        onForgottenPasswordClick = onForgottenPasswordClick
     )
 }
 
@@ -107,7 +109,8 @@ private fun AuthenticationScreen(
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onRegistrationClick: () -> Unit,
-    onLoginClick: () -> Unit
+    onLoginClick: () -> Unit,
+    onForgottenPasswordClick : () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     val scrollState = rememberScrollState()
@@ -152,7 +155,8 @@ private fun AuthenticationScreen(
                     focusManager.clearFocus()
                     onLoginClick()
                 },
-                onRegisterClick = onRegistrationClick
+                onRegisterClick = onRegistrationClick,
+                onForgottenPasswordClick = onForgottenPasswordClick
             )
         }
     }
@@ -212,7 +216,8 @@ private fun AuthenticationScreenPreview() {
            onEmailChange = { email = it },
            onPasswordChange = { password = it },
            onRegistrationClick = {},
-           onLoginClick = {}
+           onLoginClick = {},
+           onForgottenPasswordClick = {}
        )
     }
 }

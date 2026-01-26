@@ -27,4 +27,5 @@
     <string name="user_not_white_listed_error">Registration is currently limited to authorized users.</string>
     <string name="auth_user_not_found_error">No user found.</string>
     <string name="registration_failed">The registration could not be completed.</string>
+    <string name="forgotten_password">Forgotten password ?</string>
 </resources>
