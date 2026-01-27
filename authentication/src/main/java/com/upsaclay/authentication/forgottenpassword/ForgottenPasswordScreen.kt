@@ -53,6 +53,7 @@ fun ForgottenPasswordDestination(
         viewModel.event.collectLatest {
             when (it) {
                 is SingleUiEvent.Error -> showSnackBar(context.getString(it.messageId))
+                is SingleUiEvent.Success -> showSnackBar(context.getString(it.messageId))
             }
         }
     }
