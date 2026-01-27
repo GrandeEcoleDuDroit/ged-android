@@ -65,7 +65,9 @@ class ForgottenPasswordViewModel(private val forgotPasswordUseCase: ForgottenPas
     }
 
     fun resetValues() {
-        TODO("Not yet implemented")
+        viewModelScope.launch {
+            _uiState.value = ForgottenPasswordUiState()
+        }
     }
 
     internal data class ForgottenPasswordUiState(
