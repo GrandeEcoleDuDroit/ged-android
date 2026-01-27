@@ -70,7 +70,7 @@ class AuthenticationRemoteDataSource(private val authenticationApi: Authenticati
         }
     }
 
-    fun forgotPassword(email: String) {4
+    fun forgotPassword(email: String) {
         try {
             authenticationApi.forgotPassword(email)
         } catch (e : Exception){
