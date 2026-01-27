@@ -124,7 +124,9 @@ private fun CredentialsInputs(
         )
         Text(
             modifier = Modifier
-                .align(Alignment.Start),
+                .align(Alignment.Start)
+                .clickable(onClick = onForgottenPasswordClick)
+                .testTag(stringResource(R.string.forgotten_password_button_tag)),
             text = stringResource(R.string.forgotten_password),
             style = MaterialTheme.typography.bodyLarge
         )
@@ -135,9 +137,7 @@ private fun CredentialsInputs(
             }
             Text(
                 modifier = Modifier
-                    .align(Alignment.Start)
-                    .clickable(onClick = onForgottenPasswordClick)
-                    .testTag(stringResource(R.string.forgotten_password_button_tag)),
+                    .align(Alignment.Start),
                 text = stringResource(it),
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.titleLarge,
