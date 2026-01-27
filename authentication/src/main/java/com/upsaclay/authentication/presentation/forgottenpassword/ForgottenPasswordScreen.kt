@@ -1,4 +1,4 @@
-package com.upsaclay.authentication.forgottenpassword
+package com.upsaclay.authentication.presentation.forgottenpassword
 
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -24,7 +24,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
+import com.upsaclay.authentication.R as authR
 import com.upsaclay.common.extension.rootMediumPadding
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.BackTopBar
@@ -112,7 +113,7 @@ fun ForgottenPasswordScreen(
         ) {
             BackTopBar(
                 onBackClick = onBackClick,
-                title = "Mot de passe oublié"
+                title = stringResource(authR.string.forgotten_password)
             )
             ForgottenPasswordForm(
                 onEmailChange = onEmailChange,

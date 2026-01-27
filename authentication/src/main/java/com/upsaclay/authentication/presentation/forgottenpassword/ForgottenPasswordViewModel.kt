@@ -1,4 +1,4 @@
-package com.upsaclay.authentication.forgottenpassword
+package com.upsaclay.authentication.presentation.forgottenpassword
 
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel

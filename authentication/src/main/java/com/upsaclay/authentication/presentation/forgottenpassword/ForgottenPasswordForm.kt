@@ -1,4 +1,4 @@
-package com.upsaclay.authentication.forgottenpassword
+package com.upsaclay.authentication.presentation.forgottenpassword
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -6,6 +6,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -24,7 +28,7 @@ fun ForgottenPasswordForm(
     email : String,
     onEmailError : Int?
 ){
-    Column() {
+    Column {
         SimpleOutlinedTextField(
             value = email,
             onValueChange = onEmailChange,
@@ -50,11 +54,13 @@ fun ForgottenPasswordForm(
 @PhonePreviews
 @Composable
 fun ForgottenPasswordFormPreview() {
+    var email by remember { mutableStateOf("") }
+
     GedoiseTheme {
         ForgottenPasswordForm(
-            onEmailChange = {},
+            onEmailChange = {email = it},
             onClick = {},
-            email = "",
+            email = email,
             onEmailError = null
 
         )
