@@ -69,4 +69,12 @@ class AuthenticationRemoteDataSource(private val authenticationApi: Authenticati
             else -> mapFirebaseException(e)
         }
     }
+
+    fun forgotPassword(email: String) {4
+        try {
+            authenticationApi.forgotPassword(email)
+        } catch (e : Exception){
+            throw mapFirebaseAuthException(e)
+        }
+    }
 }
