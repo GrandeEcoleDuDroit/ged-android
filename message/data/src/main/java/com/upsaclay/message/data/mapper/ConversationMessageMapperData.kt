@@ -6,7 +6,6 @@ import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.entity.User.UserState
 import com.upsaclay.common.domain.extensions.toLocalDateTimeUTC
-import com.upsaclay.common.domain.extensions.uppercaseFirstLetter
 import com.upsaclay.message.data.local.model.LocalConversationMessage
 import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.ConversationMessage
@@ -22,8 +21,8 @@ private fun LocalConversationMessage.toConversation() = Conversation(
     id = conversationId,
     interlocutor = User(
         id = conversationInterlocutorId,
-        firstName = conversationInterlocutorFirstName.uppercaseFirstLetter(),
-        lastName = conversationInterlocutorLastName.uppercaseFirstLetter(),
+        firstName = UserUtils.Name.formatName(conversationInterlocutorFirstName),
+        lastName = UserUtils.Name.formatName(conversationInterlocutorLastName),
         email = conversationInterlocutorEmail,
         schoolLevel = SchoolLevel.fromNumber(conversationInterlocutorSchoolLevel),
         admin = conversationInterlocutorAdmin,

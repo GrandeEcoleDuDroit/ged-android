@@ -1,6 +1,12 @@
 package com.upsaclay.common.domain
 
+import com.upsaclay.common.domain.extensions.capitalizeWords
+
 object UserUtils {
+    object Name {
+        fun formatName(name: String) = name.capitalizeWords()
+    }
+
     object ProfilePicture {
         private const val FOLDER_NAME = "UserProfilePictures"
 
