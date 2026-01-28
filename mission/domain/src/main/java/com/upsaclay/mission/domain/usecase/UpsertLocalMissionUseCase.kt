@@ -4,7 +4,7 @@ import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.repository.MissionRepository
 
-class UpsertMissionUseCase(
+class UpsertLocalMissionUseCase(
     private val missionRepository: MissionRepository,
     private val imageRepository: ImageRepository
 ) {

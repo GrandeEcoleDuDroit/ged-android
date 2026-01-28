@@ -1,9 +1,9 @@
+
 import com.upsaclay.mission.domain.missionFixture
 import com.upsaclay.mission.domain.missionsFixture
 import com.upsaclay.mission.domain.repository.MissionRepository
-import com.upsaclay.mission.domain.usecase.DeleteMissionUseCase
 import com.upsaclay.mission.domain.usecase.FetchMissionsUseCase
-import com.upsaclay.mission.domain.usecase.UpsertMissionUseCase
+import com.upsaclay.mission.domain.usecase.UpsertLocalMissionUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -15,8 +15,7 @@ import org.junit.Test
 
 class FetchMissionsUseCaseTest {
     private val missionRepository: MissionRepository = mockk()
-    private val deleteMissionUseCase: DeleteMissionUseCase = mockk()
-    private val upsertMissionUseCase: UpsertMissionUseCase = mockk()
+    private val upsertLocalMissionUseCase: UpsertLocalMissionUseCase = mockk()
 
     private lateinit var useCase: FetchMissionsUseCase
 
@@ -27,13 +26,12 @@ class FetchMissionsUseCaseTest {
         coEvery { missionRepository.upsertLocalMission(any()) } returns Unit
         coEvery { missionRepository.deleteLocalMission(any()) } returns Unit
         coEvery { missionRepository.getRemoteMissions() } returns missionsFixture
-        coEvery { deleteMissionUseCase.execute(any()) } returns Unit
-        coEvery { upsertMissionUseCase.execute(any()) } returns Unit
+        coEvery { missionRepository.deleteLocalMission(any()) } returns Unit
+        coEvery { upsertLocalMissionUseCase.execute(any()) } returns Unit
 
         useCase = FetchMissionsUseCase(
             missionRepository = missionRepository,
-            deleteMissionUseCase = deleteMissionUseCase,
-            upsertMissionUseCase = upsertMissionUseCase
+            upsertLocalMissionUseCase = upsertLocalMissionUseCase
         )
     }
 
@@ -47,7 +45,7 @@ class FetchMissionsUseCaseTest {
         useCase.execute()
 
         // Then
-        coVerify { upsertMissionUseCase.execute(missionFixture) }
+        coVerify { upsertLocalMissionUseCase.execute(missionFixture) }
     }
 
     @Test
@@ -60,6 +58,6 @@ class FetchMissionsUseCaseTest {
         useCase.execute()
 
         // Then
-        coVerify { deleteMissionUseCase.execute(missionFixture) }
+        coVerify { missionRepository.deleteLocalMission(missionFixture) }
     }
 }

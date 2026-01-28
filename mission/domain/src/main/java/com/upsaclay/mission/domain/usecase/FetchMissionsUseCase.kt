@@ -5,8 +5,7 @@ import com.upsaclay.mission.domain.repository.MissionRepository
 
 class FetchMissionsUseCase(
     private val missionRepository: MissionRepository,
-    private val deleteMissionUseCase: DeleteMissionUseCase,
-    private val upsertMissionUseCase: UpsertMissionUseCase
+    private val upsertLocalMissionUseCase: UpsertLocalMissionUseCase
 ) {
     suspend fun execute() {
         val missions = missionRepository.currentMissions
@@ -15,7 +14,7 @@ class FetchMissionsUseCase(
         val missionsToDelete = missions.filter { (it.state is MissionState.Published && it !in remoteMissions) }
         val missionsToUpsert = remoteMissions.filter { it !in missions }
 
-        missionsToDelete.forEach { deleteMissionUseCase.execute(it) }
-        missionsToUpsert.forEach { upsertMissionUseCase.execute(it) }
+        missionsToDelete.forEach { missionRepository.deleteLocalMission(it) }
+        missionsToUpsert.forEach { upsertLocalMissionUseCase.execute(it) }
     }
 }

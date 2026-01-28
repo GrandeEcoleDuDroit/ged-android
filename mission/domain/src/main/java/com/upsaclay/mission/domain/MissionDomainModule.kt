@@ -6,6 +6,7 @@ import com.upsaclay.mission.domain.usecase.FetchMissionsUseCase
 import com.upsaclay.mission.domain.usecase.RecreateMissionUseCase
 import com.upsaclay.mission.domain.usecase.RefreshMissionsUseCase
 import com.upsaclay.mission.domain.usecase.UpdateMissionUseCase
+import com.upsaclay.mission.domain.usecase.UpsertLocalMissionUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -51,4 +52,5 @@ val missionDomainModule = module {
     singleOf(::FetchMissionsUseCase)
     singleOf(::RefreshMissionsUseCase)
     singleOf(::MissionJobQueue)
+    singleOf(::UpsertLocalMissionUseCase)
 }
