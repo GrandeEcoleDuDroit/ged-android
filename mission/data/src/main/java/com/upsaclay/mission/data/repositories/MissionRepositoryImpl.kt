@@ -41,6 +41,9 @@ class MissionRepositoryImpl(
         }
     }
 
+    override suspend fun getLocalMission(missionId: String): Mission? =
+        missionLocalDataSource.getMission(missionId)
+
     override suspend fun createMission(mission: Mission, imageFile: File?) {
         try {
             missionLocalDataSource.upsertMission(mission)

@@ -25,6 +25,10 @@ class MissionLocalDataSource(
     fun getMissionFlow(missionId: String): Flow<Mission> =
         missionDao.getMissionFlow(missionId).mapNotNull { it?.toMission(::getImagePath) }
 
+    suspend fun getMission(missionId: String): Mission? =
+        missionDao.getMission(missionId)?.toMission(::getImagePath)
+
+
     suspend fun upsertMission(mission: Mission) {
         withContext(Dispatchers.IO) {
             missionDao.upsertMission(mission.toLocal())
