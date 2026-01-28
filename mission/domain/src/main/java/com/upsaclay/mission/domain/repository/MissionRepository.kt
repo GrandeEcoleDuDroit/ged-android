@@ -15,6 +15,8 @@ interface MissionRepository {
 
     suspend fun getRemoteMissions(): List<Mission>
 
+    suspend fun getLocalMission(missionId: String): Mission?
+
     suspend fun createMission(mission: Mission, imageFile: File?)
 
     suspend fun updateMission(user: User, mission: Mission, imageFile: File?)

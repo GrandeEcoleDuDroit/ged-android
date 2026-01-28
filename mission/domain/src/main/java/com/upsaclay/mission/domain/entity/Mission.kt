@@ -68,6 +68,13 @@ data class Mission(
                 is Published -> imageUrl
                 is Error -> imagePath
             }
+
+        fun resolveImagePath(): String? = when (this) {
+            is Draft -> null
+            is Publishing -> imagePath
+            is Published -> null
+            is Error -> imagePath
+        }
     }
 }
 
