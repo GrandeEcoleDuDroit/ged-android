@@ -3,7 +3,7 @@ import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.missionFixture
 import com.upsaclay.mission.domain.repository.MissionRepository
-import com.upsaclay.mission.domain.usecase.UpsertMissionUseCase
+import com.upsaclay.mission.domain.usecase.UpsertLocalMissionUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -11,11 +11,11 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 
-class UpsertMissionUseCaseTest {
+class UpsertLocalMissionUseCaseTest {
     private val missionRepository: MissionRepository = mockk()
     private val imageRepository: ImageRepository = mockk()
 
-    private lateinit var useCase: UpsertMissionUseCase
+    private lateinit var useCase: UpsertLocalMissionUseCase
 
     @Before
     fun setUp() {
@@ -24,7 +24,7 @@ class UpsertMissionUseCaseTest {
         coEvery { imageRepository.deleteLocalImage(any()) } returns Unit
         coEvery { imageRepository.deleteCacheImage(any()) } returns Unit
 
-        useCase = UpsertMissionUseCase(
+        useCase = UpsertLocalMissionUseCase(
             missionRepository = missionRepository,
             imageRepository = imageRepository
         )
