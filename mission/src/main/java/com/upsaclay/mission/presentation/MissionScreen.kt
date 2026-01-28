@@ -54,7 +54,6 @@ import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.entity.MissionReport
-import com.upsaclay.mission.domain.missionsFixture
 import com.upsaclay.mission.presentation.components.MissionCard
 import com.upsaclay.mission.presentation.components.bottomsheets.MissionBottomSheet
 import kotlinx.coroutines.launch
@@ -169,7 +168,10 @@ private fun MissionScreen(
             ) {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     item {
-                        LazyRow(horizontalArrangement = Arrangement.smallMediumSpacing()) {
+                        LazyRow(
+                            modifier = Modifier.padding(bottom = dimensionResource(com.upsaclay.common.R.dimen.small_padding)),
+                            horizontalArrangement = Arrangement.smallMediumSpacing()
+                        ) {
                             items(filters) { filter ->
                                 FilterChip(
                                     onClick = { onMissionFilterChange(filter) },
