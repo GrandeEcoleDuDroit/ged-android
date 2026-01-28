@@ -54,6 +54,7 @@ import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.entity.MissionReport
+import com.upsaclay.mission.domain.missionsFixture
 import com.upsaclay.mission.presentation.components.MissionCard
 import com.upsaclay.mission.presentation.components.bottomsheets.MissionBottomSheet
 import kotlinx.coroutines.launch
