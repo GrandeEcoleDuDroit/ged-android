@@ -40,6 +40,7 @@ import com.upsaclay.message.domain.entity.MessageReport
 import com.upsaclay.message.domain.fixtures.conversationFixture
 import com.upsaclay.message.domain.fixtures.messagesFixture
 import com.upsaclay.message.presentation.chat.ChatViewModel.MessageEvent
+import com.upsaclay.message.presentation.stringRes
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flowOf
@@ -248,7 +249,7 @@ private fun ChatScreen(
         is ChatScreenBottomSheet.MessageReportBottomSheet -> {
             ReportBottomSheet(
                 sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-                items = MessageReport.Reason.entries,
+                items = MessageReport.Reason.entries.map { stringResource(it.stringRes) },
                 onReportClick = { reason ->
                     activeBottomSheet = null
                     onReportClick(
@@ -267,7 +268,7 @@ private fun ChatScreen(
             )
         }
 
-        else -> Unit
+        null -> Unit
     }
 }
 

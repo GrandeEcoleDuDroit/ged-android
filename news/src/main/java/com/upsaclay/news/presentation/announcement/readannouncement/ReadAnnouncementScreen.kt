@@ -42,6 +42,7 @@ import com.upsaclay.news.domain.entity.AnnouncementReport
 import com.upsaclay.news.presentation.announcement.AnnouncementPresentationUtils.contentStyle
 import com.upsaclay.news.presentation.announcement.AnnouncementPresentationUtils.titleStyle
 import com.upsaclay.news.presentation.announcement.components.AnnouncementBottomSheet
+import com.upsaclay.news.presentation.announcement.stringRes
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -185,7 +186,7 @@ fun ReadAnnouncementScreen(
 
         if (showReportBottomSheet) {
             ReportBottomSheet(
-                items = AnnouncementReport.Reason.entries,
+                items = AnnouncementReport.Reason.entries.map { stringResource(it.stringRes) },
                 onDismiss = { showReportBottomSheet = false },
                 onReportClick = { reason ->
                     showReportBottomSheet = false

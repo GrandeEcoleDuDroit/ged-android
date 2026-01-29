@@ -243,7 +243,7 @@ private fun MissionScreen(
 
             is MissionScreenBottomSheet.MissionReportBottomSheet -> {
                 ReportBottomSheet(
-                    items = MissionReport.Reason.entries,
+                    items = MissionReport.Reason.entries.map { stringResource(it.stringRes) },
                     onReportClick = { reason ->
                         activeBottomSheet = null
                         onReportMissionClick(
@@ -261,7 +261,7 @@ private fun MissionScreen(
                 )
             }
 
-            else -> Unit
+            null -> Unit
         }
     }
 }

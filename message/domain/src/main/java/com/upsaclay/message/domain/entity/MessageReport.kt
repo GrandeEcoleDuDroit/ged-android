@@ -4,7 +4,7 @@ data class MessageReport(
     val conversationId: String,
     val messageId: String,
     val recipient: MessageReport.Recipient,
-    val reason: MessageReport.Reason
+    val reason: String
 ) {
     data class Recipient(
         val fullName: String,
@@ -17,19 +17,6 @@ data class MessageReport(
         SPAM,
         BULLYING_OR_HARASSMENT,
         ILLEGAL_CONTENT,
-        SCAM_OR_FRAUD,
-        OTHER;
-
-        override fun toString(): String {
-            return when (this) {
-                NUDITY_OR_SEXUAL_CONTENT -> "Nudity or sexual content"
-                HATE_SPEECH_OR_SYMBOL -> "Hate speech or symbol"
-                ILLEGAL_CONTENT -> "Illegal content"
-                SPAM -> "Spam"
-                BULLYING_OR_HARASSMENT -> "Bullying or harassment"
-                SCAM_OR_FRAUD -> "Scam or fraud"
-                OTHER -> "Other"
-            }
-        }
+        SCAM_OR_FRAUD
     }
 }
