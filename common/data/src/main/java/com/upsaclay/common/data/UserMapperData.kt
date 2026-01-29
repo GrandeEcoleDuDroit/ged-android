@@ -77,7 +77,7 @@ fun OracleUser.toUser() = User(
 internal fun UserReport.toRemote() = RemoteUserReport(
     user = reportedUser.toRemote(),
     reporter = reporter.toRemote(),
-    reason = reason.toString()
+    reason = reason
 )
 
 private fun UserReport.ReportedUser.toRemote() = RemoteUserReport.RemoteReportedUser(

@@ -2,10 +2,9 @@ package com.upsaclay.common.presentation.user
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -28,7 +27,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.R
@@ -48,6 +46,7 @@ import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.components.TextItem
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.stringRes
 import com.upsaclay.common.utils.PhonePreviews
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -198,14 +197,14 @@ private fun UserScreen(
                     activeDialog = UserScreenDialog.UnblockUserDialog
                 },
                 onReportClick = { activeBottomSheet = UserScreenBottomSheet.UserReportBottomSheet },
-                isBlocked = userBlocked,
+                isUserBlocked = userBlocked,
                 onDismiss = { activeBottomSheet = null }
             )
         }
 
         is UserScreenBottomSheet.UserReportBottomSheet -> {
             ReportBottomSheet(
-                items = UserReport.Reason.entries,
+                items = UserReport.Reason.entries.map { stringResource(it.stringRes) },
                 onReportClick = { reason ->
                     activeBottomSheet = null
                     onReportUserClick(
@@ -227,75 +226,67 @@ private fun UserScreen(
             )
         }
 
-        else -> Unit
+        null -> Unit
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun UserBottomSheet(
+    isUserBlocked: Boolean,
     onDismiss: () -> Unit,
     onReportClick: () -> Unit,
     onBlockClick: () -> Unit,
-    onUnblockClick: () -> Unit,
-    isBlocked: Boolean
+    onUnblockClick: () -> Unit
 ) {
     ModalBottomSheet(
         onDismissRequest = onDismiss
     ) {
-        if (isBlocked) {
+        Column(modifier = Modifier.navigationBarsPadding()) {
+            if (isUserBlocked) {
+                TextItem(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = { Text(text = stringResource(id = R.string.unblock)) },
+                    icon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_outline_block),
+                            contentDescription = null
+                        )
+                    },
+                    onClick = onUnblockClick
+                )
+            } else {
+                TextItem(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = { Text(text = stringResource(id = R.string.block)) },
+                    icon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_outline_block),
+                            contentDescription = null
+                        )
+                    },
+                    onClick = onBlockClick
+                )
+            }
+
             TextItem(
                 modifier = Modifier.fillMaxWidth(),
                 text = {
                     Text(
-                        text = stringResource(id = R.string.unblock)
+                        text = stringResource(id = R.string.report),
+                        color = MaterialTheme.colorScheme.error
                     )
                 },
                 icon = {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_outline_block),
-                        contentDescription = null
+                        painter = painterResource(id = R.drawable.ic_outline_report),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.error
                     )
                 },
-                onClick = onUnblockClick
-            )
-        } else {
-            TextItem(
-                modifier = Modifier.fillMaxWidth(),
-                text = {
-                    Text(
-                        text = stringResource(id = R.string.block)
-                    )
-                },
-                icon = {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_outline_block),
-                        contentDescription = null
-                    )
-                },
-                onClick = onBlockClick
+                onClick = onReportClick
             )
         }
-
-        TextItem(
-            modifier = Modifier.fillMaxWidth(),
-            text = {
-                Text(
-                    text = stringResource(id = R.string.report),
-                    color = MaterialTheme.colorScheme.error
-                )
-            },
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_outline_report),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.error
-                )
-            },
-            onClick = onReportClick
-        )
-
-        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.large_padding)))
     }
 }
 
