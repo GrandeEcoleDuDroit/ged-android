@@ -25,7 +25,7 @@ fun List<Mission>.missionSorting(): List<Mission> {
                 when (priority(lhs)) {
                     Priority.FIRST -> compareValues(rhs.date, lhs.date)
                     Priority.SECOND -> compareNonCompletedMission(lhs, rhs)
-                    Priority.THIRD -> compareValues(rhs.date, lhs.date)
+                    Priority.THIRD -> compareValues(rhs.endDate, lhs.endDate)
                 }
             }
     )
