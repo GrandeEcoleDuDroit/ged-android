@@ -125,10 +125,10 @@ private fun CredentialsInputs(
         Text(
             modifier = Modifier
                 .align(Alignment.Start)
-                .clickable(onClick = onForgottenPasswordClick)
-                .testTag(stringResource(R.string.forgotten_password_button_tag)),
+                .clickable(onClick = onForgottenPasswordClick),
             text = stringResource(R.string.forgotten_password),
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Medium
         )
 
         errorMessage?.let {

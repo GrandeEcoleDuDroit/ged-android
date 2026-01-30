@@ -32,6 +32,11 @@ class ForgottenPasswordViewModel(private val repository: AuthenticationRepositor
         })
 
     }
+    fun onEmailChange (email : String) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(email = email) }
+        }
+    }
     private fun validateInput(email : String) : Boolean {
         _uiState.update { it.copy(emailError = validateEmail(email)) }
         return with(_uiState.value) {
@@ -63,14 +68,6 @@ class ForgottenPasswordViewModel(private val repository: AuthenticationRepositor
         )
 
     }
-
-    fun onEmailChange (email : String) {
-        viewModelScope.launch {
-            _uiState.update { it.copy(email = email) }
-        }
-    }
-
-
 
     internal data class ForgottenPasswordUiState(
         val email : String = "",

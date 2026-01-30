@@ -58,7 +58,7 @@ fun ForgottenPasswordDestination(
     ForgottenPasswordScreen(
         onBackClick = onBackClick,
         onEmailChange = viewModel::onEmailChange,
-        onClick = { suspend { viewModel.sendResetEmail(it) } },
+        onClick = viewModel::sendResetEmail,
         email = uiState.email,
         onEmailError = uiState.emailError
     )
