@@ -23,6 +23,12 @@
     <string name="message_reported">Message reported</string>
     <string name="chat_blocked_user_indicator_text">You cannot send messages to this user unless you unblock them.</string>
     <string name="search_icon_description">Search user</string>
+    <string name="nudity_or_sexual_content">Nudity or sexual content</string>
+    <string name="hate_speech_or_symbols">Hate speech or symbols</string>
+    <string name="spam">Spam</string>
+    <string name="bullying_or_harassment">Bullying or harassment</string>
+    <string name="illegal_content">Illegal content</string>
+    <string name="scam_or_fraud">Scam or fraud</string>
 
     <string name="message_failed_to_send_error">Failed to send message.</string>
 </resources>

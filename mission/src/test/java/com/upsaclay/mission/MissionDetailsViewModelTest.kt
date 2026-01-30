@@ -78,7 +78,7 @@ class MissionDetailsViewModelTest {
                 fullName = userFixture2.fullName,
                 email = userFixture2.email
             ),
-            reason = MissionReport.Reason.FALSE_INFORMATION
+            reason = "reason"
         )
 
         // When

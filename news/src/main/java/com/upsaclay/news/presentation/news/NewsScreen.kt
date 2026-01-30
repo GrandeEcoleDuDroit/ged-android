@@ -30,6 +30,7 @@ import com.upsaclay.news.domain.announcementsFixture
 import com.upsaclay.news.domain.entity.Announcement
 import com.upsaclay.news.domain.entity.AnnouncementReport
 import com.upsaclay.news.presentation.announcement.components.AnnouncementBottomSheet
+import com.upsaclay.news.presentation.announcement.stringRes
 import com.upsaclay.news.presentation.news.components.NewsScaffold
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -177,7 +178,7 @@ private fun NewsScreen(
 
             is NewsScreenBottomSheet.AnnouncementReportBottomSheet -> {
                 ReportBottomSheet(
-                    items = AnnouncementReport.Reason.entries,
+                    items = AnnouncementReport.Reason.entries.map { stringResource(it.stringRes) },
                     onReportClick = { reason ->
                         activeBottomSheet = null
                         onReportAnnouncementClick(

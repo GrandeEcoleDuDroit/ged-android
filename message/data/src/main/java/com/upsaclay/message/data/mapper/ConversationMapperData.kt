@@ -9,7 +9,6 @@ import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.entity.User.UserState
 import com.upsaclay.common.domain.extensions.toEpochMilliUTC
 import com.upsaclay.common.domain.extensions.toLocalDateTimeUTC
-import com.upsaclay.common.domain.extensions.uppercaseFirstLetter
 import com.upsaclay.message.data.local.model.LocalConversation
 import com.upsaclay.message.data.model.ConversationField.Remote.CONVERSATION_ID
 import com.upsaclay.message.data.model.ConversationField.Remote.CREATED_AT
@@ -46,8 +45,8 @@ internal fun Conversation.toRemote(userId: String) = RemoteConversation(
 fun LocalConversation.toConversation(): Conversation {
     val interlocutor = User(
         id = conversationInterlocutorId,
-        firstName = conversationInterlocutorFirstName.uppercaseFirstLetter(),
-        lastName = conversationInterlocutorLastName.uppercaseFirstLetter(),
+        firstName = UserUtils.Name.formatName(conversationInterlocutorFirstName),
+        lastName = UserUtils.Name.formatName(conversationInterlocutorLastName),
         email = conversationInterlocutorEmail,
         schoolLevel = SchoolLevel.fromNumber(conversationInterlocutorSchoolLevel),
         admin = conversationInterlocutorAdmin,

@@ -1,24 +1,31 @@
 package com.upsaclay.mission.presentation.extension
 
+import com.upsaclay.common.domain.entity.ComparatorResult
+import com.upsaclay.common.domain.entity.Priority
 import com.upsaclay.mission.domain.entity.Mission
 
 fun List<Mission>.missionSorting(): List<Mission> {
-    fun priority(mission: Mission): Int {
-        return when  {
-            mission.state !is Mission.MissionState.Published -> 0
-            !mission.completed -> 1
-            else -> 2
+    fun priority(mission: Mission): Priority {
+        return when {
+            mission.state !is Mission.MissionState.Published -> Priority.FIRST
+            !mission.completed -> Priority.SECOND
+            else -> Priority.THIRD
         }
+    }
+
+    fun compareNonCompletedMission(lhs: Mission, rhs: Mission): Int {
+        return compareValues(lhs.startDate, rhs.startDate).takeUnless { it == ComparatorResult.EQUALS }
+            ?: compareValues(lhs.endDate, rhs.endDate).takeUnless { it == ComparatorResult.EQUALS }
+            ?: compareValues(rhs.date, lhs.date)
     }
 
     return sortedWith(
         compareBy(::priority)
-            .thenBy {
-                when (priority(it)) {
-                    0 -> it.date
-                    1 -> it.startDate
-                    2 -> it.endDate
-                    else -> it.date
+            .thenComparator { lhs, rhs ->
+                when (priority(lhs)) {
+                    Priority.FIRST -> compareValues(rhs.date, lhs.date)
+                    Priority.SECOND -> compareNonCompletedMission(lhs, rhs)
+                    Priority.THIRD -> compareValues(rhs.endDate, lhs.endDate)
                 }
             }
     )

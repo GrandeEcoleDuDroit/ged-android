@@ -3,8 +3,10 @@ package com.upsaclay.mission.presentation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -34,7 +36,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
-import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.extension.rootMediumPadding
 import com.upsaclay.common.extension.smallMediumSpacing
 import com.upsaclay.common.presentation.LoadingScreen
@@ -166,27 +167,25 @@ private fun MissionScreen(
                 onRefresh = onRefresh,
                 refreshing = refreshing
             ) {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.mediumSpacing()
-                ) {
+                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    item {
+                        LazyRow(
+                            modifier = Modifier.padding(bottom = dimensionResource(com.upsaclay.common.R.dimen.small_padding)),
+                            horizontalArrangement = Arrangement.smallMediumSpacing()
+                        ) {
+                            items(filters) { filter ->
+                                FilterChip(
+                                    onClick = { onMissionFilterChange(filter) },
+                                    label = { Text(stringResource(filter.label)) },
+                                    selected = filter == activeFilter
+                                )
+                            }
+                        }
+                    }
+
                     if (missions.isEmpty()) {
                         item { EmptyText(text = stringResource(R.string.no_mission)) }
                     } else {
-                        item {
-                            LazyRow(
-                                horizontalArrangement = Arrangement.smallMediumSpacing()
-                            ) {
-                                items(filters) { filter ->
-                                    FilterChip(
-                                        onClick = { onMissionFilterChange(filter) },
-                                        label = { Text(stringResource(filter.label)) },
-                                        selected = filter == activeFilter
-                                    )
-                                }
-                            }
-                        }
-
                         items(missions) { mission ->
                             MissionCard(
                                 mission = mission,
@@ -201,6 +200,7 @@ private fun MissionScreen(
                                     activeBottomSheet = MissionScreenBottomSheet.MissionBottomSheet(mission)
                                 }
                             )
+                            Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)))
                         }
                     }
                 }
@@ -243,7 +243,7 @@ private fun MissionScreen(
 
             is MissionScreenBottomSheet.MissionReportBottomSheet -> {
                 ReportBottomSheet(
-                    items = MissionReport.Reason.entries,
+                    items = MissionReport.Reason.entries.map { stringResource(it.stringRes) },
                     onReportClick = { reason ->
                         activeBottomSheet = null
                         onReportMissionClick(
@@ -261,7 +261,7 @@ private fun MissionScreen(
                 )
             }
 
-            else -> Unit
+            null -> Unit
         }
     }
 }

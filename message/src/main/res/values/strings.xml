@@ -22,6 +22,12 @@
     <string name="no_conversation">Aucune conversation</string>
     <string name="message_reported">Message signalé</string>
     <string name="chat_blocked_user_indicator_text">Vous ne pouvez pas envoyer de messages à cet utilisateur à moins que vous ne le débloquiez.</string>
+    <string name="nudity_or_sexual_content">Nudité ou contenu sexuel</string>
+    <string name="hate_speech_or_symbols">Discours ou symbole de haine</string>
+    <string name="spam">Spam</string>
+    <string name="bullying_or_harassment">Intimidation ou harcèlement</string>
+    <string name="illegal_content">Contenu illégal</string>
+    <string name="scam_or_fraud">Escroquerie ou fraude</string>
 
     <string name="message_failed_to_send_error">Échec de l\’envoi du message.</string>
 

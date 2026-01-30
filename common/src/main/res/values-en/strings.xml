@@ -33,6 +33,7 @@
     <string name="see_all">See all</string>
     <string name="report">Report</string>
     <string name="block">Block</string>
+    <string name="submit">Submit</string>
     <string name="arrow_back_icon_description">Go back</string>
     <string name="ged_logo_description">Logo of the university La Grande École du Droit</string>
     <string name="profile_picture_description">User\'s profile picture</string>
@@ -52,6 +53,15 @@
     <string name="hour_ago_medium">%d hours</string>
     <string name="day_ago_medium">%d days</string>
     <string name="week_ago_medium">%d weeks</string>
+    <string name="selling_promoting_inappropriate_content_report_reason">Selling or promoting inappropriate content</string>
+    <string name="violent_hateful_content_report_reason">Violent or hateful content</string>
+    <string name="spam_scam_report_reason">Spam or scam</string>
+    <string name="false_information_report_reason">False information</string>
+    <string name="intellectual_property_violation_report_reason">Intellectual property violation</string>
+    <string name="other_report_reason">Other</string>
+    <string name="other_report_reason_placeholder">Enter reason</string>
+    <string name="hacked_account">Hacked account</string>
+    <string name="pretending_to_be_someone_else">Pretending to be someone else</string>
 
     <string name="no_user">No users</string>
     <string name="no_internet_connection">No internet connection.</string>
@@ -82,5 +92,4 @@
     <string name="cannot_connect_to_host_error">Could not connect to the server.</string>
     <string name="any_network_error">A network error has occurred.</string>
     <string name="unknown_error">An unknown error occurred.</string>
-
 </resources>

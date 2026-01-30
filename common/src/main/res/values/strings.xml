@@ -37,6 +37,7 @@
     <string name="report">Signaler</string>
     <string name="block">Bloquer</string>
     <string name="confirm">Confirmer</string>
+    <string name="submit">Soumettre</string>
     <string name="arrow_back_icon_description">Retour en arrière</string>
     <string name="ged_logo_description">Logo de l\'université de La Grande École du Droit</string>
     <string name="profile_picture_description">Photo de profil de l\'utilisateur</string>
@@ -57,6 +58,15 @@
     <string name="hour_ago_medium">%d heures</string>
     <string name="day_ago_medium">%d jours</string>
     <string name="week_ago_medium">%d semaines</string>
+    <string name="selling_promoting_inappropriate_content_report_reason">Vente ou promotion de contenu inapproprié</string>
+    <string name="violent_hateful_content_report_reason">Contenu violent ou haineux</string>
+    <string name="spam_scam_report_reason">Spam ou arnaque</string>
+    <string name="false_information_report_reason">Fausses informations</string>
+    <string name="intellectual_property_violation_report_reason">Violation de la propriété intelectuelle</string>
+    <string name="other_report_reason">Autre</string>
+    <string name="other_report_reason_placeholder">Entrez la raison</string>
+    <string name="hacked_account">Compte piraté</string>
+    <string name="pretending_to_be_someone_else">Prétend être quelqu\'un d\'autre</string>
 
     <string name="no_user">Aucun utilisateur</string>
     <string name="no_internet_connection">Aucune connexion Internet.</string>

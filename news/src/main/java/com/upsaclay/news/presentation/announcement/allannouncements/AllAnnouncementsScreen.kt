@@ -45,6 +45,7 @@ import com.upsaclay.news.domain.entity.Announcement.AnnouncementState
 import com.upsaclay.news.domain.entity.AnnouncementReport
 import com.upsaclay.news.presentation.announcement.components.AnnouncementBottomSheet
 import com.upsaclay.news.presentation.announcement.components.ExtendedAnnouncementItem
+import com.upsaclay.news.presentation.announcement.stringRes
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -232,7 +233,7 @@ private fun AllAnnouncementsScreen(
 
             is AllAnnouncementScreenBottomSheet.AnnouncementReportBottomSheet -> {
                 ReportBottomSheet(
-                    items = AnnouncementReport.Reason.entries,
+                    items = AnnouncementReport.Reason.entries.map { stringResource(it.stringRes) },
                     onReportClick = { reason ->
                         activeBottomSheet = null
                         onReportAnnouncementClick(

@@ -3,7 +3,7 @@ package com.upsaclay.authentication.presentation.registration.firstregistration
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import com.upsaclay.authentication.R
-import com.upsaclay.common.domain.extensions.capitalizeWordsRegex
+import com.upsaclay.common.domain.UserUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -15,7 +15,7 @@ class FirstRegistrationViewModel: ViewModel() {
     fun onFirstNameChange(firstName: String) {
         if (validateName(firstName)) {
             _uiState.update {
-                it.copy(firstName = firstName.capitalizeWordsRegex())
+                it.copy(firstName = firstName)
             }
         }
     }
@@ -23,7 +23,7 @@ class FirstRegistrationViewModel: ViewModel() {
     fun onLastNameChange(lastName: String) {
         if (validateName(lastName)) {
             _uiState.update {
-                it.copy(lastName = lastName.capitalizeWordsRegex())
+                it.copy(lastName = lastName)
             }
         }
     }
@@ -33,8 +33,8 @@ class FirstRegistrationViewModel: ViewModel() {
 
         _uiState.update {
             it.copy(
-                firstName = firstName.trim().capitalizeWordsRegex(),
-                lastName = lastName.trim().capitalizeWordsRegex(),
+                firstName = UserUtils.Name.formatName(firstName.trim()),
+                lastName = UserUtils.Name.formatName(lastName.trim()),
                 firstNameError = R.string.mandatory_field.takeIf { firstName.isBlank() },
                 lastNameError = R.string.mandatory_field.takeIf { lastName.isBlank() }
             )
@@ -46,7 +46,7 @@ class FirstRegistrationViewModel: ViewModel() {
     }
 
     private fun validateName(name: String): Boolean =
-        name.matches(Regex("^[a-zA-Z\\s-]+$")) || name.isBlank()
+        name.matches(Regex("^[\\p{L}'\\s-]+$")) || name.isBlank()
 
     internal data class FirstRegistrationUiState(
         val firstName: String = "",

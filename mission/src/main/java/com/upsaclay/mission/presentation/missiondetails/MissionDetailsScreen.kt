@@ -69,6 +69,7 @@ import com.upsaclay.mission.presentation.components.MissionImage
 import com.upsaclay.mission.presentation.components.bottomsheets.MissionBottomSheet
 import com.upsaclay.mission.presentation.missiondetails.MissionDetailsViewModel.MissionButtonState
 import com.upsaclay.mission.presentation.missiondetails.MissionDetailsViewModel.MissionDetailsUiEvent
+import com.upsaclay.mission.presentation.stringRes
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -367,7 +368,7 @@ private fun MissionDetailsScreen(
 
         is MissionDetailsScreenBottomSheet.MissionReportBottomSheet -> {
             ReportBottomSheet(
-                items = MissionReport.Reason.entries,
+                items = MissionReport.Reason.entries.map { stringResource(it.stringRes) },
                 onDismiss = { activeBottomSheet = null },
                 onReportClick = { reason ->
                     activeBottomSheet = null

@@ -3,7 +3,7 @@ package com.upsaclay.common.domain.entity
 data class UserReport(
     val reportedUser: ReportedUser,
     val reporter: Reporter,
-    val reason: Reason
+    val reason: String
 ) {
     data class ReportedUser(
         val id: String,
@@ -18,15 +18,6 @@ data class UserReport(
 
     enum class Reason {
         HACKED_ACCOUNT,
-        PRETENDING_TO_BE_SOMEONE_ELSE,
-        OTHER;
-
-        override fun toString(): String {
-            return when (this) {
-                HACKED_ACCOUNT -> "Hacked account"
-                PRETENDING_TO_BE_SOMEONE_ELSE -> "Pretending to be someone else"
-                OTHER -> "Other"
-            }
-        }
+        PRETENDING_TO_BE_SOMEONE_ELSE
     }
 }
