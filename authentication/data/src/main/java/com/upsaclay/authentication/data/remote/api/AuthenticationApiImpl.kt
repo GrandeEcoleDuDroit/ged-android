@@ -70,14 +70,7 @@ class AuthenticationApiImpl: AuthenticationApi {
         firebaseAuth.signOut()
     }
 
-    override fun forgotPassword(email: String) {
-        firebaseAuth.sendPasswordResetEmail(email)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    // Email sent successfully
-                } else {
-                    // Handle the error
-                }
-            }
+    override suspend fun forgotPassword(email: String) {
+        firebaseAuth.sendPasswordResetEmail(email).await()
     }
 }

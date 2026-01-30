@@ -18,5 +18,5 @@ interface AuthenticationApi {
     suspend fun signUp(email: String, password: String): String?
 
     fun signOut()
-    fun forgotPassword(email: String)
+    suspend fun forgotPassword(email: String)
 }

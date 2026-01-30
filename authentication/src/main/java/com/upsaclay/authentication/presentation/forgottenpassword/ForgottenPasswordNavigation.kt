@@ -6,16 +6,16 @@ import androidx.navigation.NavGraphBuilder
 import com.upsaclay.common.domain.entity.Route
 import kotlinx.serialization.Serializable
 
-@Serializable data object ForgottenPasswordNavigationRoute : Route
+@Serializable data object ForgottenPasswordRoute : Route
 
 
 fun NavController.navigateToForgottenPasswordScreen() {
-    navigate(route = ForgottenPasswordNavigationRoute)
+    navigate(route = ForgottenPasswordRoute)
 }
 fun NavGraphBuilder.forgottenPasswordScreen(
     onBackClick: () -> Unit,
 ) {
-    composable<ForgottenPasswordNavigationRoute>{
+    composable<ForgottenPasswordRoute>{
         ForgottenPasswordDestination(
             onBackClick = onBackClick
         )

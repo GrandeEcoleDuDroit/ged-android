@@ -5,15 +5,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Snackbar
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -59,15 +54,11 @@ fun ForgottenPasswordDestination(
         }
     }
 
-    DisposableEffect(Unit) {
-        onDispose {
-            viewModel.resetValues()
-        }
-    }
+
     ForgottenPasswordScreen(
         onBackClick = onBackClick,
         onEmailChange = viewModel::onEmailChange,
-        onClick = viewModel::onClick,
+        onClick = { suspend { viewModel.sendResetEmail(it) } },
         email = uiState.email,
         onEmailError = uiState.emailError
     )
@@ -79,18 +70,17 @@ fun ForgottenPasswordScreen(
     onBackClick: () -> Unit,
     onEmailChange: (String) -> Unit,
     onClick: () -> Unit,
-    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     email : String,
     onEmailError : Int?
 ) {
     val focusManager = LocalFocusManager.current
-    val scrollState = rememberScrollState()
     Scaffold(
         modifier = Modifier.imePadding(),
         snackbarHost = {
-            SnackbarHost(snackbarHostState) {
-                Snackbar(it)
-            }
+            BackTopBar(
+                onBackClick = onBackClick,
+                title = stringResource(authR.string.forgotten_password)
+            )
         },
 
     ){
@@ -99,7 +89,6 @@ fun ForgottenPasswordScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .rootMediumPadding(innerPadding)
-                .verticalScroll(scrollState)
                 .pointerInput(Unit){
                     detectTapGestures(
                         onTap = {focusManager.clearFocus()}
@@ -111,10 +100,6 @@ fun ForgottenPasswordScreen(
             }
 
         ) {
-            BackTopBar(
-                onBackClick = onBackClick,
-                title = stringResource(authR.string.forgotten_password)
-            )
             ForgottenPasswordForm(
                 onEmailChange = onEmailChange,
                 onClick = onClick,
@@ -127,8 +112,11 @@ fun ForgottenPasswordScreen(
 }
 
 /*
-* PREVIEW
-* */
+==================================================================
+                                PREVIEW
+====================================================================
+*/
+
 
 @PhonePreviews
 @Composable

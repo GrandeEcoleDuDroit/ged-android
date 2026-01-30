@@ -68,7 +68,12 @@ internal class AuthenticationRepositoryImpl(
     }
 
     override suspend fun forgotPassword(email: String) {
-        authenticationRemoteDataSource.forgotPassword(email)
+        try {
+            authenticationRemoteDataSource.forgotPassword(email)
+        }
+        catch (e : Exception){
+            throw e
+        }
     }
 
     private fun listenAuthenticationState() {
