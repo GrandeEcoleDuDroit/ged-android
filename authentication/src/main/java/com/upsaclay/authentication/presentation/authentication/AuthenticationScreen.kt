@@ -83,9 +83,9 @@ fun AuthenticationDestination(
     AuthenticationScreen(
         email = uiState.email,
         password = uiState.password,
+        loading = uiState.loading,
         emailError = uiState.emailError,
         passwordError = uiState.passwordError,
-        loading = uiState.loading,
         errorMessage = uiState.errorMessage,
         snackbarHostState = snackbarHostState,
         onEmailChange = viewModel::onEmailChange,
@@ -99,9 +99,9 @@ fun AuthenticationDestination(
 private fun AuthenticationScreen(
     email: String,
     password: String,
+    loading: Boolean,
     @StringRes emailError: Int? = null,
     @StringRes passwordError: Int? = null,
-    loading: Boolean = false,
     errorMessage: Int? = null,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     onEmailChange: (String) -> Unit,
@@ -209,6 +209,7 @@ private fun AuthenticationScreenPreview() {
        AuthenticationScreen(
            email = email,
            password = password,
+           loading = false,
            onEmailChange = { email = it },
            onPasswordChange = { password = it },
            onRegistrationClick = {},

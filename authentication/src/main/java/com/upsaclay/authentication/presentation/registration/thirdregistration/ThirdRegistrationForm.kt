@@ -70,7 +70,7 @@ fun ThirdRegistrationForm(
                     .fillMaxWidth()
                     .testTag(stringResource(R.string.registration_screen_password_input_tag)),
                 text = password,
-                isEnable = !loading,
+                enabled = !loading,
                 onValueChange = onPasswordChange,
                 errorMessage = passwordError
             )

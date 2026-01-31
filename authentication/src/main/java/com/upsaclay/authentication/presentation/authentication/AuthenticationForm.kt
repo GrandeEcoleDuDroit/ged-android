@@ -55,6 +55,7 @@ fun AuthenticationForm(
         CredentialsInputs(
             email = email,
             password = password,
+            loading = loading,
             emailError = emailError,
             passwordError = passwordError,
             errorMessage = errorMessage,
@@ -77,6 +78,7 @@ fun AuthenticationForm(
         )
 
         RegistrationText(
+            loading = loading,
             onRegistrationClick = {
                 focusManager.clearFocus()
                 onRegisterClick()
@@ -90,6 +92,7 @@ fun AuthenticationForm(
 private fun CredentialsInputs(
     email: String,
     password: String,
+    loading: Boolean,
     emailError: Int?,
     passwordError: Int?,
     errorMessage: Int?,
@@ -107,7 +110,8 @@ private fun CredentialsInputs(
             label = stringResource(com.upsaclay.common.R.string.email),
             onValueChange = onEmailChange,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            errorMessage = emailError?.let { stringResource(it) }
+            errorMessage = emailError?.let { stringResource(it) },
+            enabled = !loading
         )
 
         OutlinePasswordTextField(
@@ -117,7 +121,8 @@ private fun CredentialsInputs(
             text = password,
             onValueChange = onPasswordChange,
             keyboardActions = keyboardActions,
-            errorMessage = passwordError
+            errorMessage = passwordError,
+            enabled = !loading
         )
 
         errorMessage?.let {
@@ -136,6 +141,7 @@ private fun CredentialsInputs(
 
 @Composable
 private fun RegistrationText(
+    loading: Boolean,
     onRegistrationClick: () -> Unit
 ) {
     Row(
@@ -152,7 +158,10 @@ private fun RegistrationText(
             fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier
-                .clickable(onClick = onRegistrationClick)
+                .clickable(
+                    enabled = !loading,
+                    onClick = onRegistrationClick
+                )
                 .testTag(stringResource(id = R.string.authentication_screen_registration_button_tag))
         )
     }
