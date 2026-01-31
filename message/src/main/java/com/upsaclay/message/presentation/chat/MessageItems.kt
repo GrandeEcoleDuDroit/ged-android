@@ -43,7 +43,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.testTag
@@ -76,8 +75,8 @@ fun SentMessageItem(
     modifier: Modifier = Modifier,
     message: Message,
     showSeen: Boolean = false,
-    clickEnabled: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onLongClick: () -> Unit
 ) {
     val dateTimeTextColor = if (isSystemInDarkTheme()) Color.LightGray else Color(0xFFC8C8C8)
 
@@ -93,10 +92,13 @@ fun SentMessageItem(
             horizontalAlignment = Alignment.End
         ) {
             MessageBubble(
-                modifier = Modifier.clickable(
-                    enabled = clickEnabled,
-                    onClick = onClick
-                ),
+                modifier = Modifier
+                    .pointerInput(Unit) {
+                        detectTapGestures(
+                            onTap = { onClick() },
+                            onLongPress = { onLongClick() }
+                        )
+                    },
                 text = message.content,
                 textColor = Color.White,
                 date = message.date,
@@ -176,12 +178,7 @@ fun ReceivedMessageItem(
             modifier = Modifier
                 .weight(0.8f, fill = false)
                 .pointerInput(Unit) {
-                    detectTapGestures(
-                        onLongPress = {
-                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                            onLongClick()
-                        }
-                    )
+                    detectTapGestures(onLongPress = { onLongClick() })
                 },
             text = message.content,
             date = message.date,
@@ -400,8 +397,8 @@ private fun SeenSentMessageItemPreview() {
         SentMessageItem(
             message = messageFixture.copy(content = "Hahaha"),
             showSeen = true,
-            clickEnabled = false,
-            onClick = {}
+            onClick = {},
+            onLongClick = {}
         )
     }
 }
@@ -412,8 +409,8 @@ private fun SendingSentMessageItemPreview() {
     GedoiseTheme {
         SentMessageItem(
             message = messageFixture.copy(state = MessageState.SENDING),
-            clickEnabled = false,
-            onClick = {}
+            onClick = {},
+            onLongClick = {}
         )
     }
 }
@@ -424,8 +421,8 @@ private fun ErrorSentMessageItemPreview() {
     GedoiseTheme {
         SentMessageItem(
             message = messageFixture.copy(state = MessageState.ERROR),
-            clickEnabled = true,
-            onClick = {}
+            onClick = {},
+            onLongClick = {}
         )
     }
 }

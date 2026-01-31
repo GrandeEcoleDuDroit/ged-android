@@ -38,6 +38,7 @@
     <string name="block">Bloquer</string>
     <string name="confirm">Confirmer</string>
     <string name="submit">Soumettre</string>
+    <string name="copy">Copier</string>
     <string name="arrow_back_icon_description">Retour en arrière</string>
     <string name="ged_logo_description">Logo de l\'université de La Grande École du Droit</string>
     <string name="profile_picture_description">Photo de profil de l\'utilisateur</string>
