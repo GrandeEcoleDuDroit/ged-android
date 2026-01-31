@@ -12,7 +12,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Scaffold
@@ -188,9 +187,7 @@ fun AccountInformationScreen(
                 }
             )
 
-            SelectionContainer {
-                UserInformationItems(user = user)
-            }
+            UserInformationItems(user = user)
         }
 
         if (showBottomSheet) {

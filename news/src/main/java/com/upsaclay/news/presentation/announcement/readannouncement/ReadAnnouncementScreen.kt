@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -152,16 +151,14 @@ fun ReadAnnouncementScreen(
             }
         }
     ) { innerPadding ->
-        SelectionContainer {
-            Announcement(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .rootMediumPadding(innerPadding)
-                    .verticalScroll(rememberScrollState()),
-                announcement = announcement,
-                onAuthorClick = { onAuthorClick(announcement.author) }
-            )
-        }
+        AnnouncementContent(
+            modifier = Modifier
+                .fillMaxSize()
+                .rootMediumPadding(innerPadding)
+                .verticalScroll(rememberScrollState()),
+            announcement = announcement,
+            onAuthorClick = { onAuthorClick(announcement.author) }
+        )
 
         if (showBottomSheet) {
             AnnouncementBottomSheet(
@@ -211,7 +208,7 @@ fun ReadAnnouncementScreen(
 }
 
 @Composable
-private fun Announcement(
+private fun AnnouncementContent(
     modifier: Modifier = Modifier,
     announcement: Announcement,
     onAuthorClick: () -> Unit
