@@ -282,7 +282,7 @@ private fun MissionDetailsScreen(
                         participants = mission.participants,
                         onParticipantClick = onParticipantClick,
                         onLongParticipantClick = {
-                            if (isManager) {
+                            if (user.id != it.id && (isManager || user.admin)) {
                                 hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                 activeBottomSheet = MissionDetailsScreenBottomSheet.ParticipantBottomSheet(it)
                             }
