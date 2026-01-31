@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
@@ -31,7 +30,7 @@ import com.upsaclay.authentication.presentation.components.RegistrationScaffold
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.extension.rootMediumPadding
 import com.upsaclay.common.presentation.SingleUiEvent
-import com.upsaclay.common.presentation.components.LinearProgressBar
+import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.PrimaryButton
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.PhonePreviews
@@ -114,7 +113,7 @@ private fun ThirdRegistrationScreen(
             verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding))
         ) {
             if (loading) {
-                LinearProgressBar(modifier = Modifier.fillMaxWidth())
+                LoadingDialog()
             }
 
             Box(
@@ -162,14 +161,13 @@ private fun ThirdRegistrationScreen(
 private fun ThirdRegistrationScreenPreview() {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    val isLoading by remember { mutableStateOf(false) }
 
     GedoiseTheme {
         Surface {
             ThirdRegistrationScreen(
                 email = email,
                 password = password,
-                loading = isLoading,
+                loading = false,
                 legalNoticeChecked = false,
                 snackbarHostState = SnackbarHostState(),
                 onEmailChange = { email = it },
