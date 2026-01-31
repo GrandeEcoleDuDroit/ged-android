@@ -33,7 +33,7 @@ fun OutlinePasswordTextField(
     onValueChange: (String) -> Unit,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     @StringRes errorMessage: Int? = null,
-    isEnable: Boolean = true
+    enabled: Boolean = true
 ) {
     var passwordVisible by remember { mutableStateOf(false) }
     val icon: Painter
@@ -74,7 +74,7 @@ fun OutlinePasswordTextField(
         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
         isError = errorMessage != null,
         supportingText = errorText,
-        enabled = isEnable,
+        enabled = enabled,
         singleLine = true
     )
 }
