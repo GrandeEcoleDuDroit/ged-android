@@ -35,9 +35,8 @@ import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.DateUtils
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.message.R
-import com.upsaclay.message.domain.fixtures.conversationFixture
 import com.upsaclay.message.domain.entity.Message
-import com.upsaclay.message.domain.entity.Message.MessageState
+import com.upsaclay.message.domain.fixtures.conversationFixture
 import com.upsaclay.message.domain.fixtures.messagesFixture
 import com.upsaclay.message.presentation.chat.ChatViewModel.MessageEvent
 import kotlinx.coroutines.flow.Flow
@@ -52,6 +51,7 @@ internal fun MessageFeed(
     interlocutor: User,
     newMessageEvent: MessageEvent.NewMessage?,
     onErrorSentMessageClick: (Message) -> Unit,
+    onSentMessageLongClick: (Message) -> Unit,
     onReceivedMessageLongClick: (Message) -> Unit,
     onInterlocutorClick: () -> Unit
 ) {
@@ -101,16 +101,28 @@ internal fun MessageFeed(
                     previousMessage = previousMessage
                 )
 
-                MessageItem(
-                    modifier = Modifier.padding(top = messageTopPadding(condition)),
-                    message = message,
-                    condition = condition,
-                    interlocutor = interlocutor,
-                    index = index,
-                    onErrorMessageClick = onErrorSentMessageClick,
-                    onLongClick = onReceivedMessageLongClick,
-                    onInterlocutorClick = onInterlocutorClick
-                )
+                if (condition.isSender) {
+                    SentMessageItem(
+                        modifier = Modifier
+                            .padding(top = messageTopPadding(condition))
+                            .testTag(stringResource(R.string.chat_screen_send_message_item_tag) + index),
+                        message = message,
+                        showSeen = condition.showSeenMessage,
+                        onClick = { onErrorSentMessageClick(message) },
+                        onLongClick = { onSentMessageLongClick(message) }
+                    )
+                } else {
+                    ReceivedMessageItem(
+                        modifier = Modifier
+                            .padding(top = messageTopPadding(condition))
+                            .testTag(stringResource(R.string.chat_screen_receive_message_item_tag) + index),
+                        message = message,
+                        displayProfilePicture = condition.displayProfilePicture,
+                        profilePictureUrl = interlocutor.profilePictureUrl,
+                        onLongClick = { onReceivedMessageLongClick(message) },
+                        onInterlocutorClick = onInterlocutorClick
+                    )
+                }
 
                 if (condition.isOldestMessage || !condition.sameDay) {
                     val topPadding = if (condition.isOldestMessage) {
@@ -140,39 +152,6 @@ internal fun MessageFeed(
                 onClick = { scope.launch { listState.animateScrollToItem(0) } }
             )
         }
-    }
-}
-
-@Composable
-private fun MessageItem(
-    modifier: Modifier = Modifier,
-    message: Message,
-    condition: MessageCondition,
-    interlocutor: User,
-    index: Int,
-    onErrorMessageClick: (Message) -> Unit,
-    onLongClick: (Message) -> Unit,
-    onInterlocutorClick: () -> Unit
-) {
-    if (condition.isSender) {
-        SentMessageItem(
-            modifier = modifier
-                .testTag(stringResource(R.string.chat_screen_send_message_item_tag) + index),
-            message = message,
-            showSeen = condition.showSeenMessage,
-            clickEnabled = message.state == MessageState.ERROR,
-            onClick = { onErrorMessageClick(message) }
-        )
-    } else {
-        ReceivedMessageItem(
-            modifier = modifier
-                .testTag(stringResource(R.string.chat_screen_receive_message_item_tag) + index),
-            message = message,
-            displayProfilePicture = condition.displayProfilePicture,
-            profilePictureUrl = interlocutor.profilePictureUrl,
-            onLongClick = { onLongClick(message) },
-            onInterlocutorClick = onInterlocutorClick
-        )
     }
 }
 
@@ -228,6 +207,7 @@ private fun MessageFeedPreview() {
                 interlocutor = conversationFixture.interlocutor,
                 newMessageEvent = null,
                 onErrorSentMessageClick = {},
+                onSentMessageLongClick = {},
                 onReceivedMessageLongClick = {},
                 onInterlocutorClick = {}
             )

@@ -17,10 +17,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.paging.PagingData
 import com.upsaclay.common.domain.entity.User
@@ -130,6 +134,8 @@ private fun ChatScreen(
     val focusManager = LocalFocusManager.current
     var activeBottomSheet by remember { mutableStateOf<ChatScreenBottomSheet?>(null) }
     var activeDialog by remember { mutableStateOf<ChatDialog?>(null) }
+    val haptic = LocalHapticFeedback.current
+    val clipboardManager = LocalClipboardManager.current
 
     when(val dialog = activeDialog) {
         is ChatDialog.DeleteMessageDialog -> {
@@ -204,7 +210,12 @@ private fun ChatScreen(
                         activeBottomSheet = ChatScreenBottomSheet.SentMessageBottomSheet(it)
                     }
                 },
+                onSentMessageLongClick = {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    activeBottomSheet = ChatScreenBottomSheet.SentMessageBottomSheet(it)
+                },
                 onReceivedMessageLongClick = {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     activeBottomSheet = ChatScreenBottomSheet.ReceivedMessageBottomSheet(it)
                 },
                 onInterlocutorClick = { onInterlocutorClick(conversation.interlocutor) }
@@ -225,6 +236,11 @@ private fun ChatScreen(
     when(val bottomSheet = activeBottomSheet) {
         is ChatScreenBottomSheet.SentMessageBottomSheet -> {
             SentMessageBottomSheet(
+                messageState = bottomSheet.message.state,
+                onCopyClick = {
+                    activeBottomSheet = null
+                    clipboardManager.setText(AnnotatedString(bottomSheet.message.content))
+                },
                 onResendMessageClick = {
                     activeBottomSheet = null
                     onResendMessageClick(bottomSheet.message)
@@ -239,6 +255,10 @@ private fun ChatScreen(
 
         is ChatScreenBottomSheet.ReceivedMessageBottomSheet -> {
             ReceivedMessageBottomSheet(
+                onCopyClick = {
+                    activeBottomSheet = null
+                    clipboardManager.setText(AnnotatedString(bottomSheet.message.content))
+                },
                 onReportClick = {
                     activeBottomSheet = ChatScreenBottomSheet.MessageReportBottomSheet(bottomSheet.message)
                 },
