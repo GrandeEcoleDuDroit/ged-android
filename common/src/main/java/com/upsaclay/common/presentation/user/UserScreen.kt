@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -178,9 +177,7 @@ private fun UserScreen(
             )
 
             if (user.state != User.UserState.DELETED) {
-                SelectionContainer {
-                    UserInformationItems(user = user)
-                }
+                UserInformationItems(user = user)
             }
         }
     }

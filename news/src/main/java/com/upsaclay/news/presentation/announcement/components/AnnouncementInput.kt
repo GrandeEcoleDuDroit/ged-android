@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -36,22 +35,20 @@ fun CreateAnnouncementInputs(
     onTitleChange: (String) -> Unit,
     onContentChange: (String) -> Unit
 ) {
-    SelectionContainer(modifier = modifier) {
-        Column(
-            modifier = Modifier.verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.mediumSpacing()
-        ) {
-            AnnouncementTitleInput(
-                title = title,
-                onTitleChange = onTitleChange,
-                focused = true
-            )
+    Column(
+        modifier = modifier.verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.mediumSpacing()
+    ) {
+        AnnouncementTitleInput(
+            title = title,
+            onTitleChange = onTitleChange,
+            focused = true
+        )
 
-            AnnouncementContentInput(
-                content = content,
-                onContentChange = onContentChange
-            )
-        }
+        AnnouncementContentInput(
+            content = content,
+            onContentChange = onContentChange
+        )
     }
 }
 
@@ -63,18 +60,19 @@ fun EditAnnouncementInputs(
     onTitleChange: (String) -> Unit,
     onContentChange: (String) -> Unit
 ) {
-    SelectionContainer(modifier = modifier) {
-        Column(verticalArrangement = Arrangement.mediumSpacing()) {
-            AnnouncementTitleInput(
-                title = title,
-                onTitleChange = onTitleChange
-            )
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.mediumSpacing()
+    ) {
+        AnnouncementTitleInput(
+            title = title,
+            onTitleChange = onTitleChange
+        )
 
-            AnnouncementContentInput(
-                content = content,
-                onContentChange = onContentChange
-            )
-        }
+        AnnouncementContentInput(
+            content = content,
+            onContentChange = onContentChange
+        )
     }
 }
 

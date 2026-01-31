@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
-import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -41,58 +40,56 @@ fun MissionFormTitleDescriptionSection(
     val bringIntoViewRequester = remember { BringIntoViewRequester() }
     val coroutineScope = rememberCoroutineScope()
 
-    SelectionContainer {
-        Column(
-            modifier = modifier,
-            verticalArrangement = Arrangement.mediumSpacing()
-        ) {
-            TransparentTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .bringIntoViewRequester(bringIntoViewRequester)
-                    .onFocusEvent {
-                        if (it.isFocused) {
-                            coroutineScope.launch {
-                                bringIntoViewRequester.bringIntoView()
-                            }
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.mediumSpacing()
+    ) {
+        TransparentTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .bringIntoViewRequester(bringIntoViewRequester)
+                .onFocusEvent {
+                    if (it.isFocused) {
+                        coroutineScope.launch {
+                            bringIntoViewRequester.bringIntoView()
                         }
-                    },
-                value = title,
-                onValueChange = onTitleChange,
-                placeholder = {
-                    Text(
-                        text = stringResource(R.string.title),
-                        style = titleStyle,
-                        color = MaterialTheme.colorScheme.inputForeground
-                    )
+                    }
                 },
-                textStyle = titleStyle
-            )
+            value = title,
+            onValueChange = onTitleChange,
+            placeholder = {
+                Text(
+                    text = stringResource(R.string.title),
+                    style = titleStyle,
+                    color = MaterialTheme.colorScheme.inputForeground
+                )
+            },
+            textStyle = titleStyle
+        )
 
-            TransparentTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .bringIntoViewRequester(bringIntoViewRequester)
-                    .onFocusEvent {
-                        if (it.isFocused) {
-                            coroutineScope.launch {
-                                bringIntoViewRequester.bringIntoView()
-                            }
+        TransparentTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .bringIntoViewRequester(bringIntoViewRequester)
+                .onFocusEvent {
+                    if (it.isFocused) {
+                        coroutineScope.launch {
+                            bringIntoViewRequester.bringIntoView()
                         }
-                    },
-                value = description,
-                onValueChange = onDescriptionChange,
-                placeholder = {
-                    Text(
-                        text = stringResource(R.string.description),
-                        style = descriptionStyle,
-                        color = MaterialTheme.colorScheme.inputForeground
-                    )
+                    }
                 },
-                minLines = 4,
-                textStyle = descriptionStyle
-            )
-        }
+            value = description,
+            onValueChange = onDescriptionChange,
+            placeholder = {
+                Text(
+                    text = stringResource(R.string.description),
+                    style = descriptionStyle,
+                    color = MaterialTheme.colorScheme.inputForeground
+                )
+            },
+            minLines = 4,
+            textStyle = descriptionStyle
+        )
     }
 }
 
