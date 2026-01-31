@@ -143,7 +143,10 @@ private fun ThirdRegistrationScreen(
                         .testTag(stringResource(R.string.registration_screen_next_button_tag)),
                     enabled = !loading,
                     text = stringResource(id = com.upsaclay.common.R.string.next),
-                    onClick = onRegistrationClick
+                    onClick = {
+                        focusManager.clearFocus()
+                        onRegistrationClick()
+                    }
                 )
             }
         }
