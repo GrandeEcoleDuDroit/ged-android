@@ -61,7 +61,7 @@ class MainViewModelTest {
     @Test
     fun data_should_be_listened_when_user_is_authenticated() = runTest {
         // When
-        viewModel.updateAppData()
+        viewModel.startAppDataUpdating()
 
         // Then
         coVerify { listenDataUseCase.start(any(), any()) }
@@ -70,7 +70,7 @@ class MainViewModelTest {
     @Test
     fun data_should_be_fetched_when_user_is_authenticated() {
         // When
-        viewModel.updateAppData()
+        viewModel.startAppDataUpdating()
 
         // Then
         coVerify { fetchDataUseCase.execute(userId) }
@@ -82,7 +82,7 @@ class MainViewModelTest {
         every { authenticationRepository.authenticationState } returns flowOf(AuthenticationState.Unauthenticated)
 
         // When
-        viewModel.updateAppData()
+        viewModel.startAppDataUpdating()
 
         // Then
         coVerify { listenDataUseCase.stop() }
@@ -94,7 +94,7 @@ class MainViewModelTest {
         every { authenticationRepository.authenticationState } returns flowOf(AuthenticationState.Unauthenticated)
 
         // When
-        viewModel.updateAppData()
+        viewModel.startAppDataUpdating()
         advanceTimeBy(2000)
         advanceUntilIdle()
 
