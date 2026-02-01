@@ -2,6 +2,8 @@ package com.upsaclay.gedoise.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.upsaclay.app.domain.entity.NotificationPreferences
+import com.upsaclay.app.domain.repository.PreferencesRepository
 import com.upsaclay.app.domain.usecase.ClearDataUseCase
 import com.upsaclay.app.domain.usecase.FcmTokenUseCase
 import com.upsaclay.app.domain.usecase.FetchDataUseCase
@@ -19,6 +21,7 @@ import timber.log.Timber
 
 class MainViewModel(
     private val authenticationRepository: AuthenticationRepository,
+    private val preferencesRepository: PreferencesRepository,
     private val fetchDataUseCase: FetchDataUseCase,
     private val clearDataUseCase: ClearDataUseCase,
     private val fcmTokenUseCase: FcmTokenUseCase,
@@ -29,7 +32,7 @@ class MainViewModel(
         e(e.message)
     }
 
-    fun updateAppData() {
+    fun startAppDataUpdating() {
         viewModelScope.launch {
             authenticationRepository.authenticationState.collectLatest { state ->
                 when (state) {
@@ -51,5 +54,12 @@ class MainViewModel(
                 }
             }
         }
+    }
+
+    suspend fun getNotificationPreferences(): NotificationPreferences? =
+        preferencesRepository.getNotificationPreferences()
+
+    suspend fun storeNotificationPreferences(notificationPreferences: NotificationPreferences) {
+        preferencesRepository.storeNotificationPreferences(notificationPreferences)
     }
 }

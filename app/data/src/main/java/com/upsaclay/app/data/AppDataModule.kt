@@ -3,8 +3,12 @@ package com.upsaclay.app.data
 import androidx.room.Room
 import com.upsaclay.app.data.local.FcmDataStore
 import com.upsaclay.app.data.local.FcmLocalDataSource
+import com.upsaclay.app.data.local.PreferencesDataStore
+import com.upsaclay.app.data.local.PreferencesLocalDataSource
 import com.upsaclay.app.data.repository.FcmTokenRepositoryImpl
+import com.upsaclay.app.data.repository.PreferencesRepositoryImpl
 import com.upsaclay.app.data.repository.RouteRepositoryImpl
+import com.upsaclay.app.domain.repository.PreferencesRepository
 import com.upsaclay.common.data.GED_SERVER_QUALIFIER
 import com.upsaclay.common.data.remote.api.FcmApi
 import com.upsaclay.common.domain.repository.FcmTokenRepository
@@ -42,4 +46,7 @@ val appDataModule = module {
     singleOf(::FcmLocalDataSource)
     singleOf(::FcmDataStore)
     singleOf(::FcmTokenRepositoryImpl) { bind<FcmTokenRepository>() }
+    singleOf(::PreferencesRepositoryImpl) { bind<PreferencesRepository>() }
+    singleOf(::PreferencesLocalDataSource)
+    singleOf(::PreferencesDataStore)
 }
