@@ -24,8 +24,7 @@ fun NavController.navigateToThirdRegistration(
 }
 
 fun NavGraphBuilder.thirdRegistrationScreen(
-    onBackClick: () -> Unit,
-    onRegistrationClick: () -> Unit
+    onBackClick: () -> Unit
 ) {
     composable<ThirdRegistrationRoute> { entry ->
         val firstName = entry.toRoute<ThirdRegistrationRoute>().firstName
@@ -37,7 +36,6 @@ fun NavGraphBuilder.thirdRegistrationScreen(
             lastName = lastName,
             schoolLevel = schoolLevel,
             onBackClick = onBackClick,
-            onRegistrationClick = onRegistrationClick
         )
     }
 }

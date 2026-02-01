@@ -148,14 +148,9 @@ fun GedNavHost(
                 onNextClick = navController::navigateToThirdRegistration
             )
 
-            thirdRegistrationScreen(
-                onBackClick = navController::popBackStack,
-                onRegistrationClick = navController::navigateToNews
-            )
+            thirdRegistrationScreen(onBackClick = navController::popBackStack)
 
-            forgottenPasswordScreen(
-             onBackClick = navController::popBackStack
-            )
+            forgottenPasswordScreen(onBackClick = navController::popBackStack)
         }
 
         newsSection(
@@ -165,9 +160,7 @@ fun GedNavHost(
             onSeeAllAnnouncementsClick = navController::navigateToAllAnnouncements,
             bottomBar = bottomBar
         ) {
-            createAnnouncementScreen(
-                onBackClick = navController::popBackStack
-            )
+            createAnnouncementScreen(onBackClick = navController::popBackStack)
 
             readAnnouncementScreen(
                 onBackClick = navController::popBackStack,
@@ -175,9 +168,7 @@ fun GedNavHost(
                 onAuthorClick = navController::navigateToUser
             )
 
-            editAnnouncementScreen(
-                onBackClick = navController::popBackStack
-            )
+            editAnnouncementScreen(onBackClick = navController::popBackStack)
 
             allAnnouncementsScreen(
                 onBackClick = navController::popBackStack,
@@ -247,9 +238,7 @@ fun GedNavHost(
             onEditMissionClick = navController::navigateToEditMission,
             bottomBar = bottomBar
         ) {
-            createMissionScreen(
-                onBackClick = navController::popBackStack
-            )
+            createMissionScreen(onBackClick = navController::popBackStack)
 
             missionDetailsScreen(
                 onBackClick = navController::popBackStack,
@@ -259,9 +248,7 @@ fun GedNavHost(
                 onSeeAllUsersClick = navController::navigateToAllUsers
             )
 
-            editMissionScreen(
-                onBackClick = navController::popBackStack
-            )
+            editMissionScreen(onBackClick = navController::popBackStack)
 
             allUsersScreen(
                 onBackClick = navController::popBackStack,

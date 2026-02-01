@@ -9,10 +9,7 @@ import com.upsaclay.authentication.mapAuthException
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.usecase.VerifyEmailFormatUseCase
 import com.upsaclay.common.extension.executeUiBlockingRequest
-import com.upsaclay.common.presentation.SingleUiEvent
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 
@@ -23,9 +20,6 @@ class ThirdRegistrationViewModel(
 ): ViewModel() {
     private val _uiState = MutableStateFlow(ThirdRegistrationUiState())
     internal val uiState: StateFlow<ThirdRegistrationUiState> = _uiState
-
-    private val _event = MutableSharedFlow<SingleUiEvent>()
-    val event: SharedFlow<SingleUiEvent> = _event
 
     fun onEmailChange(email: String) {
         _uiState.update {
@@ -61,7 +55,6 @@ class ThirdRegistrationViewModel(
 
         executeRequest {
             registerUseCase.execute(email, password, firstName, lastName, schoolLevel)
-            _event.emit(SingleUiEvent.Success())
         }
     }
 
@@ -100,8 +93,10 @@ class ThirdRegistrationViewModel(
             onLoading = {
                 _uiState.update { it.copy(loading = true) }
             },
-            onError = {
-                _event.emit(SingleUiEvent.Error(mapAuthException(it)))
+            onError = { error ->
+                _uiState.update {
+                    it.copy(errorMessage = mapAuthException(error))
+                }
             },
             onFinished = {
                 _uiState.update { it.copy(loading = false) }
