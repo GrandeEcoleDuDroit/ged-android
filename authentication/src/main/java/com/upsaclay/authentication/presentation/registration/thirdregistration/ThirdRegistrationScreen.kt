@@ -7,20 +7,16 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
@@ -29,13 +25,10 @@ import com.upsaclay.authentication.R
 import com.upsaclay.authentication.presentation.components.RegistrationScaffold
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.extension.rootMediumPadding
-import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.PrimaryButton
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.PhonePreviews
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -44,28 +37,9 @@ fun ThirdRegistrationDestination(
     lastName: String,
     schoolLevel: SchoolLevel,
     onBackClick: () -> Unit,
-    onRegistrationClick: () -> Unit,
     viewModel: ThirdRegistrationViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val context = LocalContext.current
-    val scope = rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() }
-    val showSnackBar = { message: String ->
-        scope.launch {
-            snackbarHostState.showSnackbar(message = message)
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        viewModel.event.collectLatest { event ->
-            when (event) {
-                is SingleUiEvent.Error -> showSnackBar(context.getString(event.messageId))
-
-                is SingleUiEvent.Success -> onRegistrationClick()
-            }
-        }
-    }
 
     ThirdRegistrationScreen(
         email = uiState.email,
@@ -75,7 +49,6 @@ fun ThirdRegistrationDestination(
         emailError = uiState.emailError,
         passwordError = uiState.passwordError,
         errorMessage = uiState.errorMessage,
-        snackbarHostState = snackbarHostState,
         onEmailChange = viewModel::onEmailChange,
         onPasswordChange = viewModel::onPasswordChange,
         onRegistrationClick = { viewModel.register(firstName, lastName, schoolLevel) },
@@ -93,7 +66,6 @@ private fun ThirdRegistrationScreen(
     @StringRes emailError: Int? = null,
     @StringRes passwordError: Int? = null,
     @StringRes errorMessage: Int? = null,
-    snackbarHostState: SnackbarHostState,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onRegistrationClick: () -> Unit,
@@ -102,10 +74,7 @@ private fun ThirdRegistrationScreen(
 ) {
     val focusManager = LocalFocusManager.current
 
-    RegistrationScaffold(
-        onBackClick = onBackClick,
-        snackbarHostState = snackbarHostState
-    ) { paddingValues ->
+    RegistrationScaffold(onBackClick = onBackClick) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -172,7 +141,6 @@ private fun ThirdRegistrationScreenPreview() {
                 password = password,
                 loading = false,
                 legalNoticeChecked = false,
-                snackbarHostState = SnackbarHostState(),
                 onEmailChange = { email = it },
                 onPasswordChange = { password = it },
                 onRegistrationClick = {},
