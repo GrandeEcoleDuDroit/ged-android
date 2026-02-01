@@ -8,28 +8,32 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 
+private const val MAX_NAME_LENGTH: Int = 50
+
 class FirstRegistrationViewModel: ViewModel() {
     private val _uiState = MutableStateFlow(FirstRegistrationUiState())
     internal val uiState: StateFlow<FirstRegistrationUiState> = _uiState
 
     fun onFirstNameChange(firstName: String) {
-        if (validateName(firstName)) {
+        val truncatedFirstName = firstName.take(MAX_NAME_LENGTH)
+        if (validateName(truncatedFirstName)) {
             _uiState.update {
-                it.copy(firstName = firstName)
+                it.copy(firstName = truncatedFirstName)
             }
         }
     }
 
     fun onLastNameChange(lastName: String) {
-        if (validateName(lastName)) {
+        val truncatedLastName = lastName.take(MAX_NAME_LENGTH)
+        if (validateName(truncatedLastName)) {
             _uiState.update {
-                it.copy(lastName = lastName)
+                it.copy(lastName = truncatedLastName)
             }
         }
     }
 
     fun validateInputs(): Boolean {
-        val (firstName, lastName) = _uiState.value
+        val (firstName, lastName) = uiState.value
 
         _uiState.update {
             it.copy(
