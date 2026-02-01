@@ -11,6 +11,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.upsaclay.authentication.authenticationSection
+import com.upsaclay.authentication.presentation.forgottenpassword.forgottenPasswordScreen
+import com.upsaclay.authentication.presentation.forgottenpassword.navigateToForgottenPassword
 import com.upsaclay.authentication.presentation.registration.firstregistration.firstRegistrationScreen
 import com.upsaclay.authentication.presentation.registration.firstregistration.navigateToFirstRegistration
 import com.upsaclay.authentication.presentation.registration.secondregistration.navigateToSecondRegistration
@@ -133,7 +135,8 @@ fun GedNavHost(
 
         authenticationSection(
             onRegistrationClick = navController::navigateToFirstRegistration,
-            onLoginClick = navController::navigateToNews
+            onLoginClick = navController::navigateToNews,
+            onForgottenPasswordClick = navController::navigateToForgottenPassword
         ) {
             firstRegistrationScreen(
                 onBackClick = navController::popBackStack,
@@ -148,6 +151,9 @@ fun GedNavHost(
             thirdRegistrationScreen(
                 onBackClick = navController::popBackStack,
                 onRegistrationClick = navController::navigateToNews
+            )
+            forgottenPasswordScreen(
+             onBackClick = navController::popBackStack
             )
         }
 

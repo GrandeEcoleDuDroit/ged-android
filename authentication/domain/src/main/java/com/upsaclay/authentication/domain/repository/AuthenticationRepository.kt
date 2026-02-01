@@ -19,4 +19,6 @@ interface AuthenticationRepository {
     suspend fun logout()
 
     suspend fun storeAuthenticationState(authenticationState: AuthenticationState)
+
+    suspend fun resetPassword(email : String)
 }

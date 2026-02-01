@@ -69,4 +69,8 @@ class AuthenticationApiImpl: AuthenticationApi {
     override fun signOut() {
         firebaseAuth.signOut()
     }
+
+    override suspend fun resetPassword(email: String) {
+        firebaseAuth.sendPasswordResetEmail(email).await()
+    }
 }
