@@ -103,7 +103,10 @@ private fun DeleteAccountScreen(
 
             Button(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = onDeleteAccountClick,
+                onClick = {
+                    focusManager.clearFocus()
+                    onDeleteAccountClick()
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.error
                 )

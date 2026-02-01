@@ -192,7 +192,10 @@ private fun ChatScreen(
             focusManager.clearFocus()
             onBackClick()
         },
-        onInterlocutorClick = { onInterlocutorClick(conversation.interlocutor) }
+        onInterlocutorClick = {
+            focusManager.clearFocus()
+            onInterlocutorClick(conversation.interlocutor)
+        }
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -218,7 +221,10 @@ private fun ChatScreen(
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     activeBottomSheet = ChatScreenBottomSheet.ReceivedMessageBottomSheet(it)
                 },
-                onInterlocutorClick = { onInterlocutorClick(conversation.interlocutor) }
+                onInterlocutorClick = {
+                    focusManager.clearFocus()
+                    onInterlocutorClick(conversation.interlocutor)
+                }
             )
 
             MessageBottomSection(

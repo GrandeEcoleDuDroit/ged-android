@@ -24,7 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -88,7 +88,7 @@ fun CreateConversationScreen(
     onUserClick: (User) -> Unit,
     onBackClick: () -> Unit
 ) {
-    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
     var search by remember { mutableStateOf(false) }
 
     BackHandler(enabled = search) {
@@ -104,7 +104,7 @@ fun CreateConversationScreen(
             onResetQuery()
         },
         onBackClick = {
-            keyboardController?.hide()
+            focusManager.clearFocus()
             onBackClick()
         },
         onSearchClick = { search = true },
@@ -119,7 +119,7 @@ fun CreateConversationScreen(
                 UsersFeed(
                     users = users,
                     onUserClick = {
-                        keyboardController?.hide()
+                        focusManager.clearFocus()
                         onUserClick(it)
                     }
                 )

@@ -74,7 +74,12 @@ private fun ThirdRegistrationScreen(
 ) {
     val focusManager = LocalFocusManager.current
 
-    RegistrationScaffold(onBackClick = onBackClick) { paddingValues ->
+    RegistrationScaffold(
+        onBackClick = {
+            focusManager.clearFocus()
+            onBackClick()
+        }
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()

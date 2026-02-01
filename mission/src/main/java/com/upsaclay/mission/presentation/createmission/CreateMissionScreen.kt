@@ -136,7 +136,10 @@ private fun CreateMissionScreen(
                     focusManager.clearFocus()
                     onBackClick()
                 },
-                onActionClick = onCreateMissionClick,
+                onActionClick = {
+                    focusManager.clearFocus()
+                    onCreateMissionClick()
+                },
                 actionLabel = stringResource(com.upsaclay.common.R.string.publish),
                 buttonEnable = createEnabled
             )
@@ -146,9 +149,7 @@ private fun CreateMissionScreen(
             modifier = Modifier
                 .padding(innerPadding)
                 .pointerInput(Unit) {
-                    detectTapGestures(
-                        onTap = { focusManager.clearFocus() }
-                    )
+                    detectTapGestures(onTap = { focusManager.clearFocus() })
                 },
             value = MissionFormValue(
                 imageReference = imageUri?.toString(),

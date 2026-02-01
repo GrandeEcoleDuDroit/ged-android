@@ -113,7 +113,6 @@ private fun AuthenticationScreen(
     onForgottenPasswordClick : () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
-    val scrollState = rememberScrollState()
 
     Scaffold(
         modifier = Modifier.imePadding(),
@@ -127,11 +126,9 @@ private fun AuthenticationScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .rootMediumPadding(innerPadding)
-                .verticalScroll(scrollState)
+                .verticalScroll(rememberScrollState())
                 .pointerInput(Unit) {
-                    detectTapGestures(
-                        onTap = { focusManager.clearFocus() }
-                    )
+                    detectTapGestures(onTap = { focusManager.clearFocus() })
                 },
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.aligned { size, space ->
@@ -155,8 +152,14 @@ private fun AuthenticationScreen(
                     focusManager.clearFocus()
                     onLoginClick()
                 },
-                onRegisterClick = onRegistrationClick,
-                onForgottenPasswordClick = onForgottenPasswordClick
+                onRegisterClick = {
+                    focusManager.clearFocus()
+                    onRegistrationClick()
+                },
+                onForgottenPasswordClick = {
+                    focusManager.clearFocus()
+                    onForgottenPasswordClick()
+                }
             )
         }
     }
