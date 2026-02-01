@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upsaclay.app.domain.usecase.DeleteAccountUseCase
 import com.upsaclay.authentication.R
+import com.upsaclay.authentication.domain.entity.AuthenticationException
+import com.upsaclay.authentication.domain.entity.AuthenticationException.AuthenticationError.INVALID_CREDENTIALS
 import com.upsaclay.authentication.mapAuthException
 import com.upsaclay.common.domain.entity.CustomException
 import com.upsaclay.common.domain.entity.CustomException.CustomError.CURRENT_USER_NOT_FOUND
@@ -44,8 +46,14 @@ class DeleteAccountViewModel(
                 _uiState.update { it.copy(loading = true) }
             },
             onError = { error ->
+                val errorMessage = if ((error as AuthenticationException).error == INVALID_CREDENTIALS) {
+                    com.upsaclay.gedoise.R.string.incorrect_password_error
+                } else {
+                    mapAuthException(error)
+                }
+
                 _uiState.update {
-                    it.copy(errorMessage = mapAuthException(error))
+                    it.copy(errorMessage = errorMessage)
                 }
             },
             onFinished = {

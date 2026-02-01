@@ -11,14 +11,10 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Snackbar
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
@@ -39,7 +35,6 @@ fun DeleteAccountDestination(
     viewModel: DeleteAccountViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val snackbarHostState = remember { SnackbarHostState() }
 
     DeleteAccountScreen(
         onBackClick = onBackClick,
@@ -47,7 +42,6 @@ fun DeleteAccountDestination(
         passwordError = uiState.passwordError,
         loading = uiState.loading,
         errorMessage = uiState.errorMessage,
-        snackbarHostState = snackbarHostState,
         onPasswordChange = viewModel::onPasswordChange,
         onDeleteAccountClick = viewModel::deleteUserAccount
     )
@@ -61,7 +55,6 @@ private fun DeleteAccountScreen(
     @StringRes passwordError: Int? = null,
     loading: Boolean = false,
     errorMessage: Int? = null,
-    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     onPasswordChange: (String) -> Unit,
     onDeleteAccountClick: () -> Unit
 ) {
@@ -74,9 +67,7 @@ private fun DeleteAccountScreen(
     Scaffold(
         modifier = Modifier
             .pointerInput(Unit) {
-                detectTapGestures(
-                    onTap = { focusManager.clearFocus() }
-                )
+                detectTapGestures(onTap = { focusManager.clearFocus() })
             },
         topBar = {
             BackTopBar(
@@ -86,11 +77,6 @@ private fun DeleteAccountScreen(
                 },
                 title = stringResource(R.string.delete_account)
             )
-        },
-        snackbarHost = {
-            SnackbarHost(snackbarHostState) {
-                Snackbar(it)
-            }
         }
     ) { innerPadding ->
         Column(
@@ -144,7 +130,6 @@ private fun DeleteAccountScreenPreview() {
             onBackClick = {},
             password = "",
             loading = false,
-            snackbarHostState = SnackbarHostState(),
             onPasswordChange = {},
             onDeleteAccountClick = {}
         )
