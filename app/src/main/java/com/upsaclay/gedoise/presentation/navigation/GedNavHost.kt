@@ -152,6 +152,7 @@ fun GedNavHost(
                 onBackClick = navController::popBackStack,
                 onRegistrationClick = navController::navigateToNews
             )
+
             forgottenPasswordScreen(
              onBackClick = navController::popBackStack
             )

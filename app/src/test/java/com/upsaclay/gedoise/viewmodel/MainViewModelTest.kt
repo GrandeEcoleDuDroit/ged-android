@@ -118,7 +118,7 @@ class MainViewModelTest {
     }
 
     @Test
-    fun storeNotificationPreferences_should_call_preferencesRepository() = runTest {
+    fun storeNotificationPreferences_should_store_notificationPreferences() = runTest {
         // When
         viewModel.storeNotificationPreferences(notificationPreferencesFixture)
 

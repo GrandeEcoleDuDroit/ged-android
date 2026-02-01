@@ -8,7 +8,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable data object ForgottenPasswordRoute : Route
 
-
 fun NavController.navigateToForgottenPassword() {
     navigate(route = ForgottenPasswordRoute)
 }
