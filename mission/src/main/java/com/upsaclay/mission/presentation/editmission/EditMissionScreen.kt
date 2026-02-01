@@ -181,7 +181,10 @@ private fun EditMissionScreen(
                     focusManager.clearFocus()
                     onBackClick()
                 },
-                onActionClick = onSaveMissionClick,
+                onActionClick = {
+                    focusManager.clearFocus()
+                    onSaveMissionClick()
+                },
                 actionLabel = stringResource(com.upsaclay.common.R.string.save),
                 buttonEnable = editEnabled
             )

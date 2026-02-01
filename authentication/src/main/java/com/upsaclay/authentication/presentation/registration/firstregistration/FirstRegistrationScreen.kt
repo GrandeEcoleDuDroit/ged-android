@@ -73,9 +73,7 @@ private fun FirstRegistrationScreen(
                 .fillMaxSize()
                 .rootMediumPadding(innerPadding)
                 .pointerInput(Unit) {
-                    detectTapGestures(
-                        onPress = { focusManager.clearFocus() }
-                    )
+                    detectTapGestures(onPress = { focusManager.clearFocus() })
                 }
         ) {
             FirstRegistrationForm(
