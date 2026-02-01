@@ -4,14 +4,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -49,6 +48,8 @@ import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.extension.displayName
 import com.upsaclay.common.extension.mediumSpacing
+import com.upsaclay.common.extension.smallMediumSpacing
+import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.CircularProgressBar
 import com.upsaclay.common.presentation.components.DefaultDialog
@@ -208,112 +209,121 @@ private fun MissionDetailsScreen(
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        bottomBar = {
-           if (buttonState !is MissionButtonState.Hidden) {
-               BottomSection(
-                   modifier = Modifier
-                       .windowInsetsPadding(BottomAppBarDefaults.windowInsets)
-                       .padding(vertical = dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding), horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
-                       .fillMaxWidth(),
-                   buttonState = buttonState,
-                   loading = loading,
-                   schoolLevels = mission.schoolLevels,
-                   onRegisterMissionClick = onRegisterMissionClick,
-                   onUnregisterMissionClick = {
-                       activeDialog = MissionDetailsScreenDialog.UnregisterDialog
-                   }
-               )
-           }
-        },
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState) {
                 Snackbar(snackbarData = it)
             }
         }
     ) { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)) {
-            Column(
-                modifier = Modifier.verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.mediumSpacing()
-            ) {
-                MissionImage(
-                    modifier = Modifier.height(dimensionResource(R.dimen.mission_image_height)),
-                    model = when (val state = mission.state) {
-                        is MissionState.Draft -> null
-                        is MissionState.Publishing -> state.imagePath
-                        is MissionState.Published -> state.imageUrl
-                        is MissionState.Error -> state.imagePath
-                    },
-                    defaultImageScale = 1.6f
-                )
-
-                Column(verticalArrangement = Arrangement.mediumSpacing()) {
-                    MissionDetailsTitleAndDescriptionSection(
-                        modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
-                        mission = mission
-                    )
-
-                    HorizontalDivider(
-                        modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
-                    )
-
-                    MissionDetailsInformationSection(
-                        modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
-                        mission = mission
-                    )
-
-                    HorizontalDivider(
-                        modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
-                    )
-
-                    MissionDetailsManagerSection(
-                        modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
-                        managers = mission.managers,
-                        onManagerClick = onManagerClick,
-                        onSeeAllClick = { onSeeAllManagersClick(mission.managers) }
-                    )
-
-                    HorizontalDivider(
-                        modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
-                    )
-
-                    MissionDetailsParticipantSection(
-                        modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
-                        participants = mission.participants,
-                        onParticipantClick = onParticipantClick,
-                        onLongParticipantClick = {
-                            if (user.id != it.id && (isManager || user.admin)) {
-                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                activeBottomSheet = MissionDetailsScreenBottomSheet.ParticipantBottomSheet(it)
-                            }
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .padding(bottom = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.smallMediumSpacing()
+        ) {
+            Box(modifier = Modifier.weight(1f)) {
+                Column(
+                    modifier = Modifier.verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.mediumSpacing()
+                ) {
+                    MissionImage(
+                        modifier = Modifier.height(dimensionResource(R.dimen.mission_image_height)),
+                        model = when (val state = mission.state) {
+                            is MissionState.Draft -> null
+                            is MissionState.Publishing -> state.imagePath
+                            is MissionState.Published -> state.imageUrl
+                            is MissionState.Error -> state.imagePath
                         },
-                        onSeeAllClick = { onSeeAllParticipantsClick(mission.participants) }
+                        defaultImageScale = 1.6f
                     )
 
-                    if (mission.tasks.isNotEmpty()) {
+                    Column(verticalArrangement = Arrangement.mediumSpacing()) {
+                        MissionDetailsTitleAndDescriptionSection(
+                            modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                            mission = mission
+                        )
+
                         HorizontalDivider(
                             modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
                         )
 
-                        MissionDetailsTaskSection(
+                        MissionDetailsInformationSection(
                             modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
-                            missionTasks = mission.tasks
+                            mission = mission
                         )
-                    }
 
-                    if (buttonState is MissionButtonState.Hidden) {
-                        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.small_padding)))
+                        HorizontalDivider(
+                            modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+                        )
+
+                        MissionDetailsManagerSection(
+                            modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                            managers = mission.managers,
+                            onManagerClick = onManagerClick,
+                            onSeeAllClick = { onSeeAllManagersClick(mission.managers) }
+                        )
+
+                        HorizontalDivider(
+                            modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+                        )
+
+                        MissionDetailsParticipantSection(
+                            modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                            participants = mission.participants,
+                            onParticipantClick = onParticipantClick,
+                            onLongParticipantClick = {
+                                if (user.id != it.id && (isManager || user.admin)) {
+                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                    activeBottomSheet =
+                                        MissionDetailsScreenBottomSheet.ParticipantBottomSheet(it)
+                                }
+                            },
+                            onSeeAllClick = { onSeeAllParticipantsClick(mission.participants) }
+                        )
+
+                        if (mission.tasks.isNotEmpty()) {
+                            HorizontalDivider(
+                                modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+                            )
+
+                            MissionDetailsTaskSection(
+                                modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                                missionTasks = mission.tasks
+                            )
+                        }
+
+                        if (buttonState is MissionButtonState.Hidden) {
+                            Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.small_padding)))
+                        }
                     }
                 }
+
+                MissionDetailsTopBar(
+                    modifier = Modifier.align(Alignment.TopStart),
+                    title = mission.title,
+                    showTitleTopBar = scrollBehavior.state.contentOffset.dp <= dimensionResource(R.dimen.image_top_bar_offset),
+                    onBackClick = onBackClick,
+                    onOptionClick = {
+                        activeBottomSheet = MissionDetailsScreenBottomSheet.MissionBottomSheet
+                    }
+                )
             }
 
-            MissionDetailsTopBar(
-                modifier = Modifier.align(Alignment.TopStart),
-                title = mission.title,
-                showTitleTopBar = scrollBehavior.state.contentOffset.dp <= dimensionResource(R.dimen.image_top_bar_offset),
-                onBackClick = onBackClick,
-                onOptionClick = { activeBottomSheet = MissionDetailsScreenBottomSheet.MissionBottomSheet }
-            )
+            if (buttonState !is MissionButtonState.Hidden) {
+                BottomSection(
+                    modifier = Modifier
+                        .padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+                        .fillMaxWidth(),
+                    buttonState = buttonState,
+                    loading = loading,
+                    schoolLevels = mission.schoolLevels,
+                    onRegisterMissionClick = onRegisterMissionClick,
+                    onUnregisterMissionClick = {
+                        activeDialog = MissionDetailsScreenDialog.UnregisterDialog
+                    }
+                )
+            }
         }
     }
 
@@ -399,7 +409,7 @@ private fun BottomSection(
     onRegisterMissionClick: () -> Unit,
     onUnregisterMissionClick: () -> Unit
 ) {
-    when (val state = buttonState) {
+    when (buttonState) {
         is MissionButtonState.Register -> {
             LoadingButton(
                 modifier = modifier,
@@ -430,16 +440,18 @@ private fun BottomSection(
 
         is MissionButtonState.RegistrationClosed -> {
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = modifier,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.smallSpacing()
             ) {
                 Text(
-                    text = stringResource(state.reason),
+                    text = stringResource(buttonState.reason),
                     color = MaterialTheme.colorScheme.informationText,
                     style = MaterialTheme.typography.bodySmall
                 )
 
                 PrimaryButton(
-                    modifier = modifier,
+                    modifier = Modifier.fillMaxWidth(),
                     text = stringResource(R.string.registration_closed_mission_button_text),
                     enabled = false,
                     onClick = {}
@@ -449,7 +461,9 @@ private fun BottomSection(
 
         is MissionButtonState.Unavailable -> {
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = modifier,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.smallSpacing()
             ) {
                 val formattedSchoolLevel = schoolLevels.sorted().joinToString(
                     prefix = "<b>",
@@ -458,13 +472,13 @@ private fun BottomSection(
                 )
 
                 Text(
-                    text = AnnotatedString.fromHtml(stringResource(state.reason, formattedSchoolLevel)),
+                    text = AnnotatedString.fromHtml(stringResource(buttonState.reason, formattedSchoolLevel)),
                     color = MaterialTheme.colorScheme.informationText,
                     style = MaterialTheme.typography.bodySmall
                 )
 
                 PrimaryButton(
-                    modifier = modifier,
+                    modifier = Modifier.fillMaxWidth(),
                     text = stringResource(R.string.unavailable_mission_button_text),
                     enabled = false,
                     onClick = {}
