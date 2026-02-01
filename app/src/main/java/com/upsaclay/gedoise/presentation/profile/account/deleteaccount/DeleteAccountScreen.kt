@@ -74,9 +74,7 @@ private fun DeleteAccountScreen(
     Scaffold(
         modifier = Modifier
             .pointerInput(Unit) {
-                detectTapGestures(
-                    onTap = { focusManager.clearFocus() }
-                )
+                detectTapGestures(onTap = { focusManager.clearFocus() })
             },
         topBar = {
             BackTopBar(
@@ -117,7 +115,10 @@ private fun DeleteAccountScreen(
 
             Button(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = onDeleteAccountClick,
+                onClick = {
+                    focusManager.clearFocus()
+                    onDeleteAccountClick()
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.error
                 )
