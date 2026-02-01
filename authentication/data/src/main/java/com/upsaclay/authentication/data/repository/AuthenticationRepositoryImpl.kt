@@ -67,6 +67,15 @@ internal class AuthenticationRepositoryImpl(
         authenticationLocalDataSource.storeAuthenticationState(authenticationState)
     }
 
+    override suspend fun resetPassword(email: String) {
+        try {
+            authenticationRemoteDataSource.resetPassword(email)
+        } catch (e: Exception){
+            Timber.e("Error resetting password for user $email: ${e.message}")
+            throw e
+        }
+    }
+
     private fun listenAuthenticationState() {
         scope.launch {
             merge(

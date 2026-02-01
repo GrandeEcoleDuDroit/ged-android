@@ -1,5 +1,7 @@
 package com.upsaclay.gedoise.viewmodel
 
+import com.upsaclay.app.domain.notificationPreferencesFixture
+import com.upsaclay.app.domain.repository.PreferencesRepository
 import com.upsaclay.app.domain.usecase.ClearDataUseCase
 import com.upsaclay.app.domain.usecase.FcmTokenUseCase
 import com.upsaclay.app.domain.usecase.FetchDataUseCase
@@ -26,6 +28,7 @@ import org.junit.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class MainViewModelTest {
     private val authenticationRepository: AuthenticationRepository = mockk()
+    private val preferencesRepository: PreferencesRepository = mockk()
     private val clearDataUseCase: ClearDataUseCase = mockk()
     private val fetchDataUseCase: FetchDataUseCase = mockk()
     private val fcmTokenUseCase: FcmTokenUseCase = mockk()
@@ -47,9 +50,12 @@ class MainViewModelTest {
         coEvery { listenDataUseCase.start(any(), any()) } returns Unit
         coEvery { listenDataUseCase.stop() } returns Unit
         coEvery { fetchDataUseCase.execute(any()) } returns Unit
+        coEvery { preferencesRepository.getNotificationPreferences() } returns notificationPreferencesFixture
+        coEvery { preferencesRepository.storeNotificationPreferences(any()) } returns Unit
 
         viewModel = MainViewModel(
             authenticationRepository = authenticationRepository,
+            preferencesRepository = preferencesRepository,
             clearDataUseCase = clearDataUseCase,
             fetchDataUseCase = fetchDataUseCase,
             fcmTokenUseCase = fcmTokenUseCase,
@@ -100,5 +106,23 @@ class MainViewModelTest {
 
         // Then
         coVerify { clearDataUseCase.execute() }
+    }
+
+    @Test
+    fun getNotificationPreferences_should_return_notificationPreferences() = runTest {
+        // When
+        val result = viewModel.getNotificationPreferences()
+
+        // Then
+        assert(result == notificationPreferencesFixture)
+    }
+
+    @Test
+    fun storeNotificationPreferences_should_store_notificationPreferences() = runTest {
+        // When
+        viewModel.storeNotificationPreferences(notificationPreferencesFixture)
+
+        // Then
+        coVerify { preferencesRepository.storeNotificationPreferences(notificationPreferencesFixture) }
     }
 }

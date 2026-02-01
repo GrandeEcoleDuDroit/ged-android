@@ -22,7 +22,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import com.upsaclay.authentication.R
 import com.upsaclay.authentication.presentation.components.OutlinePasswordTextField
@@ -43,7 +42,8 @@ fun AuthenticationForm(
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onLoginClick: () -> Unit,
-    onRegisterClick: () -> Unit
+    onRegisterClick: () -> Unit,
+    onForgottenPasswordClick: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     val passwordFocusRequester = remember { FocusRequester() }
@@ -62,7 +62,8 @@ fun AuthenticationForm(
             passwordFocusRequester = passwordFocusRequester,
             keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
             onEmailChange = onEmailChange,
-            onPasswordChange = onPasswordChange
+            onPasswordChange = onPasswordChange,
+            onForgottenPasswordClick = onForgottenPasswordClick
         )
 
         LoadingButton(
@@ -99,7 +100,8 @@ private fun CredentialsInputs(
     passwordFocusRequester: FocusRequester,
     keyboardActions: KeyboardActions,
     onEmailChange: (String) -> Unit,
-    onPasswordChange: (String) -> Unit
+    onPasswordChange: (String) -> Unit,
+    onForgottenPasswordClick : () -> Unit
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
@@ -125,10 +127,20 @@ private fun CredentialsInputs(
             enabled = !loading
         )
 
+        Text(
+            modifier = Modifier
+                .align(Alignment.Start)
+                .clickable(onClick = onForgottenPasswordClick)
+                .testTag(stringResource(R.string.forgotten_password_button_tag)),
+            text = stringResource(R.string.forgotten_password_button_text),
+            style = MaterialTheme.typography.labelLarge
+        )
+
         errorMessage?.let {
             LaunchedEffect(it) {
                 passwordFocusRequester.requestFocus()
             }
+
             Text(
                 modifier = Modifier.align(Alignment.Start),
                 text = stringResource(it),
@@ -150,23 +162,19 @@ private fun RegistrationText(
     ) {
         Text(
             text = stringResource(id = R.string.not_register_yet),
-            color = MaterialTheme.colorScheme.onSurface
+            style = MaterialTheme.typography.bodyMedium
         )
 
         Text(
             text = AnnotatedString(stringResource(id = R.string.sign_up)),
-            fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.labelLarge,
             modifier = Modifier
-                .clickable(
-                    enabled = !loading,
-                    onClick = onRegistrationClick
-                )
+                .clickable(enabled = !loading, onClick = onRegistrationClick)
                 .testTag(stringResource(id = R.string.authentication_screen_registration_button_tag))
         )
     }
 }
-
 
 /*
  =====================================================================
@@ -189,7 +197,8 @@ private fun AuthenticationFormPreview() {
                 onEmailChange = {},
                 onPasswordChange = {},
                 onLoginClick = {},
-                onRegisterClick = {}
+                onRegisterClick = {},
+                onForgottenPasswordClick = {}
             )
         }
     }

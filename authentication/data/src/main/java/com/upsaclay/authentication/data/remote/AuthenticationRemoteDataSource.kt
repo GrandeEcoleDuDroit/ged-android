@@ -30,6 +30,14 @@ class AuthenticationRemoteDataSource(private val authenticationApi: Authenticati
 
     suspend fun getAuthToken(): String? = authenticationApi.getAuthToken()
 
+    suspend fun resetPassword(email: String) {
+        try {
+            authenticationApi.resetPassword(email)
+        } catch (e : Exception){
+            throw mapFirebaseAuthException(e)
+        }
+    }
+
     suspend fun loginWithEmailAndPassword(email: String, password: String): String? = withContext(dispatcher) {
         try {
             authenticationApi.signIn(email, password)
