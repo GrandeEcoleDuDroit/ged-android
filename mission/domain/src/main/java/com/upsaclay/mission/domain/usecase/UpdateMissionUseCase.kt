@@ -13,6 +13,8 @@ class UpdateMissionUseCase(
 ) {
     suspend fun execute(user: User,  mission: Mission, imageUri: String?) {
         var newImagePath: String? = null
+        var missionToUpdate = mission
+        val missionSchoolLevelSet = mission.schoolLevels.map { it.number }.toSet()
 
         val newImageFile = imageUri?.let { uri ->
             val extension = imageRepository.getFileExtension(uri)
@@ -21,9 +23,13 @@ class UpdateMissionUseCase(
             imageRepository.createCacheImage(newImagePath!!, uri)
         }
 
-        val missionToUpdate = newImagePath?.let {
-            mission.copy(state = MissionState.Published(it))
-        } ?: mission
+        newImagePath?.let {
+            missionToUpdate = missionToUpdate.copy(state = MissionState.Published(it))
+        }
+        val newParticipants = missionToUpdate.participants.filter {
+            missionSchoolLevelSet.contains(it.schoolLevel.number)
+        }
+        missionToUpdate = missionToUpdate.copy(participants = newParticipants)
 
         missionRepository.updateMission(user, missionToUpdate, newImageFile)
 
