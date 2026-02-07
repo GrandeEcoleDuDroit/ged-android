@@ -11,4 +11,6 @@
     <dimen name="extra_large_padding">32dp</dimen>
     <dimen name="very_extra_large_padding">64dp</dimen>
     <dimen name="icon_size">20dp</dimen>
+    <dimen name="fab_size">56dp</dimen>
+    <dimen name="fab_corner_size">16dp</dimen>
 </resources>

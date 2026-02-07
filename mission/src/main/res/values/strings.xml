@@ -22,7 +22,6 @@
     <string name="tasks">Tâches</string>
     <string name="school_level">Niveau scolaire</string>
     <string name="short_participant_number" translatable="false">%d / %d</string>
-    <string name="add_image">Ajouter image</string>
     <string name="add_manager">Ajouter gérant</string>
     <string name="add">Ajouter</string>
     <string name="task">Tâche</string>

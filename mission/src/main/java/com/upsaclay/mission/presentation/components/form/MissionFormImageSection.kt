@@ -67,7 +67,7 @@ private fun EmptyImage(
     ) {
         Icon(
             modifier = Modifier.size(80.dp),
-            painter = painterResource(R.drawable.ic_outline_add_image),
+            painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_add_image),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -75,7 +75,7 @@ private fun EmptyImage(
         Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding)))
 
         Text(
-            text = stringResource(R.string.add_image),
+            text = stringResource(com.upsaclay.common.R.string.add_image),
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
