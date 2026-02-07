@@ -41,6 +41,7 @@ fun NewsDestination(
     onCreateAnnouncementClick: () -> Unit,
     onEditAnnouncementClick: (Announcement) -> Unit,
     onSeeAllAnnouncementsClick: () -> Unit,
+    onCreatePostClick: () -> Unit,
     bottomBar: @Composable () -> Unit,
     viewModel: NewsViewModel = koinViewModel()
 ) {
@@ -78,7 +79,8 @@ fun NewsDestination(
             onEditAnnouncementClick = { viewModel.getAnnouncement(it)?.let(onEditAnnouncementClick) },
             onDeleteAnnouncementClick = viewModel::deleteAnnouncement,
             onSeeAllAnnouncementsClick = onSeeAllAnnouncementsClick,
-            onReportAnnouncementClick = viewModel::reportAnnouncement
+            onReportAnnouncementClick = viewModel::reportAnnouncement,
+            onCreatePostClick = onCreatePostClick
         )
     } else {
         LoadingScreen()
@@ -101,7 +103,8 @@ private fun NewsScreen(
     onEditAnnouncementClick: (String) -> Unit,
     onDeleteAnnouncementClick: (Announcement) -> Unit,
     onSeeAllAnnouncementsClick: () -> Unit,
-    onReportAnnouncementClick: (AnnouncementReport) -> Unit
+    onReportAnnouncementClick: (AnnouncementReport) -> Unit,
+    onCreatePostClick: () -> Unit
 ) {
     var activeBottomSheet by remember { mutableStateOf<NewsScreenBottomSheet?>(null) }
     var activeDialog by remember { mutableStateOf<NewsDialog?>(null) }
@@ -130,6 +133,7 @@ private fun NewsScreen(
 
     NewsScaffold(
         user = user,
+        onCreatePostClick = onCreatePostClick,
         onCreateAnnouncementClick = onCreateAnnouncementClick,
         snackbarHostState = snackbarHostState,
         bottomBar = bottomBar
@@ -237,7 +241,8 @@ private fun NewsScreenPreview() {
             onDeleteAnnouncementClick = {},
             onCreateAnnouncementClick = {},
             onSeeAllAnnouncementsClick = {},
-            onReportAnnouncementClick = {}
+            onReportAnnouncementClick = {},
+            onCreatePostClick = {}
         )
     }
 }

@@ -85,7 +85,7 @@ private fun AnnouncementTitleInput(
     val focusRequester = remember { FocusRequester() }
     val placeholder = @Composable {
         Text(
-            text = stringResource(id = R.string.title_field_entry),
+            text = stringResource(id = R.string.title_field_placeholder),
             style = titleStyle
         )
     }
@@ -114,7 +114,7 @@ private fun AnnouncementContentInput(
 ) {
     val placeholder = @Composable {
         Text(
-            text = stringResource(id = R.string.content_field_entry),
+            text = stringResource(id = R.string.content_field_placeholder),
             style = contentStyle
         )
     }

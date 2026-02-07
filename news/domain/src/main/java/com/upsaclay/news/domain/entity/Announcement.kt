@@ -19,7 +19,7 @@ data class Announcement(
     }
 
     companion object {
-        const val TITLE_MAX_LENGTH = 200
-        const val CONTENT_MAX_LENGTH = 2000
+        const val MAX_TITLE_LENGTH = 200
+        const val MAX_CONTENT_LENGTH = 2000
     }
 }
