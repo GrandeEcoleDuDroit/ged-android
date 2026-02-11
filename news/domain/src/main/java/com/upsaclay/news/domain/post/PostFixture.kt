@@ -12,7 +12,7 @@ val postFixture = Post(
         "👉 Lien pour découvrir son article :\n\n" +
         "http://grandeecoledudroit.blogspot.com/2024/12/partir-la-decouverte-des-tresors-de.html?m=1",
     link = "https://www.instagram.com/p/DDhO3CDo85r/?igsh=b3dvY28wM3BrN2Ny",
-    tag = Post.PostSource.INSTAGRAM,
+    source = Post.PostSource.INSTAGRAM,
     date = LocalDateTime.now(),
     state = Post.PostState.Published(
         imageUrls = listOf(
@@ -51,7 +51,7 @@ val postFixture2 = Post(
        "✨ Et une mention spéciale à Virginie Delalande ✨ (https://lnkd.in/ewfHrAfk) pour son mot de la fin, à la fois inspirant et stimulant :" +
        "« Oui, le droit mène à tout. Mais seulement si on y met du courage, de la curiosité et… un peu de folie. Alors sortons du cadre. Réinventons les codes. Faisons du droit une aventure humaine, vivante, vibrante. »",
     link = "https://www.instagram.com/p/DDhO3CDo85r/?igsh=b3dvY28wM3BrN2Ny",
-    tag = Post.PostSource.LINKEDIN,
+    source = Post.PostSource.LINKEDIN,
     date = LocalDateTime.now().minusHours(2),
     state = Post.PostState.Published()
 )

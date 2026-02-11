@@ -86,36 +86,40 @@ class CreatePostViewModel(
         }
 
         _uiState.update {
-            it.copy(
-                imageUris = newImageUris,
-                createEnabled = validateImageUris(imageUris = newImageUris)
-            )
+            it.copy(imageUris = newImageUris)
+        }
+
+        postCreateState.update {
+            it.copy(validImageUris = validateImageUris(newImageUris))
         }
     }
 
     fun onRemoveImageUri(index: Int) {
+        val currentImageUris = uiState.value.imageUris
+        val newImageUris = currentImageUris - currentImageUris[index]
         _uiState.update {
-            it.copy(imageUris = it.imageUris - it.imageUris[index])
+            it.copy(imageUris = newImageUris)
+        }
+        postCreateState.update {
+            it.copy(validImageUris = validateImageUris(newImageUris))
         }
     }
 
     fun createPost() {
-        val (title, link, tag, content, imageUris) = uiState.value
-        if (!validateInputs(tag)) return
+        val (title, link, source, content, imageUris) = uiState.value
+        if (source == null) return
 
         val post = Post(
             id = generateIdUseCase.execute(),
             title = title.trim(),
             content = content.trim(),
-            link = link,
-            tag = tag!!,
+            link = link.trim(),
+            source = source,
             date = LocalDateTime.now(ZoneOffset.UTC),
             state = Post.PostState.Draft
         )
         createPostUseCase.execute(post, imageUris.map { it.toString() })
     }
-
-    private fun validateInputs(tag: Post.PostSource?): Boolean = tag != null
 
     private fun validateTitle(title: String): Boolean = title.isNotBlank()
 
