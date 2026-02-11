@@ -8,6 +8,7 @@ object PostPresentationUtils {
     const val MAX_TITLE_LENGTH = 100
     const val MAX_POST_LINK_LENGTH = 2048
     const val MAX_CONTENT_LENGTH = 3000
+    const val MAX_IMAGE_COUNT = 10
 
     val titleStyle: TextStyle
         @Composable

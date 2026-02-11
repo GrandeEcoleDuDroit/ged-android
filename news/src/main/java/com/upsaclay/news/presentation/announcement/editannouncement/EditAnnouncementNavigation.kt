@@ -5,8 +5,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.upsaclay.common.domain.entity.Route
-import com.upsaclay.news.domain.AnnouncementJsonParser
-import com.upsaclay.news.domain.entity.Announcement
+import com.upsaclay.news.domain.announcement.AnnouncementJsonParser
+import com.upsaclay.news.domain.announcement.Announcement
 import kotlinx.serialization.Serializable
 
 @Serializable data class EditAnnouncementRoute(val announcementJson: String): Route

@@ -5,10 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.upsaclay.common.extension.executeUiBlockingRequest
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapExceptionErrorMessage
-import com.upsaclay.news.domain.entity.Announcement
-import com.upsaclay.news.domain.entity.Announcement.Companion.MAX_CONTENT_LENGTH
-import com.upsaclay.news.domain.entity.Announcement.Companion.MAX_TITLE_LENGTH
-import com.upsaclay.news.domain.repository.AnnouncementRepository
+import com.upsaclay.news.domain.announcement.Announcement
+import com.upsaclay.news.domain.announcement.AnnouncementRepository
+import com.upsaclay.news.presentation.announcement.AnnouncementPresentationUtils.MAX_CONTENT_LENGTH
+import com.upsaclay.news.presentation.announcement.AnnouncementPresentationUtils.MAX_TITLE_LENGTH
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow

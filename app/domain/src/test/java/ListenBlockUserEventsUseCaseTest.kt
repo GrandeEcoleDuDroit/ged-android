@@ -5,7 +5,7 @@ import com.upsaclay.common.domain.entity.BlockUserEvent
 import com.upsaclay.common.domain.entity.BlockedUser
 import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.userFixture
-import com.upsaclay.news.domain.repository.AnnouncementRepository
+import com.upsaclay.news.domain.announcement.AnnouncementRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every

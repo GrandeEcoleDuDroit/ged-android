@@ -1,5 +1,6 @@
 package com.upsaclay.common.presentation.components
 
+import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -28,7 +29,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
@@ -228,13 +228,10 @@ fun FabMenuItem(
 @Composable
 private fun PrimaryButtonPreview() {
     GedoiseTheme {
-        Surface {
-            PrimaryButton(
-                text = "Primary Button",
-                onClick = {},
-                enabled = false
-            )
-        }
+        PrimaryButton(
+            text = "Primary Button",
+            onClick = {}
+        )
     }
 }
 
@@ -261,9 +258,10 @@ private fun LoadingButtonPreview() {
 }
 
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun FloatingActionButtonMenuPreview() {
-    var expanded by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(true) }
 
     GedoiseTheme {
         FloatingActionButtonMenu(

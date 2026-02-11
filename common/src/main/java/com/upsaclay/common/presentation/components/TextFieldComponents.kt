@@ -136,6 +136,7 @@ fun TransparentTextField(
         capitalization = KeyboardCapitalization.Sentences
     ),
     minLines: Int = 1,
+    singleLine: Boolean = false,
     enabled: Boolean = true
 ) {
     val backgroundColor = MaterialTheme.colorScheme.background
@@ -147,6 +148,7 @@ fun TransparentTextField(
         onValueChange = onValueChange,
         textStyle = textStyle.copy(color = MaterialTheme.colorScheme.onSurface),
         keyboardOptions = keyboardOptions,
+        singleLine = singleLine,
         minLines = minLines,
         cursorBrush = SolidColor(TextFieldDefaults.colors().cursorColor)
     ) { innerTextField ->
