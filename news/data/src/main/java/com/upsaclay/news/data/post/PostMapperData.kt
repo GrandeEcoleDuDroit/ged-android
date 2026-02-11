@@ -13,7 +13,7 @@ fun Post.toLocal() = LocalPost(
     postTitle = title,
     postContent = content,
     postLink = link,
-    postSourceId = tag.id,
+    postSourceId = source.id,
     postDate = date.toEpochMilliUTC(),
     postImageFileNames = Gson().toJson(extractImageFileNames(state)),
     postState = state.toString()
@@ -24,7 +24,7 @@ fun Post.toRemote() = RemotePost(
     postTitle = title,
     postContent = content,
     postLink = link,
-    postSourceId = tag.id,
+    postSourceId = source.id,
     postDate = date.toEpochMilliUTC(),
     postImageFileNames = Gson().toJson(extractImageFileNames(state))
 )

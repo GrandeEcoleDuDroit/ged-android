@@ -7,7 +7,7 @@ data class Post(
     val title: String,
     val content: String,
     val link: String,
-    val tag: PostSource,
+    val source: PostSource,
     val date: LocalDateTime,
     val state: PostState
 ) {
