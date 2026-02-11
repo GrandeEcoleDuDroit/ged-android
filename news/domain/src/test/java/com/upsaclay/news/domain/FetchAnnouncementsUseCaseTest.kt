@@ -3,8 +3,10 @@ package com.upsaclay.news.domain
 import com.upsaclay.common.domain.entity.BlockedUser
 import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.userFixture
-import com.upsaclay.news.domain.repository.AnnouncementRepository
-import com.upsaclay.news.domain.usecase.FetchAnnouncementsUseCase
+import com.upsaclay.news.domain.announcement.announcementFixture
+import com.upsaclay.news.domain.announcement.announcementsFixture
+import com.upsaclay.news.domain.announcement.AnnouncementRepository
+import com.upsaclay.news.domain.announcement.usecase.FetchAnnouncementsUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -41,7 +43,9 @@ class FetchAnnouncementsUseCaseTest {
     fun synchronizeAnnouncement_should_upsert_new_remote_announcement() = runTest {
         // Given
         every { announcementRepository.currentAnnouncements } returns emptyList()
-        coEvery { announcementRepository.getRemoteAnnouncements() } returns listOf(announcementFixture)
+        coEvery { announcementRepository.getRemoteAnnouncements() } returns listOf(
+            announcementFixture
+        )
 
         // When
         useCase.execute()

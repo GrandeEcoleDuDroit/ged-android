@@ -6,7 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.upsaclay.common.domain.entity.Route
 import com.upsaclay.common.domain.entity.User
-import com.upsaclay.news.domain.entity.Announcement
+import com.upsaclay.news.domain.announcement.Announcement
 import kotlinx.serialization.Serializable
 
 @Serializable data class ReadAnnouncementRoute(val announcementId: String): Route

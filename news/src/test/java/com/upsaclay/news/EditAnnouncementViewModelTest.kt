@@ -1,7 +1,7 @@
 package com.upsaclay.news
 
-import com.upsaclay.news.domain.announcementFixture
-import com.upsaclay.news.domain.repository.AnnouncementRepository
+import com.upsaclay.news.domain.announcement.announcementFixture
+import com.upsaclay.news.domain.announcement.AnnouncementRepository
 import com.upsaclay.news.presentation.announcement.editannouncement.EditAnnouncementViewModel
 import io.mockk.coVerify
 import io.mockk.mockk

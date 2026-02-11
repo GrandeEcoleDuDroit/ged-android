@@ -18,8 +18,8 @@ import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.supportingText
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.common.utils.getElapsedTimeValue
-import com.upsaclay.news.domain.entity.Announcement
-import com.upsaclay.news.domain.longAnnouncementFixture
+import com.upsaclay.news.domain.announcement.Announcement
+import com.upsaclay.news.domain.announcement.longAnnouncementFixture
 
 @Composable
 fun AnnouncementHeader(

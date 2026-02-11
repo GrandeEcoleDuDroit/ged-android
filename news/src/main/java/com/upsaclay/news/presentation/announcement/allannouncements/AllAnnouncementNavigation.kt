@@ -5,7 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.upsaclay.common.domain.entity.Route
 import com.upsaclay.common.domain.entity.User
-import com.upsaclay.news.domain.entity.Announcement
+import com.upsaclay.news.domain.announcement.Announcement
 import kotlinx.serialization.Serializable
 
 @Serializable data object AllAnnouncementsRoute: Route

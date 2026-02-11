@@ -1,8 +1,11 @@
 package com.upsaclay.news.domain
 
-import com.upsaclay.news.domain.entity.Announcement.AnnouncementState
-import com.upsaclay.news.domain.repository.AnnouncementRepository
-import com.upsaclay.news.domain.usecase.RecreateAnnouncementUseCase
+import com.upsaclay.news.domain.announcement.AnnouncementJobQueue
+import com.upsaclay.news.domain.announcement.announcementFixture
+import com.upsaclay.news.domain.announcement.Announcement.AnnouncementState
+import com.upsaclay.news.domain.announcement.longAnnouncementFixture
+import com.upsaclay.news.domain.announcement.AnnouncementRepository
+import com.upsaclay.news.domain.announcement.usecase.RecreateAnnouncementUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk

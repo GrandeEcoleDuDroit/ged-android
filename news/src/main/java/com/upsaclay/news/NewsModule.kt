@@ -1,6 +1,6 @@
 package com.upsaclay.news
 
-import com.upsaclay.news.domain.entity.Announcement
+import com.upsaclay.news.domain.announcement.Announcement
 import com.upsaclay.news.presentation.announcement.allannouncements.AllAnnouncementsViewModel
 import com.upsaclay.news.presentation.announcement.createannouncement.CreateAnnouncementViewModel
 import com.upsaclay.news.presentation.announcement.editannouncement.EditAnnouncementViewModel
