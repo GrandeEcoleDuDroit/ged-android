@@ -32,9 +32,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Download configuration files
-        run: |
-          rm -f app/google-services-release.json
-          curl "$ORACLE_BUCKET_URL"/Configurations/google-services.json -o app/google-services.json
+        run: curl "$ORACLE_BUCKET_URL"/Configurations/google-services-release.json -o app/google-services.json
 
       - name: Decode keystore
         run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > app/$KEYSTORE_PATH
