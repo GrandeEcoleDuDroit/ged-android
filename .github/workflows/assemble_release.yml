@@ -33,7 +33,7 @@ jobs:
 
       - name: Download configuration files
         run: |
-          rm -f app/google-services.json
+          rm -f app/google-services-release.json
           curl "$ORACLE_BUCKET_URL"/Configurations/google-services.json -o app/google-services.json
 
       - name: Decode keystore

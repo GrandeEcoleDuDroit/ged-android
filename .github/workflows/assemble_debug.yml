@@ -30,6 +30,11 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Download configuration files
+        run: |
+          rm -f app/google-services-debug.json
+          curl "$ORACLE_BUCKET_URL"/Configurations/google-services.json -o app/google-services.json
+
       - name: Build debug APK
         run: ./gradlew assembleDebug
 
