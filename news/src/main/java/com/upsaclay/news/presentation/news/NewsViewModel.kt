@@ -14,18 +14,22 @@ import com.upsaclay.news.domain.announcement.AnnouncementRepository
 import com.upsaclay.news.domain.announcement.usecase.DeleteAnnouncementUseCase
 import com.upsaclay.news.domain.announcement.usecase.RecreateAnnouncementUseCase
 import com.upsaclay.news.domain.announcement.usecase.RefreshAnnouncementsUseCase
+import com.upsaclay.news.domain.post.Post
+import com.upsaclay.news.domain.post.PostRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class NewsViewModel(
+    private val announcementRepository: AnnouncementRepository,
     private val recreateAnnouncementUseCase: RecreateAnnouncementUseCase,
     private val deleteAnnouncementUseCase: DeleteAnnouncementUseCase,
     private val refreshAnnouncementsUseCase: RefreshAnnouncementsUseCase,
-    private val announcementRepository: AnnouncementRepository,
+    private val postRepository: PostRepository,
     private val userRepository: UserRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(NewsUiState())
@@ -35,6 +39,7 @@ class NewsViewModel(
 
     init {
         listenAnnouncements()
+        listenPosts()
         listenUser()
     }
 
@@ -56,7 +61,7 @@ class NewsViewModel(
         )
     }
 
-    fun resendAnnouncement(announcement: Announcement) {
+    fun recreateAnnouncement(announcement: Announcement) {
         viewModelScope.launch {
             recreateAnnouncementUseCase.execute(announcement)
         }
@@ -93,16 +98,28 @@ class NewsViewModel(
 
     private fun listenAnnouncements() {
         viewModelScope.launch {
-            announcementRepository.announcements.collect { announcements ->
-                _uiState.update { state ->
-                    state.copy(
-                        announcements = announcements.map {
-                            it.copy(
-                                title = it.title?.takeIf { it.isNotBlank() }?.take(100),
-                                content = it.content.take(100)
-                            )
-                        }
-                    )
+            announcementRepository.announcements
+                .map { announcements ->
+                    announcements.map { announcement ->
+                        announcement.copy(
+                            title = announcement.title?.takeIf { it.isNotBlank() }?.take(100),
+                            content = announcement.content.take(100)
+                        )
+                    }
+                }
+                .collect { announcements ->
+                    _uiState.update {
+                        it.copy(announcements = announcements)
+                    }
+                }
+        }
+    }
+
+    private fun listenPosts() {
+        viewModelScope.launch {
+            postRepository.posts.collect { posts ->
+                _uiState.update {
+                    it.copy(posts = posts)
                 }
             }
         }
@@ -121,6 +138,7 @@ class NewsViewModel(
     data class NewsUiState(
         val user: User? = null,
         val announcements: List<Announcement>? = null,
+        val posts: List<Post>? = null,
         val refreshing: Boolean = false,
         val loading: Boolean = false
     )

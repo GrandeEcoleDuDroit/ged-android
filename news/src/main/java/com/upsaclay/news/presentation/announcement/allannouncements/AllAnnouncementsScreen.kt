@@ -215,7 +215,7 @@ private fun AllAnnouncementsScreen(
                         activeBottomSheet = null
                         onEditAnnouncementClick(bottomSheet.announcement)
                     },
-                    onResendClick = {
+                    onRecreateClick = {
                         activeBottomSheet = null
                         onResendAnnouncementClick(bottomSheet.announcement)
                     },

@@ -1,4 +1,4 @@
-package com.upsaclay.news.domain
+package com.upsaclay.news.domain.anouncement
 
 import com.upsaclay.news.domain.announcement.AnnouncementJobQueue
 import com.upsaclay.news.domain.announcement.announcementFixture

@@ -1,11 +1,11 @@
-package com.upsaclay.news.domain
+package com.upsaclay.news.domain.anouncement
 
 import com.upsaclay.common.domain.entity.BlockedUser
 import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.userFixture
+import com.upsaclay.news.domain.announcement.AnnouncementRepository
 import com.upsaclay.news.domain.announcement.announcementFixture
 import com.upsaclay.news.domain.announcement.announcementsFixture
-import com.upsaclay.news.domain.announcement.AnnouncementRepository
 import com.upsaclay.news.domain.announcement.usecase.FetchAnnouncementsUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify

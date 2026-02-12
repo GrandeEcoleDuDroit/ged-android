@@ -168,7 +168,7 @@ fun ReadAnnouncementScreen(
                     showBottomSheet = false
                     onEditAnnouncementClick(announcement)
                 },
-                onResendClick = {},
+                onRecreateClick = {},
                 onReportClick = {
                     showBottomSheet = false
                     showReportBottomSheet = true

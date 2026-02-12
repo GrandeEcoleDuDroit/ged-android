@@ -20,6 +20,9 @@
 
     <string name="post_link_field_placeholder">Lien du post</string>
     <string name="new_post">Nouveau post</string>
+    <string name="ged_news">Actualités GED</string>
+    <string name="post_option_icon_description">Afficher les options du post</string>
+    <string name="no_news">Aucune actualité</string>
 
     <string name="post_link_length_error">Le lien dépasse la limite autorisée (%d caractères maximum).</string>
     <string name="post_max_image_count_error">Vous pouvez ajouter jusqu’à %d images maximum.</string>

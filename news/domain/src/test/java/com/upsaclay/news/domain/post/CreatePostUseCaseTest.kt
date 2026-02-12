@@ -1,9 +1,7 @@
-package com.upsaclay.news.domain
+package com.upsaclay.news.domain.post
 
 import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.news.domain.post.Post.PostState
-import com.upsaclay.news.domain.post.PostRepository
-import com.upsaclay.news.domain.post.postFixture
 import com.upsaclay.news.domain.post.usecase.CreatePostUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
