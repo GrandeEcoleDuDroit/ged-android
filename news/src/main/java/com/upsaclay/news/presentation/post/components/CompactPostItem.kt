@@ -20,8 +20,11 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import com.upsaclay.common.extension.smallSpacing
+import com.upsaclay.common.presentation.components.OptionButton
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.supportingText
 import com.upsaclay.common.utils.PhonePreviews
@@ -35,7 +38,8 @@ import java.time.LocalDateTime
 @Composable
 fun CompactPostItem(
     modifier: Modifier = Modifier,
-    post: Post
+    post: Post,
+    onOptionClick: () -> Unit
 ) {
     val alpha = if (post.state is PostState.Publishing) 0.5f else 1f
 
@@ -45,7 +49,8 @@ fun CompactPostItem(
     ) {
         TitleSection(
             title = post.title,
-            state = post.state
+            state = post.state,
+            onOptionClick = onOptionClick
         )
 
         if (post.state.imageReferences.isNotEmpty()) {
@@ -56,7 +61,7 @@ fun CompactPostItem(
         }
 
         ContentSection(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f, fill = false),
             content = post.content
         )
 
@@ -71,7 +76,8 @@ fun CompactPostItem(
 private fun TitleSection(
     modifier: Modifier = Modifier,
     title: String,
-    state: PostState
+    state: PostState,
+    onOptionClick: () -> Unit
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -92,6 +98,12 @@ private fun TitleSection(
             style = MaterialTheme.typography.titleSmall,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
+        )
+
+        OptionButton(
+            modifier = Modifier.size(32.dp),
+            onClick = onOptionClick,
+            contentDescription = stringResource(id = R.string.post_option_icon_description)
         )
     }
 }
@@ -191,7 +203,8 @@ private fun CompactPostItemPreview() {
     GedoiseTheme {
         Surface {
             CompactPostItem(
-                post = postFixture
+                post = postFixture,
+                onOptionClick = {}
             )
         }
     }

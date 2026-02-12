@@ -16,6 +16,7 @@ import com.upsaclay.news.domain.announcement.usecase.RecreateAnnouncementUseCase
 import com.upsaclay.news.domain.announcement.usecase.RefreshAnnouncementsUseCase
 import com.upsaclay.news.domain.post.Post
 import com.upsaclay.news.domain.post.PostRepository
+import com.upsaclay.news.domain.post.usecase.DeletePostUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -30,6 +31,7 @@ class NewsViewModel(
     private val deleteAnnouncementUseCase: DeleteAnnouncementUseCase,
     private val refreshAnnouncementsUseCase: RefreshAnnouncementsUseCase,
     private val postRepository: PostRepository,
+    private val deletePostUseCase: DeletePostUseCase,
     private val userRepository: UserRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(NewsUiState())
@@ -78,6 +80,13 @@ class NewsViewModel(
         executeRequest {
             announcementRepository.reportAnnouncement(report)
             _event.emit(SingleUiEvent.Success(R.string.announcement_reported))
+        }
+    }
+
+    fun deletePost(post: Post) {
+        executeRequest {
+            deletePostUseCase.execute(post)
+            _event.emit(SingleUiEvent.Success(R.string.post_deleted))
         }
     }
 

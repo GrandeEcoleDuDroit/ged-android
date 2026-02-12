@@ -37,6 +37,7 @@ import com.upsaclay.news.domain.post.postsFixture
 import com.upsaclay.news.presentation.announcement.components.AnnouncementBottomSheet
 import com.upsaclay.news.presentation.announcement.stringRes
 import com.upsaclay.news.presentation.news.components.NewsScaffold
+import com.upsaclay.news.presentation.post.components.PostBottomSheet
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -86,7 +87,8 @@ fun NewsDestination(
             onDeleteAnnouncementClick = viewModel::deleteAnnouncement,
             onSeeAllAnnouncementsClick = onSeeAllAnnouncementsClick,
             onReportAnnouncementClick = viewModel::reportAnnouncement,
-            onCreatePostClick = onCreatePostClick
+            onCreatePostClick = onCreatePostClick,
+            onDeletePostClick = viewModel::deletePost
         )
     } else {
         LoadingScreen()
@@ -111,7 +113,8 @@ private fun NewsScreen(
     onDeleteAnnouncementClick: (Announcement) -> Unit,
     onSeeAllAnnouncementsClick: () -> Unit,
     onReportAnnouncementClick: (AnnouncementReport) -> Unit,
-    onCreatePostClick: () -> Unit
+    onCreatePostClick: () -> Unit,
+    onDeletePostClick: (Post) -> Unit
 ) {
     var activeBottomSheet by remember { mutableStateOf<NewsScreenBottomSheet?>(null) }
     var activeDialog by remember { mutableStateOf<NewsDialog?>(null) }
@@ -126,6 +129,19 @@ private fun NewsScreen(
                 onConfirm = {
                     activeDialog = null
                     onDeleteAnnouncementClick(dialogType.announcement)
+                },
+                onCancel = { activeDialog = null }
+            )
+        }
+
+        is NewsDialog.DeletePostDialog -> {
+            DefaultDialog(
+                text = stringResource(id = R.string.delete_post_dialog_message),
+                confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
+                critical = true,
+                onConfirm = {
+                    activeDialog = null
+                    onDeletePostClick(dialogType.post)
                 },
                 onCancel = { activeDialog = null }
             )
@@ -170,7 +186,13 @@ private fun NewsScreen(
 
                 GedNewsSection(
                     modifier = Modifier.weight(1f),
-                    posts = posts
+                    posts = posts,
+                    onUncreatedPostClick = {
+                        activeBottomSheet = NewsScreenBottomSheet.PostBottomSheet(it)
+                    },
+                    onPostOptionClick = {
+                        activeBottomSheet = NewsScreenBottomSheet.PostBottomSheet(it)
+                    }
                 )
             }
         }
@@ -223,6 +245,18 @@ private fun NewsScreen(
                 )
             }
 
+            is NewsScreenBottomSheet.PostBottomSheet -> {
+                PostBottomSheet(
+                    postState = bottomSheet.post.state,
+                    isEditable = user.admin,
+                    onDeleteClick = {
+                        activeBottomSheet = null
+                        activeDialog = NewsDialog.DeletePostDialog(bottomSheet.post)
+                    },
+                    onDismiss = { activeBottomSheet = null }
+                )
+            }
+
             else -> Unit
         }
     }
@@ -231,10 +265,12 @@ private fun NewsScreen(
 private sealed class NewsScreenBottomSheet {
     data class AnnouncementBottomSheet(val announcement: Announcement): NewsScreenBottomSheet()
     data class AnnouncementReportBottomSheet(val announcement: Announcement): NewsScreenBottomSheet()
+    data class PostBottomSheet(val post: Post): NewsScreenBottomSheet()
 }
 
 private sealed class NewsDialog {
     data class DeleteAnnouncementDialog(val announcement: Announcement): NewsDialog()
+    data class DeletePostDialog(val post: Post): NewsDialog()
 }
 
 /*
@@ -262,7 +298,8 @@ private fun NewsScreenPreview() {
             onCreateAnnouncementClick = {},
             onSeeAllAnnouncementsClick = {},
             onReportAnnouncementClick = {},
-            onCreatePostClick = {}
+            onCreatePostClick = {},
+            onDeletePostClick = {}
         )
     }
 }

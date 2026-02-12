@@ -35,6 +35,16 @@ class PostRepositoryImpl(
         postLocalDataSource.upsertPost(post)
     }
 
+    override suspend fun deletePost(post: Post) {
+        try {
+            postRemoteDataSource.deletePost(post)
+            postLocalDataSource.deletePost(post)
+        } catch (e: Exception) {
+            e("Error deleting post ${post.id}", e)
+            throw e
+        }
+    }
+
     override suspend fun deleteLocalPost(post: Post) {
         postLocalDataSource.deletePost(post)
     }

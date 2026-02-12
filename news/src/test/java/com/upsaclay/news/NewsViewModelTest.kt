@@ -9,6 +9,7 @@ import com.upsaclay.news.domain.announcement.usecase.RecreateAnnouncementUseCase
 import com.upsaclay.news.domain.announcement.usecase.RefreshAnnouncementsUseCase
 import com.upsaclay.news.domain.post.PostRepository
 import com.upsaclay.news.domain.post.postsFixture
+import com.upsaclay.news.domain.post.usecase.DeletePostUseCase
 import com.upsaclay.news.presentation.news.NewsViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -29,9 +30,10 @@ class NewsViewModelTest {
     private val recreateAnnouncementUseCase: RecreateAnnouncementUseCase = mockk()
     private val deleteAnnouncementUseCase: DeleteAnnouncementUseCase = mockk()
     private val refreshAnnouncementsUseCase: RefreshAnnouncementsUseCase = mockk()
-    private val userRepository: UserRepository = mockk()
     private val announcementRepository: AnnouncementRepository = mockk()
     private val postRepository: PostRepository = mockk()
+    private val deletePostUseCase: DeletePostUseCase = mockk()
+    private val userRepository: UserRepository = mockk()
 
     private lateinit var newsViewModel: NewsViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
@@ -53,6 +55,7 @@ class NewsViewModelTest {
             refreshAnnouncementsUseCase = refreshAnnouncementsUseCase,
             announcementRepository = announcementRepository,
             postRepository = postRepository,
+            deletePostUseCase = deletePostUseCase,
             userRepository = userRepository
         )
     }
@@ -88,5 +91,17 @@ class NewsViewModelTest {
 
         // Then
         coVerify { deleteAnnouncementUseCase.execute(announcement) }
+    }
+
+    @Test
+    fun deletePost_should_delete_post() = runTest {
+        // Given
+        val post = postsFixture.first()
+
+        // When
+        newsViewModel.deletePost(post)
+
+        // Then
+        coVerify { deletePostUseCase.execute(post) }
     }
 }

@@ -7,6 +7,7 @@ import com.upsaclay.news.domain.announcement.usecase.FetchAnnouncementsUseCase
 import com.upsaclay.news.domain.announcement.usecase.RecreateAnnouncementUseCase
 import com.upsaclay.news.domain.announcement.usecase.RefreshAnnouncementsUseCase
 import com.upsaclay.news.domain.post.usecase.CreatePostUseCase
+import com.upsaclay.news.domain.post.usecase.DeletePostUseCase
 import com.upsaclay.news.domain.post.usecase.FetchPostsUseCase
 import com.upsaclay.news.domain.post.usecase.UpsertLocalPostUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -58,4 +59,5 @@ val newsDomainModule = module {
     }
     singleOf(::UpsertLocalPostUseCase)
     singleOf(::FetchPostsUseCase)
+    singleOf(::DeletePostUseCase)
 }

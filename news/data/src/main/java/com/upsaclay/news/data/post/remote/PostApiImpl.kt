@@ -10,6 +10,7 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -39,6 +40,12 @@ class PostApiImpl(private val postServerApi: PostServerApi): PostApi {
             postServerApi.createPost(imageParts, postPart)
         }
     }
+
+    override suspend fun deletePost(remotePost: RemotePost) {
+        sendServerRequest {
+            postServerApi.deletePost(remotePost)
+        }
+    }
 }
 
 interface PostServerApi {
@@ -51,4 +58,7 @@ interface PostServerApi {
         @Part images: List<MultipartBody.Part>,
         @Part("post") post: RequestBody
     ): Response<ServerResponse>
+
+    @POST("posts/delete")
+    suspend fun deletePost(@Body remotePost: RemotePost): Response<ServerResponse>
 }
