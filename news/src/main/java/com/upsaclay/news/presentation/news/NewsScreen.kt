@@ -1,5 +1,7 @@
 package com.upsaclay.news.presentation.news
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SnackbarHostState
@@ -26,9 +28,9 @@ import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
-import com.upsaclay.news.domain.announcementsFixture
-import com.upsaclay.news.domain.entity.Announcement
-import com.upsaclay.news.domain.entity.AnnouncementReport
+import com.upsaclay.news.domain.announcement.Announcement
+import com.upsaclay.news.domain.announcement.AnnouncementReport
+import com.upsaclay.news.domain.announcement.announcementsFixture
 import com.upsaclay.news.presentation.announcement.components.AnnouncementBottomSheet
 import com.upsaclay.news.presentation.announcement.stringRes
 import com.upsaclay.news.presentation.news.components.NewsScaffold
@@ -41,6 +43,7 @@ fun NewsDestination(
     onCreateAnnouncementClick: () -> Unit,
     onEditAnnouncementClick: (Announcement) -> Unit,
     onSeeAllAnnouncementsClick: () -> Unit,
+    onCreatePostClick: () -> Unit,
     bottomBar: @Composable () -> Unit,
     viewModel: NewsViewModel = koinViewModel()
 ) {
@@ -78,7 +81,8 @@ fun NewsDestination(
             onEditAnnouncementClick = { viewModel.getAnnouncement(it)?.let(onEditAnnouncementClick) },
             onDeleteAnnouncementClick = viewModel::deleteAnnouncement,
             onSeeAllAnnouncementsClick = onSeeAllAnnouncementsClick,
-            onReportAnnouncementClick = viewModel::reportAnnouncement
+            onReportAnnouncementClick = viewModel::reportAnnouncement,
+            onCreatePostClick = onCreatePostClick
         )
     } else {
         LoadingScreen()
@@ -101,7 +105,8 @@ private fun NewsScreen(
     onEditAnnouncementClick: (String) -> Unit,
     onDeleteAnnouncementClick: (Announcement) -> Unit,
     onSeeAllAnnouncementsClick: () -> Unit,
-    onReportAnnouncementClick: (AnnouncementReport) -> Unit
+    onReportAnnouncementClick: (AnnouncementReport) -> Unit,
+    onCreatePostClick: () -> Unit
 ) {
     var activeBottomSheet by remember { mutableStateOf<NewsScreenBottomSheet?>(null) }
     var activeDialog by remember { mutableStateOf<NewsDialog?>(null) }
@@ -130,6 +135,7 @@ private fun NewsScreen(
 
     NewsScaffold(
         user = user,
+        onCreatePostClick = onCreatePostClick,
         onCreateAnnouncementClick = onCreateAnnouncementClick,
         snackbarHostState = snackbarHostState,
         bottomBar = bottomBar
@@ -237,7 +243,8 @@ private fun NewsScreenPreview() {
             onDeleteAnnouncementClick = {},
             onCreateAnnouncementClick = {},
             onSeeAllAnnouncementsClick = {},
-            onReportAnnouncementClick = {}
+            onReportAnnouncementClick = {},
+            onCreatePostClick = {}
         )
     }
 }

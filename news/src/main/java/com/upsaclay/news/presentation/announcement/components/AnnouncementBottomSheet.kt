@@ -22,8 +22,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.upsaclay.common.presentation.components.TextItem
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.news.R
-import com.upsaclay.news.domain.announcementFixture
-import com.upsaclay.news.domain.entity.Announcement.AnnouncementState
+import com.upsaclay.news.domain.announcement.Announcement.AnnouncementState
+import com.upsaclay.news.domain.announcement.announcementFixture
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

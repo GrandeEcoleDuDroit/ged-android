@@ -76,6 +76,7 @@
     <string name="unblock_user_dialog_message">Do you want to unblock this user?</string>
     <string name="deleted_user">Deleted user</string>
     <string name="confirm">Confirm</string>
+    <string name="add_image">Add image</string>
 
     <string name="mandatory_field_error">Mandatory field.</string>
     <string name="number_field_error">Please enter a valid number.</string>

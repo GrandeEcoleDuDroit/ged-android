@@ -16,13 +16,13 @@ import androidx.compose.ui.graphics.Color
 
 internal val white = Color(0xFFFFFFFF)
 internal val black = Color(0xFF121212)
-
 internal val primaryLight = Color(0xFF67708A)
 internal val primaryContainerLight = Color(0xFFDDE0E7)
 internal val onPrimaryContainerLight = Color(0xFF45474D)
 internal val onPrimaryLight = white
 internal val secondaryLight = Color(0xFF0B86FF)
 internal val secondaryContainerLight = Color(0xFFDBE1EA)
+internal val onSecondaryContainerLight = Color(0xFF19212B)
 internal val tertiaryLight = Color(0xFF009688)
 internal val backgroundLight = Color(0xFFFFFFFF)
 internal val onBackgroundLight = black
@@ -110,7 +110,7 @@ val ColorScheme.listDivider: Color
 
 val ColorScheme.overlayContent: Color
     @Composable
-    get() = Color(0xFF0F0F0F)
+    get() = Color(0xFF0F0F0F).copy(alpha = 0.6f)
 
 
 val ColorScheme.activatedButtonColors: ButtonColors
@@ -136,6 +136,22 @@ val ColorScheme.imageIconButtonColors: IconButtonColors
             Color(0xFFFFFFFF)
         }.copy(alpha = 0.7f)
     )
+
+val ColorScheme.closeFABContainerColor: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) {
+        MaterialTheme.colorScheme.onSecondaryContainer
+    } else {
+        MaterialTheme.colorScheme.primary
+    }
+
+val ColorScheme.closeFABContentColor: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) {
+        MaterialTheme.colorScheme.secondaryContainer
+    } else {
+        MaterialTheme.colorScheme.onPrimary
+    }
 
 
 val ColorScheme.checkBoxColor: CheckboxColors

@@ -79,6 +79,7 @@
     <string name="block_user_dialog_message">Vous ne verrez plus aucun de ses contenus.</string>
     <string name="unblock_user_dialog_message">Voulez-vous débloquer cet utilisateur ?</string>
     <string name="deleted_user">Utilisateur supprimé</string>
+    <string name="add_image">Ajouter image</string>
 
     <string name="mandatory_field_error">Champ obligatoire.</string>
     <string name="number_field_error">Veuillez entrer un nombre valide.</string>

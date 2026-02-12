@@ -1,7 +1,7 @@
 package com.upsaclay.news.domain
 
-import com.upsaclay.news.domain.usecase.FetchAnnouncementsUseCase
-import com.upsaclay.news.domain.usecase.RefreshAnnouncementsUseCase
+import com.upsaclay.news.domain.announcement.usecase.FetchAnnouncementsUseCase
+import com.upsaclay.news.domain.announcement.usecase.RefreshAnnouncementsUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk

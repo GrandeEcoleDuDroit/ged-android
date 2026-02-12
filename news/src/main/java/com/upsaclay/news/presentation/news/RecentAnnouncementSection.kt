@@ -30,9 +30,9 @@ import com.upsaclay.common.presentation.components.SectionTitle
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
-import com.upsaclay.news.domain.announcementsFixture
-import com.upsaclay.news.domain.entity.Announcement
-import com.upsaclay.news.domain.entity.Announcement.AnnouncementState
+import com.upsaclay.news.domain.announcement.Announcement
+import com.upsaclay.news.domain.announcement.Announcement.AnnouncementState
+import com.upsaclay.news.domain.announcement.announcementsFixture
 import com.upsaclay.news.presentation.announcement.components.CompactAnnouncementItem
 
 @Composable

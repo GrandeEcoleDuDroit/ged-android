@@ -2,11 +2,11 @@ package com.upsaclay.news
 
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.userFixture
-import com.upsaclay.news.domain.announcementsFixture
-import com.upsaclay.news.domain.repository.AnnouncementRepository
-import com.upsaclay.news.domain.usecase.DeleteAnnouncementUseCase
-import com.upsaclay.news.domain.usecase.RecreateAnnouncementUseCase
-import com.upsaclay.news.domain.usecase.RefreshAnnouncementsUseCase
+import com.upsaclay.news.domain.announcement.AnnouncementRepository
+import com.upsaclay.news.domain.announcement.announcementsFixture
+import com.upsaclay.news.domain.announcement.usecase.DeleteAnnouncementUseCase
+import com.upsaclay.news.domain.announcement.usecase.RecreateAnnouncementUseCase
+import com.upsaclay.news.domain.announcement.usecase.RefreshAnnouncementsUseCase
 import com.upsaclay.news.presentation.news.NewsViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify

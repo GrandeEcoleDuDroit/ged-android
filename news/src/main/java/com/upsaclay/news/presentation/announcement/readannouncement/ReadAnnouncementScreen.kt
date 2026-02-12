@@ -35,9 +35,9 @@ import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
-import com.upsaclay.news.domain.announcementFixture
-import com.upsaclay.news.domain.entity.Announcement
-import com.upsaclay.news.domain.entity.AnnouncementReport
+import com.upsaclay.news.domain.announcement.announcementFixture
+import com.upsaclay.news.domain.announcement.Announcement
+import com.upsaclay.news.domain.announcement.AnnouncementReport
 import com.upsaclay.news.presentation.announcement.AnnouncementPresentationUtils.contentStyle
 import com.upsaclay.news.presentation.announcement.AnnouncementPresentationUtils.titleStyle
 import com.upsaclay.news.presentation.announcement.components.AnnouncementBottomSheet

@@ -149,7 +149,7 @@ private fun CompletedMissionCard(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.overlayContent.copy(alpha = 0.6f))
+                    .background(MaterialTheme.colorScheme.overlayContent)
             )
 
             Text(

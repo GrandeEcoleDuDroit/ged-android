@@ -24,9 +24,10 @@ import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.supportingText
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.common.utils.getElapsedTimeValue
-import com.upsaclay.news.domain.entity.Announcement
-import com.upsaclay.news.domain.entity.Announcement.AnnouncementState
-import com.upsaclay.news.domain.longAnnouncementFixture
+import com.upsaclay.news.R
+import com.upsaclay.news.domain.announcement.Announcement
+import com.upsaclay.news.domain.announcement.Announcement.AnnouncementState
+import com.upsaclay.news.domain.announcement.longAnnouncementFixture
 
 @Composable
 internal fun CompactAnnouncementItem(
@@ -80,8 +81,8 @@ internal fun CompactAnnouncementItem(
         trailingContent = {
             OptionButton(
                 modifier = Modifier
-                    .testTag(stringResource(id = com.upsaclay.news.R.string.announcement_option_button_tag)),
-                contentDescription = stringResource(id = com.upsaclay.news.R.string.announcement_option_icon_description),
+                    .testTag(stringResource(id = R.string.announcement_option_button_tag)),
+                contentDescription = stringResource(id = R.string.announcement_option_icon_description),
                 onClick = onOptionClick
             )
         }

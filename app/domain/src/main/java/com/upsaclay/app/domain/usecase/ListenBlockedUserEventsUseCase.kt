@@ -2,7 +2,7 @@ package com.upsaclay.app.domain.usecase
 
 import com.upsaclay.common.domain.entity.BlockUserEvent
 import com.upsaclay.common.domain.repository.BlockedUserRepository
-import com.upsaclay.news.domain.repository.AnnouncementRepository
+import com.upsaclay.news.domain.announcement.AnnouncementRepository
 
 class ListenBlockedUserEventsUseCase(
     private val blockedUserRepository: BlockedUserRepository,

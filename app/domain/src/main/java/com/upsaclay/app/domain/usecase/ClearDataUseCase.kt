@@ -4,7 +4,7 @@ import com.upsaclay.common.domain.repository.BlockedUserRepository
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
-import com.upsaclay.news.domain.repository.AnnouncementRepository
+import com.upsaclay.news.domain.announcement.AnnouncementRepository
 
 class ClearDataUseCase(
     private val userRepository: UserRepository,
