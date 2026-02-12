@@ -63,6 +63,7 @@
     <string name="other_report_reason_placeholder">Enter reason</string>
     <string name="hacked_account">Hacked account</string>
     <string name="pretending_to_be_someone_else">Pretending to be someone else</string>
+    <string name="menu_icon_button_description">Open menu</string>
 
     <string name="no_user">No users</string>
     <string name="no_internet_connection">No internet connection.</string>

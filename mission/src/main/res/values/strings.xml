@@ -53,6 +53,7 @@
     <string name="delete_mission_dialog_text">Voulez-vous supprimer cette mission ?</string>
     <string name="remove_participant_dialog_text">Voulez-vous retirer %s de cette mission ?</string>
     <string name="unregister_mission_dialog_text">Se désinscrire de cette mission ?</string>
+    <string name="create_mission_icon_button_description">Créer mission</string>
 
     <string name="sending_error">Erreur d\'envoi</string>
     <string name="missions_refresh_error">Impossible de rafraîchir les missions</string>

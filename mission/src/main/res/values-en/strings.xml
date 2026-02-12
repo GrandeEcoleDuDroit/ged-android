@@ -52,6 +52,7 @@
     <string name="mission_reported">Mission reported</string>
     <string name="unregister_mission_dialog_text">Unregister from this mission?</string>
     <string name="remove_participant_dialog_text">Do you want remove %s from this mission ?</string>
+    <string name="create_mission_icon_button_description">Create mission</string>
 
     <string name="missions_refresh_error">Unable to refresh missions</string>
     <string name="sending_error">Sending error</string>
