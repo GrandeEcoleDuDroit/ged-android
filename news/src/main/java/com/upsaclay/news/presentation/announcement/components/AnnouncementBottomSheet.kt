@@ -31,7 +31,7 @@ fun AnnouncementBottomSheet(
     announcementState: AnnouncementState,
     isEditable: Boolean,
     onEditClick: () -> Unit,
-    onResendClick: () -> Unit,
+    onRecreateClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onReportClick: () -> Unit,
     onDismiss: () -> Unit
@@ -57,7 +57,7 @@ fun AnnouncementBottomSheet(
 
                 AnnouncementState.ERROR -> {
                     ErrorAnnouncementBottomSheetContent(
-                        onResendClick = onResendClick,
+                        onResendClick = onRecreateClick,
                         onDeleteClick = onDeleteClick
                     )
                 }
@@ -213,7 +213,7 @@ fun EditableAnnouncementBottomSheetPreview() {
                 announcementState = announcementFixture.state,
                 isEditable = true,
                 onEditClick = {},
-                onResendClick = {},
+                onRecreateClick = {},
                 onReportClick = {},
                 onDeleteClick = {},
                 onDismiss = {}
@@ -231,7 +231,7 @@ fun NonEditableAnnouncementBottomSheetPreview() {
                 announcementState = announcementFixture.state,
                 isEditable = false,
                 onEditClick = {},
-                onResendClick = {},
+                onRecreateClick = {},
                 onReportClick = {},
                 onDeleteClick = {},
                 onDismiss = {}

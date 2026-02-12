@@ -7,6 +7,8 @@ import com.upsaclay.news.domain.announcement.announcementsFixture
 import com.upsaclay.news.domain.announcement.usecase.DeleteAnnouncementUseCase
 import com.upsaclay.news.domain.announcement.usecase.RecreateAnnouncementUseCase
 import com.upsaclay.news.domain.announcement.usecase.RefreshAnnouncementsUseCase
+import com.upsaclay.news.domain.post.PostRepository
+import com.upsaclay.news.domain.post.postsFixture
 import com.upsaclay.news.presentation.news.NewsViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -29,6 +31,7 @@ class NewsViewModelTest {
     private val refreshAnnouncementsUseCase: RefreshAnnouncementsUseCase = mockk()
     private val userRepository: UserRepository = mockk()
     private val announcementRepository: AnnouncementRepository = mockk()
+    private val postRepository: PostRepository = mockk()
 
     private lateinit var newsViewModel: NewsViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
@@ -38,6 +41,7 @@ class NewsViewModelTest {
         Dispatchers.setMain(testDispatcher)
 
         every { announcementRepository.announcements } returns flowOf(announcementsFixture)
+        every { postRepository.posts } returns flowOf(postsFixture)
         every { userRepository.user } returns MutableStateFlow(userFixture)
         coEvery { recreateAnnouncementUseCase.execute(any()) } returns Unit
         coEvery { refreshAnnouncementsUseCase.execute() } returns Unit
@@ -48,6 +52,7 @@ class NewsViewModelTest {
             deleteAnnouncementUseCase = deleteAnnouncementUseCase,
             refreshAnnouncementsUseCase = refreshAnnouncementsUseCase,
             announcementRepository = announcementRepository,
+            postRepository = postRepository,
             userRepository = userRepository
         )
     }
@@ -62,12 +67,12 @@ class NewsViewModelTest {
     }
 
     @Test
-    fun resendAnnouncement_should_resend_announcement() = runTest {
+    fun recreateAnnouncement_should_recreate_announcement() = runTest {
         // Given
         val announcement = announcementsFixture.first()
 
         // When
-        newsViewModel.resendAnnouncement(announcement)
+        newsViewModel.recreateAnnouncement(announcement)
 
         // Then
         coVerify { recreateAnnouncementUseCase.execute(announcement) }

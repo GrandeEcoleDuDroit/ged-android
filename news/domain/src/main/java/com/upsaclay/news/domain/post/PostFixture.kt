@@ -57,10 +57,3 @@ val postFixture2 = Post(
 )
 
 val postsFixture = listOf(postFixture, postFixture2)
-
-val c = """
-Giuliana, actuellement à l’Université de Nottingham, poursuit un LLM en International Commercial Law.
-Dans son article, elle partage son expérience de la vie à Nottingham : les campus, les cours, et tout ce qui rend ce parcours unique.
-Un témoignage inspirant pour tous ceux qui rêvent d’étudier à l’étranger ! 🌍📚
-👉 Lien pour découvrir son article : http://grandeecoledudroit.blogspot.com/2024/12/partir-la-decouverte-des-tresors-de.html?m=1
-"""

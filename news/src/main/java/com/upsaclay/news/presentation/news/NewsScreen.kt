@@ -19,6 +19,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
+import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.presentation.LoadingScreen
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.DefaultDialog
@@ -31,6 +32,8 @@ import com.upsaclay.news.R
 import com.upsaclay.news.domain.announcement.Announcement
 import com.upsaclay.news.domain.announcement.AnnouncementReport
 import com.upsaclay.news.domain.announcement.announcementsFixture
+import com.upsaclay.news.domain.post.Post
+import com.upsaclay.news.domain.post.postsFixture
 import com.upsaclay.news.presentation.announcement.components.AnnouncementBottomSheet
 import com.upsaclay.news.presentation.announcement.stringRes
 import com.upsaclay.news.presentation.news.components.NewsScaffold
@@ -70,6 +73,7 @@ fun NewsDestination(
         NewsScreen(
             user = uiState.user!!,
             announcements = uiState.announcements,
+            posts = uiState.posts,
             refreshing = uiState.refreshing,
             loading = uiState.loading,
             bottomBar = bottomBar,
@@ -77,7 +81,7 @@ fun NewsDestination(
             onRefresh = viewModel::refreshAnnouncements,
             onAnnouncementClick = onAnnouncementClick,
             onCreateAnnouncementClick = onCreateAnnouncementClick,
-            onResendAnnouncementClick = viewModel::resendAnnouncement,
+            onRecreateAnnouncementClick = viewModel::recreateAnnouncement,
             onEditAnnouncementClick = { viewModel.getAnnouncement(it)?.let(onEditAnnouncementClick) },
             onDeleteAnnouncementClick = viewModel::deleteAnnouncement,
             onSeeAllAnnouncementsClick = onSeeAllAnnouncementsClick,
@@ -94,6 +98,7 @@ fun NewsDestination(
 private fun NewsScreen(
     user: User,
     announcements: List<Announcement>?,
+    posts: List<Post>?,
     refreshing: Boolean,
     loading: Boolean,
     bottomBar: @Composable () -> Unit,
@@ -101,7 +106,7 @@ private fun NewsScreen(
     onRefresh: () -> Unit,
     onAnnouncementClick: (String) -> Unit,
     onCreateAnnouncementClick: () -> Unit,
-    onResendAnnouncementClick: (Announcement) -> Unit,
+    onRecreateAnnouncementClick: (Announcement) -> Unit,
     onEditAnnouncementClick: (String) -> Unit,
     onDeleteAnnouncementClick: (Announcement) -> Unit,
     onSeeAllAnnouncementsClick: () -> Unit,
@@ -139,23 +144,35 @@ private fun NewsScreen(
         onCreateAnnouncementClick = onCreateAnnouncementClick,
         snackbarHostState = snackbarHostState,
         bottomBar = bottomBar
-    ) { paddingValues ->
+    ) { innerPadding ->
         PullToRefreshComponent(
-            modifier = Modifier.padding(paddingValues),
+            modifier = Modifier.padding(innerPadding),
             onRefresh = onRefresh,
             refreshing = refreshing
         ) {
-            RecentAnnouncementSection(
-                announcements = announcements,
-                onAnnouncementClick = onAnnouncementClick,
-                onUncreatedAnnouncementClick = { announcement ->
-                    activeBottomSheet = NewsScreenBottomSheet.AnnouncementBottomSheet(announcement)
-                },
-                onSeeAllAnnouncementsClick = onSeeAllAnnouncementsClick,
-                onAnnouncementOptionClick = { announcement ->
-                    activeBottomSheet = NewsScreenBottomSheet.AnnouncementBottomSheet(announcement)
-                }
-            )
+            Column(
+                verticalArrangement = Arrangement.mediumSpacing()
+            ) {
+                RecentAnnouncementSection(
+                    modifier = Modifier.weight(0.9f),
+                    announcements = announcements,
+                    onAnnouncementClick = onAnnouncementClick,
+                    onUncreatedAnnouncementClick = { announcement ->
+                        activeBottomSheet =
+                            NewsScreenBottomSheet.AnnouncementBottomSheet(announcement)
+                    },
+                    onSeeAllAnnouncementsClick = onSeeAllAnnouncementsClick,
+                    onAnnouncementOptionClick = { announcement ->
+                        activeBottomSheet =
+                            NewsScreenBottomSheet.AnnouncementBottomSheet(announcement)
+                    }
+                )
+
+                GedNewsSection(
+                    modifier = Modifier.weight(1f),
+                    posts = posts
+                )
+            }
         }
 
         when(val bottomSheet = activeBottomSheet) {
@@ -167,9 +184,9 @@ private fun NewsScreen(
                         activeBottomSheet = null
                         onEditAnnouncementClick(bottomSheet.announcement.id)
                     },
-                    onResendClick = {
+                    onRecreateClick = {
                         activeBottomSheet = null
-                        onResendAnnouncementClick(bottomSheet.announcement)
+                        onRecreateAnnouncementClick(bottomSheet.announcement)
                     },
                     onReportClick = {
                         activeBottomSheet = NewsScreenBottomSheet.AnnouncementReportBottomSheet(bottomSheet.announcement)
@@ -233,12 +250,13 @@ private fun NewsScreenPreview() {
         NewsScreen(
             user = userFixture,
             announcements = announcementsFixture,
+            posts = postsFixture,
             refreshing = false,
             loading = false,
             bottomBar = {},
             onRefresh = {},
             onAnnouncementClick = {},
-            onResendAnnouncementClick = {},
+            onRecreateAnnouncementClick = {},
             onEditAnnouncementClick = {},
             onDeleteAnnouncementClick = {},
             onCreateAnnouncementClick = {},

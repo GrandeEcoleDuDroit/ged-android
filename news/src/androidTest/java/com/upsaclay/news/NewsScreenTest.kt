@@ -11,7 +11,6 @@ import com.upsaclay.news.domain.announcement.announcementsFixture
 import com.upsaclay.news.domain.announcement.longAnnouncementFixture
 import com.upsaclay.news.presentation.news.NewsDestination
 import com.upsaclay.news.presentation.news.NewsViewModel
-import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -27,15 +26,13 @@ class NewsScreenTest {
     private val newsViewModel: NewsViewModel = mockk()
     private val uiState = NewsViewModel.NewsUiState(
         user = userFixture,
-        announcements = announcementsFixture,
-        refreshing = false
+        announcements = announcementsFixture
     )
 
     @Before
     fun setUp() {
         every { newsViewModel.event } returns MutableSharedFlow()
         every { newsViewModel.uiState } returns MutableStateFlow(uiState)
-        coEvery { newsViewModel.refreshAnnouncements() } returns Unit
     }
 
     @Test

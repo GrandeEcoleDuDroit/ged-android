@@ -18,8 +18,11 @@
 
     <string name="announcements_refresh_error">Unable to refresh announcements</string>
 
-    <string name="post_link_field_placeholder">Post link</string>
+    <string name="ged_news">GED news</string>
     <string name="new_post">New post</string>
+    <string name="post_link_field_placeholder">Post link</string>
+    <string name="post_option_icon_description">Display post options</string>
+    <string name="no_news">No news</string>
 
     <string name="post_link_length_error">The link exceeds the allowed limit (maximum %d characters).</string>
     <string name="post_max_image_count_error">You can add up to %d images.</string>

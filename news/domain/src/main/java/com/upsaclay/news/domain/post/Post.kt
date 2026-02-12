@@ -14,7 +14,11 @@ data class Post(
     enum class PostSource(val id: Int, val label: String) {
         LINKEDIN(1, "LinkedIn"),
         INSTAGRAM(2, "Instagram"),
-        BLOG_LLM(3, "Blog LLM")
+        BLOG_LLM(3, "Blog LLM");
+
+        companion object {
+            fun fromId(id: Int): PostSource = entries.first { it.id == id }
+        }
     }
 
     sealed class PostState {
@@ -45,6 +49,21 @@ data class Post(
             companion object {
                 const val TYPE = "ERROR"
             }
+        }
+
+        val imageReferences: List<String>
+            get() = when (this) {
+                is Draft -> emptyList()
+                is Publishing -> imagePaths
+                is Published -> imageUrls
+                is Error -> imagePaths
+            }
+
+        fun resolveImagePaths(): List<String> = when (this) {
+            is Draft -> emptyList()
+            is Publishing -> imagePaths
+            is Published -> emptyList()
+            is Error -> imagePaths
         }
     }
 }

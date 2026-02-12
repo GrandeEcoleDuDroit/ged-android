@@ -256,7 +256,6 @@ private fun CardSubtitle(
             icon = {
                 Icon(
                     modifier = Modifier.size(dimensionResource(com.upsaclay.common.R.dimen.icon_size)),
-
                     painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_calendar),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.informationText
