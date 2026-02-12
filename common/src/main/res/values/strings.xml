@@ -68,6 +68,7 @@
     <string name="other_report_reason_placeholder">Entrez la raison</string>
     <string name="hacked_account">Compte piraté</string>
     <string name="pretending_to_be_someone_else">Prétend être quelqu\'un d\'autre</string>
+    <string name="menu_icon_button_description">Ouvrir le menu</string>
 
     <string name="no_user">Aucun utilisateur</string>
     <string name="no_internet_connection">Aucune connexion Internet.</string>

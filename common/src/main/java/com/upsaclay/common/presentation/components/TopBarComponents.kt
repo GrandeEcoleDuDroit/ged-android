@@ -31,7 +31,10 @@ import com.upsaclay.common.utils.PhonePreviews
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TitleTopBar(title: String) {
+fun TitleTopBar(
+    title: String,
+    actions: @Composable (RowScope.() -> Unit) = {}
+) {
     TopAppBar(
         title = {
             Text(
@@ -40,6 +43,7 @@ fun TitleTopBar(title: String) {
                 maxLines = 1
             )
         },
+        actions = actions,
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.background
         )

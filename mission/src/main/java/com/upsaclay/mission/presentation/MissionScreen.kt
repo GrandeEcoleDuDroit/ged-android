@@ -11,11 +11,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
@@ -33,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
@@ -46,7 +46,6 @@ import com.upsaclay.common.presentation.components.EmptyText
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.PullToRefreshComponent
 import com.upsaclay.common.presentation.components.ReportBottomSheet
-import com.upsaclay.common.presentation.components.SimpleFloatingActionButton
 import com.upsaclay.common.presentation.components.TitleTopBar
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.PhonePreviews
@@ -276,25 +275,24 @@ private fun MissionScaffold(
 ) {
     Scaffold(
         topBar = {
-            TitleTopBar(title = stringResource(com.upsaclay.common.R.string.mission))
+            TitleTopBar(
+                title = stringResource(com.upsaclay.common.R.string.mission),
+                actions = {
+                    if (admin) {
+                        IconButton(onClick = onCreateMissionClick) {
+                            Icon(
+                                painter = painterResource(com.upsaclay.common.R.drawable.ic_add),
+                                contentDescription = stringResource(id = R.string.create_mission_icon_button_description)
+                            )
+                        }
+                    }
+                }
+            )
         },
         bottomBar = bottomBar,
         snackbarHost = {
             SnackbarHost(snackbarHostState) {
                 Snackbar(it)
-            }
-        },
-        floatingActionButton = {
-            if (admin) {
-                SimpleFloatingActionButton(
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Default.Add,
-                            contentDescription = null
-                        )
-                    },
-                    onClick = onCreateMissionClick
-                )
             }
         },
         content = content
