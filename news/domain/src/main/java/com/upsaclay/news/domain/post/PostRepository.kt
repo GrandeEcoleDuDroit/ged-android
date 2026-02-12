@@ -16,5 +16,7 @@ interface PostRepository {
 
     suspend fun upsertLocalPost(post: Post)
 
+    suspend fun deletePost(post: Post)
+
     suspend fun deleteLocalPost(post: Post)
 }

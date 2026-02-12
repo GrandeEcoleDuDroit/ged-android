@@ -23,6 +23,8 @@
     <string name="ged_news">Actualités GED</string>
     <string name="post_option_icon_description">Afficher les options du post</string>
     <string name="no_news">Aucune actualité</string>
+    <string name="post_deleted">Post supprimé</string>
+    <string name="delete_post_dialog_message">Voulez-vous supprimer ce post ?</string>
 
     <string name="post_link_length_error">Le lien dépasse la limite autorisée (%d caractères maximum).</string>
     <string name="post_max_image_count_error">Vous pouvez ajouter jusqu’à %d images maximum.</string>

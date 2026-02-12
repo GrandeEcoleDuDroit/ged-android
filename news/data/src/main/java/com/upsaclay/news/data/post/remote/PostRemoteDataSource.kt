@@ -29,4 +29,14 @@ class PostRemoteDataSource(private val postApi: PostApi) {
             }
         }
     }
+
+    suspend fun deletePost(post: Post) {
+        withContext(dispatcher) {
+            try {
+                postApi.deletePost(post.toRemote())
+            } catch (e: Exception) {
+                throw mapServerException(e)
+            }
+        }
+    }
 }
