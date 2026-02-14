@@ -51,7 +51,7 @@ data class Post(
             }
         }
 
-        val imageReferences: List<String>
+        val imageReferenceValues: List<String>
             get() = when (this) {
                 is Draft -> emptyList()
                 is Publishing -> imagePaths

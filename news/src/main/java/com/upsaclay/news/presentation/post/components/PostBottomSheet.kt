@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -12,8 +13,10 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.presentation.components.TextItem
+import com.upsaclay.news.R
 import com.upsaclay.news.domain.post.Post.PostState
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -21,6 +24,7 @@ import com.upsaclay.news.domain.post.Post.PostState
 fun PostBottomSheet(
     postState: PostState,
     isEditable: Boolean,
+    onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -30,6 +34,7 @@ fun PostBottomSheet(
                 when (postState) {
                     is PostState.Published -> {
                         EditablePostBottomSheetContent(
+                            onEditClick = onEditClick,
                             onDeleteClick = onDeleteClick
                         )
                     }
@@ -49,8 +54,23 @@ fun PostBottomSheet(
 
 @Composable
 private fun EditablePostBottomSheetContent(
+    onEditClick: () -> Unit,
     onDeleteClick: () -> Unit
 ) {
+    TextItem(
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag(stringResource(id = R.string.read_screen_sheet_edit_field_tag)),
+        text = { Text(text = stringResource(id = com.upsaclay.common.R.string.edit)) },
+        icon = {
+            Icon(
+                imageVector = Icons.Outlined.Edit,
+                contentDescription = null
+            )
+        },
+        onClick = onEditClick
+    )
+
     TextItem(
         modifier = Modifier.fillMaxWidth(),
         text = {

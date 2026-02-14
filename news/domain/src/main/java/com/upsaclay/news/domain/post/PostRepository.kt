@@ -14,6 +14,8 @@ interface PostRepository {
 
     suspend fun createPost(post: Post, imageFiles: List<File>)
 
+    suspend fun updatePost(post: Post, imageFiles: List<File>)
+
     suspend fun upsertLocalPost(post: Post)
 
     suspend fun deletePost(post: Post)

@@ -83,6 +83,9 @@ class NewsViewModel(
         }
     }
 
+    suspend fun getPost(postId: String): Post? = postRepository.getLocalPost(postId)
+
+
     fun deletePost(post: Post) {
         executeRequest {
             deletePostUseCase.execute(post)

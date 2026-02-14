@@ -31,6 +31,16 @@ class PostRepositoryImpl(
         }
     }
 
+    override suspend fun updatePost(post: Post, imageFiles: List<File>) {
+        try {
+            postRemoteDataSource.updatePost(post, imageFiles)
+            postLocalDataSource.upsertPost(post)
+        } catch (e: Exception) {
+            e("Error updating post ${post.id}", e)
+            throw e
+        }
+    }
+
     override suspend fun upsertLocalPost(post: Post) {
         postLocalDataSource.upsertPost(post)
     }

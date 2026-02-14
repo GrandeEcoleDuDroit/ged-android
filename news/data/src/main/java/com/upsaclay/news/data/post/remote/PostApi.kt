@@ -7,5 +7,7 @@ interface PostApi {
 
     suspend fun createPost(remotePost: RemotePost, imageFiles: List<File>)
 
+    suspend fun updatePost(remotePost: RemotePost, imageFiles: List<File>)
+
     suspend fun deletePost(remotePost: RemotePost)
 }

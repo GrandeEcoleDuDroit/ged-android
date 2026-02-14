@@ -1,4 +1,4 @@
-package com.upsaclay.news.presentation.post.createpost
+package com.upsaclay.news.presentation.post.editpost
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -21,10 +21,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -33,10 +31,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.EditTopBar
-import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.theme.inputForeground
-import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
+import com.upsaclay.news.domain.post.ImageReference
 import com.upsaclay.news.domain.post.Post
 import com.upsaclay.news.presentation.post.PostLinkError
 import com.upsaclay.news.presentation.post.PostPresentationUtils.MAX_IMAGE_COUNT
@@ -45,11 +43,15 @@ import com.upsaclay.news.presentation.post.components.PostFormValue
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
-fun CreatePostDestination(
+fun EditPostDestination(
+    post: Post,
     onCancelClick: () -> Unit,
-    viewModel: CreatePostViewModel = koinViewModel()
+    viewModel: EditPostViewModel = koinViewModel(
+        parameters = { parametersOf(post) }
+    )
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
@@ -65,44 +67,44 @@ fun CreatePostDestination(
         viewModel.event.collectLatest {
             when (it) {
                 is SingleUiEvent.Error -> showSnackBar(context.getString(it.messageId))
+                is SingleUiEvent.Success -> onCancelClick()
             }
         }
     }
 
-    CreatePostScreen(
+    EditPostScreen(
         title = uiState.title,
         postLink = uiState.postLink,
         postSource = uiState.postSource,
         allPostSources = uiState.allPostSources,
         content = uiState.content,
-        imageUris = uiState.imageUris,
+        imageReferences = uiState.imageReferences,
         postLinkError = uiState.postLinkError,
-        createEnabled = uiState.createEnabled,
+        loading = uiState.loading,
+        updateEnabled = uiState.updateEnabled,
         snackbarHostState = snackbarHostState,
         onTitleChange = viewModel::onTitleChange,
         onPostLinkChange = viewModel::onPostLinkChange,
         onPostSourceChange = viewModel::onSelectPostSource,
         onContentChange = viewModel::onContentChange,
         onAddImageUris = viewModel::onAddImageUris,
-        onRemoveImageUri = viewModel::onRemoveImageUri,
-        onCancelClick = onCancelClick,
-        onCreatePostClick = {
-            viewModel.createPost()
-            onCancelClick()
-        }
+        onRemoveImageUri = viewModel::onRemoveImageReference,
+        onUpdatePostClick = viewModel::updatePost,
+        onCancelClick = onCancelClick
     )
 }
 
 @Composable
-private fun CreatePostScreen(
+private fun EditPostScreen(
     title: String,
     postLink: String,
     postSource: Post.PostSource?,
     allPostSources: List<Post.PostSource>,
     content: String,
-    imageUris: List<Uri>,
+    imageReferences: List<ImageReference>,
     postLinkError: PostLinkError?,
-    createEnabled: Boolean,
+    loading: Boolean,
+    updateEnabled: Boolean,
     snackbarHostState: SnackbarHostState,
     onTitleChange: (String) -> Unit,
     onPostLinkChange: (String) -> Unit,
@@ -110,8 +112,8 @@ private fun CreatePostScreen(
     onContentChange: (String) -> Unit,
     onAddImageUris: (List<Uri>) -> Unit,
     onRemoveImageUri: (Int) -> Unit,
-    onCancelClick: () -> Unit,
-    onCreatePostClick: () -> Unit
+    onUpdatePostClick: () -> Unit,
+    onCancelClick: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     val multiplePhotoPickerLauncher = rememberLauncherForActivityResult(
@@ -119,21 +121,25 @@ private fun CreatePostScreen(
         onResult = onAddImageUris
     )
 
+    if (loading) {
+        LoadingDialog()
+    }
+
     Scaffold(
         modifier = Modifier.imePadding(),
         topBar = {
             EditTopBar(
-                title = stringResource(R.string.new_post),
+                title = stringResource(R.string.edit_post),
                 onCancelClick = {
                     focusManager.clearFocus()
                     onCancelClick()
                 },
                 onActionClick = {
                     focusManager.clearFocus()
-                    onCreatePostClick()
+                    onUpdatePostClick()
                 },
-                actionLabel = stringResource(com.upsaclay.common.R.string.publish),
-                buttonEnable = createEnabled
+                actionLabel = stringResource(com.upsaclay.common.R.string.save),
+                buttonEnable = updateEnabled
             )
         },
         bottomBar = {
@@ -142,24 +148,24 @@ private fun CreatePostScreen(
                     .navigationBarsPadding()
                     .fillMaxWidth()
             ) {
-               IconButton(
-                   onClick = {
-                       multiplePhotoPickerLauncher.launch(
-                           PickVisualMediaRequest(
-                               ActivityResultContracts.PickVisualMedia.ImageOnly
-                           )
-                       )
-                       focusManager.clearFocus()
-                   },
-                   colors = IconButtonDefaults.iconButtonColors(
-                       contentColor = MaterialTheme.colorScheme.inputForeground
-                   )
-               ) {
-                   Icon(
-                       painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_image),
-                       contentDescription = stringResource(com.upsaclay.common.R.string.add_image)
-                   )
-               }
+                IconButton(
+                    onClick = {
+                        multiplePhotoPickerLauncher.launch(
+                            PickVisualMediaRequest(
+                                ActivityResultContracts.PickVisualMedia.ImageOnly
+                            )
+                        )
+                        focusManager.clearFocus()
+                    },
+                    colors = IconButtonDefaults.iconButtonColors(
+                        contentColor = MaterialTheme.colorScheme.inputForeground
+                    )
+                ) {
+                    Icon(
+                        painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_image),
+                        contentDescription = stringResource(com.upsaclay.common.R.string.add_image)
+                    )
+                }
             }
         },
         snackbarHost = {
@@ -178,7 +184,7 @@ private fun CreatePostScreen(
                 postSource = postSource,
                 allPostSources = allPostSources,
                 content = content,
-                imageReferences = imageUris.map { it.toString() },
+                imageReferences = imageReferences.map { it.value },
                 postLinkError = when (postLinkError) {
                     is PostLinkError.ExceedLengthLimit -> stringResource(postLinkError.error, postLinkError.LIMIT)
                     null -> null
@@ -189,43 +195,6 @@ private fun CreatePostScreen(
             onPostSourceChange = onPostSourceChange,
             onContentChange = onContentChange,
             onRemoveImageClick = onRemoveImageUri
-        )
-    }
-}
-
-/*
- =====================================================================
-                                Preview
- =====================================================================
- */
-
-@PhonePreviews
-@Composable
-private fun CreatePostScreenPreview() {
-    var title by remember { mutableStateOf("") }
-    var postLink by remember { mutableStateOf("") }
-    var postSource by remember { mutableStateOf<Post.PostSource?>(null) }
-    var content by remember { mutableStateOf("") }
-
-    GedoiseTheme {
-        CreatePostScreen(
-            title = title,
-            postLink = postLink,
-            postSource = postSource,
-            allPostSources = Post.PostSource.entries,
-            content = content,
-            imageUris = emptyList(),
-            postLinkError = null,
-            createEnabled = false,
-            snackbarHostState = SnackbarHostState(),
-            onTitleChange = { title = it },
-            onPostLinkChange = { postLink = it },
-            onPostSourceChange = { postSource = it },
-            onContentChange = { content = it },
-            onAddImageUris = {},
-            onRemoveImageUri = {},
-            onCancelClick = {},
-            onCreatePostClick = {}
         )
     }
 }
