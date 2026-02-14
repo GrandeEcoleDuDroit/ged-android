@@ -64,5 +64,5 @@ class MissionLocalDataSource(
     }
 
     private fun getImagePath(fileName: String): String =
-        File(context.filesDir, MissionUtils.Image.makeRelativePath(fileName)).path
+        File(context.filesDir, MissionUtils.Image.getRelativePath(fileName)).path
 }

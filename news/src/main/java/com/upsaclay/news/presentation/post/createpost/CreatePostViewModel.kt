@@ -1,7 +1,6 @@
 package com.upsaclay.news.presentation.post.createpost
 
 import android.net.Uri
-import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upsaclay.common.domain.usecase.GenerateIdUseCase
@@ -9,6 +8,7 @@ import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.post.Post
 import com.upsaclay.news.domain.post.usecase.CreatePostUseCase
+import com.upsaclay.news.presentation.post.PostLinkError
 import com.upsaclay.news.presentation.post.PostPresentationUtils.MAX_CONTENT_LENGTH
 import com.upsaclay.news.presentation.post.PostPresentationUtils.MAX_IMAGE_COUNT
 import com.upsaclay.news.presentation.post.PostPresentationUtils.MAX_POST_LINK_LENGTH
@@ -31,7 +31,6 @@ class CreatePostViewModel(
     private val _event = MutableSharedFlow<SingleUiEvent>()
     val event: SharedFlow<SingleUiEvent> = _event
     private val postCreateState = MutableStateFlow(PostCreateState())
-
 
     init {
         listenPostCreateState()
@@ -162,15 +161,9 @@ class CreatePostViewModel(
         val content: String = "",
         val imageUris: List<Uri> = emptyList(),
         val postLinkError: PostLinkError? = null,
-        val createEnabled: Boolean = false,
+        val createEnabled: Boolean = false
     ) {
         val allPostSources: List<Post.PostSource> = Post.PostSource.entries
-    }
-
-    sealed class PostLinkError(@StringRes val error: Int) {
-        data object ExceedLengthLimit: PostLinkError(error = R.string.post_link_length_error) {
-            const val LIMIT: Int = MAX_POST_LINK_LENGTH
-        }
     }
 
     private data class PostCreateState(

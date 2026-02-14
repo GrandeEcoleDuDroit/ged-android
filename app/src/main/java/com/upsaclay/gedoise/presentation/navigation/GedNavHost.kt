@@ -68,6 +68,8 @@ import com.upsaclay.news.presentation.navigateToNews
 import com.upsaclay.news.presentation.newsSection
 import com.upsaclay.news.presentation.post.createpost.createPostScreen
 import com.upsaclay.news.presentation.post.createpost.navigateToCreatePost
+import com.upsaclay.news.presentation.post.editpost.editPostScreen
+import com.upsaclay.news.presentation.post.editpost.navigateToEditPost
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 
@@ -161,6 +163,7 @@ fun GedNavHost(
             onEditAnnouncementClick = navController::navigateToEditAnnouncement,
             onSeeAllAnnouncementsClick = navController::navigateToAllAnnouncements,
             onCreatePostClick = navController::navigateToCreatePost,
+            onEditPostClick = navController::navigateToEditPost,
             bottomBar = bottomBar
         ) {
             createAnnouncementScreen(onBackClick = navController::popBackStack)
@@ -181,6 +184,8 @@ fun GedNavHost(
             )
 
             createPostScreen(onBackClick = navController::popBackStack)
+
+            editPostScreen(onBackClick = navController::popBackStack)
         }
 
         conversationSection(

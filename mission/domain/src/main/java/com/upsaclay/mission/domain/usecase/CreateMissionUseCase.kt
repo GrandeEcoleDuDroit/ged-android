@@ -21,7 +21,7 @@ class CreateMissionUseCase(
             val imageFile = imageUri?.let { uri ->
                 val extension = imageRepository.getFileExtension(uri)
                 val fileName = "${MissionUtils.Image.generateFileName(mission.id)}.$extension"
-                imagePath = MissionUtils.Image.makeRelativePath(fileName)
+                imagePath = MissionUtils.Image.getRelativePath(fileName)
                 imageRepository.createLocalImage(imagePath!!, uri)
             }
 

@@ -48,6 +48,7 @@ fun NewsDestination(
     onEditAnnouncementClick: (Announcement) -> Unit,
     onSeeAllAnnouncementsClick: () -> Unit,
     onCreatePostClick: () -> Unit,
+    onEditPostClick: (Post) -> Unit,
     bottomBar: @Composable () -> Unit,
     viewModel: NewsViewModel = koinViewModel()
 ) {
@@ -88,6 +89,11 @@ fun NewsDestination(
             onSeeAllAnnouncementsClick = onSeeAllAnnouncementsClick,
             onReportAnnouncementClick = viewModel::reportAnnouncement,
             onCreatePostClick = onCreatePostClick,
+            onEditPostClick = {
+                scope.launch {
+                    viewModel.getPost(it)?.let(onEditPostClick)
+                }
+            },
             onDeletePostClick = viewModel::deletePost
         )
     } else {
@@ -114,6 +120,7 @@ private fun NewsScreen(
     onSeeAllAnnouncementsClick: () -> Unit,
     onReportAnnouncementClick: (AnnouncementReport) -> Unit,
     onCreatePostClick: () -> Unit,
+    onEditPostClick: (String) -> Unit,
     onDeletePostClick: (Post) -> Unit
 ) {
     var activeBottomSheet by remember { mutableStateOf<NewsScreenBottomSheet?>(null) }
@@ -249,6 +256,10 @@ private fun NewsScreen(
                 PostBottomSheet(
                     postState = bottomSheet.post.state,
                     isEditable = user.admin,
+                    onEditClick = {
+                        activeBottomSheet = null
+                        onEditPostClick(bottomSheet.post.id)
+                    },
                     onDeleteClick = {
                         activeBottomSheet = null
                         activeDialog = NewsDialog.DeletePostDialog(bottomSheet.post)
@@ -299,6 +310,7 @@ private fun NewsScreenPreview() {
             onSeeAllAnnouncementsClick = {},
             onReportAnnouncementClick = {},
             onCreatePostClick = {},
+            onEditPostClick = {},
             onDeletePostClick = {}
         )
     }

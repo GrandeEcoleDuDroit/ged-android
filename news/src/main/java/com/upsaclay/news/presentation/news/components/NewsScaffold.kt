@@ -43,8 +43,14 @@ fun NewsScaffold(
                 expanded = expanded,
                 onOpenMenuButtonClick = { expanded = true },
                 onDismissMenu = { expanded = false },
-                onCreateAnnouncementClick = onCreateAnnouncementClick,
-                onCreatePostClick = onCreatePostClick
+                onCreateAnnouncementClick = {
+                    expanded = false
+                    onCreateAnnouncementClick()
+                },
+                onCreatePostClick = {
+                    expanded = false
+                    onCreatePostClick()
+                }
             )
         },
         bottomBar = bottomBar,

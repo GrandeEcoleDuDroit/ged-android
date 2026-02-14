@@ -53,15 +53,15 @@ fun CompactPostItem(
             onOptionClick = onOptionClick
         )
 
-        if (post.state.imageReferences.isNotEmpty()) {
+        if (post.state.imageReferenceValues.isNotEmpty()) {
             ImageSection(
                 modifier = Modifier.height(dimensionResource(R.dimen.compact_post_image_height)),
-                imageReferences = post.state.imageReferences
+                imageReferences = post.state.imageReferenceValues
             )
         }
 
         ContentSection(
-            modifier = Modifier.weight(1f, fill = false),
+            modifier = Modifier.weight(1f),
             content = post.content
         )
 

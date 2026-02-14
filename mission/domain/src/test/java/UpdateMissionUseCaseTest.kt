@@ -53,7 +53,7 @@ class UpdateMissionUseCaseTest {
     }
 
     @Test
-    fun updateMissionUseCase_should_delete_old_mission_image_when_its_present() = runTest {
+    fun updateMissionUseCase_should_delete_created_cache_images() = runTest {
         // Given
         val mission = missionFixture.copy(state = MissionState.Published())
 

@@ -4,6 +4,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
@@ -66,6 +67,7 @@ fun GedNewsSection(
                     val post = posts[page]
                     CompactPostItem(
                         modifier = Modifier
+                            .fillMaxSize()
                             .pointerInput(Unit) {
                                 detectTapGestures(onTap = {
                                     if (post.state is PostState.Error) {

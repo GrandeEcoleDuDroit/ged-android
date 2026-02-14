@@ -30,6 +30,16 @@ class PostRemoteDataSource(private val postApi: PostApi) {
         }
     }
 
+    suspend fun updatePost(post: Post, imageFiles: List<File>) {
+        withContext(dispatcher) {
+            try {
+                postApi.updatePost(post.toRemote(), imageFiles)
+            } catch (e: Exception) {
+                throw mapServerException(e)
+            }
+        }
+    }
+
     suspend fun deletePost(post: Post) {
         withContext(dispatcher) {
             try {

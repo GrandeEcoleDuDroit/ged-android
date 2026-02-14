@@ -5,7 +5,7 @@ import com.upsaclay.mission.domain.MissionUtils
 
 fun MissionUtils.Image.formatUrl(fileName: String?): String? =
     fileName?.let {
-        "${BuildConfig.ORACLE_BUCKET_URL}/${makeRelativePath(fileName)}"
+        "${BuildConfig.ORACLE_BUCKET_URL}/${getRelativePath(fileName)}"
     }
 
 fun MissionUtils.Image.extractFileNameFromPath(path: String?): String? = path?.substringAfterLast("/")

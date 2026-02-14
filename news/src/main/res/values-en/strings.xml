@@ -20,6 +20,7 @@
 
     <string name="ged_news">GED news</string>
     <string name="new_post">New post</string>
+    <string name="edit_post">Edit post</string>
     <string name="post_link_field_placeholder">Post link</string>
     <string name="post_option_icon_description">Display post options</string>
     <string name="no_news">No news</string>

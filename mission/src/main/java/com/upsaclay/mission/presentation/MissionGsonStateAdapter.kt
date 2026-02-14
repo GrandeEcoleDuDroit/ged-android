@@ -1,4 +1,4 @@
-package com.upsaclay.mission.domain
+package com.upsaclay.mission.presentation
 
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
@@ -9,7 +9,7 @@ import com.google.gson.JsonSerializer
 import com.upsaclay.mission.domain.entity.Mission.MissionState
 import java.lang.reflect.Type
 
-object MissionStateAdapter: JsonSerializer<MissionState>, JsonDeserializer<MissionState> {
+object MissionGsonStateAdapter: JsonSerializer<MissionState>, JsonDeserializer<MissionState> {
     override fun serialize(
         src: MissionState,
         typeOfSrc: Type,

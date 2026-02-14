@@ -41,6 +41,23 @@ class PostApiImpl(private val postServerApi: PostServerApi): PostApi {
         }
     }
 
+    override suspend fun updatePost(remotePost: RemotePost, imageFiles: List<File>) {
+        val postPart = gson
+            .toJson(remotePost)
+            .toRequestBody("application/json".toMediaType())
+
+        val imageParts: MutableList<MultipartBody.Part> = mutableListOf()
+        imageFiles.forEach {
+            val requestBody = it.asRequestBody("image/*".toMediaType())
+            val part = MultipartBody.Part.createFormData("images", it.name, requestBody)
+            imageParts.add(part)
+        }
+
+        sendServerRequest {
+            postServerApi.updatePost(imageParts, postPart)
+        }
+    }
+
     override suspend fun deletePost(remotePost: RemotePost) {
         sendServerRequest {
             postServerApi.deletePost(remotePost)
@@ -55,6 +72,13 @@ interface PostServerApi {
     @Multipart
     @POST("posts/create")
     suspend fun createPost(
+        @Part images: List<MultipartBody.Part>,
+        @Part("post") post: RequestBody
+    ): Response<ServerResponse>
+
+    @Multipart
+    @POST("posts/update")
+    suspend fun updatePost(
         @Part images: List<MultipartBody.Part>,
         @Part("post") post: RequestBody
     ): Response<ServerResponse>
