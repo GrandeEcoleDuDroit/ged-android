@@ -10,6 +10,7 @@ import com.upsaclay.news.domain.announcement.usecase.RefreshAnnouncementsUseCase
 import com.upsaclay.news.domain.post.PostRepository
 import com.upsaclay.news.domain.post.postsFixture
 import com.upsaclay.news.domain.post.usecase.DeletePostUseCase
+import com.upsaclay.news.domain.post.usecase.RecreatePostUseCase
 import com.upsaclay.news.presentation.news.NewsViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -33,6 +34,7 @@ class NewsViewModelTest {
     private val announcementRepository: AnnouncementRepository = mockk()
     private val postRepository: PostRepository = mockk()
     private val deletePostUseCase: DeletePostUseCase = mockk()
+    private val recreatePostUseCase: RecreatePostUseCase = mockk()
     private val userRepository: UserRepository = mockk()
 
     private lateinit var newsViewModel: NewsViewModel
@@ -48,6 +50,8 @@ class NewsViewModelTest {
         coEvery { recreateAnnouncementUseCase.execute(any()) } returns Unit
         coEvery { refreshAnnouncementsUseCase.execute() } returns Unit
         coEvery { deleteAnnouncementUseCase.execute(any()) } returns Unit
+        coEvery { recreatePostUseCase.execute(any()) } returns Unit
+        coEvery { deletePostUseCase.execute(any()) } returns Unit
 
         newsViewModel = NewsViewModel(
             recreateAnnouncementUseCase = recreateAnnouncementUseCase,
@@ -55,6 +59,7 @@ class NewsViewModelTest {
             refreshAnnouncementsUseCase = refreshAnnouncementsUseCase,
             announcementRepository = announcementRepository,
             postRepository = postRepository,
+            recreatePostUseCase = recreatePostUseCase,
             deletePostUseCase = deletePostUseCase,
             userRepository = userRepository
         )
@@ -91,6 +96,18 @@ class NewsViewModelTest {
 
         // Then
         coVerify { deleteAnnouncementUseCase.execute(announcement) }
+    }
+
+    @Test
+    fun recreatePost_should_recreate_post() = runTest {
+        // Given
+        val post = postsFixture.first()
+
+        // When
+        newsViewModel.recreatePost(post)
+
+        // Then
+        coVerify { recreatePostUseCase.execute(post) }
     }
 
     @Test
