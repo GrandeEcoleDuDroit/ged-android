@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -25,6 +26,7 @@ fun PostBottomSheet(
     postState: PostState,
     isEditable: Boolean,
     onEditClick: () -> Unit,
+    onRecreateClick: () -> Unit = {},
     onDeleteClick: () -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -41,6 +43,7 @@ fun PostBottomSheet(
 
                     is PostState.Error -> {
                         ErrorPostBottomSheetContent(
+                            onRecreateClick = onRecreateClick,
                             onDeleteClick = onDeleteClick
                         )
                     }
@@ -92,8 +95,21 @@ private fun EditablePostBottomSheetContent(
 
 @Composable
 private fun ErrorPostBottomSheetContent(
+    onRecreateClick: () -> Unit,
     onDeleteClick: () -> Unit
 ) {
+    TextItem(
+        modifier = Modifier.fillMaxWidth(),
+        text = { Text(text = stringResource(id = com.upsaclay.common.R.string.retry)) },
+        icon = {
+            Icon(
+                imageVector = Icons.Default.Refresh,
+                contentDescription = null
+            )
+        },
+        onClick = onRecreateClick
+    )
+
     TextItem(
         modifier = Modifier.fillMaxWidth(),
         text = {
