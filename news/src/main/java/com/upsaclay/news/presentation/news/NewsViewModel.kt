@@ -17,6 +17,7 @@ import com.upsaclay.news.domain.announcement.usecase.RefreshAnnouncementsUseCase
 import com.upsaclay.news.domain.post.Post
 import com.upsaclay.news.domain.post.PostRepository
 import com.upsaclay.news.domain.post.usecase.DeletePostUseCase
+import com.upsaclay.news.domain.post.usecase.RecreatePostUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -31,6 +32,7 @@ class NewsViewModel(
     private val deleteAnnouncementUseCase: DeleteAnnouncementUseCase,
     private val refreshAnnouncementsUseCase: RefreshAnnouncementsUseCase,
     private val postRepository: PostRepository,
+    private val recreatePostUseCase: RecreatePostUseCase,
     private val deletePostUseCase: DeletePostUseCase,
     private val userRepository: UserRepository
 ) : ViewModel() {
@@ -85,6 +87,11 @@ class NewsViewModel(
 
     suspend fun getPost(postId: String): Post? = postRepository.getLocalPost(postId)
 
+    fun recreatePost(post: Post) {
+        viewModelScope.launch {
+            recreatePostUseCase.execute(post)
+        }
+    }
 
     fun deletePost(post: Post) {
         executeRequest {

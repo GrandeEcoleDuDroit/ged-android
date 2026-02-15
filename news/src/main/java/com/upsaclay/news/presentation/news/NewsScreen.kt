@@ -94,6 +94,7 @@ fun NewsDestination(
                     viewModel.getPost(it)?.let(onEditPostClick)
                 }
             },
+            onRecreatePostClick = viewModel::recreatePost,
             onDeletePostClick = viewModel::deletePost
         )
     } else {
@@ -121,6 +122,7 @@ private fun NewsScreen(
     onReportAnnouncementClick: (AnnouncementReport) -> Unit,
     onCreatePostClick: () -> Unit,
     onEditPostClick: (String) -> Unit,
+    onRecreatePostClick: (Post) -> Unit,
     onDeletePostClick: (Post) -> Unit
 ) {
     var activeBottomSheet by remember { mutableStateOf<NewsScreenBottomSheet?>(null) }
@@ -260,6 +262,10 @@ private fun NewsScreen(
                         activeBottomSheet = null
                         onEditPostClick(bottomSheet.post.id)
                     },
+                    onRecreateClick = {
+                        activeBottomSheet = null
+                        onRecreatePostClick(bottomSheet.post)
+                    },
                     onDeleteClick = {
                         activeBottomSheet = null
                         activeDialog = NewsDialog.DeletePostDialog(bottomSheet.post)
@@ -311,6 +317,7 @@ private fun NewsScreenPreview() {
             onReportAnnouncementClick = {},
             onCreatePostClick = {},
             onEditPostClick = {},
+            onRecreatePostClick = {},
             onDeletePostClick = {}
         )
     }

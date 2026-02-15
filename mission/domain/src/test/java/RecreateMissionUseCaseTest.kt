@@ -1,4 +1,3 @@
-import com.upsaclay.common.domain.repository.FileRepository
 import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.mission.domain.MissionJobQueue
 import com.upsaclay.mission.domain.entity.Mission.MissionState
@@ -19,7 +18,6 @@ import java.io.File
 @OptIn(ExperimentalCoroutinesApi::class)
 class RecreateMissionUseCaseTest {
     private val missionRepository: MissionRepository = mockk()
-    private val fileRepository: FileRepository = mockk()
     private val imageRepository: ImageRepository = mockk()
     private val missionJobQueue: MissionJobQueue = mockk()
 
@@ -33,12 +31,10 @@ class RecreateMissionUseCaseTest {
         coEvery { missionJobQueue.cancelAndRemoveJob(any()) } returns Unit
         coEvery { missionRepository.createMission(any(), any()) } returns Unit
         coEvery { missionRepository.upsertLocalMission(any()) } returns Unit
-        coEvery { fileRepository.getFile(any()) } returns file
         coEvery { imageRepository.deleteLocalImage(any()) } returns Unit
 
         useCase = RecreateMissionUseCase(
             missionRepository = missionRepository,
-            fileRepository = fileRepository,
             imageRepository = imageRepository,
             missionJobQueue = missionJobQueue,
             scope = testScope
@@ -46,7 +42,7 @@ class RecreateMissionUseCaseTest {
     }
 
     @Test
-    fun resendMissionUseCase_should_resend_mission_when_state_is_error_only() = runTest {
+    fun recreateMissionUseCase_should_recreate_mission_when_state_is_error_only() = runTest {
         // Given
         val mission = missionFixture.copy(state = MissionState.Error())
 
@@ -60,7 +56,7 @@ class RecreateMissionUseCaseTest {
     }
 
     @Test
-    fun resendMissionUseCase_should_create_mission_with_publishing_state() = runTest {
+    fun recreateMissionUseCase_should_create_mission_with_publishing_state() = runTest {
         // Given
         val mission = missionFixture.copy(state = MissionState.Error())
 
@@ -74,7 +70,7 @@ class RecreateMissionUseCaseTest {
     }
 
     @Test
-    fun resendMissionUseCase_should_create_mission_with_publishing_state_and_image_path_when_image_uri_is_provided() = runTest {
+    fun recreateMissionUseCase_should_create_mission_with_publishing_state_and_image_path_when_image_uri_is_provided() = runTest {
         // Given
         val mission = missionFixture.copy(state = MissionState.Error(file.path))
 
@@ -83,12 +79,12 @@ class RecreateMissionUseCaseTest {
 
         // Then
         coVerify {
-            missionRepository.createMission(mission.copy(state = MissionState.Publishing(file.path)), file)
+            missionRepository.createMission(mission.copy(state = MissionState.Publishing(file.path)), any())
         }
     }
 
     @Test
-    fun resendMissionUseCase_should_update_local_mission_to_published_state_when_succeeds() = runTest {
+    fun recreateMissionUseCase_should_update_local_mission_to_published_state_when_succeeds() = runTest {
         // Given
         val mission = missionFixture.copy(state = MissionState.Error())
 
@@ -102,7 +98,7 @@ class RecreateMissionUseCaseTest {
     }
 
     @Test
-    fun resendMissionUseCase_should_update_local_mission_to_published_state_with_image_name_when_succeeds_and_image_uri_is_provided() = runTest {
+    fun recreateMissionUseCase_should_update_local_mission_to_published_state_with_image_name_when_succeeds_and_image_uri_is_provided() = runTest {
         // Given
         val mission = missionFixture.copy(state = MissionState.Error(file.path))
 
@@ -116,7 +112,7 @@ class RecreateMissionUseCaseTest {
     }
 
     @Test
-    fun resendMissionUseCase_should_update_local_mission_to_error_state_when_fails() = runTest {
+    fun recreateMissionUseCase_should_update_local_mission_to_error_state_when_fails() = runTest {
         // Given
         val mission = missionFixture.copy(state = MissionState.Error())
         coEvery { missionRepository.createMission(any(), any()) } throws Exception()
@@ -131,7 +127,7 @@ class RecreateMissionUseCaseTest {
     }
 
     @Test
-    fun resendMissionUseCase_should_update_local_mission_to_error_state_and_image_path_when_image_uri_is_provided_when_fails() = runTest {
+    fun recreateMissionUseCase_should_update_local_mission_to_error_state_with_image_path_when_fails_and_image_uri_is_provided() = runTest {
         // Given
         val mission = missionFixture.copy(state = MissionState.Error(file.path))
         coEvery { missionRepository.createMission(any(), any()) } throws Exception()
@@ -146,7 +142,7 @@ class RecreateMissionUseCaseTest {
     }
 
     @Test
-    fun resendMissionUseCase_should_delete_local_image_when_succeed() = runTest {
+    fun recreateMissionUseCase_should_delete_local_image_when_succeed() = runTest {
         // Given
         val mission = missionFixture.copy(state = MissionState.Error(file.path))
 

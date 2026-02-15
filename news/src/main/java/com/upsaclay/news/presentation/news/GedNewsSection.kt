@@ -1,6 +1,5 @@
 package com.upsaclay.news.presentation.news
 
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,9 +13,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import com.upsaclay.common.extension.noRippleClickable
 import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.components.CircularProgressBar
 import com.upsaclay.common.presentation.components.EmptyText
@@ -68,16 +67,14 @@ fun GedNewsSection(
                     CompactPostItem(
                         modifier = Modifier
                             .fillMaxSize()
-                            .pointerInput(Unit) {
-                                detectTapGestures(onTap = {
-                                    if (post.state is PostState.Error) {
-                                        onUncreatedPostClick(post)
-                                    }
-                                })
+                            .noRippleClickable {
+                                if (post.state is PostState.Error) {
+                                    onUncreatedPostClick(post)
+                                }
                             }
                             .padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
                         post = post,
-                        onOptionClick = { onPostOptionClick(post) },
+                        onOptionClick = { onPostOptionClick(post) }
                     )
                 }
             }

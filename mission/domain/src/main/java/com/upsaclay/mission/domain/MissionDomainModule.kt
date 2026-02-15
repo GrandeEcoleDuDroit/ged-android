@@ -40,7 +40,6 @@ val missionDomainModule = module {
     single {
         RecreateMissionUseCase(
             missionRepository = get(),
-            fileRepository = get(),
             imageRepository = get(),
             missionJobQueue = get(),
             scope = get(BACKGROUND_SCOPE)
