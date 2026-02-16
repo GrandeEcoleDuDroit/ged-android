@@ -108,7 +108,7 @@ fun ExpandableText(
                     expanded = true
                 },
                 text = stringResource(R.string.show_more_text),
-                style = style,
+                style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.primary
             )
         }
@@ -165,6 +165,7 @@ private fun SectionTitlePreview() {
 }
 
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun ExpandableTextPreview() {
     GedoiseTheme {

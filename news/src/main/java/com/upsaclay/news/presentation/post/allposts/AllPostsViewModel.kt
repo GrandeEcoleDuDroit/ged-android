@@ -46,7 +46,7 @@ class AllPostsViewModel(
                 }
             },
             onError = {
-                _event.emit(SingleUiEvent.Error( R.string.posts_refresh_error))
+                _event.emit(SingleUiEvent.Error( R.string.news_refresh_error))
             },
             onFinished = {
                 _uiState.update { it.copy(refreshing = false) }
