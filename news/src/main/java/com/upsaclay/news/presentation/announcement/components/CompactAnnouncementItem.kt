@@ -3,6 +3,7 @@ package com.upsaclay.news.presentation.announcement.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
@@ -13,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -81,6 +83,7 @@ internal fun CompactAnnouncementItem(
         trailingContent = {
             OptionButton(
                 modifier = Modifier
+                    .size(dimensionResource(com.upsaclay.common.R.dimen.extra_small_button_size))
                     .testTag(stringResource(id = R.string.announcement_option_button_tag)),
                 contentDescription = stringResource(id = R.string.announcement_option_icon_description),
                 onClick = onOptionClick

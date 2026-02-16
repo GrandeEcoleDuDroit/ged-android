@@ -23,7 +23,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
-import androidx.compose.ui.unit.dp
 import com.upsaclay.common.presentation.components.CircularProgressBar
 import com.upsaclay.common.presentation.components.EmptyText
 import com.upsaclay.common.presentation.components.SectionTitle
@@ -39,9 +38,9 @@ import com.upsaclay.news.presentation.announcement.components.CompactAnnouncemen
 fun RecentAnnouncementSection(
     modifier: Modifier = Modifier,
     announcements: List<Announcement>?,
+    onSeeAllAnnouncementsClick: () -> Unit,
     onAnnouncementClick: (String) -> Unit,
     onUncreatedAnnouncementClick: (Announcement) -> Unit,
-    onSeeAllAnnouncementsClick: () -> Unit,
     onAnnouncementOptionClick: (Announcement) -> Unit
 ) {
     Column(modifier = modifier) {
@@ -58,8 +57,7 @@ fun RecentAnnouncementSection(
             )
 
             TextButton(
-                modifier = Modifier
-                    .height(30.dp),
+                modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.extra_small_button_size)),
                 contentPadding = PaddingValues(
                     start = ButtonDefaults.TextButtonContentPadding.calculateStartPadding(LayoutDirection.Ltr),
                     end = ButtonDefaults.TextButtonContentPadding.calculateEndPadding(LayoutDirection.Ltr)
@@ -128,9 +126,9 @@ private fun RecentAnnouncementContentPreview() {
         Surface {
             RecentAnnouncementSection(
                 announcements = announcementsFixture,
+                onSeeAllAnnouncementsClick = {},
                 onAnnouncementClick = {},
                 onUncreatedAnnouncementClick = {},
-                onSeeAllAnnouncementsClick = {},
                 onAnnouncementOptionClick = {}
             )
         }

@@ -4,5 +4,4 @@
     <dimen name="create_post_image_rail_item_width">180dp</dimen>
     <dimen name="compact_post_image_height">160dp</dimen>
     <dimen name="post_item_redirect_button_height">34dp</dimen>
-    <dimen name="post_item_tag_icon_size">20dp</dimen>
 </resources>

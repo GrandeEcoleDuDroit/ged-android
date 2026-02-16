@@ -10,9 +10,9 @@
     <dimen name="large_padding">24dp</dimen>
     <dimen name="extra_large_padding">32dp</dimen>
     <dimen name="very_extra_large_padding">64dp</dimen>
-    <dimen name="icon_size">20dp</dimen>
-    <dimen name="fab_size">56dp</dimen>
-    <dimen name="fab_corner_size">16dp</dimen>
-    <dimen name="default_icon_size">24dp</dimen>
+    <dimen name="small_icon_size">16dp</dimen>
+    <dimen name="small_medium_icon_size">20dp</dimen>
+    <dimen name="medium_icon_size">24dp</dimen>
+    <dimen name="extra_small_button_size">32dp</dimen>
     <dimen name="supporting_text_top_padding">4dp</dimen>
 </resources>

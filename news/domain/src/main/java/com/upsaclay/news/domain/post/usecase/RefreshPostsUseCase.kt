@@ -1,8 +1,8 @@
-package com.upsaclay.news.domain.announcement.usecase
+package com.upsaclay.news.domain.post.usecase
 
 import kotlinx.coroutines.delay
 
-class RefreshAnnouncementsUseCase(private val fetchAnnouncementsUseCase: FetchAnnouncementsUseCase) {
+class RefreshPostsUseCase(private val fetchPostsUseCase: FetchPostsUseCase) {
     internal var lastRequestTime: Long = 0
 
     companion object {
@@ -13,7 +13,7 @@ class RefreshAnnouncementsUseCase(private val fetchAnnouncementsUseCase: FetchAn
         delay(500)
         val currentTime = System.currentTimeMillis()
         if (currentTime - lastRequestTime > DEBOUNCE_INTERVAL) {
-            fetchAnnouncementsUseCase.execute()
+            fetchPostsUseCase.execute()
             lastRequestTime = currentTime
         }
     }

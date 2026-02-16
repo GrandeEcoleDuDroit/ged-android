@@ -8,11 +8,19 @@ object AnnouncementPresentationUtils {
     const val MAX_TITLE_LENGTH = 200
     const val MAX_CONTENT_LENGTH = 2000
 
-    val titleStyle: TextStyle
+    val announcementTitleStyle: TextStyle
         @Composable
         get() = MaterialTheme.typography.titleLarge
 
-    val contentStyle: TextStyle
+    val announcementContentStyle: TextStyle
         @Composable
         get() = MaterialTheme.typography.bodyLarge
+
+    val extendedAnnouncementItemTitleStyle: TextStyle
+        @Composable
+        get() = MaterialTheme.typography.titleMedium
+
+    val extendedAnnouncementItemContentStyle: TextStyle
+        @Composable
+        get() = MaterialTheme.typography.bodyMedium
 }

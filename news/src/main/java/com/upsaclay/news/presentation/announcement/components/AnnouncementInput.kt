@@ -24,8 +24,8 @@ import com.upsaclay.common.presentation.components.TransparentTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
-import com.upsaclay.news.presentation.announcement.AnnouncementPresentationUtils.contentStyle
-import com.upsaclay.news.presentation.announcement.AnnouncementPresentationUtils.titleStyle
+import com.upsaclay.news.presentation.announcement.AnnouncementPresentationUtils.announcementContentStyle
+import com.upsaclay.news.presentation.announcement.AnnouncementPresentationUtils.announcementTitleStyle
 
 @Composable
 fun CreateAnnouncementInputs(
@@ -86,7 +86,7 @@ private fun AnnouncementTitleInput(
     val placeholder = @Composable {
         Text(
             text = stringResource(id = R.string.title_field_placeholder),
-            style = titleStyle
+            style = announcementTitleStyle
         )
     }
 
@@ -103,7 +103,7 @@ private fun AnnouncementTitleInput(
         value = title,
         placeholder = placeholder,
         onValueChange = onTitleChange,
-        textStyle = titleStyle
+        textStyle = announcementTitleStyle
     )
 }
 
@@ -115,7 +115,7 @@ private fun AnnouncementContentInput(
     val placeholder = @Composable {
         Text(
             text = stringResource(id = R.string.content_field_placeholder),
-            style = contentStyle
+            style = announcementContentStyle
         )
     }
 
@@ -124,7 +124,7 @@ private fun AnnouncementContentInput(
         value = content,
         placeholder = placeholder,
         onValueChange = onContentChange,
-        textStyle = contentStyle
+        textStyle = announcementContentStyle
     )
 }
 

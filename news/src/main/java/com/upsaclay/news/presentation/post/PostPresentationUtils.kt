@@ -10,7 +10,7 @@ object PostPresentationUtils {
     const val MAX_CONTENT_LENGTH = 3000
     const val MAX_IMAGE_COUNT = 10
 
-    val titleStyle: TextStyle
+    val postTitleStyle: TextStyle
         @Composable
         get() = MaterialTheme.typography.titleLarge
 
@@ -18,7 +18,20 @@ object PostPresentationUtils {
         @Composable
         get() = MaterialTheme.typography.bodyMedium
 
-    val contentStyle: TextStyle
+    val postContentStyle: TextStyle
         @Composable
         get() = MaterialTheme.typography.bodyLarge
+
+    val extendedPostItemTitleStyle: TextStyle
+        @Composable
+        get() = MaterialTheme.typography.titleMedium
+
+    val extendedPostItemContentStyle: TextStyle
+        @Composable
+        get() = MaterialTheme.typography.bodyMedium
+
+    val extendedPostItemFooterStyle: TextStyle
+        @Composable
+        get() = MaterialTheme.typography.bodyMedium
+
 }

@@ -3,18 +3,27 @@ package com.upsaclay.news.presentation.news
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerDefaults
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.LayoutDirection
 import com.upsaclay.common.extension.noRippleClickable
 import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.components.CircularProgressBar
@@ -33,7 +42,8 @@ fun GedNewsSection(
     modifier: Modifier = Modifier,
     posts: List<Post>?,
     onUncreatedPostClick: (Post) -> Unit,
-    onPostOptionClick: (Post) -> Unit
+    onPostOptionClick: (Post) -> Unit,
+    onSeeAllPostsClick: () -> Unit
 ) {
     val pagerState = rememberPagerState { posts?.size ?: 0 }
 
@@ -43,12 +53,26 @@ fun GedNewsSection(
             .padding(bottom = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
         verticalArrangement = Arrangement.smallSpacing()
     ) {
-        SectionTitle(
+        Row(
             modifier = Modifier
                 .padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
                 .fillMaxWidth(),
-            title = stringResource(id = R.string.ged_news)
-        )
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            SectionTitle(title = stringResource(id = R.string.ged_news))
+
+            TextButton(
+                modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.extra_small_button_size)),
+                contentPadding = PaddingValues(
+                    start = ButtonDefaults.TextButtonContentPadding.calculateStartPadding(LayoutDirection.Ltr),
+                    end = ButtonDefaults.TextButtonContentPadding.calculateEndPadding(LayoutDirection.Ltr)
+                ),
+                onClick = onSeeAllPostsClick
+            ) {
+                Text(text = stringResource(com.upsaclay.common.R.string.see_all))
+            }
+        }
 
         posts?.let {
             if (posts.isEmpty()) {
@@ -104,6 +128,7 @@ private fun GedNewsSectionPreview() {
         Surface {
             GedNewsSection(
                 posts = postsFixture,
+                onSeeAllPostsClick = {},
                 onUncreatedPostClick = {},
                 onPostOptionClick = {}
             )

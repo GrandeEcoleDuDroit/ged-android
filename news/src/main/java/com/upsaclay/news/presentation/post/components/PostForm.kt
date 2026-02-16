@@ -49,9 +49,10 @@ import com.upsaclay.common.presentation.theme.inputForeground
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.post.Post.PostSource
-import com.upsaclay.news.presentation.post.PostPresentationUtils.contentStyle
+import com.upsaclay.news.presentation.announcement.AnnouncementPresentationUtils.announcementTitleStyle
+import com.upsaclay.news.presentation.post.PostPresentationUtils.postContentStyle
 import com.upsaclay.news.presentation.post.PostPresentationUtils.postLinkStyle
-import com.upsaclay.news.presentation.post.PostPresentationUtils.titleStyle
+import com.upsaclay.news.presentation.post.PostPresentationUtils.postTitleStyle
 
 @Composable
 fun PostForm(
@@ -110,10 +111,10 @@ private fun InputSection(
             placeholder = {
                 Text(
                     text = stringResource(R.string.title_field_placeholder),
-                    style = titleStyle
+                    style = announcementTitleStyle
                 )
             },
-            textStyle = titleStyle
+            textStyle = postTitleStyle
         )
 
         PostLinkInput(
@@ -135,10 +136,10 @@ private fun InputSection(
             placeholder = {
                 Text(
                     text = stringResource(R.string.content_field_placeholder),
-                    style = contentStyle
+                    style = postContentStyle
                 )
             },
-            textStyle = contentStyle
+            textStyle = postContentStyle
         )
     }
 }
@@ -181,7 +182,7 @@ private fun PostLinkInput(
         postLinkError?.let {
             Text(
                 modifier = Modifier.padding(
-                    start = dimensionResource(com.upsaclay.common.R.dimen.default_icon_size) +
+                    start = dimensionResource(com.upsaclay.common.R.dimen.medium_icon_size) +
                             dimensionResource(com.upsaclay.common.R.dimen.small_padding),
                     top = dimensionResource(com.upsaclay.common.R.dimen.supporting_text_top_padding)
                 ),
