@@ -49,6 +49,7 @@ fun NewsDestination(
     onSeeAllAnnouncementsClick: () -> Unit,
     onCreatePostClick: () -> Unit,
     onEditPostClick: (Post) -> Unit,
+    onSeeAllPostsClick: () -> Unit,
     bottomBar: @Composable () -> Unit,
     viewModel: NewsViewModel = koinViewModel()
 ) {
@@ -86,8 +87,8 @@ fun NewsDestination(
             onRecreateAnnouncementClick = viewModel::recreateAnnouncement,
             onEditAnnouncementClick = { viewModel.getAnnouncement(it)?.let(onEditAnnouncementClick) },
             onDeleteAnnouncementClick = viewModel::deleteAnnouncement,
-            onSeeAllAnnouncementsClick = onSeeAllAnnouncementsClick,
             onReportAnnouncementClick = viewModel::reportAnnouncement,
+            onSeeAllAnnouncementsClick = onSeeAllAnnouncementsClick,
             onCreatePostClick = onCreatePostClick,
             onEditPostClick = {
                 scope.launch {
@@ -95,7 +96,8 @@ fun NewsDestination(
                 }
             },
             onRecreatePostClick = viewModel::recreatePost,
-            onDeletePostClick = viewModel::deletePost
+            onDeletePostClick = viewModel::deletePost,
+            onSeeAllPostsClick = onSeeAllPostsClick
         )
     } else {
         LoadingScreen()
@@ -118,12 +120,13 @@ private fun NewsScreen(
     onRecreateAnnouncementClick: (Announcement) -> Unit,
     onEditAnnouncementClick: (String) -> Unit,
     onDeleteAnnouncementClick: (Announcement) -> Unit,
-    onSeeAllAnnouncementsClick: () -> Unit,
     onReportAnnouncementClick: (AnnouncementReport) -> Unit,
+    onSeeAllAnnouncementsClick: () -> Unit,
     onCreatePostClick: () -> Unit,
     onEditPostClick: (String) -> Unit,
     onRecreatePostClick: (Post) -> Unit,
-    onDeletePostClick: (Post) -> Unit
+    onDeletePostClick: (Post) -> Unit,
+    onSeeAllPostsClick: () -> Unit
 ) {
     var activeBottomSheet by remember { mutableStateOf<NewsScreenBottomSheet?>(null) }
     var activeDialog by remember { mutableStateOf<NewsDialog?>(null) }
@@ -186,11 +189,11 @@ private fun NewsScreen(
                         activeBottomSheet =
                             NewsScreenBottomSheet.AnnouncementBottomSheet(announcement)
                     },
-                    onSeeAllAnnouncementsClick = onSeeAllAnnouncementsClick,
                     onAnnouncementOptionClick = { announcement ->
                         activeBottomSheet =
                             NewsScreenBottomSheet.AnnouncementBottomSheet(announcement)
-                    }
+                    },
+                    onSeeAllAnnouncementsClick = onSeeAllAnnouncementsClick
                 )
 
                 GedNewsSection(
@@ -201,7 +204,8 @@ private fun NewsScreen(
                     },
                     onPostOptionClick = {
                         activeBottomSheet = NewsScreenBottomSheet.PostBottomSheet(it)
-                    }
+                    },
+                    onSeeAllPostsClick = onSeeAllPostsClick
                 )
             }
         }
@@ -313,12 +317,13 @@ private fun NewsScreenPreview() {
             onEditAnnouncementClick = {},
             onDeleteAnnouncementClick = {},
             onCreateAnnouncementClick = {},
-            onSeeAllAnnouncementsClick = {},
             onReportAnnouncementClick = {},
+            onSeeAllAnnouncementsClick = {},
             onCreatePostClick = {},
             onEditPostClick = {},
             onRecreatePostClick = {},
-            onDeletePostClick = {}
+            onDeletePostClick = {},
+            onSeeAllPostsClick = {}
         )
     }
 }

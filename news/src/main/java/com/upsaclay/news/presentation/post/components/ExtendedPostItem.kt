@@ -22,7 +22,10 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.extension.smallSpacing
+import com.upsaclay.common.presentation.components.ExpandableText
 import com.upsaclay.common.presentation.components.OptionButton
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.supportingText
@@ -32,23 +35,56 @@ import com.upsaclay.news.R
 import com.upsaclay.news.domain.post.Post
 import com.upsaclay.news.domain.post.Post.PostState
 import com.upsaclay.news.domain.post.postFixture
+import com.upsaclay.news.presentation.post.PostPresentationUtils.extendedPostItemContentStyle
+import com.upsaclay.news.presentation.post.PostPresentationUtils.extendedPostItemFooterStyle
+import com.upsaclay.news.presentation.post.PostPresentationUtils.extendedPostItemTitleStyle
 import java.time.LocalDateTime
 
 @Composable
-fun CompactPostItem(
+fun ExtendedPostItem(
     modifier: Modifier = Modifier,
     post: Post,
     onOptionClick: () -> Unit
 ) {
-    val alpha = if (post.state is PostState.Publishing) 0.5f else 1f
+    when (post.state) {
+        is PostState.Published, PostState.Draft -> {
+            DefaultItem(
+                modifier = modifier,
+                post = post,
+                onOptionClick = onOptionClick
+            )
+        }
 
+        is PostState.Publishing -> {
+            PublishingItem(
+                modifier = modifier,
+                post = post,
+                onOptionClick = onOptionClick
+            )
+        }
+
+        is PostState.Error -> {
+            ErrorItem(
+                modifier = modifier,
+                post = post,
+                onOptionClick = onOptionClick
+            )
+        }
+    }
+}
+
+@Composable
+private fun DefaultItem(
+    modifier: Modifier = Modifier,
+    post: Post,
+    onOptionClick: () -> Unit
+) {
     Column(
-        modifier = modifier.alpha(alpha),
-        verticalArrangement = Arrangement.smallSpacing()
+        modifier = modifier,
+        verticalArrangement = Arrangement.mediumSpacing()
     ) {
         TitleSection(
             title = post.title,
-            state = post.state,
             onOptionClick = onOptionClick
         )
 
@@ -59,10 +95,62 @@ fun CompactPostItem(
             )
         }
 
-        ContentSection(
-            modifier = Modifier.weight(1f),
-            content = post.content
+        ContentSection(content = post.content)
+
+        FooterSection(
+            postSource = post.source,
+            date = post.date
         )
+    }
+}
+
+@Composable
+private fun PublishingItem(
+    modifier: Modifier = Modifier,
+    post: Post,
+    onOptionClick: () -> Unit
+) {
+    DefaultItem(
+        modifier = modifier.alpha(0.5f),
+        post = post,
+        onOptionClick = onOptionClick
+    )
+}
+
+@Composable
+private fun ErrorItem(
+    modifier: Modifier = Modifier,
+    post: Post,
+    onOptionClick: () -> Unit
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.mediumSpacing()
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.smallSpacing(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_error),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.error
+            )
+
+            TitleSection(
+                title = post.title,
+                onOptionClick = onOptionClick
+            )
+        }
+
+        if (post.state.imageReferenceValues.isNotEmpty()) {
+            ImageSection(
+                modifier = Modifier.height(dimensionResource(R.dimen.compact_post_image_height)),
+                imageReferences = post.state.imageReferenceValues
+            )
+        }
+
+        ContentSection(content = post.content)
 
         FooterSection(
             postSource = post.source,
@@ -75,7 +163,6 @@ fun CompactPostItem(
 private fun TitleSection(
     modifier: Modifier = Modifier,
     title: String,
-    state: PostState,
     onOptionClick: () -> Unit
 ) {
     Row(
@@ -83,24 +170,16 @@ private fun TitleSection(
         horizontalArrangement = Arrangement.smallSpacing(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (state is PostState.Error) {
-            Icon(
-                painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_error),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.error
-            )
-        }
-
         Text(
             modifier = Modifier.weight(1f),
             text = title,
-            style = MaterialTheme.typography.titleSmall,
+            style = extendedPostItemTitleStyle,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
         )
 
         OptionButton(
-            modifier = Modifier.size(dimensionResource(com.upsaclay.common.R.dimen.extra_small_button_size)),
+            modifier = Modifier.size(32.dp),
             onClick = onOptionClick,
             contentDescription = stringResource(id = R.string.post_option_icon_description)
         )
@@ -125,11 +204,10 @@ private fun ContentSection(
     modifier: Modifier = Modifier,
     content: String
 ) {
-    Text(
-        modifier = modifier,
+    ExpandableText(
         text = content,
-        style = MaterialTheme.typography.bodySmall,
-        overflow = TextOverflow.Ellipsis
+        modifier = modifier,
+        style = extendedPostItemContentStyle
     )
 }
 
@@ -173,22 +251,23 @@ private fun FooterSection(
         Text(
             text = postSource.label,
             color = MaterialTheme.colorScheme.supportingText,
-            style = MaterialTheme.typography.bodySmall
+            style = extendedPostItemFooterStyle
         )
 
         Text(
             text = "\u2022",
             color = MaterialTheme.colorScheme.supportingText,
-            style = MaterialTheme.typography.bodySmall
+            style = extendedPostItemFooterStyle
         )
 
         Text(
             text = getElapsedTimeValue(date),
             color = MaterialTheme.colorScheme.supportingText,
-            style = MaterialTheme.typography.bodySmall
+            style = extendedPostItemFooterStyle
         )
     }
 }
+
 
 /*
  =====================================================================
@@ -198,10 +277,36 @@ private fun FooterSection(
 
 @PhonePreviews
 @Composable
-private fun CompactPostItemPreview() {
+private fun DefaultItemPreview() {
     GedoiseTheme {
         Surface {
-            CompactPostItem(
+            DefaultItem(
+                post = postFixture,
+                onOptionClick = {}
+            )
+        }
+    }
+}
+
+@PhonePreviews
+@Composable
+private fun PublishingItemPreview() {
+    GedoiseTheme {
+        Surface {
+            PublishingItem (
+                post = postFixture,
+                onOptionClick = {}
+            )
+        }
+    }
+}
+
+@PhonePreviews
+@Composable
+private fun ErrorItemPreview() {
+    GedoiseTheme {
+        Surface {
+            ErrorItem(
                 post = postFixture,
                 onOptionClick = {}
             )

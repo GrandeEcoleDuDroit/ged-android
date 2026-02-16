@@ -26,6 +26,7 @@ fun NavGraphBuilder.newsSection(
     onSeeAllAnnouncementsClick: () -> Unit,
     onCreatePostClick: () -> Unit,
     onEditPostClick: (Post) -> Unit,
+    onSeeAllPostsClick: () -> Unit,
     bottomBar: @Composable () -> Unit,
     newsDestinations: NavGraphBuilder.() -> Unit
 ) {
@@ -38,6 +39,7 @@ fun NavGraphBuilder.newsSection(
                 onSeeAllAnnouncementsClick = onSeeAllAnnouncementsClick,
                 onCreatePostClick = onCreatePostClick,
                 onEditPostClick = onEditPostClick,
+                onSeeAllPostsClick = onSeeAllPostsClick,
                 bottomBar = bottomBar
             )
         }

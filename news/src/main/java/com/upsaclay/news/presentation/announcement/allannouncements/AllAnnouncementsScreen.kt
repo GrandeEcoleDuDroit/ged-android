@@ -17,6 +17,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,13 +40,14 @@ import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
-import com.upsaclay.news.domain.announcement.announcementsFixture
 import com.upsaclay.news.domain.announcement.Announcement
 import com.upsaclay.news.domain.announcement.Announcement.AnnouncementState
 import com.upsaclay.news.domain.announcement.AnnouncementReport
+import com.upsaclay.news.domain.announcement.announcementsFixture
 import com.upsaclay.news.presentation.announcement.components.AnnouncementBottomSheet
 import com.upsaclay.news.presentation.announcement.components.ExtendedAnnouncementItem
 import com.upsaclay.news.presentation.announcement.stringRes
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -57,23 +59,21 @@ fun AllAnnouncementsDestination(
     viewModel: AllAnnouncementsViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
+    val showSnackBar = { message: String ->
+        scope.launch {
+            snackbarHostState.showSnackbar(message = message)
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
-                is SingleUiEvent.Error -> {
-                    snackbarHostState.showSnackbar(
-                        message = context.getString(event.messageId)
-                    )
-                }
+                is SingleUiEvent.Error -> showSnackBar(context.getString(event.messageId))
 
-                is SingleUiEvent.Success -> {
-                    snackbarHostState.showSnackbar(
-                        message = context.getString(event.messageId)
-                    )
-                }
+                is SingleUiEvent.Success -> showSnackBar(context.getString(event.messageId))
             }
         }
     }
@@ -89,7 +89,7 @@ fun AllAnnouncementsDestination(
             onRefresh = viewModel::refreshAnnouncements,
             onAuthorClick = onAuthorClick,
             onAnnouncementClick = onAnnouncementClick,
-            onResendAnnouncementClick = viewModel::resendAnnouncement,
+            onRecreateAnnouncementClick = viewModel::recreateAnnouncement,
             onEditAnnouncementClick = onEditAnnouncementClick,
             onReportAnnouncementClick = viewModel::reportAnnouncement,
             onDeleteAnnouncementClick = viewModel::deleteAnnouncement
@@ -109,7 +109,7 @@ private fun AllAnnouncementsScreen(
     onRefresh: () -> Unit,
     onAuthorClick: (User) -> Unit,
     onAnnouncementClick: (String) -> Unit,
-    onResendAnnouncementClick: (Announcement) -> Unit,
+    onRecreateAnnouncementClick: (Announcement) -> Unit,
     onEditAnnouncementClick: (Announcement) -> Unit,
     onReportAnnouncementClick: (AnnouncementReport) -> Unit,
     onDeleteAnnouncementClick: (Announcement) -> Unit
@@ -217,7 +217,7 @@ private fun AllAnnouncementsScreen(
                     },
                     onRecreateClick = {
                         activeBottomSheet = null
-                        onResendAnnouncementClick(bottomSheet.announcement)
+                        onRecreateAnnouncementClick(bottomSheet.announcement)
                     },
                     onReportClick = {
                         activeBottomSheet =
@@ -288,7 +288,7 @@ private fun AllAnnouncementsScreenPreview() {
             onAuthorClick = {},
             onRefresh = {},
             onAnnouncementClick = {},
-            onResendAnnouncementClick = {},
+            onRecreateAnnouncementClick = {},
             onEditAnnouncementClick = {},
             onReportAnnouncementClick = {},
             onDeleteAnnouncementClick = {}

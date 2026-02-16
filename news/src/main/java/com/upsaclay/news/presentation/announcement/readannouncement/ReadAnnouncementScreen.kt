@@ -38,8 +38,8 @@ import com.upsaclay.news.R
 import com.upsaclay.news.domain.announcement.announcementFixture
 import com.upsaclay.news.domain.announcement.Announcement
 import com.upsaclay.news.domain.announcement.AnnouncementReport
-import com.upsaclay.news.presentation.announcement.AnnouncementPresentationUtils.contentStyle
-import com.upsaclay.news.presentation.announcement.AnnouncementPresentationUtils.titleStyle
+import com.upsaclay.news.presentation.announcement.AnnouncementPresentationUtils.announcementContentStyle
+import com.upsaclay.news.presentation.announcement.AnnouncementPresentationUtils.announcementTitleStyle
 import com.upsaclay.news.presentation.announcement.components.AnnouncementBottomSheet
 import com.upsaclay.news.presentation.announcement.stringRes
 import org.koin.androidx.compose.koinViewModel
@@ -226,14 +226,14 @@ private fun AnnouncementContent(
             Text(
                 modifier = Modifier.testTag(stringResource(id = R.string.read_screen_announcement_title_tag)),
                 text = it,
-                style = titleStyle
+                style = announcementTitleStyle
             )
         }
 
         Text(
             modifier = Modifier.testTag(stringResource(id = R.string.read_screen_announcement_content_tag)),
             text = announcement.content,
-            style = contentStyle
+            style = announcementContentStyle
         )
     }
 }

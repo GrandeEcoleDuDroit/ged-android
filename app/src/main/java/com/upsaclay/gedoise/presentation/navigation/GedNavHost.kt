@@ -66,6 +66,8 @@ import com.upsaclay.news.presentation.announcement.readannouncement.navigateToRe
 import com.upsaclay.news.presentation.announcement.readannouncement.readAnnouncementScreen
 import com.upsaclay.news.presentation.navigateToNews
 import com.upsaclay.news.presentation.newsSection
+import com.upsaclay.news.presentation.post.allposts.allPostsScreen
+import com.upsaclay.news.presentation.post.allposts.navigateToAllPosts
 import com.upsaclay.news.presentation.post.createpost.createPostScreen
 import com.upsaclay.news.presentation.post.createpost.navigateToCreatePost
 import com.upsaclay.news.presentation.post.editpost.editPostScreen
@@ -164,6 +166,7 @@ fun GedNavHost(
             onSeeAllAnnouncementsClick = navController::navigateToAllAnnouncements,
             onCreatePostClick = navController::navigateToCreatePost,
             onEditPostClick = navController::navigateToEditPost,
+            onSeeAllPostsClick = navController::navigateToAllPosts,
             bottomBar = bottomBar
         ) {
             createAnnouncementScreen(onBackClick = navController::popBackStack)
@@ -186,6 +189,11 @@ fun GedNavHost(
             createPostScreen(onBackClick = navController::popBackStack)
 
             editPostScreen(onBackClick = navController::popBackStack)
+
+            allPostsScreen(
+                onBackClick = navController::popBackStack,
+                onEditPostClick = navController::navigateToEditPost
+            )
         }
 
         conversationSection(

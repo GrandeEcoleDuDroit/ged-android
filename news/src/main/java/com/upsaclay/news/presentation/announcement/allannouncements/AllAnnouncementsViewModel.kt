@@ -55,7 +55,7 @@ class AllAnnouncementsViewModel(
         )
     }
 
-    fun resendAnnouncement(announcement: Announcement) {
+    fun recreateAnnouncement(announcement: Announcement) {
         viewModelScope.launch {
             recreateAnnouncementUseCase.execute(announcement)
         }

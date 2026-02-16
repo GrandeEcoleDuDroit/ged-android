@@ -255,7 +255,7 @@ private fun CardSubtitle(
             modifier = Modifier.padding(top = dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding)),
             icon = {
                 Icon(
-                    modifier = Modifier.size(dimensionResource(com.upsaclay.common.R.dimen.icon_size)),
+                    modifier = Modifier.size(dimensionResource(com.upsaclay.common.R.dimen.small_medium_icon_size)),
                     painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_calendar),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.informationText
@@ -274,7 +274,7 @@ private fun CardSubtitle(
             modifier = Modifier.padding(top = dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding)),
             icon = {
                 Icon(
-                    modifier = Modifier.size(dimensionResource(com.upsaclay.common.R.dimen.icon_size)),
+                    modifier = Modifier.size(dimensionResource(com.upsaclay.common.R.dimen.small_medium_icon_size)),
                     painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_group),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.informationText

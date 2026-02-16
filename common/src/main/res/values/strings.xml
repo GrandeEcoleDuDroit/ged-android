@@ -59,6 +59,7 @@
     <string name="hour_ago_medium">%d heures</string>
     <string name="day_ago_medium">%d jours</string>
     <string name="week_ago_medium">%d semaines</string>
+    <string name="show_more_text">Voir plus</string>
     <string name="selling_promoting_inappropriate_content_report_reason">Vente ou promotion de contenu inapproprié</string>
     <string name="violent_hateful_content_report_reason">Contenu violent ou haineux</string>
     <string name="spam_scam_report_reason">Spam ou arnaque</string>
