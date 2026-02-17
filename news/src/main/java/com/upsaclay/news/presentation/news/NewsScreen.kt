@@ -47,6 +47,7 @@ fun NewsDestination(
     onCreateAnnouncementClick: () -> Unit,
     onEditAnnouncementClick: (Announcement) -> Unit,
     onSeeAllAnnouncementsClick: () -> Unit,
+    onPostClick: (String) -> Unit,
     onCreatePostClick: () -> Unit,
     onEditPostClick: (Post) -> Unit,
     onSeeAllPostsClick: () -> Unit,
@@ -89,6 +90,7 @@ fun NewsDestination(
             onDeleteAnnouncementClick = viewModel::deleteAnnouncement,
             onReportAnnouncementClick = viewModel::reportAnnouncement,
             onSeeAllAnnouncementsClick = onSeeAllAnnouncementsClick,
+            onPostClick = onPostClick,
             onCreatePostClick = onCreatePostClick,
             onEditPostClick = {
                 scope.launch {
@@ -122,6 +124,7 @@ private fun NewsScreen(
     onDeleteAnnouncementClick: (Announcement) -> Unit,
     onReportAnnouncementClick: (AnnouncementReport) -> Unit,
     onSeeAllAnnouncementsClick: () -> Unit,
+    onPostClick: (String) -> Unit,
     onCreatePostClick: () -> Unit,
     onEditPostClick: (String) -> Unit,
     onRecreatePostClick: (Post) -> Unit,
@@ -199,6 +202,7 @@ private fun NewsScreen(
                 GedNewsSection(
                     modifier = Modifier.weight(1f),
                     posts = posts,
+                    onPostClick = onPostClick,
                     onUncreatedPostClick = {
                         activeBottomSheet = NewsScreenBottomSheet.PostBottomSheet(it)
                     },
@@ -319,6 +323,7 @@ private fun NewsScreenPreview() {
             onCreateAnnouncementClick = {},
             onReportAnnouncementClick = {},
             onSeeAllAnnouncementsClick = {},
+            onPostClick = {},
             onCreatePostClick = {},
             onEditPostClick = {},
             onRecreatePostClick = {},

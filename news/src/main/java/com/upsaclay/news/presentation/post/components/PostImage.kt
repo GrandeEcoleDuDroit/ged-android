@@ -24,7 +24,7 @@ import com.upsaclay.common.presentation.theme.overlayContent
 import com.upsaclay.common.presentation.theme.white
 
 @Composable
-fun PostImages(
+fun PostImagePages(
     modifier: Modifier = Modifier,
     models: List<String>
 ) {
@@ -90,10 +90,10 @@ private fun PageNumberBadge(
 @Preview
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun PostImagesPreview() {
+private fun PostImagePagesPreview() {
     val models = listOf("", "")
 
     GedoiseTheme {
-        PostImages(models = models)
+        PostImagePages(models = models)
     }
 }

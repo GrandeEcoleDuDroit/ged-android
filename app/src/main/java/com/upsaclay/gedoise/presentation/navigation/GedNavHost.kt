@@ -72,6 +72,8 @@ import com.upsaclay.news.presentation.post.createpost.createPostScreen
 import com.upsaclay.news.presentation.post.createpost.navigateToCreatePost
 import com.upsaclay.news.presentation.post.editpost.editPostScreen
 import com.upsaclay.news.presentation.post.editpost.navigateToEditPost
+import com.upsaclay.news.presentation.post.readpost.navigateToReadPost
+import com.upsaclay.news.presentation.post.readpost.readPostScreen
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 
@@ -164,18 +166,19 @@ fun GedNavHost(
             onCreateAnnouncementClick = navController::navigateToCreateAnnouncement,
             onEditAnnouncementClick = navController::navigateToEditAnnouncement,
             onSeeAllAnnouncementsClick = navController::navigateToAllAnnouncements,
+            onPostClick = navController::navigateToReadPost,
             onCreatePostClick = navController::navigateToCreatePost,
             onEditPostClick = navController::navigateToEditPost,
             onSeeAllPostsClick = navController::navigateToAllPosts,
             bottomBar = bottomBar
         ) {
-            createAnnouncementScreen(onBackClick = navController::popBackStack)
-
             readAnnouncementScreen(
                 onBackClick = navController::popBackStack,
                 onEditAnnouncementClick = navController::navigateToEditAnnouncement,
                 onAuthorClick = navController::navigateToUser
             )
+
+            createAnnouncementScreen(onBackClick = navController::popBackStack)
 
             editAnnouncementScreen(onBackClick = navController::popBackStack)
 
@@ -186,12 +189,18 @@ fun GedNavHost(
                 onAuthorClick = navController::navigateToUser
             )
 
+            readPostScreen(
+                onBackClick = navController::popBackStack,
+                onEditPostClick = navController::navigateToEditPost
+            )
+
             createPostScreen(onBackClick = navController::popBackStack)
 
             editPostScreen(onBackClick = navController::popBackStack)
 
             allPostsScreen(
                 onBackClick = navController::popBackStack,
+                onPostClick = navController::navigateToReadPost,
                 onEditPostClick = navController::navigateToEditPost
             )
         }

@@ -26,6 +26,9 @@ class PostLocalDataSource(
     suspend fun getPosts(): List<Post> = postDao.getPosts()
         .map { it.toPost(::getImagePath) }
 
+    fun getPostFlow(postId: String): Flow<Post?> = postDao.getPostFlow(postId)
+        .map { it?.toPost(::getImagePath) }
+
     suspend fun getPost(postId: String): Post? = postDao.getPost(postId)?.toPost(::getImagePath)
 
     suspend fun upsertPost(post: Post) {

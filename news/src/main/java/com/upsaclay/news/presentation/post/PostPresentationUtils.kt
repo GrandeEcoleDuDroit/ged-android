@@ -21,17 +21,4 @@ object PostPresentationUtils {
     val postContentStyle: TextStyle
         @Composable
         get() = MaterialTheme.typography.bodyLarge
-
-    val extendedPostItemTitleStyle: TextStyle
-        @Composable
-        get() = MaterialTheme.typography.titleMedium
-
-    val extendedPostItemContentStyle: TextStyle
-        @Composable
-        get() = MaterialTheme.typography.bodyMedium
-
-    val extendedPostItemFooterStyle: TextStyle
-        @Composable
-        get() = MaterialTheme.typography.bodyMedium
-
 }

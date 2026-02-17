@@ -1,6 +1,5 @@
 package com.upsaclay.news.presentation.post.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,16 +27,11 @@ import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.components.ExpandableText
 import com.upsaclay.common.presentation.components.OptionButton
 import com.upsaclay.common.presentation.theme.GedoiseTheme
-import com.upsaclay.common.presentation.theme.supportingText
 import com.upsaclay.common.utils.PhonePreviews
-import com.upsaclay.common.utils.getElapsedTimeValue
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.post.Post
 import com.upsaclay.news.domain.post.Post.PostState
 import com.upsaclay.news.domain.post.postFixture
-import com.upsaclay.news.presentation.post.PostPresentationUtils.extendedPostItemContentStyle
-import com.upsaclay.news.presentation.post.PostPresentationUtils.extendedPostItemFooterStyle
-import com.upsaclay.news.presentation.post.PostPresentationUtils.extendedPostItemTitleStyle
 import java.time.LocalDateTime
 
 @Composable
@@ -173,7 +167,7 @@ private fun TitleSection(
         Text(
             modifier = Modifier.weight(1f),
             text = title,
-            style = extendedPostItemTitleStyle,
+            style = MaterialTheme.typography.titleMedium,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
         )
@@ -191,7 +185,7 @@ private fun ImageSection(
     modifier: Modifier = Modifier,
     imageReferences: List<String>
 ) {
-    PostImages(
+    PostImagePages(
         modifier = modifier
             .heightIn(max = dimensionResource(R.dimen.compact_post_image_height))
             .clip(ShapeDefaults.Medium),
@@ -207,7 +201,7 @@ private fun ContentSection(
     ExpandableText(
         text = content,
         modifier = modifier,
-        style = extendedPostItemContentStyle
+        style = MaterialTheme.typography.bodyMedium
     )
 }
 
@@ -217,55 +211,11 @@ private fun FooterSection(
     postSource: Post.PostSource,
     date: LocalDateTime
 ) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.smallSpacing()
-    ) {
-        when (postSource) {
-            Post.PostSource.LINKEDIN -> {
-                Image(
-                    modifier = Modifier.size(dimensionResource(com.upsaclay.common.R.dimen.small_icon_size)),
-                    painter = painterResource(R.drawable.ic_linkedin),
-                    contentDescription = null
-                )
-            }
-
-            Post.PostSource.INSTAGRAM -> {
-                Image(
-                    modifier = Modifier.size(dimensionResource(com.upsaclay.common.R.dimen.small_icon_size)),
-                    painter = painterResource(R.drawable.ic_instagram),
-                    contentDescription = null
-                )
-            }
-
-            Post.PostSource.BLOG_LLM -> {
-                Image(
-                    modifier = Modifier.size(dimensionResource(com.upsaclay.common.R.dimen.small_icon_size)),
-                    painter = painterResource(com.upsaclay.common.R.drawable.ged_logo),
-                    contentDescription = null
-                )
-            }
-        }
-
-        Text(
-            text = postSource.label,
-            color = MaterialTheme.colorScheme.supportingText,
-            style = extendedPostItemFooterStyle
-        )
-
-        Text(
-            text = "\u2022",
-            color = MaterialTheme.colorScheme.supportingText,
-            style = extendedPostItemFooterStyle
-        )
-
-        Text(
-            text = getElapsedTimeValue(date),
-            color = MaterialTheme.colorScheme.supportingText,
-            style = extendedPostItemFooterStyle
-        )
-    }
+    PostSourceItem(
+        modifier = modifier,
+        postSource = postSource,
+        date = date
+    )
 }
 
 

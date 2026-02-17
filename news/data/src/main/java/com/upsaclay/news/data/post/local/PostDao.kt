@@ -18,6 +18,9 @@ interface PostDao {
     suspend fun getPosts(): List<LocalPost>
 
     @Query("SELECT * FROM $POST_TABLE_NAME WHERE $POST_ID = :postId")
+    fun getPostFlow(postId: String): Flow<LocalPost?>
+
+    @Query("SELECT * FROM $POST_TABLE_NAME WHERE $POST_ID = :postId")
     suspend fun getPost(postId: String): LocalPost?
 
     @Upsert

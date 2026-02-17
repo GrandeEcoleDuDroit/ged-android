@@ -8,9 +8,11 @@ interface PostRepository {
 
     suspend fun getLocalPosts(): List<Post>
 
-    suspend fun getRemotePosts(): List<Post>
+    fun getLocalPostFlow(postId: String): Flow<Post?>
 
     suspend fun getLocalPost(postId: String): Post?
+
+    suspend fun getRemotePosts(): List<Post>
 
     suspend fun createPost(post: Post, imageFiles: List<File>)
 
