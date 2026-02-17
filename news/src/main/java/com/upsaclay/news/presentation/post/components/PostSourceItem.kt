@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.supportingText
+import com.upsaclay.common.utils.ElapsedTimeValueFormat
 import com.upsaclay.common.utils.getElapsedTimeValue
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.post.Post
@@ -28,9 +29,10 @@ fun PostSourceItem(
     modifier: Modifier = Modifier,
     postSource: Post.PostSource,
     date: LocalDateTime,
-    size: SizeTokens = SizeTokens.SMALL
+    contentSize: SizeTokens = SizeTokens.SMALL,
+    elapsedTimeValueFormat: ElapsedTimeValueFormat = ElapsedTimeValueFormat.SHORT
 ) {
-    val textStyle = when (size) {
+    val textStyle = when (contentSize) {
         SizeTokens.SMALL -> MaterialTheme.typography.bodySmall
         else -> MaterialTheme.typography.bodyMedium
     }
@@ -42,7 +44,7 @@ fun PostSourceItem(
     ) {
         PostSourceIcon(
             postSource = postSource,
-            size = size
+            size = contentSize
         )
 
         Text(
@@ -58,7 +60,7 @@ fun PostSourceItem(
         )
 
         Text(
-            text = getElapsedTimeValue(date),
+            text = getElapsedTimeValue(date, elapsedTimeValueFormat),
             color = MaterialTheme.colorScheme.supportingText,
             style = textStyle
         )

@@ -7,13 +7,33 @@ import com.upsaclay.common.domain.usecase.GetElapsedTimeUseCase
 import java.time.LocalDateTime
 
 @Composable
-fun getElapsedTimeValue(date: LocalDateTime): String {
+fun getElapsedTimeValue(date: LocalDateTime, format: ElapsedTimeValueFormat = ElapsedTimeValueFormat.SHORT): String {
     return when (val elapsedTime = GetElapsedTimeUseCase.fromLocalDateTime(date)) {
-        is ElapsedTime.Now -> stringResource(com.upsaclay.common.R.string.now, elapsedTime.value)
-        is ElapsedTime.Minute -> stringResource(com.upsaclay.common.R.string.minute_ago_short, elapsedTime.value)
-        is ElapsedTime.Hour -> stringResource(com.upsaclay.common.R.string.hour_ago_short, elapsedTime.value)
-        is ElapsedTime.Day -> stringResource(com.upsaclay.common.R.string.day_ago_short, elapsedTime.value)
-        is ElapsedTime.Week -> stringResource(com.upsaclay.common.R.string.week_ago_short, elapsedTime.value)
+        is ElapsedTime.Now -> stringResource(com.upsaclay.common.R.string.now)
+        is ElapsedTime.Minute -> {
+            when (format) {
+                ElapsedTimeValueFormat.SHORT -> stringResource(com.upsaclay.common.R.string.minute_ago_short, elapsedTime.value)
+                ElapsedTimeValueFormat.LONG -> stringResource(com.upsaclay.common.R.string.minute_ago_long, elapsedTime.value)
+            }
+        }
+        is ElapsedTime.Hour -> {
+            when (format) {
+                ElapsedTimeValueFormat.SHORT -> stringResource(com.upsaclay.common.R.string.hour_ago_short, elapsedTime.value)
+                ElapsedTimeValueFormat.LONG -> stringResource(com.upsaclay.common.R.string.hour_ago_long, elapsedTime.value)
+            }
+        }
+        is ElapsedTime.Day -> {
+            when (format) {
+                ElapsedTimeValueFormat.SHORT -> stringResource(com.upsaclay.common.R.string.day_ago_short, elapsedTime.value)
+                ElapsedTimeValueFormat.LONG -> stringResource(com.upsaclay.common.R.string.day_ago_long, elapsedTime.value)
+            }
+        }
+
         is ElapsedTime.Later -> DateUtils.formatDayMonthYear(elapsedTime.value)
     }
+}
+
+enum class ElapsedTimeValueFormat {
+    SHORT,
+    LONG
 }

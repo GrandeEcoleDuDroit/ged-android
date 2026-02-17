@@ -79,7 +79,7 @@ fun SectionTitle(
 fun ExpandableText(
     text: String,
     modifier: Modifier = Modifier,
-    maxLines: Int = 3,
+    maxLines: Int = 5,
     style: TextStyle = LocalTextStyle.current
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }

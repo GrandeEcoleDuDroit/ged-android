@@ -43,15 +43,14 @@ fun GedNewsSection(
     posts: List<Post>?,
     onPostClick: (String) -> Unit,
     onUncreatedPostClick: (Post) -> Unit,
+    onRedirectPostClick: (String) -> Unit,
     onPostOptionClick: (Post) -> Unit,
     onSeeAllPostsClick: () -> Unit
 ) {
     val pagerState = rememberPagerState { posts?.size ?: 0 }
 
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(bottom = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+        modifier = modifier,
         verticalArrangement = Arrangement.smallSpacing()
     ) {
         Row(
@@ -80,6 +79,7 @@ fun GedNewsSection(
                 EmptyText(text = stringResource(R.string.no_news))
             } else {
                 HorizontalPager(
+                    modifier = Modifier.fillMaxSize(),
                     state = pagerState,
                     beyondViewportPageCount = 1,
                     pageSpacing = dimensionResource(com.upsaclay.common.R.dimen.medium_padding),
@@ -101,6 +101,7 @@ fun GedNewsSection(
                             }
                             .padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
                         post = post,
+                        onRedirectPostClick = { onRedirectPostClick(post.link) },
                         onOptionClick = { onPostOptionClick(post) }
                     )
                 }
@@ -134,6 +135,7 @@ private fun GedNewsSectionPreview() {
                 onPostClick = {},
                 onSeeAllPostsClick = {},
                 onUncreatedPostClick = {},
+                onRedirectPostClick = {},
                 onPostOptionClick = {}
             )
         }

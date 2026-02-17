@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
@@ -39,10 +40,12 @@ import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.OptionButton
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.utils.ElapsedTimeValueFormat
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.post.Post
 import com.upsaclay.news.domain.post.postFixture
+import com.upsaclay.news.presentation.post.PostPresentationUtils
 import com.upsaclay.news.presentation.post.PostPresentationUtils.postContentStyle
 import com.upsaclay.news.presentation.post.PostPresentationUtils.postTitleStyle
 import com.upsaclay.news.presentation.post.SizeTokens
@@ -84,6 +87,7 @@ fun ReadPostDestination(
             loading = uiState.loading,
             snackbarHostState = snackbarHostState,
             onBackClick = onBackClick,
+            onRedirectPostClick = { context.startActivity(PostPresentationUtils.getPostLinkIntent(it)) },
             onEditPostClick = onEditPostClick,
             onDeletePostClick = viewModel::deletePost
         )
@@ -107,6 +111,7 @@ private fun ReadPostScreen(
     loading: Boolean,
     snackbarHostState: SnackbarHostState,
     onBackClick: () -> Unit,
+    onRedirectPostClick: (String) -> Unit,
     onEditPostClick: (Post) -> Unit,
     onDeletePostClick: () -> Unit
 ) {
@@ -154,36 +159,53 @@ private fun ReadPostScreen(
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .verticalScroll(rememberScrollState()),
+                .padding(bottom = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
             verticalArrangement = Arrangement.mediumSpacing()
         ) {
-            Text(
-                modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
-                text = post.title,
-                style = postTitleStyle
-            )
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.mediumSpacing()
+            ) {
+                Text(
+                    modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                    text = post.title,
+                    style = postTitleStyle
+                )
 
-            PostSourceItem(
-                modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
-                postSource = post.source,
-                date = post.date,
-                size = SizeTokens.MEDIUM
-            )
+                PostSourceItem(
+                    modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                    postSource = post.source,
+                    date = post.date,
+                    contentSize = SizeTokens.MEDIUM,
+                    elapsedTimeValueFormat = ElapsedTimeValueFormat.LONG
+                )
 
-            if (post.state.imageReferenceValues.isNotEmpty()) {
-                PostImagePages(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(dimensionResource(R.dimen.post_image_height)),
-                    models = post.state.imageReferenceValues
+                if (post.state.imageReferenceValues.isNotEmpty()) {
+                    PostImagePages(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(dimensionResource(R.dimen.post_image_height)),
+                        models = post.state.imageReferenceValues
+                    )
+                }
+
+                Text(
+                    modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                    text = post.content,
+                    style = postContentStyle
                 )
             }
 
-            Text(
-                modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
-                text = post.content,
-                style = postContentStyle
-            )
+            OutlinedButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                onClick = { onRedirectPostClick(post.link) }
+            ) {
+                Text(text = stringResource(com.upsaclay.common.R.string.see))
+            }
         }
     }
 
@@ -233,6 +255,7 @@ private fun ReadPostScreenPreview() {
                 loading = false,
                 snackbarHostState = SnackbarHostState(),
                 onBackClick = {},
+                onRedirectPostClick = {},
                 onEditPostClick = {},
                 onDeletePostClick = {}
             )

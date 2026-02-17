@@ -2,13 +2,18 @@ package com.upsaclay.news.presentation.post.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -21,6 +26,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.extension.smallSpacing
@@ -38,6 +44,7 @@ import java.time.LocalDateTime
 fun ExtendedPostItem(
     modifier: Modifier = Modifier,
     post: Post,
+    onRedirectPostClick: () -> Unit,
     onOptionClick: () -> Unit
 ) {
     when (post.state) {
@@ -45,6 +52,7 @@ fun ExtendedPostItem(
             DefaultItem(
                 modifier = modifier,
                 post = post,
+                onRedirectPostClick = onRedirectPostClick,
                 onOptionClick = onOptionClick
             )
         }
@@ -53,6 +61,7 @@ fun ExtendedPostItem(
             PublishingItem(
                 modifier = modifier,
                 post = post,
+                onRedirectPostClick = onRedirectPostClick,
                 onOptionClick = onOptionClick
             )
         }
@@ -61,6 +70,7 @@ fun ExtendedPostItem(
             ErrorItem(
                 modifier = modifier,
                 post = post,
+                onRedirectPostClick = onRedirectPostClick,
                 onOptionClick = onOptionClick
             )
         }
@@ -71,6 +81,7 @@ fun ExtendedPostItem(
 private fun DefaultItem(
     modifier: Modifier = Modifier,
     post: Post,
+    onRedirectPostClick: () -> Unit,
     onOptionClick: () -> Unit
 ) {
     Column(
@@ -89,11 +100,14 @@ private fun DefaultItem(
             )
         }
 
-        ContentSection(content = post.content)
+        if (post.content.isNotBlank()) {
+            ContentSection(content = post.content)
+        }
 
         FooterSection(
             postSource = post.source,
-            date = post.date
+            date = post.date,
+            onRedirectPostClick = onRedirectPostClick
         )
     }
 }
@@ -102,11 +116,13 @@ private fun DefaultItem(
 private fun PublishingItem(
     modifier: Modifier = Modifier,
     post: Post,
+    onRedirectPostClick: () -> Unit,
     onOptionClick: () -> Unit
 ) {
     DefaultItem(
         modifier = modifier.alpha(0.5f),
         post = post,
+        onRedirectPostClick = onRedirectPostClick,
         onOptionClick = onOptionClick
     )
 }
@@ -115,6 +131,7 @@ private fun PublishingItem(
 private fun ErrorItem(
     modifier: Modifier = Modifier,
     post: Post,
+    onRedirectPostClick: () -> Unit,
     onOptionClick: () -> Unit
 ) {
     Column(
@@ -144,11 +161,14 @@ private fun ErrorItem(
             )
         }
 
-        ContentSection(content = post.content)
+        if (post.content.isNotBlank()) {
+            ContentSection(content = post.content)
+        }
 
         FooterSection(
             postSource = post.source,
-            date = post.date
+            date = post.date,
+            onRedirectPostClick = onRedirectPostClick
         )
     }
 }
@@ -209,13 +229,30 @@ private fun ContentSection(
 private fun FooterSection(
     modifier: Modifier = Modifier,
     postSource: Post.PostSource,
-    date: LocalDateTime
+    date: LocalDateTime,
+    onRedirectPostClick: () -> Unit,
 ) {
-    PostSourceItem(
-        modifier = modifier,
-        postSource = postSource,
-        date = date
-    )
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        PostSourceItem(
+            postSource = postSource,
+            date = date
+        )
+
+        OutlinedButton(
+            modifier = Modifier.height(dimensionResource(R.dimen.post_item_redirect_button_height)),
+            contentPadding = PaddingValues(
+                start = ButtonDefaults.ContentPadding.calculateStartPadding(LayoutDirection.Ltr),
+                end = ButtonDefaults.ContentPadding.calculateEndPadding(LayoutDirection.Ltr)
+            ),
+            onClick = onRedirectPostClick
+        ) {
+            Text(text = stringResource(com.upsaclay.common.R.string.see))
+        }
+    }
 }
 
 
@@ -232,6 +269,7 @@ private fun DefaultItemPreview() {
         Surface {
             DefaultItem(
                 post = postFixture,
+                onRedirectPostClick = {},
                 onOptionClick = {}
             )
         }
@@ -245,6 +283,7 @@ private fun PublishingItemPreview() {
         Surface {
             PublishingItem (
                 post = postFixture,
+                onRedirectPostClick = {},
                 onOptionClick = {}
             )
         }
@@ -258,6 +297,7 @@ private fun ErrorItemPreview() {
         Surface {
             ErrorItem(
                 post = postFixture,
+                onRedirectPostClick = {},
                 onOptionClick = {}
             )
         }

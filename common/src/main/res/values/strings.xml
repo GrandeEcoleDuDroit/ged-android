@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">Grande Ecole du Droit</string>
+    <string name="ged_logo_description">Logo de l\'université de La Grande École du Droit</string>
     <string name="home">Accueil</string>
     <string name="messages">Messages</string>
     <string name="calendar">Calendrier</string>
@@ -39,27 +40,22 @@
     <string name="confirm">Confirmer</string>
     <string name="submit">Soumettre</string>
     <string name="copy">Copier</string>
+    <string name="now">Maintenant</string>
+    <string name="minute_ago_short">%d min</string>
+    <string name="hour_ago_short">%d h</string>
+    <string name="day_ago_short">%d j</string>
+    <string name="minute_ago_long">Il y a %d minutes</string>
+    <string name="hour_ago_long">Il y a %d heures</string>
+    <string name="day_ago_long">Il y a %d jours</string>
+    <string name="show_more_text">Voir plus</string>
     <string name="arrow_back_icon_description">Retour en arrière</string>
-    <string name="ged_logo_description">Logo de l\'université de La Grande École du Droit</string>
-    <string name="profile_picture_description">Photo de profil de l\'utilisateur</string>
     <string name="icon_add_description">Icône d\'ajout</string>
+    <string name="profile_picture_description">Photo de profil de l\'utilisateur</string>
     <string name="school_level">Niveau d\'étude</string>
     <string name="first_name">Prénom</string>
     <string name="last_name">Nom</string>
     <string name="email">Adresse e-mail</string>
-    <string name="discard_modification_dialog_text">Abandonner les modifications ?</string>
-    <string name="now">Maintenant</string>
-    <string name="second_ago_short">%d sec</string>
-    <string name="minute_ago_short">%d min</string>
-    <string name="hour_ago_short">%d h</string>
-    <string name="day_ago_short">%d j</string>
-    <string name="week_ago_short">%d sem</string>
     <string name="administrator">Administrateur</string>
-    <string name="minute_ago_medium">%d minutes</string>
-    <string name="hour_ago_medium">%d heures</string>
-    <string name="day_ago_medium">%d jours</string>
-    <string name="week_ago_medium">%d semaines</string>
-    <string name="show_more_text">Voir plus</string>
     <string name="selling_promoting_inappropriate_content_report_reason">Vente ou promotion de contenu inapproprié</string>
     <string name="violent_hateful_content_report_reason">Contenu violent ou haineux</string>
     <string name="spam_scam_report_reason">Spam ou arnaque</string>
@@ -82,6 +78,7 @@
     <string name="unblock_user_dialog_message">Voulez-vous débloquer cet utilisateur ?</string>
     <string name="deleted_user">Utilisateur supprimé</string>
     <string name="add_image">Ajouter image</string>
+    <string name="discard_modification_dialog_text">Abandonner les modifications ?</string>
 
     <string name="mandatory_field_error">Champ obligatoire.</string>
     <string name="number_field_error">Veuillez entrer un nombre valide.</string>

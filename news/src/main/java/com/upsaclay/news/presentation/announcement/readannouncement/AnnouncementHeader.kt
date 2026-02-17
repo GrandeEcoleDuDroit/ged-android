@@ -16,6 +16,7 @@ import com.upsaclay.common.extension.displayName
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.supportingText
+import com.upsaclay.common.utils.ElapsedTimeValueFormat
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.common.utils.getElapsedTimeValue
 import com.upsaclay.news.domain.announcement.Announcement
@@ -25,6 +26,7 @@ import com.upsaclay.news.domain.announcement.longAnnouncementFixture
 fun AnnouncementHeader(
     modifier: Modifier = Modifier,
     announcement: Announcement,
+    elapsedTimeValueFormat: ElapsedTimeValueFormat = ElapsedTimeValueFormat.SHORT,
     onClick: () -> Unit
 ) {
     Row(
@@ -49,7 +51,7 @@ fun AnnouncementHeader(
         )
 
         Text(
-            text = getElapsedTimeValue(announcement.date),
+            text = getElapsedTimeValue(announcement.date, elapsedTimeValueFormat),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.supportingText
         )

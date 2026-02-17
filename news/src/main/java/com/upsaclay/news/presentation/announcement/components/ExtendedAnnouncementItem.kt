@@ -97,7 +97,6 @@ private fun DefaultItem(
         ExpandableText(
             modifier = Modifier.testTag(stringResource(id = R.string.read_screen_announcement_content_tag)),
             text = announcement.content,
-            maxLines = 2,
             style = extendedAnnouncementItemContentStyle,
         )
     }
