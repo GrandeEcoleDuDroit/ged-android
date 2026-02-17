@@ -49,6 +49,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun AllPostsDestination(
     onBackClick: () -> Unit,
+    onPostClick: (String) -> Unit,
     onEditPostClick: (Post) -> Unit,
     viewModel: AllPostsViewModel = koinViewModel()
 ) {
@@ -81,6 +82,7 @@ fun AllPostsDestination(
             snackbarHostState = snackbarHostState,
             onBackClick = onBackClick,
             onRefresh = viewModel::refreshPosts,
+            onPostClick = onPostClick,
             onRecreatePostClick = viewModel::recreatePost,
             onEditPostClick = onEditPostClick,
             onDeletePostClick = viewModel::deletePost
@@ -98,6 +100,7 @@ private fun AllPostsScreen(
     snackbarHostState: SnackbarHostState = SnackbarHostState(),
     onBackClick: () -> Unit,
     onRefresh: () -> Unit,
+    onPostClick: (String) -> Unit,
     onRecreatePostClick: (Post) -> Unit,
     onEditPostClick: (Post) -> Unit,
     onDeletePostClick: (Post) -> Unit
@@ -158,7 +161,9 @@ private fun AllPostsScreen(
                             ExtendedPostItem(
                                 modifier = Modifier
                                     .noRippleClickable {
-                                        if (post.state !is Post.PostState.Published) {
+                                        if (post.state is Post.PostState.Published) {
+                                            onPostClick(post.id)
+                                        } else {
                                             activeBottomSheet = AllPostScreenBottomSheet.PostBottomSheet(post)
                                         }
                                     }
@@ -239,6 +244,7 @@ private fun AllPostsScreenPreview() {
             loading = false,
             onBackClick = {},
             onRefresh = {},
+            onPostClick = {},
             onRecreatePostClick = {},
             onEditPostClick = {},
             onDeletePostClick = {}

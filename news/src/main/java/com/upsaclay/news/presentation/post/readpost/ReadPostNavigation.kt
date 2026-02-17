@@ -1,27 +1,28 @@
-package com.upsaclay.news.presentation.post.allposts
+package com.upsaclay.news.presentation.post.readpost
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import com.upsaclay.common.domain.entity.Route
 import com.upsaclay.news.domain.post.Post
 import kotlinx.serialization.Serializable
 
-@Serializable data object AllPostsRoute: Route
+@Serializable data class ReadPostRoute(val postId: String): Route
 
-fun NavController.navigateToAllPosts() {
-    navigate(route = AllPostsRoute)
+fun NavController.navigateToReadPost(postId: String) {
+    navigate(route = ReadPostRoute(postId))
 }
 
-fun NavGraphBuilder.allPostsScreen(
+fun NavGraphBuilder.readPostScreen(
     onBackClick: () -> Unit,
-    onPostClick: (String) -> Unit,
     onEditPostClick: (Post) -> Unit
 ) {
-    composable<AllPostsRoute> {
-        AllPostsDestination(
+    composable<ReadPostRoute> {
+        val postId = it.toRoute<ReadPostRoute>().postId
+        ReadPostDestination(
+            postId = postId,
             onBackClick = onBackClick,
-            onPostClick = onPostClick,
             onEditPostClick = onEditPostClick
         )
     }

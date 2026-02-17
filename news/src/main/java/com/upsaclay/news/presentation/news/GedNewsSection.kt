@@ -41,6 +41,7 @@ import com.upsaclay.news.presentation.post.components.CompactPostItem
 fun GedNewsSection(
     modifier: Modifier = Modifier,
     posts: List<Post>?,
+    onPostClick: (String) -> Unit,
     onUncreatedPostClick: (Post) -> Unit,
     onPostOptionClick: (Post) -> Unit,
     onSeeAllPostsClick: () -> Unit
@@ -92,7 +93,9 @@ fun GedNewsSection(
                         modifier = Modifier
                             .fillMaxSize()
                             .noRippleClickable {
-                                if (post.state is PostState.Error) {
+                                if (post.state is PostState.Published) {
+                                    onPostClick(post.id)
+                                } else {
                                     onUncreatedPostClick(post)
                                 }
                             }
@@ -128,6 +131,7 @@ private fun GedNewsSectionPreview() {
         Surface {
             GedNewsSection(
                 posts = postsFixture,
+                onPostClick = {},
                 onSeeAllPostsClick = {},
                 onUncreatedPostClick = {},
                 onPostOptionClick = {}

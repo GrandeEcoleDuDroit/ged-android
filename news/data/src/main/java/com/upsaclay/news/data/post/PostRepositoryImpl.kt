@@ -17,9 +17,11 @@ class PostRepositoryImpl(
 
     override suspend fun getLocalPosts(): List<Post> = postLocalDataSource.getPosts()
 
-    override suspend fun getRemotePosts(): List<Post> = postRemoteDataSource.getPosts()
+    override fun getLocalPostFlow(postId: String): Flow<Post?> = postLocalDataSource.getPostFlow(postId)
 
     override suspend fun getLocalPost(postId: String): Post? = postLocalDataSource.getPost(postId)
+
+    override suspend fun getRemotePosts(): List<Post> = postRemoteDataSource.getPosts()
 
     override suspend fun createPost(post: Post, imageFiles: List<File>) {
         try {
