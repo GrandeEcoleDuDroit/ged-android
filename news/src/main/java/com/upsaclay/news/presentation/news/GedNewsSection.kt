@@ -1,7 +1,6 @@
 package com.upsaclay.news.presentation.news
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -26,7 +25,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
 import com.upsaclay.common.extension.noRippleClickable
 import com.upsaclay.common.extension.smallSpacing
-import com.upsaclay.common.presentation.components.CircularProgressBar
 import com.upsaclay.common.presentation.components.EmptyText
 import com.upsaclay.common.presentation.components.SectionTitle
 import com.upsaclay.common.presentation.theme.GedoiseTheme
@@ -105,15 +103,6 @@ fun GedNewsSection(
                         onOptionClick = { onPostOptionClick(post) }
                     )
                 }
-            }
-        } ?: run {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressBar()
             }
         }
     }
