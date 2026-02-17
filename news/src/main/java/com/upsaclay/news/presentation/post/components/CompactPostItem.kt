@@ -2,13 +2,18 @@ package com.upsaclay.news.presentation.post.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -21,6 +26,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.LayoutDirection
 import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.components.OptionButton
 import com.upsaclay.common.presentation.theme.GedoiseTheme
@@ -35,6 +41,7 @@ import java.time.LocalDateTime
 fun CompactPostItem(
     modifier: Modifier = Modifier,
     post: Post,
+    onRedirectPostClick: () -> Unit,
     onOptionClick: () -> Unit
 ) {
     val alpha = if (post.state is PostState.Publishing) 0.5f else 1f
@@ -56,14 +63,17 @@ fun CompactPostItem(
             )
         }
 
-        ContentSection(
-            modifier = Modifier.weight(1f, fill = false),
-            content = post.content
-        )
+        if (post.content.isNotBlank()) {
+            ContentSection(
+                modifier = Modifier.weight(1f, fill = false),
+                content = post.content
+            )
+        }
 
         FooterSection(
             postSource = post.source,
-            date = post.date
+            date = post.date,
+            onRedirectPostClick = onRedirectPostClick
         )
     }
 }
@@ -134,13 +144,30 @@ private fun ContentSection(
 private fun FooterSection(
     modifier: Modifier = Modifier,
     postSource: Post.PostSource,
-    date: LocalDateTime
+    date: LocalDateTime,
+    onRedirectPostClick: () -> Unit
 ) {
-    PostSourceItem(
-        modifier = modifier,
-        postSource = postSource,
-        date = date
-    )
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        PostSourceItem(
+            postSource = postSource,
+            date = date
+        )
+
+        OutlinedButton(
+            modifier = Modifier.height(dimensionResource(R.dimen.post_item_redirect_button_height)),
+            contentPadding = PaddingValues(
+                start = ButtonDefaults.ContentPadding.calculateStartPadding(LayoutDirection.Ltr),
+                end = ButtonDefaults.ContentPadding.calculateEndPadding(LayoutDirection.Ltr)
+            ),
+            onClick = onRedirectPostClick
+        ) {
+            Text(text = stringResource(com.upsaclay.common.R.string.see))
+        }
+    }
 }
 
 /*
@@ -156,6 +183,7 @@ private fun CompactPostItemPreview() {
         Surface {
             CompactPostItem(
                 post = postFixture,
+                onRedirectPostClick = {},
                 onOptionClick = {}
             )
         }

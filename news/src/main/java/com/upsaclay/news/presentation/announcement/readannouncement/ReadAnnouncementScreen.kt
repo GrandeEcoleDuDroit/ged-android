@@ -33,11 +33,12 @@ import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.OptionButton
 import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.utils.ElapsedTimeValueFormat
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
-import com.upsaclay.news.domain.announcement.announcementFixture
 import com.upsaclay.news.domain.announcement.Announcement
 import com.upsaclay.news.domain.announcement.AnnouncementReport
+import com.upsaclay.news.domain.announcement.announcementFixture
 import com.upsaclay.news.presentation.announcement.AnnouncementPresentationUtils.announcementContentStyle
 import com.upsaclay.news.presentation.announcement.AnnouncementPresentationUtils.announcementTitleStyle
 import com.upsaclay.news.presentation.announcement.components.AnnouncementBottomSheet
@@ -219,6 +220,7 @@ private fun AnnouncementContent(
     ) {
         AnnouncementHeader(
             announcement = announcement,
+            elapsedTimeValueFormat = ElapsedTimeValueFormat.LONG,
             onClick = onAuthorClick
         )
 

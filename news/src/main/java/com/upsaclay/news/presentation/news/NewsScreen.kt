@@ -16,6 +16,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
@@ -37,6 +38,7 @@ import com.upsaclay.news.domain.post.postsFixture
 import com.upsaclay.news.presentation.announcement.components.AnnouncementBottomSheet
 import com.upsaclay.news.presentation.announcement.stringRes
 import com.upsaclay.news.presentation.news.components.NewsScaffold
+import com.upsaclay.news.presentation.post.PostPresentationUtils
 import com.upsaclay.news.presentation.post.components.PostBottomSheet
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -91,6 +93,7 @@ fun NewsDestination(
             onReportAnnouncementClick = viewModel::reportAnnouncement,
             onSeeAllAnnouncementsClick = onSeeAllAnnouncementsClick,
             onPostClick = onPostClick,
+            onRedirectPostClick = { context.startActivity(PostPresentationUtils.getPostLinkIntent(it)) },
             onCreatePostClick = onCreatePostClick,
             onEditPostClick = {
                 scope.launch {
@@ -125,6 +128,7 @@ private fun NewsScreen(
     onReportAnnouncementClick: (AnnouncementReport) -> Unit,
     onSeeAllAnnouncementsClick: () -> Unit,
     onPostClick: (String) -> Unit,
+    onRedirectPostClick: (String) -> Unit,
     onCreatePostClick: () -> Unit,
     onEditPostClick: (String) -> Unit,
     onRecreatePostClick: (Post) -> Unit,
@@ -177,7 +181,9 @@ private fun NewsScreen(
         bottomBar = bottomBar
     ) { innerPadding ->
         PullToRefreshComponent(
-            modifier = Modifier.padding(innerPadding),
+            modifier = Modifier
+                .padding(innerPadding)
+                .padding(bottom = dimensionResource(com.upsaclay.common.R.dimen.small_padding)),
             onRefresh = onRefresh,
             refreshing = refreshing
         ) {
@@ -206,6 +212,7 @@ private fun NewsScreen(
                     onUncreatedPostClick = {
                         activeBottomSheet = NewsScreenBottomSheet.PostBottomSheet(it)
                     },
+                    onRedirectPostClick = onRedirectPostClick,
                     onPostOptionClick = {
                         activeBottomSheet = NewsScreenBottomSheet.PostBottomSheet(it)
                     },
@@ -324,6 +331,7 @@ private fun NewsScreenPreview() {
             onReportAnnouncementClick = {},
             onSeeAllAnnouncementsClick = {},
             onPostClick = {},
+            onRedirectPostClick = {},
             onCreatePostClick = {},
             onEditPostClick = {},
             onRecreatePostClick = {},

@@ -41,6 +41,7 @@ import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.post.Post
 import com.upsaclay.news.domain.post.postsFixture
+import com.upsaclay.news.presentation.post.PostPresentationUtils
 import com.upsaclay.news.presentation.post.components.ExtendedPostItem
 import com.upsaclay.news.presentation.post.components.PostBottomSheet
 import kotlinx.coroutines.launch
@@ -83,6 +84,7 @@ fun AllPostsDestination(
             onBackClick = onBackClick,
             onRefresh = viewModel::refreshPosts,
             onPostClick = onPostClick,
+            onRedirectPostClick = { context.startActivity(PostPresentationUtils.getPostLinkIntent(it)) },
             onRecreatePostClick = viewModel::recreatePost,
             onEditPostClick = onEditPostClick,
             onDeletePostClick = viewModel::deletePost
@@ -101,6 +103,7 @@ private fun AllPostsScreen(
     onBackClick: () -> Unit,
     onRefresh: () -> Unit,
     onPostClick: (String) -> Unit,
+    onRedirectPostClick: (String) -> Unit,
     onRecreatePostClick: (Post) -> Unit,
     onEditPostClick: (Post) -> Unit,
     onDeletePostClick: (Post) -> Unit
@@ -169,6 +172,7 @@ private fun AllPostsScreen(
                                     }
                                     .padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
                                 post = post,
+                                onRedirectPostClick = { onRedirectPostClick(post.link) },
                                 onOptionClick = {
                                     activeBottomSheet = AllPostScreenBottomSheet.PostBottomSheet(post)
                                 }
@@ -245,6 +249,7 @@ private fun AllPostsScreenPreview() {
             onBackClick = {},
             onRefresh = {},
             onPostClick = {},
+            onRedirectPostClick = {},
             onRecreatePostClick = {},
             onEditPostClick = {},
             onDeletePostClick = {}

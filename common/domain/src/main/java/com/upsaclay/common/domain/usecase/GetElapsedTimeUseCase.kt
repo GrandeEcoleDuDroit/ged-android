@@ -12,8 +12,7 @@ object GetElapsedTimeUseCase {
             duration.toMinutes() < 1 -> ElapsedTime.Now(duration.seconds)
             duration.toMinutes() < 60 -> ElapsedTime.Minute(duration.toMinutes())
             duration.toHours() < 24 -> ElapsedTime.Hour(duration.toHours())
-            duration.toDays() < 7 -> ElapsedTime.Day(duration.toDays())
-            duration.toDays() < 30 -> ElapsedTime.Week(duration.toDays() / 7)
+            duration.toDays() < 30 -> ElapsedTime.Day(duration.toDays())
             else -> ElapsedTime.Later(localDateTime)
         }
     }
