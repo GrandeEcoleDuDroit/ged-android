@@ -2,7 +2,6 @@ package com.upsaclay.common.presentation.components
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.runtime.Composable
@@ -27,13 +26,6 @@ fun CircularProgressBar(
     )
 }
 
-@Composable
-fun LinearProgressBar(modifier: Modifier = Modifier) {
-    LinearProgressIndicator(
-        modifier = modifier
-    )
-}
-
 /*
  =====================================================================
                                 Preview
@@ -45,13 +37,5 @@ fun LinearProgressBar(modifier: Modifier = Modifier) {
 private fun CircularProgressBarPreview() {
     GedoiseTheme {
         CircularProgressBar()
-    }
-}
-
-@Preview
-@Composable
-private fun LinearProgressBarPreview() {
-    GedoiseTheme {
-        LinearProgressBar()
     }
 }
