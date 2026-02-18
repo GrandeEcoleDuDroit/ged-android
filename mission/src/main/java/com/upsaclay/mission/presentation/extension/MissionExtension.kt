@@ -13,20 +13,10 @@ fun List<Mission>.missionSorting(): List<Mission> {
         }
     }
 
-    fun compareNonCompletedMission(lhs: Mission, rhs: Mission): Int {
-        return compareValues(lhs.startDate, rhs.startDate).takeUnless { it == ComparatorResult.EQUALS }
-            ?: compareValues(lhs.endDate, rhs.endDate).takeUnless { it == ComparatorResult.EQUALS }
-            ?: compareValues(rhs.date, lhs.date)
-    }
-
     return sortedWith(
         compareBy(::priority)
             .thenComparator { lhs, rhs ->
-                when (priority(lhs)) {
-                    Priority.FIRST -> compareValues(rhs.date, lhs.date)
-                    Priority.SECOND -> compareNonCompletedMission(lhs, rhs)
-                    Priority.THIRD -> compareValues(rhs.endDate, lhs.endDate)
-                }
+                compareValues(rhs.endDate, lhs.endDate)
             }
     )
 }
