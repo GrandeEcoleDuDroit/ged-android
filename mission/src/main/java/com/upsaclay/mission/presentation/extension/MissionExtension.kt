@@ -16,7 +16,11 @@ fun List<Mission>.missionSorting(): List<Mission> {
     return sortedWith(
         compareBy(::priority)
             .thenComparator { lhs, rhs ->
-                compareValues(rhs.endDate, lhs.endDate)
+                when (priority(lhs)) {
+                    Priority.FIRST -> compareValues(rhs.date, lhs.date)
+                    Priority.SECOND -> compareValues(lhs.endDate, rhs.endDate)
+                    Priority.THIRD -> compareValues(rhs.endDate, lhs.endDate)
+                }
             }
     )
 }
