@@ -22,7 +22,7 @@ class FetchMissionsUseCaseTest {
     @Before
     fun setUp() {
         every { missionRepository.missions } returns flowOf(missionsFixture)
-        every { missionRepository.currentMissions } returns missionsFixture
+        every { missionRepository.getLocalMissions } returns missionsFixture
         coEvery { missionRepository.upsertLocalMission(any()) } returns Unit
         coEvery { missionRepository.deleteLocalMission(any()) } returns Unit
         coEvery { missionRepository.getRemoteMissions() } returns missionsFixture
@@ -38,7 +38,7 @@ class FetchMissionsUseCaseTest {
     @Test
     fun fetchMissions_should_upsert_new_remote_mission() = runTest {
         // Given
-        every { missionRepository.currentMissions } returns emptyList()
+        every { missionRepository.getLocalMissions } returns emptyList()
         coEvery { missionRepository.getRemoteMissions() } returns listOf(missionFixture)
 
         // When
@@ -51,7 +51,7 @@ class FetchMissionsUseCaseTest {
     @Test
     fun fetchMissions_should_delete_missions_non_present_in_remote() = runTest {
         // Given
-        every { missionRepository.currentMissions } returns listOf(missionFixture)
+        every { missionRepository.getLocalMissions } returns listOf(missionFixture)
         coEvery { missionRepository.getRemoteMissions() } returns emptyList()
 
         // When

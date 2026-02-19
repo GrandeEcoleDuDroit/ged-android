@@ -26,7 +26,7 @@ class MissionRepositoryImpl(
         )
     override val missions: Flow<List<Mission>> = _missions
 
-    override val currentMissions: List<Mission>
+    override val getLocalMissions: List<Mission>
         get() = _missions.value
 
     override fun getMissionFlow(missionId: String): Flow<Mission> =
