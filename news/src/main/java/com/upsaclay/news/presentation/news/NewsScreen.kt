@@ -180,46 +180,42 @@ private fun NewsScreen(
         snackbarHostState = snackbarHostState,
         bottomBar = bottomBar
     ) { innerPadding ->
-        PullToRefreshComponent(
-            modifier = Modifier
-                .padding(innerPadding)
-                .padding(bottom = dimensionResource(com.upsaclay.common.R.dimen.small_padding)),
-            onRefresh = onRefresh,
-            refreshing = refreshing
-        ) {
-            Column(
-                verticalArrangement = Arrangement.mediumSpacing()
-            ) {
-                RecentAnnouncementSection(
-                    modifier = Modifier.weight(0.9f),
-                    announcements = announcements,
-                    onAnnouncementClick = onAnnouncementClick,
-                    onUncreatedAnnouncementClick = { announcement ->
-                        activeBottomSheet =
-                            NewsScreenBottomSheet.AnnouncementBottomSheet(announcement)
-                    },
-                    onAnnouncementOptionClick = { announcement ->
-                        activeBottomSheet =
-                            NewsScreenBottomSheet.AnnouncementBottomSheet(announcement)
-                    },
-                    onSeeAllAnnouncementsClick = onSeeAllAnnouncementsClick
-                )
 
-                GedNewsSection(
-                    modifier = Modifier.weight(1f),
-                    posts = posts,
-                    onPostClick = onPostClick,
-                    onUncreatedPostClick = {
-                        activeBottomSheet = NewsScreenBottomSheet.PostBottomSheet(it)
-                    },
-                    onRedirectPostClick = onRedirectPostClick,
-                    onPostOptionClick = {
-                        activeBottomSheet = NewsScreenBottomSheet.PostBottomSheet(it)
-                    },
-                    onSeeAllPostsClick = onSeeAllPostsClick
-                )
-            }
+        Column(
+            verticalArrangement = Arrangement.mediumSpacing(),
+            modifier = Modifier.padding(innerPadding)
+
+        ) {
+            RecentAnnouncementSection(
+                modifier = Modifier.weight(0.9f),
+                announcements = announcements,
+                onAnnouncementClick = onAnnouncementClick,
+                onUncreatedAnnouncementClick = { announcement ->
+                    activeBottomSheet =
+                        NewsScreenBottomSheet.AnnouncementBottomSheet(announcement)
+                },
+                onAnnouncementOptionClick = { announcement ->
+                    activeBottomSheet =
+                        NewsScreenBottomSheet.AnnouncementBottomSheet(announcement)
+                },
+                onSeeAllAnnouncementsClick = onSeeAllAnnouncementsClick
+            )
+
+            GedNewsSection(
+                modifier = Modifier.weight(1f),
+                posts = posts,
+                onPostClick = onPostClick,
+                onUncreatedPostClick = {
+                    activeBottomSheet = NewsScreenBottomSheet.PostBottomSheet(it)
+                },
+                onRedirectPostClick = onRedirectPostClick,
+                onPostOptionClick = {
+                    activeBottomSheet = NewsScreenBottomSheet.PostBottomSheet(it)
+                },
+                onSeeAllPostsClick = onSeeAllPostsClick
+            )
         }
+
 
         when(val bottomSheet = activeBottomSheet) {
             is NewsScreenBottomSheet.AnnouncementBottomSheet -> {
