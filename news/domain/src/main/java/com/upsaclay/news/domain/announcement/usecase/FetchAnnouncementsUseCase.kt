@@ -9,7 +9,7 @@ class FetchAnnouncementsUseCase(
     private val blockedUserRepository: BlockedUserRepository
 ) {
     suspend fun execute() {
-        val localAnnouncements = announcementRepository.currentAnnouncements
+        val localAnnouncements = announcementRepository.getLocalAnnouncements
         val remoteAnnouncements = announcementRepository.getRemoteAnnouncements()
         val localBlockedUsers = blockedUserRepository.getLocalBlockedUsers()
 

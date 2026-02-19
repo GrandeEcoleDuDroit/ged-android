@@ -27,7 +27,7 @@ class FetchAnnouncementsUseCaseTest {
     @Before
     fun setUp() {
         every { announcementRepository.announcements } returns flowOf(announcementsFixture)
-        every { announcementRepository.currentAnnouncements } returns announcementsFixture
+        every { announcementRepository.getLocalAnnouncements } returns announcementsFixture
         coEvery { announcementRepository.upsertLocalAnnouncement(any()) } returns Unit
         coEvery { announcementRepository.deleteLocalAnnouncement(any()) } returns Unit
         coEvery { announcementRepository.getRemoteAnnouncements() } returns announcementsFixture
@@ -42,7 +42,7 @@ class FetchAnnouncementsUseCaseTest {
     @Test
     fun synchronizeAnnouncement_should_upsert_new_remote_announcement() = runTest {
         // Given
-        every { announcementRepository.currentAnnouncements } returns emptyList()
+        every { announcementRepository.getLocalAnnouncements } returns emptyList()
         coEvery { announcementRepository.getRemoteAnnouncements() } returns listOf(
             announcementFixture
         )
@@ -57,7 +57,7 @@ class FetchAnnouncementsUseCaseTest {
     @Test
     fun synchronizeAnnouncement_should_delete_announcements_non_present_in_remote() = runTest {
         // Given
-        every { announcementRepository.currentAnnouncements } returns listOf(announcementFixture)
+        every { announcementRepository.getLocalAnnouncements } returns listOf(announcementFixture)
         coEvery { announcementRepository.getRemoteAnnouncements() } returns emptyList()
 
         // When
@@ -73,7 +73,7 @@ class FetchAnnouncementsUseCaseTest {
         val announcement = announcementFixture.copy(author = userFixture.copy(id = blockedUserId))
         coEvery { blockedUserRepository.getLocalBlockedUsers() } returns mapOf(blockedUserId to BlockedUser(blockedUserId, LocalDateTime.now()))
         coEvery { announcementRepository.getRemoteAnnouncements() } returns listOf(announcement)
-        every { announcementRepository.currentAnnouncements } returns emptyList()
+        every { announcementRepository.getLocalAnnouncements } returns emptyList()
 
         // When
         useCase.execute()
@@ -86,7 +86,7 @@ class FetchAnnouncementsUseCaseTest {
     fun synchronizeAnnouncement_should_delete_announcements_of_blocked_users() = runTest {
         // Given
         val announcement = announcementFixture.copy(author = userFixture.copy(id = blockedUserId))
-        every { announcementRepository.currentAnnouncements } returns listOf(announcement)
+        every { announcementRepository.getLocalAnnouncements } returns listOf(announcement)
         coEvery { announcementRepository.getRemoteAnnouncements() } returns emptyList()
 
         // When

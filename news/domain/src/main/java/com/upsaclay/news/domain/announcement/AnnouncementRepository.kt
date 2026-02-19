@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 interface AnnouncementRepository {
     val announcements: Flow<List<Announcement>>
 
-    val currentAnnouncements: List<Announcement>
+    val getLocalAnnouncements: List<Announcement>
 
     fun getAnnouncementFlow(announcementId: String): Flow<Announcement?>
 
