@@ -18,7 +18,7 @@ fun List<Mission>.missionSorting(): List<Mission> {
             .thenComparator { lhs, rhs ->
                 when (priority(lhs)) {
                     Priority.FIRST -> compareValues(rhs.date, lhs.date)
-                    Priority.SECOND -> compareValues(lhs.endDate, rhs.endDate)
+                    Priority.SECOND -> compareValues(lhs.date, rhs.date)
                     Priority.THIRD -> compareValues(rhs.endDate, lhs.endDate)
                 }
             }
