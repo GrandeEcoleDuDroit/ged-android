@@ -134,7 +134,7 @@ private fun ContentSection(
 ) {
     Text(
         modifier = modifier,
-        text = content.substring(0,99),
+        text = content,
         style = MaterialTheme.typography.bodySmall,
         overflow = TextOverflow.Ellipsis
     )

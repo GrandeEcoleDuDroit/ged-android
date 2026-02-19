@@ -137,6 +137,7 @@ class NewsViewModel(
     private fun listenPosts() {
         viewModelScope.launch {
             postRepository.posts.collect { posts ->
+                posts.forEach { post -> post.content = post.content.take(100) }
                 _uiState.update {
                     it.copy(posts = posts)
                 }
