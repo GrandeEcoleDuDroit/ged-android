@@ -39,7 +39,7 @@ class ConversationViewModel(
 
     fun deleteConversation(conversation: Conversation) {
         executeRequest {
-            val user = userRepository.currentUser ?: throw CustomException(CURRENT_USER_NOT_FOUND, Exception())
+            val user = userRepository.getLocalUser ?: throw CustomException(CURRENT_USER_NOT_FOUND, Exception())
             deleteConversationUseCase.execute(conversation, user.id)
             _event.emit(SingleUiEvent.Success(R.string.conversation_deleted))
         }
@@ -48,7 +48,7 @@ class ConversationViewModel(
     fun recreateConversation(conversation: Conversation) {
         viewModelScope.launch {
             try {
-                val userId = userRepository.currentUser?.id ?: throw CustomException(CURRENT_USER_NOT_FOUND)
+                val userId = userRepository.getLocalUser?.id ?: throw CustomException(CURRENT_USER_NOT_FOUND)
                 recreateConversationUseCase.execute(conversation, userId)
             } catch (e: Exception) {
                 _event.emit(SingleUiEvent.Error(mapExceptionErrorMessage(e)))

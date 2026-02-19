@@ -92,7 +92,7 @@ class EditMissionViewModel(
         )
 
         executeRequest {
-            val user = userRepository.currentUser ?: throw CustomException(CustomException.CustomError.CURRENT_USER_NOT_FOUND)
+            val user = userRepository.getLocalUser ?: throw CustomException(CustomException.CustomError.CURRENT_USER_NOT_FOUND)
             updateMissionUseCase.execute(
                 user = user,
                 mission = newMission,

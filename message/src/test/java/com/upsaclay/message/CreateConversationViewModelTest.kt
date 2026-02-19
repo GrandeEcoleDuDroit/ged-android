@@ -38,7 +38,7 @@ class CreateConversationViewModelTest {
         Dispatchers.setMain(testDispatcher)
 
         every { userRepository.user } returns MutableStateFlow(userFixture)
-        every { userRepository.currentUser } returns userFixture
+        every { userRepository.getLocalUser } returns userFixture
         coEvery { getConversationUseCase.execute(any()) } returns conversationFixture
         coEvery { blockedUserRepository.getLocalBlockedUsers() } returns emptyMap()
         coEvery { getUsersUseCase.execute() } returns usersFixture

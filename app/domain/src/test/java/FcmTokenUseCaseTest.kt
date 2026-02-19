@@ -25,7 +25,7 @@ class FcmTokenUseCaseTest {
 
     @Before
     fun setUp() {
-        every { userRepository.currentUser } returns userFixture
+        every { userRepository.getLocalUser } returns userFixture
         coEvery { fcmTokenRepository.getFcmToken() } returns fcmTokenFixture
         coEvery { fcmTokenRepository.storeFcmToken(any()) } returns Unit
         coEvery { fcmTokenRepository.sendFcmToken(any(), any()) } returns Unit

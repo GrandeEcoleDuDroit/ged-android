@@ -50,7 +50,7 @@ class ChatViewModel(
             messageText = "",
             loading = false,
             isUserBlocked = false,
-            currentUser = userRepository.currentUser
+            currentUser = userRepository.getLocalUser
         )
     )
     internal val uiState: StateFlow<ChatUiState> = _uiState

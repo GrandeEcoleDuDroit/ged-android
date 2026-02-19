@@ -13,7 +13,7 @@ class SendMessageNotificationUseCase(
 ) {
     suspend fun execute(conversation: Conversation, message: Message) {
         runCatching {
-            val currentUser = userRepository.currentUser ?: return
+            val currentUser = userRepository.getLocalUser ?: return
             val messageContentNotification = MessageNotification(
                 conversation = conversation,
                 messageContent = MessageNotification.MessageContent(

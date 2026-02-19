@@ -34,7 +34,7 @@ class DeleteAccountViewModel(
         if (!validateInput(password)) return
 
         executeRequest {
-            val currentUser = userRepository.currentUser ?: throw CustomException(CURRENT_USER_NOT_FOUND)
+            val currentUser = userRepository.getLocalUser ?: throw CustomException(CURRENT_USER_NOT_FOUND)
             deleteAccountUseCase.execute(currentUser, password)
         }
     }

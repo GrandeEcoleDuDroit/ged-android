@@ -21,7 +21,7 @@ class LogoutUseCaseTest {
 
     @Before
     fun setUp() {
-        every { userRepository.currentUser } returns userFixture
+        every { userRepository.getLocalUser } returns userFixture
         coEvery { fcmTokenRepository.deleteToken(any()) } returns Unit
         coEvery { authenticationRepository.logout() } returns Unit
 

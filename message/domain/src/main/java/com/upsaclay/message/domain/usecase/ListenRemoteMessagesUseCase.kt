@@ -36,7 +36,7 @@ class ListenRemoteMessagesUseCase(
             .filterNot { listeningJobs.containsKey(it.id) }
             .onEach { conversation ->
                 val job = scope.launch {
-                    val user = userRepository.currentUser ?: userRepository.user.first()
+                    val user = userRepository.getLocalUser ?: userRepository.user.first()
                     listenRemoteMessages(user.id, conversation)
                 }
                 listeningJobs[conversation.id] = job

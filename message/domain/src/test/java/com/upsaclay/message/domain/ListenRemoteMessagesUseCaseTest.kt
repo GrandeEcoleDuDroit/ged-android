@@ -31,7 +31,7 @@ class ListenRemoteMessagesUseCaseTest {
 
     @Before
     fun setUp() {
-        every { userRepository.currentUser } returns userFixture
+        every { userRepository.getLocalUser } returns userFixture
         every { blockedUserRepository.currentBlockedUsers } returns blockedUsersFixture
         coEvery { userRepository.user } returns flowOf(userFixture)
         coEvery { conversationRepository.getConversationsFlow() } returns flowOf(listOf(

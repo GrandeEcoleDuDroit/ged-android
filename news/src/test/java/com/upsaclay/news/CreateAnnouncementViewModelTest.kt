@@ -35,7 +35,7 @@ class CreateAnnouncementViewModelTest {
 
         every { generateIdUseCase.execute() } returns "id"
         every { userRepository.user } returns MutableStateFlow(userFixture)
-        every { userRepository.currentUser } returns userFixture
+        every { userRepository.getLocalUser } returns userFixture
         coEvery { createAnnouncementUseCase.execute(any()) } returns Unit
 
         createAnnouncementViewModel = CreateAnnouncementViewModel(
@@ -81,7 +81,7 @@ class CreateAnnouncementViewModelTest {
     @Test
     fun createAnnouncement_should_not_create_announcement_when_user_is_null() {
         // Given
-        every { userRepository.currentUser } returns null
+        every { userRepository.getLocalUser } returns null
         createAnnouncementViewModel = CreateAnnouncementViewModel(
             userRepository = userRepository,
             createAnnouncementUseCase = createAnnouncementUseCase,

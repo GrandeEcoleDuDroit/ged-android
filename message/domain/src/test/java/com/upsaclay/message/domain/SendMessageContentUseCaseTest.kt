@@ -33,7 +33,7 @@ class SendMessageContentUseCaseTest {
 
     @Before
     fun setUp() {
-        every { userRepository.currentUser } returns userFixture
+        every { userRepository.getLocalUser } returns userFixture
         coEvery { sendMessageNotificationUseCase.execute(any(), any()) } returns Unit
         coEvery { conversationRepository.updateLocalConversation(any()) } returns Unit
         coEvery { conversationRepository.createLocalConversation(any()) } returns Unit

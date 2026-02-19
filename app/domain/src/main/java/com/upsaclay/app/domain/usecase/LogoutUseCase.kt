@@ -11,7 +11,7 @@ class LogoutUseCase(
     private val fcmTokenRepository: FcmTokenRepository
 ) {
     suspend fun execute() {
-        val userId = userRepository.currentUser?.id ?: throw CustomException(CustomException.CustomError.CURRENT_USER_NOT_FOUND)
+        val userId = userRepository.getLocalUser?.id ?: throw CustomException(CustomException.CustomError.CURRENT_USER_NOT_FOUND)
         fcmTokenRepository.deleteToken(userId)
         authenticationRepository.logout()
     }

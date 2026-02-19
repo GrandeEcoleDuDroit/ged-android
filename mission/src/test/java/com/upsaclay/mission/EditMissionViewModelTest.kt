@@ -41,7 +41,7 @@ class EditMissionViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
 
-        every { userRepository.currentUser } returns userFixture
+        every { userRepository.getLocalUser } returns userFixture
         every { generateIdUseCase.execute() } returns newId
         coEvery { getUsersUseCase.execute() } returns usersFixture
 

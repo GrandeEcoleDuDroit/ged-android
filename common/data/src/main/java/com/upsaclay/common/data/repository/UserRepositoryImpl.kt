@@ -25,7 +25,7 @@ internal class UserRepositoryImpl(
             initialValue = null
         )
     override val user: Flow<User> = _user.filterNotNull()
-    override val currentUser: User?
+    override val getLocalUser: User?
         get() = _user.value
 
     override fun getUserFlow(userId: String): Flow<User?> = userRemoteDataSource.listenUser(userId)

@@ -7,7 +7,7 @@ import java.io.File
 
 interface UserRepository {
     val user: Flow<User>
-    val currentUser: User?
+    val getLocalUser: User?
 
     fun getUserFlow(userId: String): Flow<User?>
 

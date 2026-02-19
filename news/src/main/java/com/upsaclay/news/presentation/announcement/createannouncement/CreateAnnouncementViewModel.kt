@@ -24,7 +24,7 @@ class CreateAnnouncementViewModel(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(CreateAnnouncementUiState())
     internal val uiState: StateFlow<CreateAnnouncementUiState> = _uiState
-    private val user: User? = userRepository.currentUser
+    private val user: User? = userRepository.getLocalUser
 
     fun onTitleChange(title: String) {
         _uiState.update {

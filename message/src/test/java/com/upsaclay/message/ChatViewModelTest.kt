@@ -52,7 +52,7 @@ class ChatViewModelTest {
             conversationFixture
         )
         every { userRepository.user } returns MutableStateFlow(userFixture)
-        every { userRepository.currentUser } returns userFixture
+        every { userRepository.getLocalUser } returns userFixture
         every { messageRepository.getPagingMessages(any()) } returns flowOf(PagingData.from(
             messagesFixture
         ))

@@ -34,7 +34,7 @@ class ConversationViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
 
-        every { userRepository.currentUser } returns userFixture
+        every { userRepository.getLocalUser } returns userFixture
         every { getConversationUiUseCase.execute() } returns emptyFlow()
         coEvery { recreateConversationUseCase.execute(any(), any()) } returns Unit
         coEvery { deleteConversationUseCase.execute(any(), any()) } returns Unit

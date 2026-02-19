@@ -38,7 +38,7 @@ class CreateConversationViewModel(
             val blockedUsers = blockedUserRepository.getLocalBlockedUsers()
             try {
                 getUsersUseCase.execute()
-                    .filter { it.id != userRepository.currentUser?.id && !blockedUsers.containsKey(it.id) }
+                    .filter { it.id != userRepository.getLocalUser?.id && !blockedUsers.containsKey(it.id) }
                     .sortedBy { it.fullName }
                     .also { users ->
                         defaultUsers = users
