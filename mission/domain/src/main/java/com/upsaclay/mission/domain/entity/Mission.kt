@@ -9,7 +9,7 @@ import java.time.ZoneOffset
 data class Mission(
     val id: String,
     val title: String,
-    val description: String,
+    var description: String,
     val date: LocalDateTime,
     val startDate: LocalDate,
     val endDate: LocalDate,
