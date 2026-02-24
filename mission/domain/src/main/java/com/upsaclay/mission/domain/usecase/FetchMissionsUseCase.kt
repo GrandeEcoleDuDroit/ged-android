@@ -8,7 +8,7 @@ class FetchMissionsUseCase(
     private val upsertLocalMissionUseCase: UpsertLocalMissionUseCase
 ) {
     suspend fun execute() {
-        val missions = missionRepository.currentMissions
+        val missions = missionRepository.getLocalMissions()
         val remoteMissions = missionRepository.getRemoteMissions()
 
         val missionsToDelete = missions.filter { (it.state is MissionState.Published && it !in remoteMissions) }
