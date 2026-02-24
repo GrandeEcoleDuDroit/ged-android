@@ -9,11 +9,11 @@ import java.io.File
 interface MissionRepository {
     val missions: Flow<List<Mission>>
 
-    val currentMissions: List<Mission>
-
     fun getMissionFlow(missionId: String): Flow<Mission>
 
     suspend fun getRemoteMissions(): List<Mission>
+
+    suspend fun getLocalMissions(): List<Mission>
 
     suspend fun getLocalMission(missionId: String): Mission?
 

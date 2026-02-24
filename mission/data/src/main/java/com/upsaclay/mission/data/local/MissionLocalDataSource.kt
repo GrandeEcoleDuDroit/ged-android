@@ -17,7 +17,7 @@ class MissionLocalDataSource(
     private val context: Context,
     private val missionDao: MissionDao
 ) {
-    fun getMissions(): Flow<List<Mission>> = missionDao.getMissions()
+    fun getMissionsFlow(): Flow<List<Mission>> = missionDao.getMissionsFlow()
         .map { localMissions ->
             localMissions.map { it.toMission(::getImagePath) }
         }
@@ -25,9 +25,11 @@ class MissionLocalDataSource(
     fun getMissionFlow(missionId: String): Flow<Mission> =
         missionDao.getMissionFlow(missionId).mapNotNull { it?.toMission(::getImagePath) }
 
+    suspend fun getMissions(): List<Mission> =
+        missionDao.getMissions().map { it.toMission(::getImagePath) }
+
     suspend fun getMission(missionId: String): Mission? =
         missionDao.getMission(missionId)?.toMission(::getImagePath)
-
 
     suspend fun upsertMission(mission: Mission) {
         withContext(Dispatchers.IO) {

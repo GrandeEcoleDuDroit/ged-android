@@ -12,10 +12,13 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface MissionDao {
     @Query("SELECT * FROM $MISSION_TABLE_NAME ORDER BY $MISSION_DATE DESC")
-    fun getMissions(): Flow<List<LocalMission>>
+    fun getMissionsFlow(): Flow<List<LocalMission>>
 
     @Query("SELECT * FROM $MISSION_TABLE_NAME WHERE $MISSION_ID = :missionId")
     fun getMissionFlow(missionId: String): Flow<LocalMission?>
+
+    @Query("SELECT * FROM $MISSION_TABLE_NAME")
+    suspend fun getMissions(): List<LocalMission>
 
     @Query("SELECT * FROM $MISSION_TABLE_NAME WHERE $MISSION_ID = :missionId")
     suspend fun getMission(missionId: String): LocalMission?

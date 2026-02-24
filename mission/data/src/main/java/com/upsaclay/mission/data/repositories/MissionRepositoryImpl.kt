@@ -7,27 +7,14 @@ import com.upsaclay.mission.data.remote.MissionRemoteDataSource
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.MissionReport
 import com.upsaclay.mission.domain.repository.MissionRepository
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.stateIn
 import java.io.File
 
 class MissionRepositoryImpl(
     private val missionLocalDataSource: MissionLocalDataSource,
-    private val missionRemoteDataSource: MissionRemoteDataSource,
-    scope: CoroutineScope
+    private val missionRemoteDataSource: MissionRemoteDataSource
 ): MissionRepository {
-    private val _missions = missionLocalDataSource.getMissions()
-        .stateIn(
-            scope = scope,
-            started = SharingStarted.Eagerly,
-            initialValue = emptyList()
-        )
-    override val missions: Flow<List<Mission>> = _missions
-
-    override val currentMissions: List<Mission>
-        get() = _missions.value
+    override val missions: Flow<List<Mission>> = missionLocalDataSource.getMissionsFlow()
 
     override fun getMissionFlow(missionId: String): Flow<Mission> =
         missionLocalDataSource.getMissionFlow(missionId)
@@ -40,6 +27,9 @@ class MissionRepositoryImpl(
             throw e
         }
     }
+
+    override suspend fun getLocalMissions(): List<Mission> =
+        missionLocalDataSource.getMissions()
 
     override suspend fun getLocalMission(missionId: String): Mission? =
         missionLocalDataSource.getMission(missionId)
