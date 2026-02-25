@@ -55,7 +55,7 @@ class EditAnnouncementViewModel(
 
         val trimmedAnnouncement = announcement.copy(
             title = if (title.isBlank()) null else title.trim(),
-            content = content
+            content = content.trim()
         )
 
         executeRequest {
