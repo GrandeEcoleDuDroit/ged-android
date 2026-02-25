@@ -8,9 +8,9 @@ import com.upsaclay.news.data.post.PostField.Local.POST_DATE
 import com.upsaclay.news.data.post.PostField.Local.POST_ID
 import com.upsaclay.news.data.post.PostField.Local.POST_IMAGE_FILE_NAMES
 import com.upsaclay.news.data.post.PostField.Local.POST_LINK
+import com.upsaclay.news.data.post.PostField.Local.POST_SOURCE_ID
 import com.upsaclay.news.data.post.PostField.Local.POST_STATE
 import com.upsaclay.news.data.post.PostField.Local.POST_TABLE_NAME
-import com.upsaclay.news.data.post.PostField.Local.POST_SOURCE_ID
 import com.upsaclay.news.data.post.PostField.Local.POST_TITLE
 
 @Entity(tableName = POST_TABLE_NAME)
@@ -21,7 +21,7 @@ data class LocalPost(
     @ColumnInfo(name = POST_TITLE)
     val postTitle: String,
     @ColumnInfo(name = POST_CONTENT)
-    val postContent: String,
+    val postContent: String?,
     @ColumnInfo(name = POST_LINK)
     val postLink: String,
     @ColumnInfo(name = POST_SOURCE_ID)

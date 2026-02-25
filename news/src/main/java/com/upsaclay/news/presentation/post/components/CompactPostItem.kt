@@ -63,10 +63,10 @@ fun CompactPostItem(
             )
         }
 
-        if (post.content.isNotBlank()) {
+        post.content?.let {
             ContentSection(
                 modifier = Modifier.weight(1f, fill = false),
-                content = post.content
+                content = it
             )
         }
 

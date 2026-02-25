@@ -47,7 +47,10 @@ class NewsScreenTest {
                 onCreateAnnouncementClick = {},
                 onEditAnnouncementClick = {},
                 onSeeAllAnnouncementsClick = {},
+                onPostClick = {},
                 onCreatePostClick = {},
+                onEditPostClick = {},
+                onSeeAllPostsClick = {},
                 bottomBar = {},
                 viewModel = newsViewModel
             )
@@ -67,7 +70,10 @@ class NewsScreenTest {
                 onCreateAnnouncementClick = {},
                 onEditAnnouncementClick = {},
                 onSeeAllAnnouncementsClick = {},
+                onPostClick = {},
                 onCreatePostClick = {},
+                onEditPostClick = {},
+                onSeeAllPostsClick = {},
                 bottomBar = {},
                 viewModel = newsViewModel
             )
@@ -94,7 +100,10 @@ class NewsScreenTest {
                 onCreateAnnouncementClick = {},
                 onEditAnnouncementClick = {},
                 onSeeAllAnnouncementsClick = {},
+                onPostClick = {},
                 onCreatePostClick = {},
+                onEditPostClick = {},
+                onSeeAllPostsClick = {},
                 bottomBar = {},
                 viewModel = newsViewModel
             )
@@ -129,7 +138,10 @@ class NewsScreenTest {
                 onCreateAnnouncementClick = {},
                 onEditAnnouncementClick = {},
                 onSeeAllAnnouncementsClick = {},
+                onPostClick = {},
                 onCreatePostClick = {},
+                onEditPostClick = {},
+                onSeeAllPostsClick = {},
                 bottomBar = {},
                 viewModel = newsViewModel
             )

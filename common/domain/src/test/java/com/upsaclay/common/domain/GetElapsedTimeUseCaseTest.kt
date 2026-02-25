@@ -47,7 +47,7 @@ class GetElapsedTimeUseCaseTest {
     }
 
     @Test
-    fun fromLocalDateTime_should_return_elapsed_time_day_when_duration_is_between_1_and_7_days() {
+    fun fromLocalDateTime_should_return_elapsed_time_day_when_duration_is_between_1_and_30_days() {
         // Given
         val localDateTime = LocalDateTime.now(ZoneOffset.UTC).minusDays(2)
 
@@ -56,18 +56,6 @@ class GetElapsedTimeUseCaseTest {
 
         // Then
         assertEquals(ElapsedTime.Day(2), result)
-    }
-
-    @Test
-    fun fromLocalDateTime_should_return_elapsed_time_week_when_duration_is_between_7_to_30_days() {
-        // Given
-        val localDateTime = LocalDateTime.now(ZoneOffset.UTC).minusDays(14)
-
-        // When
-        val result = getElapsedTimeUseCase.fromLocalDateTime(localDateTime)
-
-        // Then
-        assertEquals(ElapsedTime.Week(2), result)
     }
 
     @Test

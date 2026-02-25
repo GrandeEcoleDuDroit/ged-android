@@ -15,7 +15,7 @@ data class RemotePost(
     @SerializedName(POST_TITLE)
     val postTitle: String,
     @SerializedName(POST_CONTENT)
-    val postContent: String,
+    val postContent: String?,
     @SerializedName(POST_LINK)
     val postLink: String,
     @SerializedName(POST_SOURCE_ID)

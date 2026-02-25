@@ -191,11 +191,13 @@ private fun ReadPostScreen(
                     )
                 }
 
-                Text(
-                    modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
-                    text = post.content,
-                    style = postContentStyle
-                )
+                post.content?.let {
+                    Text(
+                        modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                        text = it,
+                        style = postContentStyle
+                    )
+                }
             }
 
             OutlinedButton(

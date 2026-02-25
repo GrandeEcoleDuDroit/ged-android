@@ -100,8 +100,8 @@ private fun DefaultItem(
             )
         }
 
-        if (post.content.isNotBlank()) {
-            ContentSection(content = post.content)
+        post.content?.let {
+            ContentSection(content = it)
         }
 
         FooterSection(
@@ -161,8 +161,8 @@ private fun ErrorItem(
             )
         }
 
-        if (post.content.isNotBlank()) {
-            ContentSection(content = post.content)
+        post.content?.let {
+            ContentSection(content = it)
         }
 
         FooterSection(
