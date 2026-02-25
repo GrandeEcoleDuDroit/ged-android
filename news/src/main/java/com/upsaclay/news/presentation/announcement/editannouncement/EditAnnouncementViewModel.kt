@@ -50,11 +50,14 @@ class EditAnnouncementViewModel(
     }
 
     fun updateAnnouncement() {
-        if (!validateUpdate(uiState.value.title, uiState.value.content)) return
+        val (title, content) = uiState.value
+        if (!validateUpdate(title, content)) return
+
         val trimmedAnnouncement = announcement.copy(
-            title = uiState.value.title.trim(),
-            content = uiState.value.content.trim()
+            title = if (title.isBlank()) null else title.trim(),
+            content = content
         )
+
         executeRequest {
             announcementRepository.updateAnnouncement(trimmedAnnouncement)
             _event.emit(SingleUiEvent.Success())
