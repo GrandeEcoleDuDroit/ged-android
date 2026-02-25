@@ -27,7 +27,7 @@ import com.upsaclay.news.data.post.local.PostDao
         LocalMission::class,
         LocalPost::class
     ],
-    version = 2,
+    version = 1,
     exportSchema = false
 )
 abstract class GedoiseDatabase : RoomDatabase() {

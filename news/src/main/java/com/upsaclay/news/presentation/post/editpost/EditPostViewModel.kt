@@ -31,7 +31,7 @@ class EditPostViewModel(
             title = post.title,
             postLink = post.link,
             postSource = post.source,
-            content = post.content,
+            content = post.content ?: "",
             imageReferences = post.state.imageReferenceValues.map(ImageReference::ImageUrl)
         )
     )
@@ -50,7 +50,7 @@ class EditPostViewModel(
 
         val newPost = post.copy(
             title = title.trim(),
-            content = content.trim(),
+            content = if (content.isBlank()) null else content.trim(),
             link = link.trim(),
             source = source
         )

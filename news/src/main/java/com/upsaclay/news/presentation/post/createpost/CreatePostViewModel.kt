@@ -111,7 +111,7 @@ class CreatePostViewModel(
         val post = Post(
             id = generateIdUseCase.execute(),
             title = title.trim(),
-            content = content.trim(),
+            content = if (content.isBlank()) null else content.trim(),
             link = link.trim(),
             source = source,
             date = LocalDateTime.now(ZoneOffset.UTC),
