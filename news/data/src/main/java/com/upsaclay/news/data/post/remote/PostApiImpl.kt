@@ -10,11 +10,12 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
-import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
+import retrofit2.http.Path
 import java.io.File
 
 class PostApiImpl(private val postServerApi: PostServerApi): PostApi {
@@ -58,9 +59,9 @@ class PostApiImpl(private val postServerApi: PostServerApi): PostApi {
         }
     }
 
-    override suspend fun deletePost(remotePost: RemotePost) {
+    override suspend fun deletePost(postId: String) {
         sendServerRequest {
-            postServerApi.deletePost(remotePost)
+            postServerApi.deletePost(postId)
         }
     }
 }
@@ -83,6 +84,6 @@ interface PostServerApi {
         @Part("post") post: RequestBody
     ): Response<ServerResponse>
 
-    @POST("posts/delete")
-    suspend fun deletePost(@Body remotePost: RemotePost): Response<ServerResponse>
+    @DELETE("posts/{postId}")
+    suspend fun deletePost(@Path("postId") postId: String): Response<ServerResponse>
 }

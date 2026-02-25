@@ -49,7 +49,7 @@ class PostRepositoryImpl(
 
     override suspend fun deletePost(post: Post) {
         try {
-            postRemoteDataSource.deletePost(post)
+            postRemoteDataSource.deletePost(post.id)
             postLocalDataSource.deletePost(post)
         } catch (e: Exception) {
             e("Error deleting post ${post.id}", e)
