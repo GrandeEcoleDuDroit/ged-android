@@ -9,5 +9,5 @@ interface PostApi {
 
     suspend fun updatePost(remotePost: RemotePost, imageFiles: List<File>)
 
-    suspend fun deletePost(remotePost: RemotePost)
+    suspend fun deletePost(postId: String)
 }
