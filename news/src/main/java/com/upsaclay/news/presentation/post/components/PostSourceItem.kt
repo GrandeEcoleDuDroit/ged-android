@@ -97,7 +97,7 @@ private fun PostSourceIcon(
         Post.PostSource.BLOG_LLM -> {
             Image(
                 modifier = Modifier.size(iconSize),
-                painter = painterResource(com.upsaclay.common.R.drawable.ged_logo),
+                painter = painterResource(com.upsaclay.common.R.drawable.app_logo),
                 contentDescription = null
             )
         }

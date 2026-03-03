@@ -45,7 +45,7 @@ fun NewsTopBar(
                 modifier = Modifier.scale(1.2f)
             ) {
                 Image(
-                    painter = painterResource(id = com.upsaclay.common.R.drawable.ged_logo),
+                    painter = painterResource(id = com.upsaclay.common.R.drawable.app_logo),
                     contentDescription = stringResource(id = com.upsaclay.common.R.string.ged_logo_description),
                     modifier = Modifier.scale(0.85f)
                 )

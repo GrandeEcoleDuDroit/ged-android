@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="announcement_author_picture_description">Photo de l\'auteur de l\'annonce</string>
-    <string name="recent_announcements">Annonces récentes</string>
-    <string name="news_ged">Actualités GED</string>
+    <string name="announcements">Annonces</string>
     <string name="no_announcement">Aucune annonce</string>
     <string name="all_announcements">Toute les annonces</string>
     <string name="announcement">Annonce</string>
@@ -23,9 +22,9 @@
     <string name="post_link_field_placeholder">Lien du post</string>
     <string name="new_post">Nouveau post</string>
     <string name="edit_post">Editer post</string>
-    <string name="ged_news">Actualités GED</string>
+    <string name="posts">Posts</string>
     <string name="post_option_icon_description">Afficher les options du post</string>
-    <string name="no_news">Aucune actualité</string>
+    <string name="no_post">Aucun post</string>
     <string name="post_deleted">Post supprimé</string>
     <string name="delete_post_dialog_message">Voulez-vous supprimer ce post ?</string>
 

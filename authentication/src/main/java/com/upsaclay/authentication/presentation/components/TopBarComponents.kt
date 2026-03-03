@@ -1,9 +1,11 @@
 package com.upsaclay.authentication.presentation.components
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.authentication.R
 import com.upsaclay.common.presentation.components.BackTopBar
@@ -17,6 +19,7 @@ internal fun RegistrationScaffold(
     content: @Composable (PaddingValues) -> Unit
 ) {
     Scaffold(
+        modifier = Modifier.imePadding(),
         topBar = {
             BackTopBar(
                 onBackClick = onBackClick,

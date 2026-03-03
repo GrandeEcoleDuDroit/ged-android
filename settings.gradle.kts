@@ -19,7 +19,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Gedoise"
+rootProject.name = "ItsCloudy"
 include(":app")
 include(":authentication")
 include(":authentication:domain")

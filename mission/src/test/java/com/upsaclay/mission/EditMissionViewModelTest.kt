@@ -220,7 +220,7 @@ class EditMissionViewModelTest {
     @Test
     fun onSchoolLevelChange_should_add_school_level_when_not_present() {
         // Given
-        val schoolLevel = SchoolLevel.GED_4
+        val schoolLevel = SchoolLevel.LEVEL_4
 
         // When
         viewModel = EditMissionViewModel(
@@ -239,7 +239,7 @@ class EditMissionViewModelTest {
     @Test
     fun onSchoolLevelChange_should_remove_school_level_when_present() {
         // Given
-        val schoolLevel = SchoolLevel.GED_4
+        val schoolLevel = SchoolLevel.LEVEL_4
 
         // When
         viewModel = EditMissionViewModel(
@@ -259,7 +259,7 @@ class EditMissionViewModelTest {
     @Test
     fun onSchoolLevelChange_should_update_school_levels_sorted() {
         // Given
-        val schoolLevels = listOf(SchoolLevel.GED_4, SchoolLevel.GED_1)
+        val schoolLevels = listOf(SchoolLevel.LEVEL_4, SchoolLevel.LEVEL_1)
 
         // When
         viewModel = EditMissionViewModel(

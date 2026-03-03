@@ -5,10 +5,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -31,7 +30,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
@@ -40,7 +38,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.upsaclay.authentication.R
+import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.extension.rootMediumPadding
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.theme.GedoiseTheme
@@ -126,18 +124,15 @@ private fun AuthenticationScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .rootMediumPadding(innerPadding)
+                .padding(top = dimensionResource(com.upsaclay.common.R.dimen.extra_large_padding))
                 .verticalScroll(rememberScrollState())
                 .pointerInput(Unit) {
                     detectTapGestures(onTap = { focusManager.clearFocus() })
                 },
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.aligned { size, space ->
-                size + (10 * space / 100)
-            }
+            verticalArrangement = Arrangement.mediumSpacing()
         ) {
             HeaderSection()
-
-            Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.extra_large_padding)))
 
             AuthenticationForm(
                 email = email,
@@ -167,33 +162,22 @@ private fun AuthenticationScreen(
 
 @Composable
 private fun HeaderSection() {
-    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
-    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
-
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.small_padding)),
+        verticalArrangement = Arrangement.mediumSpacing(),
     ) {
         Image(
-            painter = painterResource(id = com.upsaclay.common.R.drawable.ged_logo),
+            painter = painterResource(id = com.upsaclay.common.R.drawable.app_logo),
             contentDescription = stringResource(id = com.upsaclay.common.R.string.ged_logo_description),
             contentScale = ContentScale.Fit,
             alignment = Alignment.Center,
-            modifier = Modifier
-                .width(screenWidth * 0.35f)
-                .height(screenHeight * 0.2f)
+            modifier = Modifier.width(160.dp)
         )
 
         Text(
             text = stringResource(id = com.upsaclay.common.R.string.app_name),
-            style = MaterialTheme.typography.titleLarge,
+            style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.SemiBold,
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onSurface
-        )
-
-        Text(
-            text = stringResource(id = R.string.presentation_text),
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurface
         )

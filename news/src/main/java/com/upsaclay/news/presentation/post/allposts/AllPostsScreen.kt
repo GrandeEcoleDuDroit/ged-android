@@ -155,7 +155,7 @@ private fun AllPostsScreen(
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     if (posts.isEmpty()) {
                         item {
-                            EmptyText(text = stringResource(id = R.string.no_news))
+                            EmptyText(text = stringResource(id = R.string.no_post))
                         }
                     } else {
                         itemsIndexed(posts) { index, post ->

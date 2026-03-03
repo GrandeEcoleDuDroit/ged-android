@@ -190,7 +190,7 @@ private fun NewsScreen(
             Column(
                 verticalArrangement = Arrangement.mediumSpacing()
             ) {
-                RecentAnnouncementSection(
+                AnnouncementSection(
                     modifier = Modifier.weight(0.9f),
                     announcements = announcements,
                     onAnnouncementClick = onAnnouncementClick,
@@ -205,7 +205,7 @@ private fun NewsScreen(
                     onSeeAllAnnouncementsClick = onSeeAllAnnouncementsClick
                 )
 
-                GedNewsSection(
+                PostSection(
                     modifier = Modifier.weight(1f),
                     posts = posts,
                     onPostClick = onPostClick,

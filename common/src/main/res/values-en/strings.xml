@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="ged_logo_description">Logo of the university La Grande École du Droit</string>
+    <string name="ged_logo_description">App logo</string>
     <string name="home">Home</string>
     <string name="messages">Messages</string>
     <string name="calendar">Calendar</string>

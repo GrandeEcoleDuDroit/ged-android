@@ -6,8 +6,6 @@
     <string name="sign_up">Sign up</string>
     <string name="registration">Registration</string>
 
-    <string name="presentation_text">The app that brings together all the GED news, made for Gedois by Gedois.</string>
-    <string name="title_login_screen">Gedoise Application</string>
     <string name="show_password_icon_description">Icon to show password</string>
     <string name="hide_password_icon_description">Icon to hide password</string>
     <string name="not_register_yet">Not registered yet?</string>

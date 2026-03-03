@@ -33,7 +33,7 @@ import com.upsaclay.news.domain.announcement.announcementsFixture
 import com.upsaclay.news.presentation.announcement.components.CompactAnnouncementItem
 
 @Composable
-fun RecentAnnouncementSection(
+fun AnnouncementSection(
     modifier: Modifier = Modifier,
     announcements: List<Announcement>?,
     onSeeAllAnnouncementsClick: () -> Unit,
@@ -50,7 +50,7 @@ fun RecentAnnouncementSection(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             SectionTitle(
-                title = stringResource(id = R.string.recent_announcements),
+                title = stringResource(id = R.string.announcements),
                 modifier = Modifier.testTag(stringResource(id = R.string.news_screen_empty_announcement_text_tag))
             )
 
@@ -110,10 +110,10 @@ fun RecentAnnouncementSection(
 
 @PhonePreviews
 @Composable
-private fun RecentAnnouncementContentPreview() {
+private fun AnnouncementContentPreview() {
     GedoiseTheme {
         Surface {
-            RecentAnnouncementSection(
+            AnnouncementSection(
                 announcements = announcementsFixture,
                 onSeeAllAnnouncementsClick = {},
                 onAnnouncementClick = {},

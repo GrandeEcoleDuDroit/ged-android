@@ -110,7 +110,7 @@ private fun SecondRegistrationScreen(
 @PhonePreviews
 @Composable
 private fun SecondRegistrationScreenPreview() {
-    var selectedItem by remember { mutableStateOf(SchoolLevel.GED_1) }
+    var selectedItem by remember { mutableStateOf(SchoolLevel.LEVEL_1) }
 
     GedoiseTheme {
         SecondRegistrationScreen(
