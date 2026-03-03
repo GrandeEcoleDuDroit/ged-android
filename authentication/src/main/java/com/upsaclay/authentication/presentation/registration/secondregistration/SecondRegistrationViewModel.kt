@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 class SecondRegistrationViewModel: ViewModel() {
     val schoolLevels = SchoolLevel.all
-    private val _schoolLevel = MutableStateFlow(SchoolLevel.GED_1)
+    private val _schoolLevel = MutableStateFlow(SchoolLevel.LEVEL_1)
     val schoolLevel: StateFlow<SchoolLevel> = _schoolLevel
 
     fun onSchoolLevelChange(schoolLevel: SchoolLevel) {

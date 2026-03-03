@@ -153,9 +153,9 @@ class MissionDetailsViewModelTest {
         // Given
         val user = userFixture2.copy(
             id = "6",
-            schoolLevel = SchoolLevel.GED_3
+            schoolLevel = SchoolLevel.LEVEL_3
         )
-        val mission = missionFixture.copy(schoolLevels = listOf(SchoolLevel.GED_1))
+        val mission = missionFixture.copy(schoolLevels = listOf(SchoolLevel.LEVEL_1))
         every { missionRepository.getMissionFlow(any()) } returns flowOf(mission)
         every { userRepository.user } returns flowOf(user)
 

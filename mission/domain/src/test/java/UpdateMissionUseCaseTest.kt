@@ -68,11 +68,11 @@ class UpdateMissionUseCaseTest {
     fun updateMissionUseCase_should_remove_participants_with_unmatched_school_level() = runTest {
         // Given
         val participants = listOf(
-            userFixture2.copy(schoolLevel = SchoolLevel.GED_1),
-            userFixture3.copy(schoolLevel = SchoolLevel.GED_2)
+            userFixture2.copy(schoolLevel = SchoolLevel.LEVEL_1),
+            userFixture3.copy(schoolLevel = SchoolLevel.LEVEL_2)
         )
         val mission = missionFixture.copy(
-            schoolLevels = listOf(SchoolLevel.GED_2),
+            schoolLevels = listOf(SchoolLevel.LEVEL_2),
             participants = participants
         )
         val expectedMission = mission.copy(participants = listOf(participants[1]))

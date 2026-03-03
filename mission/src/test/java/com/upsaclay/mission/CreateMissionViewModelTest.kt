@@ -210,8 +210,8 @@ class CreateMissionViewModelTest {
     @Test
     fun onSchoolLevelChange_should_add_school_level_when_not_present() {
         // Given
-        val schoolLevelToAdd = SchoolLevel.GED_4
-        val expectedResult = listOf(SchoolLevel.GED_1, SchoolLevel.GED_2, SchoolLevel.GED_3, SchoolLevel.GED_4)
+        val schoolLevelToAdd = SchoolLevel.LEVEL_4
+        val expectedResult = listOf(SchoolLevel.LEVEL_1, SchoolLevel.LEVEL_2, SchoolLevel.LEVEL_3, SchoolLevel.LEVEL_4)
 
         // When
         viewModel.onSchoolLevelChange(schoolLevelToAdd)
@@ -224,8 +224,8 @@ class CreateMissionViewModelTest {
     @Test
     fun onSchoolLevelChange_should_remove_school_level_when_present() {
         // Given
-        val schoolLevelToRemove = SchoolLevel.GED_4
-        val expectedResult = listOf(SchoolLevel.GED_1, SchoolLevel.GED_2, SchoolLevel.GED_3)
+        val schoolLevelToRemove = SchoolLevel.LEVEL_4
+        val expectedResult = listOf(SchoolLevel.LEVEL_1, SchoolLevel.LEVEL_2, SchoolLevel.LEVEL_3)
 
 
         // When
@@ -238,8 +238,8 @@ class CreateMissionViewModelTest {
     @Test
     fun onSchoolLevelChange_should_update_school_levels_sorted() {
         // Given
-        val schoolLevelsToRemove = listOf(SchoolLevel.GED_4, SchoolLevel.GED_1)
-        val expectedResult = listOf(SchoolLevel.GED_2, SchoolLevel.GED_3)
+        val schoolLevelsToRemove = listOf(SchoolLevel.LEVEL_4, SchoolLevel.LEVEL_1)
+        val expectedResult = listOf(SchoolLevel.LEVEL_2, SchoolLevel.LEVEL_3)
 
         // When
         schoolLevelsToRemove.forEach {

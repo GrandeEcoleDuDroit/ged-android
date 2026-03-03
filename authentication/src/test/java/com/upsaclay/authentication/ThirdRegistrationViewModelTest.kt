@@ -25,7 +25,7 @@ class ThirdRegistrationViewModelTest {
     private val testDispatcher = UnconfinedTestDispatcher()
     private val firstName = "John"
     private val lastName = "Doe"
-    private val schoolLevel = SchoolLevel.GED_1
+    private val schoolLevel = SchoolLevel.LEVEL_1
     private val email = "email@example.com"
     private val password = "password1234"
 

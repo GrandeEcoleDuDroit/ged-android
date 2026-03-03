@@ -10,7 +10,7 @@ val userFixture = User(
     firstName = "Jean",
     lastName = "Dupont",
     email = "jean.dupont@email.com",
-    schoolLevel = SchoolLevel.GED_1,
+    schoolLevel = SchoolLevel.LEVEL_1,
     admin = true,
     profilePictureUrl = "https://images.unsplash.com/photo-1545570503-b656623ef132?q=80&w=1364&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
 )
@@ -20,7 +20,7 @@ val userFixture2 = User(
     firstName = "Patrick",
     lastName = "Boucher",
     email = "patrick.boucher@email.com",
-    schoolLevel = SchoolLevel.GED_2,
+    schoolLevel = SchoolLevel.LEVEL_2,
     profilePictureUrl = "https://cdn.pixabay.com/photo/2023/07/25/19/27/ai-generated-8149775_1280.jpg"
 )
 
@@ -29,7 +29,7 @@ val userFixture3 = User(
     firstName = "Evelyne",
     lastName = "Aubin",
     email = "evelyne.aubin@email.com",
-    schoolLevel = SchoolLevel.GED_3,
+    schoolLevel = SchoolLevel.LEVEL_3,
     profilePictureUrl = "https://images.unsplash.com/photo-1596854307809-6e754c522f95?q=80&w=1760&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
 )
 

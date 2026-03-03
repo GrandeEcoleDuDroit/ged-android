@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">Grande Ecole du Droit</string>
-    <string name="ged_logo_description">Logo de l\'université de La Grande École du Droit</string>
+    <string name="app_name" translatable="false">ItsCloudy</string>
+    <string name="ged_logo_description">Logo de l\'application</string>
     <string name="home">Accueil</string>
     <string name="messages">Messages</string>
     <string name="calendar">Calendrier</string>

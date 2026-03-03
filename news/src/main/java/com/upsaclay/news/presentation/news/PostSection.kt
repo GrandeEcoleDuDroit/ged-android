@@ -36,7 +36,7 @@ import com.upsaclay.news.domain.post.postsFixture
 import com.upsaclay.news.presentation.post.components.CompactPostItem
 
 @Composable
-fun GedNewsSection(
+fun PostSection(
     modifier: Modifier = Modifier,
     posts: List<Post>?,
     onPostClick: (String) -> Unit,
@@ -58,7 +58,7 @@ fun GedNewsSection(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            SectionTitle(title = stringResource(id = R.string.ged_news))
+            SectionTitle(title = stringResource(id = R.string.posts))
 
             TextButton(
                 modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.extra_small_button_size)),
@@ -74,7 +74,7 @@ fun GedNewsSection(
 
         posts?.let {
             if (posts.isEmpty()) {
-                EmptyText(text = stringResource(R.string.no_news))
+                EmptyText(text = stringResource(R.string.no_post))
             } else {
                 HorizontalPager(
                     modifier = Modifier.fillMaxSize(),
@@ -116,10 +116,10 @@ fun GedNewsSection(
 
 @PhonePreviews
 @Composable
-private fun GedNewsSectionPreview() {
+private fun PostSectionPreview() {
     GedoiseTheme {
         Surface {
-            GedNewsSection(
+            PostSection(
                 posts = postsFixture,
                 onPostClick = {},
                 onSeeAllPostsClick = {},
