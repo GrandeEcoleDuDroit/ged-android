@@ -1,7 +1,6 @@
 package com.upsaclay.news.presentation.post.readpost
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -24,7 +23,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
@@ -35,7 +33,6 @@ import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.BackTopBar
-import com.upsaclay.common.presentation.components.CircularProgressBar
 import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.OptionButton
@@ -91,15 +88,6 @@ fun ReadPostDestination(
             onEditPostClick = onEditPostClick,
             onDeletePostClick = viewModel::deletePost
         )
-    } else {
-        Box(
-            modifier = Modifier.fillMaxWidth(),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressBar(
-                modifier = Modifier.padding(top = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
-            )
-        }
     }
 }
 

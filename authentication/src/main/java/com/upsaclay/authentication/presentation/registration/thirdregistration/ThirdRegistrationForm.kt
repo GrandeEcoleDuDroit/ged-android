@@ -104,7 +104,7 @@ fun ThirdRegistrationForm(
 
 @Composable
 private fun LegalNoticeText() {
-    val legalNoticeUrl = "https://grandeecoledudroit.github.io/ged-website/legal-notice.html"
+    val legalNoticeUrl = "https://itscloudymourchidi.github.io/itscloudy-website/#/legal-notice"
 
     Text(
         text = buildAnnotatedString {

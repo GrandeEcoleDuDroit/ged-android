@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -31,6 +30,7 @@ import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.components.OptionButton
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.PhonePreviews
+import com.upsaclay.common.utils.TabletPreviews
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.post.Post
 import com.upsaclay.news.domain.post.Post.PostState
@@ -57,10 +57,7 @@ fun CompactPostItem(
         )
 
         if (post.state.imageReferenceValues.isNotEmpty()) {
-            ImageSection(
-                modifier = Modifier.height(dimensionResource(R.dimen.compact_post_image_height)),
-                imageReferences = post.state.imageReferenceValues
-            )
+            ImageSection(imageReferences = post.state.imageReferenceValues)
         }
 
         post.content?.let {
@@ -121,7 +118,7 @@ private fun ImageSection(
 ) {
     PostImagePages(
         modifier = modifier
-            .heightIn(max = dimensionResource(R.dimen.compact_post_image_height))
+            .height(dimensionResource(R.dimen.compact_post_image_height))
             .clip(ShapeDefaults.Medium),
         models = imageReferences
     )
@@ -177,6 +174,7 @@ private fun FooterSection(
  */
 
 @PhonePreviews
+@TabletPreviews
 @Composable
 private fun CompactPostItemPreview() {
     GedoiseTheme {

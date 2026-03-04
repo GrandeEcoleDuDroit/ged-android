@@ -34,4 +34,4 @@ annotation class PhonePreviews
     showBackground = true,
     uiMode = Configuration.UI_MODE_NIGHT_YES
 )
-annotation class Tablets
+annotation class TabletPreviews

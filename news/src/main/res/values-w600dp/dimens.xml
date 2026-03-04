@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="post_image_height">300dp</dimen>
+    <dimen name="compact_post_image_height">260dp</dimen>
+</resources>

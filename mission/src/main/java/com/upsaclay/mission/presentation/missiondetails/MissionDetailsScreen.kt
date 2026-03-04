@@ -51,7 +51,6 @@ import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.extension.smallMediumSpacing
 import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.SingleUiEvent
-import com.upsaclay.common.presentation.components.CircularProgressBar
 import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.LoadingButton
 import com.upsaclay.common.presentation.components.PrimaryButton
@@ -127,15 +126,6 @@ fun MissionDetailsDestination(
             onSeeAllManagersClick = onSeeAllUsersClick,
             onSeeAllParticipantsClick = onSeeAllUsersClick
         )
-    } else {
-        Box(
-            modifier = Modifier.fillMaxWidth(),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressBar(
-                modifier = Modifier.padding(top = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
-            )
-        }
     }
 }
 
