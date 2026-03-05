@@ -15,8 +15,6 @@
     <string name="announcement_deleted">Announcement deleted</string>
     <string name="announcement_reported">Announcement reported</string>
 
-    <string name="announcements_refresh_error">Unable to refresh announcements</string>
-
     <string name="news">News</string>
     <string name="all_news">All news</string>
     <string name="posts">Posts</string>

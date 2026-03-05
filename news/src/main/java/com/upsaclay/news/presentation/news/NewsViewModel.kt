@@ -13,7 +13,6 @@ import com.upsaclay.news.domain.announcement.AnnouncementReport
 import com.upsaclay.news.domain.announcement.AnnouncementRepository
 import com.upsaclay.news.domain.announcement.usecase.DeleteAnnouncementUseCase
 import com.upsaclay.news.domain.announcement.usecase.RecreateAnnouncementUseCase
-import com.upsaclay.news.domain.announcement.usecase.RefreshAnnouncementsUseCase
 import com.upsaclay.news.domain.post.Post
 import com.upsaclay.news.domain.post.PostRepository
 import com.upsaclay.news.domain.post.usecase.DeletePostUseCase
@@ -30,7 +29,6 @@ class NewsViewModel(
     private val announcementRepository: AnnouncementRepository,
     private val recreateAnnouncementUseCase: RecreateAnnouncementUseCase,
     private val deleteAnnouncementUseCase: DeleteAnnouncementUseCase,
-    private val refreshAnnouncementsUseCase: RefreshAnnouncementsUseCase,
     private val postRepository: PostRepository,
     private val recreatePostUseCase: RecreatePostUseCase,
     private val deletePostUseCase: DeletePostUseCase,
@@ -50,20 +48,6 @@ class NewsViewModel(
     fun getAnnouncement(announcementId: String): Announcement? =
         announcementRepository.getAnnouncement(announcementId)
 
-    fun refreshAnnouncements() {
-        viewModelScope.executeUiBlockingRequest(
-            block = { refreshAnnouncementsUseCase.execute() },
-            onLoading = {
-                _uiState.update { it.copy(refreshing = true) }
-            },
-            onError = {
-                _event.emit(SingleUiEvent.Error(R.string.announcements_refresh_error))
-            },
-            onFinished = {
-                _uiState.update { it.copy(refreshing = false) }
-            }
-        )
-    }
 
     fun recreateAnnouncement(announcement: Announcement) {
         viewModelScope.launch {
@@ -164,7 +148,6 @@ class NewsViewModel(
         val user: User? = null,
         val announcements: List<Announcement>? = null,
         val posts: List<Post>? = null,
-        val refreshing: Boolean = false,
         val loading: Boolean = false
     )
 }
