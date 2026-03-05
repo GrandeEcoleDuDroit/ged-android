@@ -5,11 +5,11 @@ import kotlinx.coroutines.flow.Flow
 interface AnnouncementRepository {
     val announcements: Flow<List<Announcement>>
 
-    val currentAnnouncements: List<Announcement>
+    fun getLocalAnnouncementFlow(announcementId: String): Flow<Announcement?>
 
-    fun getAnnouncementFlow(announcementId: String): Flow<Announcement?>
+    suspend fun getLocalAnnouncements(): List<Announcement>
 
-    fun getAnnouncement(announcementId: String): Announcement?
+    suspend fun getLocalAnnouncement(announcementId: String): Announcement?
 
     suspend fun getRemoteAnnouncements(): List<Announcement>
 

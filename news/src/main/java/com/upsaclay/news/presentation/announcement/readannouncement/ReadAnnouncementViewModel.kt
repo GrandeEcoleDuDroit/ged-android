@@ -70,7 +70,7 @@ class ReadAnnouncementViewModel(
 
     private fun listenAnnouncement() {
         viewModelScope.launch {
-            announcementRepository.getAnnouncementFlow(announcementId)
+            announcementRepository.getLocalAnnouncementFlow(announcementId)
                 .filterNotNull()
                 .map { announcement ->
                     announcement.copy(

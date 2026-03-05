@@ -6,35 +6,22 @@ import com.upsaclay.news.data.announcement.remote.AnnouncementRemoteDataSource
 import com.upsaclay.news.domain.announcement.Announcement
 import com.upsaclay.news.domain.announcement.AnnouncementReport
 import com.upsaclay.news.domain.announcement.AnnouncementRepository
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 
 internal class AnnouncementRepositoryImpl(
     private val announcementRemoteDataSource: AnnouncementRemoteDataSource,
-    private val announcementLocalDataSource: AnnouncementLocalDataSource,
-    scope: CoroutineScope
+    private val announcementLocalDataSource: AnnouncementLocalDataSource
 ) : AnnouncementRepository {
-    private val _announcements = announcementLocalDataSource.getAnnouncements()
-        .stateIn(
-            scope = scope,
-            started = SharingStarted.Eagerly,
-            initialValue = emptyList()
-        )
-    override val announcements: Flow<List<Announcement>> = _announcements
+    override val announcements: Flow<List<Announcement>> = announcementLocalDataSource.getAnnouncementsFlow()
 
-    override val currentAnnouncements: List<Announcement>
-        get() = _announcements.value
+    override fun getLocalAnnouncementFlow(announcementId: String): Flow<Announcement?> =
+        announcementLocalDataSource.getAnnouncementFlow(announcementId)
 
-    override fun getAnnouncementFlow(announcementId: String): Flow<Announcement?> =
-        _announcements.map { announcements ->
-            announcements.firstOrNull { it.id == announcementId }
-        }
+    override suspend fun getLocalAnnouncement(announcementId: String): Announcement? =
+        announcementLocalDataSource.getAnnouncement(announcementId)
 
-    override fun getAnnouncement(announcementId: String): Announcement? =
-        _announcements.value.firstOrNull { it.id == announcementId }
+    override suspend fun getLocalAnnouncements(): List<Announcement> =
+        announcementLocalDataSource.getAnnouncements()
 
     override suspend fun getRemoteAnnouncements(): List<Announcement> {
         return try {

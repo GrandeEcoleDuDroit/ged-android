@@ -88,7 +88,11 @@ fun NewsDestination(
             onAnnouncementClick = onAnnouncementClick,
             onCreateAnnouncementClick = onCreateAnnouncementClick,
             onRecreateAnnouncementClick = viewModel::recreateAnnouncement,
-            onEditAnnouncementClick = { viewModel.getAnnouncement(it)?.let(onEditAnnouncementClick) },
+            onEditAnnouncementClick = {
+                scope.launch {
+                    viewModel.getAnnouncement(it)?.let(onEditAnnouncementClick)
+                }
+            },
             onDeleteAnnouncementClick = viewModel::deleteAnnouncement,
             onReportAnnouncementClick = viewModel::reportAnnouncement,
             onSeeAllAnnouncementsClick = onSeeAllAnnouncementsClick,
