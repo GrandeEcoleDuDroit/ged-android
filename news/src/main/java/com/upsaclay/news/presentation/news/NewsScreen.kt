@@ -25,7 +25,6 @@ import com.upsaclay.common.presentation.LoadingScreen
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.LoadingDialog
-import com.upsaclay.common.presentation.components.PullToRefreshComponent
 import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.PhonePreviews
@@ -80,11 +79,9 @@ fun NewsDestination(
             user = uiState.user!!,
             announcements = uiState.announcements,
             posts = uiState.posts,
-            refreshing = uiState.refreshing,
             loading = uiState.loading,
             bottomBar = bottomBar,
             snackbarHostState = snackbarHostState,
-            onRefresh = viewModel::refreshAnnouncements,
             onAnnouncementClick = onAnnouncementClick,
             onCreateAnnouncementClick = onCreateAnnouncementClick,
             onRecreateAnnouncementClick = viewModel::recreateAnnouncement,
@@ -115,11 +112,9 @@ private fun NewsScreen(
     user: User,
     announcements: List<Announcement>?,
     posts: List<Post>?,
-    refreshing: Boolean,
     loading: Boolean,
     bottomBar: @Composable () -> Unit,
     snackbarHostState: SnackbarHostState = SnackbarHostState(),
-    onRefresh: () -> Unit,
     onAnnouncementClick: (String) -> Unit,
     onCreateAnnouncementClick: () -> Unit,
     onRecreateAnnouncementClick: (Announcement) -> Unit,
@@ -180,45 +175,38 @@ private fun NewsScreen(
         snackbarHostState = snackbarHostState,
         bottomBar = bottomBar
     ) { innerPadding ->
-        PullToRefreshComponent(
-            modifier = Modifier
+        Column(
+            Modifier
                 .padding(innerPadding)
                 .padding(bottom = dimensionResource(com.upsaclay.common.R.dimen.small_padding)),
-            onRefresh = onRefresh,
-            refreshing = refreshing
+            verticalArrangement = Arrangement.mediumSpacing()
         ) {
-            Column(
-                verticalArrangement = Arrangement.mediumSpacing()
-            ) {
-                AnnouncementSection(
-                    modifier = Modifier.weight(0.9f),
-                    announcements = announcements,
-                    onAnnouncementClick = onAnnouncementClick,
-                    onUncreatedAnnouncementClick = { announcement ->
-                        activeBottomSheet =
-                            NewsScreenBottomSheet.AnnouncementBottomSheet(announcement)
-                    },
-                    onAnnouncementOptionClick = { announcement ->
-                        activeBottomSheet =
-                            NewsScreenBottomSheet.AnnouncementBottomSheet(announcement)
-                    },
-                    onSeeAllAnnouncementsClick = onSeeAllAnnouncementsClick
-                )
+            AnnouncementSection(
+                modifier = Modifier.weight(0.9f),
+                announcements = announcements,
+                onAnnouncementClick = onAnnouncementClick,
+                onUncreatedAnnouncementClick = { announcement ->
+                    activeBottomSheet = NewsScreenBottomSheet.AnnouncementBottomSheet(announcement)
+                },
+                onAnnouncementOptionClick = { announcement ->
+                    activeBottomSheet = NewsScreenBottomSheet.AnnouncementBottomSheet(announcement)
+                },
+                onSeeAllAnnouncementsClick = onSeeAllAnnouncementsClick
+            )
 
-                PostSection(
-                    modifier = Modifier.weight(1f),
-                    posts = posts,
-                    onPostClick = onPostClick,
-                    onUncreatedPostClick = {
-                        activeBottomSheet = NewsScreenBottomSheet.PostBottomSheet(it)
-                    },
-                    onRedirectPostClick = onRedirectPostClick,
-                    onPostOptionClick = {
-                        activeBottomSheet = NewsScreenBottomSheet.PostBottomSheet(it)
-                    },
-                    onSeeAllPostsClick = onSeeAllPostsClick
-                )
-            }
+            PostSection(
+                modifier = Modifier.weight(1f),
+                posts = posts,
+                onPostClick = onPostClick,
+                onUncreatedPostClick = {
+                    activeBottomSheet = NewsScreenBottomSheet.PostBottomSheet(it)
+                },
+                onRedirectPostClick = onRedirectPostClick,
+                onPostOptionClick = {
+                    activeBottomSheet = NewsScreenBottomSheet.PostBottomSheet(it)
+                },
+                onSeeAllPostsClick = onSeeAllPostsClick
+            )
         }
 
         when(val bottomSheet = activeBottomSheet) {
@@ -319,10 +307,8 @@ private fun NewsScreenPreview() {
             user = userFixture,
             announcements = announcementsFixture,
             posts = postsFixture,
-            refreshing = false,
             loading = false,
             bottomBar = {},
-            onRefresh = {},
             onAnnouncementClick = {},
             onRecreateAnnouncementClick = {},
             onEditAnnouncementClick = {},

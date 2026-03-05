@@ -15,8 +15,6 @@
     <string name="announcement_reported">Annonce signalé</string>
     <string name="content_field_placeholder">Contenu</string>
 
-    <string name="announcements_refresh_error">Impossible de rafraîchir les annonces</string>
-
     <string name="news">Actualité</string>
     <string name="all_news">Toutes les actualités</string>
     <string name="post_link_field_placeholder">Lien du post</string>
