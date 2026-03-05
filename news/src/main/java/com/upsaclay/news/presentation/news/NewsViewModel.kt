@@ -45,8 +45,8 @@ class NewsViewModel(
         listenUser()
     }
 
-    fun getAnnouncement(announcementId: String): Announcement? =
-        announcementRepository.getAnnouncement(announcementId)
+    suspend fun getAnnouncement(announcementId: String): Announcement? =
+        announcementRepository.getLocalAnnouncement(announcementId)
 
 
     fun recreateAnnouncement(announcement: Announcement) {

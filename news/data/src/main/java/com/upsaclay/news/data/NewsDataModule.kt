@@ -42,13 +42,7 @@ val newsDataModule = module {
             .create(AnnouncementApi::class.java)
     }
 
-    single<AnnouncementRepository> {
-        AnnouncementRepositoryImpl(
-            announcementRemoteDataSource = get(),
-            announcementLocalDataSource = get(),
-            scope = get(BACKGROUND_SCOPE)
-        )
-    }
+    singleOf(::AnnouncementRepositoryImpl) { bind<AnnouncementRepository>() }
     singleOf(::AnnouncementRemoteDataSource)
     singleOf(::AnnouncementLocalDataSource)
 
