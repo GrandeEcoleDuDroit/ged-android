@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import com.upsaclay.common.domain.entity.Reporter
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.extension.noRippleClickable
@@ -36,14 +37,17 @@ import com.upsaclay.common.presentation.components.EmptyText
 import com.upsaclay.common.presentation.components.ListDivider
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.PullToRefreshComponent
+import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.post.Post
+import com.upsaclay.news.domain.post.PostReport
 import com.upsaclay.news.domain.post.postsFixture
 import com.upsaclay.news.presentation.post.PostPresentationUtils
 import com.upsaclay.news.presentation.post.components.ExtendedPostItem
 import com.upsaclay.news.presentation.post.components.PostBottomSheet
+import com.upsaclay.news.presentation.post.stringRes
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -87,7 +91,8 @@ fun AllPostsDestination(
             onRedirectPostClick = { context.startActivity(PostPresentationUtils.getPostLinkIntent(it)) },
             onRecreatePostClick = viewModel::recreatePost,
             onEditPostClick = onEditPostClick,
-            onDeletePostClick = viewModel::deletePost
+            onDeletePostClick = viewModel::deletePost,
+            onReportPostClick = viewModel::reportPost
         )
     }
 }
@@ -106,7 +111,8 @@ private fun AllPostsScreen(
     onRedirectPostClick: (String) -> Unit,
     onRecreatePostClick: (Post) -> Unit,
     onEditPostClick: (Post) -> Unit,
-    onDeletePostClick: (Post) -> Unit
+    onDeletePostClick: (Post) -> Unit,
+    onReportPostClick: (PostReport) -> Unit
 ) {
     var activeBottomSheet by remember { mutableStateOf<AllPostScreenBottomSheet?>(null) }
     var activeDialog by remember { mutableStateOf<AllPostDialog?>(null) }
@@ -202,7 +208,7 @@ private fun AllPostsScreen(
         is AllPostScreenBottomSheet.PostBottomSheet -> {
             PostBottomSheet(
                 postState = bottomSheet.post.state,
-                isEditable = user.admin,
+                editable = user.admin,
                 onEditClick = {
                     activeBottomSheet = null
                     onEditPostClick(bottomSheet.post)
@@ -215,6 +221,29 @@ private fun AllPostsScreen(
                     activeBottomSheet = null
                     activeDialog = AllPostDialog.DeletePostDialog(bottomSheet.post)
                 },
+                onReportClick = {
+                    activeBottomSheet = AllPostScreenBottomSheet.PostReportBottomSheet(bottomSheet.post)
+                },
+                onDismiss = { activeBottomSheet = null }
+            )
+        }
+
+        is AllPostScreenBottomSheet.PostReportBottomSheet -> {
+            ReportBottomSheet(
+                items = PostReport.Reason.entries.map { stringResource(it.stringRes) },
+                onReportClick = { reason ->
+                    activeBottomSheet = null
+                    onReportPostClick(
+                        PostReport(
+                            postId = bottomSheet.post.id,
+                            reporter = Reporter(
+                                fullName = user.fullName,
+                                email = user.email
+                            ),
+                            reason = reason
+                        )
+                    )
+                },
                 onDismiss = { activeBottomSheet = null }
             )
         }
@@ -225,6 +254,7 @@ private fun AllPostsScreen(
 
 private sealed class AllPostScreenBottomSheet {
     data class PostBottomSheet(val post: Post) : AllPostScreenBottomSheet()
+    data class PostReportBottomSheet(val post: Post): AllPostScreenBottomSheet()
 }
 
 private sealed class AllPostDialog {
@@ -252,7 +282,8 @@ private fun AllPostsScreenPreview() {
             onRedirectPostClick = {},
             onRecreatePostClick = {},
             onEditPostClick = {},
-            onDeletePostClick = {}
+            onDeletePostClick = {},
+            onReportPostClick = {}
         )
     }
 }

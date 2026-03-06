@@ -1,6 +1,7 @@
 package com.upsaclay.news.data.announcement
 
 import com.upsaclay.common.data.extensions.formatUrl
+import com.upsaclay.common.data.toRemote
 import com.upsaclay.common.domain.UserUtils
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.entity.User
@@ -82,15 +83,10 @@ internal fun AnnouncementReport.toRemote() = RemoteAnnouncementReport(
     announcementId = announcementId,
     author = author.toRemote(),
     reporter = reporter.toRemote(),
-    reason = reason.toString()
+    reason = reason
 )
 
 private fun AnnouncementReport.Author.toRemote() = RemoteAnnouncementReport.RemoteAuthor(
-    fullName = fullName,
-    email = email
-)
-
-private fun AnnouncementReport.Reporter.toRemote() = RemoteAnnouncementReport.RemoteReporter(
     fullName = fullName,
     email = email
 )

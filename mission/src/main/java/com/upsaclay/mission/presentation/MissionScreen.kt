@@ -34,6 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import com.upsaclay.common.domain.entity.Reporter
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.extension.rootMediumPadding
@@ -248,7 +249,7 @@ private fun MissionScreen(
                         onReportMissionClick(
                             MissionReport(
                                 missionId = bottomSheet.mission.id,
-                                reporter = MissionReport.Reporter(
+                                reporter = Reporter(
                                     fullName = user.fullName,
                                     email = user.email
                                 ),

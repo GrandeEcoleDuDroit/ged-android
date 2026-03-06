@@ -4,6 +4,7 @@ import com.upsaclay.common.data.utils.e
 import com.upsaclay.news.data.post.local.PostLocalDataSource
 import com.upsaclay.news.data.post.remote.PostRemoteDataSource
 import com.upsaclay.news.domain.post.Post
+import com.upsaclay.news.domain.post.PostReport
 import com.upsaclay.news.domain.post.PostRepository
 import kotlinx.coroutines.flow.Flow
 import java.io.File
@@ -59,5 +60,14 @@ class PostRepositoryImpl(
 
     override suspend fun deleteLocalPost(post: Post) {
         postLocalDataSource.deletePost(post)
+    }
+
+    override suspend fun reportPost(report: PostReport) {
+        try {
+            postRemoteDataSource.reportPost(report)
+        } catch (e: Exception) {
+            e("Error reporting post ${report.postId}", e)
+            throw e
+        }
     }
 }

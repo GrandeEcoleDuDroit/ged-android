@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import com.upsaclay.common.domain.entity.Reporter
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.extension.mediumSpacing
@@ -36,11 +37,13 @@ import com.upsaclay.common.presentation.components.BackTopBar
 import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.OptionButton
+import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.ElapsedTimeValueFormat
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.post.Post
+import com.upsaclay.news.domain.post.PostReport
 import com.upsaclay.news.domain.post.postFixture
 import com.upsaclay.news.presentation.post.PostPresentationUtils
 import com.upsaclay.news.presentation.post.PostPresentationUtils.postContentStyle
@@ -49,6 +52,7 @@ import com.upsaclay.news.presentation.post.SizeTokens
 import com.upsaclay.news.presentation.post.components.PostBottomSheet
 import com.upsaclay.news.presentation.post.components.PostImagePages
 import com.upsaclay.news.presentation.post.components.PostSourceItem
+import com.upsaclay.news.presentation.post.stringRes
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -86,7 +90,8 @@ fun ReadPostDestination(
             onBackClick = onBackClick,
             onRedirectPostClick = { context.startActivity(PostPresentationUtils.getPostLinkIntent(it)) },
             onEditPostClick = onEditPostClick,
-            onDeletePostClick = viewModel::deletePost
+            onDeletePostClick = viewModel::deletePost,
+            onReportPostClick = viewModel::reportPost
         )
     }
 }
@@ -101,8 +106,9 @@ private fun ReadPostScreen(
     onBackClick: () -> Unit,
     onRedirectPostClick: (String) -> Unit,
     onEditPostClick: (Post) -> Unit,
-    onDeletePostClick: () -> Unit
-) {
+    onDeletePostClick: () -> Unit,
+    onReportPostClick: (PostReport) -> Unit
+    ) {
     var activeBottomSheet by remember { mutableStateOf<ReadPostScreenBottomSheet?>(null) }
     var activeDialog by remember { mutableStateOf<ReadPostDialog?>(null) }
 
@@ -203,7 +209,7 @@ private fun ReadPostScreen(
         is ReadPostScreenBottomSheet.PostBottomSheet -> {
             PostBottomSheet(
                 postState = post.state,
-                isEditable = user.admin,
+                editable = user.admin,
                 onEditClick = {
                     activeBottomSheet = null
                     onEditPostClick(post)
@@ -211,6 +217,29 @@ private fun ReadPostScreen(
                 onDeleteClick = {
                     activeBottomSheet = null
                     activeDialog = ReadPostDialog.DeletePostDialog
+                },
+                onReportClick = {
+                    activeBottomSheet = ReadPostScreenBottomSheet.PostReportBottomSheet
+                },
+                onDismiss = { activeBottomSheet = null }
+            )
+        }
+
+        is ReadPostScreenBottomSheet.PostReportBottomSheet -> {
+            ReportBottomSheet(
+                items = PostReport.Reason.entries.map { stringResource(it.stringRes) },
+                onReportClick = { reason ->
+                    activeBottomSheet = null
+                    onReportPostClick(
+                        PostReport(
+                            postId = post.id,
+                            reporter = Reporter(
+                                fullName = user.fullName,
+                                email = user.email
+                            ),
+                            reason = reason
+                        )
+                    )
                 },
                 onDismiss = { activeBottomSheet = null }
             )
@@ -222,6 +251,7 @@ private fun ReadPostScreen(
 
 private sealed class ReadPostScreenBottomSheet {
     data object PostBottomSheet : ReadPostScreenBottomSheet()
+    data object PostReportBottomSheet: ReadPostScreenBottomSheet()
 }
 
 private sealed class ReadPostDialog {
@@ -247,7 +277,8 @@ private fun ReadPostScreenPreview() {
                 onBackClick = {},
                 onRedirectPostClick = {},
                 onEditPostClick = {},
-                onDeletePostClick = {}
+                onDeletePostClick = {},
+                onReportPostClick = {}
             )
         }
     }

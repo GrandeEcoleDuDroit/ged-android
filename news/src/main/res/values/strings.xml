@@ -15,6 +15,8 @@
     <string name="announcement_reported">Annonce signalé</string>
     <string name="content_field_placeholder">Contenu</string>
 
+    <string name="announcements_refresh_error">Impossible de rafraîchir les annonces</string>
+
     <string name="news">Actualité</string>
     <string name="all_news">Toutes les actualités</string>
     <string name="post_link_field_placeholder">Lien du post</string>
@@ -24,6 +26,7 @@
     <string name="post_option_icon_description">Afficher les options du post</string>
     <string name="no_post">Aucun post</string>
     <string name="post_deleted">Post supprimé</string>
+    <string name="post_reported">Post signalé</string>
     <string name="delete_post_dialog_message">Voulez-vous supprimer ce post ?</string>
 
     <string name="post_link_length_error">Le lien dépasse la limite autorisée (%d caractères maximum).</string>

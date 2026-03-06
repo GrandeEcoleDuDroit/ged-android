@@ -2,12 +2,15 @@ package com.upsaclay.news.data.post
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.upsaclay.common.data.toRemote
 import com.upsaclay.common.domain.extensions.toEpochMilliUTC
 import com.upsaclay.common.domain.extensions.toLocalDateTimeUTC
 import com.upsaclay.news.data.post.local.LocalPost
 import com.upsaclay.news.data.post.remote.RemotePost
+import com.upsaclay.news.data.post.remote.RemotePostReport
 import com.upsaclay.news.domain.post.Post
 import com.upsaclay.news.domain.post.Post.PostState
+import com.upsaclay.news.domain.post.PostReport
 import com.upsaclay.news.domain.post.PostUtils
 
 private val gson = Gson()
@@ -51,6 +54,12 @@ fun RemotePost.toPost() = Post(
     source = Post.PostSource.fromId(postSourceId),
     date = postDate.toLocalDateTimeUTC(),
     state = mapRemotePostState(postImageFileNames)
+)
+
+internal fun PostReport.toRemote() = RemotePostReport(
+    postId = postId,
+    reporter = reporter.toRemote(),
+    reason = reason
 )
 
 private fun extractImageFileNames(state: PostState): List<String> {

@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import com.upsaclay.common.domain.entity.Reporter
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.extension.rootMediumPadding
 import com.upsaclay.common.extension.smallMediumSpacing
@@ -195,7 +196,7 @@ fun ReadAnnouncementScreen(
                                 fullName = announcement.author.fullName,
                                 email = announcement.author.email
                             ),
-                            reporter = AnnouncementReport.Reporter(
+                            reporter = Reporter(
                                 fullName = user.fullName,
                                 email = user.email
                             ),

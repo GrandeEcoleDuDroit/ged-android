@@ -4,6 +4,7 @@ import com.upsaclay.common.data.exceptions.mapServerException
 import com.upsaclay.news.data.post.toPost
 import com.upsaclay.news.data.post.toRemote
 import com.upsaclay.news.domain.post.Post
+import com.upsaclay.news.domain.post.PostReport
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -44,6 +45,16 @@ class PostRemoteDataSource(private val postApi: PostApi) {
         withContext(dispatcher) {
             try {
                 postApi.deletePost(postId)
+            } catch (e: Exception) {
+                throw mapServerException(e)
+            }
+        }
+    }
+
+    suspend fun reportPost(report: PostReport) {
+        withContext(dispatcher) {
+            try {
+                postApi.reportPost(report.toRemote())
             } catch (e: Exception) {
                 throw mapServerException(e)
             }

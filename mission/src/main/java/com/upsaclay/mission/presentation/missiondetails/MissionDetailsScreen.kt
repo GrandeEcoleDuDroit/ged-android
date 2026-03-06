@@ -43,6 +43,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.fromHtml
 import androidx.compose.ui.unit.dp
+import com.upsaclay.common.domain.entity.Reporter
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
@@ -375,7 +376,7 @@ private fun MissionDetailsScreen(
                     onReportMissionClick(
                         MissionReport(
                             missionId = mission.id,
-                            reporter = MissionReport.Reporter(
+                            reporter = Reporter(
                                 fullName = user.fullName,
                                 email = user.email
                             ),

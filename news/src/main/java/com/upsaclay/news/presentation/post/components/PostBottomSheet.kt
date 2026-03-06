@@ -11,45 +11,50 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.upsaclay.common.presentation.components.TextItem
-import com.upsaclay.news.R
+import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.news.domain.post.Post.PostState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostBottomSheet(
     postState: PostState,
-    isEditable: Boolean,
+    editable: Boolean,
     onEditClick: () -> Unit,
     onRecreateClick: () -> Unit = {},
     onDeleteClick: () -> Unit,
+    onReportClick: () -> Unit,
     onDismiss: () -> Unit
 ) {
-    if (isEditable) {
-        ModalBottomSheet(onDismissRequest = onDismiss) {
-            Column(modifier = Modifier.navigationBarsPadding()) {
-                when (postState) {
-                    is PostState.Published -> {
+    ModalBottomSheet(onDismissRequest = onDismiss) {
+        Column(modifier = Modifier.navigationBarsPadding()) {
+            when (postState) {
+                is PostState.Published -> {
+                    if (editable) {
                         EditablePostBottomSheetContent(
                             onEditClick = onEditClick,
                             onDeleteClick = onDeleteClick
                         )
+                    } else {
+                        NonEditablePostBottomSheetContent(onReportClick = onReportClick)
                     }
-
-                    is PostState.Error -> {
-                        ErrorPostBottomSheetContent(
-                            onRecreateClick = onRecreateClick,
-                            onDeleteClick = onDeleteClick
-                        )
-                    }
-
-                    else -> Unit
                 }
+
+                is PostState.Error -> {
+                    ErrorPostBottomSheetContent(
+                        onRecreateClick = onRecreateClick,
+                        onDeleteClick = onDeleteClick
+                    )
+                }
+
+                else -> Unit
             }
         }
     }
@@ -61,9 +66,7 @@ private fun EditablePostBottomSheetContent(
     onDeleteClick: () -> Unit
 ) {
     TextItem(
-        modifier = Modifier
-            .fillMaxWidth()
-            .testTag(stringResource(id = R.string.read_screen_sheet_edit_field_tag)),
+        modifier = Modifier.fillMaxWidth(),
         text = { Text(text = stringResource(id = com.upsaclay.common.R.string.edit)) },
         icon = {
             Icon(
@@ -90,6 +93,29 @@ private fun EditablePostBottomSheetContent(
             )
         },
         onClick = onDeleteClick
+    )
+}
+
+@Composable
+private fun NonEditablePostBottomSheetContent(
+    onReportClick: () -> Unit
+) {
+    TextItem(
+        modifier = Modifier.fillMaxWidth(),
+        text = {
+            Text(
+                text = stringResource(id = com.upsaclay.common.R.string.report),
+                color = MaterialTheme.colorScheme.error
+            )
+        },
+        icon = {
+            Icon(
+                painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_report),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.error
+            )
+        },
+        onClick = onReportClick
     )
 }
 
@@ -127,4 +153,48 @@ private fun ErrorPostBottomSheetContent(
         },
         onClick = onDeleteClick
     )
+}
+
+/*
+ =====================================================================
+                                Preview
+ =====================================================================
+ */
+
+@Preview(heightDp = 400)
+@Composable
+fun EditablePostBottomSheetPreview() {
+    GedoiseTheme {
+        Surface {
+            EditablePostBottomSheetContent(
+                onEditClick = {},
+                onDeleteClick = {}
+            )
+        }
+    }
+}
+
+@Preview(heightDp = 400)
+@Composable
+private fun NonEditablePostBottomSheetPreview() {
+    GedoiseTheme {
+        Surface {
+            NonEditablePostBottomSheetContent(
+                onReportClick = {}
+            )
+        }
+    }
+}
+
+@Preview(heightDp = 400)
+@Composable
+private fun ErrorPostBottomSheetContentPreview() {
+    GedoiseTheme {
+        Surface {
+            ErrorPostBottomSheetContent(
+                onRecreateClick = {},
+                onDeleteClick = {}
+            )
+        }
+    }
 }
