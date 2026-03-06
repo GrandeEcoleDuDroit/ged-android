@@ -3,7 +3,10 @@ package com.upsaclay.news
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.news.domain.announcement.AnnouncementRepository
+import com.upsaclay.news.domain.announcement.announcementFixture
+import com.upsaclay.news.domain.announcement.announcementReportFixture
 import com.upsaclay.news.domain.announcement.announcementsFixture
+import com.upsaclay.news.domain.announcement.postReportFixture
 import com.upsaclay.news.domain.announcement.usecase.DeleteAnnouncementUseCase
 import com.upsaclay.news.domain.announcement.usecase.RecreateAnnouncementUseCase
 import com.upsaclay.news.domain.announcement.usecase.RefreshAnnouncementsUseCase
@@ -56,7 +59,6 @@ class NewsViewModelTest {
         newsViewModel = NewsViewModel(
             recreateAnnouncementUseCase = recreateAnnouncementUseCase,
             deleteAnnouncementUseCase = deleteAnnouncementUseCase,
-            refreshAnnouncementsUseCase = refreshAnnouncementsUseCase,
             announcementRepository = announcementRepository,
             postRepository = postRepository,
             recreatePostUseCase = recreatePostUseCase,
@@ -66,18 +68,9 @@ class NewsViewModelTest {
     }
 
     @Test
-    fun refreshAnnouncements_should_refresh_announcements() = runTest {
-        // When
-        newsViewModel.refreshAnnouncements()
-
-        // Then
-        coVerify { refreshAnnouncementsUseCase.execute() }
-    }
-
-    @Test
     fun recreateAnnouncement_should_recreate_announcement() = runTest {
         // Given
-        val announcement = announcementsFixture.first()
+        val announcement = announcementFixture
 
         // When
         newsViewModel.recreateAnnouncement(announcement)
@@ -89,13 +82,25 @@ class NewsViewModelTest {
     @Test
     fun deleteAnnouncement_should_delete_announcement() = runTest {
         // Given
-        val announcement = announcementsFixture.first()
+        val announcement = announcementFixture
 
         // When
         newsViewModel.deleteAnnouncement(announcement)
 
         // Then
         coVerify { deleteAnnouncementUseCase.execute(announcement) }
+    }
+
+    @Test
+    fun reportAnnouncement_should_report_announcement() = runTest {
+        // Given
+        val announcementReport = announcementReportFixture
+
+        // When
+        newsViewModel.reportAnnouncement(announcementReport)
+
+        // Then
+        coVerify { announcementRepository.reportAnnouncement(announcementReport) }
     }
 
     @Test
@@ -120,5 +125,17 @@ class NewsViewModelTest {
 
         // Then
         coVerify { deletePostUseCase.execute(post) }
+    }
+
+    @Test
+    fun reportPost_should_report_post() = runTest {
+        // Given
+        val postReport = postReportFixture
+
+        // When
+        newsViewModel.reportPost(postReport)
+
+        // Then
+        coVerify { postRepository.reportPost(postReport) }
     }
 }

@@ -1,18 +1,12 @@
-package com.upsaclay.news.domain.announcement
+package com.upsaclay.news.domain.post
 
 import com.upsaclay.common.domain.entity.Reporter
 
-data class AnnouncementReport(
-    val announcementId: String,
-    val author: Author,
+data class PostReport(
+    val postId: String,
     val reporter: Reporter,
     val reason: String
 ) {
-    data class Author(
-        val fullName: String,
-        val email: String
-    )
-
     enum class Reason {
         SELLING_PROMOTING_INAPPROPRIATE_ITEMS,
         VIOLENT_HATEFUL_CONTENT,

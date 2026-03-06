@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import com.upsaclay.common.domain.entity.Reporter
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.extension.noRippleClickable
@@ -243,7 +244,7 @@ private fun AllAnnouncementsScreen(
                                     fullName = bottomSheet.announcement.author.fullName,
                                     email = bottomSheet.announcement.author.email
                                 ),
-                                reporter = AnnouncementReport.Reporter(
+                                reporter = Reporter(
                                     fullName = user.fullName,
                                     email = user.email
                                 ),

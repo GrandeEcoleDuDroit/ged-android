@@ -7,7 +7,9 @@ import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.extension.executeUiBlockingRequest
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapExceptionErrorMessage
+import com.upsaclay.news.R
 import com.upsaclay.news.domain.post.Post
+import com.upsaclay.news.domain.post.PostReport
 import com.upsaclay.news.domain.post.PostRepository
 import com.upsaclay.news.domain.post.usecase.DeletePostUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -39,6 +41,13 @@ class ReadPostViewModel(
         executeRequest {
             deletePostUseCase.execute(post)
             _event.emit(ReadPostUiEvent.PostDeleted)
+        }
+    }
+
+    fun reportPost(report: PostReport) {
+        executeRequest {
+            postRepository.reportPost(report)
+            _event.emit(SingleUiEvent.Success(R.string.announcement_reported))
         }
     }
 

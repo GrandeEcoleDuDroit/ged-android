@@ -1,8 +1,11 @@
 package com.upsaclay.news.domain.announcement
 
+import com.upsaclay.common.domain.reporterFixture
 import com.upsaclay.common.domain.userFixture
+import com.upsaclay.common.domain.userFixture2
 import com.upsaclay.common.domain.usersFixture
 import com.upsaclay.news.domain.announcement.Announcement.AnnouncementState
+import com.upsaclay.news.domain.post.PostReport
 import java.time.LocalDateTime
 
 val longAnnouncementFixture = Announcement(
@@ -104,4 +107,20 @@ val announcementsFixture = listOf(
         author = usersFixture[6],
         state = AnnouncementState.PUBLISHED
     )
+)
+
+val announcementReportFixture = AnnouncementReport(
+    announcementId = "1",
+    reporter = reporterFixture,
+    author = AnnouncementReport.Author(
+        fullName = userFixture2.fullName,
+        email = userFixture2.email
+    ),
+    reason = "reason"
+)
+
+val postReportFixture = PostReport(
+    postId = "1",
+    reporter = reporterFixture,
+    reason = "reason"
 )

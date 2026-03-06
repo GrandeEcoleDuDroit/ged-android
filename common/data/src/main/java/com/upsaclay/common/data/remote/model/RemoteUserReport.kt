@@ -10,9 +10,4 @@ data class RemoteUserReport(
         val fullName: String,
         val email: String
     )
-
-    data class RemoteReporter(
-        val fullName: String,
-        val email: String
-    )
 }

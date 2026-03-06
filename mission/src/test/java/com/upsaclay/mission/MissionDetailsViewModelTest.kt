@@ -1,5 +1,6 @@
 package com.upsaclay.mission
 
+import com.upsaclay.common.domain.entity.Reporter
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.userFixture
@@ -74,7 +75,7 @@ class MissionDetailsViewModelTest {
         // Given
         val report = MissionReport(
             missionId = missionFixture.id,
-            reporter = MissionReport.Reporter(
+            reporter = Reporter(
                 fullName = userFixture2.fullName,
                 email = userFixture2.email
             ),

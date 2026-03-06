@@ -1,9 +1,9 @@
-package com.upsaclay.mission.data.remote.models
+package com.upsaclay.news.data.post.remote
 
 import com.upsaclay.common.data.remote.model.RemoteReporter
 
-data class RemoteMissionReport(
-    val missionId: String,
+data class RemotePostReport(
+    val postId: String,
     val reporter: RemoteReporter,
     val reason: String
 )

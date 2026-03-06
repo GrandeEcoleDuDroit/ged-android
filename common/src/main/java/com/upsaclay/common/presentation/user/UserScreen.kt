@@ -29,6 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.R
+import com.upsaclay.common.domain.entity.Reporter
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.entity.UserReport
 import com.upsaclay.common.domain.userFixture
@@ -211,7 +212,7 @@ private fun UserScreen(
                                 fullName = user.fullName,
                                 email = user.email
                             ),
-                            reporter = UserReport.Reporter(
+                            reporter = Reporter(
                                 fullName = currentUser.fullName,
                                 email = currentUser.email
                             ),
