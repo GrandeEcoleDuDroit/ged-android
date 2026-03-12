@@ -178,7 +178,7 @@ class EditPostViewModel(
     private fun validateContent(content: String): Boolean = content.isNotBlank()
 
     private fun validateImageReferencesUpdate(imageReferences: List<ImageReference>): Boolean =
-        imageReferences != post.state.imageReferenceValues
+        imageReferences.map { it.value } != post.state.imageReferenceValues
 
     private fun validateImageReferences(imageReferences: List<ImageReference>): Boolean =
         imageReferences.isNotEmpty() && imageReferences.size <= MAX_IMAGE_COUNT

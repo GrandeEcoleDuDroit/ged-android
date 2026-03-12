@@ -14,7 +14,7 @@ data class Post(
     enum class PostSource(val id: Int, val label: String) {
         LINKEDIN(1, "LinkedIn"),
         INSTAGRAM(2, "Instagram"),
-        BLOG_LLM(3, "Blog LLM");
+        WEB(3, "Web");
 
         companion object {
             fun fromId(id: Int): PostSource = entries.first { it.id == id }

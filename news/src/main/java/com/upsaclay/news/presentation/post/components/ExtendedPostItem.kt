@@ -188,7 +188,6 @@ private fun TitleSection(
             modifier = Modifier.weight(1f),
             text = title,
             style = MaterialTheme.typography.titleMedium,
-            maxLines = 2,
             overflow = TextOverflow.Ellipsis
         )
 

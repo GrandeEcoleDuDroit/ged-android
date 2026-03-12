@@ -143,7 +143,7 @@ private fun AllPostsScreen(
         topBar = {
             BackTopBar(
                 onBackClick = onBackClick,
-                title = stringResource(R.string.all_news)
+                title = stringResource(R.string.all_posts)
             )
         },
         snackbarHost = {

@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -94,10 +95,10 @@ private fun PostSourceIcon(
             )
         }
 
-        Post.PostSource.BLOG_LLM -> {
-            Image(
+        Post.PostSource.WEB -> {
+            Icon(
                 modifier = Modifier.size(iconSize),
-                painter = painterResource(com.upsaclay.common.R.drawable.app_logo),
+                painter = painterResource(R.drawable.ic_outline_language),
                 contentDescription = null
             )
         }
@@ -117,7 +118,7 @@ private fun PostSourceItemPreview() {
     GedoiseTheme {
         Surface {
             PostSourceItem(
-                postSource = Post.PostSource.BLOG_LLM,
+                postSource = Post.PostSource.WEB,
                 date = LocalDateTime.now()
             )
         }
