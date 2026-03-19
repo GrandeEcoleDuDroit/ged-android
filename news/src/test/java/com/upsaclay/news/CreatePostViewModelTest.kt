@@ -1,6 +1,9 @@
 package com.upsaclay.news
 
 import android.net.Uri
+import com.upsaclay.common.domain.entity.ByteUnit
+import com.upsaclay.common.domain.entity.FileInformation
+import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.common.domain.usecase.GenerateIdUseCase
 import com.upsaclay.news.domain.post.Post
 import com.upsaclay.news.domain.post.postFixture
@@ -18,6 +21,7 @@ import org.junit.Test
 import kotlin.test.assertEquals
 
 class CreatePostViewModelTest {
+    private val imageRepository: ImageRepository = mockk()
     private val createPostUseCase: CreatePostUseCase = mockk()
     private val generateIdUseCase: GenerateIdUseCase = mockk()
 
@@ -33,10 +37,12 @@ class CreatePostViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
 
+        every { imageRepository.getFileInformation(any()) } returns FileInformation()
         every { generateIdUseCase.execute() } returns "id"
         coEvery { createPostUseCase.execute(any(), any()) } returns Unit
 
         viewModel = CreatePostViewModel(
+            imageRepository = imageRepository,
             createPostUseCase = createPostUseCase,
             generateIdUseCase = generateIdUseCase
         )
@@ -116,6 +122,31 @@ class CreatePostViewModelTest {
 
         // Then
         assertEquals(imageUris, viewModel.uiState.value.imageUris)
+    }
+
+    @Test
+    fun onAddImageUris_should_not_add_image_with_size_superior_than_3mb() {
+        // Given
+        every { imageRepository.getFileInformation(any()) } returns FileInformation(size = 4 * ByteUnit.MEGA_BYTE.value)
+        val imageUris = listOf(imageUri)
+
+        // When
+        viewModel.onAddImageUris(imageUris)
+
+        // Then
+        assertEquals(emptyList(), viewModel.uiState.value.imageUris)
+    }
+
+    @Test
+    fun onAddImageUris_should_add_10_images_maximum() {
+        // Given
+        val imageUris = List(11) { imageUri }
+
+        // When
+        viewModel.onAddImageUris(imageUris)
+
+        // Then
+        assertEquals(10, viewModel.uiState.value.imageUris.size)
     }
 
     @Test

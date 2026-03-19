@@ -2,6 +2,7 @@ package com.upsaclay.common.data.repository
 
 import com.upsaclay.common.data.local.ImageLocalDataSource
 import com.upsaclay.common.data.remote.ImageRemoteDataSource
+import com.upsaclay.common.domain.entity.FileInformation
 import com.upsaclay.common.domain.repository.ImageRepository
 import java.io.File
 import java.io.InputStream
@@ -12,6 +13,8 @@ internal class ImageRepositoryImpl(
 ): ImageRepository {
     override suspend fun getRemoteImage(fileName: String): InputStream? =
         imageRemoteDataSource.getImage(fileName)
+
+    override fun getFileInformation(uri: String): FileInformation = imageLocalDataSource.getFileInformation(uri)
 
     override fun getFileExtension(uri: String): String = imageLocalDataSource.getFileExtension(uri)
 

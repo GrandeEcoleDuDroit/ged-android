@@ -25,10 +25,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.upsaclay.common.R
-import com.upsaclay.common.domain.loremIpsum
 import com.upsaclay.common.extension.extraSmallSpacing
 import com.upsaclay.common.extension.noRippleClickable
 import com.upsaclay.common.extension.smallSpacing
+import com.upsaclay.common.presentation.CommonPresentationUtils.loremIpsum
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.informationText
 
