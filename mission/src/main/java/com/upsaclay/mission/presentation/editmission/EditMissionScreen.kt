@@ -25,11 +25,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.domain.entity.ByteUnit
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.extensions.toBytes
 import com.upsaclay.common.domain.userFixture
-import com.upsaclay.common.domain.usersFixture
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.DatePickerModal
 import com.upsaclay.common.presentation.components.EditTopBar
@@ -40,9 +40,10 @@ import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.entity.MissionTask
-import com.upsaclay.mission.domain.missionFixture
 import com.upsaclay.mission.presentation.MissionBottomSheetType
 import com.upsaclay.mission.presentation.MissionImageError
+import com.upsaclay.mission.presentation.MissionPreviewParameterData
+import com.upsaclay.mission.presentation.MissionPreviewParameterProvider
 import com.upsaclay.mission.presentation.components.bottomsheets.AddMissionTaskBottomSheet
 import com.upsaclay.mission.presentation.components.bottomsheets.EditMissionTaskBottomSheet
 import com.upsaclay.mission.presentation.components.bottomsheets.SelectManagerBottomSheet
@@ -339,8 +340,10 @@ private fun EditMissionScreen(
 
 @PhonePreviews
 @Composable
-private fun CreateMissionScreenPreview() {
-    val mission = missionFixture
+private fun EditMissionScreenPreview(
+    @PreviewParameter(MissionPreviewParameterProvider::class) previewParameter: MissionPreviewParameterData
+) {
+    val mission = previewParameter.mission
 
     GedoiseTheme {
         EditMissionScreen(
@@ -358,7 +361,7 @@ private fun CreateMissionScreenPreview() {
             missionState = MissionState.Published(),
             maxParticipantsError = null,
             schoolLevelSupportingText = null,
-            users = usersFixture,
+            users = previewParameter.users,
             userQuery = "",
             imageUri = null,
             loading = false,

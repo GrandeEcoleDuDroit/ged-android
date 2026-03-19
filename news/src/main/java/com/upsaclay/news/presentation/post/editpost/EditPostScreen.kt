@@ -21,26 +21,32 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.upsaclay.common.domain.entity.ByteUnit
 import com.upsaclay.common.domain.extensions.toBytes
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.EditTopBar
 import com.upsaclay.common.presentation.components.LoadingDialog
+import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.inputForeground
+import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.post.ImageReference
 import com.upsaclay.news.domain.post.Post
 import com.upsaclay.news.presentation.post.PostImageError
 import com.upsaclay.news.presentation.post.PostLinkError
 import com.upsaclay.news.presentation.post.PostPresentationUtils.MAX_IMAGE_COUNT
+import com.upsaclay.news.presentation.post.PostPreviewParameterProvider
 import com.upsaclay.news.presentation.post.components.PostForm
 import com.upsaclay.news.presentation.post.components.PostFormValue
 import kotlinx.coroutines.flow.collectLatest
@@ -211,6 +217,46 @@ private fun EditPostScreen(
             onPostSourceChange = onPostSourceChange,
             onContentChange = onContentChange,
             onRemoveImageClick = onRemoveImageUri
+        )
+    }
+}
+
+/*
+ =====================================================================
+                                Preview
+ =====================================================================
+ */
+
+@PhonePreviews
+@Composable
+private fun EditPostScreenPreview(
+    @PreviewParameter(PostPreviewParameterProvider::class) post: Post
+) {
+    var title by remember { mutableStateOf(post.title) }
+    var postLink by remember { mutableStateOf(post.link) }
+    var postSource by remember { mutableStateOf(post.source) }
+    var content by remember { mutableStateOf(post.content ?: "") }
+
+    GedoiseTheme {
+        EditPostScreen(
+            title = title,
+            postLink = postLink,
+            postSource = postSource,
+            allPostSources = Post.PostSource.entries,
+            content = content,
+            imageReferences = emptyList(),
+            postLinkError = null,
+            loading = false,
+            updateEnabled = false,
+            snackbarHostState = SnackbarHostState(),
+            onTitleChange = { title = it },
+            onPostLinkChange = { postLink = it },
+            onPostSourceChange = { postSource = it },
+            onContentChange = { content = it },
+            onAddImageUris = {},
+            onRemoveImageUri = {},
+            onCancelClick = {},
+            onUpdatePostClick = {}
         )
     }
 }

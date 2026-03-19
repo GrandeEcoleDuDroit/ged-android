@@ -34,9 +34,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.upsaclay.common.domain.entity.Reporter
 import com.upsaclay.common.domain.entity.User
-import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.extension.rootMediumPadding
 import com.upsaclay.common.extension.smallMediumSpacing
 import com.upsaclay.common.presentation.LoadingScreen
@@ -54,7 +54,6 @@ import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.entity.MissionReport
-import com.upsaclay.mission.domain.missionsFixture
 import com.upsaclay.mission.presentation.components.MissionCard
 import com.upsaclay.mission.presentation.components.bottomsheets.MissionBottomSheet
 import kotlinx.coroutines.launch
@@ -317,11 +316,13 @@ private sealed class MissionScreenDialog {
 
 @PhonePreviews
 @Composable
-private fun MissionScreenPreview() {
+private fun MissionScreenPreview(
+    @PreviewParameter(AllMissionPreviewParameterProvider::class) previewParameter: AllMissionPreviewParameterData
+) {
     GedoiseTheme {
         MissionScreen(
-            user = userFixture,
-            missions = missionsFixture,
+            user = previewParameter.user,
+            missions = previewParameter.missions,
             loading = false,
             activeFilter = MissionViewModel.MissionFilter.OPEN,
             filters = MissionViewModel.MissionFilter.entries,

@@ -19,6 +19,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.upsaclay.common.extension.rootMediumPadding
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.EditTopBar
@@ -26,8 +27,9 @@ import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
-import com.upsaclay.news.domain.announcement.announcementFixture
 import com.upsaclay.news.domain.announcement.Announcement
+import com.upsaclay.news.presentation.announcement.AnnouncementPreviewParameterData
+import com.upsaclay.news.presentation.announcement.AnnouncementPreviewParameterProvider
 import com.upsaclay.news.presentation.announcement.components.EditAnnouncementInputs
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -133,9 +135,12 @@ private fun EditAnnouncementScreen(
 
 @PhonePreviews
 @Composable
-private fun EditAnnouncementScreenPreview() {
-    var title by remember { mutableStateOf(announcementFixture.title ?: "") }
-    var content by remember { mutableStateOf(announcementFixture.content) }
+private fun EditAnnouncementScreenPreview(
+    @PreviewParameter(AnnouncementPreviewParameterProvider::class) previewParameter: AnnouncementPreviewParameterData
+) {
+    var title by remember { mutableStateOf(previewParameter.announcement.title ?: "") }
+    var content by remember { mutableStateOf(previewParameter.announcement.content) }
+
     GedoiseTheme {
         Surface {
             EditAnnouncementScreen(

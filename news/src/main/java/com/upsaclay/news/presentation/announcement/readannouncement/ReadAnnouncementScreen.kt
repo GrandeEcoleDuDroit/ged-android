@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.upsaclay.common.domain.entity.Reporter
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.extension.rootMediumPadding
@@ -39,9 +40,10 @@ import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.announcement.Announcement
 import com.upsaclay.news.domain.announcement.AnnouncementReport
-import com.upsaclay.news.domain.announcement.announcementFixture
 import com.upsaclay.news.presentation.announcement.AnnouncementPresentationUtils.announcementContentStyle
 import com.upsaclay.news.presentation.announcement.AnnouncementPresentationUtils.announcementTitleStyle
+import com.upsaclay.news.presentation.announcement.AnnouncementPreviewParameterData
+import com.upsaclay.news.presentation.announcement.AnnouncementPreviewParameterProvider
 import com.upsaclay.news.presentation.announcement.components.AnnouncementBottomSheet
 import com.upsaclay.news.presentation.announcement.stringRes
 import org.koin.androidx.compose.koinViewModel
@@ -249,12 +251,14 @@ private fun AnnouncementContent(
 
 @PhonePreviews
 @Composable
-private fun NonEditableAnnouncementScreenPreview() {
+private fun NonEditableAnnouncementScreenPreview(
+    @PreviewParameter(AnnouncementPreviewParameterProvider::class) previewParameter: AnnouncementPreviewParameterData
+) {
     GedoiseTheme {
         Surface {
             ReadAnnouncementScreen(
-                user = announcementFixture.author,
-                announcement = announcementFixture,
+                user = previewParameter.announcement.author,
+                announcement = previewParameter.announcement,
                 snackbarHostState = SnackbarHostState(),
                 onBackClick = {},
                 onAuthorClick = {},
@@ -268,12 +272,14 @@ private fun NonEditableAnnouncementScreenPreview() {
 
 @PhonePreviews
 @Composable
-private fun EditableAnnouncementScreenPreview() {
+private fun EditableAnnouncementScreenPreview(
+    @PreviewParameter(AnnouncementPreviewParameterProvider::class) previewParameter: AnnouncementPreviewParameterData
+) {
     GedoiseTheme {
         Surface {
             ReadAnnouncementScreen(
-                user = announcementFixture.author,
-                announcement = announcementFixture,
+                user = previewParameter.announcement.author,
+                announcement = previewParameter.announcement,
                 snackbarHostState = SnackbarHostState(),
                 onBackClick = {},
                 onAuthorClick = {},

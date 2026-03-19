@@ -25,9 +25,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.upsaclay.common.domain.entity.Reporter
 import com.upsaclay.common.domain.entity.User
-import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.extension.noRippleClickable
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.BackTopBar
@@ -43,7 +43,8 @@ import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.post.Post
 import com.upsaclay.news.domain.post.PostReport
-import com.upsaclay.news.domain.post.postsFixture
+import com.upsaclay.news.presentation.post.AllPostPreviewParameterData
+import com.upsaclay.news.presentation.post.AllPostPreviewParameterProvider
 import com.upsaclay.news.presentation.post.PostPresentationUtils
 import com.upsaclay.news.presentation.post.components.ExtendedPostItem
 import com.upsaclay.news.presentation.post.components.PostBottomSheet
@@ -269,11 +270,13 @@ private sealed class AllPostDialog {
 
 @PhonePreviews
 @Composable
-private fun AllPostsScreenPreview() {
+private fun AllPostsScreenPreview(
+    @PreviewParameter(AllPostPreviewParameterProvider::class) previewParameter: AllPostPreviewParameterData
+) {
     GedoiseTheme {
         AllPostsScreen(
-            user = userFixture,
-            posts = postsFixture,
+            user = previewParameter.user,
+            posts = previewParameter.posts,
             refreshing = false,
             loading = false,
             onBackClick = {},
