@@ -25,9 +25,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.upsaclay.common.domain.entity.Reporter
 import com.upsaclay.common.domain.entity.User
-import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.extension.noRippleClickable
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.BackTopBar
@@ -44,7 +44,8 @@ import com.upsaclay.news.R
 import com.upsaclay.news.domain.announcement.Announcement
 import com.upsaclay.news.domain.announcement.Announcement.AnnouncementState
 import com.upsaclay.news.domain.announcement.AnnouncementReport
-import com.upsaclay.news.domain.announcement.announcementsFixture
+import com.upsaclay.news.presentation.announcement.AllAnnouncementPreviewParameterData
+import com.upsaclay.news.presentation.announcement.AnnouncementPreviewParameterProvider
 import com.upsaclay.news.presentation.announcement.components.AnnouncementBottomSheet
 import com.upsaclay.news.presentation.announcement.components.ExtendedAnnouncementItem
 import com.upsaclay.news.presentation.announcement.stringRes
@@ -278,11 +279,13 @@ private sealed class AllAnnouncementDialog {
 
 @PhonePreviews
 @Composable
-private fun AllAnnouncementsScreenPreview() {
+private fun AllAnnouncementsScreenPreview(
+    @PreviewParameter(AnnouncementPreviewParameterProvider::class) previewParameter: AllAnnouncementPreviewParameterData
+) {
     GedoiseTheme {
         AllAnnouncementsScreen(
-            user = userFixture,
-            announcements = announcementsFixture,
+            user = previewParameter.user,
+            announcements = previewParameter.announcements,
             refreshing = false,
             loading = false,
             onBackClick = {},

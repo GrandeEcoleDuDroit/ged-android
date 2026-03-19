@@ -10,12 +10,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.upsaclay.common.domain.entity.User
-import com.upsaclay.common.domain.usersFixture
 import com.upsaclay.common.presentation.components.SearchTopBar
 import com.upsaclay.common.presentation.components.UserItem
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.PhonePreviews
+import com.upsaclay.mission.presentation.AllUsersMissionDetailsPreviewParameterProvider
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -80,11 +81,13 @@ private fun AllUsersScreen(
 
 @PhonePreviews
 @Composable
-private fun AllUsersScreenPreview() {
+private fun AllUsersScreenPreview(
+    @PreviewParameter(AllUsersMissionDetailsPreviewParameterProvider::class) users: List<User>
+) {
     GedoiseTheme {
         Surface {
             AllUsersScreen(
-                users = usersFixture + usersFixture,
+                users = users,
                 userQuery = "",
                 onUserQueryChange = {},
                 onResetQuery = {},

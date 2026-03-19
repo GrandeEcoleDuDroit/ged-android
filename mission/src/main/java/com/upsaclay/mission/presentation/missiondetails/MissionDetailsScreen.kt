@@ -42,11 +42,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.fromHtml
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.upsaclay.common.domain.entity.Reporter
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.entity.User
-import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.extension.displayName
 import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.extension.smallMediumSpacing
@@ -65,7 +65,8 @@ import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.entity.MissionReport
-import com.upsaclay.mission.domain.missionFixture
+import com.upsaclay.mission.presentation.MissionDetailsPreviewParameterData
+import com.upsaclay.mission.presentation.MissionDetailsPreviewParameterProvider
 import com.upsaclay.mission.presentation.components.MissionImage
 import com.upsaclay.mission.presentation.components.bottomsheets.MissionBottomSheet
 import com.upsaclay.mission.presentation.missiondetails.MissionDetailsViewModel.MissionButtonState
@@ -501,12 +502,14 @@ private sealed class MissionDetailsScreenDialog {
 
 @PhonePreviews
 @Composable
-private fun MissionDetailsScreenPreview() {
+private fun MissionDetailsScreenPreview(
+    @PreviewParameter(MissionDetailsPreviewParameterProvider::class) previewParameter: MissionDetailsPreviewParameterData
+) {
     GedoiseTheme {
         Surface {
             MissionDetailsScreen(
-                user = userFixture,
-                mission = missionFixture,
+                user = previewParameter.user,
+                mission = previewParameter.mission,
                 loading = false,
                 isManager = true,
                 buttonState = MissionButtonState.Register,

@@ -28,14 +28,16 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.upsaclay.common.domain.entity.User
-import com.upsaclay.common.domain.usersFixture
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.UserItem
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.supportingText
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.message.domain.entity.Conversation
+import com.upsaclay.message.presentation.conversation.CreateConversationPreviewParameterData
+import com.upsaclay.message.presentation.conversation.CreateConversationPreviewParameterProvider
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -173,12 +175,14 @@ private fun UsersFeed(
 
 @PhonePreviews
 @Composable
-private fun CreateConversationScreenPreview() {
+private fun CreateConversationScreenPreview(
+    @PreviewParameter(CreateConversationPreviewParameterProvider::class) previewParameter: CreateConversationPreviewParameterData
+) {
     var query by remember { mutableStateOf("") }
 
     GedoiseTheme {
         CreateConversationScreen(
-            users = usersFixture,
+            users = previewParameter.users,
             query = query,
             onQueryChange = { query = it },
             onResetQuery = { query = "" },

@@ -18,9 +18,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.upsaclay.common.domain.entity.Reporter
 import com.upsaclay.common.domain.entity.User
-import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.presentation.LoadingScreen
 import com.upsaclay.common.presentation.SingleUiEvent
@@ -32,10 +32,8 @@ import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.announcement.Announcement
 import com.upsaclay.news.domain.announcement.AnnouncementReport
-import com.upsaclay.news.domain.announcement.announcementsFixture
 import com.upsaclay.news.domain.post.Post
 import com.upsaclay.news.domain.post.PostReport
-import com.upsaclay.news.domain.post.postsFixture
 import com.upsaclay.news.presentation.announcement.components.AnnouncementBottomSheet
 import com.upsaclay.news.presentation.announcement.stringRes
 import com.upsaclay.news.presentation.news.components.NewsScaffold
@@ -334,12 +332,14 @@ private sealed class NewsDialog {
 
 @PhonePreviews
 @Composable
-private fun NewsScreenPreview() {
+private fun NewsScreenPreview(
+    @PreviewParameter(NewsPreviewParameterProvider::class) previewParameter: NewsPreviewParameterData
+) {
     GedoiseTheme {
         NewsScreen(
-            user = userFixture,
-            announcements = announcementsFixture,
-            posts = postsFixture,
+            user = previewParameter.user,
+            announcements = previewParameter.announcements,
+            posts = previewParameter.posts,
             loading = false,
             bottomBar = {},
             onAnnouncementClick = {},

@@ -28,9 +28,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.upsaclay.common.domain.entity.Reporter
 import com.upsaclay.common.domain.entity.User
-import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.BackTopBar
@@ -44,10 +44,11 @@ import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.post.Post
 import com.upsaclay.news.domain.post.PostReport
-import com.upsaclay.news.domain.post.postFixture
 import com.upsaclay.news.presentation.post.PostPresentationUtils
 import com.upsaclay.news.presentation.post.PostPresentationUtils.postContentStyle
 import com.upsaclay.news.presentation.post.PostPresentationUtils.postTitleStyle
+import com.upsaclay.news.presentation.post.PostPreviewParameterData
+import com.upsaclay.news.presentation.post.PostPreviewParameterProvider
 import com.upsaclay.news.presentation.post.SizeTokens
 import com.upsaclay.news.presentation.post.components.PostBottomSheet
 import com.upsaclay.news.presentation.post.components.PostImagePages
@@ -266,12 +267,14 @@ private sealed class ReadPostDialog {
 
 @PhonePreviews
 @Composable
-private fun ReadPostScreenPreview() {
+private fun ReadPostScreenPreview(
+    @PreviewParameter(PostPreviewParameterProvider::class) previewParameter: PostPreviewParameterData
+) {
     GedoiseTheme {
         Surface {
             ReadPostScreen(
-                user = userFixture,
-                post = postFixture,
+                user = previewParameter.user,
+                post = previewParameter.post,
                 loading = false,
                 snackbarHostState = SnackbarHostState(),
                 onBackClick = {},
