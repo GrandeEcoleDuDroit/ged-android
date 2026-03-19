@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,6 +22,7 @@ import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.domain.userFixture2
 import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.domain.entity.MissionTask
 import com.upsaclay.mission.domain.missionTaskFixture
@@ -56,17 +58,17 @@ fun MissionForm(
         )
 
         MissionFormTitleDescriptionSection(
-            modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+            modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
             title = value.title,
             description = value.description,
             onTitleChange = onTitleChange,
             onDescriptionChange = onDescriptionChange
         )
 
-        HorizontalDivider(modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)))
+        HorizontalDivider(modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium))
 
         MissionFormInformationSection(
-            modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+            modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
             allSchoolLevels = value.allSchoolLevels,
             schoolLevels = value.schoolLevels,
             startDate = value.startDate,
@@ -82,7 +84,7 @@ fun MissionForm(
             onMaxParticipantsChange = onMaxParticipantsChange
         )
 
-        HorizontalDivider(modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)))
+        HorizontalDivider(modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium))
 
         MissionFormManagerSection(
             managers = value.managers,
@@ -90,7 +92,7 @@ fun MissionForm(
             onRemoveManagerClick = onRemoveManagerClick
         )
 
-        HorizontalDivider(modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)))
+        HorizontalDivider(modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium))
 
         MissionFormTaskSection(
             missionTasks = value.missionTasks,
@@ -99,7 +101,7 @@ fun MissionForm(
             onRemoveTaskClick = onRemoveTaskClick
         )
 
-        Spacer(modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.small_padding)))
+        Spacer(modifier = Modifier.padding(MaterialTheme.padding.small))
     }
 }
 

@@ -28,6 +28,7 @@ import com.upsaclay.common.presentation.components.SimpleAsyncImage
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.emptyImageBackground
 import com.upsaclay.common.presentation.theme.imageIconButtonColors
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
 
@@ -72,7 +73,7 @@ private fun EmptyImage(
             tint = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
-        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding)))
+        Spacer(modifier = Modifier.height(MaterialTheme.padding.extraSmall))
 
         Text(
             text = stringResource(com.upsaclay.common.R.string.add_image),
@@ -95,7 +96,7 @@ private fun NonEmptyImage(
 
         IconButton(
             modifier = Modifier
-                .padding(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding))
+                .padding(MaterialTheme.padding.smallMedium)
                 .align(Alignment.TopEnd)
                 .size(dimensionResource(R.dimen.mission_image_remove_button_size)),
             colors = MaterialTheme.colorScheme.imageIconButtonColors,

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -25,6 +26,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import com.upsaclay.common.presentation.components.EmptyText
 import com.upsaclay.common.presentation.components.SectionTitle
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.announcement.Announcement
@@ -44,7 +46,7 @@ fun AnnouncementSection(
     Column(modifier = modifier) {
         Row(
             modifier = Modifier
-                .padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+                .padding(horizontal = MaterialTheme.padding.medium)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
@@ -77,7 +79,7 @@ fun AnnouncementSection(
                 if (announcements.isEmpty()) {
                     item {
                         EmptyText(
-                            modifier = Modifier.padding(top = dimensionResource(com.upsaclay.common.R.dimen.small_padding)),
+                            modifier = Modifier.padding(top = MaterialTheme.padding.small),
                             text = stringResource(id = R.string.no_announcement)
                         )
                     }

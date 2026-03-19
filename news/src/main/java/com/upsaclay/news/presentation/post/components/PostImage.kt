@@ -15,12 +15,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.upsaclay.common.presentation.components.SimpleAsyncImage
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.overlayContent
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.presentation.theme.white
 
 @Composable
@@ -50,7 +50,7 @@ fun PostImagePages(
             Box(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .padding(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding))
+                    .padding(MaterialTheme.padding.smallMedium)
             ) {
                 PageNumberBadge(
                     index = pagerState.currentPage,

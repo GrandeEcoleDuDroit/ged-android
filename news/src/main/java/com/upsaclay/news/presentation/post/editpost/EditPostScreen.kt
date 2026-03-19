@@ -28,7 +28,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -39,6 +38,7 @@ import com.upsaclay.common.presentation.components.EditTopBar
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.inputForeground
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.post.ImageReference
@@ -199,7 +199,7 @@ private fun EditPostScreen(
         PostForm(
             modifier = Modifier
                 .padding(innerPadding)
-                .padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                .padding(horizontal = MaterialTheme.padding.medium),
             value = PostFormValue(
                 title = title,
                 postLink = postLink,

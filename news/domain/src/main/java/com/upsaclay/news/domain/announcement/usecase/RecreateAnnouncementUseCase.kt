@@ -1,8 +1,8 @@
 package com.upsaclay.news.domain.announcement.usecase
 
-import com.upsaclay.news.domain.announcement.AnnouncementJobQueue
 import com.upsaclay.news.domain.announcement.Announcement
 import com.upsaclay.news.domain.announcement.Announcement.AnnouncementState
+import com.upsaclay.news.domain.announcement.AnnouncementJobQueue
 import com.upsaclay.news.domain.announcement.AnnouncementRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

@@ -18,12 +18,12 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import com.upsaclay.common.presentation.components.OptionButton
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.imageIconButtonColors
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.utils.PhonePreviews
 
 @Composable
@@ -59,7 +59,7 @@ private fun ImageTopBar(
 ) {
     Row(
         modifier = modifier
-            .padding(dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding))
+            .padding(MaterialTheme.padding.extraSmall)
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
@@ -96,7 +96,7 @@ private fun TextTopBar(
     Row(
         modifier = modifier
             .background(MaterialTheme.colorScheme.surface)
-            .padding(dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding))
+            .padding(MaterialTheme.padding.extraSmall)
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -117,7 +117,7 @@ private fun TextTopBar(
             }
 
             Text(
-                modifier = Modifier.padding(start = dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding)),
+                modifier = Modifier.padding(start = MaterialTheme.padding.extraSmall),
                 text = title,
                 style = MaterialTheme.typography.titleLarge,
                 maxLines = 1,

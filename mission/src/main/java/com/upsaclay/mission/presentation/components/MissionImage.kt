@@ -11,12 +11,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.upsaclay.common.presentation.components.SimpleAsyncImage
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.defaultImageForeground
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.utils.PhonePreviews
 
 @Composable
@@ -51,7 +51,7 @@ private fun DefaultImage(
     Box(
         modifier = modifier
             .background(MaterialTheme.colorScheme.surfaceVariant)
-            .padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+            .padding(MaterialTheme.padding.medium),
         contentAlignment = Alignment.Center
     ) {
         Icon(

@@ -13,13 +13,13 @@ import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -33,6 +33,7 @@ import com.upsaclay.common.presentation.components.EmptyText
 import com.upsaclay.common.presentation.components.SectionTitle
 import com.upsaclay.common.presentation.components.UserItem
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
@@ -118,7 +119,7 @@ fun MissionDetailsManagerSection(
             }
         }
 
-        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding)))
+        Spacer(modifier = Modifier.height(MaterialTheme.padding.extraSmall))
 
         managers.take(MAX_USER_ITEM_DISPLAYED).forEach {
             MissionUserItem(
@@ -167,7 +168,7 @@ fun MissionDetailsParticipantSection(
             }
         }
 
-        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding)))
+        Spacer(modifier = Modifier.height(MaterialTheme.padding.extraSmall))
 
         if (participants.isEmpty()) {
             EmptyText(
@@ -175,7 +176,7 @@ fun MissionDetailsParticipantSection(
                 textStyle = contentStyle
             )
 
-            Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding)))
+            Spacer(modifier = Modifier.height(MaterialTheme.padding.extraSmall))
         } else {
             participants.take(MAX_USER_ITEM_DISPLAYED).forEach {
                 UserItem(

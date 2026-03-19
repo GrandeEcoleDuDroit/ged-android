@@ -10,9 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.style.TextOverflow
 import com.upsaclay.common.extension.displayName
+import com.upsaclay.common.extension.smallMediumSpacing
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.supportingText
@@ -35,7 +35,7 @@ fun AnnouncementHeader(
                 detectTapGestures(onTap = { onClick() })
             },
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding))
+        horizontalArrangement = Arrangement.smallMediumSpacing()
     ) {
         ProfilePicture(
             url = announcement.author.profilePictureUrl,

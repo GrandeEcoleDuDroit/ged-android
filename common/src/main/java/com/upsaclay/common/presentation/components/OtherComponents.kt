@@ -27,7 +27,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,6 +37,7 @@ import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.extension.displayName
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.utils.PhonePreviews
 import kotlinx.coroutines.delay
 
@@ -158,7 +158,7 @@ private fun PullRefreshComponentPreview() {
             onRefresh = { },
             refreshing = refreshing
         ) {
-            LazyColumn(modifier = Modifier.padding(dimensionResource(R.dimen.medium_padding))) {
+            LazyColumn(modifier = Modifier.padding(MaterialTheme.padding.medium)) {
                 item {
                     Text(text = "Pull to refresh", style = MaterialTheme.typography.titleLarge)
                 }

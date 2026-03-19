@@ -62,6 +62,7 @@ import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.black
 import com.upsaclay.common.presentation.theme.informationText
 import com.upsaclay.common.presentation.theme.inputBackground
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.presentation.theme.white
 import com.upsaclay.common.utils.DateUtils
 import com.upsaclay.message.R
@@ -109,8 +110,8 @@ fun SentMessageItem(
             if (showSeen) {
                 Text(
                     modifier = Modifier.padding(
-                        top = dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding),
-                        end = dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)
+                        top = MaterialTheme.padding.extraSmall,
+                        end = MaterialTheme.padding.smallMedium
                     ),
                     text = stringResource(id = R.string.message_seen),
                     style = MaterialTheme.typography.bodySmall,
@@ -157,7 +158,7 @@ fun ReceivedMessageItem(
 
     Row(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.small_padding)),
+        horizontalArrangement = Arrangement.smallSpacing(),
         verticalAlignment = Alignment.Bottom
     ) {
         if (displayProfilePicture) {
@@ -203,11 +204,11 @@ private fun MessageBubble(
 ) {
     FlowRow(
         modifier = modifier
-            .clip(RoundedCornerShape(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)))
+            .clip(RoundedCornerShape(MaterialTheme.padding.medium))
             .background(backgroundColor)
             .padding(
-                vertical = dimensionResource(com.upsaclay.common.R.dimen.small_padding),
-                horizontal = dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)
+                vertical = MaterialTheme.padding.small,
+                horizontal = MaterialTheme.padding.smallMedium
             ),
         horizontalArrangement = Arrangement.End
     ) {
@@ -220,7 +221,7 @@ private fun MessageBubble(
 
         Text(
             modifier = Modifier
-                .padding(start = dimensionResource(com.upsaclay.common.R.dimen.small_padding))
+                .padding(start = MaterialTheme.padding.small)
                 .align(Alignment.Bottom),
             text = DateUtils.formatHourMinute(date),
             style = MaterialTheme.typography.labelSmall,
@@ -243,7 +244,7 @@ fun MessageInput(
         modifier = modifier
             .clip(ShapeDefaults.ExtraLarge)
             .background(MaterialTheme.colorScheme.inputBackground)
-            .padding(end = dimensionResource(com.upsaclay.common.R.dimen.small_padding)),
+            .padding(end = MaterialTheme.padding.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
         BasicTextField(
@@ -276,8 +277,8 @@ fun MessageInput(
                 visualTransformation = VisualTransformation.None,
                 interactionSource = interactionSource,
                 contentPadding = PaddingValues(
-                    horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding),
-                    vertical = dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)
+                    horizontal = MaterialTheme.padding.medium,
+                    vertical = MaterialTheme.padding.smallMedium
                 )
             )
         }
@@ -307,7 +308,7 @@ fun NewMessageIndicator(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)),
+            .padding(vertical = MaterialTheme.padding.smallMedium),
         Arrangement.Center
     ) {
         Surface(
@@ -319,8 +320,8 @@ fun NewMessageIndicator(
             Text(
                 modifier = Modifier
                     .padding(
-                        horizontal = dimensionResource(com.upsaclay.common.R.dimen.large_padding),
-                        vertical = dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)
+                        horizontal = MaterialTheme.padding.large,
+                        vertical = MaterialTheme.padding.smallMedium
                     ),
                 text = stringResource(id = R.string.new_message),
                 style = MaterialTheme.typography.labelMedium,
@@ -472,7 +473,7 @@ private fun MessageBlockedUserIndicatorPreview() {
     GedoiseTheme {
         Surface {
             MessageBlockedUserIndicator(
-                modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                modifier = Modifier.padding(MaterialTheme.padding.medium),
                 onDeleteChatClick = {},
                 onUnblockUserClick = {}
             )

@@ -27,6 +27,7 @@ import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
+import com.upsaclay.news.domain.announcement.announcementFixture
 import com.upsaclay.news.domain.announcement.Announcement
 import com.upsaclay.news.presentation.announcement.AnnouncementPreviewParameterData
 import com.upsaclay.news.presentation.announcement.AnnouncementPreviewParameterProvider

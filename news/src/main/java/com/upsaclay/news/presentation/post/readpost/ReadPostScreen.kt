@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
@@ -39,6 +40,7 @@ import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.OptionButton
 import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.utils.ElapsedTimeValueFormat
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
@@ -154,7 +156,7 @@ private fun ReadPostScreen(
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .padding(bottom = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                .padding(bottom = MaterialTheme.padding.medium),
             verticalArrangement = Arrangement.mediumSpacing()
         ) {
             Column(
@@ -164,13 +166,13 @@ private fun ReadPostScreen(
                 verticalArrangement = Arrangement.mediumSpacing()
             ) {
                 Text(
-                    modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                    modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
                     text = post.title,
                     style = postTitleStyle
                 )
 
                 PostSourceItem(
-                    modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                    modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
                     postSource = post.source,
                     date = post.date,
                     contentSize = SizeTokens.MEDIUM,
@@ -188,7 +190,7 @@ private fun ReadPostScreen(
 
                 post.content?.let {
                     Text(
-                        modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                        modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
                         text = it,
                         style = postContentStyle
                     )
@@ -198,7 +200,7 @@ private fun ReadPostScreen(
             OutlinedButton(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                    .padding(horizontal = MaterialTheme.padding.medium),
                 onClick = { onRedirectPostClick(post.link) }
             ) {
                 Text(text = stringResource(com.upsaclay.common.R.string.see))
