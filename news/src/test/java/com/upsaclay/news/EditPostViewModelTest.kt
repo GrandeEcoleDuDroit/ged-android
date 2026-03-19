@@ -1,6 +1,9 @@
 package com.upsaclay.news
 
 import android.net.Uri
+import com.upsaclay.common.domain.entity.ByteUnit
+import com.upsaclay.common.domain.entity.FileInformation
+import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.news.domain.post.ImageReference
 import com.upsaclay.news.domain.post.Post
 import com.upsaclay.news.domain.post.postFixture
@@ -8,6 +11,7 @@ import com.upsaclay.news.domain.post.usecase.UpdatePostUseCase
 import com.upsaclay.news.presentation.post.editpost.EditPostViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -18,6 +22,7 @@ import kotlin.test.assertEquals
 
 class EditPostViewModelTest {
     private val post = postFixture
+    private val imageRepository: ImageRepository = mockk()
     private val updatePostUseCase: UpdatePostUseCase = mockk()
 
     private lateinit var viewModel: EditPostViewModel
@@ -32,10 +37,12 @@ class EditPostViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
 
+        every { imageRepository.getFileInformation(any()) } returns FileInformation()
         coEvery { updatePostUseCase.execute(any(), any()) } returns Unit
 
         viewModel = EditPostViewModel(
             post = post,
+            imageRepository = imageRepository,
             updatePostUseCase = updatePostUseCase
         )
     }
@@ -115,6 +122,32 @@ class EditPostViewModelTest {
 
         // Then
         assertEquals(expectedResult, viewModel.uiState.value.imageReferences)
+    }
+
+    @Test
+    fun onAddImageUris_should_not_add_image_with_size_superior_than_3mb() {
+        // Given
+        every { imageRepository.getFileInformation(any()) } returns FileInformation(size = 4 * ByteUnit.MEGA_BYTE.value)
+        val imageUris = listOf(imageUri)
+        val expectedResult = viewModel.uiState.value.imageReferences
+
+        // When
+        viewModel.onAddImageUris(imageUris)
+
+        // Then
+        assertEquals(expectedResult, viewModel.uiState.value.imageReferences)
+    }
+
+    @Test
+    fun onAddImageUris_should_add_10_images_maximum() {
+        // Given
+        val imageUris = List(11) { imageUri }
+
+        // When
+        viewModel.onAddImageUris(imageUris)
+
+        // Then
+        assertEquals(10, viewModel.uiState.value.imageReferences.size)
     }
 
     @Test

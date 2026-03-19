@@ -3,13 +3,15 @@ package com.upsaclay.news.presentation.post.editpost
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.common.extension.executeUiBlockingRequest
+import com.upsaclay.common.presentation.CommonPresentationUtils
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapExceptionErrorMessage
-import com.upsaclay.news.R
 import com.upsaclay.news.domain.post.ImageReference
 import com.upsaclay.news.domain.post.Post
 import com.upsaclay.news.domain.post.usecase.UpdatePostUseCase
+import com.upsaclay.news.presentation.post.PostImageError
 import com.upsaclay.news.presentation.post.PostLinkError
 import com.upsaclay.news.presentation.post.PostPresentationUtils.MAX_CONTENT_LENGTH
 import com.upsaclay.news.presentation.post.PostPresentationUtils.MAX_IMAGE_COUNT
@@ -24,7 +26,8 @@ import kotlinx.coroutines.launch
 
 class EditPostViewModel(
     private val post: Post,
-    private val updatePostUseCase: UpdatePostUseCase
+    private val imageRepository: ImageRepository,
+    private val updatePostUseCase: UpdatePostUseCase,
 ): ViewModel() {
     private val _uiState = MutableStateFlow(
         EditPostUiState(
@@ -113,13 +116,30 @@ class EditPostViewModel(
     }
 
     fun onAddImageUris(uris: List<Uri>) {
-        val references = uris.map { ImageReference.ImageUri(it.toString()) }
-        val newImageReferences = uiState.value.imageReferences + references
-        if (newImageReferences.size > MAX_IMAGE_COUNT) {
-            viewModelScope.launch {
-                _event.emit(SingleUiEvent.Error(R.string.post_max_image_count_error))
+        val currentImageReferences = uiState.value.imageReferences
+        var displayImageSizeErrorMessage = false
+        val displayImageCountErrorMessage = currentImageReferences.size + uris.size > MAX_IMAGE_COUNT
+        val newImageUriReferences = uris
+            .filter { uri ->
+                val fileInformation = imageRepository.getFileInformation(uri.toString())
+                if (fileInformation.size > CommonPresentationUtils.MAX_IMAGE_FILE_SIZE) {
+                    displayImageSizeErrorMessage = true
+                    false
+                } else true
             }
-            return
+            .map { ImageReference.ImageUri(it.toString()) }
+        val newImageReferences = (currentImageReferences + newImageUriReferences).take(MAX_IMAGE_COUNT)
+
+        if (displayImageSizeErrorMessage) {
+            viewModelScope.launch {
+                _event.emit(EditPostUiEvent.ImageError(PostImageError.ImageTooLarge))
+            }
+        }
+
+        if (displayImageCountErrorMessage) {
+            viewModelScope.launch {
+                _event.emit(EditPostUiEvent.ImageError(PostImageError.TooManyImages))
+            }
         }
 
         _uiState.update {
@@ -158,7 +178,7 @@ class EditPostViewModel(
         _uiState.update {
             it.copy(
                 postLinkError = when {
-                    postLink.length > MAX_POST_LINK_LENGTH -> PostLinkError.ExceedLengthLimit
+                    postLink.length > MAX_POST_LINK_LENGTH -> PostLinkError.LinkTooLong
                     else -> null
                 }
             )
@@ -215,6 +235,7 @@ class EditPostViewModel(
         val content: String = "",
         val imageReferences: List<ImageReference> = emptyList(),
         val postLinkError: PostLinkError? = null,
+        val postImageError: PostImageError? = null,
         val loading: Boolean = false,
         val updateEnabled: Boolean = false
     ) {
@@ -246,5 +267,9 @@ class EditPostViewModel(
                     validPostLink &&
                     validPostSource &&
                     (validContent || validImageReferences)
+    }
+
+    sealed interface EditPostUiEvent : SingleUiEvent {
+        data class ImageError(val postImageError: PostImageError) : EditPostUiEvent
     }
 }

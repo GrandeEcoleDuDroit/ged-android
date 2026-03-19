@@ -3,11 +3,13 @@ package com.upsaclay.news.presentation.post.createpost
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.common.domain.usecase.GenerateIdUseCase
+import com.upsaclay.common.presentation.CommonPresentationUtils
 import com.upsaclay.common.presentation.SingleUiEvent
-import com.upsaclay.news.R
 import com.upsaclay.news.domain.post.Post
 import com.upsaclay.news.domain.post.usecase.CreatePostUseCase
+import com.upsaclay.news.presentation.post.PostImageError
 import com.upsaclay.news.presentation.post.PostLinkError
 import com.upsaclay.news.presentation.post.PostPresentationUtils.MAX_CONTENT_LENGTH
 import com.upsaclay.news.presentation.post.PostPresentationUtils.MAX_IMAGE_COUNT
@@ -23,6 +25,7 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 
 class CreatePostViewModel(
+    private val imageRepository: ImageRepository,
     private val createPostUseCase: CreatePostUseCase,
     private val generateIdUseCase: GenerateIdUseCase
 ): ViewModel() {
@@ -76,12 +79,29 @@ class CreatePostViewModel(
     }
 
     fun onAddImageUris(uris: List<Uri>) {
-        val newImageUris = uiState.value.imageUris + uris
-        if (newImageUris.size > MAX_IMAGE_COUNT) {
-            viewModelScope.launch {
-                _event.emit(SingleUiEvent.Error(R.string.post_max_image_count_error))
+        val currentImageUris = uiState.value.imageUris
+        var displayImageSizeErrorMessage = false
+        val displayImageCountErrorMessage = currentImageUris.size + uris.size > MAX_IMAGE_COUNT
+        val givenImageUris = uris
+            .filter { uri ->
+                val fileInformation = imageRepository.getFileInformation(uri.toString())
+                if (fileInformation.size > CommonPresentationUtils.MAX_IMAGE_FILE_SIZE) {
+                    displayImageSizeErrorMessage = true
+                    false
+                } else true
             }
-            return
+        val newImageUris = (currentImageUris + givenImageUris).take(MAX_IMAGE_COUNT)
+
+        if (displayImageSizeErrorMessage) {
+            viewModelScope.launch {
+                _event.emit(CreatePostUiEvent.ImageError(PostImageError.ImageTooLarge))
+            }
+        }
+
+        if (displayImageCountErrorMessage) {
+            viewModelScope.launch {
+                _event.emit(CreatePostUiEvent.ImageError(PostImageError.TooManyImages))
+            }
         }
 
         _uiState.update {
@@ -126,7 +146,7 @@ class CreatePostViewModel(
         _uiState.update {
             it.copy(
                 postLinkError = when {
-                    postLink.length > MAX_POST_LINK_LENGTH -> PostLinkError.ExceedLengthLimit
+                    postLink.length > MAX_POST_LINK_LENGTH -> PostLinkError.LinkTooLong
                     else -> null
                 }
             )
@@ -178,5 +198,9 @@ class CreatePostViewModel(
                     validPostLink &&
                     validPostSource &&
                     (validContent || validImageUris)
+    }
+
+    sealed interface CreatePostUiEvent : SingleUiEvent {
+        data class ImageError(val postImageError: PostImageError) : CreatePostUiEvent
     }
 }

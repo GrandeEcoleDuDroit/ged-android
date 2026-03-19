@@ -31,6 +31,8 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import com.upsaclay.common.domain.entity.ByteUnit
+import com.upsaclay.common.domain.extensions.toBytes
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.EditTopBar
 import com.upsaclay.common.presentation.theme.GedoiseTheme
@@ -38,6 +40,7 @@ import com.upsaclay.common.presentation.theme.inputForeground
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.post.Post
+import com.upsaclay.news.presentation.post.PostImageError
 import com.upsaclay.news.presentation.post.PostLinkError
 import com.upsaclay.news.presentation.post.PostPresentationUtils.MAX_IMAGE_COUNT
 import com.upsaclay.news.presentation.post.components.PostForm
@@ -64,7 +67,21 @@ fun CreatePostDestination(
     LaunchedEffect(Unit) {
         viewModel.event.collectLatest {
             when (it) {
+                is CreatePostViewModel.CreatePostUiEvent.ImageError -> {
+                    val message = when (val imageError = it.postImageError) {
+                        is PostImageError.TooManyImages -> context.getString(imageError.error, imageError.LIMIT)
+                        is PostImageError.ImageTooLarge -> {
+                            val maxValue = context.getString(
+                                com.upsaclay.common.R.string.mega_bytes_short,
+                                imageError.LIMIT.toBytes(ByteUnit.MEGA_BYTE)
+                            )
+                            context.getString(imageError.error, maxValue)
+                        }
+                    }
+                    showSnackBar(message)
+                }
                 is SingleUiEvent.Error -> showSnackBar(context.getString(it.messageId))
+                is SingleUiEvent.Success -> onCancelClick()
             }
         }
     }
@@ -180,7 +197,7 @@ private fun CreatePostScreen(
                 content = content,
                 imageReferences = imageUris.map { it.toString() },
                 postLinkError = when (postLinkError) {
-                    is PostLinkError.ExceedLengthLimit -> stringResource(postLinkError.error, postLinkError.LIMIT)
+                    is PostLinkError.LinkTooLong -> stringResource(postLinkError.error, postLinkError.LIMIT)
                     null -> null
                 }
             ),
