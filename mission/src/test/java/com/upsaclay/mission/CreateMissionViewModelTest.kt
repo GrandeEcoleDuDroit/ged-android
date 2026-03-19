@@ -1,7 +1,10 @@
 package com.upsaclay.mission
 
 import android.net.Uri
+import com.upsaclay.common.domain.entity.ByteUnit
+import com.upsaclay.common.domain.entity.FileInformation
 import com.upsaclay.common.domain.entity.SchoolLevel
+import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.GenerateIdUseCase
 import com.upsaclay.common.domain.usecase.GetUsersUseCase
@@ -28,6 +31,7 @@ import kotlin.test.assertEquals
 @OptIn(ExperimentalCoroutinesApi::class)
 class CreateMissionViewModelTest {
     private val userRepository: UserRepository = mockk()
+    private val imageRepository: ImageRepository = mockk()
     private val createMissionUseCase: CreateMissionUseCase = mockk()
     private val getUsersUseCase: GetUsersUseCase = mockk()
     private val generateIdUseCase: GenerateIdUseCase = mockk()
@@ -35,6 +39,7 @@ class CreateMissionViewModelTest {
     private lateinit var viewModel: CreateMissionViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
     private val newId = "newId"
+    private val imageUri = mockk<Uri>()
 
     @Before
     fun setUp() {
@@ -42,11 +47,13 @@ class CreateMissionViewModelTest {
 
         every { generateIdUseCase.execute() } returns newId
         every { userRepository.user } returns MutableStateFlow(userFixture)
+        every { imageRepository.getFileInformation(any()) } returns FileInformation()
         coEvery { createMissionUseCase.execute(any(), any()) } returns Unit
         coEvery { getUsersUseCase.execute() } returns usersFixture
 
         viewModel = CreateMissionViewModel(
             userRepository = userRepository,
+            imageRepository = imageRepository,
             createMissionUseCase = createMissionUseCase,
             getUsersUseCase = getUsersUseCase,
             generateIdUseCase = generateIdUseCase
@@ -72,14 +79,23 @@ class CreateMissionViewModelTest {
 
     @Test
     fun onImageUriChange_should_update_image_uri() {
-        // Given
-        val imageUri = mockk<Uri>()
-
         // When
         viewModel.onImageUriChange(imageUri)
 
         // Then
         assertEquals(imageUri, viewModel.uiState.value.imageUri)
+    }
+
+    @Test
+    fun onImageUriChange_should_update_image_uri_should_not_add_image_with_size_superior_than_3mb() {
+        // Given
+        every { imageRepository.getFileInformation(any()) } returns FileInformation(size = 4 * ByteUnit.MEGA_BYTE.value)
+
+        // When
+        viewModel.onImageUriChange(imageUri)
+
+        // Then
+        assertEquals(null, viewModel.uiState.value.imageUri)
     }
 
     @Test
@@ -393,6 +409,7 @@ class CreateMissionViewModelTest {
         // When
         viewModel = CreateMissionViewModel(
             userRepository = userRepository,
+            imageRepository = imageRepository,
             createMissionUseCase = createMissionUseCase,
             getUsersUseCase = getUsersUseCase,
             generateIdUseCase = generateIdUseCase

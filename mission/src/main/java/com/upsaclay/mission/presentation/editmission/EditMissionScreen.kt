@@ -24,8 +24,10 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import com.upsaclay.common.domain.entity.ByteUnit
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.entity.User
+import com.upsaclay.common.domain.extensions.toBytes
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.domain.usersFixture
 import com.upsaclay.common.presentation.SingleUiEvent
@@ -40,6 +42,7 @@ import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.entity.MissionTask
 import com.upsaclay.mission.domain.missionFixture
 import com.upsaclay.mission.presentation.MissionBottomSheetType
+import com.upsaclay.mission.presentation.MissionImageError
 import com.upsaclay.mission.presentation.components.bottomsheets.AddMissionTaskBottomSheet
 import com.upsaclay.mission.presentation.components.bottomsheets.EditMissionTaskBottomSheet
 import com.upsaclay.mission.presentation.components.bottomsheets.SelectManagerBottomSheet
@@ -62,13 +65,29 @@ fun EditMissionDestination(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+    val showSnackBar = { message: String ->
+        scope.launch {
+            snackbarHostState.showSnackbar(message = message)
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
-                is SingleUiEvent.Error -> scope.launch {
-                    snackbarHostState.showSnackbar(context.getString(event.messageId))
+                is EditMissionViewModel.EditMissionUiEvent.ImageError -> {
+                    val message = when (val imageError = event.missionImageError) {
+                        is MissionImageError.ImageTooLarge -> {
+                            val maxValue = context.getString(
+                                com.upsaclay.common.R.string.mega_bytes_short,
+                                imageError.LIMIT.toBytes(ByteUnit.MEGA_BYTE)
+                            )
+                            context.getString(imageError.error, maxValue)
+                        }
+                    }
+                    showSnackBar(message)
                 }
+
+                is SingleUiEvent.Error -> showSnackBar(context.getString(event.messageId))
 
                 is SingleUiEvent.Success -> onBackClick()
             }
