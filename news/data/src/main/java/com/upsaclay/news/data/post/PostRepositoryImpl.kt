@@ -48,6 +48,10 @@ class PostRepositoryImpl(
         postLocalDataSource.upsertPost(post)
     }
 
+    override suspend fun deleteLocalPosts() {
+        postLocalDataSource.deletePosts()
+    }
+
     override suspend fun deletePost(post: Post) {
         try {
             postRemoteDataSource.deletePost(post.id)

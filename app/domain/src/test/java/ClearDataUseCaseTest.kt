@@ -6,6 +6,7 @@ import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.message.domain.repository.ConversationRepository
 import com.upsaclay.message.domain.repository.MessageRepository
 import com.upsaclay.news.domain.announcement.AnnouncementRepository
+import com.upsaclay.news.domain.post.PostRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -18,6 +19,7 @@ class ClearDataUseCaseTest {
     private val conversationRepository: ConversationRepository = mockk()
     private val messageRepository: MessageRepository = mockk()
     private val announcementRepository: AnnouncementRepository = mockk()
+    private val postRepository: PostRepository = mockk()
     private val blockedUserRepository: BlockedUserRepository = mockk()
 
     private lateinit var useCase: ClearDataUseCase
@@ -28,6 +30,7 @@ class ClearDataUseCaseTest {
         coEvery { conversationRepository.deleteLocalConversations() } returns Unit
         coEvery { messageRepository.deleteLocalMessages() } returns Unit
         coEvery { announcementRepository.deleteLocalAnnouncements() } returns Unit
+        coEvery { postRepository.deleteLocalPosts() } returns Unit
         coEvery { blockedUserRepository.deleteLocalBlockedUsers() } returns Unit
 
         useCase = ClearDataUseCase(
@@ -35,6 +38,7 @@ class ClearDataUseCaseTest {
             conversationRepository = conversationRepository,
             messageRepository = messageRepository,
             announcementRepository = announcementRepository,
+            postRepository = postRepository,
             blockedUserRepository = blockedUserRepository
         )
     }
@@ -49,6 +53,7 @@ class ClearDataUseCaseTest {
         coVerify { conversationRepository.deleteLocalConversations() }
         coVerify { messageRepository.deleteLocalMessages() }
         coVerify { announcementRepository.deleteLocalAnnouncements() }
+        coVerify { postRepository.deleteLocalPosts() }
         coVerify { blockedUserRepository.deleteLocalBlockedUsers() }
     }
 }

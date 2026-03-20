@@ -26,6 +26,9 @@ interface PostDao {
     @Upsert
     suspend fun upsertPost(localPost: LocalPost)
 
+    @Query("DELETE FROM $POST_TABLE_NAME")
+    suspend fun deletePosts()
+
     @Delete
     suspend fun deletePost(localPost: LocalPost)
 }
