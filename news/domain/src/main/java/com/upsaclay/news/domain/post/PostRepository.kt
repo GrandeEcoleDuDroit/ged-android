@@ -22,6 +22,8 @@ interface PostRepository {
 
     suspend fun deletePost(post: Post)
 
+    suspend fun deleteLocalPosts()
+
     suspend fun deleteLocalPost(post: Post)
 
     suspend fun reportPost(report: PostReport)

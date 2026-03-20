@@ -37,6 +37,12 @@ class PostLocalDataSource(
         }
     }
 
+    suspend fun deletePosts() {
+        withContext(dispatcher) {
+            postDao.deletePosts()
+        }
+    }
+
     suspend fun deletePost(post: Post) {
         withContext(dispatcher) {
             postDao.deletePost(post.toLocal())
