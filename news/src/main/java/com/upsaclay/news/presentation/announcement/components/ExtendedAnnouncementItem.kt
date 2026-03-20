@@ -14,7 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.extension.mediumSpacing
@@ -23,6 +22,7 @@ import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.components.ExpandableText
 import com.upsaclay.common.presentation.components.OptionButton
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.announcement.Announcement
@@ -131,7 +131,7 @@ private fun ErrorItem(
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.small_padding))
+            horizontalArrangement = Arrangement.smallSpacing()
         ) {
             Icon(
                 painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_error),
@@ -199,7 +199,7 @@ private fun DefaultItemPreview() {
     GedoiseTheme {
         Surface {
             DefaultItem(
-                modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                modifier = Modifier.padding(MaterialTheme.padding.medium),
                 announcement = longAnnouncementFixture,
                 onOptionClick = {},
                 onAuthorClick = {}
@@ -214,7 +214,7 @@ private fun PublishingItemPreview() {
     GedoiseTheme {
         Surface {
             PublishingItem(
-                modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                modifier = Modifier.padding(MaterialTheme.padding.medium),
                 announcement = longAnnouncementFixture,
                 onOptionClick = {},
                 onAuthorClick = {}
@@ -229,7 +229,7 @@ private fun ErrorItemPreview() {
     GedoiseTheme {
         Surface {
             ErrorItem(
-                modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                modifier = Modifier.padding(MaterialTheme.padding.medium),
                 announcement = longAnnouncementFixture.copy(state = AnnouncementState.ERROR),
                 onOptionClick = {},
                 onAuthorClick = {}

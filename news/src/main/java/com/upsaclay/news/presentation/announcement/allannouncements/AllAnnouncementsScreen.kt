@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
@@ -23,7 +24,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.upsaclay.common.domain.entity.Reporter
@@ -39,6 +39,7 @@ import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.PullToRefreshComponent
 import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.announcement.Announcement
@@ -179,7 +180,7 @@ private fun AllAnnouncementsScreen(
                                                 AllAnnouncementScreenBottomSheet.AnnouncementBottomSheet(announcement)
                                         }
                                     }
-                                    .padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                                    .padding(MaterialTheme.padding.medium),
                                 announcement = announcement,
                                 onOptionClick = {
                                     activeBottomSheet =
@@ -203,7 +204,7 @@ private fun AllAnnouncementsScreen(
                 contentAlignment = Alignment.Center
             ) {
                 CircularProgressBar(
-                    modifier = Modifier.padding(top = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+                    modifier = Modifier.padding(top = MaterialTheme.padding.medium)
                 )
             }
         }

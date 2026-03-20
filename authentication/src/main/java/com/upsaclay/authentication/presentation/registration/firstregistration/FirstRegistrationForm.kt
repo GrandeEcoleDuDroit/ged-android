@@ -10,10 +10,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import com.upsaclay.authentication.R
+import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.presentation.components.SimpleOutlinedTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.PhonePreviews
@@ -28,7 +28,7 @@ fun FirstRegistrationForm(
     onLastNameChange: (String) -> Unit
 ) {
     Column(
-        verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+        verticalArrangement = Arrangement.mediumSpacing()
     ) {
         Text(
             text = stringResource(id = R.string.enter_name),

@@ -20,12 +20,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.presentation.theme.supportingText
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.message.R
@@ -84,8 +84,8 @@ private fun EmptyConversationText(onCreateClick: () -> Unit) {
 
         TextButton(
             contentPadding = PaddingValues(
-                top = dimensionResource(com.upsaclay.common.R.dimen.default_padding),
-                bottom = dimensionResource(com.upsaclay.common.R.dimen.default_padding),
+                top = MaterialTheme.padding.default,
+                bottom = MaterialTheme.padding.default,
                 start = ButtonDefaults.TextButtonContentPadding.calculateLeftPadding(LayoutDirection.Rtl),
                 end = ButtonDefaults.TextButtonContentPadding.calculateRightPadding(LayoutDirection.Rtl)
             ),

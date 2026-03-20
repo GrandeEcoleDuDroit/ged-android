@@ -16,7 +16,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import com.upsaclay.authentication.R
@@ -24,6 +23,7 @@ import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.presentation.components.LoadingButton
 import com.upsaclay.common.presentation.components.SimpleOutlinedTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.common.R as commonR
 
@@ -56,7 +56,7 @@ fun ForgottenPasswordForm(
         errorMessage?.let {
             Text(
                 modifier = Modifier
-                    .padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+                    .padding(horizontal = MaterialTheme.padding.medium)
                     .align(Alignment.Start),
                 text = stringResource(it),
                 color = MaterialTheme.colorScheme.error,

@@ -60,6 +60,7 @@ import com.upsaclay.common.presentation.components.TextItem
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.activatedButtonColors
 import com.upsaclay.common.presentation.theme.informationText
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
@@ -210,7 +211,7 @@ private fun MissionDetailsScreen(
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .padding(bottom = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+                .padding(bottom = MaterialTheme.padding.medium)
                 .fillMaxSize(),
             verticalArrangement = Arrangement.smallMediumSpacing()
         ) {
@@ -232,36 +233,36 @@ private fun MissionDetailsScreen(
 
                     Column(verticalArrangement = Arrangement.mediumSpacing()) {
                         MissionDetailsTitleAndDescriptionSection(
-                            modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                            modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
                             mission = mission
                         )
 
                         HorizontalDivider(
-                            modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+                            modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium)
                         )
 
                         MissionDetailsInformationSection(
-                            modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                            modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
                             mission = mission
                         )
 
                         HorizontalDivider(
-                            modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+                            modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium)
                         )
 
                         MissionDetailsManagerSection(
-                            modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                            modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
                             managers = mission.managers,
                             onManagerClick = onManagerClick,
                             onSeeAllClick = { onSeeAllManagersClick(mission.managers) }
                         )
 
                         HorizontalDivider(
-                            modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+                            modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium)
                         )
 
                         MissionDetailsParticipantSection(
-                            modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                            modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
                             participants = mission.participants,
                             onParticipantClick = onParticipantClick,
                             onLongParticipantClick = {
@@ -276,17 +277,17 @@ private fun MissionDetailsScreen(
 
                         if (mission.tasks.isNotEmpty()) {
                             HorizontalDivider(
-                                modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+                                modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium)
                             )
 
                             MissionDetailsTaskSection(
-                                modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                                modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
                                 missionTasks = mission.tasks
                             )
                         }
 
                         if (buttonState is MissionButtonState.Hidden) {
-                            Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.small_padding)))
+                            Spacer(modifier = Modifier.height(MaterialTheme.padding.small))
                         }
                     }
                 }
@@ -305,7 +306,7 @@ private fun MissionDetailsScreen(
             if (buttonState !is MissionButtonState.Hidden) {
                 BottomSection(
                     modifier = Modifier
-                        .padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+                        .padding(horizontal = MaterialTheme.padding.medium)
                         .fillMaxWidth(),
                     buttonState = buttonState,
                     loading = loading,

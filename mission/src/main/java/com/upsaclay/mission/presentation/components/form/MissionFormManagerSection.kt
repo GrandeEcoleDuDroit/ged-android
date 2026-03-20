@@ -28,6 +28,7 @@ import com.upsaclay.common.domain.usersFixture
 import com.upsaclay.common.presentation.components.SectionTitle
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.iconBackground
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
 import com.upsaclay.mission.presentation.components.RemoveButton
@@ -42,11 +43,11 @@ fun MissionFormManagerSection(
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         SectionTitle(
-            modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+            modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
             title = stringResource(R.string.managers)
         )
 
-        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.small_padding)))
+        Spacer(modifier = Modifier.height(MaterialTheme.padding.small))
 
         AddManagerItem(
             modifier = Modifier.clickable(onClick = onShowManagerListClick)

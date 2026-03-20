@@ -19,11 +19,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.outlinedTextFieldColor
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.utils.PhonePreviews
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -155,7 +155,7 @@ private fun SimpleDropDownPreview() {
     GedoiseTheme {
         Surface {
             SingleSelectionDropDown(
-                modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding)),
+                modifier = Modifier.padding(MaterialTheme.padding.extraSmall),
                 items = items,
                 selectedItem = selectedItem,
                 onItemClicked = { item ->
@@ -187,7 +187,7 @@ private fun MultiDropDownMenuPreview() {
     GedoiseTheme {
         Surface {
             MultiSelectionDropDownMenu(
-                modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding)),
+                modifier = Modifier.padding(MaterialTheme.padding.extraSmall),
                 items = items,
                 selectedItems = selectedItems,
                 value = selectedItems.joinToString(" - "),

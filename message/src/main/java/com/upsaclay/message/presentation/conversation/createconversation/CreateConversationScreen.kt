@@ -25,14 +25,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.upsaclay.common.domain.entity.User
+import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.UserItem
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.presentation.theme.supportingText
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.message.domain.entity.Conversation
@@ -115,7 +116,7 @@ fun CreateConversationScreen(
     ) { innerPadding ->
         Column(
             modifier = Modifier.padding(innerPadding),
-            verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.small_padding))
+            verticalArrangement = Arrangement.smallSpacing()
         ) {
             users?.let {
                 UsersFeed(
@@ -129,7 +130,7 @@ fun CreateConversationScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                        .padding(top = MaterialTheme.padding.medium),
                     contentAlignment = Alignment.TopCenter
                 ) {
                     CircularProgressIndicator()
@@ -157,7 +158,7 @@ private fun UsersFeed(
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                        .padding(top = MaterialTheme.padding.medium),
                     text = stringResource(id = com.upsaclay.common.R.string.no_user),
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.supportingText

@@ -14,6 +14,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerDefaults
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -28,6 +29,7 @@ import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.components.EmptyText
 import com.upsaclay.common.presentation.components.SectionTitle
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.post.Post
@@ -53,7 +55,7 @@ fun PostSection(
     ) {
         Row(
             modifier = Modifier
-                .padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+                .padding(horizontal = MaterialTheme.padding.medium)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
@@ -80,7 +82,7 @@ fun PostSection(
                     modifier = Modifier.fillMaxSize(),
                     state = pagerState,
                     beyondViewportPageCount = 1,
-                    pageSpacing = dimensionResource(com.upsaclay.common.R.dimen.medium_padding),
+                    pageSpacing = MaterialTheme.padding.medium,
                     flingBehavior = PagerDefaults.flingBehavior(
                         state = pagerState,
                         snapPositionalThreshold = 0.1f
@@ -97,7 +99,7 @@ fun PostSection(
                                     onUncreatedPostClick(post)
                                 }
                             }
-                            .padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                            .padding(horizontal = MaterialTheme.padding.medium),
                         post = post,
                         onRedirectPostClick = { onRedirectPostClick(post.link) },
                         onOptionClick = { onPostOptionClick(post) }

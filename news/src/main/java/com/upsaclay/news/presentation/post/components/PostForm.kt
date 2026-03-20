@@ -46,6 +46,7 @@ import com.upsaclay.common.presentation.components.TransparentTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.imageIconButtonColors
 import com.upsaclay.common.presentation.theme.inputForeground
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
 import com.upsaclay.news.domain.post.Post.PostSource
@@ -182,8 +183,7 @@ private fun PostLinkInput(
         postLinkError?.let {
             Text(
                 modifier = Modifier.padding(
-                    start = dimensionResource(com.upsaclay.common.R.dimen.medium_icon_size) +
-                            dimensionResource(com.upsaclay.common.R.dimen.small_padding),
+                    start = dimensionResource(com.upsaclay.common.R.dimen.medium_icon_size) + MaterialTheme.padding.small,
                     top = dimensionResource(com.upsaclay.common.R.dimen.supporting_text_top_padding)
                 ),
                 text = it,
@@ -260,7 +260,7 @@ private fun ImageRailItem(
 
         IconButton(
             modifier = Modifier
-                .padding(dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding))
+                .padding(MaterialTheme.padding.extraSmall)
                 .size(30.dp),
             onClick = onRemoveImageClick,
             colors = MaterialTheme.colorScheme.imageIconButtonColors

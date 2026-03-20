@@ -25,7 +25,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -33,6 +32,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.outlinedTextFieldColor
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.utils.PhonePreviews
 
 @Composable
@@ -185,7 +185,7 @@ private fun SimpleOutlinedTextFieldPreview() {
     GedoiseTheme {
         Surface {
             SimpleOutlinedTextField(
-                modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.small_padding)),
+                modifier = Modifier.padding(MaterialTheme.padding.small),
                 value = text,
                 label = "Label",
                 onValueChange = { text = it }
@@ -202,7 +202,7 @@ private fun SimpleTextFieldPreview() {
     GedoiseTheme {
         Surface {
             SimpleTextField(
-                modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.small_padding)),
+                modifier = Modifier.padding(MaterialTheme.padding.small),
                 value = text,
                 label = "Label",
                 onValueChange = { text = it }
