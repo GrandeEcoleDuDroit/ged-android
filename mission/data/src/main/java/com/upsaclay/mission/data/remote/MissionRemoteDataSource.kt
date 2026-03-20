@@ -47,7 +47,7 @@ class MissionRemoteDataSource(private val missionApi: MissionApi) {
     suspend fun deleteMission(mission: Mission) {
         withContext(dispatcher) {
             try {
-                missionApi.deleteMission(mission.toRemote())
+                missionApi.deleteMission(mission.id)
             } catch (e: Exception) {
                 throw mapServerException(e)
             }
