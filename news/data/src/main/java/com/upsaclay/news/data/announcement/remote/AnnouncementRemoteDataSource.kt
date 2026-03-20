@@ -48,7 +48,7 @@ internal class AnnouncementRemoteDataSource(private val announcementApi: Announc
         withContext(dispatcher) {
             try {
                 sendServerRequest {
-                    announcementApi.deleteAnnouncements(announcement.id, announcement.author.id)
+                    announcementApi.deleteAnnouncement(announcement.id)
                 }
             } catch (e: Exception) {
                 throw mapServerException(e)
