@@ -34,7 +34,7 @@ class PostApiImpl(private val postServerApi: PostServerApi): PostApi {
         val imageParts: MutableList<MultipartBody.Part> = mutableListOf()
         imageFiles.forEach {
             val requestBody = it.asRequestBody("image/*".toMediaType())
-            val part = MultipartBody.Part.createFormData("images", it.name, requestBody)
+            val part = MultipartBody.Part.createFormData("image", it.name, requestBody)
             imageParts.add(part)
         }
 
@@ -51,7 +51,7 @@ class PostApiImpl(private val postServerApi: PostServerApi): PostApi {
         val imageParts: MutableList<MultipartBody.Part> = mutableListOf()
         imageFiles.forEach {
             val requestBody = it.asRequestBody("image/*".toMediaType())
-            val part = MultipartBody.Part.createFormData("images", it.name, requestBody)
+            val part = MultipartBody.Part.createFormData("image", it.name, requestBody)
             imageParts.add(part)
         }
 
