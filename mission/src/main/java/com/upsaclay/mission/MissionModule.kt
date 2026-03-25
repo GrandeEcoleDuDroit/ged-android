@@ -25,10 +25,11 @@ val missionModule = module {
     viewModel { (mission: Mission) ->
         EditMissionViewModel(
             mission = mission,
+            userRepository = get(),
+            imageRepository = get(),
             updateMissionUseCase = get(),
             getUsersUseCase = get(),
-            generateIdUseCase = get(),
-            userRepository = get()
+            generateIdUseCase = get()
         )
     }
 

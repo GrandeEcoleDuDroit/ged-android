@@ -21,17 +21,19 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.style.TextOverflow
-import com.upsaclay.common.R
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.presentation.theme.topBarTitle
 import com.upsaclay.common.presentation.theme.white
 import com.upsaclay.common.utils.PhonePreviews
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TitleTopBar(title: String) {
+fun TitleTopBar(
+    title: String,
+    actions: @Composable (RowScope.() -> Unit) = {}
+) {
     TopAppBar(
         title = {
             Text(
@@ -40,6 +42,7 @@ fun TitleTopBar(title: String) {
                 maxLines = 1
             )
         },
+        actions = actions,
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.background
         )
@@ -106,11 +109,11 @@ fun EditTopBar(
         },
         actions = {
             Button(
-                modifier = Modifier.padding(end = dimensionResource(R.dimen.small_padding)),
+                modifier = Modifier.padding(end = MaterialTheme.padding.small),
                 enabled = buttonEnable,
                 contentPadding = PaddingValues(
-                    vertical = dimensionResource(R.dimen.default_padding),
-                    horizontal = dimensionResource(R.dimen.small_medium_padding)
+                    vertical = MaterialTheme.padding.default,
+                    horizontal = MaterialTheme.padding.smallMedium
                 ),
                 colors = ButtonDefaults.buttonColors(contentColor = MaterialTheme.colorScheme.white),
                 onClick = onActionClick

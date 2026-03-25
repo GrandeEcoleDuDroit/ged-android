@@ -8,12 +8,12 @@ import com.upsaclay.common.extension.executeUiBlockingRequest
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapExceptionErrorMessage
 import com.upsaclay.news.R
-import com.upsaclay.news.domain.entity.Announcement
-import com.upsaclay.news.domain.entity.AnnouncementReport
-import com.upsaclay.news.domain.repository.AnnouncementRepository
-import com.upsaclay.news.domain.usecase.DeleteAnnouncementUseCase
-import com.upsaclay.news.domain.usecase.RecreateAnnouncementUseCase
-import com.upsaclay.news.domain.usecase.RefreshAnnouncementsUseCase
+import com.upsaclay.news.domain.announcement.Announcement
+import com.upsaclay.news.domain.announcement.AnnouncementReport
+import com.upsaclay.news.domain.announcement.AnnouncementRepository
+import com.upsaclay.news.domain.announcement.usecase.DeleteAnnouncementUseCase
+import com.upsaclay.news.domain.announcement.usecase.RecreateAnnouncementUseCase
+import com.upsaclay.news.domain.announcement.usecase.RefreshAnnouncementsUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -55,7 +55,7 @@ class AllAnnouncementsViewModel(
         )
     }
 
-    fun resendAnnouncement(announcement: Announcement) {
+    fun recreateAnnouncement(announcement: Announcement) {
         viewModelScope.launch {
             recreateAnnouncementUseCase.execute(announcement)
         }

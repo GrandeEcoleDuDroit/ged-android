@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="announcement_author_picture_description">Photo de l\'auteur de l\'annonce</string>
-    <string name="recent_announcements">Annonces récentes</string>
-    <string name="news_ged">Actualités GED</string>
+    <string name="announcements">Annonces</string>
     <string name="no_announcement">Aucune annonce</string>
     <string name="all_announcements">Toute les annonces</string>
     <string name="announcement">Annonce</string>
@@ -11,11 +10,28 @@
     <string name="edit_announcement">Editer annonce</string>
     <string name="announcement_sent">Annonce envoyée</string>
     <string name="delete_announcement_dialog_message">Voulez-vous supprimer cette annonce ?</string>
-    <string name="title_field_entry">Titre</string>
-    <string name="content_field_entry">Contenu</string>
-    <string name="announcements_refresh_error">Impossible de rafraîchir les annonces</string>
+    <string name="title_field_placeholder">Titre</string>
     <string name="announcement_deleted">Annonce supprimé</string>
     <string name="announcement_reported">Annonce signalé</string>
+    <string name="content_field_placeholder">Contenu</string>
+
+    <string name="announcements_refresh_error">Impossible de rafraîchir les annonces</string>
+
+    <string name="news">Actualité</string>
+    <string name="post_link_field_placeholder">Lien du post</string>
+    <string name="new_post">Nouveau post</string>
+    <string name="edit_post">Editer post</string>
+    <string name="posts">Posts</string>
+    <string name="post_option_icon_description">Afficher les options du post</string>
+    <string name="no_post">Aucun post</string>
+    <string name="all_posts">Tous les posts</string>
+    <string name="post_deleted">Post supprimé</string>
+    <string name="post_reported">Post signalé</string>
+    <string name="delete_post_dialog_message">Voulez-vous supprimer ce post ?</string>
+
+    <string name="post_link_length_error">Le lien dépasse la limite autorisée (%d caractères maximum).</string>
+    <string name="post_max_image_count_error">Vous pouvez ajouter jusqu’à %d images maximum.</string>
+    <string name="news_refresh_error">Impossible de rafraîchir les actualités</string>
 
     <string name="news_screen_empty_announcement_text_tag" translatable="false">News Screen Empty Announcement Text Tag</string>
     <string name="news_screen_recent_announcements_tag" translatable="false">News Screen Recent Announcement Tag</string>

@@ -11,11 +11,6 @@ data class UserReport(
         val email: String
     )
 
-    data class Reporter(
-        val fullName: String,
-        val email: String
-    )
-
     enum class Reason {
         HACKED_ACCOUNT,
         PRETENDING_TO_BE_SOMEONE_ELSE

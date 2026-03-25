@@ -22,7 +22,6 @@
     <string name="tasks">Tâches</string>
     <string name="school_level">Niveau scolaire</string>
     <string name="short_participant_number" translatable="false">%d / %d</string>
-    <string name="add_image">Ajouter image</string>
     <string name="add_manager">Ajouter gérant</string>
     <string name="add">Ajouter</string>
     <string name="task">Tâche</string>
@@ -54,6 +53,7 @@
     <string name="delete_mission_dialog_text">Voulez-vous supprimer cette mission ?</string>
     <string name="remove_participant_dialog_text">Voulez-vous retirer %s de cette mission ?</string>
     <string name="unregister_mission_dialog_text">Se désinscrire de cette mission ?</string>
+    <string name="create_mission_icon_button_description">Créer mission</string>
 
     <string name="sending_error">Erreur d\'envoi</string>
     <string name="missions_refresh_error">Impossible de rafraîchir les missions</string>

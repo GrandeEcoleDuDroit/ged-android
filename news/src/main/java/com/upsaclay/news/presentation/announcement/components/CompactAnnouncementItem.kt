@@ -3,6 +3,7 @@ package com.upsaclay.news.presentation.announcement.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
@@ -13,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -24,9 +26,10 @@ import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.supportingText
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.common.utils.getElapsedTimeValue
-import com.upsaclay.news.domain.entity.Announcement
-import com.upsaclay.news.domain.entity.Announcement.AnnouncementState
-import com.upsaclay.news.domain.longAnnouncementFixture
+import com.upsaclay.news.R
+import com.upsaclay.news.domain.announcement.Announcement
+import com.upsaclay.news.domain.announcement.Announcement.AnnouncementState
+import com.upsaclay.news.domain.announcement.longAnnouncementFixture
 
 @Composable
 internal fun CompactAnnouncementItem(
@@ -80,8 +83,9 @@ internal fun CompactAnnouncementItem(
         trailingContent = {
             OptionButton(
                 modifier = Modifier
-                    .testTag(stringResource(id = com.upsaclay.news.R.string.announcement_option_button_tag)),
-                contentDescription = stringResource(id = com.upsaclay.news.R.string.announcement_option_icon_description),
+                    .size(dimensionResource(com.upsaclay.common.R.dimen.extra_small_button_size))
+                    .testTag(stringResource(id = R.string.announcement_option_button_tag)),
+                contentDescription = stringResource(id = R.string.announcement_option_icon_description),
                 onClick = onOptionClick
             )
         }

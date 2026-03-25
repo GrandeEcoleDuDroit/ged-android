@@ -16,14 +16,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.upsaclay.common.R
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.userFixture
+import com.upsaclay.common.extension.extraSmallSpacing
+import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.gold
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.utils.PhonePreviews
 
 @Composable
@@ -48,9 +50,9 @@ fun UserInformationItems(user: User) {
     )
 
     Column(
-        modifier = Modifier.fillMaxWidth().padding(top = dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)),
+        modifier = Modifier.fillMaxWidth().padding(top = MaterialTheme.padding.smallMedium),
         horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+        verticalArrangement = Arrangement.mediumSpacing()
     ) {
         accountInformationValues.forEach { accountInfo ->
             UserInformationItem(
@@ -62,7 +64,7 @@ fun UserInformationItems(user: User) {
             Row(
                 modifier = Modifier.testTag(stringResource(id = R.string.member_text_tag)),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding))
+                horizontalArrangement = Arrangement.extraSmallSpacing()
             ) {
                 Text(
                     text = stringResource(R.string.administrator),

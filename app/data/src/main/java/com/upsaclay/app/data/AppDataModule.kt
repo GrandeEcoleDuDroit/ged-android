@@ -36,6 +36,7 @@ val appDataModule = module {
     single { get<GedoiseDatabase>().conversationMessageDao() }
     single { get<GedoiseDatabase>().messageNotificationDao() }
     single { get<GedoiseDatabase>().missionDao() }
+    single { get<GedoiseDatabase>().postDao() }
 
     single {
         get<Retrofit>(GED_SERVER_QUALIFIER)

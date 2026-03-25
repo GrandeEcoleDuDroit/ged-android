@@ -16,7 +16,7 @@ class SecondRegistrationViewModelTest {
 
     private val testDispatcher = UnconfinedTestDispatcher()
     private val schoolLevels = SchoolLevel.all
-    private val schoolLevel = SchoolLevel.GED_1
+    private val schoolLevel = SchoolLevel.LEVEL_1
 
     @Before
     fun setUp() {
@@ -35,7 +35,7 @@ class SecondRegistrationViewModelTest {
     @Test
     fun updateSchoolLevel_should_on_schoolLevelChange() {
         // Given
-        val schoolLevel = SchoolLevel.GED_2
+        val schoolLevel = SchoolLevel.LEVEL_2
 
         // When
         secondRegistrationViewModel.onSchoolLevelChange(schoolLevel)

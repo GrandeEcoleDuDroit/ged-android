@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.paging.PagingData
 import com.upsaclay.common.domain.entity.User
@@ -41,8 +42,6 @@ import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.Message
 import com.upsaclay.message.domain.entity.Message.MessageState
 import com.upsaclay.message.domain.entity.MessageReport
-import com.upsaclay.message.domain.fixtures.conversationFixture
-import com.upsaclay.message.domain.fixtures.messagesFixture
 import com.upsaclay.message.presentation.chat.ChatViewModel.MessageEvent
 import com.upsaclay.message.presentation.stringRes
 import kotlinx.coroutines.flow.Flow
@@ -344,13 +343,15 @@ private sealed class ChatDialog {
 
 @PhonePreviews
 @Composable
-private fun ChatScreenPreview() {
+private fun ChatScreenPreview(
+    @PreviewParameter(ChatPreviewParameterProvider::class) previewParameter: ChatPreviewParameterData
+) {
     var text by remember { mutableStateOf("") }
 
     GedoiseTheme {
         ChatScreen(
-            conversation = conversationFixture,
-            messages = flowOf(PagingData.from(messagesFixture)),
+            conversation = previewParameter.conversation,
+            messages = flowOf(PagingData.from(previewParameter.messages)),
             messageText = text,
             loading = false,
             isUserBlocked = false,

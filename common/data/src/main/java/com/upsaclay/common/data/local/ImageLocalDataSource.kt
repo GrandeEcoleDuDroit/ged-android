@@ -5,7 +5,9 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
+import android.provider.OpenableColumns
 import androidx.core.net.toUri
+import com.upsaclay.common.domain.entity.FileInformation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -13,6 +15,19 @@ import java.io.FileNotFoundException
 
 class ImageLocalDataSource(private val context: Context) {
     private val contentResolver = context.contentResolver
+
+    fun getFileInformation(uri: String): FileInformation {
+        return contentResolver.query(uri.toUri(), null, null, null, null)?.use { cursor ->
+            val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+            val sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE)
+            cursor.moveToFirst()
+
+            FileInformation(
+                displayName = cursor.getString(nameIndex),
+                size = cursor.getLong(sizeIndex)
+            )
+        } ?: FileInformation()
+    }
 
     fun getFileExtension(uri: String): String =
         contentResolver.getType(uri.toUri())?.split("/")?.last()

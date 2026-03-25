@@ -20,13 +20,11 @@ import com.upsaclay.common.data.remote.api.user.UserApiImpl
 import com.upsaclay.common.data.remote.api.user.UserFirestoreApi
 import com.upsaclay.common.data.remote.api.user.UserServerApi
 import com.upsaclay.common.data.repository.BlockedUserRepositoryImpl
-import com.upsaclay.common.data.repository.FileRepositoryImpl
 import com.upsaclay.common.data.repository.ImageRepositoryImpl
 import com.upsaclay.common.data.repository.UserRepositoryImpl
 import com.upsaclay.common.data.repository.WhiteListRepositoryImpl
 import com.upsaclay.common.data.utils.e
 import com.upsaclay.common.domain.repository.BlockedUserRepository
-import com.upsaclay.common.domain.repository.FileRepository
 import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.repository.WhiteListRepository
@@ -100,8 +98,6 @@ val commonDataModule = module {
     singleOf(::ImageRemoteDataSource)
     singleOf(::ImageLocalDataSource)
     singleOf(::ImageRepositoryImpl) { bind<ImageRepository>() }
-
-    singleOf(::FileRepositoryImpl) { bind<FileRepository>() }
 
     singleOf(::UserFirestoreApi)
     singleOf(::UserApiImpl) { bind<UserApi>() }

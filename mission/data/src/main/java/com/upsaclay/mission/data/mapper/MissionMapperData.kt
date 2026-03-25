@@ -3,6 +3,7 @@ package com.upsaclay.mission.data.mapper
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.upsaclay.common.data.remote.model.OracleUser
+import com.upsaclay.common.data.toRemote
 import com.upsaclay.common.data.toUser
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.entity.User
@@ -151,10 +152,5 @@ fun InboundRemoteMission.toMission(): Mission {
 internal fun MissionReport.toRemote() = RemoteMissionReport(
     missionId = missionId,
     reporter = reporter.toRemote(),
-    reason = reason.toString()
-)
-
-internal fun MissionReport.Reporter.toRemote() = RemoteMissionReport.RemoteReporter(
-    fullName = fullName,
-    email = email
+    reason = reason
 )

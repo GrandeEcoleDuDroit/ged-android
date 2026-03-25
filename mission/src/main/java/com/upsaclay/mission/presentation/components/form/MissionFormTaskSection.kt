@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.components.SectionTitle
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.MissionTask
@@ -38,17 +39,17 @@ fun MissionFormTaskSection(
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         SectionTitle(
-            modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+            modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
             title = stringResource(R.string.tasks)
         )
 
-        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.small_padding)))
+        Spacer(modifier = Modifier.height(MaterialTheme.padding.small))
 
         AddMissionTaskItem(
             modifier = Modifier
                 .clickable(onClick = onAddTaskClick)
                 .padding(
-                    horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding),
+                    horizontal = MaterialTheme.padding.medium,
                     vertical = 14.dp
                 )
                 .fillMaxWidth()
@@ -60,7 +61,7 @@ fun MissionFormTaskSection(
                     .fillMaxWidth()
                     .clickable(onClick = { onTaskClick(it) })
                     .padding(
-                        horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding),
+                        horizontal = MaterialTheme.padding.medium,
                         vertical = 10.dp
                     ),
                 missionTask = it,

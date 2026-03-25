@@ -2,17 +2,14 @@ package com.upsaclay.common.presentation.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -76,21 +73,6 @@ fun BackButton(
 }
 
 @Composable
-fun SimpleFloatingActionButton(
-    modifier: Modifier = Modifier,
-    icon: @Composable () -> Unit,
-    onClick: () -> Unit
-) {
-    FloatingActionButton (
-        onClick = onClick,
-        modifier = modifier,
-        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-        content = icon
-    )
-
-}
-
-@Composable
 fun LoadingButton(
     modifier: Modifier = Modifier,
     text: String,
@@ -126,13 +108,10 @@ fun LoadingButton(
 @Composable
 private fun PrimaryButtonPreview() {
     GedoiseTheme {
-        Surface {
-            PrimaryButton(
-                text = "Primary Button",
-                onClick = {},
-                enabled = false
-            )
-        }
+        PrimaryButton(
+            text = "Primary Button",
+            onClick = {}
+        )
     }
 }
 
@@ -141,22 +120,6 @@ private fun PrimaryButtonPreview() {
 private fun OptionButtonPreview() {
     GedoiseTheme {
         OptionButton(
-            onClick = {}
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun SimpleFloatingActionButtonPreview() {
-    GedoiseTheme {
-        SimpleFloatingActionButton(
-            icon = {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    null
-                )
-            },
             onClick = {}
         )
     }

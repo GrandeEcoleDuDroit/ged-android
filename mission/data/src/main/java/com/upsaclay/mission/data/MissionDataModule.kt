@@ -39,11 +39,5 @@ val missionDataModule = module {
     singleOf(::MissionApiImpl) { bind<MissionApi>() }
     singleOf(::MissionLocalDataSource)
     singleOf(::MissionRemoteDataSource)
-    single<MissionRepository> {
-        MissionRepositoryImpl(
-            missionLocalDataSource = get(),
-            missionRemoteDataSource = get(),
-            scope = get(BACKGROUND_SCOPE)
-        )
-    }
+    singleOf(::MissionRepositoryImpl) { bind<MissionRepository>() }
 }

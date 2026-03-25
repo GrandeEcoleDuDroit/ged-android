@@ -33,6 +33,7 @@ import com.upsaclay.common.presentation.components.TextIcon
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.informationText
 import com.upsaclay.common.presentation.theme.overlayContent
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.presentation.theme.white
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
@@ -105,7 +106,7 @@ private fun DefaultMissionCard(
 
             OptionButton(
                 modifier = Modifier
-                    .padding(dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding))
+                    .padding(MaterialTheme.padding.extraSmall)
                     .align(Alignment.TopEnd),
                 onClick = onOptionClick
             )
@@ -114,7 +115,7 @@ private fun DefaultMissionCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                .padding(MaterialTheme.padding.medium),
             verticalArrangement = Arrangement.smallMediumSpacing()
         ) {
             CardTitle(title = mission.title)
@@ -149,7 +150,7 @@ private fun CompletedMissionCard(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.overlayContent.copy(alpha = 0.6f))
+                    .background(MaterialTheme.colorScheme.overlayContent)
             )
 
             Text(
@@ -162,7 +163,7 @@ private fun CompletedMissionCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                .padding(MaterialTheme.padding.medium),
             verticalArrangement = Arrangement.smallMediumSpacing()
         ) {
             CardTitle(title = mission.title)
@@ -212,7 +213,7 @@ private fun ErrorMissionCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                .padding(MaterialTheme.padding.medium),
             verticalArrangement = Arrangement.smallMediumSpacing()
         ) {
             CardTitle(title = mission.title)
@@ -252,11 +253,10 @@ private fun CardSubtitle(
         verticalArrangement = Arrangement.extraSmallSpacing()
     ) {
         TextIcon(
-            modifier = Modifier.padding(top = dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding)),
+            modifier = Modifier.padding(top = MaterialTheme.padding.extraSmall),
             icon = {
                 Icon(
-                    modifier = Modifier.size(dimensionResource(com.upsaclay.common.R.dimen.icon_size)),
-
+                    modifier = Modifier.size(dimensionResource(com.upsaclay.common.R.dimen.small_medium_icon_size)),
                     painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_calendar),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.informationText
@@ -272,10 +272,10 @@ private fun CardSubtitle(
         )
 
         TextIcon(
-            modifier = Modifier.padding(top = dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding)),
+            modifier = Modifier.padding(top = MaterialTheme.padding.extraSmall),
             icon = {
                 Icon(
-                    modifier = Modifier.size(dimensionResource(com.upsaclay.common.R.dimen.icon_size)),
+                    modifier = Modifier.size(dimensionResource(com.upsaclay.common.R.dimen.small_medium_icon_size)),
                     painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_group),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.informationText
@@ -326,8 +326,8 @@ private fun ErrorBanner(modifier: Modifier = Modifier) {
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.background.copy(alpha = 0.8f))
             .padding(
-                vertical = dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding),
-                horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)
+                vertical = MaterialTheme.padding.extraSmall,
+                horizontal = MaterialTheme.padding.medium
             ),
         icon = {
             Icon(
@@ -341,9 +341,9 @@ private fun ErrorBanner(modifier: Modifier = Modifier) {
             Text(
                 modifier = Modifier
                     .padding(
-                        top = dimensionResource(com.upsaclay.common.R.dimen.small_padding),
-                        bottom = dimensionResource(com.upsaclay.common.R.dimen.small_padding),
-                        end = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)
+                        top = MaterialTheme.padding.small,
+                        bottom = MaterialTheme.padding.small,
+                        end = MaterialTheme.padding.medium
                     ),
                 text = stringResource(R.string.sending_error),
                 style = MaterialTheme.typography.bodyMedium,

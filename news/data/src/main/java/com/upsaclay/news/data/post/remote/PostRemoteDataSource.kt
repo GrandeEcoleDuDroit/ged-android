@@ -1,0 +1,63 @@
+package com.upsaclay.news.data.post.remote
+
+import com.upsaclay.common.data.exceptions.mapServerException
+import com.upsaclay.news.data.post.toPost
+import com.upsaclay.news.data.post.toRemote
+import com.upsaclay.news.domain.post.Post
+import com.upsaclay.news.domain.post.PostReport
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.io.File
+
+class PostRemoteDataSource(private val postApi: PostApi) {
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+
+    suspend fun getPosts(): List<Post> {
+        return try {
+            postApi.getPosts()?.map { it.toPost() } ?: emptyList()
+        } catch (e: Exception) {
+            throw mapServerException(e)
+        }
+    }
+
+    suspend fun createPost(post: Post, imageFiles: List<File>) {
+        withContext(dispatcher) {
+            try {
+                postApi.createPost(post.toRemote(), imageFiles)
+            } catch (e: Exception) {
+                throw mapServerException(e)
+            }
+        }
+    }
+
+    suspend fun updatePost(post: Post, imageFiles: List<File>) {
+        withContext(dispatcher) {
+            try {
+                postApi.updatePost(post.toRemote(), imageFiles)
+            } catch (e: Exception) {
+                throw mapServerException(e)
+            }
+        }
+    }
+
+    suspend fun deletePost(postId: String) {
+        withContext(dispatcher) {
+            try {
+                postApi.deletePost(postId)
+            } catch (e: Exception) {
+                throw mapServerException(e)
+            }
+        }
+    }
+
+    suspend fun reportPost(report: PostReport) {
+        withContext(dispatcher) {
+            try {
+                postApi.reportPost(report.toRemote())
+            } catch (e: Exception) {
+                throw mapServerException(e)
+            }
+        }
+    }
+}

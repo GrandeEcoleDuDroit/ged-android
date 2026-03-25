@@ -18,12 +18,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.upsaclay.common.R
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.utils.PhonePreviews
 
 @Composable
@@ -71,7 +71,7 @@ fun LoadingDialog(message: String = stringResource(id = R.string.loading)) {
                 shape = MaterialTheme.shapes.extraSmall
             )
             .widthIn(max = screenWidth * 0.4f)
-            .padding(vertical = dimensionResource(R.dimen.medium_large_padding))
+            .padding(vertical = MaterialTheme.padding.mediumLarge)
     ) {
         Row(
             horizontalArrangement = Arrangement.Center,
@@ -79,7 +79,7 @@ fun LoadingDialog(message: String = stringResource(id = R.string.loading)) {
         ) {
             CircularProgressBar(scale = 0.5f)
 
-            Spacer(modifier = Modifier.width(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)))
+            Spacer(modifier = Modifier.width(MaterialTheme.padding.medium))
 
             Text(
                 text = message,

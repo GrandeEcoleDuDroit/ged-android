@@ -10,21 +10,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.style.TextOverflow
 import com.upsaclay.common.extension.displayName
+import com.upsaclay.common.extension.smallMediumSpacing
 import com.upsaclay.common.presentation.components.ProfilePicture
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.supportingText
+import com.upsaclay.common.utils.ElapsedTimeValueFormat
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.common.utils.getElapsedTimeValue
-import com.upsaclay.news.domain.entity.Announcement
-import com.upsaclay.news.domain.longAnnouncementFixture
+import com.upsaclay.news.domain.announcement.Announcement
+import com.upsaclay.news.domain.announcement.longAnnouncementFixture
 
 @Composable
 fun AnnouncementHeader(
     modifier: Modifier = Modifier,
     announcement: Announcement,
+    elapsedTimeValueFormat: ElapsedTimeValueFormat = ElapsedTimeValueFormat.SHORT,
     onClick: () -> Unit
 ) {
     Row(
@@ -33,7 +35,7 @@ fun AnnouncementHeader(
                 detectTapGestures(onTap = { onClick() })
             },
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding))
+        horizontalArrangement = Arrangement.smallMediumSpacing()
     ) {
         ProfilePicture(
             url = announcement.author.profilePictureUrl,
@@ -49,7 +51,7 @@ fun AnnouncementHeader(
         )
 
         Text(
-            text = getElapsedTimeValue(announcement.date),
+            text = getElapsedTimeValue(announcement.date, elapsedTimeValueFormat),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.supportingText
         )

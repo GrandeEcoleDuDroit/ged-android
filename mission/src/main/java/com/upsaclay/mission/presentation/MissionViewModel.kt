@@ -24,6 +24,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+private const val MAX_DESCRIPTION_LENGTH = 250
+
 class MissionViewModel(
     private val missionRepository: MissionRepository,
     private val userRepository: UserRepository,
@@ -120,10 +122,16 @@ class MissionViewModel(
 
     private fun listenMissions() {
         viewModelScope.launch {
-            missionRepository.missions.map { it.missionSorting() }.collect { missions ->
-                defaultMissions = missions
-                updateMission()
-            }
+            missionRepository.missions
+                .map { missions ->
+                    missions
+                        .missionSorting()
+                        .map { it.copy(description = it.description.take(MAX_DESCRIPTION_LENGTH)) }
+                }
+                .collect { missions ->
+                    defaultMissions = missions
+                    updateMission()
+                }
         }
     }
 

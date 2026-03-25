@@ -6,7 +6,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.domain.userFixture2
-import com.upsaclay.news.domain.longAnnouncementFixture
+import com.upsaclay.news.domain.announcement.longAnnouncementFixture
 import com.upsaclay.news.presentation.announcement.readannouncement.ReadAnnouncementDestination
 import com.upsaclay.news.presentation.announcement.readannouncement.ReadAnnouncementViewModel
 import io.mockk.every

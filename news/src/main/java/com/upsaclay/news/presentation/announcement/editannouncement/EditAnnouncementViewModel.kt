@@ -5,10 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.upsaclay.common.extension.executeUiBlockingRequest
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapExceptionErrorMessage
-import com.upsaclay.news.domain.entity.Announcement
-import com.upsaclay.news.domain.entity.Announcement.Companion.CONTENT_MAX_LENGTH
-import com.upsaclay.news.domain.entity.Announcement.Companion.TITLE_MAX_LENGTH
-import com.upsaclay.news.domain.repository.AnnouncementRepository
+import com.upsaclay.news.domain.announcement.Announcement
+import com.upsaclay.news.domain.announcement.AnnouncementRepository
+import com.upsaclay.news.presentation.announcement.AnnouncementPresentationUtils.MAX_CONTENT_LENGTH
+import com.upsaclay.news.presentation.announcement.AnnouncementPresentationUtils.MAX_TITLE_LENGTH
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -30,7 +30,7 @@ class EditAnnouncementViewModel(
     val event: SharedFlow<SingleUiEvent> = _event
 
     fun onTitleChange(title: String) {
-        val truncatedTitle = title.take(TITLE_MAX_LENGTH)
+        val truncatedTitle = title.take(MAX_TITLE_LENGTH)
         _uiState.update {
             it.copy(
                 title = truncatedTitle,
@@ -40,7 +40,7 @@ class EditAnnouncementViewModel(
     }
 
     fun onContentChange(content: String) {
-        val truncatedContent = content.take(CONTENT_MAX_LENGTH)
+        val truncatedContent = content.take(MAX_CONTENT_LENGTH)
         _uiState.update {
             it.copy(
                 content = truncatedContent,
@@ -50,11 +50,14 @@ class EditAnnouncementViewModel(
     }
 
     fun updateAnnouncement() {
-        if (!validateUpdate(uiState.value.title, uiState.value.content)) return
+        val (title, content) = uiState.value
+        if (!validateUpdate(title, content)) return
+
         val trimmedAnnouncement = announcement.copy(
-            title = uiState.value.title.trim(),
-            content = uiState.value.content.trim()
+            title = if (title.isBlank()) null else title.trim(),
+            content = content.trim()
         )
+
         executeRequest {
             announcementRepository.updateAnnouncement(trimmedAnnouncement)
             _event.emit(SingleUiEvent.Success())

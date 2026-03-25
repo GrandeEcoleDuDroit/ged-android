@@ -6,18 +6,24 @@ import androidx.lifecycle.viewModelScope
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.extensions.replace
+import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.GenerateIdUseCase
 import com.upsaclay.common.domain.usecase.GetUsersUseCase
+import com.upsaclay.common.presentation.CommonPresentationUtils
+import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.entity.MissionTask
 import com.upsaclay.mission.domain.usecase.CreateMissionUseCase
+import com.upsaclay.mission.presentation.MissionImageError
 import com.upsaclay.mission.presentation.MissionPresentationUtils.MAX_DESCRIPTION_LENGTH
 import com.upsaclay.mission.presentation.MissionPresentationUtils.MAX_DURATION_LENGTH
 import com.upsaclay.mission.presentation.MissionPresentationUtils.MAX_TITLE_LENGTH
 import com.upsaclay.mission.presentation.extension.missionManagerSorting
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.update
@@ -28,12 +34,15 @@ import java.time.ZoneOffset
 
 class CreateMissionViewModel(
     private val userRepository: UserRepository,
+    private val imageRepository: ImageRepository,
     private val createMissionUseCase: CreateMissionUseCase,
     private val getUsersUseCase: GetUsersUseCase,
     private val generateIdUseCase: GenerateIdUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(CreateMissionUiState())
     val uiState: StateFlow<CreateMissionUiState> = _uiState
+    private val _event = MutableSharedFlow<SingleUiEvent>()
+    val event: SharedFlow<SingleUiEvent> = _event
     private val missionCreateState = MutableStateFlow(MissionCreateState())
     private var defaultUsers: List<User> = emptyList()
 
@@ -66,6 +75,14 @@ class CreateMissionViewModel(
     }
 
     fun onImageUriChange(uri: Uri?) {
+        val fileInformation = imageRepository.getFileInformation(uri.toString())
+        if (fileInformation.size > CommonPresentationUtils.MAX_IMAGE_FILE_SIZE) {
+            viewModelScope.launch {
+                _event.emit(CreateMissionUiEvent.ImageError(MissionImageError.ImageTooLarge))
+            }
+            return
+        }
+
         _uiState.update {
             it.copy(imageUri = uri)
         }
@@ -304,5 +321,9 @@ class CreateMissionViewModel(
                     validDescription &&
                     validSchoolLevels &&
                     validMaxParticipants
+    }
+
+    sealed interface CreateMissionUiEvent : SingleUiEvent {
+        data class ImageError(val missionImageError: MissionImageError) : CreateMissionUiEvent
     }
 }

@@ -23,6 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import com.upsaclay.common.domain.entity.Reporter
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.extension.rootMediumPadding
 import com.upsaclay.common.extension.smallMediumSpacing
@@ -33,13 +35,15 @@ import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.OptionButton
 import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.utils.ElapsedTimeValueFormat
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
-import com.upsaclay.news.domain.announcementFixture
-import com.upsaclay.news.domain.entity.Announcement
-import com.upsaclay.news.domain.entity.AnnouncementReport
-import com.upsaclay.news.presentation.announcement.AnnouncementPresentationUtils.contentStyle
-import com.upsaclay.news.presentation.announcement.AnnouncementPresentationUtils.titleStyle
+import com.upsaclay.news.domain.announcement.Announcement
+import com.upsaclay.news.domain.announcement.AnnouncementReport
+import com.upsaclay.news.presentation.announcement.AnnouncementPresentationUtils.announcementContentStyle
+import com.upsaclay.news.presentation.announcement.AnnouncementPresentationUtils.announcementTitleStyle
+import com.upsaclay.news.presentation.announcement.AnnouncementPreviewParameterData
+import com.upsaclay.news.presentation.announcement.AnnouncementPreviewParameterProvider
 import com.upsaclay.news.presentation.announcement.components.AnnouncementBottomSheet
 import com.upsaclay.news.presentation.announcement.stringRes
 import org.koin.androidx.compose.koinViewModel
@@ -168,7 +172,7 @@ fun ReadAnnouncementScreen(
                     showBottomSheet = false
                     onEditAnnouncementClick(announcement)
                 },
-                onResendClick = {},
+                onRecreateClick = {},
                 onReportClick = {
                     showBottomSheet = false
                     showReportBottomSheet = true
@@ -194,7 +198,7 @@ fun ReadAnnouncementScreen(
                                 fullName = announcement.author.fullName,
                                 email = announcement.author.email
                             ),
-                            reporter = AnnouncementReport.Reporter(
+                            reporter = Reporter(
                                 fullName = user.fullName,
                                 email = user.email
                             ),
@@ -219,6 +223,7 @@ private fun AnnouncementContent(
     ) {
         AnnouncementHeader(
             announcement = announcement,
+            elapsedTimeValueFormat = ElapsedTimeValueFormat.LONG,
             onClick = onAuthorClick
         )
 
@@ -226,14 +231,14 @@ private fun AnnouncementContent(
             Text(
                 modifier = Modifier.testTag(stringResource(id = R.string.read_screen_announcement_title_tag)),
                 text = it,
-                style = titleStyle
+                style = announcementTitleStyle
             )
         }
 
         Text(
             modifier = Modifier.testTag(stringResource(id = R.string.read_screen_announcement_content_tag)),
             text = announcement.content,
-            style = contentStyle
+            style = announcementContentStyle
         )
     }
 }
@@ -246,12 +251,14 @@ private fun AnnouncementContent(
 
 @PhonePreviews
 @Composable
-private fun NonEditableAnnouncementScreenPreview() {
+private fun NonEditableAnnouncementScreenPreview(
+    @PreviewParameter(AnnouncementPreviewParameterProvider::class) previewParameter: AnnouncementPreviewParameterData
+) {
     GedoiseTheme {
         Surface {
             ReadAnnouncementScreen(
-                user = announcementFixture.author,
-                announcement = announcementFixture,
+                user = previewParameter.announcement.author,
+                announcement = previewParameter.announcement,
                 snackbarHostState = SnackbarHostState(),
                 onBackClick = {},
                 onAuthorClick = {},
@@ -265,12 +272,14 @@ private fun NonEditableAnnouncementScreenPreview() {
 
 @PhonePreviews
 @Composable
-private fun EditableAnnouncementScreenPreview() {
+private fun EditableAnnouncementScreenPreview(
+    @PreviewParameter(AnnouncementPreviewParameterProvider::class) previewParameter: AnnouncementPreviewParameterData
+) {
     GedoiseTheme {
         Surface {
             ReadAnnouncementScreen(
-                user = announcementFixture.author,
-                announcement = announcementFixture,
+                user = previewParameter.announcement.author,
+                announcement = previewParameter.announcement,
                 snackbarHostState = SnackbarHostState(),
                 onBackClick = {},
                 onAuthorClick = {},

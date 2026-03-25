@@ -1,10 +1,18 @@
 package com.upsaclay.news.domain
 
-import com.upsaclay.news.domain.usecase.CreateAnnouncementUseCase
-import com.upsaclay.news.domain.usecase.DeleteAnnouncementUseCase
-import com.upsaclay.news.domain.usecase.FetchAnnouncementsUseCase
-import com.upsaclay.news.domain.usecase.RecreateAnnouncementUseCase
-import com.upsaclay.news.domain.usecase.RefreshAnnouncementsUseCase
+import com.upsaclay.news.domain.announcement.AnnouncementJobQueue
+import com.upsaclay.news.domain.announcement.usecase.CreateAnnouncementUseCase
+import com.upsaclay.news.domain.announcement.usecase.DeleteAnnouncementUseCase
+import com.upsaclay.news.domain.announcement.usecase.FetchAnnouncementsUseCase
+import com.upsaclay.news.domain.announcement.usecase.RecreateAnnouncementUseCase
+import com.upsaclay.news.domain.announcement.usecase.RefreshAnnouncementsUseCase
+import com.upsaclay.news.domain.post.usecase.CreatePostUseCase
+import com.upsaclay.news.domain.post.usecase.DeletePostUseCase
+import com.upsaclay.news.domain.post.usecase.FetchPostsUseCase
+import com.upsaclay.news.domain.post.usecase.RecreatePostUseCase
+import com.upsaclay.news.domain.post.usecase.RefreshPostsUseCase
+import com.upsaclay.news.domain.post.usecase.UpdatePostUseCase
+import com.upsaclay.news.domain.post.usecase.UpsertLocalPostUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -44,4 +52,18 @@ val newsDomainModule = module {
     singleOf(::DeleteAnnouncementUseCase)
     singleOf(::FetchAnnouncementsUseCase)
     singleOf(::AnnouncementJobQueue)
+
+    single {
+        CreatePostUseCase(
+            postRepository = get(),
+            imageRepository = get(),
+            scope = get(BACKGROUND_SCOPE)
+        )
+    }
+    singleOf(::UpsertLocalPostUseCase)
+    singleOf(::FetchPostsUseCase)
+    singleOf(::DeletePostUseCase)
+    singleOf(::UpdatePostUseCase)
+    singleOf(::RecreatePostUseCase)
+    singleOf(::RefreshPostsUseCase)
 }

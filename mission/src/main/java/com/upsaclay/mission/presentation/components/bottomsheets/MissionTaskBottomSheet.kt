@@ -26,13 +26,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.TextFieldValue
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.MissionTask
@@ -143,7 +143,7 @@ private fun MissionTaskBottomSheet(
             TextButton(
                 modifier = Modifier
                     .align(Alignment.End)
-                    .padding(end = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                    .padding(end = MaterialTheme.padding.medium),
                 onClick = { onButtonClick(textFieldValue.text) },
                 enabled = buttonEnabled,
             ) {

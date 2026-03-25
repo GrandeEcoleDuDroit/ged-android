@@ -5,9 +5,11 @@ import com.upsaclay.common.data.local.LocalUser
 import com.upsaclay.common.data.remote.model.FirestoreUser
 import com.upsaclay.common.data.remote.model.OracleUser
 import com.upsaclay.common.data.remote.model.RemoteBlockedUser
+import com.upsaclay.common.data.remote.model.RemoteReporter
 import com.upsaclay.common.data.remote.model.RemoteUserReport
 import com.upsaclay.common.domain.UserUtils
 import com.upsaclay.common.domain.entity.BlockedUser
+import com.upsaclay.common.domain.entity.Reporter
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.entity.UserReport
@@ -86,11 +88,6 @@ private fun UserReport.ReportedUser.toRemote() = RemoteUserReport.RemoteReported
     email = email
 )
 
-private fun UserReport.Reporter.toRemote() = RemoteUserReport.RemoteReporter(
-    fullName = fullName,
-    email = email
-)
-
 internal fun BlockedUser.toRemote(currentUserId: String) = RemoteBlockedUser(
     userId = currentUserId,
     blockedUserId = userId,
@@ -100,4 +97,9 @@ internal fun BlockedUser.toRemote(currentUserId: String) = RemoteBlockedUser(
 internal fun RemoteBlockedUser.toBlockedUser() = BlockedUser(
     userId = userId,
     date = blockedDate.toLocalDateTimeUTC()
+)
+
+fun Reporter.toRemote() = RemoteReporter(
+    fullName = fullName,
+    email = email
 )

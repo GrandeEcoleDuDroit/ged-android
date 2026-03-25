@@ -35,6 +35,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
 import com.upsaclay.common.R
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.utils.PhonePreviews
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -83,7 +84,7 @@ private fun DefaultReportSheetContent(
             textAlign = TextAlign.Center
         )
 
-        Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.small_padding)))
+        Spacer(modifier = Modifier.height(MaterialTheme.padding.small))
 
         items.forEach { item ->
             TextItem(
@@ -146,7 +147,7 @@ private fun EditableBottomSheetContent(onSubmitClick: (String) -> Unit) {
             TextButton(
                 modifier = Modifier
                     .align(Alignment.End)
-                    .padding(end = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                    .padding(end = MaterialTheme.padding.medium),
                 onClick = { onSubmitClick(value) },
                 enabled = submitEnabled,
             ) {

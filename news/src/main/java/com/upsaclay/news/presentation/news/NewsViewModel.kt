@@ -8,24 +8,31 @@ import com.upsaclay.common.extension.executeUiBlockingRequest
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapExceptionErrorMessage
 import com.upsaclay.news.R
-import com.upsaclay.news.domain.entity.Announcement
-import com.upsaclay.news.domain.entity.AnnouncementReport
-import com.upsaclay.news.domain.repository.AnnouncementRepository
-import com.upsaclay.news.domain.usecase.DeleteAnnouncementUseCase
-import com.upsaclay.news.domain.usecase.RecreateAnnouncementUseCase
-import com.upsaclay.news.domain.usecase.RefreshAnnouncementsUseCase
+import com.upsaclay.news.domain.announcement.Announcement
+import com.upsaclay.news.domain.announcement.AnnouncementReport
+import com.upsaclay.news.domain.announcement.AnnouncementRepository
+import com.upsaclay.news.domain.announcement.usecase.DeleteAnnouncementUseCase
+import com.upsaclay.news.domain.announcement.usecase.RecreateAnnouncementUseCase
+import com.upsaclay.news.domain.post.Post
+import com.upsaclay.news.domain.post.PostReport
+import com.upsaclay.news.domain.post.PostRepository
+import com.upsaclay.news.domain.post.usecase.DeletePostUseCase
+import com.upsaclay.news.domain.post.usecase.RecreatePostUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class NewsViewModel(
+    private val announcementRepository: AnnouncementRepository,
     private val recreateAnnouncementUseCase: RecreateAnnouncementUseCase,
     private val deleteAnnouncementUseCase: DeleteAnnouncementUseCase,
-    private val refreshAnnouncementsUseCase: RefreshAnnouncementsUseCase,
-    private val announcementRepository: AnnouncementRepository,
+    private val postRepository: PostRepository,
+    private val recreatePostUseCase: RecreatePostUseCase,
+    private val deletePostUseCase: DeletePostUseCase,
     private val userRepository: UserRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(NewsUiState())
@@ -35,28 +42,15 @@ class NewsViewModel(
 
     init {
         listenAnnouncements()
+        listenPosts()
         listenUser()
     }
 
-    fun getAnnouncement(announcementId: String): Announcement? =
-        announcementRepository.getAnnouncement(announcementId)
+    suspend fun getAnnouncement(announcementId: String): Announcement? =
+        announcementRepository.getLocalAnnouncement(announcementId)
 
-    fun refreshAnnouncements() {
-        viewModelScope.executeUiBlockingRequest(
-            block = { refreshAnnouncementsUseCase.execute() },
-            onLoading = {
-                _uiState.update { it.copy(refreshing = true) }
-            },
-            onError = {
-                _event.emit(SingleUiEvent.Error(R.string.announcements_refresh_error))
-            },
-            onFinished = {
-                _uiState.update { it.copy(refreshing = false) }
-            }
-        )
-    }
 
-    fun resendAnnouncement(announcement: Announcement) {
+    fun recreateAnnouncement(announcement: Announcement) {
         viewModelScope.launch {
             recreateAnnouncementUseCase.execute(announcement)
         }
@@ -72,6 +66,28 @@ class NewsViewModel(
     fun reportAnnouncement(report: AnnouncementReport) {
         executeRequest {
             announcementRepository.reportAnnouncement(report)
+            _event.emit(SingleUiEvent.Success(R.string.announcement_reported))
+        }
+    }
+
+    suspend fun getPost(postId: String): Post? = postRepository.getLocalPost(postId)
+
+    fun recreatePost(post: Post) {
+        viewModelScope.launch {
+            recreatePostUseCase.execute(post)
+        }
+    }
+
+    fun deletePost(post: Post) {
+        executeRequest {
+            deletePostUseCase.execute(post)
+            _event.emit(SingleUiEvent.Success(R.string.post_deleted))
+        }
+    }
+
+    fun reportPost(report: PostReport) {
+        executeRequest {
+            postRepository.reportPost(report)
             _event.emit(SingleUiEvent.Success(R.string.announcement_reported))
         }
     }
@@ -93,18 +109,36 @@ class NewsViewModel(
 
     private fun listenAnnouncements() {
         viewModelScope.launch {
-            announcementRepository.announcements.collect { announcements ->
-                _uiState.update { state ->
-                    state.copy(
-                        announcements = announcements.map {
-                            it.copy(
-                                title = it.title?.takeIf { it.isNotBlank() }?.take(100),
-                                content = it.content.take(100)
-                            )
-                        }
-                    )
+            announcementRepository.announcements
+                .map { announcements ->
+                    announcements.map { announcement ->
+                        announcement.copy(
+                            title = announcement.title?.takeIf { it.isNotBlank() }?.take(100),
+                            content = announcement.content.take(100)
+                        )
+                    }
                 }
-            }
+                .collect { announcements ->
+                    _uiState.update {
+                        it.copy(announcements = announcements)
+                    }
+                }
+        }
+    }
+
+    private fun listenPosts() {
+        viewModelScope.launch {
+            postRepository.posts
+                .map { posts ->
+                    posts.map { post ->
+                        post.copy(content = post.content?.take(1000))
+                    }
+                }
+                .collect { posts ->
+                    _uiState.update {
+                        it.copy(posts = posts)
+                    }
+                }
         }
     }
 
@@ -121,7 +155,7 @@ class NewsViewModel(
     data class NewsUiState(
         val user: User? = null,
         val announcements: List<Announcement>? = null,
-        val refreshing: Boolean = false,
+        val posts: List<Post>? = null,
         val loading: Boolean = false
     )
 }

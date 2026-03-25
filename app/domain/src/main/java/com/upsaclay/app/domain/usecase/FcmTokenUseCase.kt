@@ -12,7 +12,7 @@ class FcmTokenUseCase(
     private val scope: CoroutineScope
 ) {
     suspend fun sendUnsentToken() {
-        val currentUserId = userRepository.currentUser?.id ?: return
+        val currentUserId = userRepository.getCurrentUser()?.id ?: return
         fcmTokenRepository.getFcmToken()?.let { fcmToken ->
             if (!fcmToken.sent) {
                 addFcmToken(currentUserId, fcmToken)
@@ -29,7 +29,7 @@ class FcmTokenUseCase(
 
             val fcmToken = FcmToken(token, false)
             fcmTokenRepository.storeFcmToken(fcmToken)
-            userRepository.currentUser?.id?.let {
+            userRepository.getCurrentUser()?.id?.let {
                 addFcmToken(it, fcmToken)
             }
         }

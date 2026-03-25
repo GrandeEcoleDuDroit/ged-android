@@ -1,6 +1,6 @@
 package com.upsaclay.news.presentation.announcement
 
-import com.upsaclay.news.domain.entity.AnnouncementReport
+import com.upsaclay.news.domain.announcement.AnnouncementReport
 
 val AnnouncementReport.Reason.stringRes: Int
     get() = when (this) {

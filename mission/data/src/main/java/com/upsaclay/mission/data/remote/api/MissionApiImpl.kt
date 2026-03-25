@@ -18,12 +18,14 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
+import retrofit2.http.Path
 import java.io.File
 
 internal class MissionApiImpl(private val missionServerApi: MissionServerApi): MissionApi {
@@ -76,9 +78,9 @@ internal class MissionApiImpl(private val missionServerApi: MissionServerApi): M
         }
     }
 
-    override suspend fun deleteMission(remoteMission: OutboundRemoteMission) {
+    override suspend fun deleteMission(missionId: String) {
         sendServerRequest {
-            missionServerApi.deleteMission(remoteMission)
+            missionServerApi.deleteMission(missionId)
         }
     }
 
@@ -124,8 +126,8 @@ internal interface MissionServerApi {
         @Part("mission") mission: RequestBody
     ): Response<ServerResponse>
 
-    @POST("missions/delete")
-    suspend fun deleteMission(@Body remoteMission: OutboundRemoteMission): Response<ServerResponse>
+    @DELETE("missions/{missionId}")
+    suspend fun deleteMission(@Path("missionId") missionId: String): Response<ServerResponse>
 
     @FormUrlEncoded
     @POST("missions/add-participant")

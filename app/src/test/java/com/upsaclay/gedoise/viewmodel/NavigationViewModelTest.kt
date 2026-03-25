@@ -8,8 +8,8 @@ import com.upsaclay.common.domain.repository.RouteRepository
 import com.upsaclay.common.domain.usecase.NavigationRequestUseCase
 import com.upsaclay.gedoise.presentation.navigation.NavigationViewModel
 import com.upsaclay.gedoise.presentation.navigation.TopLevelDestination
-import com.upsaclay.message.domain.fixtures.conversationFixture
 import com.upsaclay.message.domain.converter.ConversationJsonParser
+import com.upsaclay.message.domain.fixtures.conversationFixture
 import com.upsaclay.message.domain.usecase.GetUnreadConversationsCountUseCase
 import com.upsaclay.message.presentation.chat.ChatRoute
 import com.upsaclay.news.presentation.NewsBaseRoute

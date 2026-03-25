@@ -1,5 +1,6 @@
 package com.upsaclay.mission
 
+import com.upsaclay.common.domain.entity.Reporter
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.userFixture
@@ -74,7 +75,7 @@ class MissionDetailsViewModelTest {
         // Given
         val report = MissionReport(
             missionId = missionFixture.id,
-            reporter = MissionReport.Reporter(
+            reporter = Reporter(
                 fullName = userFixture2.fullName,
                 email = userFixture2.email
             ),
@@ -153,9 +154,9 @@ class MissionDetailsViewModelTest {
         // Given
         val user = userFixture2.copy(
             id = "6",
-            schoolLevel = SchoolLevel.GED_3
+            schoolLevel = SchoolLevel.LEVEL_3
         )
-        val mission = missionFixture.copy(schoolLevels = listOf(SchoolLevel.GED_1))
+        val mission = missionFixture.copy(schoolLevels = listOf(SchoolLevel.LEVEL_1))
         every { missionRepository.getMissionFlow(any()) } returns flowOf(mission)
         every { userRepository.user } returns flowOf(user)
 
