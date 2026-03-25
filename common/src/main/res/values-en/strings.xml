@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="ged_logo_description">App logo</string>
     <string name="home">Home</string>
     <string name="messages">Messages</string>
     <string name="calendar">Calendar</string>
@@ -36,24 +37,24 @@
     <string name="submit">Submit</string>
     <string name="copy">Copy</string>
     <string name="arrow_back_icon_description">Go back</string>
-    <string name="ged_logo_description">Logo of the university La Grande École du Droit</string>
-    <string name="profile_picture_description">User\'s profile picture</string>
     <string name="icon_add_description">Add icon</string>
     <string name="school_level">School level</string>
     <string name="first_name">First name</string>
     <string name="last_name">Last name</string>
     <string name="email">Email</string>
-    <string name="discard_modification_dialog_text">Discard changes?</string>
     <string name="now">Now</string>
-    <string name="second_ago_short">%d sec</string>
     <string name="minute_ago_short">%d min</string>
     <string name="hour_ago_short">%d h</string>
     <string name="day_ago_short">%d d</string>
-    <string name="week_ago_short">%d w</string>
-    <string name="minute_ago_medium">%d minutes</string>
-    <string name="hour_ago_medium">%d hours</string>
-    <string name="day_ago_medium">%d days</string>
-    <string name="week_ago_medium">%d weeks</string>
+    <string name="minute_ago_long">%d minutes ago</string>
+    <string name="hour_ago_long">%d hours ago</string>
+    <string name="day_ago_long">%d days ago</string>
+    <string name="show_more_text">Show more</string>
+    <string name="bytes_short">%d bytes</string>
+    <string name="kilo_bytes_short">%d KB</string>
+    <string name="mega_bytes_short">%d MB</string>
+    <string name="giga_bytes_short">%d GB</string>
+
     <string name="selling_promoting_inappropriate_content_report_reason">Selling or promoting inappropriate content</string>
     <string name="violent_hateful_content_report_reason">Violent or hateful content</string>
     <string name="spam_scam_report_reason">Spam or scam</string>
@@ -63,6 +64,8 @@
     <string name="other_report_reason_placeholder">Enter reason</string>
     <string name="hacked_account">Hacked account</string>
     <string name="pretending_to_be_someone_else">Pretending to be someone else</string>
+    <string name="menu_icon_button_description">Open menu</string>
+    <string name="profile_picture_description">User\'s profile picture</string>
 
     <string name="no_user">No users</string>
     <string name="no_internet_connection">No internet connection.</string>
@@ -76,6 +79,8 @@
     <string name="unblock_user_dialog_message">Do you want to unblock this user?</string>
     <string name="deleted_user">Deleted user</string>
     <string name="confirm">Confirm</string>
+    <string name="add_image">Add image</string>
+    <string name="discard_modification_dialog_text">Discard changes?</string>
 
     <string name="mandatory_field_error">Mandatory field.</string>
     <string name="number_field_error">Please enter a valid number.</string>
@@ -93,4 +98,6 @@
     <string name="cannot_connect_to_host_error">Could not connect to the server.</string>
     <string name="any_network_error">A network error has occurred.</string>
     <string name="unknown_error">An unknown error occurred.</string>
+    <string name="image_too_large_error_title">Image too large</string>
+    <string name="image_too_large_error_message">Total image size must be inferior than %s.</string>
 </resources>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">Grande Ecole du Droit</string>
+    <string name="app_name" translatable="false">ItsCloudy</string>
+    <string name="ged_logo_description">Logo de l\'application</string>
     <string name="home">Accueil</string>
     <string name="messages">Messages</string>
     <string name="calendar">Calendrier</string>
@@ -39,26 +40,27 @@
     <string name="confirm">Confirmer</string>
     <string name="submit">Soumettre</string>
     <string name="copy">Copier</string>
+    <string name="now">Maintenant</string>
+    <string name="minute_ago_short">%d min</string>
+    <string name="hour_ago_short">%d h</string>
+    <string name="day_ago_short">%d j</string>
+    <string name="minute_ago_long">Il y a %d minutes</string>
+    <string name="hour_ago_long">Il y a %d heures</string>
+    <string name="day_ago_long">Il y a %d jours</string>
+    <string name="show_more_text">Voir plus</string>
+    <string name="bytes_short">%d o</string>
+    <string name="kilo_bytes_short">%d Ko</string>
+    <string name="mega_bytes_short">%d Mo</string>
+    <string name="giga_bytes_short">%d Go</string>
+
     <string name="arrow_back_icon_description">Retour en arrière</string>
-    <string name="ged_logo_description">Logo de l\'université de La Grande École du Droit</string>
-    <string name="profile_picture_description">Photo de profil de l\'utilisateur</string>
     <string name="icon_add_description">Icône d\'ajout</string>
+    <string name="profile_picture_description">Photo de profil de l\'utilisateur</string>
     <string name="school_level">Niveau d\'étude</string>
     <string name="first_name">Prénom</string>
     <string name="last_name">Nom</string>
     <string name="email">Adresse e-mail</string>
-    <string name="discard_modification_dialog_text">Abandonner les modifications ?</string>
-    <string name="now">Maintenant</string>
-    <string name="second_ago_short">%d sec</string>
-    <string name="minute_ago_short">%d min</string>
-    <string name="hour_ago_short">%d h</string>
-    <string name="day_ago_short">%d j</string>
-    <string name="week_ago_short">%d sem</string>
     <string name="administrator">Administrateur</string>
-    <string name="minute_ago_medium">%d minutes</string>
-    <string name="hour_ago_medium">%d heures</string>
-    <string name="day_ago_medium">%d jours</string>
-    <string name="week_ago_medium">%d semaines</string>
     <string name="selling_promoting_inappropriate_content_report_reason">Vente ou promotion de contenu inapproprié</string>
     <string name="violent_hateful_content_report_reason">Contenu violent ou haineux</string>
     <string name="spam_scam_report_reason">Spam ou arnaque</string>
@@ -68,6 +70,7 @@
     <string name="other_report_reason_placeholder">Entrez la raison</string>
     <string name="hacked_account">Compte piraté</string>
     <string name="pretending_to_be_someone_else">Prétend être quelqu\'un d\'autre</string>
+    <string name="menu_icon_button_description">Ouvrir le menu</string>
 
     <string name="no_user">Aucun utilisateur</string>
     <string name="no_internet_connection">Aucune connexion Internet.</string>
@@ -79,6 +82,8 @@
     <string name="block_user_dialog_message">Vous ne verrez plus aucun de ses contenus.</string>
     <string name="unblock_user_dialog_message">Voulez-vous débloquer cet utilisateur ?</string>
     <string name="deleted_user">Utilisateur supprimé</string>
+    <string name="add_image">Ajouter image</string>
+    <string name="discard_modification_dialog_text">Abandonner les modifications ?</string>
 
     <string name="mandatory_field_error">Champ obligatoire.</string>
     <string name="number_field_error">Veuillez entrer un nombre valide.</string>
@@ -96,6 +101,8 @@
     <string name="cannot_connect_to_host_error">Impossible de se connecter au serveur.</string>
     <string name="any_network_error">Une erreur réseau est survenue.</string>
     <string name="unknown_error">Une erreur inconnue est survenue.</string>
+    <string name="image_too_large_error_title">Image trop volumineuse</string>
+    <string name="image_too_large_error_message">La taille totale de l\'image doit être inférieur à %s.</string>
 
     <string name="member_text_tag" translatable="false">Member text tag</string>
 </resources>

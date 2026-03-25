@@ -19,16 +19,16 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.KeyboardType
 import com.upsaclay.authentication.R
 import com.upsaclay.authentication.presentation.components.OutlinePasswordTextField
 import com.upsaclay.common.extension.extraSmallSpacing
+import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.presentation.components.LoadingButton
 import com.upsaclay.common.presentation.components.SimpleOutlinedTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.utils.PhonePreviews
 
 @Composable
@@ -50,7 +50,7 @@ fun AuthenticationForm(
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+        verticalArrangement = Arrangement.mediumSpacing()
     ) {
         CredentialsInputs(
             email = email,
@@ -104,7 +104,7 @@ private fun CredentialsInputs(
     onForgottenPasswordClick : () -> Unit
 ) {
     Column(
-        verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+        verticalArrangement = Arrangement.mediumSpacing()
     ) {
         SimpleOutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
@@ -166,7 +166,7 @@ private fun RegistrationText(
         )
 
         Text(
-            text = AnnotatedString(stringResource(id = R.string.sign_up)),
+            text = stringResource(id = R.string.sign_up),
             color = MaterialTheme.colorScheme.primary,
             style = MaterialTheme.typography.labelLarge,
             modifier = Modifier

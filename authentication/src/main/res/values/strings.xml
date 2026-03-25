@@ -6,8 +6,6 @@
     <string name="sign_up">S\'inscrire</string>
     <string name="registration">Inscription</string>
 
-    <string name="presentation_text">L\'application qui réunit toutes les actualités de la GED, faite pour les gédois par les gédois.</string>
-    <string name="title_login_screen">Gedoise Application</string>
     <string name="show_password_icon_description">Icône pour montrer le mot de passe</string>
     <string name="hide_password_icon_description">Icône pour cacher le mot de passe</string>
     <string name="mandatory_field">Champ obligatoire</string>

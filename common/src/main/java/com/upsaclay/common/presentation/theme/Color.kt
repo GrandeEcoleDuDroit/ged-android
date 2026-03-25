@@ -16,13 +16,13 @@ import androidx.compose.ui.graphics.Color
 
 internal val white = Color(0xFFFFFFFF)
 internal val black = Color(0xFF121212)
-
-internal val primaryLight = Color(0xFF67708A)
+internal val primaryLight = Color(0xFF4787F7)
 internal val primaryContainerLight = Color(0xFFDDE0E7)
 internal val onPrimaryContainerLight = Color(0xFF45474D)
 internal val onPrimaryLight = white
 internal val secondaryLight = Color(0xFF0B86FF)
-internal val secondaryContainerLight = Color(0xFFDBE1EA)
+internal val secondaryContainerLight = Color(0xFFDEE8F8)
+internal val onSecondaryContainerLight = Color(0xFF19202B)
 internal val tertiaryLight = Color(0xFF009688)
 internal val backgroundLight = Color(0xFFFFFFFF)
 internal val onBackgroundLight = black
@@ -37,12 +37,12 @@ internal val surfaceVariantLight = Color(0xFFE0E4EC)
 internal val outlineLight = Color(0xFF74777E)
 internal val outlineVariantLight = Color(0xFFC4C8D0)
 
-internal val primaryDark = Color(0xFF67708A)
+internal val primaryDark = Color(0xFF4787F7)
 internal val primaryContainerDark = Color(0xFF444958)
 internal val onPrimaryContainerDark = Color(0xFFE3E3E3)
 internal val onPrimaryDark = white
+internal val secondaryContainerDark = Color(0xFF444C58)
 internal val onSecondaryContainerDark = white
-internal val secondaryContainerDark = Color(0xFF444958)
 internal val surfaceContainerHighDark = Color(0xFF444958)
 internal val onBackgroundDark = white
 internal val backgroundDark = Color(0xFF191919)
@@ -110,7 +110,7 @@ val ColorScheme.listDivider: Color
 
 val ColorScheme.overlayContent: Color
     @Composable
-    get() = Color(0xFF0F0F0F)
+    get() = Color(0xFF0F0F0F).copy(alpha = 0.6f)
 
 
 val ColorScheme.activatedButtonColors: ButtonColors
@@ -137,7 +137,6 @@ val ColorScheme.imageIconButtonColors: IconButtonColors
         }.copy(alpha = 0.7f)
     )
 
-
 val ColorScheme.checkBoxColor: CheckboxColors
     @Composable
     get() = CheckboxColors(
@@ -154,7 +153,6 @@ val ColorScheme.checkBoxColor: CheckboxColors
         disabledUncheckedBorderColor = CheckboxDefaults.colors().disabledUncheckedBorderColor,
         disabledIndeterminateBorderColor = CheckboxDefaults.colors().disabledIndeterminateBorderColor
     )
-
 
 val ColorScheme.outlinedTextFieldColor: TextFieldColors
     @Composable

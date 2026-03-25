@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.BackTopBar
@@ -33,6 +34,7 @@ import com.upsaclay.common.presentation.components.UserItem
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.gedoise.R
+import com.upsaclay.gedoise.presentation.profile.BlockedUsersPreviewParameterProvider
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -147,12 +149,14 @@ private fun BlockedUsersScreen(
 
 @PhonePreviews
 @Composable
-private fun BlockedUserScreenPreview() {
+private fun BlockedUserScreenPreview(
+    @PreviewParameter(BlockedUsersPreviewParameterProvider::class) blockedUsers: List<User>
+) {
     GedoiseTheme {
         Surface {
             BlockedUsersScreen(
                 onBackClick = {},
-                blockedUsers = emptyList(),
+                blockedUsers = blockedUsers,
                 snackbarHostState = SnackbarHostState(),
                 onUnblockClick = {},
                 onAccountClick = {}

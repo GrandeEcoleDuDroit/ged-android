@@ -66,7 +66,7 @@ val missionsFixture = listOf(
         participants = listOf(usersFixture[0], usersFixture[1], usersFixture[3]),
         endDate = LocalDate.now().plusDays(10),
         maxParticipants = 3,
-        schoolLevels = listOf(SchoolLevel.GED_3, SchoolLevel.GED_4),
+        schoolLevels = listOf(SchoolLevel.LEVEL_3, SchoolLevel.LEVEL_4),
         tasks = listOf(
             MissionTask(
                 id = "1",
@@ -96,6 +96,6 @@ val missionsFixture = listOf(
         managers = listOf(userFixture2),
         participants = listOf(usersFixture[0], usersFixture[1], usersFixture[3]),
         maxParticipants = 3,
-        schoolLevels = listOf(SchoolLevel.GED_2)
+        schoolLevels = listOf(SchoolLevel.LEVEL_2)
     )
 )

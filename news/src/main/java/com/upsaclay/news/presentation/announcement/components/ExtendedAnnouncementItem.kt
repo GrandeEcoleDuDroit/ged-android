@@ -14,22 +14,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.sp
 import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.extension.smallMediumSpacing
 import com.upsaclay.common.extension.smallSpacing
+import com.upsaclay.common.presentation.components.ExpandableText
 import com.upsaclay.common.presentation.components.OptionButton
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
-import com.upsaclay.news.domain.entity.Announcement
-import com.upsaclay.news.domain.entity.Announcement.AnnouncementState
-import com.upsaclay.news.domain.longAnnouncementFixture
-import com.upsaclay.news.presentation.announcement.AnnouncementPresentationUtils
+import com.upsaclay.news.domain.announcement.Announcement
+import com.upsaclay.news.domain.announcement.Announcement.AnnouncementState
+import com.upsaclay.news.domain.announcement.longAnnouncementFixture
+import com.upsaclay.news.presentation.announcement.AnnouncementPresentationUtils.extendedAnnouncementItemContentStyle
+import com.upsaclay.news.presentation.announcement.AnnouncementPresentationUtils.extendedAnnouncementItemTitleStyle
 import com.upsaclay.news.presentation.announcement.readannouncement.AnnouncementHeader
 
 @Composable
@@ -90,14 +90,14 @@ private fun DefaultItem(
             Text(
                 modifier = Modifier.testTag(stringResource(id = R.string.read_screen_announcement_title_tag)),
                 text = it,
-                style = titleStyle
+                style = extendedAnnouncementItemTitleStyle
             )
         }
 
-        Text(
+        ExpandableText(
             modifier = Modifier.testTag(stringResource(id = R.string.read_screen_announcement_content_tag)),
             text = announcement.content,
-            style = contentStyle
+            style = extendedAnnouncementItemContentStyle,
         )
     }
 }
@@ -131,7 +131,7 @@ private fun ErrorItem(
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.small_padding))
+            horizontalArrangement = Arrangement.smallSpacing()
         ) {
             Icon(
                 painter = painterResource(com.upsaclay.common.R.drawable.ic_outline_error),
@@ -150,14 +150,14 @@ private fun ErrorItem(
             Text(
                 modifier = Modifier.testTag(stringResource(id = R.string.read_screen_announcement_title_tag)),
                 text = it,
-                style = titleStyle
+                style = extendedAnnouncementItemTitleStyle
             )
         }
 
-        Text(
-            modifier = Modifier.testTag(stringResource(id = R.string.read_screen_announcement_content_tag)),
+        ExpandableText(
             text = announcement.content,
-            style = contentStyle
+            modifier = Modifier.testTag(stringResource(id = R.string.read_screen_announcement_content_tag)),
+            style = extendedAnnouncementItemContentStyle
         )
     }
 }
@@ -187,14 +187,6 @@ private fun Header(
     }
 }
 
-private val titleStyle: TextStyle
-    @Composable
-    get() = AnnouncementPresentationUtils.titleStyle.copy(fontSize = 18.sp)
-
-private val contentStyle: TextStyle
-    @Composable
-    get() = MaterialTheme.typography.bodyMedium
-
 /*
  =====================================================================
                                 Preview
@@ -207,7 +199,7 @@ private fun DefaultItemPreview() {
     GedoiseTheme {
         Surface {
             DefaultItem(
-                modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                modifier = Modifier.padding(MaterialTheme.padding.medium),
                 announcement = longAnnouncementFixture,
                 onOptionClick = {},
                 onAuthorClick = {}
@@ -222,7 +214,7 @@ private fun PublishingItemPreview() {
     GedoiseTheme {
         Surface {
             PublishingItem(
-                modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                modifier = Modifier.padding(MaterialTheme.padding.medium),
                 announcement = longAnnouncementFixture,
                 onOptionClick = {},
                 onAuthorClick = {}
@@ -237,7 +229,7 @@ private fun ErrorItemPreview() {
     GedoiseTheme {
         Surface {
             ErrorItem(
-                modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                modifier = Modifier.padding(MaterialTheme.padding.medium),
                 announcement = longAnnouncementFixture.copy(state = AnnouncementState.ERROR),
                 onOptionClick = {},
                 onAuthorClick = {}

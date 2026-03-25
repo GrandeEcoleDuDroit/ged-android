@@ -42,16 +42,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.fromHtml
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import com.upsaclay.common.domain.entity.Reporter
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.entity.User
-import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.extension.displayName
 import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.extension.smallMediumSpacing
 import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.SingleUiEvent
-import com.upsaclay.common.presentation.components.CircularProgressBar
 import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.LoadingButton
 import com.upsaclay.common.presentation.components.PrimaryButton
@@ -60,12 +60,14 @@ import com.upsaclay.common.presentation.components.TextItem
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.activatedButtonColors
 import com.upsaclay.common.presentation.theme.informationText
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.entity.MissionReport
-import com.upsaclay.mission.domain.missionFixture
+import com.upsaclay.mission.presentation.MissionDetailsPreviewParameterData
+import com.upsaclay.mission.presentation.MissionDetailsPreviewParameterProvider
 import com.upsaclay.mission.presentation.components.MissionImage
 import com.upsaclay.mission.presentation.components.bottomsheets.MissionBottomSheet
 import com.upsaclay.mission.presentation.missiondetails.MissionDetailsViewModel.MissionButtonState
@@ -127,15 +129,6 @@ fun MissionDetailsDestination(
             onSeeAllManagersClick = onSeeAllUsersClick,
             onSeeAllParticipantsClick = onSeeAllUsersClick
         )
-    } else {
-        Box(
-            modifier = Modifier.fillMaxWidth(),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressBar(
-                modifier = Modifier.padding(top = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
-            )
-        }
     }
 }
 
@@ -218,7 +211,7 @@ private fun MissionDetailsScreen(
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .padding(bottom = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+                .padding(bottom = MaterialTheme.padding.medium)
                 .fillMaxSize(),
             verticalArrangement = Arrangement.smallMediumSpacing()
         ) {
@@ -240,36 +233,36 @@ private fun MissionDetailsScreen(
 
                     Column(verticalArrangement = Arrangement.mediumSpacing()) {
                         MissionDetailsTitleAndDescriptionSection(
-                            modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                            modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
                             mission = mission
                         )
 
                         HorizontalDivider(
-                            modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+                            modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium)
                         )
 
                         MissionDetailsInformationSection(
-                            modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                            modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
                             mission = mission
                         )
 
                         HorizontalDivider(
-                            modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+                            modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium)
                         )
 
                         MissionDetailsManagerSection(
-                            modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                            modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
                             managers = mission.managers,
                             onManagerClick = onManagerClick,
                             onSeeAllClick = { onSeeAllManagersClick(mission.managers) }
                         )
 
                         HorizontalDivider(
-                            modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+                            modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium)
                         )
 
                         MissionDetailsParticipantSection(
-                            modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                            modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
                             participants = mission.participants,
                             onParticipantClick = onParticipantClick,
                             onLongParticipantClick = {
@@ -284,17 +277,17 @@ private fun MissionDetailsScreen(
 
                         if (mission.tasks.isNotEmpty()) {
                             HorizontalDivider(
-                                modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+                                modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium)
                             )
 
                             MissionDetailsTaskSection(
-                                modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                                modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
                                 missionTasks = mission.tasks
                             )
                         }
 
                         if (buttonState is MissionButtonState.Hidden) {
-                            Spacer(modifier = Modifier.height(dimensionResource(com.upsaclay.common.R.dimen.small_padding)))
+                            Spacer(modifier = Modifier.height(MaterialTheme.padding.small))
                         }
                     }
                 }
@@ -313,7 +306,7 @@ private fun MissionDetailsScreen(
             if (buttonState !is MissionButtonState.Hidden) {
                 BottomSection(
                     modifier = Modifier
-                        .padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+                        .padding(horizontal = MaterialTheme.padding.medium)
                         .fillMaxWidth(),
                     buttonState = buttonState,
                     loading = loading,
@@ -385,7 +378,7 @@ private fun MissionDetailsScreen(
                     onReportMissionClick(
                         MissionReport(
                             missionId = mission.id,
-                            reporter = MissionReport.Reporter(
+                            reporter = Reporter(
                                 fullName = user.fullName,
                                 email = user.email
                             ),
@@ -510,12 +503,14 @@ private sealed class MissionDetailsScreenDialog {
 
 @PhonePreviews
 @Composable
-private fun MissionDetailsScreenPreview() {
+private fun MissionDetailsScreenPreview(
+    @PreviewParameter(MissionDetailsPreviewParameterProvider::class) previewParameter: MissionDetailsPreviewParameterData
+) {
     GedoiseTheme {
         Surface {
             MissionDetailsScreen(
-                user = userFixture,
-                mission = missionFixture,
+                user = previewParameter.user,
+                mission = previewParameter.mission,
                 loading = false,
                 isManager = true,
                 buttonState = MissionButtonState.Register,

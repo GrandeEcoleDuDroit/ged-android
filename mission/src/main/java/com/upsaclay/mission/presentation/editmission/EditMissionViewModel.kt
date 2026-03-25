@@ -7,10 +7,12 @@ import com.upsaclay.common.domain.entity.CustomException
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.extensions.replace
+import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.GenerateIdUseCase
 import com.upsaclay.common.domain.usecase.GetUsersUseCase
 import com.upsaclay.common.extension.executeUiBlockingRequest
+import com.upsaclay.common.presentation.CommonPresentationUtils
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapExceptionErrorMessage
 import com.upsaclay.mission.R
@@ -18,6 +20,7 @@ import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.entity.Mission.MissionState
 import com.upsaclay.mission.domain.entity.MissionTask
 import com.upsaclay.mission.domain.usecase.UpdateMissionUseCase
+import com.upsaclay.mission.presentation.MissionImageError
 import com.upsaclay.mission.presentation.MissionPresentationUtils.MAX_DESCRIPTION_LENGTH
 import com.upsaclay.mission.presentation.MissionPresentationUtils.MAX_DURATION_LENGTH
 import com.upsaclay.mission.presentation.MissionPresentationUtils.MAX_TITLE_LENGTH
@@ -32,10 +35,11 @@ import java.time.LocalDate
 
 class EditMissionViewModel(
     private val mission: Mission,
+    private val imageRepository: ImageRepository,
+    private val userRepository: UserRepository,
     private val getUsersUseCase: GetUsersUseCase,
     private val updateMissionUseCase: UpdateMissionUseCase,
     private val generateIdUseCase: GenerateIdUseCase,
-    private val userRepository: UserRepository
 ): ViewModel() {
     private val _uiState = MutableStateFlow(
         EditMissionUiState(
@@ -103,6 +107,14 @@ class EditMissionViewModel(
     }
 
     fun onImageUriChange(uri: Uri?) {
+        val fileInformation = imageRepository.getFileInformation(uri.toString())
+        if (fileInformation.size > CommonPresentationUtils.MAX_IMAGE_FILE_SIZE) {
+            viewModelScope.launch {
+                _event.emit(EditMissionUiEvent.ImageError(MissionImageError.ImageTooLarge))
+            }
+            return
+        }
+
         _uiState.update {
             it.copy(imageUri = uri)
         }
@@ -467,5 +479,9 @@ class EditMissionViewModel(
                     validDescription &&
                     validSchoolLevels &&
                     validMaxParticipants
+    }
+
+    sealed interface EditMissionUiEvent : SingleUiEvent {
+        data class ImageError(val missionImageError: MissionImageError) : EditMissionUiEvent
     }
 }

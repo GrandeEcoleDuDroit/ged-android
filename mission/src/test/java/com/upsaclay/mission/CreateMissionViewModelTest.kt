@@ -1,7 +1,10 @@
 package com.upsaclay.mission
 
 import android.net.Uri
+import com.upsaclay.common.domain.entity.ByteUnit
+import com.upsaclay.common.domain.entity.FileInformation
 import com.upsaclay.common.domain.entity.SchoolLevel
+import com.upsaclay.common.domain.repository.ImageRepository
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.GenerateIdUseCase
 import com.upsaclay.common.domain.usecase.GetUsersUseCase
@@ -28,6 +31,7 @@ import kotlin.test.assertEquals
 @OptIn(ExperimentalCoroutinesApi::class)
 class CreateMissionViewModelTest {
     private val userRepository: UserRepository = mockk()
+    private val imageRepository: ImageRepository = mockk()
     private val createMissionUseCase: CreateMissionUseCase = mockk()
     private val getUsersUseCase: GetUsersUseCase = mockk()
     private val generateIdUseCase: GenerateIdUseCase = mockk()
@@ -35,6 +39,7 @@ class CreateMissionViewModelTest {
     private lateinit var viewModel: CreateMissionViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
     private val newId = "newId"
+    private val imageUri = mockk<Uri>()
 
     @Before
     fun setUp() {
@@ -42,11 +47,13 @@ class CreateMissionViewModelTest {
 
         every { generateIdUseCase.execute() } returns newId
         every { userRepository.user } returns MutableStateFlow(userFixture)
+        every { imageRepository.getFileInformation(any()) } returns FileInformation()
         coEvery { createMissionUseCase.execute(any(), any()) } returns Unit
         coEvery { getUsersUseCase.execute() } returns usersFixture
 
         viewModel = CreateMissionViewModel(
             userRepository = userRepository,
+            imageRepository = imageRepository,
             createMissionUseCase = createMissionUseCase,
             getUsersUseCase = getUsersUseCase,
             generateIdUseCase = generateIdUseCase
@@ -72,14 +79,23 @@ class CreateMissionViewModelTest {
 
     @Test
     fun onImageUriChange_should_update_image_uri() {
-        // Given
-        val imageUri = mockk<Uri>()
-
         // When
         viewModel.onImageUriChange(imageUri)
 
         // Then
         assertEquals(imageUri, viewModel.uiState.value.imageUri)
+    }
+
+    @Test
+    fun onImageUriChange_should_update_image_uri_should_not_add_image_with_size_superior_than_3mb() {
+        // Given
+        every { imageRepository.getFileInformation(any()) } returns FileInformation(size = 4 * ByteUnit.MEGA_BYTE.value)
+
+        // When
+        viewModel.onImageUriChange(imageUri)
+
+        // Then
+        assertEquals(null, viewModel.uiState.value.imageUri)
     }
 
     @Test
@@ -210,8 +226,8 @@ class CreateMissionViewModelTest {
     @Test
     fun onSchoolLevelChange_should_add_school_level_when_not_present() {
         // Given
-        val schoolLevelToAdd = SchoolLevel.GED_4
-        val expectedResult = listOf(SchoolLevel.GED_1, SchoolLevel.GED_2, SchoolLevel.GED_3, SchoolLevel.GED_4)
+        val schoolLevelToAdd = SchoolLevel.LEVEL_4
+        val expectedResult = listOf(SchoolLevel.LEVEL_1, SchoolLevel.LEVEL_2, SchoolLevel.LEVEL_3, SchoolLevel.LEVEL_4)
 
         // When
         viewModel.onSchoolLevelChange(schoolLevelToAdd)
@@ -224,8 +240,8 @@ class CreateMissionViewModelTest {
     @Test
     fun onSchoolLevelChange_should_remove_school_level_when_present() {
         // Given
-        val schoolLevelToRemove = SchoolLevel.GED_4
-        val expectedResult = listOf(SchoolLevel.GED_1, SchoolLevel.GED_2, SchoolLevel.GED_3)
+        val schoolLevelToRemove = SchoolLevel.LEVEL_4
+        val expectedResult = listOf(SchoolLevel.LEVEL_1, SchoolLevel.LEVEL_2, SchoolLevel.LEVEL_3)
 
 
         // When
@@ -238,8 +254,8 @@ class CreateMissionViewModelTest {
     @Test
     fun onSchoolLevelChange_should_update_school_levels_sorted() {
         // Given
-        val schoolLevelsToRemove = listOf(SchoolLevel.GED_4, SchoolLevel.GED_1)
-        val expectedResult = listOf(SchoolLevel.GED_2, SchoolLevel.GED_3)
+        val schoolLevelsToRemove = listOf(SchoolLevel.LEVEL_4, SchoolLevel.LEVEL_1)
+        val expectedResult = listOf(SchoolLevel.LEVEL_2, SchoolLevel.LEVEL_3)
 
         // When
         schoolLevelsToRemove.forEach {
@@ -393,6 +409,7 @@ class CreateMissionViewModelTest {
         // When
         viewModel = CreateMissionViewModel(
             userRepository = userRepository,
+            imageRepository = imageRepository,
             createMissionUseCase = createMissionUseCase,
             getUsersUseCase = getUsersUseCase,
             generateIdUseCase = generateIdUseCase

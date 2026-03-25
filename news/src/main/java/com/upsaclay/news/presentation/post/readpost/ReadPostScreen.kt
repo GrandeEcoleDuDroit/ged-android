@@ -1,0 +1,290 @@
+package com.upsaclay.news.presentation.post.readpost
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import com.upsaclay.common.domain.entity.Reporter
+import com.upsaclay.common.domain.entity.User
+import com.upsaclay.common.extension.mediumSpacing
+import com.upsaclay.common.presentation.SingleUiEvent
+import com.upsaclay.common.presentation.components.BackTopBar
+import com.upsaclay.common.presentation.components.DefaultDialog
+import com.upsaclay.common.presentation.components.LoadingDialog
+import com.upsaclay.common.presentation.components.OptionButton
+import com.upsaclay.common.presentation.components.ReportBottomSheet
+import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.presentation.theme.padding
+import com.upsaclay.common.utils.ElapsedTimeValueFormat
+import com.upsaclay.common.utils.PhonePreviews
+import com.upsaclay.news.R
+import com.upsaclay.news.domain.post.Post
+import com.upsaclay.news.domain.post.PostReport
+import com.upsaclay.news.presentation.post.PostPresentationUtils
+import com.upsaclay.news.presentation.post.PostPresentationUtils.postContentStyle
+import com.upsaclay.news.presentation.post.PostPresentationUtils.postTitleStyle
+import com.upsaclay.news.presentation.post.PostPreviewParameterData
+import com.upsaclay.news.presentation.post.PostPreviewParameterProvider
+import com.upsaclay.news.presentation.post.SizeTokens
+import com.upsaclay.news.presentation.post.components.PostBottomSheet
+import com.upsaclay.news.presentation.post.components.PostImagePages
+import com.upsaclay.news.presentation.post.components.PostSourceItem
+import com.upsaclay.news.presentation.post.stringRes
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
+
+@Composable
+fun ReadPostDestination(
+    postId: String,
+    onBackClick: () -> Unit,
+    onEditPostClick: (Post) -> Unit,
+    viewModel: ReadPostViewModel = koinViewModel(
+        parameters = { parametersOf(postId) }
+    )
+) {
+    val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
+    val showSnackBar: suspend (String) -> SnackbarResult = { message ->
+        snackbarHostState.showSnackbar(message)
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.event.collect { event ->
+            when (event) {
+                is ReadPostViewModel.ReadPostUiEvent.PostDeleted -> onBackClick()
+                is SingleUiEvent.Error -> showSnackBar(context.getString(event.messageId))
+            }
+        }
+    }
+
+    if (uiState.user != null && uiState.post != null) {
+        ReadPostScreen(
+            user = uiState.user!!,
+            post = uiState.post!!,
+            loading = uiState.loading,
+            snackbarHostState = snackbarHostState,
+            onBackClick = onBackClick,
+            onRedirectPostClick = { context.startActivity(PostPresentationUtils.getPostLinkIntent(it)) },
+            onEditPostClick = onEditPostClick,
+            onDeletePostClick = viewModel::deletePost,
+            onReportPostClick = viewModel::reportPost
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ReadPostScreen(
+    user: User,
+    post: Post,
+    loading: Boolean,
+    snackbarHostState: SnackbarHostState,
+    onBackClick: () -> Unit,
+    onRedirectPostClick: (String) -> Unit,
+    onEditPostClick: (Post) -> Unit,
+    onDeletePostClick: () -> Unit,
+    onReportPostClick: (PostReport) -> Unit
+    ) {
+    var activeBottomSheet by remember { mutableStateOf<ReadPostScreenBottomSheet?>(null) }
+    var activeDialog by remember { mutableStateOf<ReadPostDialog?>(null) }
+
+    when (activeDialog) {
+        is ReadPostDialog.DeletePostDialog -> {
+            DefaultDialog(
+                modifier = Modifier.testTag(stringResource(id = R.string.read_screen_delete_dialog_tag)),
+                text = stringResource(id = R.string.delete_post_dialog_message),
+                confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
+                critical = true,
+                onConfirm = {
+                    activeDialog = null
+                    onDeletePostClick()
+                },
+                onCancel = { activeDialog = null }
+            )
+        }
+
+        else -> Unit
+    }
+
+    if (loading) {
+        LoadingDialog()
+    }
+
+    Scaffold(
+        topBar = {
+            BackTopBar(
+                onBackClick = onBackClick,
+                title = stringResource(R.string.news),
+                leadingIcon = {
+                    OptionButton { activeBottomSheet = ReadPostScreenBottomSheet.PostBottomSheet }
+                }
+            )
+        },
+        snackbarHost = {
+            SnackbarHost(snackbarHostState) {
+                Snackbar(it)
+            }
+        }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .padding(bottom = MaterialTheme.padding.medium),
+            verticalArrangement = Arrangement.mediumSpacing()
+        ) {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.mediumSpacing()
+            ) {
+                Text(
+                    modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
+                    text = post.title,
+                    style = postTitleStyle
+                )
+
+                PostSourceItem(
+                    modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
+                    postSource = post.source,
+                    date = post.date,
+                    contentSize = SizeTokens.MEDIUM,
+                    elapsedTimeValueFormat = ElapsedTimeValueFormat.LONG
+                )
+
+                if (post.state.imageReferenceValues.isNotEmpty()) {
+                    PostImagePages(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(dimensionResource(R.dimen.post_image_height)),
+                        models = post.state.imageReferenceValues
+                    )
+                }
+
+                post.content?.let {
+                    Text(
+                        modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
+                        text = it,
+                        style = postContentStyle
+                    )
+                }
+            }
+
+            OutlinedButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = MaterialTheme.padding.medium),
+                onClick = { onRedirectPostClick(post.link) }
+            ) {
+                Text(text = stringResource(com.upsaclay.common.R.string.see))
+            }
+        }
+    }
+
+    when (activeBottomSheet) {
+        is ReadPostScreenBottomSheet.PostBottomSheet -> {
+            PostBottomSheet(
+                postState = post.state,
+                editable = user.admin,
+                onEditClick = {
+                    activeBottomSheet = null
+                    onEditPostClick(post)
+                },
+                onDeleteClick = {
+                    activeBottomSheet = null
+                    activeDialog = ReadPostDialog.DeletePostDialog
+                },
+                onReportClick = {
+                    activeBottomSheet = ReadPostScreenBottomSheet.PostReportBottomSheet
+                },
+                onDismiss = { activeBottomSheet = null }
+            )
+        }
+
+        is ReadPostScreenBottomSheet.PostReportBottomSheet -> {
+            ReportBottomSheet(
+                items = PostReport.Reason.entries.map { stringResource(it.stringRes) },
+                onReportClick = { reason ->
+                    activeBottomSheet = null
+                    onReportPostClick(
+                        PostReport(
+                            postId = post.id,
+                            reporter = Reporter(
+                                fullName = user.fullName,
+                                email = user.email
+                            ),
+                            reason = reason
+                        )
+                    )
+                },
+                onDismiss = { activeBottomSheet = null }
+            )
+        }
+
+        else -> Unit
+    }
+}
+
+private sealed class ReadPostScreenBottomSheet {
+    data object PostBottomSheet : ReadPostScreenBottomSheet()
+    data object PostReportBottomSheet: ReadPostScreenBottomSheet()
+}
+
+private sealed class ReadPostDialog {
+    data object DeletePostDialog : ReadPostDialog()
+}
+
+/*
+ =====================================================================
+                                Preview
+ =====================================================================
+ */
+
+@PhonePreviews
+@Composable
+private fun ReadPostScreenPreview(
+    @PreviewParameter(PostPreviewParameterProvider::class) previewParameter: PostPreviewParameterData
+) {
+    GedoiseTheme {
+        Surface {
+            ReadPostScreen(
+                user = previewParameter.user,
+                post = previewParameter.post,
+                loading = false,
+                snackbarHostState = SnackbarHostState(),
+                onBackClick = {},
+                onRedirectPostClick = {},
+                onEditPostClick = {},
+                onDeletePostClick = {},
+                onReportPostClick = {}
+            )
+        }
+    }
+}

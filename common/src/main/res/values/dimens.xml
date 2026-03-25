@@ -1,14 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="default_padding">0dp</dimen>
-    <dimen name="very_extra_small_padding">2dp</dimen>
-    <dimen name="extra_small_padding">4dp</dimen>
-    <dimen name="small_padding">8dp</dimen>
-    <dimen name="small_medium_padding">12dp</dimen>
-    <dimen name="medium_padding">16dp</dimen>
-    <dimen name="medium_large_padding">20dp</dimen>
-    <dimen name="large_padding">24dp</dimen>
-    <dimen name="extra_large_padding">32dp</dimen>
-    <dimen name="very_extra_large_padding">64dp</dimen>
-    <dimen name="icon_size">20dp</dimen>
+    <dimen name="small_icon_size">16dp</dimen>
+    <dimen name="small_medium_icon_size">20dp</dimen>
+    <dimen name="medium_icon_size">24dp</dimen>
+    <dimen name="extra_small_button_size">32dp</dimen>
+    <dimen name="supporting_text_top_padding">4dp</dimen>
 </resources>

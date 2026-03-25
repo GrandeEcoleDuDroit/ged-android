@@ -9,11 +9,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
-import com.upsaclay.common.R
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.listDivider
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.utils.PhonePreviews
 
 @Composable
@@ -40,7 +39,7 @@ fun ListDividerPreview() {
             LazyColumn {
                 itemsIndexed(items) { index, text ->
                     Text(
-                        modifier = Modifier.padding(dimensionResource(R.dimen.medium_padding)),
+                        modifier = Modifier.padding(MaterialTheme.padding.medium),
                         text = text
                     )
                     if (index < items.lastIndex) {

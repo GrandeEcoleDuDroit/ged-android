@@ -9,10 +9,10 @@ import com.upsaclay.common.extension.executeUiBlockingRequest
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.utils.mapExceptionErrorMessage
 import com.upsaclay.news.R
-import com.upsaclay.news.domain.entity.Announcement
-import com.upsaclay.news.domain.entity.AnnouncementReport
-import com.upsaclay.news.domain.repository.AnnouncementRepository
-import com.upsaclay.news.domain.usecase.DeleteAnnouncementUseCase
+import com.upsaclay.news.domain.announcement.Announcement
+import com.upsaclay.news.domain.announcement.AnnouncementReport
+import com.upsaclay.news.domain.announcement.AnnouncementRepository
+import com.upsaclay.news.domain.announcement.usecase.DeleteAnnouncementUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -70,7 +70,7 @@ class ReadAnnouncementViewModel(
 
     private fun listenAnnouncement() {
         viewModelScope.launch {
-            announcementRepository.getAnnouncementFlow(announcementId)
+            announcementRepository.getLocalAnnouncementFlow(announcementId)
                 .filterNotNull()
                 .map { announcement ->
                     announcement.copy(

@@ -4,15 +4,10 @@ import com.upsaclay.common.domain.extensions.toEpochMilliUTC
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.domain.userFixture2
 import com.upsaclay.common.domain.usersFixture
-import com.upsaclay.message.domain.entity.Conversation
-import com.upsaclay.message.domain.entity.ConversationDTO
-import com.upsaclay.message.domain.entity.ConversationMessage
-import com.upsaclay.message.domain.entity.ConversationUi
 import com.upsaclay.message.domain.entity.Message
 import com.upsaclay.message.domain.entity.Message.MessageState
 import com.upsaclay.message.domain.entity.MessageNotification
 import java.time.LocalDateTime
-import java.time.ZoneOffset
 
 val messageFixture = Message(
     id = "1",

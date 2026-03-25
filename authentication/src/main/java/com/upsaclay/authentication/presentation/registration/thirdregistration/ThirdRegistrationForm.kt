@@ -14,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
@@ -24,9 +23,11 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
 import com.upsaclay.authentication.R
 import com.upsaclay.authentication.presentation.components.OutlinePasswordTextField
+import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.presentation.components.SimpleOutlinedTextField
 import com.upsaclay.common.presentation.theme.GedoiseTheme
 import com.upsaclay.common.presentation.theme.checkBoxColor
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.utils.PhonePreviews
 
 @Composable
@@ -43,11 +44,11 @@ fun ThirdRegistrationForm(
     onLegalNoticeCheckedChange: (Boolean) -> Unit
 ) {
     Column(
-        verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+        verticalArrangement = Arrangement.mediumSpacing()
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
-            verticalArrangement = Arrangement.spacedBy(dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+            modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
+            verticalArrangement = Arrangement.mediumSpacing()
         ) {
             Text(
                 text = stringResource(id = R.string.enter_email_password),
@@ -77,7 +78,7 @@ fun ThirdRegistrationForm(
         }
 
         Row(
-            modifier = Modifier.padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.extra_small_padding)),
+            modifier = Modifier.padding(horizontal = MaterialTheme.padding.extraSmall),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Checkbox(
@@ -92,7 +93,7 @@ fun ThirdRegistrationForm(
         errorMessage?.let {
             Text(
                 modifier = Modifier
-                    .padding(horizontal = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+                    .padding(horizontal = MaterialTheme.padding.medium)
                     .align(Alignment.Start),
                 text = stringResource(it),
                 color = MaterialTheme.colorScheme.error,
@@ -104,7 +105,7 @@ fun ThirdRegistrationForm(
 
 @Composable
 private fun LegalNoticeText() {
-    val legalNoticeUrl = "https://grandeecoledudroit.github.io/ged-website/legal-notice.html"
+    val legalNoticeUrl = "https://itscloudymourchidi.github.io/itscloudy-website/#/legal-notice"
 
     Text(
         text = buildAnnotatedString {

@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="message_add_icon_description">Nouvelle conversation</string>
-    <string name="group_add_icon_description">Nouveau groupe</string>
-    <string name="fab_button_panel_icon_description">Ouvrir le pannel des boutons flottants</string>
     <string name="new_conversation">Nouvelle conversation</string>
-    <string name="new_group">Nouveau groupe</string>
     <string name="start_conversation">Démarrer une conversation avec vos amis.</string>
     <string name="delete_conversation_dialog_title">Supprimer conversation ?</string>
     <string name="delete_conversation_dialog_message">Cela supprimera l\'historique des messages de votre côté uniquement.</string>
@@ -46,4 +43,5 @@
     <string name="chat_screen_send_button_tag" translatable="false">Chat Screen Send Button Tag</string>
     <string name="chat_screen_blocked_user_indicator_tag" translatable="false">Mesage blocked user indicator test tag</string>
     <string name="search_icon_description">Rechercher utilisateur</string>
+    <string name="create_conversation_icon_button_description">Créer conversation</string>
 </resources>

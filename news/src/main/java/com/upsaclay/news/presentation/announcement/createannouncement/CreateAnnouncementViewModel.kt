@@ -5,11 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.repository.UserRepository
 import com.upsaclay.common.domain.usecase.GenerateIdUseCase
-import com.upsaclay.news.domain.entity.Announcement
-import com.upsaclay.news.domain.entity.Announcement.AnnouncementState
-import com.upsaclay.news.domain.entity.Announcement.Companion.CONTENT_MAX_LENGTH
-import com.upsaclay.news.domain.entity.Announcement.Companion.TITLE_MAX_LENGTH
-import com.upsaclay.news.domain.usecase.CreateAnnouncementUseCase
+import com.upsaclay.news.domain.announcement.Announcement
+import com.upsaclay.news.domain.announcement.Announcement.AnnouncementState
+import com.upsaclay.news.domain.announcement.usecase.CreateAnnouncementUseCase
+import com.upsaclay.news.presentation.announcement.AnnouncementPresentationUtils.MAX_CONTENT_LENGTH
+import com.upsaclay.news.presentation.announcement.AnnouncementPresentationUtils.MAX_TITLE_LENGTH
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -29,14 +29,14 @@ class CreateAnnouncementViewModel(
     fun onTitleChange(title: String) {
         _uiState.update {
             it.copy(
-                title = title.take(TITLE_MAX_LENGTH),
+                title = title.take(MAX_TITLE_LENGTH),
                 createEnabled = validateCreate(uiState.value.content)
             )
         }
     }
 
     fun onContentChange(content: String) {
-        val contentTruncated = content.take(CONTENT_MAX_LENGTH)
+        val contentTruncated = content.take(MAX_CONTENT_LENGTH)
         _uiState.update {
             it.copy(
                 content = contentTruncated,

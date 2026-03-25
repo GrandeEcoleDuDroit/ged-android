@@ -13,7 +13,7 @@ interface MissionApi {
 
     suspend fun updateMission(userId: String, remoteMission: OutboundRemoteMission, imageFile: File?)
 
-    suspend fun deleteMission(remoteMission: OutboundRemoteMission)
+    suspend fun deleteMission(missionId: String)
 
     suspend fun reportMission(remoteMissionReport: RemoteMissionReport)
 

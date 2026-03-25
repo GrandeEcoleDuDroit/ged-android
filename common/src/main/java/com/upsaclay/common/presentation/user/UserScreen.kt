@@ -28,11 +28,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.upsaclay.common.R
+import com.upsaclay.common.domain.entity.Reporter
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.domain.entity.UserReport
-import com.upsaclay.common.domain.userFixture
-import com.upsaclay.common.domain.userFixture2
 import com.upsaclay.common.extension.displayName
 import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.extension.rootMediumPadding
@@ -80,15 +80,15 @@ fun UserDestination(
 
     if (uiState.currentUser != null) {
         UserScreen(
-            onBackClick = onBackClick,
-            onReportUserClick = viewModel::reportUser,
-            onBlockUserClick = viewModel::blockUser,
-            onUnblockUserClick = viewModel::unblockUser,
             user = user,
             currentUser = uiState.currentUser!!,
             loading = uiState.loading,
             userBlocked = uiState.userBlocked,
-            snackbarHostState = snackbarHostState
+            snackbarHostState = snackbarHostState,
+            onBackClick = onBackClick,
+            onReportUserClick = viewModel::reportUser,
+            onBlockUserClick = viewModel::blockUser,
+            onUnblockUserClick = viewModel::unblockUser
         )
     }
 }
@@ -96,15 +96,15 @@ fun UserDestination(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun UserScreen(
-    onBackClick: () -> Unit,
-    onReportUserClick: (UserReport) -> Unit,
-    onBlockUserClick: (String) -> Unit,
-    onUnblockUserClick: (String) -> Unit,
     user: User,
     currentUser: User,
     loading: Boolean,
     userBlocked: Boolean,
-    snackbarHostState: SnackbarHostState = SnackbarHostState()
+    snackbarHostState: SnackbarHostState = SnackbarHostState(),
+    onBackClick: () -> Unit,
+    onReportUserClick: (UserReport) -> Unit,
+    onBlockUserClick: (String) -> Unit,
+    onUnblockUserClick: (String) -> Unit
 ) {
     var activeBottomSheet by remember { mutableStateOf<UserScreenBottomSheet?>(null) }
     var activeDialog by remember { mutableStateOf<UserScreenDialog?>(null) }
@@ -211,7 +211,7 @@ private fun UserScreen(
                                 fullName = user.fullName,
                                 email = user.email
                             ),
-                            reporter = UserReport.Reporter(
+                            reporter = Reporter(
                                 fullName = currentUser.fullName,
                                 email = currentUser.email
                             ),
@@ -305,18 +305,20 @@ private sealed class UserScreenDialog {
 
 @PhonePreviews
 @Composable
-private fun UserScreenPreview() {
+private fun UserScreenPreview(
+    @PreviewParameter(UserPreviewParameterProvider::class) previewParameter: UserPreviewParameterData
+) {
     GedoiseTheme {
         Surface {
             UserScreen(
+                user = previewParameter.user,
+                currentUser = previewParameter.currentUser,
+                loading = false,
+                userBlocked = false,
                 onBackClick = {},
                 onReportUserClick = {},
                 onBlockUserClick = {},
-                onUnblockUserClick = {},
-                user = userFixture,
-                currentUser = userFixture2,
-                loading = false,
-                userBlocked = false
+                onUnblockUserClick = {}
             )
         }
     }

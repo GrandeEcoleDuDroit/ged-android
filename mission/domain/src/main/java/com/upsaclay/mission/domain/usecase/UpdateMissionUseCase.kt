@@ -19,7 +19,7 @@ class UpdateMissionUseCase(
         val newImageFile = imageUri?.let { uri ->
             val extension = imageRepository.getFileExtension(uri)
             val fileName = "${MissionUtils.Image.generateFileName(mission.id)}.$extension"
-            newImagePath = MissionUtils.Image.makeRelativePath(fileName)
+            newImagePath = MissionUtils.Image.getRelativePath(fileName)
             imageRepository.createCacheImage(newImagePath!!, uri)
         }
 

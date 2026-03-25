@@ -2,26 +2,27 @@ package com.upsaclay.common.extension
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.dimensionResource
+import com.upsaclay.common.presentation.theme.padding
 
 @Composable
 fun Modifier.rootMediumPadding(innerPadding: PaddingValues): Modifier {
     return this.padding(
         top = innerPadding.calculateTopPadding(),
-        start = dimensionResource(com.upsaclay.common.R.dimen.medium_padding),
-        end = dimensionResource(com.upsaclay.common.R.dimen.medium_padding),
+        start = MaterialTheme.padding.medium,
+        end = MaterialTheme.padding.medium,
         bottom = innerPadding.calculateBottomPadding() +
-                dimensionResource(com.upsaclay.common.R.dimen.medium_padding)
+                MaterialTheme.padding.medium
     )
 }
 
 @Composable
 fun Modifier.rootMediumPadding(): Modifier {
     return this.padding(
-        start = dimensionResource(com.upsaclay.common.R.dimen.medium_padding),
-        end = dimensionResource(com.upsaclay.common.R.dimen.medium_padding),
-        bottom = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)
+        start = MaterialTheme.padding.medium,
+        end = MaterialTheme.padding.medium,
+        bottom = MaterialTheme.padding.medium
     )
 }

@@ -11,7 +11,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -19,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.presentation.components.TextIcon
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.Mission
 import com.upsaclay.mission.domain.missionFixture
@@ -116,7 +116,7 @@ private fun MissionInformationValuesItemPreview() {
     GedoiseTheme {
         Surface {
             MissionInformationValuesItem(
-                modifier = Modifier.padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                modifier = Modifier.padding(MaterialTheme.padding.medium),
                 mission = missionFixture
             )
         }

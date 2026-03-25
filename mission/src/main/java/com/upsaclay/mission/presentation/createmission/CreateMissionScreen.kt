@@ -7,18 +7,26 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import com.upsaclay.common.domain.entity.ByteUnit
 import com.upsaclay.common.domain.entity.SchoolLevel
 import com.upsaclay.common.domain.entity.User
+import com.upsaclay.common.domain.extensions.toBytes
 import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.domain.usersFixture
 import com.upsaclay.common.presentation.components.DatePickerModal
@@ -29,11 +37,14 @@ import com.upsaclay.mission.R
 import com.upsaclay.mission.domain.entity.MissionTask
 import com.upsaclay.mission.domain.missionFixture
 import com.upsaclay.mission.presentation.MissionBottomSheetType
+import com.upsaclay.mission.presentation.MissionImageError
 import com.upsaclay.mission.presentation.components.bottomsheets.AddMissionTaskBottomSheet
 import com.upsaclay.mission.presentation.components.bottomsheets.EditMissionTaskBottomSheet
 import com.upsaclay.mission.presentation.components.bottomsheets.SelectManagerBottomSheet
 import com.upsaclay.mission.presentation.components.form.MissionForm
 import com.upsaclay.mission.presentation.components.form.MissionFormValue
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate
 
@@ -43,6 +54,33 @@ fun CreateMissionDestination(
     viewModel: CreateMissionViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val showSnackBar = { message: String ->
+        scope.launch {
+            snackbarHostState.showSnackbar(message = message)
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.event.collectLatest {
+            when (it) {
+                is CreateMissionViewModel.CreateMissionUiEvent.ImageError -> {
+                    val message = when (val imageError = it.missionImageError) {
+                        is MissionImageError.ImageTooLarge -> {
+                            val maxValue = context.getString(
+                                com.upsaclay.common.R.string.mega_bytes_short,
+                                imageError.LIMIT.toBytes(ByteUnit.MEGA_BYTE)
+                            )
+                            context.getString(imageError.error, maxValue)
+                        }
+                    }
+                    showSnackBar(message)
+                }
+            }
+        }
+    }
 
     CreateMissionScreen(
         title = uiState.title,
@@ -59,6 +97,7 @@ fun CreateMissionDestination(
         managers = uiState.managers,
         missionTasks = uiState.missionTasks,
         createEnabled = uiState.createEnabled,
+        snackbarHostState = snackbarHostState,
         onTitleChange = viewModel::onTitleChange,
         onDescriptionChange = viewModel::onDescriptionChange,
         onStartDateChange = viewModel::onStartDateChange,
@@ -99,6 +138,7 @@ private fun CreateMissionScreen(
     managers: List<User>,
     missionTasks: List<MissionTask>,
     createEnabled: Boolean,
+    snackbarHostState: SnackbarHostState,
     onImageUriChange: (Uri) -> Unit,
     onRemoveImageClick: () -> Unit,
     onTitleChange: (String) -> Unit,
@@ -143,6 +183,11 @@ private fun CreateMissionScreen(
                 actionLabel = stringResource(com.upsaclay.common.R.string.publish),
                 buttonEnable = createEnabled
             )
+        },
+        snackbarHost = {
+            SnackbarHost(snackbarHostState) {
+                Snackbar(it)
+            }
         }
     ) { innerPadding ->
         MissionForm(
@@ -283,6 +328,7 @@ private fun CreateMissionScreenPreview() {
             users = usersFixture,
             userQuery = "",
             createEnabled = false,
+            snackbarHostState = SnackbarHostState(),
             onTitleChange = {},
             onDescriptionChange = {},
             onSchoolLevelChange = {},

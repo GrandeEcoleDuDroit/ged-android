@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="create_post_image_rail_item_height">220dp</dimen>
+    <dimen name="create_post_image_rail_item_width">180dp</dimen>
+    <dimen name="post_image_height">200dp</dimen>
+    <dimen name="compact_post_image_height">160dp</dimen>
+    <dimen name="post_item_redirect_button_height">34dp</dimen>
+</resources>

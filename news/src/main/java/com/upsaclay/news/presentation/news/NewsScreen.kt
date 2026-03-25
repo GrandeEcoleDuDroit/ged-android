@@ -1,7 +1,10 @@
 package com.upsaclay.news.presentation.news
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -15,23 +18,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import com.upsaclay.common.domain.entity.Reporter
 import com.upsaclay.common.domain.entity.User
-import com.upsaclay.common.domain.userFixture
+import com.upsaclay.common.extension.mediumSpacing
 import com.upsaclay.common.presentation.LoadingScreen
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.LoadingDialog
-import com.upsaclay.common.presentation.components.PullToRefreshComponent
 import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
-import com.upsaclay.news.domain.announcementsFixture
-import com.upsaclay.news.domain.entity.Announcement
-import com.upsaclay.news.domain.entity.AnnouncementReport
+import com.upsaclay.news.domain.announcement.Announcement
+import com.upsaclay.news.domain.announcement.AnnouncementReport
+import com.upsaclay.news.domain.post.Post
+import com.upsaclay.news.domain.post.PostReport
 import com.upsaclay.news.presentation.announcement.components.AnnouncementBottomSheet
 import com.upsaclay.news.presentation.announcement.stringRes
 import com.upsaclay.news.presentation.news.components.NewsScaffold
+import com.upsaclay.news.presentation.post.PostPresentationUtils
+import com.upsaclay.news.presentation.post.components.PostBottomSheet
+import com.upsaclay.news.presentation.post.stringRes
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -41,6 +50,10 @@ fun NewsDestination(
     onCreateAnnouncementClick: () -> Unit,
     onEditAnnouncementClick: (Announcement) -> Unit,
     onSeeAllAnnouncementsClick: () -> Unit,
+    onPostClick: (String) -> Unit,
+    onCreatePostClick: () -> Unit,
+    onEditPostClick: (Post) -> Unit,
+    onSeeAllPostsClick: () -> Unit,
     bottomBar: @Composable () -> Unit,
     viewModel: NewsViewModel = koinViewModel()
 ) {
@@ -67,18 +80,33 @@ fun NewsDestination(
         NewsScreen(
             user = uiState.user!!,
             announcements = uiState.announcements,
-            refreshing = uiState.refreshing,
+            posts = uiState.posts,
             loading = uiState.loading,
             bottomBar = bottomBar,
             snackbarHostState = snackbarHostState,
-            onRefresh = viewModel::refreshAnnouncements,
             onAnnouncementClick = onAnnouncementClick,
             onCreateAnnouncementClick = onCreateAnnouncementClick,
-            onResendAnnouncementClick = viewModel::resendAnnouncement,
-            onEditAnnouncementClick = { viewModel.getAnnouncement(it)?.let(onEditAnnouncementClick) },
+            onRecreateAnnouncementClick = viewModel::recreateAnnouncement,
+            onEditAnnouncementClick = {
+                scope.launch {
+                    viewModel.getAnnouncement(it)?.let(onEditAnnouncementClick)
+                }
+            },
             onDeleteAnnouncementClick = viewModel::deleteAnnouncement,
+            onReportAnnouncementClick = viewModel::reportAnnouncement,
             onSeeAllAnnouncementsClick = onSeeAllAnnouncementsClick,
-            onReportAnnouncementClick = viewModel::reportAnnouncement
+            onPostClick = onPostClick,
+            onRedirectPostClick = { context.startActivity(PostPresentationUtils.getPostLinkIntent(it)) },
+            onCreatePostClick = onCreatePostClick,
+            onEditPostClick = {
+                scope.launch {
+                    viewModel.getPost(it)?.let(onEditPostClick)
+                }
+            },
+            onRecreatePostClick = viewModel::recreatePost,
+            onDeletePostClick = viewModel::deletePost,
+            onReportPostClick = viewModel::reportPost,
+            onSeeAllPostsClick = onSeeAllPostsClick
         )
     } else {
         LoadingScreen()
@@ -90,18 +118,25 @@ fun NewsDestination(
 private fun NewsScreen(
     user: User,
     announcements: List<Announcement>?,
-    refreshing: Boolean,
+    posts: List<Post>?,
     loading: Boolean,
     bottomBar: @Composable () -> Unit,
     snackbarHostState: SnackbarHostState = SnackbarHostState(),
-    onRefresh: () -> Unit,
     onAnnouncementClick: (String) -> Unit,
     onCreateAnnouncementClick: () -> Unit,
-    onResendAnnouncementClick: (Announcement) -> Unit,
+    onRecreateAnnouncementClick: (Announcement) -> Unit,
     onEditAnnouncementClick: (String) -> Unit,
     onDeleteAnnouncementClick: (Announcement) -> Unit,
+    onReportAnnouncementClick: (AnnouncementReport) -> Unit,
     onSeeAllAnnouncementsClick: () -> Unit,
-    onReportAnnouncementClick: (AnnouncementReport) -> Unit
+    onPostClick: (String) -> Unit,
+    onRedirectPostClick: (String) -> Unit,
+    onCreatePostClick: () -> Unit,
+    onEditPostClick: (String) -> Unit,
+    onRecreatePostClick: (Post) -> Unit,
+    onDeletePostClick: (Post) -> Unit,
+    onReportPostClick: (PostReport) -> Unit,
+    onSeeAllPostsClick: () -> Unit
 ) {
     var activeBottomSheet by remember { mutableStateOf<NewsScreenBottomSheet?>(null) }
     var activeDialog by remember { mutableStateOf<NewsDialog?>(null) }
@@ -121,6 +156,19 @@ private fun NewsScreen(
             )
         }
 
+        is NewsDialog.DeletePostDialog -> {
+            DefaultDialog(
+                text = stringResource(id = R.string.delete_post_dialog_message),
+                confirmText = stringResource(id = com.upsaclay.common.R.string.delete),
+                critical = true,
+                onConfirm = {
+                    activeDialog = null
+                    onDeletePostClick(dialogType.post)
+                },
+                onCancel = { activeDialog = null }
+            )
+        }
+
         else -> Unit
     }
 
@@ -130,25 +178,42 @@ private fun NewsScreen(
 
     NewsScaffold(
         user = user,
+        onCreatePostClick = onCreatePostClick,
         onCreateAnnouncementClick = onCreateAnnouncementClick,
         snackbarHostState = snackbarHostState,
         bottomBar = bottomBar
-    ) { paddingValues ->
-        PullToRefreshComponent(
-            modifier = Modifier.padding(paddingValues),
-            onRefresh = onRefresh,
-            refreshing = refreshing
+    ) { innerPadding ->
+        Column(
+            Modifier
+                .padding(innerPadding)
+                .padding(bottom = MaterialTheme.padding.small),
+            verticalArrangement = Arrangement.mediumSpacing()
         ) {
-            RecentAnnouncementSection(
+            AnnouncementSection(
+                modifier = Modifier.weight(0.9f),
                 announcements = announcements,
                 onAnnouncementClick = onAnnouncementClick,
                 onUncreatedAnnouncementClick = { announcement ->
                     activeBottomSheet = NewsScreenBottomSheet.AnnouncementBottomSheet(announcement)
                 },
-                onSeeAllAnnouncementsClick = onSeeAllAnnouncementsClick,
                 onAnnouncementOptionClick = { announcement ->
                     activeBottomSheet = NewsScreenBottomSheet.AnnouncementBottomSheet(announcement)
-                }
+                },
+                onSeeAllAnnouncementsClick = onSeeAllAnnouncementsClick
+            )
+
+            PostSection(
+                modifier = Modifier.weight(1f),
+                posts = posts,
+                onPostClick = onPostClick,
+                onUncreatedPostClick = {
+                    activeBottomSheet = NewsScreenBottomSheet.PostBottomSheet(it)
+                },
+                onRedirectPostClick = onRedirectPostClick,
+                onPostOptionClick = {
+                    activeBottomSheet = NewsScreenBottomSheet.PostBottomSheet(it)
+                },
+                onSeeAllPostsClick = onSeeAllPostsClick
             )
         }
 
@@ -161,9 +226,9 @@ private fun NewsScreen(
                         activeBottomSheet = null
                         onEditAnnouncementClick(bottomSheet.announcement.id)
                     },
-                    onResendClick = {
+                    onRecreateClick = {
                         activeBottomSheet = null
-                        onResendAnnouncementClick(bottomSheet.announcement)
+                        onRecreateAnnouncementClick(bottomSheet.announcement)
                     },
                     onReportClick = {
                         activeBottomSheet = NewsScreenBottomSheet.AnnouncementReportBottomSheet(bottomSheet.announcement)
@@ -188,7 +253,50 @@ private fun NewsScreen(
                                     fullName = bottomSheet.announcement.author.fullName,
                                     email = bottomSheet.announcement.author.email
                                 ),
-                                reporter = AnnouncementReport.Reporter(
+                                reporter = Reporter(
+                                    fullName = user.fullName,
+                                    email = user.email
+                                ),
+                                reason = reason
+                            )
+                        )
+                    },
+                    onDismiss = { activeBottomSheet = null }
+                )
+            }
+
+            is NewsScreenBottomSheet.PostBottomSheet -> {
+                PostBottomSheet(
+                    postState = bottomSheet.post.state,
+                    editable = user.admin,
+                    onEditClick = {
+                        activeBottomSheet = null
+                        onEditPostClick(bottomSheet.post.id)
+                    },
+                    onRecreateClick = {
+                        activeBottomSheet = null
+                        onRecreatePostClick(bottomSheet.post)
+                    },
+                    onDeleteClick = {
+                        activeBottomSheet = null
+                        activeDialog = NewsDialog.DeletePostDialog(bottomSheet.post)
+                    },
+                    onReportClick = {
+                        activeBottomSheet = NewsScreenBottomSheet.PostReportBottomSheet(bottomSheet.post)
+                    },
+                    onDismiss = { activeBottomSheet = null }
+                )
+            }
+
+            is NewsScreenBottomSheet.PostReportBottomSheet -> {
+                ReportBottomSheet(
+                    items = PostReport.Reason.entries.map { stringResource(it.stringRes) },
+                    onReportClick = { reason ->
+                        activeBottomSheet = null
+                        onReportPostClick(
+                            PostReport(
+                                postId = bottomSheet.post.id,
+                                reporter = Reporter(
                                     fullName = user.fullName,
                                     email = user.email
                                 ),
@@ -208,10 +316,13 @@ private fun NewsScreen(
 private sealed class NewsScreenBottomSheet {
     data class AnnouncementBottomSheet(val announcement: Announcement): NewsScreenBottomSheet()
     data class AnnouncementReportBottomSheet(val announcement: Announcement): NewsScreenBottomSheet()
+    data class PostBottomSheet(val post: Post): NewsScreenBottomSheet()
+    data class PostReportBottomSheet(val post: Post): NewsScreenBottomSheet()
 }
 
 private sealed class NewsDialog {
     data class DeleteAnnouncementDialog(val announcement: Announcement): NewsDialog()
+    data class DeletePostDialog(val post: Post): NewsDialog()
 }
 
 /*
@@ -222,22 +333,31 @@ private sealed class NewsDialog {
 
 @PhonePreviews
 @Composable
-private fun NewsScreenPreview() {
+private fun NewsScreenPreview(
+    @PreviewParameter(NewsPreviewParameterProvider::class) previewParameter: NewsPreviewParameterData
+) {
     GedoiseTheme {
         NewsScreen(
-            user = userFixture,
-            announcements = announcementsFixture,
-            refreshing = false,
+            user = previewParameter.user,
+            announcements = previewParameter.announcements,
+            posts = previewParameter.posts,
             loading = false,
             bottomBar = {},
-            onRefresh = {},
             onAnnouncementClick = {},
-            onResendAnnouncementClick = {},
+            onRecreateAnnouncementClick = {},
             onEditAnnouncementClick = {},
             onDeleteAnnouncementClick = {},
             onCreateAnnouncementClick = {},
+            onReportAnnouncementClick = {},
             onSeeAllAnnouncementsClick = {},
-            onReportAnnouncementClick = {}
+            onPostClick = {},
+            onRedirectPostClick = {},
+            onCreatePostClick = {},
+            onEditPostClick = {},
+            onRecreatePostClick = {},
+            onDeletePostClick = {},
+            onReportPostClick = {},
+            onSeeAllPostsClick = {}
         )
     }
 }

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
@@ -17,15 +18,16 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import com.upsaclay.common.domain.entity.Reporter
 import com.upsaclay.common.domain.entity.User
-import com.upsaclay.common.domain.userFixture
 import com.upsaclay.common.extension.noRippleClickable
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.BackTopBar
@@ -37,15 +39,18 @@ import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.components.PullToRefreshComponent
 import com.upsaclay.common.presentation.components.ReportBottomSheet
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.news.R
-import com.upsaclay.news.domain.announcementsFixture
-import com.upsaclay.news.domain.entity.Announcement
-import com.upsaclay.news.domain.entity.Announcement.AnnouncementState
-import com.upsaclay.news.domain.entity.AnnouncementReport
+import com.upsaclay.news.domain.announcement.Announcement
+import com.upsaclay.news.domain.announcement.Announcement.AnnouncementState
+import com.upsaclay.news.domain.announcement.AnnouncementReport
+import com.upsaclay.news.presentation.announcement.AllAnnouncementPreviewParameterData
+import com.upsaclay.news.presentation.announcement.AnnouncementPreviewParameterProvider
 import com.upsaclay.news.presentation.announcement.components.AnnouncementBottomSheet
 import com.upsaclay.news.presentation.announcement.components.ExtendedAnnouncementItem
 import com.upsaclay.news.presentation.announcement.stringRes
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -57,23 +62,21 @@ fun AllAnnouncementsDestination(
     viewModel: AllAnnouncementsViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
+    val showSnackBar = { message: String ->
+        scope.launch {
+            snackbarHostState.showSnackbar(message = message)
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
-                is SingleUiEvent.Error -> {
-                    snackbarHostState.showSnackbar(
-                        message = context.getString(event.messageId)
-                    )
-                }
+                is SingleUiEvent.Error -> showSnackBar(context.getString(event.messageId))
 
-                is SingleUiEvent.Success -> {
-                    snackbarHostState.showSnackbar(
-                        message = context.getString(event.messageId)
-                    )
-                }
+                is SingleUiEvent.Success -> showSnackBar(context.getString(event.messageId))
             }
         }
     }
@@ -89,7 +92,7 @@ fun AllAnnouncementsDestination(
             onRefresh = viewModel::refreshAnnouncements,
             onAuthorClick = onAuthorClick,
             onAnnouncementClick = onAnnouncementClick,
-            onResendAnnouncementClick = viewModel::resendAnnouncement,
+            onRecreateAnnouncementClick = viewModel::recreateAnnouncement,
             onEditAnnouncementClick = onEditAnnouncementClick,
             onReportAnnouncementClick = viewModel::reportAnnouncement,
             onDeleteAnnouncementClick = viewModel::deleteAnnouncement
@@ -109,7 +112,7 @@ private fun AllAnnouncementsScreen(
     onRefresh: () -> Unit,
     onAuthorClick: (User) -> Unit,
     onAnnouncementClick: (String) -> Unit,
-    onResendAnnouncementClick: (Announcement) -> Unit,
+    onRecreateAnnouncementClick: (Announcement) -> Unit,
     onEditAnnouncementClick: (Announcement) -> Unit,
     onReportAnnouncementClick: (AnnouncementReport) -> Unit,
     onDeleteAnnouncementClick: (Announcement) -> Unit
@@ -177,7 +180,7 @@ private fun AllAnnouncementsScreen(
                                                 AllAnnouncementScreenBottomSheet.AnnouncementBottomSheet(announcement)
                                         }
                                     }
-                                    .padding(dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                                    .padding(MaterialTheme.padding.medium),
                                 announcement = announcement,
                                 onOptionClick = {
                                     activeBottomSheet =
@@ -201,7 +204,7 @@ private fun AllAnnouncementsScreen(
                 contentAlignment = Alignment.Center
             ) {
                 CircularProgressBar(
-                    modifier = Modifier.padding(top = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+                    modifier = Modifier.padding(top = MaterialTheme.padding.medium)
                 )
             }
         }
@@ -215,9 +218,9 @@ private fun AllAnnouncementsScreen(
                         activeBottomSheet = null
                         onEditAnnouncementClick(bottomSheet.announcement)
                     },
-                    onResendClick = {
+                    onRecreateClick = {
                         activeBottomSheet = null
-                        onResendAnnouncementClick(bottomSheet.announcement)
+                        onRecreateAnnouncementClick(bottomSheet.announcement)
                     },
                     onReportClick = {
                         activeBottomSheet =
@@ -243,7 +246,7 @@ private fun AllAnnouncementsScreen(
                                     fullName = bottomSheet.announcement.author.fullName,
                                     email = bottomSheet.announcement.author.email
                                 ),
-                                reporter = AnnouncementReport.Reporter(
+                                reporter = Reporter(
                                     fullName = user.fullName,
                                     email = user.email
                                 ),
@@ -277,18 +280,20 @@ private sealed class AllAnnouncementDialog {
 
 @PhonePreviews
 @Composable
-private fun AllAnnouncementsScreenPreview() {
+private fun AllAnnouncementsScreenPreview(
+    @PreviewParameter(AnnouncementPreviewParameterProvider::class) previewParameter: AllAnnouncementPreviewParameterData
+) {
     GedoiseTheme {
         AllAnnouncementsScreen(
-            user = userFixture,
-            announcements = announcementsFixture,
+            user = previewParameter.user,
+            announcements = previewParameter.announcements,
             refreshing = false,
             loading = false,
             onBackClick = {},
             onAuthorClick = {},
             onRefresh = {},
             onAnnouncementClick = {},
-            onResendAnnouncementClick = {},
+            onRecreateAnnouncementClick = {},
             onEditAnnouncementClick = {},
             onReportAnnouncementClick = {},
             onDeleteAnnouncementClick = {}

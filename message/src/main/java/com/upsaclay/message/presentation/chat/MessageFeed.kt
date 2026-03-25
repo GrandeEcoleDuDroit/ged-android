@@ -32,6 +32,7 @@ import androidx.paging.compose.itemKey
 import com.upsaclay.common.domain.entity.User
 import com.upsaclay.common.extension.rootMediumPadding
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.utils.DateUtils
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.message.R
@@ -126,14 +127,14 @@ internal fun MessageFeed(
 
                 if (condition.isOldestMessage || !condition.sameDay) {
                     val topPadding = if (condition.isOldestMessage) {
-                        dimensionResource(com.upsaclay.common.R.dimen.default_padding)
+                        MaterialTheme.padding.default
                     } else {
-                        dimensionResource(com.upsaclay.common.R.dimen.medium_large_padding)
+                        MaterialTheme.padding.mediumLarge
                     }
 
                     Text(
                         modifier = Modifier
-                            .padding(top = topPadding, bottom = dimensionResource(com.upsaclay.common.R.dimen.medium_large_padding))
+                            .padding(top = topPadding, bottom = MaterialTheme.padding.mediumLarge)
                             .fillMaxWidth(),
                         text = DateUtils.formatDayMonthYear(message.date),
                         style = MaterialTheme.typography.bodySmall,
@@ -184,9 +185,9 @@ private fun messageTopPadding(condition: MessageCondition): Dp {
 
     return when {
         small -> 2.dp
-        smallMedium -> dimensionResource(com.upsaclay.common.R.dimen.small_medium_padding)
-        zero -> dimensionResource(com.upsaclay.common.R.dimen.default_padding)
-        else -> dimensionResource(com.upsaclay.common.R.dimen.medium_padding)
+        smallMedium -> MaterialTheme.padding.smallMedium
+        zero -> MaterialTheme.padding.default
+        else -> MaterialTheme.padding.medium
     }
 }
 

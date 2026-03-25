@@ -35,6 +35,7 @@ import com.upsaclay.common.extension.smallSpacing
 import com.upsaclay.common.presentation.components.EmptyText
 import com.upsaclay.common.presentation.components.StaticSearchBar
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.mission.presentation.components.items.MissionUserItem
 
@@ -63,7 +64,7 @@ fun SelectManagerBottomSheet(
             StaticSearchBar(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = dimensionResource(R.dimen.medium_padding)),
+                    .padding(horizontal = MaterialTheme.padding.medium),
                 query = userQuery,
                 onQueryChange = onUserQueryChange,
                 onResetQuery = onResetQuery,
@@ -72,7 +73,7 @@ fun SelectManagerBottomSheet(
 
             LazyColumn(
                 modifier = Modifier
-                    .padding(top = dimensionResource(R.dimen.medium_padding))
+                    .padding(top = MaterialTheme.padding.medium)
                     .weight(1f)
             ) {
                 if (users.isEmpty()) {
@@ -103,7 +104,7 @@ fun SelectManagerBottomSheet(
             TextButton(
                 modifier = Modifier
                     .align(Alignment.End)
-                    .padding(end = dimensionResource(com.upsaclay.common.R.dimen.medium_padding)),
+                    .padding(end = MaterialTheme.padding.medium),
                 onClick = { onSaveClick(currentSelectedManagers) },
                 enabled = saveEnabled
             ) {
@@ -128,7 +129,7 @@ private fun SelectableManagerItem(
             .fillMaxWidth()
             .clickable(onClick = { onUserClick(user) })
             .padding(
-                horizontal = dimensionResource(R.dimen.medium_padding),
+                horizontal = MaterialTheme.padding.medium,
             ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.smallSpacing()

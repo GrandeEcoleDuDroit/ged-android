@@ -11,7 +11,5 @@ sealed class ElapsedTime {
 
     data class Day(val value: Long) : ElapsedTime()
 
-    data class Week(val value: Long) : ElapsedTime()
-
     data class Later(val value: LocalDateTime) : ElapsedTime()
 }

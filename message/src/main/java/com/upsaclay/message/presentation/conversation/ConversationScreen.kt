@@ -3,6 +3,7 @@ package com.upsaclay.message.presentation.conversation
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -16,18 +17,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.upsaclay.common.presentation.SingleUiEvent
 import com.upsaclay.common.presentation.components.CircularProgressBar
 import com.upsaclay.common.presentation.components.DefaultDialog
 import com.upsaclay.common.presentation.components.LoadingDialog
 import com.upsaclay.common.presentation.theme.GedoiseTheme
+import com.upsaclay.common.presentation.theme.padding
 import com.upsaclay.common.utils.PhonePreviews
 import com.upsaclay.message.R
 import com.upsaclay.message.domain.entity.Conversation
 import com.upsaclay.message.domain.entity.ConversationUi
-import com.upsaclay.message.domain.fixtures.conversationsUiFixture
 import com.upsaclay.message.domain.mapper.toConversation
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -137,7 +138,7 @@ private fun ConversationScreen(
                 contentAlignment = Alignment.Center
             ) {
                 CircularProgressBar(
-                    modifier = Modifier.padding(top = dimensionResource(com.upsaclay.common.R.dimen.medium_padding))
+                    modifier = Modifier.padding(top = MaterialTheme.padding.medium)
                 )
             }
         }
@@ -179,13 +180,13 @@ private sealed class ConversationScreenDialog {
 
 @PhonePreviews
 @Composable
-private fun ConversationsScreenPreview() {
-    val conversations = conversationsUiFixture.sortedByDescending { it.lastMessage.date }
-
+private fun ConversationsScreenPreview(
+    @PreviewParameter(ConversationPreviewParameterProvider::class) conversationsUi: List<ConversationUi>
+) {
     GedoiseTheme {
         Surface {
             ConversationScreen(
-                conversations = conversations,
+                conversations = conversationsUi.sortedByDescending { it.lastMessage.date },
                 loading = false,
                 onConversationClick = {},
                 onDeleteConversationClick = {},
